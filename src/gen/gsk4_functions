@@ -1,0 +1,16 @@
+quote
+$(Expr(:toplevel, quote
+    function serialization_error_quark()
+        ret = ccall(("gsk_serialization_error_quark", "libgtk-4.so.1"), UInt32, ())
+        ret
+    end
+    function transform_parse(_string)
+        m_out_transform = mutable(Ptr{GskTransform})
+        ret = ccall(("gsk_transform_parse", "libgtk-4.so.1"), Cint, (Ptr{UInt8}, Ptr{Ptr{GskTransform}}), _string, m_out_transform)
+        ret2 = convert(Bool, ret)
+        _out_transform = m_out_transform[]
+        _out_transform = convert(GskTransform, _out_transform, true)
+        (ret2, _out_transform)
+    end
+end))
+end

@@ -1,0 +1,428 @@
+quote
+$(Expr(:toplevel, quote
+    begin
+        begin
+            struct _GskColorStop
+                offset::Float32
+                color::Ptr{GdkRGBA}
+            end
+        end
+        mutable struct GskColorStop
+            handle::Ptr{GskColorStop}
+        end
+        begin
+            function Base.getproperty(s::GskColorStop, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GskColorStop)
+                    u = unsafe_load(Ptr{_GskColorStop}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GskParseLocation
+                bytes::UInt64
+                chars::UInt64
+                lines::UInt64
+                line_bytes::UInt64
+                line_chars::UInt64
+            end
+        end
+        mutable struct GskParseLocation
+            handle::Ptr{GskParseLocation}
+        end
+        begin
+            function Base.getproperty(s::GskParseLocation, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GskParseLocation)
+                    u = unsafe_load(Ptr{_GskParseLocation}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        nothing
+        mutable struct GskRoundedRect
+            handle::Ptr{GskRoundedRect}
+        end
+        nothing
+    end
+    begin
+        nothing
+        mutable struct GskShaderArgsBuilder <: GBoxed
+            handle::Ptr{GskShaderArgsBuilder}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = begin
+                        ccall(("gsk_shader_args_builder_get_type", "libgtk-4.so.1"), GType, ())
+                    end
+                function GskShaderArgsBuilder(ref::Ptr{GskShaderArgsBuilder}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GskShaderArgsBuilder
+                    gtype = ccall(($(QuoteNode("gsk_shader_args_builder_get_type")), "libgtk-4.so.1"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        nothing
+    end
+    begin
+        begin
+            struct _GskShadow
+                color::Ptr{GdkRGBA}
+                dx::Float32
+                dy::Float32
+                radius::Float32
+            end
+        end
+        mutable struct GskShadow
+            handle::Ptr{GskShadow}
+        end
+        begin
+            function Base.getproperty(s::GskShadow, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GskShadow)
+                    u = unsafe_load(Ptr{_GskShadow}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        nothing
+        mutable struct GskTransform <: GBoxed
+            handle::Ptr{GskTransform}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GskTransform) = begin
+                        ccall(("gsk_transform_get_type", "libgtk-4.so.1"), GType, ())
+                    end
+                function GskTransform(ref::Ptr{GskTransform}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GskTransform
+                    gtype = ccall(($(QuoteNode("gsk_transform_get_type")), "libgtk-4.so.1"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        nothing
+    end
+    begin
+        gtype_wrapper_cache = Dict{Symbol, Type}()
+    end
+    begin
+        abstract type GskRenderer <: GObject end
+    end
+    begin
+        mutable struct GskRendererLeaf <: GskRenderer
+            handle::Ptr{GObject}
+            function GskRendererLeaf(handle::Ptr{GObject})
+                if handle == C_NULL
+                    error("Cannot construct GskRendererLeaf with a NULL pointer")
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs, T
+        function GskRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskRendererLeaf, args))
+            end
+            w = GskRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskRenderer] = GskRendererLeaf
+        function GskRenderer(args...; kwargs...)
+            GskRendererLeaf(args...; kwargs...)
+        end
+        Base.propertynames(o::GskRendererLeaf) = begin
+                [:handle, :surface, :realized]
+            end
+        function Base.getproperty(o::GskRendererLeaf, name::Symbol)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 1), :realized => (:Bool, 0, 1))
+            if name in keys(d)
+                return get_gtk_property(o, name, eval((d[name])[1]))
+            else
+                return getfield(o, name)
+            end
+        end
+        function Base.setproperty!(o::GskRendererLeaf, name::Symbol, x)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                set_gtk_property!(o, name, x)
+            else
+                setfield!(o, name, x)
+            end
+        end
+    end
+    begin
+        abstract type GskBroadwayRenderer <: GskRenderer end
+    end
+    begin
+        mutable struct GskBroadwayRendererLeaf <: GskBroadwayRenderer
+            handle::Ptr{GObject}
+            function GskBroadwayRendererLeaf(handle::Ptr{GObject})
+                if handle == C_NULL
+                    error("Cannot construct GskBroadwayRendererLeaf with a NULL pointer")
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs, T
+        function GskBroadwayRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskBroadwayRendererLeaf, args))
+            end
+            w = GskBroadwayRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
+        function GskBroadwayRenderer(args...; kwargs...)
+            GskBroadwayRendererLeaf(args...; kwargs...)
+        end
+        Base.propertynames(o::GskBroadwayRendererLeaf) = begin
+                [:handle]
+            end
+        function Base.getproperty(o::GskBroadwayRendererLeaf, name::Symbol)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                return get_gtk_property(o, name, eval((d[name])[1]))
+            else
+                return getfield(o, name)
+            end
+        end
+        function Base.setproperty!(o::GskBroadwayRendererLeaf, name::Symbol, x)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                set_gtk_property!(o, name, x)
+            else
+                setfield!(o, name, x)
+            end
+        end
+    end
+    begin
+        abstract type GskCairoRenderer <: GskRenderer end
+    end
+    begin
+        mutable struct GskCairoRendererLeaf <: GskCairoRenderer
+            handle::Ptr{GObject}
+            function GskCairoRendererLeaf(handle::Ptr{GObject})
+                if handle == C_NULL
+                    error("Cannot construct GskCairoRendererLeaf with a NULL pointer")
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs, T
+        function GskCairoRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskCairoRendererLeaf, args))
+            end
+            w = GskCairoRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
+        function GskCairoRenderer(args...; kwargs...)
+            GskCairoRendererLeaf(args...; kwargs...)
+        end
+        Base.propertynames(o::GskCairoRendererLeaf) = begin
+                [:handle]
+            end
+        function Base.getproperty(o::GskCairoRendererLeaf, name::Symbol)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                return get_gtk_property(o, name, eval((d[name])[1]))
+            else
+                return getfield(o, name)
+            end
+        end
+        function Base.setproperty!(o::GskCairoRendererLeaf, name::Symbol, x)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                set_gtk_property!(o, name, x)
+            else
+                setfield!(o, name, x)
+            end
+        end
+    end
+    begin
+        abstract type GskGLRenderer <: GskRenderer end
+    end
+    begin
+        mutable struct GskGLRendererLeaf <: GskGLRenderer
+            handle::Ptr{GObject}
+            function GskGLRendererLeaf(handle::Ptr{GObject})
+                if handle == C_NULL
+                    error("Cannot construct GskGLRendererLeaf with a NULL pointer")
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs, T
+        function GskGLRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskGLRendererLeaf, args))
+            end
+            w = GskGLRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskGLRenderer] = GskGLRendererLeaf
+        function GskGLRenderer(args...; kwargs...)
+            GskGLRendererLeaf(args...; kwargs...)
+        end
+        Base.propertynames(o::GskGLRendererLeaf) = begin
+                [:handle]
+            end
+        function Base.getproperty(o::GskGLRendererLeaf, name::Symbol)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                return get_gtk_property(o, name, eval((d[name])[1]))
+            else
+                return getfield(o, name)
+            end
+        end
+        function Base.setproperty!(o::GskGLRendererLeaf, name::Symbol, x)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                set_gtk_property!(o, name, x)
+            else
+                setfield!(o, name, x)
+            end
+        end
+    end
+    begin
+        abstract type GskGLShader <: GObject end
+    end
+    begin
+        mutable struct GskGLShaderLeaf <: GskGLShader
+            handle::Ptr{GObject}
+            function GskGLShaderLeaf(handle::Ptr{GObject})
+                if handle == C_NULL
+                    error("Cannot construct GskGLShaderLeaf with a NULL pointer")
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs, T
+        function GskGLShaderLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskGLShaderLeaf, args))
+            end
+            w = GskGLShaderLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
+        function GskGLShader(args...; kwargs...)
+            GskGLShaderLeaf(args...; kwargs...)
+        end
+        Base.propertynames(o::GskGLShaderLeaf) = begin
+                [:handle, :resource, :source]
+            end
+        function Base.getproperty(o::GskGLShaderLeaf, name::Symbol)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:resource => (:String, 0, 11), :source => (:GBytes, 0, 11))
+            if name in keys(d)
+                return get_gtk_property(o, name, eval((d[name])[1]))
+            else
+                return getfield(o, name)
+            end
+        end
+        function Base.setproperty!(o::GskGLShaderLeaf, name::Symbol, x)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:resource => (:String, 0, 11), :source => (:GBytes, 0, 11))
+            if name in keys(d)
+                set_gtk_property!(o, name, x)
+            else
+                setfield!(o, name, x)
+            end
+        end
+    end
+    begin
+        abstract type GskNglRenderer <: GskRenderer end
+    end
+    begin
+        mutable struct GskNglRendererLeaf <: GskNglRenderer
+            handle::Ptr{GObject}
+            function GskNglRendererLeaf(handle::Ptr{GObject})
+                if handle == C_NULL
+                    error("Cannot construct GskNglRendererLeaf with a NULL pointer")
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs, T
+        function GskNglRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskNglRendererLeaf, args))
+            end
+            w = GskNglRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
+        function GskNglRenderer(args...; kwargs...)
+            GskNglRendererLeaf(args...; kwargs...)
+        end
+        Base.propertynames(o::GskNglRendererLeaf) = begin
+                [:handle]
+            end
+        function Base.getproperty(o::GskNglRendererLeaf, name::Symbol)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                return get_gtk_property(o, name, eval((d[name])[1]))
+            else
+                return getfield(o, name)
+            end
+        end
+        function Base.setproperty!(o::GskNglRendererLeaf, name::Symbol, x)
+            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+            if name in keys(d)
+                set_gtk_property!(o, name, x)
+            else
+                setfield!(o, name, x)
+            end
+        end
+    end
+    begin
+        gtype_wrapper_cache_init() = begin
+                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+            end
+    end
+    export GskColorStop, GskParseLocation, GskRoundedRect, GskShaderArgsBuilder, GskShadow, GskTransform, GskBroadwayRenderer, GskCairoRenderer, GskGLRenderer, GskGLShader, GskNglRenderer, GskRenderer
+end))
+end

@@ -1,0 +1,711 @@
+quote
+$(Expr(:toplevel, quote
+    begin
+        begin
+            struct _GrapheneSimd4F
+                x::Float32
+                y::Float32
+                z::Float32
+                w::Float32
+            end
+        end
+        mutable struct GrapheneSimd4F
+            handle::Ptr{GrapheneSimd4F}
+        end
+        begin
+            function Base.getproperty(s::GrapheneSimd4F, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneSimd4F)
+                    u = unsafe_load(Ptr{_GrapheneSimd4F}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneVec3
+                value::GrapheneSimd4F
+            end
+        end
+        mutable struct GrapheneVec3 <: GBoxed
+            handle::Ptr{GrapheneVec3}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneVec3) = begin
+                        ccall(("graphene_vec3_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneVec3(ref::Ptr{GrapheneVec3}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneVec3
+                    gtype = ccall(($(QuoteNode("graphene_vec3_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneVec3, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneVec3)
+                    u = unsafe_load(Ptr{_GrapheneVec3}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneSimd4X4F
+                x::GrapheneSimd4F
+                y::GrapheneSimd4F
+                z::GrapheneSimd4F
+                w::GrapheneSimd4F
+            end
+        end
+        mutable struct GrapheneSimd4X4F
+            handle::Ptr{GrapheneSimd4X4F}
+        end
+        begin
+            function Base.getproperty(s::GrapheneSimd4X4F, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneSimd4X4F)
+                    u = unsafe_load(Ptr{_GrapheneSimd4X4F}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneSize
+                width::Float32
+                height::Float32
+            end
+        end
+        mutable struct GrapheneSize <: GBoxed
+            handle::Ptr{GrapheneSize}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneSize) = begin
+                        ccall(("graphene_size_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneSize(ref::Ptr{GrapheneSize}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneSize
+                    gtype = ccall(($(QuoteNode("graphene_size_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneSize, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneSize)
+                    u = unsafe_load(Ptr{_GrapheneSize}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneBox
+                min::Ptr{GrapheneVec3}
+                max::Ptr{GrapheneVec3}
+            end
+        end
+        mutable struct GrapheneBox <: GBoxed
+            handle::Ptr{GrapheneBox}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneBox) = begin
+                        ccall(("graphene_box_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneBox(ref::Ptr{GrapheneBox}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneBox
+                    gtype = ccall(($(QuoteNode("graphene_box_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneBox, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneBox)
+                    u = unsafe_load(Ptr{_GrapheneBox}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneEuler
+                angles::Ptr{GrapheneVec3}
+                order::Int32
+            end
+        end
+        mutable struct GrapheneEuler <: GBoxed
+            handle::Ptr{GrapheneEuler}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneEuler) = begin
+                        ccall(("graphene_euler_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneEuler(ref::Ptr{GrapheneEuler}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneEuler
+                    gtype = ccall(($(QuoteNode("graphene_euler_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneEuler, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneEuler)
+                    u = unsafe_load(Ptr{_GrapheneEuler}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        nothing
+        mutable struct GrapheneFrustum <: GBoxed
+            handle::Ptr{GrapheneFrustum}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneFrustum) = begin
+                        ccall(("graphene_frustum_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneFrustum(ref::Ptr{GrapheneFrustum}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneFrustum
+                    gtype = ccall(($(QuoteNode("graphene_frustum_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        nothing
+    end
+    begin
+        begin
+            struct _GrapheneMatrix
+                value::GrapheneSimd4X4F
+            end
+        end
+        mutable struct GrapheneMatrix <: GBoxed
+            handle::Ptr{GrapheneMatrix}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneMatrix) = begin
+                        ccall(("graphene_matrix_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneMatrix(ref::Ptr{GrapheneMatrix}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneMatrix
+                    gtype = ccall(($(QuoteNode("graphene_matrix_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneMatrix, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneMatrix)
+                    u = unsafe_load(Ptr{_GrapheneMatrix}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GraphenePlane
+                normal::Ptr{GrapheneVec3}
+                constant::Float32
+            end
+        end
+        mutable struct GraphenePlane <: GBoxed
+            handle::Ptr{GraphenePlane}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GraphenePlane) = begin
+                        ccall(("graphene_plane_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GraphenePlane(ref::Ptr{GraphenePlane}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GraphenePlane
+                    gtype = ccall(($(QuoteNode("graphene_plane_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GraphenePlane, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GraphenePlane)
+                    u = unsafe_load(Ptr{_GraphenePlane}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GraphenePoint
+                x::Float32
+                y::Float32
+            end
+        end
+        mutable struct GraphenePoint <: GBoxed
+            handle::Ptr{GraphenePoint}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GraphenePoint) = begin
+                        ccall(("graphene_point_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GraphenePoint(ref::Ptr{GraphenePoint}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GraphenePoint
+                    gtype = ccall(($(QuoteNode("graphene_point_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GraphenePoint, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GraphenePoint)
+                    u = unsafe_load(Ptr{_GraphenePoint}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GraphenePoint3D
+                x::Float32
+                y::Float32
+                z::Float32
+            end
+        end
+        mutable struct GraphenePoint3D <: GBoxed
+            handle::Ptr{GraphenePoint3D}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GraphenePoint3D) = begin
+                        ccall(("graphene_point3d_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GraphenePoint3D(ref::Ptr{GraphenePoint3D}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GraphenePoint3D
+                    gtype = ccall(($(QuoteNode("graphene_point3d_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GraphenePoint3D, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GraphenePoint3D)
+                    u = unsafe_load(Ptr{_GraphenePoint3D}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        nothing
+        mutable struct GrapheneQuad <: GBoxed
+            handle::Ptr{GrapheneQuad}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneQuad) = begin
+                        ccall(("graphene_quad_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneQuad(ref::Ptr{GrapheneQuad}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneQuad
+                    gtype = ccall(($(QuoteNode("graphene_quad_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        nothing
+    end
+    begin
+        begin
+            struct _GrapheneQuaternion
+                x::Float32
+                y::Float32
+                z::Float32
+                w::Float32
+            end
+        end
+        mutable struct GrapheneQuaternion <: GBoxed
+            handle::Ptr{GrapheneQuaternion}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneQuaternion) = begin
+                        ccall(("graphene_quaternion_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneQuaternion(ref::Ptr{GrapheneQuaternion}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneQuaternion
+                    gtype = ccall(($(QuoteNode("graphene_quaternion_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneQuaternion, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneQuaternion)
+                    u = unsafe_load(Ptr{_GrapheneQuaternion}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneRay
+                origin::Ptr{GrapheneVec3}
+                direction::Ptr{GrapheneVec3}
+            end
+        end
+        mutable struct GrapheneRay <: GBoxed
+            handle::Ptr{GrapheneRay}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneRay) = begin
+                        ccall(("graphene_ray_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneRay(ref::Ptr{GrapheneRay}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneRay
+                    gtype = ccall(($(QuoteNode("graphene_ray_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneRay, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneRay)
+                    u = unsafe_load(Ptr{_GrapheneRay}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneRect
+                origin::Ptr{GraphenePoint}
+                size::Ptr{GrapheneSize}
+            end
+        end
+        mutable struct GrapheneRect <: GBoxed
+            handle::Ptr{GrapheneRect}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneRect) = begin
+                        ccall(("graphene_rect_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneRect(ref::Ptr{GrapheneRect}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneRect
+                    gtype = ccall(($(QuoteNode("graphene_rect_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneRect, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneRect)
+                    u = unsafe_load(Ptr{_GrapheneRect}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneSphere
+                center::Ptr{GrapheneVec3}
+                radius::Float32
+            end
+        end
+        mutable struct GrapheneSphere <: GBoxed
+            handle::Ptr{GrapheneSphere}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneSphere) = begin
+                        ccall(("graphene_sphere_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneSphere(ref::Ptr{GrapheneSphere}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneSphere
+                    gtype = ccall(($(QuoteNode("graphene_sphere_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneSphere, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneSphere)
+                    u = unsafe_load(Ptr{_GrapheneSphere}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneTriangle
+                a::Ptr{GrapheneVec3}
+                b::Ptr{GrapheneVec3}
+                c::Ptr{GrapheneVec3}
+            end
+        end
+        mutable struct GrapheneTriangle <: GBoxed
+            handle::Ptr{GrapheneTriangle}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneTriangle) = begin
+                        ccall(("graphene_triangle_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneTriangle(ref::Ptr{GrapheneTriangle}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneTriangle
+                    gtype = ccall(($(QuoteNode("graphene_triangle_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneTriangle, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneTriangle)
+                    u = unsafe_load(Ptr{_GrapheneTriangle}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneVec2
+                value::GrapheneSimd4F
+            end
+        end
+        mutable struct GrapheneVec2 <: GBoxed
+            handle::Ptr{GrapheneVec2}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneVec2) = begin
+                        ccall(("graphene_vec2_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneVec2(ref::Ptr{GrapheneVec2}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneVec2
+                    gtype = ccall(($(QuoteNode("graphene_vec2_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneVec2, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneVec2)
+                    u = unsafe_load(Ptr{_GrapheneVec2}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        begin
+            struct _GrapheneVec4
+                value::GrapheneSimd4F
+            end
+        end
+        mutable struct GrapheneVec4 <: GBoxed
+            handle::Ptr{GrapheneVec4}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GrapheneVec4) = begin
+                        ccall(("graphene_vec4_get_type", "libgraphene-1.0.so.0"), GType, ())
+                    end
+                function GrapheneVec4(ref::Ptr{GrapheneVec4}, own::Bool = false)
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneVec4
+                    gtype = ccall(($(QuoteNode("graphene_vec4_get_type")), "libgraphene-1.0.so.0"), GType, ())
+                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
+                    v
+                end
+            end
+        end
+        begin
+            function Base.getproperty(s::GrapheneVec4, sym::Symbol)
+                if sym === :handle
+                    return getfield(s, :handle)
+                elseif sym in fieldnames(_GrapheneVec4)
+                    u = unsafe_load(Ptr{_GrapheneVec4}(s.handle))
+                    return getfield(u, sym)
+                end
+            end
+        end
+    end
+    begin
+        gtype_wrapper_cache = Dict{Symbol, Type}()
+    end
+    begin
+        gtype_wrapper_cache_init() = begin
+                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+            end
+    end
+    export GrapheneSimd4F, GrapheneVec3, GrapheneSimd4X4F, GrapheneSize, GrapheneBox, GrapheneEuler, GrapheneFrustum, GrapheneMatrix, GraphenePlane, GraphenePoint, GraphenePoint3D, GrapheneQuad, GrapheneQuaternion, GrapheneRay, GrapheneRect, GrapheneSphere, GrapheneTriangle, GrapheneVec2, GrapheneVec4
+end))
+end
