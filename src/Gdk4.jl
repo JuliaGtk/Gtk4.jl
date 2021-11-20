@@ -2,7 +2,6 @@ module Gdk4
 
 using GLib
 using GLib.MutableTypes
-using Gio
 using Pango.Cairo
 using GdkPixbufLib
 

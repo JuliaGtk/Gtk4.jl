@@ -1,6 +1,8 @@
 # Simple calculator application that utilises Gtk.jl
 # created by Nand Vinchhi for GCI 2019
 
+# only works if you use include() in the REPL
+
 using Gtk4, GLib
 
 win = Gtk4.Window()

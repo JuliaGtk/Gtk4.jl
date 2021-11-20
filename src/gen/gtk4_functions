@@ -92,6 +92,33 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_accessible_state_init_value", "libgtk-4.so.1"), Nothing, (Int32, Ptr{GValue}), _state, _value)
         nothing
     end
+    function bitset_iter_init_at(_set::GtkBitset, _target)
+        m_iter = mutable(_GtkBitsetIter)
+        m_value = mutable(UInt32)
+        ret = ccall(("gtk_bitset_iter_init_at", "libgtk-4.so.1"), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, UInt32, Ptr{UInt32}), m_iter, _set, _target, m_value)
+        ret2 = convert(Bool, ret)
+        _iter = m_iter[]
+        _value = m_value[]
+        (ret2, _iter, _value)
+    end
+    function bitset_iter_init_first(_set::GtkBitset)
+        m_iter = mutable(_GtkBitsetIter)
+        m_value = mutable(UInt32)
+        ret = ccall(("gtk_bitset_iter_init_first", "libgtk-4.so.1"), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
+        ret2 = convert(Bool, ret)
+        _iter = m_iter[]
+        _value = m_value[]
+        (ret2, _iter, _value)
+    end
+    function bitset_iter_init_last(_set::GtkBitset)
+        m_iter = mutable(_GtkBitsetIter)
+        m_value = mutable(UInt32)
+        ret = ccall(("gtk_bitset_iter_init_last", "libgtk-4.so.1"), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
+        ret2 = convert(Bool, ret)
+        _iter = m_iter[]
+        _value = m_value[]
+        (ret2, _iter, _value)
+    end
     function builder_error_quark()
         ret = ccall(("gtk_builder_error_quark", "libgtk-4.so.1"), UInt32, ())
         ret

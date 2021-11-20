@@ -6,7 +6,6 @@ include("Gsk4.jl")
 
 using GLib
 using GLib.MutableTypes
-using Gio
 using Pango
 using Pango.Cairo
 using ..Graphene

@@ -2,7 +2,6 @@ module Gsk4
 
 using GLib
 using GLib.MutableTypes
-using Gio
 using Pango
 using Pango.Cairo
 using GdkPixbufLib
