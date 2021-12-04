@@ -1,6 +1,9 @@
 quote
 $(Expr(:toplevel, quote
     begin
+        gboxed_types = Any[]
+    end
+    begin
         nothing
         mutable struct GdkContentFormats <: GBoxed
             handle::Ptr{GdkContentFormats}
@@ -8,7 +11,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkContentFormats) = begin
                         ccall(("gdk_content_formats_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GdkContentFormats(ref::Ptr{GdkContentFormats}, own::Bool = false)
+                function GdkContentFormats(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -17,11 +20,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GdkContentFormats
-                    gtype = ccall(($(QuoteNode("gdk_content_formats_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GdkContentFormats)
             end
         end
         nothing
@@ -34,7 +33,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkContentFormatsBuilder) = begin
                         ccall(("gdk_content_formats_builder_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GdkContentFormatsBuilder(ref::Ptr{GdkContentFormatsBuilder}, own::Bool = false)
+                function GdkContentFormatsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -43,11 +42,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GdkContentFormatsBuilder
-                    gtype = ccall(($(QuoteNode("gdk_content_formats_builder_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GdkContentFormatsBuilder)
             end
         end
         nothing
@@ -60,7 +55,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkEventSequence) = begin
                         ccall(("gdk_event_sequence_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GdkEventSequence(ref::Ptr{GdkEventSequence}, own::Bool = false)
+                function GdkEventSequence(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -69,11 +64,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GdkEventSequence
-                    gtype = ccall(($(QuoteNode("gdk_event_sequence_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GdkEventSequence)
             end
         end
         nothing
@@ -86,7 +77,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkFrameTimings) = begin
                         ccall(("gdk_frame_timings_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GdkFrameTimings(ref::Ptr{GdkFrameTimings}, own::Bool = false)
+                function GdkFrameTimings(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -95,11 +86,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GdkFrameTimings
-                    gtype = ccall(($(QuoteNode("gdk_frame_timings_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GdkFrameTimings)
             end
         end
         nothing
@@ -134,7 +121,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkPopupLayout) = begin
                         ccall(("gdk_popup_layout_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GdkPopupLayout(ref::Ptr{GdkPopupLayout}, own::Bool = false)
+                function GdkPopupLayout(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -143,11 +130,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GdkPopupLayout
-                    gtype = ccall(($(QuoteNode("gdk_popup_layout_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GdkPopupLayout)
             end
         end
         nothing
@@ -167,7 +150,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkRGBA) = begin
                         ccall(("gdk_rgba_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GdkRGBA(ref::Ptr{GdkRGBA}, own::Bool = false)
+                function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -176,11 +159,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GdkRGBA
-                    gtype = ccall(($(QuoteNode("gdk_rgba_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GdkRGBA)
             end
         end
         begin
@@ -209,7 +188,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkRectangle) = begin
                         ccall(("gdk_rectangle_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GdkRectangle(ref::Ptr{GdkRectangle}, own::Bool = false)
+                function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -218,11 +197,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GdkRectangle
-                    gtype = ccall(($(QuoteNode("gdk_rectangle_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GdkRectangle)
             end
         end
         begin
@@ -251,7 +226,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkToplevelLayout) = begin
                         ccall(("gdk_toplevel_layout_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GdkToplevelLayout(ref::Ptr{GdkToplevelLayout}, own::Bool = false)
+                function GdkToplevelLayout(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -260,14 +235,15 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GdkToplevelLayout
-                    gtype = ccall(($(QuoteNode("gdk_toplevel_layout_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GdkToplevelLayout)
             end
         end
         nothing
+    end
+    begin
+        gboxed_cache_init() = begin
+                append!(GLib.gboxed_types, gboxed_types)
+            end
     end
     begin
         gtype_wrapper_cache = Dict{Symbol, Type}()
@@ -285,7 +261,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkAppLaunchContextLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkAppLaunchContextLeaf, args))
@@ -300,23 +276,25 @@ $(Expr(:toplevel, quote
         function GdkAppLaunchContext(args...; kwargs...)
             GdkAppLaunchContextLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkAppLaunchContextLeaf) = begin
-                [:handle, :display]
+        begin
+            Base.propertynames(o::GdkAppLaunchContextLeaf) = begin
+                    [:handle, :display]
+                end
+            function Base.getproperty(o::GdkAppLaunchContextLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkAppLaunchContextLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkAppLaunchContextLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkAppLaunchContextLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -333,7 +311,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkDrawContextLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkDrawContextLeaf, args))
@@ -348,23 +326,25 @@ $(Expr(:toplevel, quote
         function GdkDrawContext(args...; kwargs...)
             GdkDrawContextLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkDrawContextLeaf) = begin
-                [:handle, :surface, :display]
+        begin
+            Base.propertynames(o::GdkDrawContextLeaf) = begin
+                    [:handle, :surface, :display]
+                end
+            function Base.getproperty(o::GdkDrawContextLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkDrawContextLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkDrawContextLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkDrawContextLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -381,7 +361,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkCairoContextLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkCairoContextLeaf, args))
@@ -396,23 +376,25 @@ $(Expr(:toplevel, quote
         function GdkCairoContext(args...; kwargs...)
             GdkCairoContextLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkCairoContextLeaf) = begin
-                [:handle]
+        begin
+            Base.propertynames(o::GdkCairoContextLeaf) = begin
+                    [:handle, :surface, :display]
+                end
+            function Base.getproperty(o::GdkCairoContextLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkCairoContextLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkCairoContextLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkCairoContextLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -429,7 +411,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkClipboardLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkClipboardLeaf, args))
@@ -444,23 +426,25 @@ $(Expr(:toplevel, quote
         function GdkClipboard(args...; kwargs...)
             GdkClipboardLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkClipboardLeaf) = begin
-                [:handle, :content, :local, :display, :formats]
+        begin
+            Base.propertynames(o::GdkClipboardLeaf) = begin
+                    [:handle, :content, :local, :display, :formats]
+                end
+            function Base.getproperty(o::GdkClipboardLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:content => (:GdkContentProvider, 0, 1), :local => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :formats => (:GdkContentFormats, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkClipboardLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:content => (:GdkContentProvider, 0, 1), :local => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :formats => (:GdkContentFormats, 0, 1))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkClipboardLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkClipboardLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -477,7 +461,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkContentDeserializerLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkContentDeserializerLeaf, args))
@@ -491,25 +475,6 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GdkContentDeserializer] = GdkContentDeserializerLeaf
         function GdkContentDeserializer(args...; kwargs...)
             GdkContentDeserializerLeaf(args...; kwargs...)
-        end
-        Base.propertynames(o::GdkContentDeserializerLeaf) = begin
-                [:handle]
-            end
-        function Base.getproperty(o::GdkContentDeserializerLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkContentDeserializerLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
-            end
         end
     end
     begin
@@ -525,7 +490,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkContentProviderLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkContentProviderLeaf, args))
@@ -540,23 +505,25 @@ $(Expr(:toplevel, quote
         function GdkContentProvider(args...; kwargs...)
             GdkContentProviderLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkContentProviderLeaf) = begin
-                [:handle, :formats, :storable_formats]
+        begin
+            Base.propertynames(o::GdkContentProviderLeaf) = begin
+                    [:handle, :formats, :storable_formats]
+                end
+            function Base.getproperty(o::GdkContentProviderLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:formats => (:GdkContentFormats, 0, 1), :storable_formats => (:GdkContentFormats, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkContentProviderLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:formats => (:GdkContentFormats, 0, 1), :storable_formats => (:GdkContentFormats, 0, 1))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkContentProviderLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkContentProviderLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -573,7 +540,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkContentSerializerLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkContentSerializerLeaf, args))
@@ -587,25 +554,6 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GdkContentSerializer] = GdkContentSerializerLeaf
         function GdkContentSerializer(args...; kwargs...)
             GdkContentSerializerLeaf(args...; kwargs...)
-        end
-        Base.propertynames(o::GdkContentSerializerLeaf) = begin
-                [:handle]
-            end
-        function Base.getproperty(o::GdkContentSerializerLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkContentSerializerLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
-            end
         end
     end
     begin
@@ -621,7 +569,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkCursorLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkCursorLeaf, args))
@@ -636,23 +584,25 @@ $(Expr(:toplevel, quote
         function GdkCursor(args...; kwargs...)
             GdkCursorLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkCursorLeaf) = begin
-                [:handle, :texture, :name, :hotspot_x, :hotspot_y, :fallback]
+        begin
+            Base.propertynames(o::GdkCursorLeaf) = begin
+                    [:handle, :texture, :name, :hotspot_x, :hotspot_y, :fallback]
+                end
+            function Base.getproperty(o::GdkCursorLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:texture => (:GdkTexture, 0, 11), :name => (:String, 0, 11), :hotspot_x => (:Int32, 0, 11), :hotspot_y => (:Int32, 0, 11), :fallback => (:GdkCursor, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkCursorLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:texture => (:GdkTexture, 0, 11), :name => (:String, 0, 11), :hotspot_x => (:Int32, 0, 11), :hotspot_y => (:Int32, 0, 11), :fallback => (:GdkCursor, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkCursorLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:texture => (:GdkTexture, 0, 11), :name => (:String, 0, 11), :hotspot_x => (:Int32, 0, 11), :hotspot_y => (:Int32, 0, 11), :fallback => (:GdkCursor, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkCursorLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:texture => (:GdkTexture, 0, 11), :name => (:String, 0, 11), :hotspot_x => (:Int32, 0, 11), :hotspot_y => (:Int32, 0, 11), :fallback => (:GdkCursor, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -669,7 +619,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkDeviceLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkDeviceLeaf, args))
@@ -684,23 +634,25 @@ $(Expr(:toplevel, quote
         function GdkDevice(args...; kwargs...)
             GdkDeviceLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkDeviceLeaf) = begin
-                [:handle, :vendor_id, :tool, :caps_lock_state, :scroll_lock_state, :has_bidi_layouts, :has_cursor, :n_axes, :name, :modifier_state, :display, :num_lock_state, :seat, :num_touches, :direction, :product_id, :source]
+        begin
+            Base.propertynames(o::GdkDeviceLeaf) = begin
+                    [:handle, :source, :tool, :caps_lock_state, :scroll_lock_state, :has_bidi_layouts, :has_cursor, :n_axes, :name, :modifier_state, :display, :num_lock_state, :seat, :num_touches, :direction, :product_id, :vendor_id]
+                end
+            function Base.getproperty(o::GdkDeviceLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:vendor_id => (:String, 0, 11), :tool => (:GdkDeviceTool, 0, 1), :caps_lock_state => (:Bool, 0, 1), :scroll_lock_state => (:Bool, 0, 1), :has_bidi_layouts => (:Bool, 0, 1), :has_cursor => (:Bool, 0, 11), :n_axes => (:UInt32, 0, 1), :name => (:String, 0, 11), :modifier_state => (:Int32, 0, 1), :num_lock_state => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :seat => (:GdkSeat, 0, 3), :num_touches => (:UInt32, 0, 11), :source => (:Int32, 0, 11), :direction => (:Int32, 0, 1), :product_id => (:String, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkDeviceLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:source => (:Int32, 0, 11), :tool => (:GdkDeviceTool, 0, 1), :caps_lock_state => (:Bool, 0, 1), :scroll_lock_state => (:Bool, 0, 1), :has_bidi_layouts => (:Bool, 0, 1), :has_cursor => (:Bool, 0, 11), :n_axes => (:UInt32, 0, 1), :name => (:String, 0, 11), :modifier_state => (:Int32, 0, 1), :display => (:GdkDisplay, 0, 11), :num_lock_state => (:Bool, 0, 1), :seat => (:GdkSeat, 0, 3), :num_touches => (:UInt32, 0, 11), :direction => (:Int32, 0, 1), :product_id => (:String, 0, 11), :vendor_id => (:String, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkDeviceLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:seat => (:GdkSeat, 0, 3), :source => (:Int32, 0, 11), :name => (:String, 0, 11), :num_touches => (:UInt32, 0, 11), :has_cursor => (:Bool, 0, 11), :display => (:GdkDisplay, 0, 11), :product_id => (:String, 0, 11), :vendor_id => (:String, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkDeviceLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:product_id => (:String, 0, 11), :vendor_id => (:String, 0, 11), :name => (:String, 0, 11), :num_touches => (:UInt32, 0, 11), :has_cursor => (:Bool, 0, 11), :source => (:Int32, 0, 11), :display => (:GdkDisplay, 0, 11), :seat => (:GdkSeat, 0, 3))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -717,7 +669,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkDeviceToolLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkDeviceToolLeaf, args))
@@ -732,23 +684,25 @@ $(Expr(:toplevel, quote
         function GdkDeviceTool(args...; kwargs...)
             GdkDeviceToolLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkDeviceToolLeaf) = begin
-                [:handle, :serial, :hardware_id, :axes, :tool_type]
+        begin
+            Base.propertynames(o::GdkDeviceToolLeaf) = begin
+                    [:handle, :serial, :hardware_id, :axes, :tool_type]
+                end
+            function Base.getproperty(o::GdkDeviceToolLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:serial => (:UInt64, 0, 11), :hardware_id => (:UInt64, 0, 11), :axes => (:Int32, 0, 11), :tool_type => (:Int32, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkDeviceToolLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:serial => (:UInt64, 0, 11), :hardware_id => (:UInt64, 0, 11), :axes => (:Int32, 0, 11), :tool_type => (:Int32, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkDeviceToolLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:serial => (:UInt64, 0, 11), :hardware_id => (:UInt64, 0, 11), :axes => (:Int32, 0, 11), :tool_type => (:Int32, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkDeviceToolLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:serial => (:UInt64, 0, 11), :hardware_id => (:UInt64, 0, 11), :axes => (:Int32, 0, 11), :tool_type => (:Int32, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -765,7 +719,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkDisplayLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkDisplayLeaf, args))
@@ -780,23 +734,25 @@ $(Expr(:toplevel, quote
         function GdkDisplay(args...; kwargs...)
             GdkDisplayLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkDisplayLeaf) = begin
-                [:handle, :input_shapes, :composited, :rgba]
+        begin
+            Base.propertynames(o::GdkDisplayLeaf) = begin
+                    [:handle, :input_shapes, :composited, :rgba]
+                end
+            function Base.getproperty(o::GdkDisplayLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:input_shapes => (:Bool, 0, 1), :composited => (:Bool, 0, 1), :rgba => (:Bool, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkDisplayLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:input_shapes => (:Bool, 0, 1), :composited => (:Bool, 0, 1), :rgba => (:Bool, 0, 1))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkDisplayLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkDisplayLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -813,7 +769,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkDisplayManagerLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkDisplayManagerLeaf, args))
@@ -828,23 +784,25 @@ $(Expr(:toplevel, quote
         function GdkDisplayManager(args...; kwargs...)
             GdkDisplayManagerLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkDisplayManagerLeaf) = begin
-                [:handle, :default_display]
+        begin
+            Base.propertynames(o::GdkDisplayManagerLeaf) = begin
+                    [:handle, :default_display]
+                end
+            function Base.getproperty(o::GdkDisplayManagerLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:default_display => (:GdkDisplay, 0, 3))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkDisplayManagerLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:default_display => (:GdkDisplay, 0, 3))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkDisplayManagerLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:default_display => (:GdkDisplay, 0, 3))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkDisplayManagerLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:default_display => (:GdkDisplay, 0, 3))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -861,7 +819,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkDragLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkDragLeaf, args))
@@ -876,23 +834,25 @@ $(Expr(:toplevel, quote
         function GdkDrag(args...; kwargs...)
             GdkDragLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkDragLeaf) = begin
-                [:handle, :surface, :actions, :device, :selected_action, :content, :display, :formats]
+        begin
+            Base.propertynames(o::GdkDragLeaf) = begin
+                    [:handle, :surface, :actions, :device, :selected_action, :content, :display, :formats]
+                end
+            function Base.getproperty(o::GdkDragLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :actions => (:Int32, 0, 3), :device => (:GdkDevice, 0, 11), :selected_action => (:Int32, 0, 3), :content => (:GdkContentProvider, 0, 11), :display => (:GdkDisplay, 0, 1), :formats => (:GdkContentFormats, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkDragLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :actions => (:Int32, 0, 3), :device => (:GdkDevice, 0, 11), :selected_action => (:Int32, 0, 3), :content => (:GdkContentProvider, 0, 11), :display => (:GdkDisplay, 0, 1), :formats => (:GdkContentFormats, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkDragLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :actions => (:Int32, 0, 3), :device => (:GdkDevice, 0, 11), :selected_action => (:Int32, 0, 3), :content => (:GdkContentProvider, 0, 11), :formats => (:GdkContentFormats, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkDragLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :actions => (:Int32, 0, 3), :device => (:GdkDevice, 0, 11), :selected_action => (:Int32, 0, 3), :content => (:GdkContentProvider, 0, 11), :formats => (:GdkContentFormats, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -909,7 +869,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkDropLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkDropLeaf, args))
@@ -924,23 +884,25 @@ $(Expr(:toplevel, quote
         function GdkDrop(args...; kwargs...)
             GdkDropLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkDropLeaf) = begin
-                [:handle, :drag, :actions, :surface, :device, :display, :formats]
+        begin
+            Base.propertynames(o::GdkDropLeaf) = begin
+                    [:handle, :drag, :actions, :surface, :device, :display, :formats]
+                end
+            function Base.getproperty(o::GdkDropLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:drag => (:GdkDrag, 0, 11), :actions => (:Int32, 0, 11), :surface => (:GdkSurface, 0, 11), :device => (:GdkDevice, 0, 11), :display => (:GdkDisplay, 0, 1), :formats => (:GdkContentFormats, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkDropLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:drag => (:GdkDrag, 0, 11), :actions => (:Int32, 0, 11), :surface => (:GdkSurface, 0, 11), :device => (:GdkDevice, 0, 11), :display => (:GdkDisplay, 0, 1), :formats => (:GdkContentFormats, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkDropLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:drag => (:GdkDrag, 0, 11), :actions => (:Int32, 0, 11), :surface => (:GdkSurface, 0, 11), :device => (:GdkDevice, 0, 11), :formats => (:GdkContentFormats, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkDropLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:drag => (:GdkDrag, 0, 11), :actions => (:Int32, 0, 11), :surface => (:GdkSurface, 0, 11), :device => (:GdkDevice, 0, 11), :formats => (:GdkContentFormats, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -957,7 +919,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkFrameClockLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkFrameClockLeaf, args))
@@ -971,25 +933,6 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GdkFrameClock] = GdkFrameClockLeaf
         function GdkFrameClock(args...; kwargs...)
             GdkFrameClockLeaf(args...; kwargs...)
-        end
-        Base.propertynames(o::GdkFrameClockLeaf) = begin
-                [:handle]
-            end
-        function Base.getproperty(o::GdkFrameClockLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkFrameClockLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
-            end
         end
     end
     begin
@@ -1005,7 +948,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkGLContextLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkGLContextLeaf, args))
@@ -1020,23 +963,25 @@ $(Expr(:toplevel, quote
         function GdkGLContext(args...; kwargs...)
             GdkGLContextLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkGLContextLeaf) = begin
-                [:handle, :shared_context]
+        begin
+            Base.propertynames(o::GdkGLContextLeaf) = begin
+                    [:handle, :surface, :shared_context, :display]
+                end
+            function Base.getproperty(o::GdkGLContextLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :shared_context => (:GdkGLContext, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkGLContextLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:shared_context => (:GdkGLContext, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkGLContextLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:shared_context => (:GdkGLContext, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkGLContextLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :shared_context => (:GdkGLContext, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -1053,7 +998,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkTextureLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkTextureLeaf, args))
@@ -1068,23 +1013,25 @@ $(Expr(:toplevel, quote
         function GdkTexture(args...; kwargs...)
             GdkTextureLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkTextureLeaf) = begin
-                [:handle, :height, :width]
+        begin
+            Base.propertynames(o::GdkTextureLeaf) = begin
+                    [:handle, :height, :width]
+                end
+            function Base.getproperty(o::GdkTextureLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:height => (:Int32, 0, 11), :width => (:Int32, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkTextureLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:height => (:Int32, 0, 11), :width => (:Int32, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkTextureLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:height => (:Int32, 0, 11), :width => (:Int32, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkTextureLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:height => (:Int32, 0, 11), :width => (:Int32, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -1101,7 +1048,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkGLTextureLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkGLTextureLeaf, args))
@@ -1116,23 +1063,25 @@ $(Expr(:toplevel, quote
         function GdkGLTexture(args...; kwargs...)
             GdkGLTextureLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkGLTextureLeaf) = begin
-                [:handle]
+        begin
+            Base.propertynames(o::GdkGLTextureLeaf) = begin
+                    [:handle, :height, :width]
+                end
+            function Base.getproperty(o::GdkGLTextureLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:height => (:Int32, 0, 11), :width => (:Int32, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkGLTextureLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkGLTextureLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkGLTextureLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:height => (:Int32, 0, 11), :width => (:Int32, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -1149,7 +1098,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkMemoryTextureLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkMemoryTextureLeaf, args))
@@ -1164,23 +1113,25 @@ $(Expr(:toplevel, quote
         function GdkMemoryTexture(args...; kwargs...)
             GdkMemoryTextureLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkMemoryTextureLeaf) = begin
-                [:handle]
+        begin
+            Base.propertynames(o::GdkMemoryTextureLeaf) = begin
+                    [:handle, :height, :width]
+                end
+            function Base.getproperty(o::GdkMemoryTextureLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:height => (:Int32, 0, 11), :width => (:Int32, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkMemoryTextureLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkMemoryTextureLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkMemoryTextureLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:height => (:Int32, 0, 11), :width => (:Int32, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -1197,7 +1148,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkMonitorLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkMonitorLeaf, args))
@@ -1212,23 +1163,25 @@ $(Expr(:toplevel, quote
         function GdkMonitor(args...; kwargs...)
             GdkMonitorLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkMonitorLeaf) = begin
-                [:handle, :geometry, :height_mm, :subpixel_layout, :refresh_rate, :width_mm, :valid, :display, :model, :manufacturer, :connector, :scale_factor]
+        begin
+            Base.propertynames(o::GdkMonitorLeaf) = begin
+                    [:handle, :geometry, :height_mm, :subpixel_layout, :refresh_rate, :width_mm, :valid, :display, :model, :manufacturer, :connector, :scale_factor]
+                end
+            function Base.getproperty(o::GdkMonitorLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:geometry => (:GdkRectangle, 0, 1), :height_mm => (:Int32, 0, 1), :subpixel_layout => (:Int32, 0, 1), :refresh_rate => (:Int32, 0, 1), :width_mm => (:Int32, 0, 1), :valid => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :model => (:String, 0, 1), :manufacturer => (:String, 0, 1), :connector => (:String, 0, 1), :scale_factor => (:Int32, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkMonitorLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:geometry => (:GdkRectangle, 0, 1), :height_mm => (:Int32, 0, 1), :subpixel_layout => (:Int32, 0, 1), :refresh_rate => (:Int32, 0, 1), :width_mm => (:Int32, 0, 1), :valid => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :model => (:String, 0, 1), :manufacturer => (:String, 0, 1), :connector => (:String, 0, 1), :scale_factor => (:Int32, 0, 1))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkMonitorLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkMonitorLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -1245,7 +1198,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkSeatLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkSeatLeaf, args))
@@ -1260,23 +1213,25 @@ $(Expr(:toplevel, quote
         function GdkSeat(args...; kwargs...)
             GdkSeatLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkSeatLeaf) = begin
-                [:handle, :display]
+        begin
+            Base.propertynames(o::GdkSeatLeaf) = begin
+                    [:handle, :display]
+                end
+            function Base.getproperty(o::GdkSeatLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkSeatLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkSeatLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkSeatLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -1293,7 +1248,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkSnapshotLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkSnapshotLeaf, args))
@@ -1307,25 +1262,6 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GdkSnapshot] = GdkSnapshotLeaf
         function GdkSnapshot(args...; kwargs...)
             GdkSnapshotLeaf(args...; kwargs...)
-        end
-        Base.propertynames(o::GdkSnapshotLeaf) = begin
-                [:handle]
-            end
-        function Base.getproperty(o::GdkSnapshotLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkSnapshotLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
-            end
         end
     end
     begin
@@ -1341,7 +1277,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkSurfaceLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkSurfaceLeaf, args))
@@ -1356,23 +1292,25 @@ $(Expr(:toplevel, quote
         function GdkSurface(args...; kwargs...)
             GdkSurfaceLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkSurfaceLeaf) = begin
-                [:handle, :width, :cursor, :height, :frame_clock, :display, :scale_factor, :mapped]
+        begin
+            Base.propertynames(o::GdkSurfaceLeaf) = begin
+                    [:handle, :mapped, :cursor, :height, :frame_clock, :display, :scale_factor, :width]
+                end
+            function Base.getproperty(o::GdkSurfaceLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:width => (:Int32, 0, 1), :cursor => (:GdkCursor, 0, 3), :height => (:Int32, 0, 1), :frame_clock => (:GdkFrameClock, 0, 11), :display => (:GdkDisplay, 0, 11), :scale_factor => (:Int32, 0, 1), :mapped => (:Bool, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkSurfaceLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:mapped => (:Bool, 0, 1), :cursor => (:GdkCursor, 0, 3), :height => (:Int32, 0, 1), :frame_clock => (:GdkFrameClock, 0, 11), :display => (:GdkDisplay, 0, 11), :scale_factor => (:Int32, 0, 1), :width => (:Int32, 0, 1))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkSurfaceLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:cursor => (:GdkCursor, 0, 3), :frame_clock => (:GdkFrameClock, 0, 11), :display => (:GdkDisplay, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkSurfaceLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:cursor => (:GdkCursor, 0, 3), :frame_clock => (:GdkFrameClock, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -1389,7 +1327,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GdkVulkanContextLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GdkVulkanContextLeaf, args))
@@ -1404,23 +1342,25 @@ $(Expr(:toplevel, quote
         function GdkVulkanContext(args...; kwargs...)
             GdkVulkanContextLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GdkVulkanContextLeaf) = begin
-                [:handle]
+        begin
+            Base.propertynames(o::GdkVulkanContextLeaf) = begin
+                    [:handle, :surface, :display]
+                end
+            function Base.getproperty(o::GdkVulkanContextLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GdkVulkanContextLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GdkVulkanContextLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GdkVulkanContextLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 11), :display => (:GdkDisplay, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end

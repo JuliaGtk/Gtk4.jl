@@ -23,6 +23,7 @@ disguised = []
 struct_skiplist=vcat(disguised, [])
 
 first_list=[:Simd4F,:Vec3,:Simd4X4F,:Size]
+GI.struct_cache_expr!(exprs)
 GI.struct_exprs!(exprs,exports,ns,first_list)
 
 struct_skiplist=vcat(struct_skiplist,first_list)

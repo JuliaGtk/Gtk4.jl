@@ -5,7 +5,6 @@ include("Gdk4.jl")
 include("Gsk4.jl")
 
 using GLib
-using GLib.MutableTypes
 using Pango
 using Pango.Cairo
 using ..Graphene
@@ -38,6 +37,7 @@ function __init__()
     #]), Sys.iswindows() ? ";" : ":")
 
     gtype_wrapper_cache_init()
+    gboxed_cache_init()
 
     # Next, ensure that gdk-pixbuf has its loaders.cache file; we generate a
     # MutableArtifacts.toml file that maps in a loaders.cache we dynamically

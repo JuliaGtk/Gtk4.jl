@@ -170,12 +170,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function to_2d(instance::GskTransform)
-        m_out_xx = mutable(Float32)
-        m_out_yx = mutable(Float32)
-        m_out_xy = mutable(Float32)
-        m_out_yy = mutable(Float32)
-        m_out_dx = mutable(Float32)
-        m_out_dy = mutable(Float32)
+        m_out_xx = Ref{Float32}()
+        m_out_yx = Ref{Float32}()
+        m_out_xy = Ref{Float32}()
+        m_out_yy = Ref{Float32}()
+        m_out_dx = Ref{Float32}()
+        m_out_dy = Ref{Float32}()
         ret = ccall(("gsk_transform_to_2d", "libgtk-4.so.1"), Nothing, (Ptr{GskTransform}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), instance, m_out_xx, m_out_yx, m_out_xy, m_out_yy, m_out_dx, m_out_dy)
         _out_xx = m_out_xx[]
         _out_yx = m_out_yx[]
@@ -186,10 +186,10 @@ $(Expr(:toplevel, quote
         (_out_xx, _out_yx, _out_xy, _out_yy, _out_dx, _out_dy)
     end
     function to_affine(instance::GskTransform)
-        m_out_scale_x = mutable(Float32)
-        m_out_scale_y = mutable(Float32)
-        m_out_dx = mutable(Float32)
-        m_out_dy = mutable(Float32)
+        m_out_scale_x = Ref{Float32}()
+        m_out_scale_y = Ref{Float32}()
+        m_out_dx = Ref{Float32}()
+        m_out_dy = Ref{Float32}()
         ret = ccall(("gsk_transform_to_affine", "libgtk-4.so.1"), Nothing, (Ptr{GskTransform}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), instance, m_out_scale_x, m_out_scale_y, m_out_dx, m_out_dy)
         _out_scale_x = m_out_scale_x[]
         _out_scale_y = m_out_scale_y[]
@@ -198,7 +198,7 @@ $(Expr(:toplevel, quote
         (_out_scale_x, _out_scale_y, _out_dx, _out_dy)
     end
     function to_matrix(instance::GskTransform)
-        m_out_matrix = mutable(Ptr{GrapheneMatrix})
+        m_out_matrix = Ref{Ptr{GrapheneMatrix}}()
         ret = ccall(("gsk_transform_to_matrix", "libgtk-4.so.1"), Nothing, (Ptr{GskTransform}, Ptr{Ptr{GrapheneMatrix}}), instance, m_out_matrix)
         _out_matrix = m_out_matrix[]
         _out_matrix = convert(GrapheneMatrix, _out_matrix, false)
@@ -214,8 +214,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function to_translate(instance::GskTransform)
-        m_out_dx = mutable(Float32)
-        m_out_dy = mutable(Float32)
+        m_out_dx = Ref{Float32}()
+        m_out_dy = Ref{Float32}()
         ret = ccall(("gsk_transform_to_translate", "libgtk-4.so.1"), Nothing, (Ptr{GskTransform}, Ptr{Float32}, Ptr{Float32}), instance, m_out_dx, m_out_dy)
         _out_dx = m_out_dx[]
         _out_dy = m_out_dy[]
@@ -232,14 +232,14 @@ $(Expr(:toplevel, quote
         ret2
     end
     function transform_bounds(instance::GskTransform, _rect::GrapheneRect)
-        m_out_rect = mutable(Ptr{GrapheneRect})
+        m_out_rect = Ref{Ptr{GrapheneRect}}()
         ret = ccall(("gsk_transform_transform_bounds", "libgtk-4.so.1"), Nothing, (Ptr{GskTransform}, Ptr{GrapheneRect}, Ptr{Ptr{GrapheneRect}}), instance, _rect, m_out_rect)
         _out_rect = m_out_rect[]
         _out_rect = convert(GrapheneRect, _out_rect, false)
         _out_rect
     end
     function transform_point(instance::GskTransform, _point::GraphenePoint)
-        m_out_point = mutable(Ptr{GraphenePoint})
+        m_out_point = Ref{Ptr{GraphenePoint}}()
         ret = ccall(("gsk_transform_transform_point", "libgtk-4.so.1"), Nothing, (Ptr{GskTransform}, Ptr{GraphenePoint}, Ptr{Ptr{GraphenePoint}}), instance, _point, m_out_point)
         _out_point = m_out_point[]
         _out_point = convert(GraphenePoint, _out_point, false)
@@ -400,7 +400,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_color_stops(instance::GskConicGradientNode)
-        m_n_stops = mutable(UInt64)
+        m_n_stops = Ref{UInt64}()
         ret = ccall(("gsk_conic_gradient_node_get_color_stops", "libgtk-4.so.1"), Ptr{GskColorStop}, (Ptr{GObject}, Ptr{UInt64}), instance, m_n_stops)
         _n_stops = m_n_stops[]
         ret
@@ -630,7 +630,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_color_stops(instance::GskLinearGradientNode)
-        m_n_stops = mutable(UInt64)
+        m_n_stops = Ref{UInt64}()
         ret = ccall(("gsk_linear_gradient_node_get_color_stops", "libgtk-4.so.1"), Ptr{GskColorStop}, (Ptr{GObject}, Ptr{UInt64}), instance, m_n_stops)
         _n_stops = m_n_stops[]
         ret
@@ -712,7 +712,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_color_stops(instance::GskRadialGradientNode)
-        m_n_stops = mutable(UInt64)
+        m_n_stops = Ref{UInt64}()
         ret = ccall(("gsk_radial_gradient_node_get_color_stops", "libgtk-4.so.1"), Ptr{GskColorStop}, (Ptr{GObject}, Ptr{UInt64}), instance, m_n_stops)
         _n_stops = m_n_stops[]
         ret
@@ -761,7 +761,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_bounds(instance::GskRenderNode)
-        m_bounds = mutable(Ptr{GrapheneRect})
+        m_bounds = Ref{Ptr{GrapheneRect}}()
         ret = ccall(("gsk_render_node_get_bounds", "libgtk-4.so.1"), Nothing, (Ptr{GObject}, Ptr{Ptr{GrapheneRect}}), instance, m_bounds)
         _bounds = m_bounds[]
         _bounds = convert(GrapheneRect, _bounds, false)
@@ -935,7 +935,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_glyphs(instance::GskTextNode)
-        m_n_glyphs = mutable(UInt32)
+        m_n_glyphs = Ref{UInt32}()
         ret = ccall(("gsk_text_node_get_glyphs", "libgtk-4.so.1"), Ptr{PangoGlyphInfo}, (Ptr{GObject}, Ptr{UInt32}), instance, m_n_glyphs)
         _n_glyphs = m_n_glyphs[]
         ret

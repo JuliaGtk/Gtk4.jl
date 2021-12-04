@@ -1,7 +1,6 @@
 module Gsk4
 
 using GLib
-using GLib.MutableTypes
 using Pango
 using Pango.Cairo
 using GdkPixbufLib
@@ -15,6 +14,7 @@ eval(include("gen/gsk4_structs"))
 
 function __init__()
    gtype_wrapper_cache_init()
+   gboxed_cache_init()
 end
 
 end

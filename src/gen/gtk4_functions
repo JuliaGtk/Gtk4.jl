@@ -51,8 +51,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function accelerator_parse(_accelerator)
-        m_accelerator_key = mutable(UInt32)
-        m_accelerator_mods = mutable(Int32)
+        m_accelerator_key = Ref{UInt32}()
+        m_accelerator_mods = Ref{Int32}()
         ret = ccall(("gtk_accelerator_parse", "libgtk-4.so.1"), Cint, (Ptr{UInt8}, Ptr{UInt32}, Ptr{Int32}), _accelerator, m_accelerator_key, m_accelerator_mods)
         ret2 = convert(Bool, ret)
         _accelerator_key = m_accelerator_key[]
@@ -65,9 +65,9 @@ $(Expr(:toplevel, quote
             else
                 _display
             end
-        m_accelerator_key = mutable(UInt32)
-        m_accelerator_codes = mutable(Ptr{UInt32})
-        m_accelerator_mods = mutable(Int32)
+        m_accelerator_key = Ref{UInt32}()
+        m_accelerator_codes = Ref{Ptr{UInt32}}()
+        m_accelerator_mods = Ref{Int32}()
         ret = ccall(("gtk_accelerator_parse_with_keycode", "libgtk-4.so.1"), Cint, (Ptr{UInt8}, Ptr{GObject}, Ptr{UInt32}, Ptr{Ptr{UInt32}}, Ptr{Int32}), _accelerator, _display, m_accelerator_key, m_accelerator_codes, m_accelerator_mods)
         ret2 = convert(Bool, ret)
         _accelerator_key = m_accelerator_key[]
@@ -93,8 +93,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function bitset_iter_init_at(_set::GtkBitset, _target)
-        m_iter = mutable(_GtkBitsetIter)
-        m_value = mutable(UInt32)
+        m_iter = Ref{_GtkBitsetIter}()
+        m_value = Ref{UInt32}()
         ret = ccall(("gtk_bitset_iter_init_at", "libgtk-4.so.1"), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, UInt32, Ptr{UInt32}), m_iter, _set, _target, m_value)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -102,8 +102,8 @@ $(Expr(:toplevel, quote
         (ret2, _iter, _value)
     end
     function bitset_iter_init_first(_set::GtkBitset)
-        m_iter = mutable(_GtkBitsetIter)
-        m_value = mutable(UInt32)
+        m_iter = Ref{_GtkBitsetIter}()
+        m_value = Ref{UInt32}()
         ret = ccall(("gtk_bitset_iter_init_first", "libgtk-4.so.1"), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -111,8 +111,8 @@ $(Expr(:toplevel, quote
         (ret2, _iter, _value)
     end
     function bitset_iter_init_last(_set::GtkBitset)
-        m_iter = mutable(_GtkBitsetIter)
-        m_value = mutable(UInt32)
+        m_iter = Ref{_GtkBitsetIter}()
+        m_value = Ref{UInt32}()
         ret = ccall(("gtk_bitset_iter_init_last", "libgtk-4.so.1"), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -170,7 +170,7 @@ $(Expr(:toplevel, quote
     end
     function enumerate_printers(_func::Function, _data::Maybe(Nothing), _destroy::Function, _wait)
         _func = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Cint (Ptr{GObject}, Ptr{Nothing})
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Cint (Ptr{GObject}, Ptr{Nothing})
             end
         _data = if _data == nothing
                 C_NULL
@@ -178,7 +178,7 @@ $(Expr(:toplevel, quote
                 _data
             end
         _destroy = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
             end
         ret = ccall(("gtk_enumerate_printers", "libgtk-4.so.1"), Nothing, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}, Cint), _func, _data, _destroy, _wait)
         nothing
@@ -221,9 +221,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function hsv_to_rgb(_h, _s, _v)
-        m_r = mutable(Float32)
-        m_g = mutable(Float32)
-        m_b = mutable(Float32)
+        m_r = Ref{Float32}()
+        m_g = Ref{Float32}()
+        m_b = Ref{Float32}()
         ret = ccall(("gtk_hsv_to_rgb", "libgtk-4.so.1"), Nothing, (Float32, Float32, Float32, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), _h, _s, _v, m_r, m_g, m_b)
         _r = m_r[]
         _g = m_g[]
@@ -303,7 +303,7 @@ $(Expr(:toplevel, quote
                 _page_setup
             end
         _done_cb = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{GObject}, Ptr{Nothing})
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{GObject}, Ptr{Nothing})
             end
         _data = if _data == nothing
                 C_NULL
@@ -366,9 +366,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function rgb_to_hsv(_r, _g, _b)
-        m_h = mutable(Float32)
-        m_s = mutable(Float32)
-        m_v = mutable(Float32)
+        m_h = Ref{Float32}()
+        m_s = Ref{Float32}()
+        m_v = Ref{Float32}()
         ret = ccall(("gtk_rgb_to_hsv", "libgtk-4.so.1"), Nothing, (Float32, Float32, Float32, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), _r, _g, _b, m_h, m_s, m_v)
         _h = m_h[]
         _s = m_s[]
@@ -444,7 +444,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function test_list_all_types()
-        m_n_types = mutable(UInt32)
+        m_n_types = Ref{UInt32}()
         ret = ccall(("gtk_test_list_all_types", "libgtk-4.so.1"), Ptr{UInt64}, (Ptr{UInt32},), m_n_types)
         _n_types = m_n_types[]
         ret
@@ -463,8 +463,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function tree_get_row_drag_data(_value::GValue)
-        m_tree_model = mutable(Ptr{GObject})
-        m_path = mutable(Ptr{GtkTreePath})
+        m_tree_model = Ref{Ptr{GObject}}()
+        m_path = Ref{Ptr{GtkTreePath}}()
         ret = ccall(("gtk_tree_get_row_drag_data", "libgtk-4.so.1"), Cint, (Ptr{GValue}, Ptr{Ptr{GObject}}, Ptr{Ptr{GtkTreePath}}), _value, m_tree_model, m_path)
         ret2 = convert(Bool, ret)
         _tree_model = m_tree_model[]

@@ -1,6 +1,9 @@
 quote
 $(Expr(:toplevel, quote
     begin
+        gboxed_types = Any[]
+    end
+    begin
         begin
             struct _GskColorStop
                 offset::Float32
@@ -60,7 +63,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = begin
                         ccall(("gsk_shader_args_builder_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GskShaderArgsBuilder(ref::Ptr{GskShaderArgsBuilder}, own::Bool = false)
+                function GskShaderArgsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -69,11 +72,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GskShaderArgsBuilder
-                    gtype = ccall(($(QuoteNode("gsk_shader_args_builder_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GskShaderArgsBuilder)
             end
         end
         nothing
@@ -109,7 +108,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GskTransform) = begin
                         ccall(("gsk_transform_get_type", "libgtk-4.so.1"), GType, ())
                     end
-                function GskTransform(ref::Ptr{GskTransform}, own::Bool = false)
+                function GskTransform(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -118,14 +117,15 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GskTransform
-                    gtype = ccall(($(QuoteNode("gsk_transform_get_type")), "libgtk-4.so.1"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GskTransform)
             end
         end
         nothing
+    end
+    begin
+        gboxed_cache_init() = begin
+                append!(GLib.gboxed_types, gboxed_types)
+            end
     end
     begin
         gtype_wrapper_cache = Dict{Symbol, Type}()
@@ -143,7 +143,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GskRendererLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GskRendererLeaf, args))
@@ -158,23 +158,25 @@ $(Expr(:toplevel, quote
         function GskRenderer(args...; kwargs...)
             GskRendererLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GskRendererLeaf) = begin
-                [:handle, :surface, :realized]
+        begin
+            Base.propertynames(o::GskRendererLeaf) = begin
+                    [:handle, :surface, :realized]
+                end
+            function Base.getproperty(o::GskRendererLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 1), :realized => (:Bool, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GskRendererLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 1), :realized => (:Bool, 0, 1))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GskRendererLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GskRendererLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -191,7 +193,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GskBroadwayRendererLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GskBroadwayRendererLeaf, args))
@@ -206,23 +208,25 @@ $(Expr(:toplevel, quote
         function GskBroadwayRenderer(args...; kwargs...)
             GskBroadwayRendererLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GskBroadwayRendererLeaf) = begin
-                [:handle]
+        begin
+            Base.propertynames(o::GskBroadwayRendererLeaf) = begin
+                    [:handle, :surface, :realized]
+                end
+            function Base.getproperty(o::GskBroadwayRendererLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 1), :realized => (:Bool, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GskBroadwayRendererLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GskBroadwayRendererLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GskBroadwayRendererLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -239,7 +243,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GskCairoRendererLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GskCairoRendererLeaf, args))
@@ -254,23 +258,25 @@ $(Expr(:toplevel, quote
         function GskCairoRenderer(args...; kwargs...)
             GskCairoRendererLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GskCairoRendererLeaf) = begin
-                [:handle]
+        begin
+            Base.propertynames(o::GskCairoRendererLeaf) = begin
+                    [:handle, :surface, :realized]
+                end
+            function Base.getproperty(o::GskCairoRendererLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 1), :realized => (:Bool, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GskCairoRendererLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GskCairoRendererLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GskCairoRendererLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -287,7 +293,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GskGLRendererLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GskGLRendererLeaf, args))
@@ -302,23 +308,25 @@ $(Expr(:toplevel, quote
         function GskGLRenderer(args...; kwargs...)
             GskGLRendererLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GskGLRendererLeaf) = begin
-                [:handle]
+        begin
+            Base.propertynames(o::GskGLRendererLeaf) = begin
+                    [:handle, :surface, :realized]
+                end
+            function Base.getproperty(o::GskGLRendererLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 1), :realized => (:Bool, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GskGLRendererLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GskGLRendererLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GskGLRendererLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -335,7 +343,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GskGLShaderLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GskGLShaderLeaf, args))
@@ -350,23 +358,25 @@ $(Expr(:toplevel, quote
         function GskGLShader(args...; kwargs...)
             GskGLShaderLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GskGLShaderLeaf) = begin
-                [:handle, :resource, :source]
+        begin
+            Base.propertynames(o::GskGLShaderLeaf) = begin
+                    [:handle, :resource, :source]
+                end
+            function Base.getproperty(o::GskGLShaderLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:resource => (:String, 0, 11), :source => (:GBytes, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GskGLShaderLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:resource => (:String, 0, 11), :source => (:GBytes, 0, 11))
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GskGLShaderLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:resource => (:String, 0, 11), :source => (:GBytes, 0, 11))
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GskGLShaderLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:resource => (:String, 0, 11), :source => (:GBytes, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end
@@ -383,7 +393,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs, T
+        local kwargs
         function GskNglRendererLeaf(args...; kwargs...)
             if isempty(kwargs)
                 error(MethodError(GskNglRendererLeaf, args))
@@ -398,23 +408,25 @@ $(Expr(:toplevel, quote
         function GskNglRenderer(args...; kwargs...)
             GskNglRendererLeaf(args...; kwargs...)
         end
-        Base.propertynames(o::GskNglRendererLeaf) = begin
-                [:handle]
+        begin
+            Base.propertynames(o::GskNglRendererLeaf) = begin
+                    [:handle, :surface, :realized]
+                end
+            function Base.getproperty(o::GskNglRendererLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:surface => (:GdkSurface, 0, 1), :realized => (:Bool, 0, 1))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
             end
-        function Base.getproperty(o::GskNglRendererLeaf, name::Symbol)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                return get_gtk_property(o, name, eval((d[name])[1]))
-            else
-                return getfield(o, name)
-            end
-        end
-        function Base.setproperty!(o::GskNglRendererLeaf, name::Symbol, x)
-            d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-            if name in keys(d)
-                set_gtk_property!(o, name, x)
-            else
-                setfield!(o, name, x)
+            function Base.setproperty!(o::GskNglRendererLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
             end
         end
     end

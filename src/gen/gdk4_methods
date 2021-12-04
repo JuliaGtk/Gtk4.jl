@@ -90,8 +90,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_offset(instance::GdkPopupLayout)
-        m_dx = mutable(Int32)
-        m_dy = mutable(Int32)
+        m_dx = Ref{Int32}()
+        m_dy = Ref{Int32}()
         ret = ccall(("gdk_popup_layout_get_offset", "libgtk-4.so.1"), Nothing, (Ptr{GdkPopupLayout}, Ptr{Int32}, Ptr{Int32}), instance, m_dx, m_dy)
         _dx = m_dx[]
         _dy = m_dy[]
@@ -102,10 +102,10 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_shadow_width(instance::GdkPopupLayout)
-        m_left = mutable(Int32)
-        m_right = mutable(Int32)
-        m_top = mutable(Int32)
-        m_bottom = mutable(Int32)
+        m_left = Ref{Int32}()
+        m_right = Ref{Int32}()
+        m_top = Ref{Int32}()
+        m_bottom = Ref{Int32}()
         ret = ccall(("gdk_popup_layout_get_shadow_width", "libgtk-4.so.1"), Nothing, (Ptr{GdkPopupLayout}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, m_left, m_right, m_top, m_bottom)
         _left = m_left[]
         _right = m_right[]
@@ -203,7 +203,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function intersect(instance::GdkRectangle, _src2::GdkRectangle)
-        m_dest = mutable(Ptr{GdkRectangle})
+        m_dest = Ref{Ptr{GdkRectangle}}()
         ret = ccall(("gdk_rectangle_intersect", "libgtk-4.so.1"), Cint, (Ptr{GdkRectangle}, Ptr{GdkRectangle}, Ptr{Ptr{GdkRectangle}}), instance, _src2, m_dest)
         ret2 = convert(Bool, ret)
         _dest = m_dest[]
@@ -211,7 +211,7 @@ $(Expr(:toplevel, quote
         (ret2, _dest)
     end
     function union(instance::GdkRectangle, _src2::GdkRectangle)
-        m_dest = mutable(Ptr{GdkRectangle})
+        m_dest = Ref{Ptr{GdkRectangle}}()
         ret = ccall(("gdk_rectangle_union", "libgtk-4.so.1"), Nothing, (Ptr{GdkRectangle}, Ptr{GdkRectangle}, Ptr{Ptr{GdkRectangle}}), instance, _src2, m_dest)
         _dest = m_dest[]
         _dest = convert(GdkRectangle, _dest, false)
@@ -233,7 +233,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_fullscreen(instance::GdkToplevelLayout)
-        m_fullscreen = mutable(Cint)
+        m_fullscreen = Ref{Cint}()
         ret = ccall(("gdk_toplevel_layout_get_fullscreen", "libgtk-4.so.1"), Cint, (Ptr{GdkToplevelLayout}, Ptr{Cint}), instance, m_fullscreen)
         ret2 = convert(Bool, ret)
         _fullscreen = m_fullscreen[]
@@ -250,7 +250,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_maximized(instance::GdkToplevelLayout)
-        m_maximized = mutable(Cint)
+        m_maximized = Ref{Cint}()
         ret = ccall(("gdk_toplevel_layout_get_maximized", "libgtk-4.so.1"), Cint, (Ptr{GdkToplevelLayout}, Ptr{Cint}), instance, m_maximized)
         ret2 = convert(Bool, ret)
         _maximized = m_maximized[]
@@ -372,7 +372,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function read_finish(instance::GdkClipboard, _result)
-        m_out_mime_type = mutable(Ptr{UInt8})
+        m_out_mime_type = Ref{Ptr{UInt8}}()
         err = err_buf()
         ret = ccall(("gdk_clipboard_read_finish", "libgtk-4.so.1"), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{Ptr{GError}}), instance, _result, m_out_mime_type, err)
         check_err(err)
@@ -572,7 +572,7 @@ $(Expr(:toplevel, quote
                 _data
             end
         _notify = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
             end
         ret = ccall(("gdk_content_deserializer_set_task_data", "libgtk-4.so.1"), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _data, _notify)
         nothing
@@ -698,7 +698,7 @@ $(Expr(:toplevel, quote
                 _data
             end
         _notify = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
             end
         ret = ccall(("gdk_content_serializer_set_task_data", "libgtk-4.so.1"), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _data, _notify)
         nothing
@@ -832,8 +832,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_surface_at_position(instance::GdkDevice)
-        m_win_x = mutable(Float64)
-        m_win_y = mutable(Float64)
+        m_win_x = Ref{Float64}()
+        m_win_y = Ref{Float64}()
         ret = ccall(("gdk_device_get_surface_at_position", "libgtk-4.so.1"), Ptr{GObject}, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_win_x, m_win_y)
         ret2 = if ret == C_NULL
                 nothing
@@ -991,9 +991,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function map_keycode(instance::GdkDisplay, _keycode)
-        m_keys = mutable(Ptr{GdkKeymapKey})
-        m_keyvals = mutable(Ptr{UInt32})
-        m_n_entries = mutable(Int32)
+        m_keys = Ref{Ptr{GdkKeymapKey}}()
+        m_keyvals = Ref{Ptr{UInt32}}()
+        m_n_entries = Ref{Int32}()
         ret = ccall(("gdk_display_map_keycode", "libgtk-4.so.1"), Cint, (Ptr{GObject}, UInt32, Ptr{Ptr{GdkKeymapKey}}, Ptr{Ptr{UInt32}}, Ptr{Int32}), instance, _keycode, m_keys, m_keyvals, m_n_entries)
         ret2 = convert(Bool, ret)
         _keys = m_keys[]
@@ -1002,8 +1002,8 @@ $(Expr(:toplevel, quote
         (ret2, _keys, _keyvals)
     end
     function map_keyval(instance::GdkDisplay, _keyval)
-        m_keys = mutable(Ptr{GdkKeymapKey})
-        m_n_keys = mutable(Int32)
+        m_keys = Ref{Ptr{GdkKeymapKey}}()
+        m_n_keys = Ref{Int32}()
         ret = ccall(("gdk_display_map_keyval", "libgtk-4.so.1"), Cint, (Ptr{GObject}, UInt32, Ptr{Ptr{GdkKeymapKey}}, Ptr{Int32}), instance, _keyval, m_keys, m_n_keys)
         ret2 = convert(Bool, ret)
         _keys = m_keys[]
@@ -1031,10 +1031,10 @@ $(Expr(:toplevel, quote
         nothing
     end
     function translate_key(instance::GdkDisplay, _keycode, _state, _group)
-        m_keyval = mutable(UInt32)
-        m_effective_group = mutable(Int32)
-        m_level = mutable(Int32)
-        m_consumed = mutable(Int32)
+        m_keyval = Ref{UInt32}()
+        m_effective_group = Ref{Int32}()
+        m_level = Ref{Int32}()
+        m_consumed = Ref{Int32}()
         ret = ccall(("gdk_display_translate_key", "libgtk-4.so.1"), Cint, (Ptr{GObject}, UInt32, Int32, Int32, Ptr{UInt32}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, _keycode, _state, _group, m_keyval, m_effective_group, m_level, m_consumed)
         ret2 = convert(Bool, ret)
         _keyval = m_keyval[]
@@ -1222,7 +1222,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function read_finish(instance::GdkDrop, _result)
-        m_out_mime_type = mutable(Ptr{UInt8})
+        m_out_mime_type = Ref{Ptr{UInt8}}()
         err = err_buf()
         ret = ccall(("gdk_drop_read_finish", "libgtk-4.so.1"), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{Ptr{GError}}), instance, _result, m_out_mime_type, err)
         check_err(err)
@@ -1303,8 +1303,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_refresh_info(instance::GdkFrameClock, _base_time)
-        m_refresh_interval_return = mutable(Int64)
-        m_presentation_time_return = mutable(Int64)
+        m_refresh_interval_return = Ref{Int64}()
+        m_presentation_time_return = Ref{Int64}()
         ret = ccall(("gdk_frame_clock_get_refresh_info", "libgtk-4.so.1"), Nothing, (Ptr{GObject}, Int64, Ptr{Int64}, Ptr{Int64}), instance, _base_time, m_refresh_interval_return, m_presentation_time_return)
         _refresh_interval_return = m_refresh_interval_return[]
         _presentation_time_return = m_presentation_time_return[]
@@ -1356,8 +1356,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_required_version(instance::GdkGLContext)
-        m_major = mutable(Int32)
-        m_minor = mutable(Int32)
+        m_major = Ref{Int32}()
+        m_minor = Ref{Int32}()
         ret = ccall(("gdk_gl_context_get_required_version", "libgtk-4.so.1"), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_major, m_minor)
         _major = m_major[]
         _minor = m_minor[]
@@ -1378,8 +1378,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_version(instance::GdkGLContext)
-        m_major = mutable(Int32)
-        m_minor = mutable(Int32)
+        m_major = Ref{Int32}()
+        m_minor = Ref{Int32}()
         ret = ccall(("gdk_gl_context_get_version", "libgtk-4.so.1"), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_major, m_minor)
         _major = m_major[]
         _minor = m_minor[]
@@ -1424,7 +1424,7 @@ $(Expr(:toplevel, quote
     end
     function GLTexture(_context::GdkGLContext, _id, _width, _height, _destroy::Function, _data::Maybe(Nothing))
         _destroy = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
             end
         _data = if _data == nothing
                 C_NULL
@@ -1459,7 +1459,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_geometry(instance::GdkMonitor)
-        m_geometry = mutable(Ptr{GdkRectangle})
+        m_geometry = Ref{Ptr{GdkRectangle}}()
         ret = ccall(("gdk_monitor_get_geometry", "libgtk-4.so.1"), Nothing, (Ptr{GObject}, Ptr{Ptr{GdkRectangle}}), instance, m_geometry)
         _geometry = m_geometry[]
         _geometry = convert(GdkRectangle, _geometry, false)
@@ -1610,9 +1610,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_device_position(instance::GdkSurface, _device::GdkDevice)
-        m_x = mutable(Float64)
-        m_y = mutable(Float64)
-        m_mask = mutable(Int32)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
+        m_mask = Ref{Int32}()
         ret = ccall(("gdk_surface_get_device_position", "libgtk-4.so.1"), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Float64}, Ptr{Float64}, Ptr{Int32}), instance, _device, m_x, m_y, m_mask)
         ret2 = convert(Bool, ret)
         _x = m_x[]
@@ -1691,9 +1691,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function translate_coordinates(instance::GdkSurface, _to::GdkSurface, _x, _y)
-        m_x = mutable(Float64)
+        m_x = Ref{Float64}()
         m_x[] = Base.cconvert(Float64, _x)
-        m_y = mutable(Float64)
+        m_y = Ref{Float64}()
         m_y[] = Base.cconvert(Float64, _y)
         ret = ccall(("gdk_surface_translate_coordinates", "libgtk-4.so.1"), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, _to, m_x, m_y)
         ret2 = convert(Bool, ret)
@@ -1763,8 +1763,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_concrete_size(instance::GObject, _specified_width, _specified_height, _default_width, _default_height)
-        m_concrete_width = mutable(Float64)
-        m_concrete_height = mutable(Float64)
+        m_concrete_width = Ref{Float64}()
+        m_concrete_height = Ref{Float64}()
         ret = ccall(("gdk_paintable_compute_concrete_size", "libgtk-4.so.1"), Nothing, (Ptr{GObject}, Float64, Float64, Float64, Float64, Ptr{Float64}, Ptr{Float64}), instance, _specified_width, _specified_height, _default_width, _default_height, m_concrete_width, m_concrete_height)
         _concrete_width = m_concrete_width[]
         _concrete_height = m_concrete_height[]

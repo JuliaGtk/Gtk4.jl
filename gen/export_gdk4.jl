@@ -22,6 +22,7 @@ toplevel, exprs, exports = GI.output_exprs()
 disguised = []
 struct_skiplist=vcat(disguised, [:ToplevelSize])
 
+GI.struct_cache_expr!(exprs)
 struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:TimeCoord])
 
 ## objects

@@ -1,6 +1,9 @@
 quote
 $(Expr(:toplevel, quote
     begin
+        gboxed_types = Any[]
+    end
+    begin
         begin
             struct _GrapheneSimd4F
                 x::Float32
@@ -35,7 +38,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneVec3) = begin
                         ccall(("graphene_vec3_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneVec3(ref::Ptr{GrapheneVec3}, own::Bool = false)
+                function GrapheneVec3(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -44,11 +47,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneVec3
-                    gtype = ccall(($(QuoteNode("graphene_vec3_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneVec3)
             end
         end
         begin
@@ -98,7 +97,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneSize) = begin
                         ccall(("graphene_size_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneSize(ref::Ptr{GrapheneSize}, own::Bool = false)
+                function GrapheneSize(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -107,11 +106,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneSize
-                    gtype = ccall(($(QuoteNode("graphene_size_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneSize)
             end
         end
         begin
@@ -138,7 +133,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneBox) = begin
                         ccall(("graphene_box_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneBox(ref::Ptr{GrapheneBox}, own::Bool = false)
+                function GrapheneBox(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -147,11 +142,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneBox
-                    gtype = ccall(($(QuoteNode("graphene_box_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneBox)
             end
         end
         begin
@@ -178,7 +169,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneEuler) = begin
                         ccall(("graphene_euler_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneEuler(ref::Ptr{GrapheneEuler}, own::Bool = false)
+                function GrapheneEuler(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -187,11 +178,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneEuler
-                    gtype = ccall(($(QuoteNode("graphene_euler_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneEuler)
             end
         end
         begin
@@ -213,7 +200,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneFrustum) = begin
                         ccall(("graphene_frustum_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneFrustum(ref::Ptr{GrapheneFrustum}, own::Bool = false)
+                function GrapheneFrustum(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -222,11 +209,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneFrustum
-                    gtype = ccall(($(QuoteNode("graphene_frustum_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneFrustum)
             end
         end
         nothing
@@ -243,7 +226,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneMatrix) = begin
                         ccall(("graphene_matrix_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneMatrix(ref::Ptr{GrapheneMatrix}, own::Bool = false)
+                function GrapheneMatrix(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -252,11 +235,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneMatrix
-                    gtype = ccall(($(QuoteNode("graphene_matrix_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneMatrix)
             end
         end
         begin
@@ -283,7 +262,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GraphenePlane) = begin
                         ccall(("graphene_plane_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GraphenePlane(ref::Ptr{GraphenePlane}, own::Bool = false)
+                function GraphenePlane(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -292,11 +271,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GraphenePlane
-                    gtype = ccall(($(QuoteNode("graphene_plane_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GraphenePlane)
             end
         end
         begin
@@ -323,7 +298,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GraphenePoint) = begin
                         ccall(("graphene_point_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GraphenePoint(ref::Ptr{GraphenePoint}, own::Bool = false)
+                function GraphenePoint(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -332,11 +307,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GraphenePoint
-                    gtype = ccall(($(QuoteNode("graphene_point_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GraphenePoint)
             end
         end
         begin
@@ -364,7 +335,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GraphenePoint3D) = begin
                         ccall(("graphene_point3d_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GraphenePoint3D(ref::Ptr{GraphenePoint3D}, own::Bool = false)
+                function GraphenePoint3D(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -373,11 +344,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GraphenePoint3D
-                    gtype = ccall(($(QuoteNode("graphene_point3d_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GraphenePoint3D)
             end
         end
         begin
@@ -399,7 +366,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneQuad) = begin
                         ccall(("graphene_quad_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneQuad(ref::Ptr{GrapheneQuad}, own::Bool = false)
+                function GrapheneQuad(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -408,11 +375,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneQuad
-                    gtype = ccall(($(QuoteNode("graphene_quad_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneQuad)
             end
         end
         nothing
@@ -432,7 +395,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneQuaternion) = begin
                         ccall(("graphene_quaternion_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneQuaternion(ref::Ptr{GrapheneQuaternion}, own::Bool = false)
+                function GrapheneQuaternion(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -441,11 +404,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneQuaternion
-                    gtype = ccall(($(QuoteNode("graphene_quaternion_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneQuaternion)
             end
         end
         begin
@@ -472,7 +431,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneRay) = begin
                         ccall(("graphene_ray_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneRay(ref::Ptr{GrapheneRay}, own::Bool = false)
+                function GrapheneRay(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -481,11 +440,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneRay
-                    gtype = ccall(($(QuoteNode("graphene_ray_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneRay)
             end
         end
         begin
@@ -512,7 +467,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneRect) = begin
                         ccall(("graphene_rect_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneRect(ref::Ptr{GrapheneRect}, own::Bool = false)
+                function GrapheneRect(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -521,11 +476,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneRect
-                    gtype = ccall(($(QuoteNode("graphene_rect_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneRect)
             end
         end
         begin
@@ -552,7 +503,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneSphere) = begin
                         ccall(("graphene_sphere_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneSphere(ref::Ptr{GrapheneSphere}, own::Bool = false)
+                function GrapheneSphere(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -561,11 +512,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneSphere
-                    gtype = ccall(($(QuoteNode("graphene_sphere_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneSphere)
             end
         end
         begin
@@ -593,7 +540,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneTriangle) = begin
                         ccall(("graphene_triangle_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneTriangle(ref::Ptr{GrapheneTriangle}, own::Bool = false)
+                function GrapheneTriangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -602,11 +549,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneTriangle
-                    gtype = ccall(($(QuoteNode("graphene_triangle_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneTriangle)
             end
         end
         begin
@@ -632,7 +575,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneVec2) = begin
                         ccall(("graphene_vec2_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneVec2(ref::Ptr{GrapheneVec2}, own::Bool = false)
+                function GrapheneVec2(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -641,11 +584,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneVec2
-                    gtype = ccall(($(QuoteNode("graphene_vec2_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneVec2)
             end
         end
         begin
@@ -671,7 +610,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GrapheneVec4) = begin
                         ccall(("graphene_vec4_get_type", "libgraphene-1.0.so.0"), GType, ())
                     end
-                function GrapheneVec4(ref::Ptr{GrapheneVec4}, own::Bool = false)
+                function GrapheneVec4(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -680,11 +619,7 @@ $(Expr(:toplevel, quote
                     end
                     x
                 end
-                function Base.setindex!(v::GLib.GV, ::Type{T}) where T <: GrapheneVec4
-                    gtype = ccall(($(QuoteNode("graphene_vec4_get_type")), "libgraphene-1.0.so.0"), GType, ())
-                    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), v, gtype)
-                    v
-                end
+                push!(gboxed_types, GrapheneVec4)
             end
         end
         begin
@@ -697,6 +632,11 @@ $(Expr(:toplevel, quote
                 end
             end
         end
+    end
+    begin
+        gboxed_cache_init() = begin
+                append!(GLib.gboxed_types, gboxed_types)
+            end
     end
     begin
         gtype_wrapper_cache = Dict{Symbol, Type}()

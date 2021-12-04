@@ -62,7 +62,7 @@ $(Expr(:toplevel, quote
     end
     function content_register_deserializer(_mime_type, _type, _deserialize::Function, _data::Maybe(Nothing), _notify::Function)
         _deserialize = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{GObject},)
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{GObject},)
             end
         _data = if _data == nothing
                 C_NULL
@@ -70,14 +70,14 @@ $(Expr(:toplevel, quote
                 _data
             end
         _notify = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
             end
         ret = ccall(("gdk_content_register_deserializer", "libgtk-4.so.1"), Nothing, (Ptr{UInt8}, UInt64, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), _mime_type, _type, _deserialize, _data, _notify)
         nothing
     end
     function content_register_serializer(_type, _mime_type, _serialize::Function, _data::Maybe(Nothing), _notify::Function)
         _serialize = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{GObject},)
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{GObject},)
             end
         _data = if _data == nothing
                 C_NULL
@@ -85,7 +85,7 @@ $(Expr(:toplevel, quote
                 _data
             end
         _notify = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:466 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
+                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
             end
         ret = ccall(("gdk_content_register_serializer", "libgtk-4.so.1"), Nothing, (UInt64, Ptr{UInt8}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), _type, _mime_type, _serialize, _data, _notify)
         nothing
@@ -135,8 +135,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function keyval_convert_case(_symbol)
-        m_lower = mutable(UInt32)
-        m_upper = mutable(UInt32)
+        m_lower = Ref{UInt32}()
+        m_upper = Ref{UInt32}()
         ret = ccall(("gdk_keyval_convert_case", "libgtk-4.so.1"), Nothing, (UInt32, Ptr{UInt32}, Ptr{UInt32}), _symbol, m_lower, m_upper)
         _lower = m_lower[]
         _upper = m_upper[]

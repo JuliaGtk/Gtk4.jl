@@ -6,7 +6,7 @@
 using Gtk4, GLib
 
 win = Gtk4.Window()
-Gtk4.set_title(win,"Calculator")
+win.title="Calculator"
 
 b1 = Gtk4.Button_new_with_label("1")
 b2 = Gtk4.Button_new_with_label("2")

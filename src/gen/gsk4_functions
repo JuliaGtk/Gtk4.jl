@@ -5,7 +5,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function transform_parse(_string)
-        m_out_transform = mutable(Ptr{GskTransform})
+        m_out_transform = Ref{Ptr{GskTransform}}()
         ret = ccall(("gsk_transform_parse", "libgtk-4.so.1"), Cint, (Ptr{UInt8}, Ptr{Ptr{GskTransform}}), _string, m_out_transform)
         ret2 = convert(Bool, ret)
         _out_transform = m_out_transform[]
