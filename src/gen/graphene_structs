@@ -4,33 +4,27 @@ $(Expr(:toplevel, quote
         gboxed_types = Any[]
     end
     begin
-        begin
-            struct _GrapheneSimd4F
-                x::Float32
-                y::Float32
-                z::Float32
-                w::Float32
-            end
+        struct _GrapheneSimd4F
+            x::Float32
+            y::Float32
+            z::Float32
+            w::Float32
         end
         mutable struct GrapheneSimd4F
             handle::Ptr{GrapheneSimd4F}
         end
-        begin
-            function Base.getproperty(s::GrapheneSimd4F, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneSimd4F)
-                    u = unsafe_load(Ptr{_GrapheneSimd4F}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneSimd4F, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneSimd4F)
+                u = unsafe_load(Ptr{_GrapheneSimd4F}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneVec3
-                value::GrapheneSimd4F
-            end
+        struct _GrapheneVec3
+            value::GrapheneSimd4F
         end
         mutable struct GrapheneVec3 <: GBoxed
             handle::Ptr{GrapheneVec3}
@@ -50,46 +44,38 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneVec3)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneVec3, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneVec3)
-                    u = unsafe_load(Ptr{_GrapheneVec3}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneVec3, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneVec3)
+                u = unsafe_load(Ptr{_GrapheneVec3}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneSimd4X4F
-                x::GrapheneSimd4F
-                y::GrapheneSimd4F
-                z::GrapheneSimd4F
-                w::GrapheneSimd4F
-            end
+        struct _GrapheneSimd4X4F
+            x::GrapheneSimd4F
+            y::GrapheneSimd4F
+            z::GrapheneSimd4F
+            w::GrapheneSimd4F
         end
         mutable struct GrapheneSimd4X4F
             handle::Ptr{GrapheneSimd4X4F}
         end
-        begin
-            function Base.getproperty(s::GrapheneSimd4X4F, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneSimd4X4F)
-                    u = unsafe_load(Ptr{_GrapheneSimd4X4F}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneSimd4X4F, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneSimd4X4F)
+                u = unsafe_load(Ptr{_GrapheneSimd4X4F}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneSize
-                width::Float32
-                height::Float32
-            end
+        struct _GrapheneSize
+            width::Float32
+            height::Float32
         end
         mutable struct GrapheneSize <: GBoxed
             handle::Ptr{GrapheneSize}
@@ -109,23 +95,19 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneSize)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneSize, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneSize)
-                    u = unsafe_load(Ptr{_GrapheneSize}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneSize, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneSize)
+                u = unsafe_load(Ptr{_GrapheneSize}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneBox
-                min::Ptr{GrapheneVec3}
-                max::Ptr{GrapheneVec3}
-            end
+        struct _GrapheneBox
+            min::Ptr{GrapheneVec3}
+            max::Ptr{GrapheneVec3}
         end
         mutable struct GrapheneBox <: GBoxed
             handle::Ptr{GrapheneBox}
@@ -145,23 +127,19 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneBox)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneBox, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneBox)
-                    u = unsafe_load(Ptr{_GrapheneBox}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneBox, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneBox)
+                u = unsafe_load(Ptr{_GrapheneBox}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneEuler
-                angles::Ptr{GrapheneVec3}
-                order::Int32
-            end
+        struct _GrapheneEuler
+            angles::Ptr{GrapheneVec3}
+            order::UInt16
         end
         mutable struct GrapheneEuler <: GBoxed
             handle::Ptr{GrapheneEuler}
@@ -181,14 +159,12 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneEuler)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneEuler, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneEuler)
-                    u = unsafe_load(Ptr{_GrapheneEuler}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneEuler, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneEuler)
+                u = unsafe_load(Ptr{_GrapheneEuler}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
@@ -215,10 +191,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     begin
-        begin
-            struct _GrapheneMatrix
-                value::GrapheneSimd4X4F
-            end
+        struct _GrapheneMatrix
+            value::GrapheneSimd4X4F
         end
         mutable struct GrapheneMatrix <: GBoxed
             handle::Ptr{GrapheneMatrix}
@@ -238,23 +212,19 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneMatrix)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneMatrix, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneMatrix)
-                    u = unsafe_load(Ptr{_GrapheneMatrix}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneMatrix, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneMatrix)
+                u = unsafe_load(Ptr{_GrapheneMatrix}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GraphenePlane
-                normal::Ptr{GrapheneVec3}
-                constant::Float32
-            end
+        struct _GraphenePlane
+            normal::Ptr{GrapheneVec3}
+            constant::Float32
         end
         mutable struct GraphenePlane <: GBoxed
             handle::Ptr{GraphenePlane}
@@ -274,23 +244,19 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GraphenePlane)
             end
         end
-        begin
-            function Base.getproperty(s::GraphenePlane, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GraphenePlane)
-                    u = unsafe_load(Ptr{_GraphenePlane}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GraphenePlane, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GraphenePlane)
+                u = unsafe_load(Ptr{_GraphenePlane}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GraphenePoint
-                x::Float32
-                y::Float32
-            end
+        struct _GraphenePoint
+            x::Float32
+            y::Float32
         end
         mutable struct GraphenePoint <: GBoxed
             handle::Ptr{GraphenePoint}
@@ -310,24 +276,20 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GraphenePoint)
             end
         end
-        begin
-            function Base.getproperty(s::GraphenePoint, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GraphenePoint)
-                    u = unsafe_load(Ptr{_GraphenePoint}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GraphenePoint, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GraphenePoint)
+                u = unsafe_load(Ptr{_GraphenePoint}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GraphenePoint3D
-                x::Float32
-                y::Float32
-                z::Float32
-            end
+        struct _GraphenePoint3D
+            x::Float32
+            y::Float32
+            z::Float32
         end
         mutable struct GraphenePoint3D <: GBoxed
             handle::Ptr{GraphenePoint3D}
@@ -347,14 +309,12 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GraphenePoint3D)
             end
         end
-        begin
-            function Base.getproperty(s::GraphenePoint3D, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GraphenePoint3D)
-                    u = unsafe_load(Ptr{_GraphenePoint3D}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GraphenePoint3D, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GraphenePoint3D)
+                u = unsafe_load(Ptr{_GraphenePoint3D}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
@@ -381,13 +341,11 @@ $(Expr(:toplevel, quote
         nothing
     end
     begin
-        begin
-            struct _GrapheneQuaternion
-                x::Float32
-                y::Float32
-                z::Float32
-                w::Float32
-            end
+        struct _GrapheneQuaternion
+            x::Float32
+            y::Float32
+            z::Float32
+            w::Float32
         end
         mutable struct GrapheneQuaternion <: GBoxed
             handle::Ptr{GrapheneQuaternion}
@@ -407,23 +365,19 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneQuaternion)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneQuaternion, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneQuaternion)
-                    u = unsafe_load(Ptr{_GrapheneQuaternion}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneQuaternion, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneQuaternion)
+                u = unsafe_load(Ptr{_GrapheneQuaternion}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneRay
-                origin::Ptr{GrapheneVec3}
-                direction::Ptr{GrapheneVec3}
-            end
+        struct _GrapheneRay
+            origin::Ptr{GrapheneVec3}
+            direction::Ptr{GrapheneVec3}
         end
         mutable struct GrapheneRay <: GBoxed
             handle::Ptr{GrapheneRay}
@@ -443,23 +397,19 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneRay)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneRay, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneRay)
-                    u = unsafe_load(Ptr{_GrapheneRay}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneRay, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneRay)
+                u = unsafe_load(Ptr{_GrapheneRay}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneRect
-                origin::Ptr{GraphenePoint}
-                size::Ptr{GrapheneSize}
-            end
+        struct _GrapheneRect
+            origin::Ptr{GraphenePoint}
+            size::Ptr{GrapheneSize}
         end
         mutable struct GrapheneRect <: GBoxed
             handle::Ptr{GrapheneRect}
@@ -479,23 +429,19 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneRect)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneRect, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneRect)
-                    u = unsafe_load(Ptr{_GrapheneRect}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneRect, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneRect)
+                u = unsafe_load(Ptr{_GrapheneRect}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneSphere
-                center::Ptr{GrapheneVec3}
-                radius::Float32
-            end
+        struct _GrapheneSphere
+            center::Ptr{GrapheneVec3}
+            radius::Float32
         end
         mutable struct GrapheneSphere <: GBoxed
             handle::Ptr{GrapheneSphere}
@@ -515,24 +461,20 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneSphere)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneSphere, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneSphere)
-                    u = unsafe_load(Ptr{_GrapheneSphere}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneSphere, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneSphere)
+                u = unsafe_load(Ptr{_GrapheneSphere}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneTriangle
-                a::Ptr{GrapheneVec3}
-                b::Ptr{GrapheneVec3}
-                c::Ptr{GrapheneVec3}
-            end
+        struct _GrapheneTriangle
+            a::Ptr{GrapheneVec3}
+            b::Ptr{GrapheneVec3}
+            c::Ptr{GrapheneVec3}
         end
         mutable struct GrapheneTriangle <: GBoxed
             handle::Ptr{GrapheneTriangle}
@@ -552,22 +494,18 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneTriangle)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneTriangle, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneTriangle)
-                    u = unsafe_load(Ptr{_GrapheneTriangle}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneTriangle, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneTriangle)
+                u = unsafe_load(Ptr{_GrapheneTriangle}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneVec2
-                value::GrapheneSimd4F
-            end
+        struct _GrapheneVec2
+            value::GrapheneSimd4F
         end
         mutable struct GrapheneVec2 <: GBoxed
             handle::Ptr{GrapheneVec2}
@@ -587,22 +525,18 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneVec2)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneVec2, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneVec2)
-                    u = unsafe_load(Ptr{_GrapheneVec2}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneVec2, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneVec2)
+                u = unsafe_load(Ptr{_GrapheneVec2}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GrapheneVec4
-                value::GrapheneSimd4F
-            end
+        struct _GrapheneVec4
+            value::GrapheneSimd4F
         end
         mutable struct GrapheneVec4 <: GBoxed
             handle::Ptr{GrapheneVec4}
@@ -622,14 +556,12 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GrapheneVec4)
             end
         end
-        begin
-            function Base.getproperty(s::GrapheneVec4, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GrapheneVec4)
-                    u = unsafe_load(Ptr{_GrapheneVec4}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GrapheneVec4, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GrapheneVec4)
+                u = unsafe_load(Ptr{_GrapheneVec4}(s.handle))
+                return getfield(u, sym)
             end
         end
     end

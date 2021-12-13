@@ -189,8 +189,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_order(instance::GrapheneEuler)
-        ret = ccall(("graphene_euler_get_order", "libgraphene-1.0.so.0"), Int32, (Ptr{GrapheneEuler},), instance)
-        ret
+        ret = ccall(("graphene_euler_get_order", "libgraphene-1.0.so.0"), UInt16, (Ptr{GrapheneEuler},), instance)
+        ret2 = EulerOrder(ret)
+        ret2
     end
     function get_x(instance::GrapheneEuler)
         ret = ccall(("graphene_euler_get_x", "libgraphene-1.0.so.0"), Float32, (Ptr{GrapheneEuler},), instance)
@@ -225,7 +226,7 @@ $(Expr(:toplevel, quote
             else
                 _m
             end
-        ret = ccall(("graphene_euler_init_from_matrix", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Ptr{GrapheneMatrix}, Int32), instance, _m, _order)
+        ret = ccall(("graphene_euler_init_from_matrix", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Ptr{GrapheneMatrix}, UInt16), instance, _m, _order)
         ret2 = convert(GrapheneEuler, ret, false)
         ret2
     end
@@ -235,12 +236,12 @@ $(Expr(:toplevel, quote
             else
                 _q
             end
-        ret = ccall(("graphene_euler_init_from_quaternion", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Ptr{GrapheneQuaternion}, Int32), instance, _q, _order)
+        ret = ccall(("graphene_euler_init_from_quaternion", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Ptr{GrapheneQuaternion}, UInt16), instance, _q, _order)
         ret2 = convert(GrapheneEuler, ret, false)
         ret2
     end
     function init_from_radians(instance::GrapheneEuler, _x, _y, _z, _order)
-        ret = ccall(("graphene_euler_init_from_radians", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Float32, Float32, Float32, Int32), instance, _x, _y, _z, _order)
+        ret = ccall(("graphene_euler_init_from_radians", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Float32, Float32, Float32, UInt16), instance, _x, _y, _z, _order)
         ret2 = convert(GrapheneEuler, ret, false)
         ret2
     end
@@ -250,18 +251,18 @@ $(Expr(:toplevel, quote
             else
                 _v
             end
-        ret = ccall(("graphene_euler_init_from_vec3", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Ptr{GrapheneVec3}, Int32), instance, _v, _order)
+        ret = ccall(("graphene_euler_init_from_vec3", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Ptr{GrapheneVec3}, UInt16), instance, _v, _order)
         ret2 = convert(GrapheneEuler, ret, false)
         ret2
     end
     function init_with_order(instance::GrapheneEuler, _x, _y, _z, _order)
-        ret = ccall(("graphene_euler_init_with_order", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Float32, Float32, Float32, Int32), instance, _x, _y, _z, _order)
+        ret = ccall(("graphene_euler_init_with_order", "libgraphene-1.0.so.0"), Ptr{GrapheneEuler}, (Ptr{GrapheneEuler}, Float32, Float32, Float32, UInt16), instance, _x, _y, _z, _order)
         ret2 = convert(GrapheneEuler, ret, false)
         ret2
     end
     function reorder(instance::GrapheneEuler, _order)
         m_res = Ref{Ptr{GrapheneEuler}}()
-        ret = ccall(("graphene_euler_reorder", "libgraphene-1.0.so.0"), Nothing, (Ptr{GrapheneEuler}, Int32, Ptr{Ptr{GrapheneEuler}}), instance, _order, m_res)
+        ret = ccall(("graphene_euler_reorder", "libgraphene-1.0.so.0"), Nothing, (Ptr{GrapheneEuler}, UInt16, Ptr{Ptr{GrapheneEuler}}), instance, _order, m_res)
         _res = m_res[]
         _res = convert(GrapheneEuler, _res, false)
         _res
@@ -1236,20 +1237,23 @@ $(Expr(:toplevel, quote
     function intersect_box(instance::GrapheneRay, _b::GrapheneBox)
         m_t_out = Ref{Float32}()
         ret = ccall(("graphene_ray_intersect_box", "libgraphene-1.0.so.0"), Int32, (Ptr{GrapheneRay}, Ptr{GrapheneBox}, Ptr{Float32}), instance, _b, m_t_out)
+        ret2 = RayIntersectionKind(ret)
         _t_out = m_t_out[]
-        (ret, _t_out)
+        (ret2, _t_out)
     end
     function intersect_sphere(instance::GrapheneRay, _s::GrapheneSphere)
         m_t_out = Ref{Float32}()
         ret = ccall(("graphene_ray_intersect_sphere", "libgraphene-1.0.so.0"), Int32, (Ptr{GrapheneRay}, Ptr{GrapheneSphere}, Ptr{Float32}), instance, _s, m_t_out)
+        ret2 = RayIntersectionKind(ret)
         _t_out = m_t_out[]
-        (ret, _t_out)
+        (ret2, _t_out)
     end
     function intersect_triangle(instance::GrapheneRay, _t::GrapheneTriangle)
         m_t_out = Ref{Float32}()
         ret = ccall(("graphene_ray_intersect_triangle", "libgraphene-1.0.so.0"), Int32, (Ptr{GrapheneRay}, Ptr{GrapheneTriangle}, Ptr{Float32}), instance, _t, m_t_out)
+        ret2 = RayIntersectionKind(ret)
         _t_out = m_t_out[]
-        (ret, _t_out)
+        (ret2, _t_out)
     end
     function intersects_box(instance::GrapheneRay, _b::GrapheneBox)
         ret = ccall(("graphene_ray_intersects_box", "libgraphene-1.0.so.0"), Cint, (Ptr{GrapheneRay}, Ptr{GrapheneBox}), instance, _b)

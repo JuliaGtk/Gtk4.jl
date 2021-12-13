@@ -92,24 +92,20 @@ $(Expr(:toplevel, quote
         nothing
     end
     begin
-        begin
-            struct _GdkKeymapKey
-                keycode::UInt32
-                group::Int32
-                level::Int32
-            end
+        struct _GdkKeymapKey
+            keycode::UInt32
+            group::Int32
+            level::Int32
         end
         mutable struct GdkKeymapKey
             handle::Ptr{GdkKeymapKey}
         end
-        begin
-            function Base.getproperty(s::GdkKeymapKey, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GdkKeymapKey)
-                    u = unsafe_load(Ptr{_GdkKeymapKey}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GdkKeymapKey, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GdkKeymapKey)
+                u = unsafe_load(Ptr{_GdkKeymapKey}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
@@ -136,13 +132,11 @@ $(Expr(:toplevel, quote
         nothing
     end
     begin
-        begin
-            struct _GdkRGBA
-                red::Float32
-                green::Float32
-                blue::Float32
-                alpha::Float32
-            end
+        struct _GdkRGBA
+            red::Float32
+            green::Float32
+            blue::Float32
+            alpha::Float32
         end
         mutable struct GdkRGBA <: GBoxed
             handle::Ptr{GdkRGBA}
@@ -162,25 +156,21 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GdkRGBA)
             end
         end
-        begin
-            function Base.getproperty(s::GdkRGBA, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GdkRGBA)
-                    u = unsafe_load(Ptr{_GdkRGBA}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GdkRGBA, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GdkRGBA)
+                u = unsafe_load(Ptr{_GdkRGBA}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
     begin
-        begin
-            struct _GdkRectangle
-                x::Int32
-                y::Int32
-                width::Int32
-                height::Int32
-            end
+        struct _GdkRectangle
+            x::Int32
+            y::Int32
+            width::Int32
+            height::Int32
         end
         mutable struct GdkRectangle <: GBoxed
             handle::Ptr{GdkRectangle}
@@ -200,14 +190,12 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GdkRectangle)
             end
         end
-        begin
-            function Base.getproperty(s::GdkRectangle, sym::Symbol)
-                if sym === :handle
-                    return getfield(s, :handle)
-                elseif sym in fieldnames(_GdkRectangle)
-                    u = unsafe_load(Ptr{_GdkRectangle}(s.handle))
-                    return getfield(u, sym)
-                end
+        function Base.getproperty(s::GdkRectangle, sym::Symbol)
+            if sym === :handle
+                return getfield(s, :handle)
+            elseif sym in fieldnames(_GdkRectangle)
+                u = unsafe_load(Ptr{_GdkRectangle}(s.handle))
+                return getfield(u, sym)
             end
         end
     end
@@ -639,7 +627,7 @@ $(Expr(:toplevel, quote
                     [:handle, :source, :tool, :caps_lock_state, :scroll_lock_state, :has_bidi_layouts, :has_cursor, :n_axes, :name, :modifier_state, :display, :num_lock_state, :seat, :num_touches, :direction, :product_id, :vendor_id]
                 end
             function Base.getproperty(o::GdkDeviceLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:vendor_id => (:String, 0, 11), :tool => (:GdkDeviceTool, 0, 1), :caps_lock_state => (:Bool, 0, 1), :scroll_lock_state => (:Bool, 0, 1), :has_bidi_layouts => (:Bool, 0, 1), :has_cursor => (:Bool, 0, 11), :n_axes => (:UInt32, 0, 1), :name => (:String, 0, 11), :modifier_state => (:Int32, 0, 1), :num_lock_state => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :seat => (:GdkSeat, 0, 3), :num_touches => (:UInt32, 0, 11), :source => (:Int32, 0, 11), :direction => (:Int32, 0, 1), :product_id => (:String, 0, 11))
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:vendor_id => (:String, 0, 11), :tool => (:GdkDeviceTool, 0, 1), :caps_lock_state => (:Bool, 0, 1), :scroll_lock_state => (:Bool, 0, 1), :has_bidi_layouts => (:Bool, 0, 1), :has_cursor => (:Bool, 0, 11), :n_axes => (:UInt32, 0, 1), :name => (:String, 0, 11), :modifier_state => (:Int32, 0, 1), :num_lock_state => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :seat => (:GdkSeat, 0, 3), :num_touches => (:UInt32, 0, 11), :source => (:InputSource, 0, 11), :direction => (:Direction, 0, 1), :product_id => (:String, 0, 11))
                 if name in keys(d)
                     return get_gtk_property(o, name, eval((d[name])[1]))
                 else
@@ -647,7 +635,7 @@ $(Expr(:toplevel, quote
                 end
             end
             function Base.setproperty!(o::GdkDeviceLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:product_id => (:String, 0, 11), :vendor_id => (:String, 0, 11), :name => (:String, 0, 11), :num_touches => (:UInt32, 0, 11), :has_cursor => (:Bool, 0, 11), :source => (:Int32, 0, 11), :display => (:GdkDisplay, 0, 11), :seat => (:GdkSeat, 0, 3))
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:product_id => (:String, 0, 11), :vendor_id => (:String, 0, 11), :name => (:String, 0, 11), :num_touches => (:UInt32, 0, 11), :has_cursor => (:Bool, 0, 11), :source => (:InputSource, 0, 11), :display => (:GdkDisplay, 0, 11), :seat => (:GdkSeat, 0, 3))
                 if name in keys(d)
                     set_gtk_property!(o, name, x)
                 else
@@ -689,7 +677,7 @@ $(Expr(:toplevel, quote
                     [:handle, :serial, :hardware_id, :axes, :tool_type]
                 end
             function Base.getproperty(o::GdkDeviceToolLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:serial => (:UInt64, 0, 11), :hardware_id => (:UInt64, 0, 11), :axes => (:Int32, 0, 11), :tool_type => (:Int32, 0, 11))
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:serial => (:UInt64, 0, 11), :hardware_id => (:UInt64, 0, 11), :axes => (:Int32, 0, 11), :tool_type => (:DeviceToolType, 0, 11))
                 if name in keys(d)
                     return get_gtk_property(o, name, eval((d[name])[1]))
                 else
@@ -697,7 +685,7 @@ $(Expr(:toplevel, quote
                 end
             end
             function Base.setproperty!(o::GdkDeviceToolLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:serial => (:UInt64, 0, 11), :hardware_id => (:UInt64, 0, 11), :axes => (:Int32, 0, 11), :tool_type => (:Int32, 0, 11))
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:serial => (:UInt64, 0, 11), :hardware_id => (:UInt64, 0, 11), :axes => (:Int32, 0, 11), :tool_type => (:DeviceToolType, 0, 11))
                 if name in keys(d)
                     set_gtk_property!(o, name, x)
                 else
@@ -1168,7 +1156,7 @@ $(Expr(:toplevel, quote
                     [:handle, :geometry, :height_mm, :subpixel_layout, :refresh_rate, :width_mm, :valid, :display, :model, :manufacturer, :connector, :scale_factor]
                 end
             function Base.getproperty(o::GdkMonitorLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:geometry => (:GdkRectangle, 0, 1), :height_mm => (:Int32, 0, 1), :subpixel_layout => (:Int32, 0, 1), :refresh_rate => (:Int32, 0, 1), :width_mm => (:Int32, 0, 1), :valid => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :model => (:String, 0, 1), :manufacturer => (:String, 0, 1), :connector => (:String, 0, 1), :scale_factor => (:Int32, 0, 1))
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:geometry => (:GdkRectangle, 0, 1), :height_mm => (:Int32, 0, 1), :subpixel_layout => (:SubpixelLayout, 0, 1), :refresh_rate => (:Int32, 0, 1), :width_mm => (:Int32, 0, 1), :valid => (:Bool, 0, 1), :display => (:GdkDisplay, 0, 11), :model => (:String, 0, 1), :manufacturer => (:String, 0, 1), :connector => (:String, 0, 1), :scale_factor => (:Int32, 0, 1))
                 if name in keys(d)
                     return get_gtk_property(o, name, eval((d[name])[1]))
                 else

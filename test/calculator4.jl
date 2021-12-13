@@ -25,10 +25,10 @@ b0 = Gtk4.Button_new_with_label("0")
 b_equalto = Gtk4.Button_new_with_label("=")
 b_divide = Gtk4.Button_new_with_label("÷")
 
-hbox1 = Gtk4.Box(Gtk4.Constants.Orientation.HORIZONTAL,0)
-hbox2 = Gtk4.Box(Gtk4.Constants.Orientation.HORIZONTAL,0)
-hbox3 = Gtk4.Box(Gtk4.Constants.Orientation.HORIZONTAL,0)
-hbox4 = Gtk4.Box(Gtk4.Constants.Orientation.HORIZONTAL,0)
+hbox1 = Gtk4.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
+hbox2 = Gtk4.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
+hbox3 = Gtk4.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
+hbox4 = Gtk4.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
 
 Gtk4.append(hbox1, b1)
 Gtk4.append(hbox1, b2)
@@ -47,7 +47,7 @@ Gtk4.append(hbox4, b0)
 Gtk4.append(hbox4, b_equalto)
 Gtk4.append(hbox4, b_divide)
 
-vbox = Gtk4.Box(Gtk4.Constants.Orientation.VERTICAL,0)
+vbox = Gtk4.Box(Gtk4.Constants.Orientation_VERTICAL,0)
 label = Gtk4.Label("")
 Gtk4.set_text(label,"")
 

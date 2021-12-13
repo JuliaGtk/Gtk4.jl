@@ -170,7 +170,7 @@ $(Expr(:toplevel, quote
     end
     function enumerate_printers(_func::Function, _data::Maybe(Nothing), _destroy::Function, _wait)
         _func = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Cint (Ptr{GObject}, Ptr{Nothing})
+                @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Cint (Ptr{GObject}, Ptr{Nothing})
             end
         _data = if _data == nothing
                 C_NULL
@@ -178,7 +178,7 @@ $(Expr(:toplevel, quote
                 _data
             end
         _destroy = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
+                @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{Nothing},)
             end
         ret = ccall(("gtk_enumerate_printers", "libgtk-4.so.1"), Nothing, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}, Cint), _func, _data, _destroy, _wait)
         nothing
@@ -206,7 +206,8 @@ $(Expr(:toplevel, quote
     end
     function get_locale_direction()
         ret = ccall(("gtk_get_locale_direction", "libgtk-4.so.1"), Int32, ())
-        ret
+        ret2 = TextDirection(ret)
+        ret2
     end
     function get_major_version()
         ret = ccall(("gtk_get_major_version", "libgtk-4.so.1"), UInt32, ())
@@ -303,7 +304,7 @@ $(Expr(:toplevel, quote
                 _page_setup
             end
         _done_cb = begin
-                #= /home/wahlstrj/Sync/GI.jl/src/giimport.jl:493 =# @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{GObject}, Ptr{Nothing})
+                @cfunction $(QuoteNode(:($(Expr(:$, :name))))) Nothing (Ptr{GObject}, Ptr{Nothing})
             end
         _data = if _data == nothing
                 C_NULL

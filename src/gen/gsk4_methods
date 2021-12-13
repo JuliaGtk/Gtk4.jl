@@ -119,7 +119,8 @@ $(Expr(:toplevel, quote
     end
     function get_category(instance::GskTransform)
         ret = ccall(("gsk_transform_get_category", "libgtk-4.so.1"), Int32, (Ptr{GskTransform},), instance)
-        ret
+        ret2 = TransformCategory(ret)
+        ret2
     end
     function invert(instance::GskTransform)
         ret = ccall(("gsk_transform_invert", "libgtk-4.so.1"), Ptr{GskTransform}, (Ptr{GskTransform},), instance)
@@ -266,7 +267,8 @@ $(Expr(:toplevel, quote
     end
     function get_blend_mode(instance::GskBlendNode)
         ret = ccall(("gsk_blend_node_get_blend_mode", "libgtk-4.so.1"), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = BlendMode(ret)
+        ret2
     end
     function get_bottom_child(instance::GskBlendNode)
         ret = ccall(("gsk_blend_node_get_bottom_child", "libgtk-4.so.1"), Ptr{GObject}, (Ptr{GObject},), instance)
@@ -563,7 +565,8 @@ $(Expr(:toplevel, quote
     end
     function get_uniform_type(instance::GskGLShader, _idx)
         ret = ccall(("gsk_gl_shader_get_uniform_type", "libgtk-4.so.1"), Int32, (Ptr{GObject}, Int32), instance, _idx)
-        ret
+        ret2 = GLUniformType(ret)
+        ret2
     end
     function GLShaderNode(_shader::GskGLShader, _bounds::GrapheneRect, _args::GBytes, _children)
         _children = convert(Vector{Ptr{GObject}}, _children)
@@ -769,7 +772,8 @@ $(Expr(:toplevel, quote
     end
     function get_node_type(instance::GskRenderNode)
         ret = ccall(("gsk_render_node_get_node_type", "libgtk-4.so.1"), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = RenderNodeType(ret)
+        ret2
     end
     function ref(instance::GskRenderNode)
         ret = ccall(("gsk_render_node_ref", "libgtk-4.so.1"), Ptr{GObject}, (Ptr{GObject},), instance)
