@@ -1,6 +1,7 @@
 module Gdk4
 
-using GLib
+include("GLib/GLib.jl")
+
 using Pango.Cairo
 using GdkPixbufLib
 

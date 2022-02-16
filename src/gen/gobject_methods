@@ -1,0 +1,496 @@
+quote
+$(Expr(:toplevel, quote
+    function copy(instance::GValue, _dest_value::GValue)
+        ret = ccall(("g_value_copy", libgobject), Nothing, (Ptr{_GValue}, Ptr{_GValue}), instance, _dest_value)
+        nothing
+    end
+    function dup_object(instance::GValue)
+        ret = ccall(("g_value_dup_object", libgobject), Ptr{GObject}, (Ptr{_GValue},), instance)
+        ret2 = convert(GObject, ret, true)
+        ret2
+    end
+    function dup_string(instance::GValue)
+        ret = ccall(("g_value_dup_string", libgobject), Cstring, (Ptr{_GValue},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
+            end
+        ret2
+    end
+    function dup_variant(instance::GValue)
+        ret = ccall(("g_value_dup_variant", libgobject), Ptr{GVariant}, (Ptr{_GValue},), instance)
+        ret2 = convert(GVariant, ret)
+        ret2
+    end
+    function fits_pointer(instance::GValue)
+        ret = ccall(("g_value_fits_pointer", libgobject), Cint, (Ptr{_GValue},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_boolean(instance::GValue)
+        ret = ccall(("g_value_get_boolean", libgobject), Cint, (Ptr{_GValue},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_boxed(instance::GValue)
+        ret = ccall(("g_value_get_boxed", libgobject), Ptr{Nothing}, (Ptr{_GValue},), instance)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function get_double(instance::GValue)
+        ret = ccall(("g_value_get_double", libgobject), Float64, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_enum(instance::GValue)
+        ret = ccall(("g_value_get_enum", libgobject), Int32, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_flags(instance::GValue)
+        ret = ccall(("g_value_get_flags", libgobject), UInt32, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_float(instance::GValue)
+        ret = ccall(("g_value_get_float", libgobject), Float32, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_gtype(instance::GValue)
+        ret = ccall(("g_value_get_gtype", libgobject), UInt64, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_int(instance::GValue)
+        ret = ccall(("g_value_get_int", libgobject), Int32, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_int64(instance::GValue)
+        ret = ccall(("g_value_get_int64", libgobject), Int64, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_long(instance::GValue)
+        ret = ccall(("g_value_get_long", libgobject), Int64, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_object(instance::GValue)
+        ret = ccall(("g_value_get_object", libgobject), Ptr{GObject}, (Ptr{_GValue},), instance)
+        ret2 = convert(GObject, ret, false)
+        ret2
+    end
+    function get_param(instance::GValue)
+        ret = ccall(("g_value_get_param", libgobject), Ptr{GObject}, (Ptr{_GValue},), instance)
+        ret2 = convert(GParamSpec, ret, false)
+        ret2
+    end
+    function get_pointer(instance::GValue)
+        ret = ccall(("g_value_get_pointer", libgobject), Ptr{Nothing}, (Ptr{_GValue},), instance)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function get_schar(instance::GValue)
+        ret = ccall(("g_value_get_schar", libgobject), Int8, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_string(instance::GValue)
+        ret = ccall(("g_value_get_string", libgobject), Cstring, (Ptr{_GValue},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, false)
+            end
+        ret2
+    end
+    function get_uchar(instance::GValue)
+        ret = ccall(("g_value_get_uchar", libgobject), UInt8, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_uint(instance::GValue)
+        ret = ccall(("g_value_get_uint", libgobject), UInt32, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_uint64(instance::GValue)
+        ret = ccall(("g_value_get_uint64", libgobject), UInt64, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_ulong(instance::GValue)
+        ret = ccall(("g_value_get_ulong", libgobject), UInt64, (Ptr{_GValue},), instance)
+        ret
+    end
+    function get_variant(instance::GValue)
+        ret = ccall(("g_value_get_variant", libgobject), Ptr{GVariant}, (Ptr{_GValue},), instance)
+        ret2 = convert(GVariant, ret)
+        ret2
+    end
+    function init(instance::GValue, _g_type::Integer)
+        ret = ccall(("g_value_init", libgobject), Ptr{_GValue}, (Ptr{_GValue}, UInt64), instance, _g_type)
+        ret2 = convert(GValue, ret, false)
+        ret2
+    end
+    function peek_pointer(instance::GValue)
+        ret = ccall(("g_value_peek_pointer", libgobject), Ptr{Nothing}, (Ptr{_GValue},), instance)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function reset(instance::GValue)
+        ret = ccall(("g_value_reset", libgobject), Ptr{_GValue}, (Ptr{_GValue},), instance)
+        ret2 = convert(GValue, ret, true)
+        ret2
+    end
+    function set_boolean(instance::GValue, _v_boolean::Bool)
+        ret = ccall(("g_value_set_boolean", libgobject), Nothing, (Ptr{_GValue}, Cint), instance, _v_boolean)
+        nothing
+    end
+    function set_boxed(instance::GValue, _v_boxed::Maybe(Nothing))
+        _v_boxed = if _v_boxed == nothing
+                C_NULL
+            else
+                _v_boxed
+            end
+        ret = ccall(("g_value_set_boxed", libgobject), Nothing, (Ptr{_GValue}, Ptr{Nothing}), instance, _v_boxed)
+        nothing
+    end
+    function set_double(instance::GValue, _v_double::Real)
+        ret = ccall(("g_value_set_double", libgobject), Nothing, (Ptr{_GValue}, Float64), instance, _v_double)
+        nothing
+    end
+    function set_enum(instance::GValue, _v_enum::Integer)
+        ret = ccall(("g_value_set_enum", libgobject), Nothing, (Ptr{_GValue}, Int32), instance, _v_enum)
+        nothing
+    end
+    function set_flags(instance::GValue, _v_flags::Integer)
+        ret = ccall(("g_value_set_flags", libgobject), Nothing, (Ptr{_GValue}, UInt32), instance, _v_flags)
+        nothing
+    end
+    function set_float(instance::GValue, _v_float::Real)
+        ret = ccall(("g_value_set_float", libgobject), Nothing, (Ptr{_GValue}, Float32), instance, _v_float)
+        nothing
+    end
+    function set_gtype(instance::GValue, _v_gtype::Integer)
+        ret = ccall(("g_value_set_gtype", libgobject), Nothing, (Ptr{_GValue}, UInt64), instance, _v_gtype)
+        nothing
+    end
+    function set_instance(instance::GValue, _instance::Maybe(Nothing))
+        _instance = if _instance == nothing
+                C_NULL
+            else
+                _instance
+            end
+        ret = ccall(("g_value_set_instance", libgobject), Nothing, (Ptr{_GValue}, Ptr{Nothing}), instance, _instance)
+        nothing
+    end
+    function set_int(instance::GValue, _v_int::Integer)
+        ret = ccall(("g_value_set_int", libgobject), Nothing, (Ptr{_GValue}, Int32), instance, _v_int)
+        nothing
+    end
+    function set_int64(instance::GValue, _v_int64::Integer)
+        ret = ccall(("g_value_set_int64", libgobject), Nothing, (Ptr{_GValue}, Int64), instance, _v_int64)
+        nothing
+    end
+    function set_interned_string(instance::GValue, _v_string::Maybe(Union{AbstractString, Symbol}))
+        _v_string = if _v_string == nothing
+                C_NULL
+            else
+                _v_string
+            end
+        ret = ccall(("g_value_set_interned_string", libgobject), Nothing, (Ptr{_GValue}, Cstring), instance, _v_string)
+        nothing
+    end
+    function set_long(instance::GValue, _v_long::Integer)
+        ret = ccall(("g_value_set_long", libgobject), Nothing, (Ptr{_GValue}, Int64), instance, _v_long)
+        nothing
+    end
+    function set_object(instance::GValue, _v_object::Maybe(GObject))
+        _v_object = if _v_object == nothing
+                C_NULL
+            else
+                _v_object
+            end
+        ret = ccall(("g_value_set_object", libgobject), Nothing, (Ptr{_GValue}, Ptr{GObject}), instance, _v_object)
+        nothing
+    end
+    function set_param(instance::GValue, _param::Maybe(GParamSpec))
+        _param = if _param == nothing
+                C_NULL
+            else
+                _param
+            end
+        ret = ccall(("g_value_set_param", libgobject), Nothing, (Ptr{_GValue}, Ptr{GObject}), instance, _param)
+        nothing
+    end
+    function set_pointer(instance::GValue, _v_pointer::Maybe(Nothing))
+        _v_pointer = if _v_pointer == nothing
+                C_NULL
+            else
+                _v_pointer
+            end
+        ret = ccall(("g_value_set_pointer", libgobject), Nothing, (Ptr{_GValue}, Ptr{Nothing}), instance, _v_pointer)
+        nothing
+    end
+    function set_schar(instance::GValue, _v_char::Integer)
+        ret = ccall(("g_value_set_schar", libgobject), Nothing, (Ptr{_GValue}, Int8), instance, _v_char)
+        nothing
+    end
+    function set_static_boxed(instance::GValue, _v_boxed::Maybe(Nothing))
+        _v_boxed = if _v_boxed == nothing
+                C_NULL
+            else
+                _v_boxed
+            end
+        ret = ccall(("g_value_set_static_boxed", libgobject), Nothing, (Ptr{_GValue}, Ptr{Nothing}), instance, _v_boxed)
+        nothing
+    end
+    function set_static_string(instance::GValue, _v_string::Maybe(Union{AbstractString, Symbol}))
+        _v_string = if _v_string == nothing
+                C_NULL
+            else
+                _v_string
+            end
+        ret = ccall(("g_value_set_static_string", libgobject), Nothing, (Ptr{_GValue}, Cstring), instance, _v_string)
+        nothing
+    end
+    function set_string(instance::GValue, _v_string::Maybe(Union{AbstractString, Symbol}))
+        _v_string = if _v_string == nothing
+                C_NULL
+            else
+                _v_string
+            end
+        ret = ccall(("g_value_set_string", libgobject), Nothing, (Ptr{_GValue}, Cstring), instance, _v_string)
+        nothing
+    end
+    function set_uchar(instance::GValue, _v_uchar::Integer)
+        ret = ccall(("g_value_set_uchar", libgobject), Nothing, (Ptr{_GValue}, UInt8), instance, _v_uchar)
+        nothing
+    end
+    function set_uint(instance::GValue, _v_uint::Integer)
+        ret = ccall(("g_value_set_uint", libgobject), Nothing, (Ptr{_GValue}, UInt32), instance, _v_uint)
+        nothing
+    end
+    function set_uint64(instance::GValue, _v_uint64::Integer)
+        ret = ccall(("g_value_set_uint64", libgobject), Nothing, (Ptr{_GValue}, UInt64), instance, _v_uint64)
+        nothing
+    end
+    function set_ulong(instance::GValue, _v_ulong::Integer)
+        ret = ccall(("g_value_set_ulong", libgobject), Nothing, (Ptr{_GValue}, UInt64), instance, _v_ulong)
+        nothing
+    end
+    function set_variant(instance::GValue, _variant::Maybe(GVariant))
+        _variant = if _variant == nothing
+                C_NULL
+            else
+                _variant
+            end
+        ret = ccall(("g_value_set_variant", libgobject), Nothing, (Ptr{_GValue}, Ptr{GVariant}), instance, _variant)
+        nothing
+    end
+    function take_boxed(instance::GValue, _v_boxed::Maybe(Nothing))
+        _v_boxed = if _v_boxed == nothing
+                C_NULL
+            else
+                _v_boxed
+            end
+        ret = ccall(("g_value_take_boxed", libgobject), Nothing, (Ptr{_GValue}, Ptr{Nothing}), instance, _v_boxed)
+        nothing
+    end
+    function take_string(instance::GValue, _v_string::Maybe(Union{AbstractString, Symbol}))
+        _v_string = if _v_string == nothing
+                C_NULL
+            else
+                _v_string
+            end
+        ret = ccall(("g_value_take_string", libgobject), Nothing, (Ptr{_GValue}, Cstring), instance, _v_string)
+        nothing
+    end
+    function take_variant(instance::GValue, _variant::Maybe(GVariant))
+        _variant = if _variant == nothing
+                C_NULL
+            else
+                _variant
+            end
+        ret = ccall(("g_value_take_variant", libgobject), Nothing, (Ptr{_GValue}, Ptr{GVariant}), instance, _variant)
+        nothing
+    end
+    function transform(instance::GValue, _dest_value::GValue)
+        ret = ccall(("g_value_transform", libgobject), Cint, (Ptr{_GValue}, Ptr{_GValue}), instance, _dest_value)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function unset(instance::GValue)
+        ret = ccall(("g_value_unset", libgobject), Nothing, (Ptr{_GValue},), instance)
+        nothing
+    end
+    function dup_source(instance::GBinding)
+        ret = ccall(("g_binding_dup_source", libgobject), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GObject, ret, true)
+            end
+        ret2
+    end
+    function dup_target(instance::GBinding)
+        ret = ccall(("g_binding_dup_target", libgobject), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GObject, ret, true)
+            end
+        ret2
+    end
+    function get_flags(instance::GBinding)
+        ret = ccall(("g_binding_get_flags", libgobject), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_source_property(instance::GBinding)
+        ret = ccall(("g_binding_get_source_property", libgobject), Cstring, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, false)
+            end
+        ret2
+    end
+    function get_target_property(instance::GBinding)
+        ret = ccall(("g_binding_get_target_property", libgobject), Cstring, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, false)
+            end
+        ret2
+    end
+    function unbind(instance::GBinding)
+        ret = ccall(("g_binding_unbind", libgobject), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function compat_control(_what::Integer, _data::Maybe(Nothing))
+        _data = if _data == nothing
+                C_NULL
+            else
+                _data
+            end
+        ret = ccall(("g_object_compat_control", libgobject), UInt64, (UInt64, Ptr{Nothing}), _what, _data)
+        ret
+    end
+    function interface_find_property(_g_iface::GTypeInterface, _property_name::Union{AbstractString, Symbol})
+        ret = ccall(("g_object_interface_find_property", libgobject), Ptr{GObject}, (Ptr{GTypeInterface}, Cstring), _g_iface, _property_name)
+        ret2 = convert(GParamSpec, ret, false)
+        ret2
+    end
+    function interface_install_property(_g_iface::GTypeInterface, _pspec::GParamSpec)
+        ret = ccall(("g_object_interface_install_property", libgobject), Nothing, (Ptr{GTypeInterface}, Ptr{GObject}), _g_iface, _pspec)
+        nothing
+    end
+    function interface_list_properties(_g_iface::GTypeInterface)
+        m_n_properties_p = Ref{UInt32}()
+        ret = ccall(("g_object_interface_list_properties", libgobject), Ptr{Ptr{GObject}}, (Ptr{GTypeInterface}, Ptr{UInt32}), _g_iface, m_n_properties_p)
+        ret2 = begin
+                ret2 = copy(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_n_properties_p[]))
+                GLib.g_free(ret)
+                ret2 = convert.(GParamSpec, ret2, false)
+            end
+        _n_properties_p = m_n_properties_p[]
+        ret2
+    end
+    function bind_property(instance::GObject, _source_property::Union{AbstractString, Symbol}, _target::GObject, _target_property::Union{AbstractString, Symbol}, _flags::Integer)
+        ret = ccall(("g_object_bind_property", libgobject), Ptr{GObject}, (Ptr{GObject}, Cstring, Ptr{GObject}, Cstring, Int32), instance, _source_property, _target, _target_property, _flags)
+        ret2 = convert(GBinding, ret, false)
+        ret2
+    end
+    function force_floating(instance::GObject)
+        ret = ccall(("g_object_force_floating", libgobject), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function freeze_notify(instance::GObject)
+        ret = ccall(("g_object_freeze_notify", libgobject), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function get_data(instance::GObject, _key::Union{AbstractString, Symbol})
+        ret = ccall(("g_object_get_data", libgobject), Ptr{Nothing}, (Ptr{GObject}, Cstring), instance, _key)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function get_property(instance::GObject, _property_name::Union{AbstractString, Symbol}, _value::GValue)
+        ret = ccall(("g_object_get_property", libgobject), Nothing, (Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _property_name, _value)
+        nothing
+    end
+    function get_qdata(instance::GObject, _quark::Integer)
+        ret = ccall(("g_object_get_qdata", libgobject), Ptr{Nothing}, (Ptr{GObject}, UInt32), instance, _quark)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function is_floating(instance::GObject)
+        ret = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function notify(instance::GObject, _property_name::Union{AbstractString, Symbol})
+        ret = ccall(("g_object_notify", libgobject), Nothing, (Ptr{GObject}, Cstring), instance, _property_name)
+        nothing
+    end
+    function notify_by_pspec(instance::GObject, _pspec::GParamSpec)
+        ret = ccall(("g_object_notify_by_pspec", libgobject), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _pspec)
+        nothing
+    end
+    function ref(instance::GObject)
+        ret = ccall(("g_object_ref", libgobject), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GObject, ret, false)
+        ret2
+    end
+    function ref_sink(instance::GObject)
+        ret = ccall(("g_object_ref_sink", libgobject), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GObject, ret, false)
+        ret2
+    end
+    function run_dispose(instance::GObject)
+        ret = ccall(("g_object_run_dispose", libgobject), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function set_data(instance::GObject, _key::Union{AbstractString, Symbol}, _data::Maybe(Nothing))
+        _data = if _data == nothing
+                C_NULL
+            else
+                _data
+            end
+        ret = ccall(("g_object_set_data", libgobject), Nothing, (Ptr{GObject}, Cstring, Ptr{Nothing}), instance, _key, _data)
+        nothing
+    end
+    function set_property(instance::GObject, _property_name::Union{AbstractString, Symbol}, _value::GValue)
+        ret = ccall(("g_object_set_property", libgobject), Nothing, (Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _property_name, _value)
+        nothing
+    end
+    function steal_data(instance::GObject, _key::Union{AbstractString, Symbol})
+        ret = ccall(("g_object_steal_data", libgobject), Ptr{Nothing}, (Ptr{GObject}, Cstring), instance, _key)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function steal_qdata(instance::GObject, _quark::Integer)
+        ret = ccall(("g_object_steal_qdata", libgobject), Ptr{Nothing}, (Ptr{GObject}, UInt32), instance, _quark)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function thaw_notify(instance::GObject)
+        ret = ccall(("g_object_thaw_notify", libgobject), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function unref(instance::GObject)
+        ret = ccall(("g_object_unref", libgobject), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function is_valid_name(_name::Union{AbstractString, Symbol})
+        ret = ccall(("g_param_spec_is_valid_name", libgobject), Cint, (Cstring,), _name)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_name(instance::GTypeModule, _name::Union{AbstractString, Symbol})
+        ret = ccall(("g_type_module_set_name", libgobject), Nothing, (Ptr{GObject}, Cstring), instance, _name)
+        nothing
+    end
+    function unuse(instance::GTypeModule)
+        ret = ccall(("g_type_module_unuse", libgobject), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function use(instance::GTypeModule)
+        ret = ccall(("g_type_module_use", libgobject), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+end))
+end
