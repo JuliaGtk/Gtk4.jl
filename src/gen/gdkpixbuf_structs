@@ -1,0 +1,339 @@
+quote
+$(Expr(:toplevel, quote
+    begin
+        gboxed_types = Any[]
+    end
+    begin
+        struct _GdkPixbufModulePattern
+            prefix::Cstring
+            mask::Cstring
+            relevance::Int32
+        end
+        begin
+            mutable struct GdkPixbufModulePattern
+                handle::Ptr{_GdkPixbufModulePattern}
+            end
+        end
+    end
+    begin
+        struct _GdkPixbufFormat
+            name::Cstring
+            signature::Ptr{GdkPixbufModulePattern}
+            domain::Cstring
+            description::Cstring
+            mime_types::Ptr{Cstring}
+            extensions::Ptr{Cstring}
+            flags::UInt32
+            disabled::Cint
+            license::Cstring
+        end
+        begin
+            mutable struct GdkPixbufFormat <: GBoxed
+                handle::Ptr{_GdkPixbufFormat}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GdkPixbufFormat) = begin
+                            ccall(("gdk_pixbuf_format_get_type", libgdkpixbuf), GType, ())
+                        end
+                    function GdkPixbufFormat(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, GdkPixbufFormat)
+                end
+            end
+        end
+    end
+    begin
+        gboxed_cache_init() = begin
+                append!(GLib.gboxed_types, gboxed_types)
+            end
+    end
+    begin
+        gtype_wrapper_cache = Dict{Symbol, Type}()
+    end
+    begin
+        abstract type GdkPixbuf <: GObject end
+    end
+    begin
+        mutable struct GdkPixbufLeaf <: GdkPixbuf
+            handle::Ptr{GObject}
+            function GdkPixbufLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GdkPixbufLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GdkPixbufLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GdkPixbufLeaf, args))
+            end
+            w = GdkPixbufLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GdkPixbuf] = GdkPixbufLeaf
+        function GdkPixbuf(args...; kwargs...)
+            GdkPixbufLeaf(args...; kwargs...)
+        end
+        begin
+            Base.propertynames(o::GdkPixbufLeaf) = begin
+                    [:handle, :rowstride, :n_channels, :has_alpha, :pixel_bytes, :bits_per_sample, :pixels, :height, :colorspace, :width]
+                end
+            function Base.getproperty(o::GdkPixbufLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:width => (:Int32, 0, 11), :n_channels => (:Int32, 0, 11), :has_alpha => (:Bool, 0, 11), :pixel_bytes => (:GBytes, 0, 11), :bits_per_sample => (:Int32, 0, 11), :pixels => (:Nothing, 0, 11), :height => (:Int32, 0, 11), :colorspace => (:Colorspace, 0, 11), :rowstride => (:Int32, 0, 11))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
+            end
+            function Base.setproperty!(o::GdkPixbufLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:width => (:Int32, 0, 11), :n_channels => (:Int32, 0, 11), :has_alpha => (:Bool, 0, 11), :pixel_bytes => (:GBytes, 0, 11), :bits_per_sample => (:Int32, 0, 11), :pixels => (:Nothing, 0, 11), :height => (:Int32, 0, 11), :colorspace => (:Colorspace, 0, 11), :rowstride => (:Int32, 0, 11))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
+            end
+        end
+    end
+    begin
+        abstract type GdkPixbufAnimation <: GObject end
+    end
+    begin
+        mutable struct GdkPixbufAnimationLeaf <: GdkPixbufAnimation
+            handle::Ptr{GObject}
+            function GdkPixbufAnimationLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GdkPixbufAnimationLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GdkPixbufAnimationLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GdkPixbufAnimationLeaf, args))
+            end
+            w = GdkPixbufAnimationLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GdkPixbufAnimation] = GdkPixbufAnimationLeaf
+        function GdkPixbufAnimation(args...; kwargs...)
+            GdkPixbufAnimationLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GdkPixbufAnimationIter <: GObject end
+    end
+    begin
+        mutable struct GdkPixbufAnimationIterLeaf <: GdkPixbufAnimationIter
+            handle::Ptr{GObject}
+            function GdkPixbufAnimationIterLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GdkPixbufAnimationIterLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GdkPixbufAnimationIterLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GdkPixbufAnimationIterLeaf, args))
+            end
+            w = GdkPixbufAnimationIterLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GdkPixbufAnimationIter] = GdkPixbufAnimationIterLeaf
+        function GdkPixbufAnimationIter(args...; kwargs...)
+            GdkPixbufAnimationIterLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GdkPixbufLoader <: GObject end
+    end
+    begin
+        mutable struct GdkPixbufLoaderLeaf <: GdkPixbufLoader
+            handle::Ptr{GObject}
+            function GdkPixbufLoaderLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GdkPixbufLoaderLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GdkPixbufLoaderLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GdkPixbufLoaderLeaf, args))
+            end
+            w = GdkPixbufLoaderLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GdkPixbufLoader] = GdkPixbufLoaderLeaf
+        function GdkPixbufLoader(args...; kwargs...)
+            GdkPixbufLoaderLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GdkPixbufNonAnim <: GdkPixbufAnimation end
+    end
+    begin
+        mutable struct GdkPixbufNonAnimLeaf <: GdkPixbufNonAnim
+            handle::Ptr{GObject}
+            function GdkPixbufNonAnimLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GdkPixbufNonAnimLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GdkPixbufNonAnimLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GdkPixbufNonAnimLeaf, args))
+            end
+            w = GdkPixbufNonAnimLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GdkPixbufNonAnim] = GdkPixbufNonAnimLeaf
+        function GdkPixbufNonAnim(args...; kwargs...)
+            GdkPixbufNonAnimLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GdkPixbufSimpleAnim <: GdkPixbufAnimation end
+    end
+    begin
+        mutable struct GdkPixbufSimpleAnimLeaf <: GdkPixbufSimpleAnim
+            handle::Ptr{GObject}
+            function GdkPixbufSimpleAnimLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GdkPixbufSimpleAnimLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GdkPixbufSimpleAnimLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GdkPixbufSimpleAnimLeaf, args))
+            end
+            w = GdkPixbufSimpleAnimLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GdkPixbufSimpleAnim] = GdkPixbufSimpleAnimLeaf
+        function GdkPixbufSimpleAnim(args...; kwargs...)
+            GdkPixbufSimpleAnimLeaf(args...; kwargs...)
+        end
+        begin
+            Base.propertynames(o::GdkPixbufSimpleAnimLeaf) = begin
+                    [:handle, :loop]
+                end
+            function Base.getproperty(o::GdkPixbufSimpleAnimLeaf, name::Symbol)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:loop => (:Bool, 0, 3))
+                if name in keys(d)
+                    return get_gtk_property(o, name, eval((d[name])[1]))
+                else
+                    return getfield(o, name)
+                end
+            end
+            function Base.setproperty!(o::GdkPixbufSimpleAnimLeaf, name::Symbol, x)
+                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:loop => (:Bool, 0, 3))
+                if name in keys(d)
+                    set_gtk_property!(o, name, x)
+                else
+                    setfield!(o, name, x)
+                end
+            end
+        end
+    end
+    begin
+        abstract type GdkPixbufSimpleAnimIter <: GdkPixbufAnimationIter end
+    end
+    begin
+        mutable struct GdkPixbufSimpleAnimIterLeaf <: GdkPixbufSimpleAnimIter
+            handle::Ptr{GObject}
+            function GdkPixbufSimpleAnimIterLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GdkPixbufSimpleAnimIterLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GdkPixbufSimpleAnimIterLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GdkPixbufSimpleAnimIterLeaf, args))
+            end
+            w = GdkPixbufSimpleAnimIterLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GdkPixbufSimpleAnimIter] = GdkPixbufSimpleAnimIterLeaf
+        function GdkPixbufSimpleAnimIter(args...; kwargs...)
+            GdkPixbufSimpleAnimIterLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        gtype_wrapper_cache_init() = begin
+                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+            end
+    end
+    export GdkPixbufModulePattern, GdkPixbufFormat, GdkPixbuf, GdkPixbufAnimation, GdkPixbufAnimationIter, GdkPixbufLoader, GdkPixbufNonAnim, GdkPixbufSimpleAnim, GdkPixbufSimpleAnimIter
+end))
+end

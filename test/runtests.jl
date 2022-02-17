@@ -16,6 +16,9 @@ include("gvalue.jl")
 include("gmenu.jl")
 include("action-group.jl")
 
+include("families.jl")
+include("layout.jl")
+
 GC.gc()
 
 sleep(2)

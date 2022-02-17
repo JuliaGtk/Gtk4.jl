@@ -91,9 +91,7 @@ g_type(obj::GObject) = g_type(typeof(obj))
 gtypes(types...) = GType[g_type(t) for t in types]
 
 # caches holding various kinds of GTypes
-#const gtype_wrappers = Dict{Symbol, Type}()
-
-#gtype_wrapper_cache[:GObject] = GObjectLeaf
+const gtype_wrappers = Dict{Symbol, Type}()
 
 macro quark_str(q)
     :( ccall((:g_quark_from_string, libglib), UInt32, (Ptr{UInt8},), bytestring($q)) )
@@ -151,12 +149,12 @@ end
 function find_leaf_type(hnd::Ptr{GObject})
     gtyp = G_OBJECT_CLASS_TYPE(hnd)
     typname = g_type_name(gtyp)
-    while !(typname in keys(gtype_wrapper_cache))
+    while !(typname in keys(gtype_wrappers))
         gtyp = g_type_parent(gtyp)
         @assert gtyp != 0
         typname = g_type_name(gtyp)
     end
-    gtype_wrapper_cache[typname]
+    gtype_wrappers[typname]
 end
 
 function wrap_gobject(hnd::Ptr{GObject},owns=false)

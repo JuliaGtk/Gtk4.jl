@@ -331,7 +331,7 @@ function __init__gtype__()
         closure = ccall((:g_closure_new_simple, libgobject), Ptr{Nothing}, (Int, Ptr{Nothing}), sizeof_gclosure, C_NULL)
     end
     ccall((:g_closure_sink, libgobject), Nothing, (Ptr{Nothing},), closure)
-    #gtype_wrapper_cache_init()
+    gtype_wrapper_cache_init()
 end
 
 const main_loop_initialized=Ref(false)

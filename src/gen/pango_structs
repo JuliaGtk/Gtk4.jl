@@ -1,0 +1,950 @@
+quote
+$(Expr(:toplevel, quote
+    begin
+        gboxed_types = Any[]
+    end
+    mutable struct PangoLanguage <: GBoxed
+        handle::Ptr{PangoLanguage}
+        begin
+            (GLib.g_type(::Type{T}) where T <: PangoLanguage) = begin
+                    ccall(("pango_language_get_type", libpango), GType, ())
+                end
+            function PangoLanguage(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, PangoLanguage)
+        end
+    end
+    begin
+        struct _PangoColor
+            red::UInt16
+            green::UInt16
+            blue::UInt16
+        end
+        begin
+            mutable struct PangoColor <: GBoxed
+                handle::Ptr{_PangoColor}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoColor) = begin
+                            ccall(("pango_color_get_type", libpango), GType, ())
+                        end
+                    function PangoColor(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoColor)
+                end
+            end
+        end
+    end
+    begin
+        struct _PangoAttrClass
+            type::Int32
+            copy::Ptr{Nothing}
+            destroy::Ptr{Nothing}
+            equal::Ptr{Nothing}
+        end
+        begin
+            mutable struct PangoAttrClass
+                handle::Ptr{_PangoAttrClass}
+            end
+        end
+    end
+    begin
+        struct _PangoRectangle
+            x::Int32
+            y::Int32
+            width::Int32
+            height::Int32
+        end
+        begin
+            mutable struct PangoRectangle
+                handle::Ptr{_PangoRectangle}
+            end
+        end
+    end
+    mutable struct PangoFontDescription <: GBoxed
+        handle::Ptr{PangoFontDescription}
+        begin
+            (GLib.g_type(::Type{T}) where T <: PangoFontDescription) = begin
+                    ccall(("pango_font_description_get_type", libpango), GType, ())
+                end
+            function PangoFontDescription(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, PangoFontDescription)
+        end
+    end
+    begin
+        struct _PangoAttribute
+            klass::Ptr{PangoAttrClass}
+            start_index::UInt32
+            end_index::UInt32
+        end
+        begin
+            mutable struct PangoAttribute <: GBoxed
+                handle::Ptr{_PangoAttribute}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoAttribute) = begin
+                            ccall(("pango_attribute_get_type", libpango), GType, ())
+                        end
+                    function PangoAttribute(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoAttribute)
+                end
+            end
+        end
+    end
+    begin
+        struct _PangoAnalysis
+            shape_engine::Ptr{Nothing}
+            lang_engine::Ptr{Nothing}
+            font::Ptr{GObject}
+            level::UInt8
+            gravity::UInt8
+            flags::UInt8
+            script::UInt8
+            language::Ptr{PangoLanguage}
+            extra_attrs::Ptr{GLib._GSList{Ptr{Nothing}}}
+        end
+        begin
+            mutable struct PangoAnalysis
+                handle::Ptr{_PangoAnalysis}
+            end
+        end
+    end
+    begin
+        struct _PangoItem
+            offset::Int32
+            length::Int32
+            num_chars::Int32
+            analysis::PangoAnalysis
+        end
+        begin
+            mutable struct PangoItem <: GBoxed
+                handle::Ptr{_PangoItem}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoItem) = begin
+                            ccall(("pango_item_get_type", libpango), GType, ())
+                        end
+                    function PangoItem(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoItem)
+                end
+            end
+        end
+    end
+    begin
+        struct _PangoGlyphVisAttr
+            is_cluster_start::UInt32
+            is_color::UInt32
+        end
+        begin
+            mutable struct PangoGlyphVisAttr
+                handle::Ptr{_PangoGlyphVisAttr}
+            end
+        end
+    end
+    begin
+        struct _PangoGlyphGeometry
+            width::Int32
+            x_offset::Int32
+            y_offset::Int32
+        end
+        begin
+            mutable struct PangoGlyphGeometry
+                handle::Ptr{_PangoGlyphGeometry}
+            end
+        end
+    end
+    begin
+        struct _PangoGlyphInfo
+            glyph::UInt32
+            geometry::PangoGlyphGeometry
+            attr::PangoGlyphVisAttr
+        end
+        begin
+            mutable struct PangoGlyphInfo
+                handle::Ptr{_PangoGlyphInfo}
+            end
+        end
+    end
+    begin
+        struct _PangoGlyphString
+            num_glyphs::Int32
+            glyphs::Ptr{PangoGlyphInfo}
+            log_clusters::Ptr{Int32}
+            space::Int32
+        end
+        begin
+            mutable struct PangoGlyphString <: GBoxed
+                handle::Ptr{_PangoGlyphString}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoGlyphString) = begin
+                            ccall(("pango_glyph_string_get_type", libpango), GType, ())
+                        end
+                    function PangoGlyphString(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoGlyphString)
+                end
+            end
+        end
+    end
+    begin
+        struct _PangoGlyphItem
+            item::Ptr{_PangoItem}
+            glyphs::Ptr{_PangoGlyphString}
+            y_offset::Int32
+            start_x_offset::Int32
+            end_x_offset::Int32
+        end
+        begin
+            mutable struct PangoGlyphItem <: GBoxed
+                handle::Ptr{_PangoGlyphItem}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoGlyphItem) = begin
+                            ccall(("pango_glyph_item_get_type", libpango), GType, ())
+                        end
+                    function PangoGlyphItem(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoGlyphItem)
+                end
+            end
+        end
+    end
+    begin
+        struct _PangoAttrColor
+            attr::_PangoAttribute
+            color::_PangoColor
+        end
+        begin
+            mutable struct PangoAttrColor
+                handle::Ptr{_PangoAttrColor}
+            end
+        end
+    end
+    begin
+        struct _PangoAttrFloat
+            attr::_PangoAttribute
+            value::Float64
+        end
+        begin
+            mutable struct PangoAttrFloat
+                handle::Ptr{_PangoAttrFloat}
+            end
+        end
+    end
+    begin
+        struct _PangoAttrFontDesc
+            attr::_PangoAttribute
+            desc::Ptr{PangoFontDescription}
+        end
+        begin
+            mutable struct PangoAttrFontDesc
+                handle::Ptr{_PangoAttrFontDesc}
+            end
+        end
+    end
+    begin
+        struct _PangoAttrFontFeatures
+            attr::_PangoAttribute
+            features::Cstring
+        end
+        begin
+            mutable struct PangoAttrFontFeatures
+                handle::Ptr{_PangoAttrFontFeatures}
+            end
+        end
+    end
+    begin
+        struct _PangoAttrInt
+            attr::_PangoAttribute
+            value::Int32
+        end
+        begin
+            mutable struct PangoAttrInt
+                handle::Ptr{_PangoAttrInt}
+            end
+        end
+    end
+    mutable struct PangoAttrIterator <: GBoxed
+        handle::Ptr{PangoAttrIterator}
+        begin
+            (GLib.g_type(::Type{T}) where T <: PangoAttrIterator) = begin
+                    ccall(("pango_attr_iterator_get_type", libpango), GType, ())
+                end
+            function PangoAttrIterator(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, PangoAttrIterator)
+        end
+    end
+    begin
+        struct _PangoAttrLanguage
+            attr::_PangoAttribute
+            value::Ptr{PangoLanguage}
+        end
+        begin
+            mutable struct PangoAttrLanguage
+                handle::Ptr{_PangoAttrLanguage}
+            end
+        end
+    end
+    mutable struct PangoAttrList <: GBoxed
+        handle::Ptr{PangoAttrList}
+        begin
+            (GLib.g_type(::Type{T}) where T <: PangoAttrList) = begin
+                    ccall(("pango_attr_list_get_type", libpango), GType, ())
+                end
+            function PangoAttrList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, PangoAttrList)
+        end
+    end
+    begin
+        struct _PangoAttrShape
+            attr::_PangoAttribute
+            ink_rect::PangoRectangle
+            logical_rect::PangoRectangle
+            data::Ptr{Nothing}
+            copy_func::Ptr{Nothing}
+            destroy_func::Ptr{Nothing}
+        end
+        begin
+            mutable struct PangoAttrShape
+                handle::Ptr{_PangoAttrShape}
+            end
+        end
+    end
+    begin
+        struct _PangoAttrSize
+            attr::_PangoAttribute
+            size::Int32
+            absolute::UInt32
+        end
+        begin
+            mutable struct PangoAttrSize
+                handle::Ptr{_PangoAttrSize}
+            end
+        end
+    end
+    begin
+        struct _PangoAttrString
+            attr::_PangoAttribute
+            value::Cstring
+        end
+        begin
+            mutable struct PangoAttrString
+                handle::Ptr{_PangoAttrString}
+            end
+        end
+    end
+    begin
+        struct _PangoFontMetrics
+            ref_count::UInt32
+            ascent::Int32
+            descent::Int32
+            height::Int32
+            approximate_char_width::Int32
+            approximate_digit_width::Int32
+            underline_position::Int32
+            underline_thickness::Int32
+            strikethrough_position::Int32
+            strikethrough_thickness::Int32
+        end
+        begin
+            mutable struct PangoFontMetrics <: GBoxed
+                handle::Ptr{_PangoFontMetrics}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoFontMetrics) = begin
+                            ccall(("pango_font_metrics_get_type", libpango), GType, ())
+                        end
+                    function PangoFontMetrics(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoFontMetrics)
+                end
+            end
+        end
+    end
+    begin
+        struct _PangoGlyphItemIter
+            glyph_item::Ptr{_PangoGlyphItem}
+            text::Cstring
+            start_glyph::Int32
+            start_index::Int32
+            start_char::Int32
+            end_glyph::Int32
+            end_index::Int32
+            end_char::Int32
+        end
+        begin
+            mutable struct PangoGlyphItemIter <: GBoxed
+                handle::Ptr{_PangoGlyphItemIter}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoGlyphItemIter) = begin
+                            ccall(("pango_glyph_item_iter_get_type", libpango), GType, ())
+                        end
+                    function PangoGlyphItemIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoGlyphItemIter)
+                end
+            end
+        end
+    end
+    mutable struct PangoLayoutIter <: GBoxed
+        handle::Ptr{PangoLayoutIter}
+        begin
+            (GLib.g_type(::Type{T}) where T <: PangoLayoutIter) = begin
+                    ccall(("pango_layout_iter_get_type", libpango), GType, ())
+                end
+            function PangoLayoutIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, PangoLayoutIter)
+        end
+    end
+    begin
+        struct _PangoLayoutLine
+            layout::Ptr{GObject}
+            start_index::Int32
+            length::Int32
+            runs::Ptr{GLib._GSList{_PangoGlyphItem}}
+            is_paragraph_start::UInt32
+            resolved_dir::UInt32
+        end
+        begin
+            mutable struct PangoLayoutLine <: GBoxed
+                handle::Ptr{_PangoLayoutLine}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoLayoutLine) = begin
+                            ccall(("pango_layout_line_get_type", libpango), GType, ())
+                        end
+                    function PangoLayoutLine(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoLayoutLine)
+                end
+            end
+        end
+    end
+    begin
+        struct _PangoLogAttr
+            is_line_break::UInt32
+            is_mandatory_break::UInt32
+            is_char_break::UInt32
+            is_white::UInt32
+            is_cursor_position::UInt32
+            is_word_start::UInt32
+            is_word_end::UInt32
+            is_sentence_boundary::UInt32
+            is_sentence_start::UInt32
+            is_sentence_end::UInt32
+            backspace_deletes_character::UInt32
+            is_expandable_space::UInt32
+            is_word_boundary::UInt32
+            break_inserts_hyphen::UInt32
+            break_removes_preceding::UInt32
+            reserved::UInt32
+        end
+        begin
+            mutable struct PangoLogAttr
+                handle::Ptr{_PangoLogAttr}
+            end
+        end
+    end
+    begin
+        struct _PangoMatrix
+            xx::Float64
+            xy::Float64
+            yx::Float64
+            yy::Float64
+            x0::Float64
+            y0::Float64
+        end
+        begin
+            mutable struct PangoMatrix <: GBoxed
+                handle::Ptr{_PangoMatrix}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: PangoMatrix) = begin
+                            ccall(("pango_matrix_get_type", libpango), GType, ())
+                        end
+                    function PangoMatrix(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
+                    end
+                    push!(gboxed_types, PangoMatrix)
+                end
+            end
+        end
+    end
+    mutable struct PangoScriptIter <: GBoxed
+        handle::Ptr{PangoScriptIter}
+        begin
+            (GLib.g_type(::Type{T}) where T <: PangoScriptIter) = begin
+                    ccall(("pango_script_iter_get_type", libpango), GType, ())
+                end
+            function PangoScriptIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, PangoScriptIter)
+        end
+    end
+    mutable struct PangoTabArray <: GBoxed
+        handle::Ptr{PangoTabArray}
+        begin
+            (GLib.g_type(::Type{T}) where T <: PangoTabArray) = begin
+                    ccall(("pango_tab_array_get_type", libpango), GType, ())
+                end
+            function PangoTabArray(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, PangoTabArray)
+        end
+    end
+    begin
+        gboxed_cache_init() = begin
+                append!(GLib.gboxed_types, gboxed_types)
+            end
+    end
+    begin
+        gtype_wrapper_cache = Dict{Symbol, Type}()
+    end
+    begin
+        abstract type PangoContext <: GObject end
+    end
+    begin
+        mutable struct PangoContextLeaf <: PangoContext
+            handle::Ptr{GObject}
+            function PangoContextLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoContextLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoContextLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoContextLeaf, args))
+            end
+            w = PangoContextLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoContext] = PangoContextLeaf
+        function PangoContext(args...; kwargs...)
+            PangoContextLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoCoverage <: GObject end
+    end
+    begin
+        mutable struct PangoCoverageLeaf <: PangoCoverage
+            handle::Ptr{GObject}
+            function PangoCoverageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoCoverageLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoCoverageLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoCoverageLeaf, args))
+            end
+            w = PangoCoverageLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoCoverage] = PangoCoverageLeaf
+        function PangoCoverage(args...; kwargs...)
+            PangoCoverageLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoFont <: GObject end
+    end
+    begin
+        mutable struct PangoFontLeaf <: PangoFont
+            handle::Ptr{GObject}
+            function PangoFontLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoFontLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoFontLeaf, args))
+            end
+            w = PangoFontLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoFont] = PangoFontLeaf
+        function PangoFont(args...; kwargs...)
+            PangoFontLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoFontFace <: GObject end
+    end
+    begin
+        mutable struct PangoFontFaceLeaf <: PangoFontFace
+            handle::Ptr{GObject}
+            function PangoFontFaceLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontFaceLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoFontFaceLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoFontFaceLeaf, args))
+            end
+            w = PangoFontFaceLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoFontFace] = PangoFontFaceLeaf
+        function PangoFontFace(args...; kwargs...)
+            PangoFontFaceLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoFontFamily <: GObject end
+    end
+    begin
+        mutable struct PangoFontFamilyLeaf <: PangoFontFamily
+            handle::Ptr{GObject}
+            function PangoFontFamilyLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontFamilyLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoFontFamilyLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoFontFamilyLeaf, args))
+            end
+            w = PangoFontFamilyLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoFontFamily] = PangoFontFamilyLeaf
+        function PangoFontFamily(args...; kwargs...)
+            PangoFontFamilyLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoFontMap <: GObject end
+    end
+    begin
+        mutable struct PangoFontMapLeaf <: PangoFontMap
+            handle::Ptr{GObject}
+            function PangoFontMapLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontMapLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoFontMapLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoFontMapLeaf, args))
+            end
+            w = PangoFontMapLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoFontMap] = PangoFontMapLeaf
+        function PangoFontMap(args...; kwargs...)
+            PangoFontMapLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoFontset <: GObject end
+    end
+    begin
+        mutable struct PangoFontsetLeaf <: PangoFontset
+            handle::Ptr{GObject}
+            function PangoFontsetLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontsetLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoFontsetLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoFontsetLeaf, args))
+            end
+            w = PangoFontsetLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoFontset] = PangoFontsetLeaf
+        function PangoFontset(args...; kwargs...)
+            PangoFontsetLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoFontsetSimple <: PangoFontset end
+    end
+    begin
+        mutable struct PangoFontsetSimpleLeaf <: PangoFontsetSimple
+            handle::Ptr{GObject}
+            function PangoFontsetSimpleLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontsetSimpleLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoFontsetSimpleLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoFontsetSimpleLeaf, args))
+            end
+            w = PangoFontsetSimpleLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoFontsetSimple] = PangoFontsetSimpleLeaf
+        function PangoFontsetSimple(args...; kwargs...)
+            PangoFontsetSimpleLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoLayout <: GObject end
+    end
+    begin
+        mutable struct PangoLayoutLeaf <: PangoLayout
+            handle::Ptr{GObject}
+            function PangoLayoutLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoLayoutLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoLayoutLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoLayoutLeaf, args))
+            end
+            w = PangoLayoutLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoLayout] = PangoLayoutLeaf
+        function PangoLayout(args...; kwargs...)
+            PangoLayoutLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type PangoRenderer <: GObject end
+    end
+    begin
+        mutable struct PangoRendererLeaf <: PangoRenderer
+            handle::Ptr{GObject}
+            function PangoRendererLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoRendererLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function PangoRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(PangoRendererLeaf, args))
+            end
+            w = PangoRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:PangoRenderer] = PangoRendererLeaf
+        function PangoRenderer(args...; kwargs...)
+            PangoRendererLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        gtype_wrapper_cache_init() = begin
+                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+            end
+    end
+    export PangoLanguage, PangoColor, PangoAttrClass, PangoRectangle, PangoFontDescription, PangoAttribute, PangoAnalysis, PangoItem, PangoGlyphVisAttr, PangoGlyphGeometry, PangoGlyphInfo, PangoGlyphString, PangoGlyphItem, PangoAttrColor, PangoAttrFloat, PangoAttrFontDesc, PangoAttrFontFeatures, PangoAttrInt, PangoAttrIterator, PangoAttrLanguage, PangoAttrList, PangoAttrShape, PangoAttrSize, PangoAttrString, PangoFontMetrics, PangoGlyphItemIter, PangoLayoutIter, PangoLayoutLine, PangoLogAttr, PangoMatrix, PangoScriptIter, PangoTabArray, PangoContext, PangoCoverage, PangoFont, PangoFontFace, PangoFontFamily, PangoFontMap, PangoFontset, PangoFontsetSimple, PangoLayout, PangoRenderer
+end))
+end

@@ -1,6 +1,8 @@
 module Gtk4
 
 include("GLib/GLib.jl")
+include("Pango/Pango.jl")
+include("GdkPixbufLib/GdkPixbufLib.jl")
 
 #include("Graphene.jl")
 #include("Gdk4.jl")

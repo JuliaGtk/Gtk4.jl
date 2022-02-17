@@ -268,7 +268,7 @@ function gobject_decl(objectinfo)
                 end
                 is_floating = (ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle)!=0)
                 if !owns || is_floating # if owns is true then we already have a reference, but if it's floating we should sink it
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -797,7 +797,7 @@ function create_method(info::GIFunctionInfo)
             ctype = typ.ctype
             wname = Symbol("m_$(get_name(arg))")
             atyp = get_type(arg)
-            push!(prologue, :( $wname = Ref{$ctype}() ))
+            push!(prologue, :( $wname = Ref{$ctype}(C_NULL) ))
             if dir == GIDirection.INOUT
                 push!(prologue, :( $wname[] = Base.cconvert($ctype,$aname) ))
             end
