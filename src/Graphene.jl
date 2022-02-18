@@ -1,6 +1,7 @@
 module Graphene
 
-using GLib
+using ..GLib
+using CEnum
 
 eval(include("gen/graphene_consts"))
 eval(include("gen/graphene_structs"))

@@ -168,7 +168,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -188,27 +188,6 @@ $(Expr(:toplevel, quote
         function GBinding(args...; kwargs...)
             GBindingLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GBindingLeaf) = begin
-                    [:handle, :target, :flags, :source, :source_property, :target_property]
-                end
-            function Base.getproperty(o::GBindingLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:target_property => (:String, 0, 11), :flags => (:Int32, 0, 11), :target => (:GObject, 0, 11), :source => (:GObject, 0, 11), :source_property => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GBindingLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:target_property => (:String, 0, 11), :flags => (:Int32, 0, 11), :target => (:GObject, 0, 11), :source => (:GObject, 0, 11), :source_property => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GInitiallyUnowned <: GObject end
@@ -222,7 +201,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -255,7 +234,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end

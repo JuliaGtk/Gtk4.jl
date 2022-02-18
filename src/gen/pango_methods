@@ -24,8 +24,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_font(instance::PangoAttrIterator, _desc::PangoFontDescription)
-        m_language = Ref{Ptr{PangoLanguage}}()
-        m_extra_attrs = Ref{Ptr{GLib._GSList{_PangoAttribute}}}()
+        m_language = Ref{Ptr{PangoLanguage}}(C_NULL)
+        m_extra_attrs = Ref{Ptr{GLib._GSList{_PangoAttribute}}}(C_NULL)
         ret = ccall(("pango_attr_iterator_get_font", libpango), Nothing, (Ptr{PangoAttrIterator}, Ptr{PangoFontDescription}, Ptr{Ptr{PangoLanguage}}, Ptr{Ptr{GLib._GSList{_PangoAttribute}}}), instance, _desc, m_language, m_extra_attrs)
         _language = m_language[]
         _language = convert(PangoLanguage, _language, true)
@@ -39,8 +39,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function range(instance::PangoAttrIterator)
-        m_start = Ref{Int32}()
-        m_end = Ref{Int32}()
+        m_start = Ref{Int32}(C_NULL)
+        m_end = Ref{Int32}(C_NULL)
         ret = ccall(("pango_attr_iterator_range", libpango), Nothing, (Ptr{PangoAttrIterator}, Ptr{Int32}, Ptr{Int32}), instance, m_start, m_end)
         _start = m_start[]
         _end = m_end[]
@@ -218,14 +218,14 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_char_extents(instance::PangoLayoutIter)
-        m_logical_rect = Ref{PangoRectangle}()
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_iter_get_char_extents", libpango), Nothing, (Ptr{PangoLayoutIter}, Ptr{PangoRectangle}), instance, m_logical_rect)
         _logical_rect = m_logical_rect[]
         _logical_rect
     end
     function get_cluster_extents(instance::PangoLayoutIter)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_iter_get_cluster_extents", libpango), Nothing, (Ptr{PangoLayoutIter}, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
@@ -241,8 +241,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_layout_extents(instance::PangoLayoutIter)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_iter_get_layout_extents", libpango), Nothing, (Ptr{PangoLayoutIter}, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
@@ -254,8 +254,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_line_extents(instance::PangoLayoutIter)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_iter_get_line_extents", libpango), Nothing, (Ptr{PangoLayoutIter}, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
@@ -267,8 +267,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_line_yrange(instance::PangoLayoutIter)
-        m_y0_ = Ref{Int32}()
-        m_y1_ = Ref{Int32}()
+        m_y0_ = Ref{Int32}(C_NULL)
+        m_y1_ = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_iter_get_line_yrange", libpango), Nothing, (Ptr{PangoLayoutIter}, Ptr{Int32}, Ptr{Int32}), instance, m_y0_, m_y1_)
         _y0_ = m_y0_[]
         _y1_ = m_y1_[]
@@ -288,8 +288,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_run_extents(instance::PangoLayoutIter)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_iter_get_run_extents", libpango), Nothing, (Ptr{PangoLayoutIter}, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
@@ -325,15 +325,15 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_extents(instance::PangoLayoutLine)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_line_get_extents", libpango), Nothing, (Ptr{_PangoLayoutLine}, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
         (_ink_rect, _logical_rect)
     end
     function get_height(instance::PangoLayoutLine)
-        m_height = Ref{Int32}()
+        m_height = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_line_get_height", libpango), Nothing, (Ptr{_PangoLayoutLine}, Ptr{Int32}), instance, m_height)
         _height = m_height[]
         _height
@@ -343,8 +343,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_pixel_extents(instance::PangoLayoutLine)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_line_get_pixel_extents", libpango), Nothing, (Ptr{_PangoLayoutLine}, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
@@ -360,15 +360,15 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_x_ranges(instance::PangoLayoutLine, _start_index::Integer, _end_index::Integer)
-        m_ranges = Ref{Ptr{Int32}}()
-        m_n_ranges = Ref{Int32}()
+        m_ranges = Ref{Ptr{Int32}}(C_NULL)
+        m_n_ranges = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_line_get_x_ranges", libpango), Nothing, (Ptr{_PangoLayoutLine}, Int32, Int32, Ptr{Ptr{Int32}}, Ptr{Int32}), instance, _start_index, _end_index, m_ranges, m_n_ranges)
         _ranges = m_ranges[]
         _n_ranges = m_n_ranges[]
         _ranges
     end
     function index_to_x(instance::PangoLayoutLine, _index_::Integer, _trailing::Bool)
-        m_x_pos = Ref{Int32}()
+        m_x_pos = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_line_index_to_x", libpango), Nothing, (Ptr{_PangoLayoutLine}, Int32, Cint, Ptr{Int32}), instance, _index_, _trailing, m_x_pos)
         _x_pos = m_x_pos[]
         _x_pos
@@ -388,8 +388,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function x_to_index(instance::PangoLayoutLine, _x_pos::Integer)
-        m_index_ = Ref{Int32}()
-        m_trailing = Ref{Int32}()
+        m_index_ = Ref{Int32}(C_NULL)
+        m_trailing = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_line_x_to_index", libpango), Cint, (Ptr{_PangoLayoutLine}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _x_pos, m_index_, m_trailing)
         ret2 = convert(Bool, ret)
         _index_ = m_index_[]
@@ -418,12 +418,16 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_font_scale_factors(instance::PangoMatrix)
-        m_xscale = Ref{Float64}()
-        m_yscale = Ref{Float64}()
+        m_xscale = Ref{Float64}(C_NULL)
+        m_yscale = Ref{Float64}(C_NULL)
         ret = ccall(("pango_matrix_get_font_scale_factors", libpango), Nothing, (Ptr{_PangoMatrix}, Ptr{Float64}, Ptr{Float64}), instance, m_xscale, m_yscale)
         _xscale = m_xscale[]
         _yscale = m_yscale[]
         (_xscale, _yscale)
+    end
+    function get_slant_ratio(instance::PangoMatrix)
+        ret = ccall(("pango_matrix_get_slant_ratio", libpango), Float64, (Ptr{_PangoMatrix},), instance)
+        ret
     end
     function rotate(instance::PangoMatrix, _degrees::Real)
         ret = ccall(("pango_matrix_rotate", libpango), Nothing, (Ptr{_PangoMatrix}, Float64), instance, _degrees)
@@ -434,9 +438,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function transform_distance(instance::PangoMatrix, _dx::Real, _dy::Real)
-        m_dx = Ref{Float64}()
+        m_dx = Ref{Float64}(C_NULL)
         m_dx[] = Base.cconvert(Float64, _dx)
-        m_dy = Ref{Float64}()
+        m_dy = Ref{Float64}(C_NULL)
         m_dy[] = Base.cconvert(Float64, _dy)
         ret = ccall(("pango_matrix_transform_distance", libpango), Nothing, (Ptr{_PangoMatrix}, Ptr{Float64}, Ptr{Float64}), instance, m_dx, m_dy)
         _dx = m_dx[]
@@ -444,16 +448,16 @@ $(Expr(:toplevel, quote
         (_dx, _dy)
     end
     function transform_pixel_rectangle(instance::PangoMatrix, _rect)
-        m_rect = Ref{PangoRectangle}()
+        m_rect = Ref{PangoRectangle}(C_NULL)
         m_rect[] = Base.cconvert(PangoRectangle, _rect)
         ret = ccall(("pango_matrix_transform_pixel_rectangle", libpango), Nothing, (Ptr{_PangoMatrix}, Ptr{PangoRectangle}), instance, m_rect)
         _rect = m_rect[]
         _rect
     end
     function transform_point(instance::PangoMatrix, _x::Real, _y::Real)
-        m_x = Ref{Float64}()
+        m_x = Ref{Float64}(C_NULL)
         m_x[] = Base.cconvert(Float64, _x)
-        m_y = Ref{Float64}()
+        m_y = Ref{Float64}(C_NULL)
         m_y[] = Base.cconvert(Float64, _y)
         ret = ccall(("pango_matrix_transform_point", libpango), Nothing, (Ptr{_PangoMatrix}, Ptr{Float64}, Ptr{Float64}), instance, m_x, m_y)
         _x = m_x[]
@@ -461,7 +465,7 @@ $(Expr(:toplevel, quote
         (_x, _y)
     end
     function transform_rectangle(instance::PangoMatrix, _rect)
-        m_rect = Ref{PangoRectangle}()
+        m_rect = Ref{PangoRectangle}(C_NULL)
         m_rect[] = Base.cconvert(PangoRectangle, _rect)
         ret = ccall(("pango_matrix_transform_rectangle", libpango), Nothing, (Ptr{_PangoMatrix}, Ptr{PangoRectangle}), instance, m_rect)
         _rect = m_rect[]
@@ -481,9 +485,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_range(instance::PangoScriptIter)
-        m_start = Ref{Cstring}()
-        m_end = Ref{Cstring}()
-        m_script = Ref{UInt16}()
+        m_start = Ref{Cstring}(C_NULL)
+        m_end = Ref{Cstring}(C_NULL)
+        m_script = Ref{UInt16}(C_NULL)
         ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{UInt16}), instance, m_start, m_end, m_script)
         _start = m_start[]
         _start = if _start == C_NULL
@@ -534,8 +538,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_tab(instance::PangoTabArray, _tab_index::Integer)
-        m_alignment = Ref{Int32}()
-        m_location = Ref{Int32}()
+        m_alignment = Ref{Int32}(C_NULL)
+        m_location = Ref{Int32}(C_NULL)
         ret = ccall(("pango_tab_array_get_tab", libpango), Nothing, (Ptr{PangoTabArray}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _tab_index, m_alignment, m_location)
         _alignment = m_alignment[]
         _alignment = TabAlign(_alignment)
@@ -543,8 +547,8 @@ $(Expr(:toplevel, quote
         (_alignment, _location)
     end
     function get_tabs(instance::PangoTabArray)
-        m_alignments = Ref{Int32}()
-        m_locations = Ref{Ptr{Int32}}()
+        m_alignments = Ref{Int32}(C_NULL)
+        m_locations = Ref{Ptr{Int32}}(C_NULL)
         ret = ccall(("pango_tab_array_get_tabs", libpango), Nothing, (Ptr{PangoTabArray}, Ptr{Int32}, Ptr{Ptr{Int32}}), instance, m_alignments, m_locations)
         _alignments = m_alignments[]
         _alignments = TabAlign(_alignments)
@@ -658,8 +662,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function list_families(instance::PangoContext)
-        m_families = Ref{Ptr{Ptr{GObject}}}()
-        m_n_families = Ref{Int32}()
+        m_families = Ref{Ptr{Ptr{GObject}}}(C_NULL)
+        m_n_families = Ref{Int32}(C_NULL)
         ret = ccall(("pango_context_list_families", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{Ptr{GObject}}}, Ptr{Int32}), instance, m_families, m_n_families)
         _families = m_families[]
         _families = begin
@@ -740,17 +744,8 @@ $(Expr(:toplevel, quote
         ret2 = CoverageLevel(ret)
         ret2
     end
-    function ref(instance::PangoCoverage)
-        ret = ccall(("pango_coverage_ref", libpango), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(PangoCoverage, ret, true)
-        ret2
-    end
     function set(instance::PangoCoverage, _index_::Integer, _level)
         ret = ccall(("pango_coverage_set", libpango), Nothing, (Ptr{GObject}, Int32, Int32), instance, _index_, _level)
-        nothing
-    end
-    function unref(instance::PangoCoverage)
-        ret = ccall(("pango_coverage_unref", libpango), Nothing, (Ptr{GObject},), instance)
         nothing
     end
     function descriptions_free(_descs)
@@ -800,8 +795,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_glyph_extents(instance::PangoFont, _glyph::Integer)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_font_get_glyph_extents", libpango), Nothing, (Ptr{GObject}, UInt32, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, _glyph, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
@@ -856,8 +851,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function list_sizes(instance::PangoFontFace)
-        m_sizes = Ref{Ptr{Int32}}()
-        m_n_sizes = Ref{Int32}()
+        m_sizes = Ref{Ptr{Int32}}(C_NULL)
+        m_n_sizes = Ref{Int32}(C_NULL)
         ret = ccall(("pango_font_face_list_sizes", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{Int32}}, Ptr{Int32}), instance, m_sizes, m_n_sizes)
         _sizes = m_sizes[]
         _n_sizes = m_n_sizes[]
@@ -897,8 +892,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function list_faces(instance::PangoFontFamily)
-        m_faces = Ref{Ptr{Ptr{GObject}}}()
-        m_n_faces = Ref{Int32}()
+        m_faces = Ref{Ptr{Ptr{GObject}}}(C_NULL)
+        m_n_faces = Ref{Int32}(C_NULL)
         ret = ccall(("pango_font_family_list_faces", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{Ptr{GObject}}}, Ptr{Int32}), instance, m_faces, m_n_faces)
         _faces = m_faces[]
         _faces = begin
@@ -928,8 +923,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function list_families(instance::PangoFontMap)
-        m_families = Ref{Ptr{Ptr{GObject}}}()
-        m_n_families = Ref{Int32}()
+        m_families = Ref{Ptr{Ptr{GObject}}}(C_NULL)
+        m_n_families = Ref{Int32}(C_NULL)
         ret = ccall(("pango_font_map_list_families", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{Ptr{GObject}}}, Ptr{Int32}), instance, m_families, m_n_families)
         _families = m_families[]
         _families = begin
@@ -1030,8 +1025,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_caret_pos(instance::PangoLayout, _index_::Integer)
-        m_strong_pos = Ref{PangoRectangle}()
-        m_weak_pos = Ref{PangoRectangle}()
+        m_strong_pos = Ref{PangoRectangle}(C_NULL)
+        m_weak_pos = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_get_caret_pos", libpango), Nothing, (Ptr{GObject}, Int32, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, _index_, m_strong_pos, m_weak_pos)
         _strong_pos = m_strong_pos[]
         _weak_pos = m_weak_pos[]
@@ -1047,8 +1042,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_cursor_pos(instance::PangoLayout, _index_::Integer)
-        m_strong_pos = Ref{PangoRectangle}()
-        m_weak_pos = Ref{PangoRectangle}()
+        m_strong_pos = Ref{PangoRectangle}(C_NULL)
+        m_weak_pos = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_get_cursor_pos", libpango), Nothing, (Ptr{GObject}, Int32, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, _index_, m_strong_pos, m_weak_pos)
         _strong_pos = m_strong_pos[]
         _weak_pos = m_weak_pos[]
@@ -1065,8 +1060,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_extents(instance::PangoLayout)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_get_extents", libpango), Nothing, (Ptr{GObject}, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
@@ -1139,8 +1134,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_log_attrs(instance::PangoLayout)
-        m_attrs = Ref{Ptr{PangoLogAttr}}()
-        m_n_attrs = Ref{Int32}()
+        m_attrs = Ref{Ptr{PangoLogAttr}}(C_NULL)
+        m_n_attrs = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_get_log_attrs", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{PangoLogAttr}}, Ptr{Int32}), instance, m_attrs, m_n_attrs)
         _attrs = m_attrs[]
         _attrs = begin
@@ -1152,22 +1147,22 @@ $(Expr(:toplevel, quote
         _attrs
     end
     function get_log_attrs_readonly(instance::PangoLayout)
-        m_n_attrs = Ref{Int32}()
+        m_n_attrs = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_get_log_attrs_readonly", libpango), Ptr{PangoLogAttr}, (Ptr{GObject}, Ptr{Int32}), instance, m_n_attrs)
         _n_attrs = m_n_attrs[]
         ret
     end
     function get_pixel_extents(instance::PangoLayout)
-        m_ink_rect = Ref{PangoRectangle}()
-        m_logical_rect = Ref{PangoRectangle}()
+        m_ink_rect = Ref{PangoRectangle}(C_NULL)
+        m_logical_rect = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_get_pixel_extents", libpango), Nothing, (Ptr{GObject}, Ptr{PangoRectangle}, Ptr{PangoRectangle}), instance, m_ink_rect, m_logical_rect)
         _ink_rect = m_ink_rect[]
         _logical_rect = m_logical_rect[]
         (_ink_rect, _logical_rect)
     end
     function get_pixel_size(instance::PangoLayout)
-        m_width = Ref{Int32}()
-        m_height = Ref{Int32}()
+        m_width = Ref{Int32}(C_NULL)
+        m_height = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_get_pixel_size", libpango), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_width, m_height)
         _width = m_width[]
         _height = m_height[]
@@ -1183,8 +1178,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_size(instance::PangoLayout)
-        m_width = Ref{Int32}()
-        m_height = Ref{Int32}()
+        m_width = Ref{Int32}(C_NULL)
+        m_height = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_get_size", libpango), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_width, m_height)
         _width = m_width[]
         _height = m_height[]
@@ -1226,15 +1221,15 @@ $(Expr(:toplevel, quote
         ret2
     end
     function index_to_line_x(instance::PangoLayout, _index_::Integer, _trailing::Bool)
-        m_line = Ref{Int32}()
-        m_x_pos = Ref{Int32}()
+        m_line = Ref{Int32}(C_NULL)
+        m_x_pos = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_index_to_line_x", libpango), Nothing, (Ptr{GObject}, Int32, Cint, Ptr{Int32}, Ptr{Int32}), instance, _index_, _trailing, m_line, m_x_pos)
         _line = m_line[]
         _x_pos = m_x_pos[]
         (_line, _x_pos)
     end
     function index_to_pos(instance::PangoLayout, _index_::Integer)
-        m_pos = Ref{PangoRectangle}()
+        m_pos = Ref{PangoRectangle}(C_NULL)
         ret = ccall(("pango_layout_index_to_pos", libpango), Nothing, (Ptr{GObject}, Int32, Ptr{PangoRectangle}), instance, _index_, m_pos)
         _pos = m_pos[]
         _pos
@@ -1250,8 +1245,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function move_cursor_visually(instance::PangoLayout, _strong::Bool, _old_index::Integer, _old_trailing::Integer, _direction::Integer)
-        m_new_index = Ref{Int32}()
-        m_new_trailing = Ref{Int32}()
+        m_new_index = Ref{Int32}(C_NULL)
+        m_new_trailing = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_move_cursor_visually", libpango), Nothing, (Ptr{GObject}, Cint, Int32, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _strong, _old_index, _old_trailing, _direction, m_new_index, m_new_trailing)
         _new_index = m_new_index[]
         _new_trailing = m_new_trailing[]
@@ -1317,7 +1312,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_markup_with_accel(instance::PangoLayout, _markup::Union{AbstractString, Symbol}, _length::Integer, _accel_marker)
-        m_accel_char = Ref{Nothing}()
+        m_accel_char = Ref{Nothing}(C_NULL)
         ret = ccall(("pango_layout_set_markup_with_accel", libpango), Nothing, (Ptr{GObject}, Cstring, Int32, Nothing, Ptr{Nothing}), instance, _markup, _length, _accel_marker, m_accel_char)
         _accel_char = m_accel_char[]
         _accel_char
@@ -1359,8 +1354,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function xy_to_index(instance::PangoLayout, _x::Integer, _y::Integer)
-        m_index_ = Ref{Int32}()
-        m_trailing = Ref{Int32}()
+        m_index_ = Ref{Int32}(C_NULL)
+        m_trailing = Ref{Int32}(C_NULL)
         ret = ccall(("pango_layout_xy_to_index", libpango), Cint, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _x, _y, m_index_, m_trailing)
         ret2 = convert(Bool, ret)
         _index_ = m_index_[]

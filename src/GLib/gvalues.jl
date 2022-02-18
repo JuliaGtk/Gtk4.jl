@@ -300,29 +300,29 @@ end
 #end
 #setindex!(f::FieldRef, value::K, ::Type{T}) where {K, T} = setindex!(f, convert(T,value), T)
 
-#function propertynames(w::GObject)
-#    n = Ref{Cuint}()
-#    props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
-#        (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
-#    names=Symbol[]
-#    for i = 1:unsafe_load(n)
-#        param = unsafe_load(unsafe_load(props, i))
-#        name=Symbol(replace(bytestring(param.name),"-"=>"_"))
-#        push!(names,name)
-#    end
-#    g_free(props)
-#    names
-#end
+function propertynames(w::GObject)
+    n = Ref{Cuint}()
+    props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
+        (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
+    names=Symbol[]
+    for i = 1:n[]
+        param = unsafe_load(unsafe_load(props, i))
+        name=Symbol(replace(bytestring(param.name),"-"=>"_"))
+        push!(names,name)
+    end
+    g_free(props)
+    names
+end
 
-#function getproperty(w::GObject, name::Symbol)
-#    isdefined(w, name) && return getfield(w, name)
-#    get_gtk_property(w,name)
-#end
+function getproperty(w::GObject, name::Symbol)
+    isdefined(w, name) && return getfield(w, name)
+    get_gtk_property(w,name)
+end
 
-#function setproperty!(w::GObject, name::Symbol, val)
-#    isdefined(w,name) && return setfield!(w, name, val)
-#    set_gtk_property!(w,name,val)
-#end
+function setproperty!(w::GObject, name::Symbol, val)
+    isdefined(w,name) && return setfield!(w, name, val)
+    set_gtk_property!(w,name,val)
+end
 
 function show(io::IO, w::GObject)
     READABLE   = 0x00000001

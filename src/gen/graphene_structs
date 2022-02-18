@@ -10,15 +10,9 @@ $(Expr(:toplevel, quote
             z::Float32
             w::Float32
         end
-        mutable struct GrapheneSimd4F
-            handle::Ptr{GrapheneSimd4F}
-        end
-        function Base.getproperty(s::GrapheneSimd4F, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneSimd4F)
-                u = unsafe_load(Ptr{_GrapheneSimd4F}(s.handle))
-                return getfield(u, sym)
+        begin
+            mutable struct GrapheneSimd4F
+                handle::Ptr{_GrapheneSimd4F}
             end
         end
     end
@@ -26,30 +20,24 @@ $(Expr(:toplevel, quote
         struct _GrapheneVec3
             value::GrapheneSimd4F
         end
-        mutable struct GrapheneVec3 <: GBoxed
-            handle::Ptr{GrapheneVec3}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneVec3) = begin
-                        ccall(("graphene_vec3_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneVec3(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneVec3 <: GBoxed
+                handle::Ptr{_GrapheneVec3}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneVec3) = begin
+                            ccall(("graphene_vec3_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneVec3(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneVec3)
                 end
-                push!(gboxed_types, GrapheneVec3)
-            end
-        end
-        function Base.getproperty(s::GrapheneVec3, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneVec3)
-                u = unsafe_load(Ptr{_GrapheneVec3}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
@@ -60,15 +48,9 @@ $(Expr(:toplevel, quote
             z::GrapheneSimd4F
             w::GrapheneSimd4F
         end
-        mutable struct GrapheneSimd4X4F
-            handle::Ptr{GrapheneSimd4X4F}
-        end
-        function Base.getproperty(s::GrapheneSimd4X4F, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneSimd4X4F)
-                u = unsafe_load(Ptr{_GrapheneSimd4X4F}(s.handle))
-                return getfield(u, sym)
+        begin
+            mutable struct GrapheneSimd4X4F
+                handle::Ptr{_GrapheneSimd4X4F}
             end
         end
     end
@@ -77,179 +59,150 @@ $(Expr(:toplevel, quote
             width::Float32
             height::Float32
         end
-        mutable struct GrapheneSize <: GBoxed
-            handle::Ptr{GrapheneSize}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneSize) = begin
-                        ccall(("graphene_size_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneSize(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneSize <: GBoxed
+                handle::Ptr{_GrapheneSize}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneSize) = begin
+                            ccall(("graphene_size_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneSize(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneSize)
                 end
-                push!(gboxed_types, GrapheneSize)
-            end
-        end
-        function Base.getproperty(s::GrapheneSize, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneSize)
-                u = unsafe_load(Ptr{_GrapheneSize}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
         struct _GrapheneBox
-            min::Ptr{GrapheneVec3}
-            max::Ptr{GrapheneVec3}
+            min::_GrapheneVec3
+            max::_GrapheneVec3
         end
-        mutable struct GrapheneBox <: GBoxed
-            handle::Ptr{GrapheneBox}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneBox) = begin
-                        ccall(("graphene_box_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneBox(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneBox <: GBoxed
+                handle::Ptr{_GrapheneBox}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneBox) = begin
+                            ccall(("graphene_box_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneBox(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneBox)
                 end
-                push!(gboxed_types, GrapheneBox)
-            end
-        end
-        function Base.getproperty(s::GrapheneBox, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneBox)
-                u = unsafe_load(Ptr{_GrapheneBox}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
         struct _GrapheneEuler
-            angles::Ptr{GrapheneVec3}
+            angles::_GrapheneVec3
             order::UInt16
         end
-        mutable struct GrapheneEuler <: GBoxed
-            handle::Ptr{GrapheneEuler}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneEuler) = begin
-                        ccall(("graphene_euler_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneEuler(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneEuler <: GBoxed
+                handle::Ptr{_GrapheneEuler}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneEuler) = begin
+                            ccall(("graphene_euler_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneEuler(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneEuler)
                 end
-                push!(gboxed_types, GrapheneEuler)
-            end
-        end
-        function Base.getproperty(s::GrapheneEuler, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneEuler)
-                u = unsafe_load(Ptr{_GrapheneEuler}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
-        nothing
-        mutable struct GrapheneFrustum <: GBoxed
-            handle::Ptr{GrapheneFrustum}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneFrustum) = begin
-                        ccall(("graphene_frustum_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneFrustum(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneFrustum <: GBoxed
+                handle::Ptr{GrapheneFrustum}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneFrustum) = begin
+                            ccall(("graphene_frustum_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneFrustum(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneFrustum)
                 end
-                push!(gboxed_types, GrapheneFrustum)
             end
         end
-        nothing
+        const _GrapheneFrustum = GrapheneFrustum
     end
     begin
         struct _GrapheneMatrix
             value::GrapheneSimd4X4F
         end
-        mutable struct GrapheneMatrix <: GBoxed
-            handle::Ptr{GrapheneMatrix}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneMatrix) = begin
-                        ccall(("graphene_matrix_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneMatrix(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneMatrix <: GBoxed
+                handle::Ptr{_GrapheneMatrix}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneMatrix) = begin
+                            ccall(("graphene_matrix_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneMatrix(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneMatrix)
                 end
-                push!(gboxed_types, GrapheneMatrix)
-            end
-        end
-        function Base.getproperty(s::GrapheneMatrix, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneMatrix)
-                u = unsafe_load(Ptr{_GrapheneMatrix}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
         struct _GraphenePlane
-            normal::Ptr{GrapheneVec3}
+            normal::_GrapheneVec3
             constant::Float32
         end
-        mutable struct GraphenePlane <: GBoxed
-            handle::Ptr{GraphenePlane}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GraphenePlane) = begin
-                        ccall(("graphene_plane_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GraphenePlane(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GraphenePlane <: GBoxed
+                handle::Ptr{_GraphenePlane}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GraphenePlane) = begin
+                            ccall(("graphene_plane_get_type", libgraphene), GType, ())
                         end
+                    function GraphenePlane(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GraphenePlane)
                 end
-                push!(gboxed_types, GraphenePlane)
-            end
-        end
-        function Base.getproperty(s::GraphenePlane, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GraphenePlane)
-                u = unsafe_load(Ptr{_GraphenePlane}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
@@ -258,30 +211,24 @@ $(Expr(:toplevel, quote
             x::Float32
             y::Float32
         end
-        mutable struct GraphenePoint <: GBoxed
-            handle::Ptr{GraphenePoint}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GraphenePoint) = begin
-                        ccall(("graphene_point_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GraphenePoint(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GraphenePoint <: GBoxed
+                handle::Ptr{_GraphenePoint}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GraphenePoint) = begin
+                            ccall(("graphene_point_get_type", libgraphene), GType, ())
                         end
+                    function GraphenePoint(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GraphenePoint)
                 end
-                push!(gboxed_types, GraphenePoint)
-            end
-        end
-        function Base.getproperty(s::GraphenePoint, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GraphenePoint)
-                u = unsafe_load(Ptr{_GraphenePoint}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
@@ -291,54 +238,49 @@ $(Expr(:toplevel, quote
             y::Float32
             z::Float32
         end
-        mutable struct GraphenePoint3D <: GBoxed
-            handle::Ptr{GraphenePoint3D}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GraphenePoint3D) = begin
-                        ccall(("graphene_point3d_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GraphenePoint3D(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GraphenePoint3D <: GBoxed
+                handle::Ptr{_GraphenePoint3D}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GraphenePoint3D) = begin
+                            ccall(("graphene_point3d_get_type", libgraphene), GType, ())
                         end
+                    function GraphenePoint3D(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GraphenePoint3D)
                 end
-                push!(gboxed_types, GraphenePoint3D)
-            end
-        end
-        function Base.getproperty(s::GraphenePoint3D, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GraphenePoint3D)
-                u = unsafe_load(Ptr{_GraphenePoint3D}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
-        nothing
-        mutable struct GrapheneQuad <: GBoxed
-            handle::Ptr{GrapheneQuad}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneQuad) = begin
-                        ccall(("graphene_quad_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneQuad(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneQuad <: GBoxed
+                handle::Ptr{GrapheneQuad}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneQuad) = begin
+                            ccall(("graphene_quad_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneQuad(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneQuad)
                 end
-                push!(gboxed_types, GrapheneQuad)
             end
         end
-        nothing
+        const _GrapheneQuad = GrapheneQuad
     end
     begin
         struct _GrapheneQuaternion
@@ -347,159 +289,129 @@ $(Expr(:toplevel, quote
             z::Float32
             w::Float32
         end
-        mutable struct GrapheneQuaternion <: GBoxed
-            handle::Ptr{GrapheneQuaternion}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneQuaternion) = begin
-                        ccall(("graphene_quaternion_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneQuaternion(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneQuaternion <: GBoxed
+                handle::Ptr{_GrapheneQuaternion}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneQuaternion) = begin
+                            ccall(("graphene_quaternion_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneQuaternion(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneQuaternion)
                 end
-                push!(gboxed_types, GrapheneQuaternion)
-            end
-        end
-        function Base.getproperty(s::GrapheneQuaternion, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneQuaternion)
-                u = unsafe_load(Ptr{_GrapheneQuaternion}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
         struct _GrapheneRay
-            origin::Ptr{GrapheneVec3}
-            direction::Ptr{GrapheneVec3}
+            origin::_GrapheneVec3
+            direction::_GrapheneVec3
         end
-        mutable struct GrapheneRay <: GBoxed
-            handle::Ptr{GrapheneRay}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneRay) = begin
-                        ccall(("graphene_ray_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneRay(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneRay <: GBoxed
+                handle::Ptr{_GrapheneRay}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneRay) = begin
+                            ccall(("graphene_ray_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneRay(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneRay)
                 end
-                push!(gboxed_types, GrapheneRay)
-            end
-        end
-        function Base.getproperty(s::GrapheneRay, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneRay)
-                u = unsafe_load(Ptr{_GrapheneRay}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
         struct _GrapheneRect
-            origin::Ptr{GraphenePoint}
-            size::Ptr{GrapheneSize}
+            origin::_GraphenePoint
+            size::_GrapheneSize
         end
-        mutable struct GrapheneRect <: GBoxed
-            handle::Ptr{GrapheneRect}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneRect) = begin
-                        ccall(("graphene_rect_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneRect(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneRect <: GBoxed
+                handle::Ptr{_GrapheneRect}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneRect) = begin
+                            ccall(("graphene_rect_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneRect(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneRect)
                 end
-                push!(gboxed_types, GrapheneRect)
-            end
-        end
-        function Base.getproperty(s::GrapheneRect, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneRect)
-                u = unsafe_load(Ptr{_GrapheneRect}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
         struct _GrapheneSphere
-            center::Ptr{GrapheneVec3}
+            center::_GrapheneVec3
             radius::Float32
         end
-        mutable struct GrapheneSphere <: GBoxed
-            handle::Ptr{GrapheneSphere}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneSphere) = begin
-                        ccall(("graphene_sphere_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneSphere(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneSphere <: GBoxed
+                handle::Ptr{_GrapheneSphere}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneSphere) = begin
+                            ccall(("graphene_sphere_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneSphere(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneSphere)
                 end
-                push!(gboxed_types, GrapheneSphere)
-            end
-        end
-        function Base.getproperty(s::GrapheneSphere, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneSphere)
-                u = unsafe_load(Ptr{_GrapheneSphere}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
     begin
         struct _GrapheneTriangle
-            a::Ptr{GrapheneVec3}
-            b::Ptr{GrapheneVec3}
-            c::Ptr{GrapheneVec3}
+            a::_GrapheneVec3
+            b::_GrapheneVec3
+            c::_GrapheneVec3
         end
-        mutable struct GrapheneTriangle <: GBoxed
-            handle::Ptr{GrapheneTriangle}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneTriangle) = begin
-                        ccall(("graphene_triangle_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneTriangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneTriangle <: GBoxed
+                handle::Ptr{_GrapheneTriangle}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneTriangle) = begin
+                            ccall(("graphene_triangle_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneTriangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneTriangle)
                 end
-                push!(gboxed_types, GrapheneTriangle)
-            end
-        end
-        function Base.getproperty(s::GrapheneTriangle, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneTriangle)
-                u = unsafe_load(Ptr{_GrapheneTriangle}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
@@ -507,30 +419,24 @@ $(Expr(:toplevel, quote
         struct _GrapheneVec2
             value::GrapheneSimd4F
         end
-        mutable struct GrapheneVec2 <: GBoxed
-            handle::Ptr{GrapheneVec2}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneVec2) = begin
-                        ccall(("graphene_vec2_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneVec2(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneVec2 <: GBoxed
+                handle::Ptr{_GrapheneVec2}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneVec2) = begin
+                            ccall(("graphene_vec2_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneVec2(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneVec2)
                 end
-                push!(gboxed_types, GrapheneVec2)
-            end
-        end
-        function Base.getproperty(s::GrapheneVec2, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneVec2)
-                u = unsafe_load(Ptr{_GrapheneVec2}(s.handle))
-                return getfield(u, sym)
             end
         end
     end
@@ -538,30 +444,24 @@ $(Expr(:toplevel, quote
         struct _GrapheneVec4
             value::GrapheneSimd4F
         end
-        mutable struct GrapheneVec4 <: GBoxed
-            handle::Ptr{GrapheneVec4}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneVec4) = begin
-                        ccall(("graphene_vec4_get_type", "libgraphene-1.0.so.0"), GType, ())
-                    end
-                function GrapheneVec4(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
+        begin
+            mutable struct GrapheneVec4 <: GBoxed
+                handle::Ptr{_GrapheneVec4}
+                begin
+                    (GLib.g_type(::Type{T}) where T <: GrapheneVec4) = begin
+                            ccall(("graphene_vec4_get_type", libgraphene), GType, ())
                         end
+                    function GrapheneVec4(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                        x = new(ref)
+                        if own
+                            finalizer(x) do x
+                                GLib.delboxed(x)
+                            end
+                        end
+                        x
                     end
-                    x
+                    push!(gboxed_types, GrapheneVec4)
                 end
-                push!(gboxed_types, GrapheneVec4)
-            end
-        end
-        function Base.getproperty(s::GrapheneVec4, sym::Symbol)
-            if sym === :handle
-                return getfield(s, :handle)
-            elseif sym in fieldnames(_GrapheneVec4)
-                u = unsafe_load(Ptr{_GrapheneVec4}(s.handle))
-                return getfield(u, sym)
             end
         end
     end

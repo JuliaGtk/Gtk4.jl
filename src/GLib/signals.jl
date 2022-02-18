@@ -107,13 +107,6 @@ function blame(@nospecialize(cb))
     @warn "Executing $cb:"
 end
 
-# Signals API for the cb pointer
-# Gtk 2
-#   https://developer.gnome.org/gtk2/stable/GObject.html#GObject-destroy
-#   https://developer.gnome.org/gtk2/stable/GtkWidget.html#GtkWidget-accel-closures-changed
-# Gtk 3
-#   https://developer.gnome.org/gtk3/stable/GtkWidget.html#GtkWidget-accel-closures-changed
-
 """
     tf = signal_handler_is_connected(widget, id)
 

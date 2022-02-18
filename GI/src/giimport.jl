@@ -46,7 +46,7 @@ function enum_decl2(enum)
     end
     bloc = Expr(:block)
     push!(bloc.args,body)
-    bloc
+    unblock(bloc)
 end
 
 function enum_decls(ns)
@@ -219,41 +219,6 @@ function gobject_decl(objectinfo)
     pg_type = get_g_type(parentinfo)
     pname = Symbol(GI.GLib.g_type_name(pg_type))
 
-    # property info
-    d=prop_dict_incl_parents(objectinfo)
-    for i in get_interfaces(objectinfo)
-        di=prop_dict(i)
-        d=merge(di,d)
-    end
-    READABLE   = 0x00000001
-    WRITABLE   = 0x00000002
-    rd=filter((p->p.second[3] & READABLE!=0),d)
-    wd=filter((p->p.second[3] & WRITABLE!=0),d)
-    propnames=vcat([:handle],collect(keys(d)))
-    propexprs=Expr[]
-    if length(d)>0
-        propexpr=quote
-            Base.propertynames(o::$leafname) = $propnames
-            function Base.getproperty(o::$leafname,name::Symbol)
-                d=$rd
-                if in(name,keys(d))
-                    return get_gtk_property(o,name,eval(d[name][1]))
-                else
-                    return getfield(o,name)
-                end
-            end
-            function Base.setproperty!(o::$leafname,name::Symbol,x)
-                d=$wd
-                if in(name,keys(d))
-                    set_gtk_property!(o,name,x)
-                else
-                    setfield!(o,name,x)
-                end
-            end
-        end
-        push!(propexprs,propexpr)
-    end
-
     decl=quote
         abstract type $oname <: $pname end
     end
@@ -288,7 +253,6 @@ function gobject_decl(objectinfo)
         function $oname(args...; kwargs...)
             $leafname(args...; kwargs...)
         end
-        $(propexprs...)
     end
     push!(exprs, decl)
     exprs
@@ -722,6 +686,10 @@ function symbol_from_lib(libname)
         return :libgdk3
     elseif occursin("libgtk-3",libname)
         return :libgtk3
+    elseif occursin("libgraphene",libname)
+        return :libgraphene
+    elseif occursin("libgtk-4",libname)
+        return :libgtk4
     end
     libname
 end

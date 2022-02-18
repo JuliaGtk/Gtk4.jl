@@ -230,7 +230,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -263,7 +263,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -296,7 +296,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -316,27 +316,6 @@ $(Expr(:toplevel, quote
         function GApplication(args...; kwargs...)
             GApplicationLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GApplicationLeaf) = begin
-                    [:handle, :resource_base_path, :is_remote, :is_busy, :application_id, :flags, :is_registered, :action_group, :inactivity_timeout]
-                end
-            function Base.getproperty(o::GApplicationLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:resource_base_path => (:String, 0, 3), :is_remote => (:Bool, 0, 1), :is_busy => (:Bool, 0, 1), :application_id => (:String, 0, 7), :flags => (:Int32, 0, 3), :is_registered => (:Bool, 0, 1), :inactivity_timeout => (:UInt32, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GApplicationLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:resource_base_path => (:String, 0, 3), :application_id => (:String, 0, 7), :flags => (:Int32, 0, 3), :action_group => (:GActionGroup, 0, 2), :inactivity_timeout => (:UInt32, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GApplicationCommandLine <: GObject end
@@ -350,7 +329,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -370,27 +349,6 @@ $(Expr(:toplevel, quote
         function GApplicationCommandLine(args...; kwargs...)
             GApplicationCommandLineLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GApplicationCommandLineLeaf) = begin
-                    [:handle, :is_remote, :options, :platform_data, :arguments]
-                end
-            function Base.getproperty(o::GApplicationCommandLineLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:is_remote => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GApplicationCommandLineLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:options => (:GVariant, 0, 10), :platform_data => (:GVariant, 0, 10), :arguments => (:GVariant, 0, 10))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GInputStream <: GObject end
@@ -404,7 +362,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -437,7 +395,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -457,27 +415,6 @@ $(Expr(:toplevel, quote
         function GFilterInputStream(args...; kwargs...)
             GFilterInputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GFilterInputStreamLeaf) = begin
-                    [:handle, :close_base_stream, :base_stream]
-                end
-            function Base.getproperty(o::GFilterInputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 7), :base_stream => (:GInputStream, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GFilterInputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 7), :base_stream => (:GInputStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GBufferedInputStream <: GFilterInputStream end
@@ -491,7 +428,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -511,27 +448,6 @@ $(Expr(:toplevel, quote
         function GBufferedInputStream(args...; kwargs...)
             GBufferedInputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GBufferedInputStreamLeaf) = begin
-                    [:handle, :close_base_stream, :buffer_size, :base_stream]
-                end
-            function Base.getproperty(o::GBufferedInputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 7), :buffer_size => (:UInt32, 0, 7), :base_stream => (:GInputStream, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GBufferedInputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 7), :buffer_size => (:UInt32, 0, 7), :base_stream => (:GInputStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GOutputStream <: GObject end
@@ -545,7 +461,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -578,7 +494,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -598,27 +514,6 @@ $(Expr(:toplevel, quote
         function GFilterOutputStream(args...; kwargs...)
             GFilterOutputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GFilterOutputStreamLeaf) = begin
-                    [:handle, :close_base_stream, :base_stream]
-                end
-            function Base.getproperty(o::GFilterOutputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 11), :base_stream => (:GOutputStream, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GFilterOutputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 11), :base_stream => (:GOutputStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GBufferedOutputStream <: GFilterOutputStream end
@@ -632,7 +527,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -652,27 +547,6 @@ $(Expr(:toplevel, quote
         function GBufferedOutputStream(args...; kwargs...)
             GBufferedOutputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GBufferedOutputStreamLeaf) = begin
-                    [:handle, :close_base_stream, :buffer_size, :auto_grow, :base_stream]
-                end
-            function Base.getproperty(o::GBufferedOutputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 11), :buffer_size => (:UInt32, 0, 7), :auto_grow => (:Bool, 0, 3), :base_stream => (:GOutputStream, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GBufferedOutputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 11), :buffer_size => (:UInt32, 0, 7), :auto_grow => (:Bool, 0, 3), :base_stream => (:GOutputStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GBytesIcon <: GObject end
@@ -686,7 +560,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -706,27 +580,6 @@ $(Expr(:toplevel, quote
         function GBytesIcon(args...; kwargs...)
             GBytesIconLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GBytesIconLeaf) = begin
-                    [:handle, :bytes]
-                end
-            function Base.getproperty(o::GBytesIconLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:bytes => (:GBytes, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GBytesIconLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:bytes => (:GBytes, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GCancellable <: GObject end
@@ -740,7 +593,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -773,7 +626,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -793,27 +646,6 @@ $(Expr(:toplevel, quote
         function GCharsetConverter(args...; kwargs...)
             GCharsetConverterLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GCharsetConverterLeaf) = begin
-                    [:handle, :to_charset, :use_fallback, :from_charset]
-                end
-            function Base.getproperty(o::GCharsetConverterLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:to_charset => (:String, 0, 11), :use_fallback => (:Bool, 0, 7), :from_charset => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GCharsetConverterLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:to_charset => (:String, 0, 11), :use_fallback => (:Bool, 0, 7), :from_charset => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GConverterInputStream <: GFilterInputStream end
@@ -827,7 +659,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -847,27 +679,6 @@ $(Expr(:toplevel, quote
         function GConverterInputStream(args...; kwargs...)
             GConverterInputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GConverterInputStreamLeaf) = begin
-                    [:handle, :close_base_stream, :converter, :base_stream]
-                end
-            function Base.getproperty(o::GConverterInputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 7), :converter => (:GConverter, 0, 11), :base_stream => (:GInputStream, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GConverterInputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 7), :converter => (:GConverter, 0, 11), :base_stream => (:GInputStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GConverterOutputStream <: GFilterOutputStream end
@@ -881,7 +692,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -901,27 +712,6 @@ $(Expr(:toplevel, quote
         function GConverterOutputStream(args...; kwargs...)
             GConverterOutputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GConverterOutputStreamLeaf) = begin
-                    [:handle, :close_base_stream, :converter, :base_stream]
-                end
-            function Base.getproperty(o::GConverterOutputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 11), :converter => (:GConverter, 0, 11), :base_stream => (:GOutputStream, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GConverterOutputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 11), :converter => (:GConverter, 0, 11), :base_stream => (:GOutputStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GCredentials <: GObject end
@@ -935,7 +725,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -968,7 +758,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1001,7 +791,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1034,7 +824,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1054,27 +844,6 @@ $(Expr(:toplevel, quote
         function GDBusConnection(args...; kwargs...)
             GDBusConnectionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusConnectionLeaf) = begin
-                    [:handle, :address, :authentication_observer, :capabilities, :exit_on_close, :flags, :guid, :stream, :unique_name, :closed]
-                end
-            function Base.getproperty(o::GDBusConnectionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:exit_on_close => (:Bool, 0, 3), :capabilities => (:Int32, 0, 1), :guid => (:String, 0, 11), :flags => (:Int32, 0, 11), :stream => (:GIOStream, 0, 11), :unique_name => (:String, 0, 1), :closed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusConnectionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:address => (:String, 0, 10), :authentication_observer => (:GDBusAuthObserver, 0, 10), :exit_on_close => (:Bool, 0, 3), :guid => (:String, 0, 11), :flags => (:Int32, 0, 11), :stream => (:GIOStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDBusInterfaceSkeleton <: GObject end
@@ -1088,7 +857,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1108,27 +877,6 @@ $(Expr(:toplevel, quote
         function GDBusInterfaceSkeleton(args...; kwargs...)
             GDBusInterfaceSkeletonLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusInterfaceSkeletonLeaf) = begin
-                    [:handle, :g_flags]
-                end
-            function Base.getproperty(o::GDBusInterfaceSkeletonLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:g_flags => (:Int32, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusInterfaceSkeletonLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:g_flags => (:Int32, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GMenuModel <: GObject end
@@ -1142,7 +890,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1175,7 +923,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1208,7 +956,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1228,27 +976,6 @@ $(Expr(:toplevel, quote
         function GDBusMessage(args...; kwargs...)
             GDBusMessageLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusMessageLeaf) = begin
-                    [:handle, :locked]
-                end
-            function Base.getproperty(o::GDBusMessageLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:locked => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusMessageLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDBusMethodInvocation <: GObject end
@@ -1262,7 +989,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1295,7 +1022,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1315,27 +1042,6 @@ $(Expr(:toplevel, quote
         function GDBusObjectManagerClient(args...; kwargs...)
             GDBusObjectManagerClientLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusObjectManagerClientLeaf) = begin
-                    [:handle, :bus_type, :flags, :name, :name_owner, :object_path, :get_proxy_type_func, :connection, :get_proxy_type_user_data, :get_proxy_type_destroy_notify]
-                end
-            function Base.getproperty(o::GDBusObjectManagerClientLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:flags => (:Int32, 0, 11), :name => (:String, 0, 11), :name_owner => (:String, 0, 1), :object_path => (:String, 0, 11), :get_proxy_type_func => (:Nothing, 0, 11), :connection => (:GDBusConnection, 0, 11), :get_proxy_type_user_data => (:Nothing, 0, 11), :get_proxy_type_destroy_notify => (:Nothing, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusObjectManagerClientLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:get_proxy_type_destroy_notify => (:Nothing, 0, 11), :flags => (:Int32, 0, 11), :name => (:String, 0, 11), :object_path => (:String, 0, 11), :get_proxy_type_func => (:Nothing, 0, 11), :bus_type => (:BusType, 0, 10), :connection => (:GDBusConnection, 0, 11), :get_proxy_type_user_data => (:Nothing, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDBusObjectManagerServer <: GObject end
@@ -1349,7 +1055,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1369,27 +1075,6 @@ $(Expr(:toplevel, quote
         function GDBusObjectManagerServer(args...; kwargs...)
             GDBusObjectManagerServerLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusObjectManagerServerLeaf) = begin
-                    [:handle, :object_path, :connection]
-                end
-            function Base.getproperty(o::GDBusObjectManagerServerLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:object_path => (:String, 0, 11), :connection => (:GDBusConnection, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusObjectManagerServerLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:object_path => (:String, 0, 11), :connection => (:GDBusConnection, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDBusObjectProxy <: GObject end
@@ -1403,7 +1088,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1423,27 +1108,6 @@ $(Expr(:toplevel, quote
         function GDBusObjectProxy(args...; kwargs...)
             GDBusObjectProxyLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusObjectProxyLeaf) = begin
-                    [:handle, :g_object_path, :g_connection]
-                end
-            function Base.getproperty(o::GDBusObjectProxyLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:g_object_path => (:String, 0, 11), :g_connection => (:GDBusConnection, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusObjectProxyLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:g_object_path => (:String, 0, 11), :g_connection => (:GDBusConnection, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDBusObjectSkeleton <: GObject end
@@ -1457,7 +1121,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1477,27 +1141,6 @@ $(Expr(:toplevel, quote
         function GDBusObjectSkeleton(args...; kwargs...)
             GDBusObjectSkeletonLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusObjectSkeletonLeaf) = begin
-                    [:handle, :g_object_path]
-                end
-            function Base.getproperty(o::GDBusObjectSkeletonLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:g_object_path => (:String, 0, 7))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusObjectSkeletonLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:g_object_path => (:String, 0, 7))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDBusProxy <: GObject end
@@ -1511,7 +1154,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1531,27 +1174,6 @@ $(Expr(:toplevel, quote
         function GDBusProxy(args...; kwargs...)
             GDBusProxyLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusProxyLeaf) = begin
-                    [:handle, :g_name_owner, :g_bus_type, :g_default_timeout, :g_interface_name, :g_interface_info, :g_object_path, :g_flags, :g_connection, :g_name]
-                end
-            function Base.getproperty(o::GDBusProxyLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:g_name_owner => (:String, 0, 1), :g_interface_name => (:String, 0, 11), :g_default_timeout => (:Int32, 0, 7), :g_interface_info => (:GDBusInterfaceInfo, 0, 3), :g_object_path => (:String, 0, 11), :g_flags => (:Int32, 0, 11), :g_connection => (:GDBusConnection, 0, 11), :g_name => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusProxyLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:g_bus_type => (:BusType, 0, 10), :g_default_timeout => (:Int32, 0, 7), :g_interface_name => (:String, 0, 11), :g_interface_info => (:GDBusInterfaceInfo, 0, 3), :g_object_path => (:String, 0, 11), :g_flags => (:Int32, 0, 11), :g_connection => (:GDBusConnection, 0, 11), :g_name => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDBusServer <: GObject end
@@ -1565,7 +1187,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1585,27 +1207,6 @@ $(Expr(:toplevel, quote
         function GDBusServer(args...; kwargs...)
             GDBusServerLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDBusServerLeaf) = begin
-                    [:handle, :client_address, :address, :authentication_observer, :guid, :active, :flags]
-                end
-            function Base.getproperty(o::GDBusServerLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:client_address => (:String, 0, 1), :address => (:String, 0, 11), :authentication_observer => (:GDBusAuthObserver, 0, 11), :guid => (:String, 0, 11), :active => (:Bool, 0, 1), :flags => (:Int32, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDBusServerLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:address => (:String, 0, 11), :authentication_observer => (:GDBusAuthObserver, 0, 11), :guid => (:String, 0, 11), :flags => (:Int32, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDataInputStream <: GBufferedInputStream end
@@ -1619,7 +1220,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1639,27 +1240,6 @@ $(Expr(:toplevel, quote
         function GDataInputStream(args...; kwargs...)
             GDataInputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDataInputStreamLeaf) = begin
-                    [:handle, :close_base_stream, :newline_type, :buffer_size, :base_stream, :byte_order]
-                end
-            function Base.getproperty(o::GDataInputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 7), :newline_type => (:DataStreamNewlineType, 0, 3), :buffer_size => (:UInt32, 0, 7), :base_stream => (:GInputStream, 0, 11), :byte_order => (:DataStreamByteOrder, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDataInputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 7), :newline_type => (:DataStreamNewlineType, 0, 3), :buffer_size => (:UInt32, 0, 7), :base_stream => (:GInputStream, 0, 11), :byte_order => (:DataStreamByteOrder, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDataOutputStream <: GFilterOutputStream end
@@ -1673,7 +1253,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1693,27 +1273,6 @@ $(Expr(:toplevel, quote
         function GDataOutputStream(args...; kwargs...)
             GDataOutputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDataOutputStreamLeaf) = begin
-                    [:handle, :close_base_stream, :base_stream, :byte_order]
-                end
-            function Base.getproperty(o::GDataOutputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 11), :base_stream => (:GOutputStream, 0, 11), :byte_order => (:DataStreamByteOrder, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDataOutputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_base_stream => (:Bool, 0, 11), :base_stream => (:GOutputStream, 0, 11), :byte_order => (:DataStreamByteOrder, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GDesktopAppInfo <: GObject end
@@ -1727,7 +1286,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1747,27 +1306,6 @@ $(Expr(:toplevel, quote
         function GDesktopAppInfo(args...; kwargs...)
             GDesktopAppInfoLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GDesktopAppInfoLeaf) = begin
-                    [:handle, :filename]
-                end
-            function Base.getproperty(o::GDesktopAppInfoLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:filename => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GDesktopAppInfoLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:filename => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GEmblem <: GObject end
@@ -1781,7 +1319,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1801,27 +1339,6 @@ $(Expr(:toplevel, quote
         function GEmblem(args...; kwargs...)
             GEmblemLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GEmblemLeaf) = begin
-                    [:handle, :origin, :icon]
-                end
-            function Base.getproperty(o::GEmblemLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:origin => (:EmblemOrigin, 0, 11), :icon => (:GObject, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GEmblemLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:origin => (:EmblemOrigin, 0, 11), :icon => (:GObject, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GEmblemedIcon <: GObject end
@@ -1835,7 +1352,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1855,27 +1372,6 @@ $(Expr(:toplevel, quote
         function GEmblemedIcon(args...; kwargs...)
             GEmblemedIconLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GEmblemedIconLeaf) = begin
-                    [:handle, :gicon]
-                end
-            function Base.getproperty(o::GEmblemedIconLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:gicon => (:GIcon, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GEmblemedIconLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:gicon => (:GIcon, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GFileEnumerator <: GObject end
@@ -1889,7 +1385,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1909,27 +1405,6 @@ $(Expr(:toplevel, quote
         function GFileEnumerator(args...; kwargs...)
             GFileEnumeratorLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GFileEnumeratorLeaf) = begin
-                    [:handle, :container]
-                end
-            function Base.getproperty(o::GFileEnumeratorLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GFileEnumeratorLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:container => (:GFile, 0, 10))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GIOStream <: GObject end
@@ -1943,7 +1418,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -1963,27 +1438,6 @@ $(Expr(:toplevel, quote
         function GIOStream(args...; kwargs...)
             GIOStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GIOStreamLeaf) = begin
-                    [:handle, :output_stream, :input_stream, :closed]
-                end
-            function Base.getproperty(o::GIOStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:output_stream => (:GOutputStream, 0, 1), :input_stream => (:GInputStream, 0, 1), :closed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GIOStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GFileIOStream <: GIOStream end
@@ -1997,7 +1451,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2017,27 +1471,6 @@ $(Expr(:toplevel, quote
         function GFileIOStream(args...; kwargs...)
             GFileIOStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GFileIOStreamLeaf) = begin
-                    [:handle, :output_stream, :input_stream, :closed]
-                end
-            function Base.getproperty(o::GFileIOStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:output_stream => (:GOutputStream, 0, 1), :input_stream => (:GInputStream, 0, 1), :closed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GFileIOStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GFileIcon <: GObject end
@@ -2051,7 +1484,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2071,27 +1504,6 @@ $(Expr(:toplevel, quote
         function GFileIcon(args...; kwargs...)
             GFileIconLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GFileIconLeaf) = begin
-                    [:handle, :file]
-                end
-            function Base.getproperty(o::GFileIconLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:file => (:GFile, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GFileIconLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:file => (:GFile, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GFileInfo <: GObject end
@@ -2105,7 +1517,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2138,7 +1550,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2171,7 +1583,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2191,27 +1603,6 @@ $(Expr(:toplevel, quote
         function GFileMonitor(args...; kwargs...)
             GFileMonitorLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GFileMonitorLeaf) = begin
-                    [:handle, :cancelled, :rate_limit]
-                end
-            function Base.getproperty(o::GFileMonitorLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:cancelled => (:Bool, 0, 1), :rate_limit => (:Int32, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GFileMonitorLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:rate_limit => (:Int32, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GFileOutputStream <: GOutputStream end
@@ -2225,7 +1616,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2258,7 +1649,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2291,7 +1682,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2324,7 +1715,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2344,27 +1735,6 @@ $(Expr(:toplevel, quote
         function GInetAddress(args...; kwargs...)
             GInetAddressLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GInetAddressLeaf) = begin
-                    [:handle, :is_loopback, :is_any, :is_mc_global, :is_multicast, :is_site_local, :is_mc_org_local, :is_mc_link_local, :is_mc_node_local, :bytes, :is_mc_site_local, :is_link_local, :family]
-                end
-            function Base.getproperty(o::GInetAddressLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:is_loopback => (:Bool, 0, 1), :is_any => (:Bool, 0, 1), :is_mc_global => (:Bool, 0, 1), :is_multicast => (:Bool, 0, 1), :is_site_local => (:Bool, 0, 1), :is_mc_org_local => (:Bool, 0, 1), :is_mc_link_local => (:Bool, 0, 1), :is_mc_node_local => (:Bool, 0, 1), :bytes => (:Nothing, 0, 11), :is_mc_site_local => (:Bool, 0, 1), :is_link_local => (:Bool, 0, 1), :family => (:SocketFamily, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GInetAddressLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:family => (:SocketFamily, 0, 11), :bytes => (:Nothing, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GInetAddressMask <: GObject end
@@ -2378,7 +1748,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2398,27 +1768,6 @@ $(Expr(:toplevel, quote
         function GInetAddressMask(args...; kwargs...)
             GInetAddressMaskLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GInetAddressMaskLeaf) = begin
-                    [:handle, :address, :family, :length]
-                end
-            function Base.getproperty(o::GInetAddressMaskLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:address => (:GInetAddress, 0, 3), :family => (:SocketFamily, 0, 1), :length => (:UInt32, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GInetAddressMaskLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:address => (:GInetAddress, 0, 3), :length => (:UInt32, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSocketAddress <: GObject end
@@ -2432,7 +1781,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2452,27 +1801,6 @@ $(Expr(:toplevel, quote
         function GSocketAddress(args...; kwargs...)
             GSocketAddressLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSocketAddressLeaf) = begin
-                    [:handle, :family]
-                end
-            function Base.getproperty(o::GSocketAddressLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:family => (:SocketFamily, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSocketAddressLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GInetSocketAddress <: GSocketAddress end
@@ -2486,7 +1814,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2506,27 +1834,6 @@ $(Expr(:toplevel, quote
         function GInetSocketAddress(args...; kwargs...)
             GInetSocketAddressLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GInetSocketAddressLeaf) = begin
-                    [:handle, :scope_id, :address, :family, :port, :flowinfo]
-                end
-            function Base.getproperty(o::GInetSocketAddressLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:scope_id => (:UInt32, 0, 11), :address => (:GInetAddress, 0, 11), :family => (:SocketFamily, 0, 1), :port => (:UInt32, 0, 11), :flowinfo => (:UInt32, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GInetSocketAddressLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:scope_id => (:UInt32, 0, 11), :address => (:GInetAddress, 0, 11), :port => (:UInt32, 0, 11), :flowinfo => (:UInt32, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GListStore <: GObject end
@@ -2540,7 +1847,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2560,27 +1867,6 @@ $(Expr(:toplevel, quote
         function GListStore(args...; kwargs...)
             GListStoreLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GListStoreLeaf) = begin
-                    [:handle, :item_type]
-                end
-            function Base.getproperty(o::GListStoreLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:item_type => (:UInt64, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GListStoreLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:item_type => (:UInt64, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GMemoryInputStream <: GInputStream end
@@ -2594,7 +1880,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2627,7 +1913,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2647,27 +1933,6 @@ $(Expr(:toplevel, quote
         function GMemoryOutputStream(args...; kwargs...)
             GMemoryOutputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GMemoryOutputStreamLeaf) = begin
-                    [:handle, :data_size, :size, :data]
-                end
-            function Base.getproperty(o::GMemoryOutputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:data_size => (:UInt64, 0, 1), :size => (:UInt64, 0, 11), :data => (:Nothing, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GMemoryOutputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:size => (:UInt64, 0, 11), :data => (:Nothing, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GMenu <: GMenuModel end
@@ -2681,7 +1946,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2714,7 +1979,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2747,7 +2012,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2780,7 +2045,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2813,7 +2078,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2833,27 +2098,6 @@ $(Expr(:toplevel, quote
         function GMountOperation(args...; kwargs...)
             GMountOperationLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GMountOperationLeaf) = begin
-                    [:handle, :anonymous, :choice, :password_save, :pim, :is_tcrypt_system_volume, :password, :domain, :is_tcrypt_hidden_volume, :username]
-                end
-            function Base.getproperty(o::GMountOperationLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:anonymous => (:Bool, 0, 3), :choice => (:Int32, 0, 3), :password_save => (:PasswordSave, 0, 3), :pim => (:UInt32, 0, 3), :is_tcrypt_system_volume => (:Bool, 0, 3), :password => (:String, 0, 3), :domain => (:String, 0, 3), :is_tcrypt_hidden_volume => (:Bool, 0, 3), :username => (:String, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GMountOperationLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:anonymous => (:Bool, 0, 3), :choice => (:Int32, 0, 3), :password_save => (:PasswordSave, 0, 3), :pim => (:UInt32, 0, 3), :is_tcrypt_system_volume => (:Bool, 0, 3), :password => (:String, 0, 3), :domain => (:String, 0, 3), :is_tcrypt_hidden_volume => (:Bool, 0, 3), :username => (:String, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GNativeSocketAddress <: GSocketAddress end
@@ -2867,7 +2111,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2887,27 +2131,6 @@ $(Expr(:toplevel, quote
         function GNativeSocketAddress(args...; kwargs...)
             GNativeSocketAddressLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GNativeSocketAddressLeaf) = begin
-                    [:handle, :family]
-                end
-            function Base.getproperty(o::GNativeSocketAddressLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:family => (:SocketFamily, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GNativeSocketAddressLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GVolumeMonitor <: GObject end
@@ -2921,7 +2144,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2954,7 +2177,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -2987,7 +2210,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3007,27 +2230,6 @@ $(Expr(:toplevel, quote
         function GNetworkAddress(args...; kwargs...)
             GNetworkAddressLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GNetworkAddressLeaf) = begin
-                    [:handle, :scheme, :hostname, :port]
-                end
-            function Base.getproperty(o::GNetworkAddressLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:scheme => (:String, 0, 11), :hostname => (:String, 0, 11), :port => (:UInt32, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GNetworkAddressLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:scheme => (:String, 0, 11), :hostname => (:String, 0, 11), :port => (:UInt32, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GNetworkService <: GObject end
@@ -3041,7 +2243,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3061,27 +2263,6 @@ $(Expr(:toplevel, quote
         function GNetworkService(args...; kwargs...)
             GNetworkServiceLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GNetworkServiceLeaf) = begin
-                    [:handle, :scheme, :service, :protocol, :domain]
-                end
-            function Base.getproperty(o::GNetworkServiceLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:scheme => (:String, 0, 3), :service => (:String, 0, 11), :protocol => (:String, 0, 11), :domain => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GNetworkServiceLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:scheme => (:String, 0, 3), :service => (:String, 0, 11), :protocol => (:String, 0, 11), :domain => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GNotification <: GObject end
@@ -3095,7 +2276,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3128,7 +2309,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3148,27 +2329,6 @@ $(Expr(:toplevel, quote
         function GPermission(args...; kwargs...)
             GPermissionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GPermissionLeaf) = begin
-                    [:handle, :can_release, :can_acquire, :allowed]
-                end
-            function Base.getproperty(o::GPermissionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:can_release => (:Bool, 0, 1), :can_acquire => (:Bool, 0, 1), :allowed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GPermissionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GPropertyAction <: GObject end
@@ -3182,7 +2342,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3202,27 +2362,6 @@ $(Expr(:toplevel, quote
         function GPropertyAction(args...; kwargs...)
             GPropertyActionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GPropertyActionLeaf) = begin
-                    [:handle, :parameter_type, :enabled, :name, :state, :property_name, :invert_boolean, :state_type, :object]
-                end
-            function Base.getproperty(o::GPropertyActionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:parameter_type => (:GVariantType, 0, 1), :enabled => (:Bool, 0, 1), :name => (:String, 0, 11), :state => (:GVariant, 0, 1), :invert_boolean => (:Bool, 0, 11), :state_type => (:GVariantType, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GPropertyActionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:name => (:String, 0, 11), :property_name => (:String, 0, 10), :invert_boolean => (:Bool, 0, 11), :object => (:GObject, 0, 10))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GProxyAddress <: GInetSocketAddress end
@@ -3236,7 +2375,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3256,27 +2395,6 @@ $(Expr(:toplevel, quote
         function GProxyAddress(args...; kwargs...)
             GProxyAddressLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GProxyAddressLeaf) = begin
-                    [:handle, :scope_id, :destination_port, :flowinfo, :protocol, :destination_protocol, :username, :address, :family, :port, :password, :destination_hostname, :uri]
-                end
-            function Base.getproperty(o::GProxyAddressLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:scope_id => (:UInt32, 0, 11), :destination_port => (:UInt32, 0, 11), :flowinfo => (:UInt32, 0, 11), :protocol => (:String, 0, 11), :destination_protocol => (:String, 0, 11), :username => (:String, 0, 11), :address => (:GInetAddress, 0, 11), :family => (:SocketFamily, 0, 1), :port => (:UInt32, 0, 11), :password => (:String, 0, 11), :destination_hostname => (:String, 0, 11), :uri => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GProxyAddressLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:scope_id => (:UInt32, 0, 11), :destination_port => (:UInt32, 0, 11), :flowinfo => (:UInt32, 0, 11), :protocol => (:String, 0, 11), :destination_protocol => (:String, 0, 11), :username => (:String, 0, 11), :address => (:GInetAddress, 0, 11), :port => (:UInt32, 0, 11), :password => (:String, 0, 11), :destination_hostname => (:String, 0, 11), :uri => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSocketAddressEnumerator <: GObject end
@@ -3290,7 +2408,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3323,7 +2441,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3343,27 +2461,6 @@ $(Expr(:toplevel, quote
         function GProxyAddressEnumerator(args...; kwargs...)
             GProxyAddressEnumeratorLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GProxyAddressEnumeratorLeaf) = begin
-                    [:handle, :default_port, :proxy_resolver, :connectable, :uri]
-                end
-            function Base.getproperty(o::GProxyAddressEnumeratorLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:default_port => (:UInt32, 0, 11), :proxy_resolver => (:GProxyResolver, 0, 7), :connectable => (:GSocketConnectable, 0, 11), :uri => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GProxyAddressEnumeratorLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:default_port => (:UInt32, 0, 11), :proxy_resolver => (:GProxyResolver, 0, 7), :connectable => (:GSocketConnectable, 0, 11), :uri => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GResolver <: GObject end
@@ -3377,7 +2474,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3410,7 +2507,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3430,27 +2527,6 @@ $(Expr(:toplevel, quote
         function GSettings(args...; kwargs...)
             GSettingsLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSettingsLeaf) = begin
-                    [:handle, :settings_schema, :path, :schema_id, :has_unapplied, :backend, :delay_apply, :schema]
-                end
-            function Base.getproperty(o::GSettingsLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:settings_schema => (:GSettingsSchema, 0, 11), :path => (:String, 0, 11), :schema_id => (:String, 0, 11), :has_unapplied => (:Bool, 0, 1), :backend => (:GSettingsBackend, 0, 11), :delay_apply => (:Bool, 0, 1), :schema => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSettingsLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:settings_schema => (:GSettingsSchema, 0, 11), :path => (:String, 0, 11), :schema_id => (:String, 0, 11), :backend => (:GSettingsBackend, 0, 11), :schema => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSettingsBackend <: GObject end
@@ -3464,7 +2540,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3497,7 +2573,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3517,27 +2593,6 @@ $(Expr(:toplevel, quote
         function GSimpleAction(args...; kwargs...)
             GSimpleActionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSimpleActionLeaf) = begin
-                    [:handle, :parameter_type, :enabled, :name, :state, :state_type]
-                end
-            function Base.getproperty(o::GSimpleActionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:parameter_type => (:GVariantType, 0, 11), :enabled => (:Bool, 0, 3), :name => (:String, 0, 11), :state => (:GVariant, 0, 7), :state_type => (:GVariantType, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSimpleActionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:parameter_type => (:GVariantType, 0, 11), :enabled => (:Bool, 0, 3), :name => (:String, 0, 11), :state => (:GVariant, 0, 7))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSimpleActionGroup <: GObject end
@@ -3551,7 +2606,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3584,7 +2639,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3617,7 +2672,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3637,27 +2692,6 @@ $(Expr(:toplevel, quote
         function GSimpleIOStream(args...; kwargs...)
             GSimpleIOStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSimpleIOStreamLeaf) = begin
-                    [:handle, :output_stream, :input_stream, :closed]
-                end
-            function Base.getproperty(o::GSimpleIOStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:output_stream => (:GOutputStream, 0, 11), :input_stream => (:GInputStream, 0, 11), :closed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSimpleIOStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:output_stream => (:GOutputStream, 0, 11), :input_stream => (:GInputStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSimplePermission <: GPermission end
@@ -3671,7 +2705,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3691,27 +2725,6 @@ $(Expr(:toplevel, quote
         function GSimplePermission(args...; kwargs...)
             GSimplePermissionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSimplePermissionLeaf) = begin
-                    [:handle, :can_release, :can_acquire, :allowed]
-                end
-            function Base.getproperty(o::GSimplePermissionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:can_release => (:Bool, 0, 1), :can_acquire => (:Bool, 0, 1), :allowed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSimplePermissionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSimpleProxyResolver <: GObject end
@@ -3725,7 +2738,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3745,27 +2758,6 @@ $(Expr(:toplevel, quote
         function GSimpleProxyResolver(args...; kwargs...)
             GSimpleProxyResolverLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSimpleProxyResolverLeaf) = begin
-                    [:handle, :default_proxy, :ignore_hosts]
-                end
-            function Base.getproperty(o::GSimpleProxyResolverLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:default_proxy => (:String, 0, 3), :ignore_hosts => (:(Array{GI.TypeDesc{Type{String}}(String, :(Union{AbstractString, Symbol}), :String, :Cstring)}), 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSimpleProxyResolverLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:default_proxy => (:String, 0, 3), :ignore_hosts => (:(Array{GI.TypeDesc{Type{String}}(String, :(Union{AbstractString, Symbol}), :String, :Cstring)}), 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSocket <: GObject end
@@ -3779,7 +2771,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3799,27 +2791,6 @@ $(Expr(:toplevel, quote
         function GSocket(args...; kwargs...)
             GSocketLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSocketLeaf) = begin
-                    [:handle, :keepalive, :remote_address, :fd, :broadcast, :timeout, :protocol, :ttl, :multicast_ttl, :listen_backlog, :blocking, :family, :type, :local_address, :multicast_loopback]
-                end
-            function Base.getproperty(o::GSocketLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:keepalive => (:Bool, 0, 3), :remote_address => (:GSocketAddress, 0, 1), :fd => (:Int32, 0, 11), :broadcast => (:Bool, 0, 3), :timeout => (:UInt32, 0, 3), :protocol => (:SocketProtocol, 0, 11), :ttl => (:UInt32, 0, 3), :multicast_ttl => (:UInt32, 0, 3), :listen_backlog => (:Int32, 0, 3), :blocking => (:Bool, 0, 3), :family => (:SocketFamily, 0, 11), :type => (:SocketType, 0, 11), :local_address => (:GSocketAddress, 0, 1), :multicast_loopback => (:Bool, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSocketLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:keepalive => (:Bool, 0, 3), :fd => (:Int32, 0, 11), :broadcast => (:Bool, 0, 3), :timeout => (:UInt32, 0, 3), :protocol => (:SocketProtocol, 0, 11), :ttl => (:UInt32, 0, 3), :multicast_ttl => (:UInt32, 0, 3), :listen_backlog => (:Int32, 0, 3), :blocking => (:Bool, 0, 3), :family => (:SocketFamily, 0, 11), :type => (:SocketType, 0, 11), :multicast_loopback => (:Bool, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSocketClient <: GObject end
@@ -3833,7 +2804,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3853,27 +2824,6 @@ $(Expr(:toplevel, quote
         function GSocketClient(args...; kwargs...)
             GSocketClientLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSocketClientLeaf) = begin
-                    [:handle, :tls_validation_flags, :tls, :family, :proxy_resolver, :type, :timeout, :enable_proxy, :protocol, :local_address]
-                end
-            function Base.getproperty(o::GSocketClientLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:tls_validation_flags => (:Int32, 0, 7), :tls => (:Bool, 0, 7), :family => (:SocketFamily, 0, 7), :proxy_resolver => (:GProxyResolver, 0, 7), :type => (:SocketType, 0, 7), :timeout => (:UInt32, 0, 7), :enable_proxy => (:Bool, 0, 7), :protocol => (:SocketProtocol, 0, 7), :local_address => (:GSocketAddress, 0, 7))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSocketClientLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:tls_validation_flags => (:Int32, 0, 7), :tls => (:Bool, 0, 7), :family => (:SocketFamily, 0, 7), :proxy_resolver => (:GProxyResolver, 0, 7), :type => (:SocketType, 0, 7), :timeout => (:UInt32, 0, 7), :enable_proxy => (:Bool, 0, 7), :protocol => (:SocketProtocol, 0, 7), :local_address => (:GSocketAddress, 0, 7))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSocketConnection <: GIOStream end
@@ -3887,7 +2837,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3907,27 +2857,6 @@ $(Expr(:toplevel, quote
         function GSocketConnection(args...; kwargs...)
             GSocketConnectionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSocketConnectionLeaf) = begin
-                    [:handle, :output_stream, :socket, :input_stream, :closed]
-                end
-            function Base.getproperty(o::GSocketConnectionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:output_stream => (:GOutputStream, 0, 1), :socket => (:GSocket, 0, 11), :input_stream => (:GInputStream, 0, 1), :closed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSocketConnectionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:socket => (:GSocket, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSocketControlMessage <: GObject end
@@ -3941,7 +2870,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3974,7 +2903,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -3994,27 +2923,6 @@ $(Expr(:toplevel, quote
         function GSocketListener(args...; kwargs...)
             GSocketListenerLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSocketListenerLeaf) = begin
-                    [:handle, :listen_backlog]
-                end
-            function Base.getproperty(o::GSocketListenerLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:listen_backlog => (:Int32, 0, 7))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSocketListenerLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:listen_backlog => (:Int32, 0, 7))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSocketService <: GSocketListener end
@@ -4028,7 +2936,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4048,27 +2956,6 @@ $(Expr(:toplevel, quote
         function GSocketService(args...; kwargs...)
             GSocketServiceLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSocketServiceLeaf) = begin
-                    [:handle, :listen_backlog, :active]
-                end
-            function Base.getproperty(o::GSocketServiceLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:listen_backlog => (:Int32, 0, 7), :active => (:Bool, 0, 7))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSocketServiceLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:listen_backlog => (:Int32, 0, 7), :active => (:Bool, 0, 7))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSubprocess <: GObject end
@@ -4082,7 +2969,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4102,27 +2989,6 @@ $(Expr(:toplevel, quote
         function GSubprocess(args...; kwargs...)
             GSubprocessLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSubprocessLeaf) = begin
-                    [:handle, :flags, :argv]
-                end
-            function Base.getproperty(o::GSubprocessLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSubprocessLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:flags => (:Int32, 0, 10), :argv => (:(Array{GI.TypeDesc{Type{String}}(String, :(Union{AbstractString, Symbol}), :String, :Cstring)}), 0, 10))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GSubprocessLauncher <: GObject end
@@ -4136,7 +3002,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4156,27 +3022,6 @@ $(Expr(:toplevel, quote
         function GSubprocessLauncher(args...; kwargs...)
             GSubprocessLauncherLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GSubprocessLauncherLeaf) = begin
-                    [:handle, :flags]
-                end
-            function Base.getproperty(o::GSubprocessLauncherLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GSubprocessLauncherLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:flags => (:Int32, 0, 10))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GTask <: GObject end
@@ -4190,7 +3035,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4210,27 +3055,6 @@ $(Expr(:toplevel, quote
         function GTask(args...; kwargs...)
             GTaskLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GTaskLeaf) = begin
-                    [:handle, :completed]
-                end
-            function Base.getproperty(o::GTaskLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:completed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GTaskLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}()
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GTcpConnection <: GSocketConnection end
@@ -4244,7 +3068,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4264,27 +3088,6 @@ $(Expr(:toplevel, quote
         function GTcpConnection(args...; kwargs...)
             GTcpConnectionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GTcpConnectionLeaf) = begin
-                    [:handle, :output_stream, :socket, :input_stream, :graceful_disconnect, :closed]
-                end
-            function Base.getproperty(o::GTcpConnectionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:output_stream => (:GOutputStream, 0, 1), :socket => (:GSocket, 0, 11), :input_stream => (:GInputStream, 0, 1), :graceful_disconnect => (:Bool, 0, 3), :closed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GTcpConnectionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:socket => (:GSocket, 0, 11), :graceful_disconnect => (:Bool, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GTcpWrapperConnection <: GTcpConnection end
@@ -4298,7 +3101,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4318,27 +3121,6 @@ $(Expr(:toplevel, quote
         function GTcpWrapperConnection(args...; kwargs...)
             GTcpWrapperConnectionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GTcpWrapperConnectionLeaf) = begin
-                    [:handle, :output_stream, :socket, :input_stream, :graceful_disconnect, :base_io_stream, :closed]
-                end
-            function Base.getproperty(o::GTcpWrapperConnectionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:output_stream => (:GOutputStream, 0, 1), :socket => (:GSocket, 0, 11), :input_stream => (:GInputStream, 0, 1), :graceful_disconnect => (:Bool, 0, 3), :base_io_stream => (:GIOStream, 0, 11), :closed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GTcpWrapperConnectionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:socket => (:GSocket, 0, 11), :graceful_disconnect => (:Bool, 0, 3), :base_io_stream => (:GIOStream, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GTestDBus <: GObject end
@@ -4352,7 +3134,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4372,27 +3154,6 @@ $(Expr(:toplevel, quote
         function GTestDBus(args...; kwargs...)
             GTestDBusLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GTestDBusLeaf) = begin
-                    [:handle, :flags]
-                end
-            function Base.getproperty(o::GTestDBusLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:flags => (:Int32, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GTestDBusLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:flags => (:Int32, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GThemedIcon <: GObject end
@@ -4406,7 +3167,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4426,27 +3187,6 @@ $(Expr(:toplevel, quote
         function GThemedIcon(args...; kwargs...)
             GThemedIconLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GThemedIconLeaf) = begin
-                    [:handle, :use_default_fallbacks, :name, :names]
-                end
-            function Base.getproperty(o::GThemedIconLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:use_default_fallbacks => (:Bool, 0, 11), :names => (:(Array{GI.TypeDesc{Type{String}}(String, :(Union{AbstractString, Symbol}), :String, :Cstring)}), 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GThemedIconLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:use_default_fallbacks => (:Bool, 0, 11), :name => (:String, 0, 10), :names => (:(Array{GI.TypeDesc{Type{String}}(String, :(Union{AbstractString, Symbol}), :String, :Cstring)}), 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GThreadedSocketService <: GSocketService end
@@ -4460,7 +3200,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4480,27 +3220,6 @@ $(Expr(:toplevel, quote
         function GThreadedSocketService(args...; kwargs...)
             GThreadedSocketServiceLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GThreadedSocketServiceLeaf) = begin
-                    [:handle, :listen_backlog, :active, :max_threads]
-                end
-            function Base.getproperty(o::GThreadedSocketServiceLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:listen_backlog => (:Int32, 0, 7), :active => (:Bool, 0, 7), :max_threads => (:Int32, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GThreadedSocketServiceLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:listen_backlog => (:Int32, 0, 7), :active => (:Bool, 0, 7), :max_threads => (:Int32, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GTlsCertificate <: GObject end
@@ -4514,7 +3233,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4534,27 +3253,6 @@ $(Expr(:toplevel, quote
         function GTlsCertificate(args...; kwargs...)
             GTlsCertificateLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GTlsCertificateLeaf) = begin
-                    [:handle, :ip_addresses, :dns_names, :not_valid_before, :private_key_pem, :pkcs11_uri, :certificate_pem, :not_valid_after, :private_key, :subject_name, :issuer_name, :certificate, :private_key_pkcs11_uri, :issuer]
-                end
-            function Base.getproperty(o::GTlsCertificateLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:ip_addresses => (:GPtrArray, 1, 1), :dns_names => (:GPtrArray, 1, 1), :not_valid_before => (:GDateTime, 0, 1), :private_key_pem => (:String, 0, 11), :pkcs11_uri => (:String, 0, 11), :certificate_pem => (:String, 0, 11), :not_valid_after => (:GDateTime, 0, 1), :private_key => (:GByteArray, 0, 11), :subject_name => (:String, 0, 1), :issuer_name => (:String, 0, 1), :certificate => (:GByteArray, 0, 11), :private_key_pkcs11_uri => (:String, 0, 11), :issuer => (:GTlsCertificate, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GTlsCertificateLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:certificate_pem => (:String, 0, 11), :private_key => (:GByteArray, 0, 11), :certificate => (:GByteArray, 0, 11), :private_key_pem => (:String, 0, 11), :pkcs11_uri => (:String, 0, 11), :private_key_pkcs11_uri => (:String, 0, 11), :issuer => (:GTlsCertificate, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GTlsConnection <: GIOStream end
@@ -4568,7 +3266,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4588,27 +3286,6 @@ $(Expr(:toplevel, quote
         function GTlsConnection(args...; kwargs...)
             GTlsConnectionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GTlsConnectionLeaf) = begin
-                    [:handle, :use_system_certdb, :input_stream, :peer_certificate_errors, :ciphersuite_name, :database, :output_stream, :require_close_notify, :protocol_version, :base_io_stream, :peer_certificate, :interaction, :rehandshake_mode, :closed, :certificate, :negotiated_protocol, :advertised_protocols]
-                end
-            function Base.getproperty(o::GTlsConnectionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:use_system_certdb => (:Bool, 0, 7), :input_stream => (:GInputStream, 0, 1), :peer_certificate_errors => (:Int32, 0, 1), :ciphersuite_name => (:String, 0, 1), :database => (:GTlsDatabase, 0, 3), :output_stream => (:GOutputStream, 0, 1), :require_close_notify => (:Bool, 0, 7), :protocol_version => (:TlsProtocolVersion, 0, 1), :base_io_stream => (:GIOStream, 0, 11), :peer_certificate => (:GTlsCertificate, 0, 1), :interaction => (:GTlsInteraction, 0, 3), :rehandshake_mode => (:TlsRehandshakeMode, 0, 7), :closed => (:Bool, 0, 1), :certificate => (:GTlsCertificate, 0, 3), :negotiated_protocol => (:String, 0, 1), :advertised_protocols => (:(Array{GI.TypeDesc{Type{String}}(String, :(Union{AbstractString, Symbol}), :String, :Cstring)}), 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GTlsConnectionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:use_system_certdb => (:Bool, 0, 7), :require_close_notify => (:Bool, 0, 7), :certificate => (:GTlsCertificate, 0, 3), :interaction => (:GTlsInteraction, 0, 3), :base_io_stream => (:GIOStream, 0, 11), :database => (:GTlsDatabase, 0, 3), :rehandshake_mode => (:TlsRehandshakeMode, 0, 7), :advertised_protocols => (:(Array{GI.TypeDesc{Type{String}}(String, :(Union{AbstractString, Symbol}), :String, :Cstring)}), 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GTlsDatabase <: GObject end
@@ -4622,7 +3299,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4655,7 +3332,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4688,7 +3365,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4708,27 +3385,6 @@ $(Expr(:toplevel, quote
         function GTlsPassword(args...; kwargs...)
             GTlsPasswordLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GTlsPasswordLeaf) = begin
-                    [:handle, :warning, :flags, :description]
-                end
-            function Base.getproperty(o::GTlsPasswordLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:warning => (:String, 0, 3), :flags => (:Int32, 0, 3), :description => (:String, 0, 3))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GTlsPasswordLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:warning => (:String, 0, 3), :flags => (:Int32, 0, 3), :description => (:String, 0, 3))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GUnixConnection <: GSocketConnection end
@@ -4742,7 +3398,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4762,27 +3418,6 @@ $(Expr(:toplevel, quote
         function GUnixConnection(args...; kwargs...)
             GUnixConnectionLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GUnixConnectionLeaf) = begin
-                    [:handle, :output_stream, :socket, :input_stream, :closed]
-                end
-            function Base.getproperty(o::GUnixConnectionLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:output_stream => (:GOutputStream, 0, 1), :socket => (:GSocket, 0, 11), :input_stream => (:GInputStream, 0, 1), :closed => (:Bool, 0, 1))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GUnixConnectionLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:socket => (:GSocket, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GUnixCredentialsMessage <: GSocketControlMessage end
@@ -4796,7 +3431,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4816,27 +3451,6 @@ $(Expr(:toplevel, quote
         function GUnixCredentialsMessage(args...; kwargs...)
             GUnixCredentialsMessageLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GUnixCredentialsMessageLeaf) = begin
-                    [:handle, :credentials]
-                end
-            function Base.getproperty(o::GUnixCredentialsMessageLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:credentials => (:GCredentials, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GUnixCredentialsMessageLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:credentials => (:GCredentials, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GUnixFDList <: GObject end
@@ -4850,7 +3464,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4883,7 +3497,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4903,27 +3517,6 @@ $(Expr(:toplevel, quote
         function GUnixFDMessage(args...; kwargs...)
             GUnixFDMessageLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GUnixFDMessageLeaf) = begin
-                    [:handle, :fd_list]
-                end
-            function Base.getproperty(o::GUnixFDMessageLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:fd_list => (:GUnixFDList, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GUnixFDMessageLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:fd_list => (:GUnixFDList, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GUnixInputStream <: GInputStream end
@@ -4937,7 +3530,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -4957,27 +3550,6 @@ $(Expr(:toplevel, quote
         function GUnixInputStream(args...; kwargs...)
             GUnixInputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GUnixInputStreamLeaf) = begin
-                    [:handle, :close_fd, :fd]
-                end
-            function Base.getproperty(o::GUnixInputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_fd => (:Bool, 0, 3), :fd => (:Int32, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GUnixInputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_fd => (:Bool, 0, 3), :fd => (:Int32, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GUnixMountMonitor <: GObject end
@@ -4991,7 +3563,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -5024,7 +3596,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -5044,27 +3616,6 @@ $(Expr(:toplevel, quote
         function GUnixOutputStream(args...; kwargs...)
             GUnixOutputStreamLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GUnixOutputStreamLeaf) = begin
-                    [:handle, :close_fd, :fd]
-                end
-            function Base.getproperty(o::GUnixOutputStreamLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_fd => (:Bool, 0, 3), :fd => (:Int32, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GUnixOutputStreamLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:close_fd => (:Bool, 0, 3), :fd => (:Int32, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GUnixSocketAddress <: GSocketAddress end
@@ -5078,7 +3629,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -5098,27 +3649,6 @@ $(Expr(:toplevel, quote
         function GUnixSocketAddress(args...; kwargs...)
             GUnixSocketAddressLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GUnixSocketAddressLeaf) = begin
-                    [:handle, :path_as_array, :family, :abstract, :address_type, :path]
-                end
-            function Base.getproperty(o::GUnixSocketAddressLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:path_as_array => (:GByteArray, 0, 11), :family => (:SocketFamily, 0, 1), :abstract => (:Bool, 0, 11), :address_type => (:UnixSocketAddressType, 0, 11), :path => (:String, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GUnixSocketAddressLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:path_as_array => (:GByteArray, 0, 11), :abstract => (:Bool, 0, 11), :address_type => (:UnixSocketAddressType, 0, 11), :path => (:String, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GVfs <: GObject end
@@ -5132,7 +3662,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -5165,7 +3695,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -5185,27 +3715,6 @@ $(Expr(:toplevel, quote
         function GZlibCompressor(args...; kwargs...)
             GZlibCompressorLeaf(args...; kwargs...)
         end
-        begin
-            Base.propertynames(o::GZlibCompressorLeaf) = begin
-                    [:handle, :level, :file_info, :format]
-                end
-            function Base.getproperty(o::GZlibCompressorLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:level => (:Int32, 0, 11), :file_info => (:GFileInfo, 0, 3), :format => (:ZlibCompressorFormat, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GZlibCompressorLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:level => (:Int32, 0, 11), :file_info => (:GFileInfo, 0, 3), :format => (:ZlibCompressorFormat, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
-        end
     end
     begin
         abstract type GZlibDecompressor <: GObject end
@@ -5219,7 +3728,7 @@ $(Expr(:toplevel, quote
                 end
                 is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
                 if !owns || is_floating
-                    gc_ref_sink(handle)
+                    GLib.gc_ref_sink(handle)
                 end
                 return gobject_ref(new(handle))
             end
@@ -5238,27 +3747,6 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GZlibDecompressor] = GZlibDecompressorLeaf
         function GZlibDecompressor(args...; kwargs...)
             GZlibDecompressorLeaf(args...; kwargs...)
-        end
-        begin
-            Base.propertynames(o::GZlibDecompressorLeaf) = begin
-                    [:handle, :file_info, :format]
-                end
-            function Base.getproperty(o::GZlibDecompressorLeaf, name::Symbol)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:file_info => (:GFileInfo, 0, 1), :format => (:ZlibCompressorFormat, 0, 11))
-                if name in keys(d)
-                    return get_gtk_property(o, name, eval((d[name])[1]))
-                else
-                    return getfield(o, name)
-                end
-            end
-            function Base.setproperty!(o::GZlibDecompressorLeaf, name::Symbol, x)
-                d = Dict{Symbol, Tuple{Any, Int32, Int32}}(:format => (:ZlibCompressorFormat, 0, 11))
-                if name in keys(d)
-                    set_gtk_property!(o, name, x)
-                else
-                    setfield!(o, name, x)
-                end
-            end
         end
     end
     begin

@@ -379,7 +379,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function interface_list_properties(_g_iface::GTypeInterface)
-        m_n_properties_p = Ref{UInt32}()
+        m_n_properties_p = Ref{UInt32}(C_NULL)
         ret = ccall(("g_object_interface_list_properties", libgobject), Ptr{Ptr{GObject}}, (Ptr{GTypeInterface}, Ptr{UInt32}), _g_iface, m_n_properties_p)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_n_properties_p[]))

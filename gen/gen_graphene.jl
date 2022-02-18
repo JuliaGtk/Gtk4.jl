@@ -8,7 +8,14 @@ ns = GINamespace(:Graphene,"1.0")
 
 ## constants, enums, and flags, put in a "Constants" submodule
 
-const_mod = GI.all_const_exprs(ns)
+const_mod = Expr(:block)
+
+push!(const_mod.args,:(using CEnum))
+
+const_exports = Expr(:export)
+
+GI.all_const_exprs!(const_mod, const_exports, ns)
+
 push!(exprs, Expr(:toplevel,Expr(:module, true, :Constants, const_mod)))
 
 ## export constants, enums, and flags code

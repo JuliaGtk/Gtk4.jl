@@ -2,7 +2,8 @@ The Julia-GI bindings are licensed under the MIT License:
 
 > Copyright (c) 2013: Björn Linse and other contributors:
 >
-> https://github.com/jwahlstrand/GI.jl/contributors
+> https://github.com/bfredl/GI.jl/contributors
+> https://github.com/JuliaGtk/Gtk4.jl/contributors
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the

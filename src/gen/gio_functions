@@ -6,8 +6,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function action_parse_detailed_name(_detailed_name::Union{AbstractString, Symbol})
-        m_action_name = Ref{Cstring}()
-        m_target_value = Ref{Ptr{GVariant}}()
+        m_action_name = Ref{Cstring}(C_NULL)
+        m_target_value = Ref{Ptr{GVariant}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_action_parse_detailed_name", libgio), Cint, (Cstring, Ptr{Cstring}, Ptr{Ptr{GVariant}}, Ptr{Ptr{GError}}), _detailed_name, m_action_name, m_target_value, err)
         check_err(err)
@@ -261,7 +261,7 @@ $(Expr(:toplevel, quote
                 _filename
             end
         _data = convert(Vector{UInt8}, _data)
-        m_result_uncertain = Ref{Cint}()
+        m_result_uncertain = Ref{Cint}(C_NULL)
         _data_size = length(_data)
         ret = ccall(("g_content_type_guess", libgio), Cstring, (Cstring, Ptr{UInt8}, UInt64, Ptr{Cint}), _filename, _data, _data_size, m_result_uncertain)
         ret2 = if ret == C_NULL
@@ -357,7 +357,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function dbus_address_get_stream_finish(_res::GAsyncResult)
-        m_out_guid = Ref{Cstring}()
+        m_out_guid = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_dbus_address_get_stream_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), _res, m_out_guid, err)
         check_err(err)
@@ -367,7 +367,7 @@ $(Expr(:toplevel, quote
         (ret2, _out_guid)
     end
     function dbus_address_get_stream_sync(_address::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable))
-        m_out_guid = Ref{Cstring}()
+        m_out_guid = Ref{Cstring}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -532,7 +532,7 @@ $(Expr(:toplevel, quote
             else
                 _tmpl
             end
-        m_iostream = Ref{Ptr{GObject}}()
+        m_iostream = Ref{Ptr{GObject}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_new_tmp", libgio), Ptr{GObject}, (Cstring, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), _tmpl, m_iostream, err)
         check_err(err)
@@ -684,7 +684,7 @@ $(Expr(:toplevel, quote
     end
     function pollable_stream_write_all(_stream::GOutputStream, _buffer, _blocking::Bool, _cancellable::Maybe(GCancellable))
         _buffer = convert(Vector{UInt8}, _buffer)
-        m_bytes_written = Ref{UInt64}()
+        m_bytes_written = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -746,8 +746,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function resources_get_info(_path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
-        m_size = Ref{UInt64}()
-        m_flags = Ref{UInt32}()
+        m_size = Ref{UInt64}(C_NULL)
+        m_flags = Ref{UInt32}(C_NULL)
         err = err_buf()
         ret = ccall(("g_resources_get_info", libgio), Cint, (Cstring, Int32, Ptr{UInt64}, Ptr{UInt32}, Ptr{Ptr{GError}}), _path, _lookup_flags, m_size, m_flags, err)
         check_err(err)
@@ -859,7 +859,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unix_mount_at(_mount_path::Union{AbstractString, Symbol})
-        m_time_read = Ref{UInt64}()
+        m_time_read = Ref{UInt64}(C_NULL)
         ret = ccall(("g_unix_mount_at", libgio), Ptr{GUnixMountEntry}, (Cstring, Ptr{UInt64}), _mount_path, m_time_read)
         ret2 = if ret == C_NULL
                 nothing
@@ -879,7 +879,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unix_mount_for(_file_path::Union{AbstractString, Symbol})
-        m_time_read = Ref{UInt64}()
+        m_time_read = Ref{UInt64}(C_NULL)
         ret = ccall(("g_unix_mount_for", libgio), Ptr{GUnixMountEntry}, (Cstring, Ptr{UInt64}), _file_path, m_time_read)
         ret2 = if ret == C_NULL
                 nothing
@@ -984,7 +984,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unix_mount_point_at(_mount_path::Union{AbstractString, Symbol})
-        m_time_read = Ref{UInt64}()
+        m_time_read = Ref{UInt64}(C_NULL)
         ret = ccall(("g_unix_mount_point_at", libgio), Ptr{GUnixMountPoint}, (Cstring, Ptr{UInt64}), _mount_path, m_time_read)
         ret2 = if ret == C_NULL
                 nothing
@@ -1000,7 +1000,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unix_mount_points_get()
-        m_time_read = Ref{UInt64}()
+        m_time_read = Ref{UInt64}(C_NULL)
         ret = ccall(("g_unix_mount_points_get", libgio), Ptr{GLib._GList{GUnixMountPoint}}, (Ptr{UInt64},), m_time_read)
         ret2 = GLib.GList(ret, true)
         _time_read = m_time_read[]
@@ -1012,7 +1012,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unix_mounts_get()
-        m_time_read = Ref{UInt64}()
+        m_time_read = Ref{UInt64}(C_NULL)
         ret = ccall(("g_unix_mounts_get", libgio), Ptr{GLib._GList{GUnixMountEntry}}, (Ptr{UInt64},), m_time_read)
         ret2 = GLib.GList(ret, true)
         _time_read = m_time_read[]

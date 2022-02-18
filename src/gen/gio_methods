@@ -117,8 +117,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_info(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
-        m_size = Ref{UInt64}()
-        m_flags = Ref{UInt32}()
+        m_size = Ref{UInt64}(C_NULL)
+        m_flags = Ref{UInt32}(C_NULL)
         err = err_buf()
         ret = ccall(("g_resource_get_info", libgio), Cint, (Ptr{GResource}, Cstring, Int32, Ptr{UInt64}, Ptr{UInt32}, Ptr{Ptr{GError}}), instance, _path, _lookup_flags, m_size, m_flags, err)
         check_err(err)
@@ -276,8 +276,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function list_schemas(instance::GSettingsSchemaSource, _recursive::Bool)
-        m_non_relocatable = Ref{Ptr{Cstring}}()
-        m_relocatable = Ref{Ptr{Cstring}}()
+        m_non_relocatable = Ref{Ptr{Cstring}}(C_NULL)
+        m_relocatable = Ref{Ptr{Cstring}}(C_NULL)
         ret = ccall(("g_settings_schema_source_list_schemas", libgio), Nothing, (Ptr{GSettingsSchemaSource}, Cint, Ptr{Ptr{Cstring}}, Ptr{Ptr{Cstring}}), instance, _recursive, m_non_relocatable, m_relocatable)
         _non_relocatable = m_non_relocatable[]
         _non_relocatable = begin
@@ -714,7 +714,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_arguments(instance::GApplicationCommandLine)
-        m_argc = Ref{Int32}()
+        m_argc = Ref{Int32}(C_NULL)
         ret = ccall(("g_application_command_line_get_arguments", libgio), Ptr{Cstring}, (Ptr{GObject}, Ptr{Int32}), instance, m_argc)
         _argc = m_argc[]
         ret
@@ -834,7 +834,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function peek_buffer(instance::GBufferedInputStream)
-        m_count = Ref{UInt64}()
+        m_count = Ref{UInt64}(C_NULL)
         ret = ccall(("g_buffered_input_stream_peek_buffer", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt64}), instance, m_count)
         _count = m_count[]
         ret
@@ -1426,7 +1426,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function to_blob(instance::GDBusMessage, _capabilities::Integer)
-        m_out_size = Ref{UInt64}()
+        m_out_size = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_dbus_message_to_blob", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt64}, Int32, Ptr{Ptr{GError}}), instance, m_out_size, _capabilities, err)
         check_err(err)
@@ -1682,7 +1682,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function read_line(instance::GDataInputStream, _cancellable::Maybe(GCancellable))
-        m_length = Ref{UInt64}()
+        m_length = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -1714,7 +1714,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function read_line_finish(instance::GDataInputStream, _result::GAsyncResult)
-        m_length = Ref{UInt64}()
+        m_length = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_data_input_stream_read_line_finish", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_length, err)
         check_err(err)
@@ -1722,7 +1722,7 @@ $(Expr(:toplevel, quote
         (ret, _length)
     end
     function read_line_finish_utf8(instance::GDataInputStream, _result::GAsyncResult)
-        m_length = Ref{UInt64}()
+        m_length = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_data_input_stream_read_line_finish_utf8", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_length, err)
         check_err(err)
@@ -1735,7 +1735,7 @@ $(Expr(:toplevel, quote
         (ret2, _length)
     end
     function read_line_utf8(instance::GDataInputStream, _cancellable::Maybe(GCancellable))
-        m_length = Ref{UInt64}()
+        m_length = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -1786,7 +1786,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function read_upto(instance::GDataInputStream, _stop_chars::Union{AbstractString, Symbol}, _stop_chars_len::Integer, _cancellable::Maybe(GCancellable))
-        m_length = Ref{UInt64}()
+        m_length = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -1823,7 +1823,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function read_upto_finish(instance::GDataInputStream, _result::GAsyncResult)
-        m_length = Ref{UInt64}()
+        m_length = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_data_input_stream_read_upto_finish", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_length, err)
         check_err(err)
@@ -2082,7 +2082,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_string_list(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
-        m_length = Ref{UInt64}()
+        m_length = Ref{UInt64}(C_NULL)
         ret = ccall(("g_desktop_app_info_get_string_list", libgio), Ptr{Cstring}, (Ptr{GObject}, Cstring, Ptr{UInt64}), instance, _key, m_length)
         ret2 = begin
                 _len = length_zt(ret)
@@ -2293,8 +2293,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function iterate(instance::GFileEnumerator, _cancellable::Maybe(GCancellable))
-        m_out_info = Ref{Ptr{GObject}}()
-        m_out_child = Ref{Ptr{GObject}}()
+        m_out_info = Ref{Ptr{GObject}}(C_NULL)
+        m_out_child = Ref{Ptr{GObject}}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -2461,9 +2461,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_attribute_data(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
-        m_type = Ref{Int32}()
-        m_value_pp = Ref{Ptr{Nothing}}()
-        m_status = Ref{Int32}()
+        m_type = Ref{Int32}(C_NULL)
+        m_value_pp = Ref{Ptr{Nothing}}(C_NULL)
+        m_status = Ref{Int32}(C_NULL)
         ret = ccall(("g_file_info_get_attribute_data", libgio), Cint, (Ptr{GObject}, Cstring, Ptr{Int32}, Ptr{Ptr{Nothing}}, Ptr{Int32}), instance, _attribute, m_type, m_value_pp, m_status)
         ret2 = convert(Bool, ret)
         _type = m_type[]
@@ -3263,7 +3263,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function read(instance::GInputStream, _cancellable::Maybe(GCancellable))
-        m_buffer = Ref{Ptr{UInt8}}()
+        m_buffer = Ref{Ptr{UInt8}}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -3277,8 +3277,8 @@ $(Expr(:toplevel, quote
         (ret, _buffer)
     end
     function read_all(instance::GInputStream, _cancellable::Maybe(GCancellable))
-        m_buffer = Ref{Ptr{UInt8}}()
-        m_bytes_read = Ref{UInt64}()
+        m_buffer = Ref{Ptr{UInt8}}(C_NULL)
+        m_bytes_read = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -3294,7 +3294,7 @@ $(Expr(:toplevel, quote
         (ret2, _buffer, _bytes_read)
     end
     function read_all_async(instance::GInputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        m_buffer = Ref{Ptr{UInt8}}()
+        m_buffer = Ref{Ptr{UInt8}}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -3316,7 +3316,7 @@ $(Expr(:toplevel, quote
         _buffer
     end
     function read_all_finish(instance::GInputStream, _result::GAsyncResult)
-        m_bytes_read = Ref{UInt64}()
+        m_bytes_read = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_input_stream_read_all_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_bytes_read, err)
         check_err(err)
@@ -3325,7 +3325,7 @@ $(Expr(:toplevel, quote
         (ret2, _bytes_read)
     end
     function read_async(instance::GInputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        m_buffer = Ref{Ptr{UInt8}}()
+        m_buffer = Ref{Ptr{UInt8}}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -3443,7 +3443,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function find(instance::GListStore, _item::GObject)
-        m_position = Ref{UInt32}()
+        m_position = Ref{UInt32}(C_NULL)
         ret = ccall(("g_list_store_find", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt32}), instance, _item, m_position)
         ret2 = convert(Bool, ret)
         _position = m_position[]
@@ -3667,8 +3667,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_next(instance::GMenuAttributeIter)
-        m_out_name = Ref{Cstring}()
-        m_value = Ref{Ptr{GVariant}}()
+        m_out_name = Ref{Cstring}(C_NULL)
+        m_value = Ref{Ptr{GVariant}}(C_NULL)
         ret = ccall(("g_menu_attribute_iter_get_next", libgio), Cint, (Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GVariant}}), instance, m_out_name, m_value)
         ret2 = convert(Bool, ret)
         _out_name = m_out_name[]
@@ -3827,8 +3827,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_next(instance::GMenuLinkIter)
-        m_out_link = Ref{Cstring}()
-        m_value = Ref{Ptr{GObject}}()
+        m_out_link = Ref{Cstring}(C_NULL)
+        m_value = Ref{Ptr{GObject}}(C_NULL)
         ret = ccall(("g_menu_link_iter_get_next", libgio), Cint, (Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GObject}}), instance, m_out_link, m_value)
         ret2 = convert(Bool, ret)
         _out_link = m_out_link[]
@@ -4314,7 +4314,7 @@ $(Expr(:toplevel, quote
     end
     function write_all(instance::GOutputStream, _buffer, _cancellable::Maybe(GCancellable))
         _buffer = convert(Vector{UInt8}, _buffer)
-        m_bytes_written = Ref{UInt64}()
+        m_bytes_written = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -4350,7 +4350,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function write_all_finish(instance::GOutputStream, _result::GAsyncResult)
-        m_bytes_written = Ref{UInt64}()
+        m_bytes_written = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_output_stream_write_all_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_bytes_written, err)
         check_err(err)
@@ -4443,7 +4443,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function writev_all_finish(instance::GOutputStream, _result::GAsyncResult)
-        m_bytes_written = Ref{UInt64}()
+        m_bytes_written = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_output_stream_writev_all_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_bytes_written, err)
         check_err(err)
@@ -4473,7 +4473,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function writev_finish(instance::GOutputStream, _result::GAsyncResult)
-        m_bytes_written = Ref{UInt64}()
+        m_bytes_written = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_output_stream_writev_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_bytes_written, err)
         check_err(err)
@@ -5318,7 +5318,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_option(instance::GSocket, _level::Integer, _optname::Integer)
-        m_value = Ref{Int32}()
+        m_value = Ref{Int32}(C_NULL)
         err = err_buf()
         ret = ccall(("g_socket_get_option", libgio), Cint, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Ptr{GError}}), instance, _level, _optname, m_value, err)
         check_err(err)
@@ -5427,8 +5427,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function receive(instance::GSocket, _cancellable::Maybe(GCancellable))
-        m_buffer = Ref{Ptr{UInt8}}()
-        m_size = Ref{UInt64}()
+        m_buffer = Ref{Ptr{UInt8}}(C_NULL)
+        m_size = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -5442,9 +5442,9 @@ $(Expr(:toplevel, quote
         (ret, _buffer)
     end
     function receive_from(instance::GSocket, _cancellable::Maybe(GCancellable))
-        m_address = Ref{Ptr{GObject}}()
-        m_buffer = Ref{Ptr{UInt8}}()
-        m_size = Ref{UInt64}()
+        m_address = Ref{Ptr{GObject}}(C_NULL)
+        m_buffer = Ref{Ptr{UInt8}}(C_NULL)
+        m_size = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -5460,11 +5460,11 @@ $(Expr(:toplevel, quote
         (ret, _address, _buffer)
     end
     function receive_message(instance::GSocket, _vectors, _flags::Integer, _cancellable::Maybe(GCancellable))
-        m_address = Ref{Ptr{GObject}}()
+        m_address = Ref{Ptr{GObject}}(C_NULL)
         _vectors = convert(Vector{GInputVector}, _vectors)
-        m_messages = Ref{Ptr{Ptr{GObject}}}()
-        m_num_messages = Ref{Int32}()
-        m_flags = Ref{Int32}()
+        m_messages = Ref{Ptr{Ptr{GObject}}}(C_NULL)
+        m_num_messages = Ref{Int32}(C_NULL)
+        m_flags = Ref{Int32}(C_NULL)
         m_flags[] = Base.cconvert(Int32, _flags)
         _cancellable = if _cancellable == nothing
                 C_NULL
@@ -5483,8 +5483,8 @@ $(Expr(:toplevel, quote
         (ret, _address, _messages, _flags)
     end
     function receive_with_blocking(instance::GSocket, _blocking::Bool, _cancellable::Maybe(GCancellable))
-        m_buffer = Ref{Ptr{UInt8}}()
-        m_size = Ref{UInt64}()
+        m_buffer = Ref{Ptr{UInt8}}(C_NULL)
+        m_size = Ref{UInt64}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -6012,7 +6012,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function accept(instance::GSocketListener, _cancellable::Maybe(GCancellable))
-        m_source_object = Ref{Ptr{GObject}}()
+        m_source_object = Ref{Ptr{GObject}}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -6046,7 +6046,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function accept_finish(instance::GSocketListener, _result::GAsyncResult)
-        m_source_object = Ref{Ptr{GObject}}()
+        m_source_object = Ref{Ptr{GObject}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_socket_listener_accept_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), instance, _result, m_source_object, err)
         check_err(err)
@@ -6056,7 +6056,7 @@ $(Expr(:toplevel, quote
         (ret2, _source_object)
     end
     function accept_socket(instance::GSocketListener, _cancellable::Maybe(GCancellable))
-        m_source_object = Ref{Ptr{GObject}}()
+        m_source_object = Ref{Ptr{GObject}}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -6090,7 +6090,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function accept_socket_finish(instance::GSocketListener, _result::GAsyncResult)
-        m_source_object = Ref{Ptr{GObject}}()
+        m_source_object = Ref{Ptr{GObject}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_socket_listener_accept_socket_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), instance, _result, m_source_object, err)
         check_err(err)
@@ -6105,7 +6105,7 @@ $(Expr(:toplevel, quote
             else
                 _source_object
             end
-        m_effective_address = Ref{Ptr{GObject}}()
+        m_effective_address = Ref{Ptr{GObject}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_socket_listener_add_address", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Int32, UInt16, Ptr{GObject}, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), instance, _address, _type, _protocol, _source_object, m_effective_address, err)
         check_err(err)
@@ -6193,8 +6193,8 @@ $(Expr(:toplevel, quote
             else
                 _cancellable
             end
-        m_stdout_buf = Ref{Ptr{GBytes}}()
-        m_stderr_buf = Ref{Ptr{GBytes}}()
+        m_stdout_buf = Ref{Ptr{GBytes}}(C_NULL)
+        m_stderr_buf = Ref{Ptr{GBytes}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_subprocess_communicate", libgio), Cint, (Ptr{GObject}, Ptr{GBytes}, Ptr{GObject}, Ptr{Ptr{GBytes}}, Ptr{Ptr{GBytes}}, Ptr{Ptr{GError}}), instance, _stdin_buf, _cancellable, m_stdout_buf, m_stderr_buf, err)
         check_err(err)
@@ -6230,8 +6230,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function communicate_finish(instance::GSubprocess, _result::GAsyncResult)
-        m_stdout_buf = Ref{Ptr{GBytes}}()
-        m_stderr_buf = Ref{Ptr{GBytes}}()
+        m_stdout_buf = Ref{Ptr{GBytes}}(C_NULL)
+        m_stderr_buf = Ref{Ptr{GBytes}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_subprocess_communicate_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GBytes}}, Ptr{Ptr{GBytes}}, Ptr{Ptr{GError}}), instance, _result, m_stdout_buf, m_stderr_buf, err)
         check_err(err)
@@ -6253,8 +6253,8 @@ $(Expr(:toplevel, quote
             else
                 _cancellable
             end
-        m_stdout_buf = Ref{Cstring}()
-        m_stderr_buf = Ref{Cstring}()
+        m_stdout_buf = Ref{Cstring}(C_NULL)
+        m_stderr_buf = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_subprocess_communicate_utf8", libgio), Cint, (Ptr{GObject}, Cstring, Ptr{GObject}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _stdin_buf, _cancellable, m_stdout_buf, m_stderr_buf, err)
         check_err(err)
@@ -6290,8 +6290,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function communicate_utf8_finish(instance::GSubprocess, _result::GAsyncResult)
-        m_stdout_buf = Ref{Cstring}()
-        m_stderr_buf = Ref{Cstring}()
+        m_stdout_buf = Ref{Cstring}(C_NULL)
+        m_stderr_buf = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_subprocess_communicate_utf8_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _result, m_stdout_buf, m_stderr_buf, err)
         check_err(err)
@@ -7137,7 +7137,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_value(instance::GTlsPassword)
-        m_length = Ref{UInt64}()
+        m_length = Ref{UInt64}(C_NULL)
         ret = ccall(("g_tls_password_get_value", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt64}), instance, m_length)
         _length = m_length[]
         ret
@@ -7328,13 +7328,13 @@ $(Expr(:toplevel, quote
         ret
     end
     function peek_fds(instance::GUnixFDList)
-        m_length = Ref{Int32}()
+        m_length = Ref{Int32}(C_NULL)
         ret = ccall(("g_unix_fd_list_peek_fds", libgio), Ptr{Int32}, (Ptr{GObject}, Ptr{Int32}), instance, m_length)
         _length = m_length[]
         ret
     end
     function steal_fds(instance::GUnixFDList)
-        m_length = Ref{Int32}()
+        m_length = Ref{Int32}(C_NULL)
         ret = ccall(("g_unix_fd_list_steal_fds", libgio), Ptr{Int32}, (Ptr{GObject}, Ptr{Int32}), instance, m_length)
         _length = m_length[]
         ret
@@ -7362,7 +7362,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function steal_fds(instance::GUnixFDMessage)
-        m_length = Ref{Int32}()
+        m_length = Ref{Int32}(C_NULL)
         ret = ccall(("g_unix_fd_message_steal_fds", libgio), Ptr{Int32}, (Ptr{GObject}, Ptr{Int32}), instance, m_length)
         _length = m_length[]
         ret
@@ -7603,8 +7603,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function parse_detailed_name(_detailed_name::Union{AbstractString, Symbol})
-        m_action_name = Ref{Cstring}()
-        m_target_value = Ref{Ptr{GVariant}}()
+        m_action_name = Ref{Cstring}(C_NULL)
+        m_target_value = Ref{Ptr{GVariant}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_action_parse_detailed_name", libgio), Cint, (Cstring, Ptr{Cstring}, Ptr{Ptr{GVariant}}, Ptr{Ptr{GError}}), _detailed_name, m_action_name, m_target_value, err)
         check_err(err)
@@ -7766,11 +7766,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function query_action(instance::GActionGroup, _action_name::Union{AbstractString, Symbol})
-        m_enabled = Ref{Cint}()
-        m_parameter_type = Ref{Ptr{GVariantType}}()
-        m_state_type = Ref{Ptr{GVariantType}}()
-        m_state_hint = Ref{Ptr{GVariant}}()
-        m_state = Ref{Ptr{GVariant}}()
+        m_enabled = Ref{Cint}(C_NULL)
+        m_parameter_type = Ref{Ptr{GVariantType}}(C_NULL)
+        m_state_type = Ref{Ptr{GVariantType}}(C_NULL)
+        m_state_hint = Ref{Ptr{GVariant}}(C_NULL)
+        m_state = Ref{Ptr{GVariant}}(C_NULL)
         ret = ccall(("g_action_group_query_action", libgio), Cint, (Ptr{GObject}, Cstring, Ptr{Cint}, Ptr{Ptr{GVariantType}}, Ptr{Ptr{GVariantType}}, Ptr{Ptr{GVariant}}, Ptr{Ptr{GVariant}}), instance, _action_name, m_enabled, m_parameter_type, m_state_type, m_state_hint, m_state)
         ret2 = convert(Bool, ret)
         _enabled = m_enabled[]
@@ -7872,8 +7872,8 @@ $(Expr(:toplevel, quote
     function convert(instance::GConverter, _inbuf, _outbuf, _flags::Integer)
         _inbuf = convert(Vector{UInt8}, _inbuf)
         _outbuf = convert(Vector{UInt8}, _outbuf)
-        m_bytes_read = Ref{UInt64}()
-        m_bytes_written = Ref{UInt64}()
+        m_bytes_read = Ref{UInt64}(C_NULL)
+        m_bytes_written = Ref{UInt64}(C_NULL)
         _inbuf_size = length(_inbuf)
         _outbuf_size = length(_outbuf)
         err = err_buf()
@@ -8054,7 +8054,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_channel_binding_data(instance::GDtlsConnection, _type)
-        m_data = Ref{Ptr{GByteArray}}()
+        m_data = Ref{Ptr{GByteArray}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_dtls_connection_get_channel_binding_data", libgio), Cint, (Ptr{GObject}, Int32, Ptr{Ptr{GByteArray}}, Ptr{Ptr{GError}}), instance, _type, m_data, err)
         check_err(err)
@@ -8272,7 +8272,7 @@ $(Expr(:toplevel, quote
             else
                 _tmpl
             end
-        m_iostream = Ref{Ptr{GObject}}()
+        m_iostream = Ref{Ptr{GObject}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_new_tmp", libgio), Ptr{GObject}, (Cstring, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), _tmpl, m_iostream, err)
         check_err(err)
@@ -8775,7 +8775,7 @@ $(Expr(:toplevel, quote
             else
                 _cancellable
             end
-        m_etag_out = Ref{Cstring}()
+        m_etag_out = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_load_bytes", libgio), Ptr{GBytes}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _cancellable, m_etag_out, err)
         check_err(err)
@@ -8804,7 +8804,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function load_bytes_finish(instance::GFile, _result::GAsyncResult)
-        m_etag_out = Ref{Cstring}()
+        m_etag_out = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_load_bytes_finish", libgio), Ptr{GBytes}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _result, m_etag_out, err)
         check_err(err)
@@ -8819,9 +8819,9 @@ $(Expr(:toplevel, quote
             else
                 _cancellable
             end
-        m_contents = Ref{Ptr{UInt8}}()
-        m_length = Ref{UInt64}()
-        m_etag_out = Ref{Cstring}()
+        m_contents = Ref{Ptr{UInt8}}(C_NULL)
+        m_length = Ref{UInt64}(C_NULL)
+        m_etag_out = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_load_contents", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _cancellable, m_contents, m_length, m_etag_out, err)
         check_err(err)
@@ -8852,9 +8852,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function load_contents_finish(instance::GFile, _res::GAsyncResult)
-        m_contents = Ref{Ptr{UInt8}}()
-        m_length = Ref{UInt64}()
-        m_etag_out = Ref{Cstring}()
+        m_contents = Ref{Ptr{UInt8}}(C_NULL)
+        m_length = Ref{UInt64}(C_NULL)
+        m_etag_out = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_load_contents_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _res, m_contents, m_length, m_etag_out, err)
         check_err(err)
@@ -8866,9 +8866,9 @@ $(Expr(:toplevel, quote
         (ret2, _contents, _etag_out)
     end
     function load_partial_contents_finish(instance::GFile, _res::GAsyncResult)
-        m_contents = Ref{Ptr{UInt8}}()
-        m_length = Ref{UInt64}()
-        m_etag_out = Ref{Cstring}()
+        m_contents = Ref{Ptr{UInt8}}(C_NULL)
+        m_length = Ref{UInt64}(C_NULL)
+        m_etag_out = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_load_partial_contents_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _res, m_contents, m_length, m_etag_out, err)
         check_err(err)
@@ -8942,9 +8942,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function measure_disk_usage_finish(instance::GFile, _result::GAsyncResult)
-        m_disk_usage = Ref{UInt64}()
-        m_num_dirs = Ref{UInt64}()
-        m_num_files = Ref{UInt64}()
+        m_disk_usage = Ref{UInt64}(C_NULL)
+        m_num_dirs = Ref{UInt64}(C_NULL)
+        m_num_files = Ref{UInt64}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_measure_disk_usage_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_disk_usage, m_num_dirs, m_num_files, err)
         check_err(err)
@@ -9400,7 +9400,7 @@ $(Expr(:toplevel, quote
             else
                 _etag
             end
-        m_new_etag = Ref{Cstring}()
+        m_new_etag = Ref{Cstring}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9466,7 +9466,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function replace_contents_finish(instance::GFile, _res::GAsyncResult)
-        m_new_etag = Ref{Cstring}()
+        m_new_etag = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_replace_contents_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _res, m_new_etag, err)
         check_err(err)
@@ -9647,7 +9647,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_attributes_finish(instance::GFile, _result::GAsyncResult)
-        m_info = Ref{Ptr{GObject}}()
+        m_info = Ref{Ptr{GObject}}(C_NULL)
         err = err_buf()
         ret = ccall(("g_file_set_attributes_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), instance, _result, m_info, err)
         check_err(err)
@@ -9886,7 +9886,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function load(instance::GLoadableIcon, _size::Integer, _cancellable::Maybe(GCancellable))
-        m_type = Ref{Cstring}()
+        m_type = Ref{Cstring}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9924,7 +9924,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function load_finish(instance::GLoadableIcon, _res::GAsyncResult)
-        m_type = Ref{Cstring}()
+        m_type = Ref{Cstring}(C_NULL)
         err = err_buf()
         ret = ccall(("g_loadable_icon_load_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _res, m_type, err)
         check_err(err)
@@ -9966,7 +9966,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function read_nonblocking(instance::GPollableInputStream, _cancellable::Maybe(GCancellable))
-        m_buffer = Ref{Ptr{UInt8}}()
+        m_buffer = Ref{Ptr{UInt8}}(C_NULL)
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
