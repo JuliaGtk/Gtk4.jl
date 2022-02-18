@@ -1,7 +1,8 @@
 The Julia-Gtk4 bindings are licensed under the MIT License:
 
-> Copyright (c) 2021: Jared Wahlstrand and other contributors:
+> Copyright (c) 2013-2022: Jameson Nash and other contributors
 >
+> https://github.com/JuliaGtk/Gtk.jl/contributors
 > https://github.com/JuliaGtk/Gtk4.jl/contributors
 >
 > Permission is hereby granted, free of charge, to any person obtaining
