@@ -7,7 +7,7 @@ using ..GdkPixbufLib
 using ..Gdk4
 
 eval(include("gen/gsk4_consts"))
-#eval(include("gen/gsk4_structs"))
+eval(include("gen/gsk4_structs"))
 
 #eval(include("gen/gtk4_methods"))
 #eval(include("gen/gtk4_functions"))

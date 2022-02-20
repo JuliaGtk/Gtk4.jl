@@ -5,9 +5,9 @@ using ..Pango.Cairo
 using ..GdkPixbufLib
 
 eval(include("gen/gdk4_consts"))
-#eval(include("gen/gdk4_structs"))
+eval(include("gen/gdk4_structs"))
 
-export GdkRGBA
+export _GdkRGBA, _GdkRectangle
 
 #eval(include("gen/gdk4_methods"))
 #eval(include("gen/gdk4_functions"))

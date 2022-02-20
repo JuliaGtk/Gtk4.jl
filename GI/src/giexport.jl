@@ -113,6 +113,9 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
         end
         push!(exprs, struct_decl(ssi;force_opaque=in(name,import_as_opaque)))
         push!(exports.args, get_full_name(ssi))
+        if length(fields)>0 && !in(name,import_as_opaque)
+            push!(exports.args,get_struct_name(ssi,false))
+        end
     end
 
     if output_cache_init

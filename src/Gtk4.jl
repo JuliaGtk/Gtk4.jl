@@ -8,40 +8,56 @@ include("Graphene.jl")
 include("Gdk4.jl")
 include("Gsk4.jl")
 
-# using GLib
-# using Pango
-# using Pango.Cairo
-# using ..Graphene
-# using GdkPixbufLib
-using ..Gdk4
-using ..Gsk4
-#
-using GTK4_jll
+using ..GLib
+
+#using JLLWrappers
+using GTK4_jll, Glib_jll
 using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
 
+using ..Gdk4
+
 eval(include("gen/gtk4_consts"))
-# eval(include("gen/gtk4_structs"))
-#
-# eval(include("gen/gtk4_methods"))
+eval(include("gen/gtk4_structs"))
+
+module G_
+
+using GTK4_jll, Glib_jll
+
+using ..GLib
+using ..Gdk4
+using ..Pango
+using ..Pango.Cairo
+using ..Graphene
+using ..GdkPixbufLib
+using ..Gsk4
+using ..Gtk4
+
+eval(include("gen/gtk4_methods"))
 # #eval(include("gen/gtk4_functions"))
-#
-# function gtk_main()
-#     while true
-#         ccall((:g_main_context_iteration, GLib.libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, false)
-#         sleep(0.005)
-#     end
-# end
-#
+
+end
+
+import Base: push!, pushfirst!
+
+include("layout.jl")
+
+function gtk_main()
+    while true
+        ccall((:g_main_context_iteration, GLib.libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, false)
+        sleep(0.005)
+    end
+end
+
 function __init__()
     # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
-    ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
-        dirname(adwaita_icons_dir),
-        dirname(hicolor_icons_dir),
-        joinpath(dirname(GTK4_jll.libgtk4_path::String), "..", "share"),
-         get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
-     ]), Sys.iswindows() ? ";" : ":")
+    # ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
+    #     dirname(adwaita_icons_dir),
+    #     dirname(hicolor_icons_dir),
+    #     joinpath(dirname(GTK4_jll.libgtk4_path::String), "..", "share"),
+    #      Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
+    #  ]), Sys.iswindows() ? ";" : ":")
 
-#     gtype_wrapper_cache_init()
+     gtype_wrapper_cache_init()
 #     gboxed_cache_init()
 #
 #     # Next, ensure that gdk-pixbuf has its loaders.cache file; we generate a
@@ -83,14 +99,14 @@ function __init__()
                                           "share", "X11", "xkb")
     end
 
-    ccall((:gtk_init, "libgtk-4.so.1"), Cvoid, ())
-#
-#     # if g_main_depth > 0, a glib main-loop is already running,
-#     # so we don't need to start a new one
-#     if ccall((:g_main_depth, GLib.libglib), Cint, ()) == 0
-#         ml=ccall((:g_main_loop_new, GLib.libglib), Ptr{Cvoid}, (Ptr{Cvoid}, Cint), C_NULL, true)
-#         global gtk_main_task = schedule(Task(gtk_main))
-#     end
+    ccall((:gtk_init, libgtk4), Cvoid, ())
+
+    # if g_main_depth > 0, a glib main-loop is already running,
+    # so we don't need to start a new one
+    if ccall((:g_main_depth, GLib.libglib), Cint, ()) == 0
+        ml=ccall((:g_main_loop_new, GLib.libglib), Ptr{Cvoid}, (Ptr{Cvoid}, Cint), C_NULL, true)
+        global gtk_main_task = schedule(Task(gtk_main))
+    end
 end
 
 end

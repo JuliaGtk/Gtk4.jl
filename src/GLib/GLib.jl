@@ -33,7 +33,7 @@ export length_zt, err_buf, check_err
 
 export gtype_wrappers, GVariantDict, GBytes, GVariantType
 
-export GValue, GParamSpec, GTypeModule
+export GValue, GParamSpec, GTypeModule, _GValue
 
 Maybe(T) = Union{T,Nothing}
 

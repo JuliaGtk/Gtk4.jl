@@ -3,62 +3,65 @@
 
 # only works if you use include() in the REPL
 
-using Gtk4, GLib
+using Gtk4, Gtk4.GLib
+import Gtk4.G_
 
-win = Gtk4.Window()
+import Gtk4.G_: Button_new_with_label
+
+win = G_.Window()
 win.title="Calculator"
 
-b1 = Gtk4.Button_new_with_label("1")
-b2 = Gtk4.Button_new_with_label("2")
-b3 = Gtk4.Button_new_with_label("3")
-b_plus = Gtk4.Button_new_with_label("+")
-b4 = Gtk4.Button_new_with_label("4")
-b5 = Gtk4.Button_new_with_label("5")
-b6 = Gtk4.Button_new_with_label("6")
-b_minus = Gtk4.Button_new_with_label("-")
-b7 = Gtk4.Button_new_with_label("7")
-b8 = Gtk4.Button_new_with_label("8")
-b9 = Gtk4.Button_new_with_label("9")
-b_multiply = Gtk4.Button_new_with_label("x")
-b_clear = Gtk4.Button_new_with_label("C")
-b0 = Gtk4.Button_new_with_label("0")
-b_equalto = Gtk4.Button_new_with_label("=")
-b_divide = Gtk4.Button_new_with_label("÷")
+b1 = Button_new_with_label("1")
+b2 = Button_new_with_label("2")
+b3 = Button_new_with_label("3")
+b_plus = Button_new_with_label("+")
+b4 = Button_new_with_label("4")
+b5 = Button_new_with_label("5")
+b6 = Button_new_with_label("6")
+b_minus = Button_new_with_label("-")
+b7 = Button_new_with_label("7")
+b8 = Button_new_with_label("8")
+b9 = Button_new_with_label("9")
+b_multiply = Button_new_with_label("x")
+b_clear = Button_new_with_label("C")
+b0 = Button_new_with_label("0")
+b_equalto = Button_new_with_label("=")
+b_divide = Button_new_with_label("÷")
 
-hbox1 = Gtk4.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
-hbox2 = Gtk4.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
-hbox3 = Gtk4.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
-hbox4 = Gtk4.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
+hbox1 = G_.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
+hbox2 = G_.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
+hbox3 = G_.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
+hbox4 = G_.Box(Gtk4.Constants.Orientation_HORIZONTAL,0)
 
-Gtk4.append(hbox1, b1)
-Gtk4.append(hbox1, b2)
-Gtk4.append(hbox1, b3)
-Gtk4.append(hbox1, b_plus)
-Gtk4.append(hbox2, b4)
-Gtk4.append(hbox2, b5)
-Gtk4.append(hbox2, b6)
-Gtk4.append(hbox2, b_minus)
-Gtk4.append(hbox3, b7)
-Gtk4.append(hbox3, b8)
-Gtk4.append(hbox3, b9)
-Gtk4.append(hbox3, b_multiply)
-Gtk4.append(hbox4, b_clear)
-Gtk4.append(hbox4, b0)
-Gtk4.append(hbox4, b_equalto)
-Gtk4.append(hbox4, b_divide)
+G_.append(hbox1, b1)
+G_.append(hbox1, b2)
+G_.append(hbox1, b3)
+G_.append(hbox1, b_plus)
+G_.append(hbox2, b4)
+G_.append(hbox2, b5)
+G_.append(hbox2, b6)
+G_.append(hbox2, b_minus)
+G_.append(hbox3, b7)
+G_.append(hbox3, b8)
+G_.append(hbox3, b9)
+G_.append(hbox3, b_multiply)
+G_.append(hbox4, b_clear)
+G_.append(hbox4, b0)
+G_.append(hbox4, b_equalto)
+G_.append(hbox4, b_divide)
 
-vbox = Gtk4.Box(Gtk4.Constants.Orientation_VERTICAL,0)
-label = Gtk4.Label("")
-Gtk4.set_text(label,"")
+vbox = G_.Box(Gtk4.Constants.Orientation_VERTICAL,0)
+label = G_.Label("")
+G_.set_text(label,"")
 
-Gtk4.append(vbox, Gtk4.Label(""))
-Gtk4.append(vbox, label)
-Gtk4.append(vbox, Gtk4.Label(""))
-Gtk4.append(vbox, hbox1)
-Gtk4.append(vbox, hbox2)
-Gtk4.append(vbox, hbox3)
-Gtk4.append(vbox, hbox4)
-Gtk4.set_child(win, vbox)
+G_.append(vbox, G_.Label(""))
+G_.append(vbox, label)
+G_.append(vbox, G_.Label(""))
+G_.append(vbox, hbox1)
+G_.append(vbox, hbox2)
+G_.append(vbox, hbox3)
+G_.append(vbox, hbox4)
+G_.set_child(win, vbox)
 
 text = ""
 
@@ -86,52 +89,52 @@ end
 function button_clicked_callback(widget)
 	if widget == b1
 		global text = text * "1"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b2
     	global text = text * "2"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b3
         global text = text * "3"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b4
     	global text = text * "4"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b5
         global text = text * "5"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b6
     	global text = text * "6"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b7
         global text = text * "7"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b8
     	global text = text * "8"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b9
         global text = text * "9"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b_plus
     	global text = text * " + "
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b_minus
         global text = text * " - "
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b_multiply
     	global text = text * " x "
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b_divide
         global text = text * " ÷ "
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b0
     	global text = text * "0"
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b_clear
         global text = ""
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     elseif widget == b_equalto
     	global text = calculate(text)
-        Gtk4.set_text(label, text)
+        G_.set_text(label, text)
     end
 end
 
@@ -152,4 +155,4 @@ id14 = signal_connect(button_clicked_callback, b_divide, "clicked")
 id15 = signal_connect(button_clicked_callback, b_clear, "clicked")
 id16 = signal_connect(button_clicked_callback, b_equalto, "clicked")
 
-Gtk4.show(win)
+G_.show(win)

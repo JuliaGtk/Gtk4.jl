@@ -1,0 +1,483 @@
+quote
+$(Expr(:toplevel, quote
+    function accelerator_get_default_mod_mask()
+        ret = ccall(("gtk_accelerator_get_default_mod_mask", libgtk4), Int32, ())
+        ret
+    end
+    function accelerator_get_label(_accelerator_key::Integer, _accelerator_mods::Integer)
+        ret = ccall(("gtk_accelerator_get_label", libgtk4), Cstring, (UInt32, Int32), _accelerator_key, _accelerator_mods)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
+            end
+        ret2
+    end
+    function accelerator_get_label_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods::Integer)
+        _display = if _display == nothing
+                C_NULL
+            else
+                _display
+            end
+        ret = ccall(("gtk_accelerator_get_label_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, Int32), _display, _accelerator_key, _keycode, _accelerator_mods)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
+            end
+        ret2
+    end
+    function accelerator_name(_accelerator_key::Integer, _accelerator_mods::Integer)
+        ret = ccall(("gtk_accelerator_name", libgtk4), Cstring, (UInt32, Int32), _accelerator_key, _accelerator_mods)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
+            end
+        ret2
+    end
+    function accelerator_name_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods::Integer)
+        _display = if _display == nothing
+                C_NULL
+            else
+                _display
+            end
+        ret = ccall(("gtk_accelerator_name_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, Int32), _display, _accelerator_key, _keycode, _accelerator_mods)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
+            end
+        ret2
+    end
+    function accelerator_parse(_accelerator::Union{AbstractString, Symbol})
+        m_accelerator_key = Ref{UInt32}(C_NULL)
+        m_accelerator_mods = Ref{Int32}(C_NULL)
+        ret = ccall(("gtk_accelerator_parse", libgtk4), Cint, (Cstring, Ptr{UInt32}, Ptr{Int32}), _accelerator, m_accelerator_key, m_accelerator_mods)
+        ret2 = convert(Bool, ret)
+        _accelerator_key = m_accelerator_key[]
+        _accelerator_mods = m_accelerator_mods[]
+        (ret2, _accelerator_key, _accelerator_mods)
+    end
+    function accelerator_parse_with_keycode(_accelerator::Union{AbstractString, Symbol}, _display::Maybe(GdkDisplay))
+        _display = if _display == nothing
+                C_NULL
+            else
+                _display
+            end
+        m_accelerator_key = Ref{UInt32}(C_NULL)
+        m_accelerator_codes = Ref{Ptr{UInt32}}(C_NULL)
+        m_accelerator_mods = Ref{Int32}(C_NULL)
+        ret = ccall(("gtk_accelerator_parse_with_keycode", libgtk4), Cint, (Cstring, Ptr{GObject}, Ptr{UInt32}, Ptr{Ptr{UInt32}}, Ptr{Int32}), _accelerator, _display, m_accelerator_key, m_accelerator_codes, m_accelerator_mods)
+        ret2 = convert(Bool, ret)
+        _accelerator_key = m_accelerator_key[]
+        _accelerator_codes = m_accelerator_codes[]
+        _accelerator_mods = m_accelerator_mods[]
+        (ret2, _accelerator_key, _accelerator_codes, _accelerator_mods)
+    end
+    function accelerator_valid(_keyval::Integer, _modifiers::Integer)
+        ret = ccall(("gtk_accelerator_valid", libgtk4), Cint, (UInt32, Int32), _keyval, _modifiers)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function accessible_property_init_value(_property, _value::GValue)
+        ret = ccall(("gtk_accessible_property_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _property, _value)
+        nothing
+    end
+    function accessible_relation_init_value(_relation, _value::GValue)
+        ret = ccall(("gtk_accessible_relation_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _relation, _value)
+        nothing
+    end
+    function accessible_state_init_value(_state, _value::GValue)
+        ret = ccall(("gtk_accessible_state_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _state, _value)
+        nothing
+    end
+    function bitset_iter_init_at(_set::GtkBitset, _target::Integer)
+        m_iter = Ref{GtkBitsetIter}(C_NULL)
+        m_value = Ref{UInt32}(C_NULL)
+        ret = ccall(("gtk_bitset_iter_init_at", libgtk4), Cint, (Ptr{GtkBitsetIter}, Ptr{GtkBitset}, UInt32, Ptr{UInt32}), m_iter, _set, _target, m_value)
+        ret2 = convert(Bool, ret)
+        _iter = m_iter[]
+        _value = m_value[]
+        (ret2, _iter, _value)
+    end
+    function bitset_iter_init_first(_set::GtkBitset)
+        m_iter = Ref{GtkBitsetIter}(C_NULL)
+        m_value = Ref{UInt32}(C_NULL)
+        ret = ccall(("gtk_bitset_iter_init_first", libgtk4), Cint, (Ptr{GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
+        ret2 = convert(Bool, ret)
+        _iter = m_iter[]
+        _value = m_value[]
+        (ret2, _iter, _value)
+    end
+    function bitset_iter_init_last(_set::GtkBitset)
+        m_iter = Ref{GtkBitsetIter}(C_NULL)
+        m_value = Ref{UInt32}(C_NULL)
+        ret = ccall(("gtk_bitset_iter_init_last", libgtk4), Cint, (Ptr{GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
+        ret2 = convert(Bool, ret)
+        _iter = m_iter[]
+        _value = m_value[]
+        (ret2, _iter, _value)
+    end
+    function builder_error_quark()
+        ret = ccall(("gtk_builder_error_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function check_version(_required_major::Integer, _required_minor::Integer, _required_micro::Integer)
+        ret = ccall(("gtk_check_version", libgtk4), Cstring, (UInt32, UInt32, UInt32), _required_major, _required_minor, _required_micro)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, false)
+            end
+        ret2
+    end
+    function constraint_vfl_parser_error_quark()
+        ret = ccall(("gtk_constraint_vfl_parser_error_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function css_parser_error_quark()
+        ret = ccall(("gtk_css_parser_error_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function css_parser_warning_quark()
+        ret = ccall(("gtk_css_parser_warning_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function disable_setlocale()
+        ret = ccall(("gtk_disable_setlocale", libgtk4), Nothing, ())
+        nothing
+    end
+    function distribute_natural_allocation(_extra_space::Integer, _sizes)
+        _sizes = convert(Vector{GtkRequestedSize}, _sizes)
+        _n_requested_sizes = length(_sizes)
+        ret = ccall(("gtk_distribute_natural_allocation", libgtk4), Int32, (Int32, UInt32, Ptr{GtkRequestedSize}), _extra_space, _n_requested_sizes, _sizes)
+        ret
+    end
+    function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::GValue, _pspec::GParamSpec)
+        ret = ccall(("gtk_editable_delegate_get_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GObject}), _object, _prop_id, _value, _pspec)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function editable_delegate_set_property(_object::GObject, _prop_id::Integer, _value::GValue, _pspec::GParamSpec)
+        ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GObject}), _object, _prop_id, _value, _pspec)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function editable_install_properties(_object_class::GObjectClass, _first_prop::Integer)
+        ret = ccall(("gtk_editable_install_properties", libgtk4), UInt32, (Ptr{GObjectClass}, UInt32), _object_class, _first_prop)
+        ret
+    end
+    function file_chooser_error_quark()
+        ret = ccall(("gtk_file_chooser_error_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function get_binary_age()
+        ret = ccall(("gtk_get_binary_age", libgtk4), UInt32, ())
+        ret
+    end
+    function get_debug_flags()
+        ret = ccall(("gtk_get_debug_flags", libgtk4), Int32, ())
+        ret
+    end
+    function get_default_language()
+        ret = ccall(("gtk_get_default_language", libgtk4), Ptr{PangoLanguage}, ())
+        ret2 = convert(PangoLanguage, ret, false)
+        ret2
+    end
+    function get_interface_age()
+        ret = ccall(("gtk_get_interface_age", libgtk4), UInt32, ())
+        ret
+    end
+    function get_locale_direction()
+        ret = ccall(("gtk_get_locale_direction", libgtk4), Int32, ())
+        ret2 = TextDirection(ret)
+        ret2
+    end
+    function get_major_version()
+        ret = ccall(("gtk_get_major_version", libgtk4), UInt32, ())
+        ret
+    end
+    function get_micro_version()
+        ret = ccall(("gtk_get_micro_version", libgtk4), UInt32, ())
+        ret
+    end
+    function get_minor_version()
+        ret = ccall(("gtk_get_minor_version", libgtk4), UInt32, ())
+        ret
+    end
+    function hsv_to_rgb(_h::Real, _s::Real, _v::Real)
+        m_r = Ref{Float32}(C_NULL)
+        m_g = Ref{Float32}(C_NULL)
+        m_b = Ref{Float32}(C_NULL)
+        ret = ccall(("gtk_hsv_to_rgb", libgtk4), Nothing, (Float32, Float32, Float32, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), _h, _s, _v, m_r, m_g, m_b)
+        _r = m_r[]
+        _g = m_g[]
+        _b = m_b[]
+        (_r, _g, _b)
+    end
+    function icon_theme_error_quark()
+        ret = ccall(("gtk_icon_theme_error_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function init()
+        ret = ccall(("gtk_init", libgtk4), Nothing, ())
+        nothing
+    end
+    function init_check()
+        ret = ccall(("gtk_init_check", libgtk4), Cint, ())
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_initialized()
+        ret = ccall(("gtk_is_initialized", libgtk4), Cint, ())
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function native_get_for_surface(_surface::GdkSurface)
+        ret = ccall(("gtk_native_get_for_surface", libgtk4), Ptr{GtkWidget}, (Ptr{GObject},), _surface)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, false)
+            end
+        ret2
+    end
+    function paper_size_get_default()
+        ret = ccall(("gtk_paper_size_get_default", libgtk4), Cstring, ())
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, false)
+            end
+        ret2
+    end
+    function paper_size_get_paper_sizes(_include_custom::Bool)
+        ret = ccall(("gtk_paper_size_get_paper_sizes", libgtk4), Ptr{GLib._GList{GtkPaperSize}}, (Cint,), _include_custom)
+        ret2 = GLib.GList(ret, true)
+        ret2
+    end
+    function param_spec_expression(_name::Union{AbstractString, Symbol}, _nick::Union{AbstractString, Symbol}, _blurb::Union{AbstractString, Symbol}, _flags::Integer)
+        ret = ccall(("gtk_param_spec_expression", libgtk4), Ptr{GObject}, (Cstring, Cstring, Cstring, Int32), _name, _nick, _blurb, _flags)
+        ret2 = convert(GParamSpec, ret, true)
+        ret2
+    end
+    function print_error_quark()
+        ret = ccall(("gtk_print_error_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function print_run_page_setup_dialog(_parent::Maybe(GtkWindow), _page_setup::Maybe(GtkPageSetup), _settings::GtkPrintSettings)
+        _parent = if _parent == nothing
+                C_NULL
+            else
+                _parent
+            end
+        _page_setup = if _page_setup == nothing
+                C_NULL
+            else
+                _page_setup
+            end
+        ret = ccall(("gtk_print_run_page_setup_dialog", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), _parent, _page_setup, _settings)
+        ret2 = convert(GtkPageSetup, ret, true)
+        ret2
+    end
+    function recent_manager_error_quark()
+        ret = ccall(("gtk_recent_manager_error_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function render_activity(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _width::Real, _height::Real)
+        ret = ccall(("gtk_render_activity", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x, _y, _width, _height)
+        nothing
+    end
+    function render_arrow(_context::GtkStyleContext, _cr::cairoContext, _angle::Real, _x::Real, _y::Real, _size::Real)
+        ret = ccall(("gtk_render_arrow", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _angle, _x, _y, _size)
+        nothing
+    end
+    function render_background(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _width::Real, _height::Real)
+        ret = ccall(("gtk_render_background", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x, _y, _width, _height)
+        nothing
+    end
+    function render_check(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _width::Real, _height::Real)
+        ret = ccall(("gtk_render_check", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x, _y, _width, _height)
+        nothing
+    end
+    function render_expander(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _width::Real, _height::Real)
+        ret = ccall(("gtk_render_expander", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x, _y, _width, _height)
+        nothing
+    end
+    function render_focus(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _width::Real, _height::Real)
+        ret = ccall(("gtk_render_focus", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x, _y, _width, _height)
+        nothing
+    end
+    function render_frame(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _width::Real, _height::Real)
+        ret = ccall(("gtk_render_frame", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x, _y, _width, _height)
+        nothing
+    end
+    function render_handle(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _width::Real, _height::Real)
+        ret = ccall(("gtk_render_handle", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x, _y, _width, _height)
+        nothing
+    end
+    function render_icon(_context::GtkStyleContext, _cr::cairoContext, _texture::GdkTexture, _x::Real, _y::Real)
+        ret = ccall(("gtk_render_icon", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Ptr{GObject}, Float64, Float64), _context, _cr, _texture, _x, _y)
+        nothing
+    end
+    function render_layout(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _layout::PangoLayout)
+        ret = ccall(("gtk_render_layout", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Ptr{GObject}), _context, _cr, _x, _y, _layout)
+        nothing
+    end
+    function render_line(_context::GtkStyleContext, _cr::cairoContext, _x0::Real, _y0::Real, _x1::Real, _y1::Real)
+        ret = ccall(("gtk_render_line", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x0, _y0, _x1, _y1)
+        nothing
+    end
+    function render_option(_context::GtkStyleContext, _cr::cairoContext, _x::Real, _y::Real, _width::Real, _height::Real)
+        ret = ccall(("gtk_render_option", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64, Float64, Float64), _context, _cr, _x, _y, _width, _height)
+        nothing
+    end
+    function rgb_to_hsv(_r::Real, _g::Real, _b::Real)
+        m_h = Ref{Float32}(C_NULL)
+        m_s = Ref{Float32}(C_NULL)
+        m_v = Ref{Float32}(C_NULL)
+        ret = ccall(("gtk_rgb_to_hsv", libgtk4), Nothing, (Float32, Float32, Float32, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), _r, _g, _b, m_h, m_s, m_v)
+        _h = m_h[]
+        _s = m_s[]
+        _v = m_v[]
+        (_h, _s, _v)
+    end
+    function set_debug_flags(_flags::Integer)
+        ret = ccall(("gtk_set_debug_flags", libgtk4), Nothing, (Int32,), _flags)
+        nothing
+    end
+    function show_uri(_parent::Maybe(GtkWindow), _uri::Union{AbstractString, Symbol}, _timestamp::Integer)
+        _parent = if _parent == nothing
+                C_NULL
+            else
+                _parent
+            end
+        ret = ccall(("gtk_show_uri", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32), _parent, _uri, _timestamp)
+        nothing
+    end
+    function show_uri_full(_parent::Maybe(GtkWindow), _uri::Union{AbstractString, Symbol}, _timestamp::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _parent = if _parent == nothing
+                C_NULL
+            else
+                _parent
+            end
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("gtk_show_uri_full", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _parent, _uri, _timestamp, _cancellable, _callback, _user_data)
+        nothing
+    end
+    function show_uri_full_finish(_parent::GtkWindow, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_show_uri_full_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _parent, _result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function test_accessible_assertion_message_role(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _expr::Union{AbstractString, Symbol}, _accessible::GtkAccessible, _expected_role, _actual_role)
+        ret = ccall(("gtk_test_accessible_assertion_message_role", libgtk4), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, Ptr{GObject}, Int32, Int32), _domain, _file, _line, _func, _expr, _accessible, _expected_role, _actual_role)
+        nothing
+    end
+    function test_accessible_has_property(_accessible::GtkAccessible, _property)
+        ret = ccall(("gtk_test_accessible_has_property", libgtk4), Cint, (Ptr{GObject}, Int32), _accessible, _property)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function test_accessible_has_relation(_accessible::GtkAccessible, _relation)
+        ret = ccall(("gtk_test_accessible_has_relation", libgtk4), Cint, (Ptr{GObject}, Int32), _accessible, _relation)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function test_accessible_has_role(_accessible::GtkAccessible, _role)
+        ret = ccall(("gtk_test_accessible_has_role", libgtk4), Cint, (Ptr{GObject}, Int32), _accessible, _role)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function test_accessible_has_state(_accessible::GtkAccessible, _state)
+        ret = ccall(("gtk_test_accessible_has_state", libgtk4), Cint, (Ptr{GObject}, Int32), _accessible, _state)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function test_list_all_types()
+        m_n_types = Ref{UInt32}(C_NULL)
+        ret = ccall(("gtk_test_list_all_types", libgtk4), Ptr{UInt64}, (Ptr{UInt32},), m_n_types)
+        _n_types = m_n_types[]
+        ret
+    end
+    function test_register_all_types()
+        ret = ccall(("gtk_test_register_all_types", libgtk4), Nothing, ())
+        nothing
+    end
+    function test_widget_wait_for_draw(_widget::GtkWidget)
+        ret = ccall(("gtk_test_widget_wait_for_draw", libgtk4), Nothing, (Ptr{GObject},), _widget)
+        nothing
+    end
+    function tree_create_row_drag_content(_tree_model::GtkTreeModel, _path::GtkTreePath)
+        ret = ccall(("gtk_tree_create_row_drag_content", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GtkTreePath}), _tree_model, _path)
+        ret2 = convert(GdkContentProvider, ret, true)
+        ret2
+    end
+    function tree_get_row_drag_data(_value::GValue)
+        m_tree_model = Ref{Ptr{GObject}}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
+        ret = ccall(("gtk_tree_get_row_drag_data", libgtk4), Cint, (Ptr{_GValue}, Ptr{Ptr{GObject}}, Ptr{Ptr{GtkTreePath}}), _value, m_tree_model, m_path)
+        ret2 = convert(Bool, ret)
+        _tree_model = m_tree_model[]
+        _tree_model = convert(Maybe(GtkTreeModel), _tree_model)
+        _path = m_path[]
+        _path = convert(Maybe(GtkTreePath), _path)
+        (ret2, _tree_model, _path)
+    end
+    function tree_row_reference_deleted(_proxy::GObject, _path::GtkTreePath)
+        ret = ccall(("gtk_tree_row_reference_deleted", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}), _proxy, _path)
+        nothing
+    end
+    function tree_row_reference_inserted(_proxy::GObject, _path::GtkTreePath)
+        ret = ccall(("gtk_tree_row_reference_inserted", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}), _proxy, _path)
+        nothing
+    end
+    function value_dup_expression(_value::GValue)
+        ret = ccall(("gtk_value_dup_expression", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GtkExpression, ret, true)
+            end
+        ret2
+    end
+    function value_get_expression(_value::GValue)
+        ret = ccall(("gtk_value_get_expression", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GtkExpression, ret, false)
+            end
+        ret2
+    end
+    function value_set_expression(_value::GValue, _expression::GtkExpression)
+        ret = ccall(("gtk_value_set_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GObject}), _value, _expression)
+        nothing
+    end
+    function value_take_expression(_value::GValue, _expression::Maybe(GtkExpression))
+        _expression = if _expression == nothing
+                C_NULL
+            else
+                _expression
+            end
+        ret = ccall(("gtk_value_take_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GObject}), _value, _expression)
+        nothing
+    end
+end))
+end
