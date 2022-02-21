@@ -369,18 +369,18 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_object_compat_control", libgobject), UInt64, (UInt64, Ptr{Nothing}), _what, _data)
         ret
     end
-    function interface_find_property(_g_iface::GTypeInterface, _property_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_object_interface_find_property", libgobject), Ptr{GObject}, (Ptr{GTypeInterface}, Cstring), _g_iface, _property_name)
+    function interface_find_property(_g_iface::_GTypeInterface, _property_name::Union{AbstractString, Symbol})
+        ret = ccall(("g_object_interface_find_property", libgobject), Ptr{GObject}, (Ptr{_GTypeInterface}, Cstring), _g_iface, _property_name)
         ret2 = convert(GParamSpec, ret, false)
         ret2
     end
-    function interface_install_property(_g_iface::GTypeInterface, _pspec::GParamSpec)
-        ret = ccall(("g_object_interface_install_property", libgobject), Nothing, (Ptr{GTypeInterface}, Ptr{GObject}), _g_iface, _pspec)
+    function interface_install_property(_g_iface::_GTypeInterface, _pspec::GParamSpec)
+        ret = ccall(("g_object_interface_install_property", libgobject), Nothing, (Ptr{_GTypeInterface}, Ptr{GObject}), _g_iface, _pspec)
         nothing
     end
-    function interface_list_properties(_g_iface::GTypeInterface)
-        m_n_properties_p = Ref{UInt32}(C_NULL)
-        ret = ccall(("g_object_interface_list_properties", libgobject), Ptr{Ptr{GObject}}, (Ptr{GTypeInterface}, Ptr{UInt32}), _g_iface, m_n_properties_p)
+    function interface_list_properties(_g_iface::_GTypeInterface)
+        m_n_properties_p = Ref{UInt32}()
+        ret = ccall(("g_object_interface_list_properties", libgobject), Ptr{Ptr{GObject}}, (Ptr{_GTypeInterface}, Ptr{UInt32}), _g_iface, m_n_properties_p)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_n_properties_p[]))
                 GLib.g_free(ret)

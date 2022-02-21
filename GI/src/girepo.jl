@@ -382,7 +382,7 @@ function get_base_type(info::GITypeInfo)
                 return GBoxed
             else
                 # we don't have a type defined so return the name
-                return get_full_name(interf_info)
+                return get_struct_name(interf_info)
             end
         elseif typ===:GIEnumInfo
             storage_typ = typetag_primitive[get_storage_type(interf_info)]

@@ -5,7 +5,7 @@ using Test
 
 fm=PangoCairo.font_map_get_default()
 c=Pango.create_context(fm)
-l=Pango.Layout(c)
+l=Pango.Layout_new(c)
 text="I am a multiline\nchunk of text."
 Pango.set_text(l,text,-1)
 @test Pango.get_line_count(l)==2
@@ -13,12 +13,12 @@ Pango.set_text(l,text,-1)
 
 a=Pango.get_attributes(l)
 
-#ink,logical=Pango.get_extents(l)
+ink,logical=Pango.get_extents(l)
 
-#width,height=Pango.get_size(l)
+width,height=Pango.get_size(l)
 
-#@test logical.width == width
-#@test logical.height == height
+@test logical.width == width
+@test logical.height == height
 
 #fd=Pango.get_font_description(l)
 

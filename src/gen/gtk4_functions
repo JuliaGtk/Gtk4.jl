@@ -51,8 +51,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function accelerator_parse(_accelerator::Union{AbstractString, Symbol})
-        m_accelerator_key = Ref{UInt32}(C_NULL)
-        m_accelerator_mods = Ref{Int32}(C_NULL)
+        m_accelerator_key = Ref{UInt32}()
+        m_accelerator_mods = Ref{Int32}()
         ret = ccall(("gtk_accelerator_parse", libgtk4), Cint, (Cstring, Ptr{UInt32}, Ptr{Int32}), _accelerator, m_accelerator_key, m_accelerator_mods)
         ret2 = convert(Bool, ret)
         _accelerator_key = m_accelerator_key[]
@@ -65,9 +65,9 @@ $(Expr(:toplevel, quote
             else
                 _display
             end
-        m_accelerator_key = Ref{UInt32}(C_NULL)
-        m_accelerator_codes = Ref{Ptr{UInt32}}(C_NULL)
-        m_accelerator_mods = Ref{Int32}(C_NULL)
+        m_accelerator_key = Ref{UInt32}()
+        m_accelerator_codes = Ref{Ptr{UInt32}}()
+        m_accelerator_mods = Ref{Int32}()
         ret = ccall(("gtk_accelerator_parse_with_keycode", libgtk4), Cint, (Cstring, Ptr{GObject}, Ptr{UInt32}, Ptr{Ptr{UInt32}}, Ptr{Int32}), _accelerator, _display, m_accelerator_key, m_accelerator_codes, m_accelerator_mods)
         ret2 = convert(Bool, ret)
         _accelerator_key = m_accelerator_key[]
@@ -93,27 +93,27 @@ $(Expr(:toplevel, quote
         nothing
     end
     function bitset_iter_init_at(_set::GtkBitset, _target::Integer)
-        m_iter = Ref{GtkBitsetIter}(C_NULL)
-        m_value = Ref{UInt32}(C_NULL)
-        ret = ccall(("gtk_bitset_iter_init_at", libgtk4), Cint, (Ptr{GtkBitsetIter}, Ptr{GtkBitset}, UInt32, Ptr{UInt32}), m_iter, _set, _target, m_value)
+        m_iter = Ref{_GtkBitsetIter}()
+        m_value = Ref{UInt32}()
+        ret = ccall(("gtk_bitset_iter_init_at", libgtk4), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, UInt32, Ptr{UInt32}), m_iter, _set, _target, m_value)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
         _value = m_value[]
         (ret2, _iter, _value)
     end
     function bitset_iter_init_first(_set::GtkBitset)
-        m_iter = Ref{GtkBitsetIter}(C_NULL)
-        m_value = Ref{UInt32}(C_NULL)
-        ret = ccall(("gtk_bitset_iter_init_first", libgtk4), Cint, (Ptr{GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
+        m_iter = Ref{_GtkBitsetIter}()
+        m_value = Ref{UInt32}()
+        ret = ccall(("gtk_bitset_iter_init_first", libgtk4), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
         _value = m_value[]
         (ret2, _iter, _value)
     end
     function bitset_iter_init_last(_set::GtkBitset)
-        m_iter = Ref{GtkBitsetIter}(C_NULL)
-        m_value = Ref{UInt32}(C_NULL)
-        ret = ccall(("gtk_bitset_iter_init_last", libgtk4), Cint, (Ptr{GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
+        m_iter = Ref{_GtkBitsetIter}()
+        m_value = Ref{UInt32}()
+        ret = ccall(("gtk_bitset_iter_init_last", libgtk4), Cint, (Ptr{_GtkBitsetIter}, Ptr{GtkBitset}, Ptr{UInt32}), m_iter, _set, m_value)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
         _value = m_value[]
@@ -149,9 +149,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function distribute_natural_allocation(_extra_space::Integer, _sizes)
-        _sizes = convert(Vector{GtkRequestedSize}, _sizes)
+        _sizes = convert(Vector{_GtkRequestedSize}, _sizes)
         _n_requested_sizes = length(_sizes)
-        ret = ccall(("gtk_distribute_natural_allocation", libgtk4), Int32, (Int32, UInt32, Ptr{GtkRequestedSize}), _extra_space, _n_requested_sizes, _sizes)
+        ret = ccall(("gtk_distribute_natural_allocation", libgtk4), Int32, (Int32, UInt32, Ptr{_GtkRequestedSize}), _extra_space, _n_requested_sizes, _sizes)
         ret
     end
     function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::GValue, _pspec::GParamSpec)
@@ -164,8 +164,8 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function editable_install_properties(_object_class::GObjectClass, _first_prop::Integer)
-        ret = ccall(("gtk_editable_install_properties", libgtk4), UInt32, (Ptr{GObjectClass}, UInt32), _object_class, _first_prop)
+    function editable_install_properties(_object_class::_GObjectClass, _first_prop::Integer)
+        ret = ccall(("gtk_editable_install_properties", libgtk4), UInt32, (Ptr{_GObjectClass}, UInt32), _object_class, _first_prop)
         ret
     end
     function file_chooser_error_quark()
@@ -207,9 +207,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function hsv_to_rgb(_h::Real, _s::Real, _v::Real)
-        m_r = Ref{Float32}(C_NULL)
-        m_g = Ref{Float32}(C_NULL)
-        m_b = Ref{Float32}(C_NULL)
+        m_r = Ref{Float32}()
+        m_g = Ref{Float32}()
+        m_b = Ref{Float32}()
         ret = ccall(("gtk_hsv_to_rgb", libgtk4), Nothing, (Float32, Float32, Float32, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), _h, _s, _v, m_r, m_g, m_b)
         _r = m_r[]
         _g = m_g[]
@@ -333,9 +333,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function rgb_to_hsv(_r::Real, _g::Real, _b::Real)
-        m_h = Ref{Float32}(C_NULL)
-        m_s = Ref{Float32}(C_NULL)
-        m_v = Ref{Float32}(C_NULL)
+        m_h = Ref{Float32}()
+        m_s = Ref{Float32}()
+        m_v = Ref{Float32}()
         ret = ccall(("gtk_rgb_to_hsv", libgtk4), Nothing, (Float32, Float32, Float32, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), _r, _g, _b, m_h, m_s, m_v)
         _h = m_h[]
         _s = m_s[]
@@ -411,7 +411,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function test_list_all_types()
-        m_n_types = Ref{UInt32}(C_NULL)
+        m_n_types = Ref{UInt32}()
         ret = ccall(("gtk_test_list_all_types", libgtk4), Ptr{UInt64}, (Ptr{UInt32},), m_n_types)
         _n_types = m_n_types[]
         ret
@@ -430,8 +430,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function tree_get_row_drag_data(_value::GValue)
-        m_tree_model = Ref{Ptr{GObject}}(C_NULL)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
+        m_tree_model = Ref{Ptr{GObject}}()
+        m_path = Ref{Ptr{GtkTreePath}}()
         ret = ccall(("gtk_tree_get_row_drag_data", libgtk4), Cint, (Ptr{_GValue}, Ptr{Ptr{GObject}}, Ptr{Ptr{GtkTreePath}}), _value, m_tree_model, m_path)
         ret2 = convert(Bool, ret)
         _tree_model = m_tree_model[]

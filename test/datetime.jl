@@ -15,7 +15,7 @@ tz=GLib.TimeZone_new_local()
 dt=GLib.DateTime_new_now_local()
 @test isa(dt,GLib.GBoxed)
 
-dt2=GLib.DateTime(tz,2021,10,31,8,41,00)
+dt2=GLib.DateTime_new(tz,2021,10,31,8,41,00)
 y,m,d=GLib.get_ymd(dt2)
 
 @test y==2021

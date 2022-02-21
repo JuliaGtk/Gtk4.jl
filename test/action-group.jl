@@ -5,12 +5,12 @@ using Test
 
 @testset "gaction" begin
 
-g=GLib.SimpleActionGroup()
+g=GLib.SimpleActionGroup_new()
 
 @test isa(g,GSimpleActionGroup)
 @test [] == GLib.list_actions(GActionGroup(g))
 
-a=GLib.SimpleAction("do-something",nothing)
+a=GLib.SimpleAction_new("do-something",nothing)
 
 @test "do-something" == GLib.get_name(GAction(a))
 @test a.name == "do-something"

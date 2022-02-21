@@ -6,7 +6,7 @@ using Test
 
 @testset "gmenu" begin
 
-m = GLib.Menu()
+m = GLib.Menu_new()
 
 @test isa(m,GObject)
 @test isa(m,GMenuModel)
@@ -21,7 +21,7 @@ GLib.freeze(m)
 
 @test false == GLib.is_mutable(m)
 
-i = GLib.MenuItem("test2","test2-action")
+i = GLib.MenuItem_new("test2","test2-action")
 @test isa(i,GObject)
 @test isa(i,GMenuItem)
 

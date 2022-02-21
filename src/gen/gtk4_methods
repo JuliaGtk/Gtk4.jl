@@ -1,6 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    function Border()
+    function Border_new()
         ret = ccall(("gtk_border_new", libgtk4), Ptr{_GtkBorder}, ())
         ret2 = convert(GtkBorder, ret, true)
         ret2
@@ -32,7 +32,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_expression_watch_unwatch", libgtk4), Nothing, (Ptr{GtkExpressionWatch},), instance)
         nothing
     end
-    function PaperSize(_name::Maybe(Union{AbstractString, Symbol}))
+    function PaperSize_new(_name::Maybe(Union{AbstractString, Symbol}))
         _name = if _name == nothing
                 C_NULL
             else
@@ -196,9 +196,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_application_info(instance::GtkRecentInfo, _app_name::Union{AbstractString, Symbol})
-        m_app_exec = Ref{Cstring}(C_NULL)
-        m_count = Ref{UInt32}(C_NULL)
-        m_stamp = Ref{Ptr{GDateTime}}(C_NULL)
+        m_app_exec = Ref{Cstring}()
+        m_count = Ref{UInt32}()
+        m_stamp = Ref{Ptr{GDateTime}}()
         ret = ccall(("gtk_recent_info_get_application_info", libgtk4), Cint, (Ptr{GtkRecentInfo}, Cstring, Ptr{Cstring}, Ptr{UInt32}, Ptr{Ptr{GDateTime}}), instance, _app_name, m_app_exec, m_count, m_stamp)
         ret2 = convert(Bool, ret)
         _app_exec = m_app_exec[]
@@ -213,7 +213,7 @@ $(Expr(:toplevel, quote
         (ret2, _app_exec, _count, _stamp)
     end
     function get_applications(instance::GtkRecentInfo)
-        m_length = Ref{UInt64}(C_NULL)
+        m_length = Ref{UInt64}()
         ret = ccall(("gtk_recent_info_get_applications", libgtk4), Ptr{Cstring}, (Ptr{GtkRecentInfo}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
@@ -255,7 +255,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_groups(instance::GtkRecentInfo)
-        m_length = Ref{UInt64}(C_NULL)
+        m_length = Ref{UInt64}()
         ret = ccall(("gtk_recent_info_get_groups", libgtk4), Ptr{Cstring}, (Ptr{GtkRecentInfo}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
@@ -355,7 +355,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_recent_info_unref", libgtk4), Nothing, (Ptr{GtkRecentInfo},), instance)
         nothing
     end
-    function Requisition()
+    function Requisition_new()
         ret = ccall(("gtk_requisition_new", libgtk4), Ptr{_GtkRequisition}, ())
         ret2 = convert(GtkRequisition, ret, true)
         ret2
@@ -378,7 +378,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_iter_free", libgtk4), Nothing, (Ptr{_GtkTreeIter},), instance)
         nothing
     end
-    function TreePath()
+    function TreePath_new()
         ret = ccall(("gtk_tree_path_new", libgtk4), Ptr{GtkTreePath}, ())
         ret2 = convert(GtkTreePath, ret, true)
         ret2
@@ -430,7 +430,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_indices(instance::GtkTreePath)
-        m_depth = Ref{Int32}(C_NULL)
+        m_depth = Ref{Int32}()
         ret = ccall(("gtk_tree_path_get_indices_with_depth", libgtk4), Ptr{Int32}, (Ptr{GtkTreePath}, Ptr{Int32}), instance, m_depth)
         _depth = m_depth[]
         ret
@@ -472,7 +472,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function TreeRowReference(_model::GtkTreeModel, _path::GtkTreePath)
+    function TreeRowReference_new(_model::GtkTreeModel, _path::GtkTreePath)
         ret = ccall(("gtk_tree_row_reference_new", libgtk4), Ptr{GtkTreeRowReference}, (Ptr{GObject}, Ptr{GtkTreePath}), _model, _path)
         ret2 = if ret == C_NULL
                 nothing
@@ -543,7 +543,7 @@ $(Expr(:toplevel, quote
         ret2 = AccessibleRole(ret)
         ret2
     end
-    function AboutDialog()
+    function AboutDialog_new()
         ret = ccall(("gtk_about_dialog_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -790,7 +790,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_about_dialog_set_wrap_license", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _wrap_license)
         nothing
     end
-    function ActionBar()
+    function ActionBar_new()
         ret = ccall(("gtk_action_bar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -839,7 +839,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkActivateAction, ret, false)
         ret2
     end
-    function Adjustment(_value::Real, _lower::Real, _upper::Real, _step_increment::Real, _page_increment::Real, _page_size::Real)
+    function Adjustment_new(_value::Real, _lower::Real, _upper::Real, _step_increment::Real, _page_increment::Real, _page_size::Real)
         ret = ccall(("gtk_adjustment_new", libgtk4), Ptr{GObject}, (Float64, Float64, Float64, Float64, Float64, Float64), _value, _lower, _upper, _step_increment, _page_increment, _page_size)
         ret2 = convert(GtkAdjustment, ret, false)
         ret2
@@ -904,7 +904,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_adjustment_set_value", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _value)
         nothing
     end
-    function AlternativeTrigger(_first::GtkShortcutTrigger, _second::GtkShortcutTrigger)
+    function AlternativeTrigger_new(_first::GtkShortcutTrigger, _second::GtkShortcutTrigger)
         ret = ccall(("gtk_alternative_trigger_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _first, _second)
         ret2 = convert(GtkShortcutTrigger, ret, true)
         ret2
@@ -919,12 +919,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkShortcutTrigger, ret, false)
         ret2
     end
-    function AnyFilter()
+    function AnyFilter_new()
         ret = ccall(("gtk_any_filter_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkAnyFilter, ret, true)
         ret2
     end
-    function AppChooserButton(_content_type::Union{AbstractString, Symbol})
+    function AppChooserButton_new(_content_type::Union{AbstractString, Symbol})
         ret = ccall(("gtk_app_chooser_button_new", libgtk4), Ptr{GObject}, (Cstring,), _content_type)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -981,7 +981,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_app_chooser_button_set_show_dialog_item", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
-    function AppChooserDialog(_parent::Maybe(GtkWindow), _flags::Integer, _file::GFile)
+    function AppChooserDialog_new(_parent::Maybe(GtkWindow), _flags::Integer, _file::GFile)
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -1019,7 +1019,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_app_chooser_dialog_set_heading", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _heading)
         nothing
     end
-    function AppChooserWidget(_content_type::Union{AbstractString, Symbol})
+    function AppChooserWidget_new(_content_type::Union{AbstractString, Symbol})
         ret = ccall(("gtk_app_chooser_widget_new", libgtk4), Ptr{GObject}, (Cstring,), _content_type)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -1082,7 +1082,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_app_chooser_widget_set_show_recommended", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
-    function Application(_application_id::Maybe(Union{AbstractString, Symbol}), _flags::Integer)
+    function Application_new(_application_id::Maybe(Union{AbstractString, Symbol}), _flags::Integer)
         _application_id = if _application_id == nothing
                 C_NULL
             else
@@ -1201,7 +1201,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_application_uninhibit", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _cookie)
         nothing
     end
-    function ApplicationWindow(_application::GtkApplication)
+    function ApplicationWindow_new(_application::GtkApplication)
         ret = ccall(("gtk_application_window_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _application)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -1237,7 +1237,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_application_window_set_show_menubar", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _show_menubar)
         nothing
     end
-    function AspectFrame(_xalign::Real, _yalign::Real, _ratio::Real, _obey_child::Bool)
+    function AspectFrame_new(_xalign::Real, _yalign::Real, _ratio::Real, _obey_child::Bool)
         ret = ccall(("gtk_aspect_frame_new", libgtk4), Ptr{GObject}, (Float32, Float32, Float32, Cint), _xalign, _yalign, _ratio, _obey_child)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -1293,7 +1293,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_aspect_frame_set_yalign", libgtk4), Nothing, (Ptr{GObject}, Float32), instance, _yalign)
         nothing
     end
-    function Assistant()
+    function Assistant_new()
         ret = ccall(("gtk_assistant_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -1408,12 +1408,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
-    function BinLayout()
+    function BinLayout_new()
         ret = ccall(("gtk_bin_layout_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkLayoutManager, ret, true)
         ret2
     end
-    function BookmarkList(_filename::Maybe(Union{AbstractString, Symbol}), _attributes::Maybe(Union{AbstractString, Symbol}))
+    function BookmarkList_new(_filename::Maybe(Union{AbstractString, Symbol}), _attributes::Maybe(Union{AbstractString, Symbol}))
         _filename = if _filename == nothing
                 C_NULL
             else
@@ -1468,7 +1468,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_bookmark_list_set_io_priority", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _io_priority)
         nothing
     end
-    function Box(_orientation, _spacing::Integer)
+    function Box_new(_orientation, _spacing::Integer)
         ret = ccall(("gtk_box_new", libgtk4), Ptr{GObject}, (Int32, Int32), _orientation, _spacing)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -1529,7 +1529,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_box_set_spacing", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _spacing)
         nothing
     end
-    function BoxLayout(_orientation)
+    function BoxLayout_new(_orientation)
         ret = ccall(("gtk_box_layout_new", libgtk4), Ptr{GObject}, (Int32,), _orientation)
         ret2 = convert(GtkLayoutManager, ret, true)
         ret2
@@ -1560,7 +1560,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_box_layout_set_spacing", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _spacing)
         nothing
     end
-    function Builder()
+    function Builder_new()
         ret = ccall(("gtk_builder_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkBuilder, ret, true)
         ret2
@@ -1705,7 +1705,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function value_from_string(instance::GtkBuilder, _pspec::GParamSpec, _string::Union{AbstractString, Symbol})
-        m_value = Ref{_GValue}(C_NULL)
+        m_value = Ref{_GValue}()
         err = err_buf()
         ret = ccall(("gtk_builder_value_from_string", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{_GValue}, Ptr{Ptr{GError}}), instance, _pspec, _string, m_value, err)
         check_err(err)
@@ -1715,7 +1715,7 @@ $(Expr(:toplevel, quote
         (ret2, _value)
     end
     function value_from_string_type(instance::GtkBuilder, _type::Integer, _string::Union{AbstractString, Symbol})
-        m_value = Ref{_GValue}(C_NULL)
+        m_value = Ref{_GValue}()
         err = err_buf()
         ret = ccall(("gtk_builder_value_from_string_type", libgtk4), Cint, (Ptr{GObject}, UInt64, Cstring, Ptr{_GValue}, Ptr{Ptr{GError}}), instance, _type, _string, m_value, err)
         check_err(err)
@@ -1724,7 +1724,7 @@ $(Expr(:toplevel, quote
         _value = convert(GValue, _value, false)
         (ret2, _value)
     end
-    function BuilderCScope()
+    function BuilderCScope_new()
         ret = ccall(("gtk_builder_cscope_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkBuilderCScope, ret, true)
         ret2
@@ -1775,7 +1775,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function Button()
+    function Button_new()
         ret = ccall(("gtk_button_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -1862,7 +1862,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_button_set_use_underline", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_underline)
         nothing
     end
-    function Calendar()
+    function Calendar_new()
         ret = ccall(("gtk_calendar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -1968,14 +1968,14 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_cell_allocation(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _renderer::GtkCellRenderer, _cell_area::GdkRectangle)
-        m_allocation = Ref{_GdkRectangle}(C_NULL)
+        m_allocation = Ref{_GdkRectangle}()
         ret = ccall(("gtk_cell_area_get_cell_allocation", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _context, _widget, _renderer, _cell_area, m_allocation)
         _allocation = m_allocation[]
         _allocation = convert(GdkRectangle, _allocation, false)
         _allocation
     end
     function get_cell_at_position(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::GdkRectangle, _x::Integer, _y::Integer)
-        m_alloc_area = Ref{_GdkRectangle}(C_NULL)
+        m_alloc_area = Ref{_GdkRectangle}()
         ret = ccall(("gtk_cell_area_get_cell_at_position", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Int32, Int32, Ptr{_GdkRectangle}), instance, _context, _widget, _cell_area, _x, _y, m_alloc_area)
         ret2 = convert(GtkCellRenderer, ret, false)
         _alloc_area = m_alloc_area[]
@@ -2023,32 +2023,32 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_preferred_height(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget)
-        m_minimum_height = Ref{Int32}(C_NULL)
-        m_natural_height = Ref{Int32}(C_NULL)
+        m_minimum_height = Ref{Int32}()
+        m_natural_height = Ref{Int32}()
         ret = ccall(("gtk_cell_area_get_preferred_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _context, _widget, m_minimum_height, m_natural_height)
         _minimum_height = m_minimum_height[]
         _natural_height = m_natural_height[]
         (_minimum_height, _natural_height)
     end
     function get_preferred_height_for_width(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _width::Integer)
-        m_minimum_height = Ref{Int32}(C_NULL)
-        m_natural_height = Ref{Int32}(C_NULL)
+        m_minimum_height = Ref{Int32}()
+        m_natural_height = Ref{Int32}()
         ret = ccall(("gtk_cell_area_get_preferred_height_for_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _context, _widget, _width, m_minimum_height, m_natural_height)
         _minimum_height = m_minimum_height[]
         _natural_height = m_natural_height[]
         (_minimum_height, _natural_height)
     end
     function get_preferred_width(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget)
-        m_minimum_width = Ref{Int32}(C_NULL)
-        m_natural_width = Ref{Int32}(C_NULL)
+        m_minimum_width = Ref{Int32}()
+        m_natural_width = Ref{Int32}()
         ret = ccall(("gtk_cell_area_get_preferred_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _context, _widget, m_minimum_width, m_natural_width)
         _minimum_width = m_minimum_width[]
         _natural_width = m_natural_width[]
         (_minimum_width, _natural_width)
     end
     function get_preferred_width_for_height(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _height::Integer)
-        m_minimum_width = Ref{Int32}(C_NULL)
-        m_natural_width = Ref{Int32}(C_NULL)
+        m_minimum_width = Ref{Int32}()
+        m_natural_width = Ref{Int32}()
         ret = ccall(("gtk_cell_area_get_preferred_width_for_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _context, _widget, _height, m_minimum_width, m_natural_width)
         _minimum_width = m_minimum_width[]
         _natural_width = m_natural_width[]
@@ -2065,7 +2065,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function inner_cell_area(instance::GtkCellArea, _widget::GtkWidget, _cell_area::GdkRectangle)
-        m_inner_area = Ref{_GdkRectangle}(C_NULL)
+        m_inner_area = Ref{_GdkRectangle}()
         ret = ccall(("gtk_cell_area_inner_cell_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _widget, _cell_area, m_inner_area)
         _inner_area = m_inner_area[]
         _inner_area = convert(GdkRectangle, _inner_area, false)
@@ -2090,8 +2090,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function request_renderer(instance::GtkCellArea, _renderer::GtkCellRenderer, _orientation, _widget::GtkWidget, _for_size::Integer)
-        m_minimum_size = Ref{Int32}(C_NULL)
-        m_natural_size = Ref{Int32}(C_NULL)
+        m_minimum_size = Ref{Int32}()
+        m_natural_size = Ref{Int32}()
         ret = ccall(("gtk_cell_area_request_renderer", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _renderer, _orientation, _widget, _for_size, m_minimum_size, m_natural_size)
         _minimum_size = m_minimum_size[]
         _natural_size = m_natural_size[]
@@ -2109,7 +2109,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_area_stop_editing", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _canceled)
         nothing
     end
-    function CellAreaBox()
+    function CellAreaBox_new()
         ret = ccall(("gtk_cell_area_box_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellArea, ret, false)
         ret2
@@ -2135,8 +2135,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_allocation(instance::GtkCellAreaContext)
-        m_width = Ref{Int32}(C_NULL)
-        m_height = Ref{Int32}(C_NULL)
+        m_width = Ref{Int32}()
+        m_height = Ref{Int32}()
         ret = ccall(("gtk_cell_area_context_get_allocation", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_width, m_height)
         _width = m_width[]
         _height = m_height[]
@@ -2148,32 +2148,32 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_preferred_height(instance::GtkCellAreaContext)
-        m_minimum_height = Ref{Int32}(C_NULL)
-        m_natural_height = Ref{Int32}(C_NULL)
+        m_minimum_height = Ref{Int32}()
+        m_natural_height = Ref{Int32}()
         ret = ccall(("gtk_cell_area_context_get_preferred_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_minimum_height, m_natural_height)
         _minimum_height = m_minimum_height[]
         _natural_height = m_natural_height[]
         (_minimum_height, _natural_height)
     end
     function get_preferred_height_for_width(instance::GtkCellAreaContext, _width::Integer)
-        m_minimum_height = Ref{Int32}(C_NULL)
-        m_natural_height = Ref{Int32}(C_NULL)
+        m_minimum_height = Ref{Int32}()
+        m_natural_height = Ref{Int32}()
         ret = ccall(("gtk_cell_area_context_get_preferred_height_for_width", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _width, m_minimum_height, m_natural_height)
         _minimum_height = m_minimum_height[]
         _natural_height = m_natural_height[]
         (_minimum_height, _natural_height)
     end
     function get_preferred_width(instance::GtkCellAreaContext)
-        m_minimum_width = Ref{Int32}(C_NULL)
-        m_natural_width = Ref{Int32}(C_NULL)
+        m_minimum_width = Ref{Int32}()
+        m_natural_width = Ref{Int32}()
         ret = ccall(("gtk_cell_area_context_get_preferred_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_minimum_width, m_natural_width)
         _minimum_width = m_minimum_width[]
         _natural_width = m_natural_width[]
         (_minimum_width, _natural_width)
     end
     function get_preferred_width_for_height(instance::GtkCellAreaContext, _height::Integer)
-        m_minimum_width = Ref{Int32}(C_NULL)
-        m_natural_width = Ref{Int32}(C_NULL)
+        m_minimum_width = Ref{Int32}()
+        m_natural_width = Ref{Int32}()
         ret = ccall(("gtk_cell_area_context_get_preferred_width_for_height", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _height, m_minimum_width, m_natural_width)
         _minimum_width = m_minimum_width[]
         _natural_width = m_natural_width[]
@@ -2192,23 +2192,23 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_aligned_area(instance::GtkCellRenderer, _widget::GtkWidget, _flags::Integer, _cell_area::GdkRectangle)
-        m_aligned_area = Ref{_GdkRectangle}(C_NULL)
+        m_aligned_area = Ref{_GdkRectangle}()
         ret = ccall(("gtk_cell_renderer_get_aligned_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _widget, _flags, _cell_area, m_aligned_area)
         _aligned_area = m_aligned_area[]
         _aligned_area = convert(GdkRectangle, _aligned_area, false)
         _aligned_area
     end
     function get_alignment(instance::GtkCellRenderer)
-        m_xalign = Ref{Float32}(C_NULL)
-        m_yalign = Ref{Float32}(C_NULL)
+        m_xalign = Ref{Float32}()
+        m_yalign = Ref{Float32}()
         ret = ccall(("gtk_cell_renderer_get_alignment", libgtk4), Nothing, (Ptr{GObject}, Ptr{Float32}, Ptr{Float32}), instance, m_xalign, m_yalign)
         _xalign = m_xalign[]
         _yalign = m_yalign[]
         (_xalign, _yalign)
     end
     function get_fixed_size(instance::GtkCellRenderer)
-        m_width = Ref{Int32}(C_NULL)
-        m_height = Ref{Int32}(C_NULL)
+        m_width = Ref{Int32}()
+        m_height = Ref{Int32}()
         ret = ccall(("gtk_cell_renderer_get_fixed_size", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_width, m_height)
         _width = m_width[]
         _height = m_height[]
@@ -2225,32 +2225,32 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_padding(instance::GtkCellRenderer)
-        m_xpad = Ref{Int32}(C_NULL)
-        m_ypad = Ref{Int32}(C_NULL)
+        m_xpad = Ref{Int32}()
+        m_ypad = Ref{Int32}()
         ret = ccall(("gtk_cell_renderer_get_padding", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_xpad, m_ypad)
         _xpad = m_xpad[]
         _ypad = m_ypad[]
         (_xpad, _ypad)
     end
     function get_preferred_height(instance::GtkCellRenderer, _widget::GtkWidget)
-        m_minimum_size = Ref{Int32}(C_NULL)
-        m_natural_size = Ref{Int32}(C_NULL)
+        m_minimum_size = Ref{Int32}()
+        m_natural_size = Ref{Int32}()
         ret = ccall(("gtk_cell_renderer_get_preferred_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _widget, m_minimum_size, m_natural_size)
         _minimum_size = m_minimum_size[]
         _natural_size = m_natural_size[]
         (_minimum_size, _natural_size)
     end
     function get_preferred_height_for_width(instance::GtkCellRenderer, _widget::GtkWidget, _width::Integer)
-        m_minimum_height = Ref{Int32}(C_NULL)
-        m_natural_height = Ref{Int32}(C_NULL)
+        m_minimum_height = Ref{Int32}()
+        m_natural_height = Ref{Int32}()
         ret = ccall(("gtk_cell_renderer_get_preferred_height_for_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _widget, _width, m_minimum_height, m_natural_height)
         _minimum_height = m_minimum_height[]
         _natural_height = m_natural_height[]
         (_minimum_height, _natural_height)
     end
     function get_preferred_size(instance::GtkCellRenderer, _widget::GtkWidget)
-        m_minimum_size = Ref{_GtkRequisition}(C_NULL)
-        m_natural_size = Ref{_GtkRequisition}(C_NULL)
+        m_minimum_size = Ref{_GtkRequisition}()
+        m_natural_size = Ref{_GtkRequisition}()
         ret = ccall(("gtk_cell_renderer_get_preferred_size", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkRequisition}, Ptr{_GtkRequisition}), instance, _widget, m_minimum_size, m_natural_size)
         _minimum_size = m_minimum_size[]
         _minimum_size = convert(GtkRequisition, _minimum_size, false)
@@ -2259,16 +2259,16 @@ $(Expr(:toplevel, quote
         (_minimum_size, _natural_size)
     end
     function get_preferred_width(instance::GtkCellRenderer, _widget::GtkWidget)
-        m_minimum_size = Ref{Int32}(C_NULL)
-        m_natural_size = Ref{Int32}(C_NULL)
+        m_minimum_size = Ref{Int32}()
+        m_natural_size = Ref{Int32}()
         ret = ccall(("gtk_cell_renderer_get_preferred_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _widget, m_minimum_size, m_natural_size)
         _minimum_size = m_minimum_size[]
         _natural_size = m_natural_size[]
         (_minimum_size, _natural_size)
     end
     function get_preferred_width_for_height(instance::GtkCellRenderer, _widget::GtkWidget, _height::Integer)
-        m_minimum_width = Ref{Int32}(C_NULL)
-        m_natural_width = Ref{Int32}(C_NULL)
+        m_minimum_width = Ref{Int32}()
+        m_natural_width = Ref{Int32}()
         ret = ccall(("gtk_cell_renderer_get_preferred_width_for_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _widget, _height, m_minimum_width, m_natural_width)
         _minimum_width = m_minimum_width[]
         _natural_width = m_natural_width[]
@@ -2339,37 +2339,37 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_renderer_stop_editing", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _canceled)
         nothing
     end
-    function CellRendererAccel()
+    function CellRendererAccel_new()
         ret = ccall(("gtk_cell_renderer_accel_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellRenderer, ret, false)
         ret2
     end
-    function CellRendererCombo()
+    function CellRendererCombo_new()
         ret = ccall(("gtk_cell_renderer_combo_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellRenderer, ret, false)
         ret2
     end
-    function CellRendererPixbuf()
+    function CellRendererPixbuf_new()
         ret = ccall(("gtk_cell_renderer_pixbuf_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellRenderer, ret, false)
         ret2
     end
-    function CellRendererProgress()
+    function CellRendererProgress_new()
         ret = ccall(("gtk_cell_renderer_progress_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellRenderer, ret, false)
         ret2
     end
-    function CellRendererSpin()
+    function CellRendererSpin_new()
         ret = ccall(("gtk_cell_renderer_spin_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellRenderer, ret, false)
         ret2
     end
-    function CellRendererSpinner()
+    function CellRendererSpinner_new()
         ret = ccall(("gtk_cell_renderer_spinner_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellRenderer, ret, false)
         ret2
     end
-    function CellRendererText()
+    function CellRendererText_new()
         ret = ccall(("gtk_cell_renderer_text_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellRenderer, ret, false)
         ret2
@@ -2378,7 +2378,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_renderer_text_set_fixed_height_from_font", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _number_of_rows)
         nothing
     end
-    function CellRendererToggle()
+    function CellRendererToggle_new()
         ret = ccall(("gtk_cell_renderer_toggle_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCellRenderer, ret, false)
         ret2
@@ -2410,7 +2410,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_renderer_toggle_set_radio", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _radio)
         nothing
     end
-    function CellView()
+    function CellView_new()
         ret = ccall(("gtk_cell_view_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -2492,7 +2492,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_view_set_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model)
         nothing
     end
-    function CenterBox()
+    function CenterBox_new()
         ret = ccall(("gtk_center_box_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -2560,7 +2560,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_center_box_set_start_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child)
         nothing
     end
-    function CenterLayout()
+    function CenterLayout_new()
         ret = ccall(("gtk_center_layout_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkLayoutManager, ret, true)
         ret2
@@ -2637,7 +2637,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_center_layout_set_start_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget)
         nothing
     end
-    function CheckButton()
+    function CheckButton_new()
         ret = ccall(("gtk_check_button_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -2716,7 +2716,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_check_button_set_use_underline", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
-    function ColorButton()
+    function ColorButton_new()
         ret = ccall(("gtk_color_button_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -2748,7 +2748,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_color_button_set_title", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _title)
         nothing
     end
-    function ColorChooserDialog(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow))
+    function ColorChooserDialog_new(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow))
         _title = if _title == nothing
                 C_NULL
             else
@@ -2763,12 +2763,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
-    function ColorChooserWidget()
+    function ColorChooserWidget_new()
         ret = ccall(("gtk_color_chooser_widget_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
-    function ColumnView(_model::Maybe(GtkSelectionModel))
+    function ColumnView_new(_model::Maybe(GtkSelectionModel))
         _model = if _model == nothing
                 C_NULL
             else
@@ -2882,7 +2882,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_column_view_sort_by_column", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32), instance, _column, _direction)
         nothing
     end
-    function ColumnViewColumn(_title::Maybe(Union{AbstractString, Symbol}), _factory::Maybe(GtkListItemFactory))
+    function ColumnViewColumn_new(_title::Maybe(Union{AbstractString, Symbol}), _factory::Maybe(GtkListItemFactory))
         _title = if _title == nothing
                 C_NULL
             else
@@ -3013,7 +3013,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_column_view_column_set_visible", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visible)
         nothing
     end
-    function ComboBox()
+    function ComboBox_new()
         ret = ccall(("gtk_combo_box_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -3047,7 +3047,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_active_iter(instance::GtkComboBox)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_combo_box_get_active_iter", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, m_iter)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -3186,7 +3186,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_combo_box_set_row_separator_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), instance, _func, _data, _destroy)
         nothing
     end
-    function ComboBoxText()
+    function ComboBoxText_new()
         ret = ccall(("gtk_combo_box_text_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -3252,7 +3252,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_combo_box_text_remove_all", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function Constraint(_target::Maybe(GtkConstraintTarget), _target_attribute, _relation, _source::Maybe(GtkConstraintTarget), _source_attribute, _multiplier::Real, _constant::Real, _strength::Integer)
+    function Constraint_new(_target::Maybe(GtkConstraintTarget), _target_attribute, _relation, _source::Maybe(GtkConstraintTarget), _source_attribute, _multiplier::Real, _constant::Real, _strength::Integer)
         _target = if _target == nothing
                 C_NULL
             else
@@ -3343,7 +3343,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function ConstraintGuide()
+    function ConstraintGuide_new()
         ret = ccall(("gtk_constraint_guide_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkConstraintGuide, ret, true)
         ret2
@@ -3429,7 +3429,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_constraint_guide_set_strength", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _strength)
         nothing
     end
-    function ConstraintLayout()
+    function ConstraintLayout_new()
         ret = ccall(("gtk_constraint_layout_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkLayoutManager, ret, true)
         ret2
@@ -3478,7 +3478,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_constraint_layout_remove_guide", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _guide)
         nothing
     end
-    function CssProvider()
+    function CssProvider_new()
         ret = ccall(("gtk_css_provider_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkCssProvider, ret, true)
         ret2
@@ -3519,7 +3519,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function CustomSorter(_sort_func::Maybe(Function), _user_data::Maybe(Nothing), _user_destroy::Maybe(Function))
+    function CustomSorter_new(_sort_func::Maybe(Function), _user_data::Maybe(Nothing), _user_destroy::Maybe(Function))
         _sort_func = if _sort_func == nothing
                 C_NULL
             else
@@ -3539,7 +3539,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkCustomSorter, ret, true)
         ret2
     end
-    function Dialog()
+    function Dialog_new()
         ret = ccall(("gtk_dialog_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -3588,7 +3588,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_dialog_set_response_sensitive", libgtk4), Nothing, (Ptr{GObject}, Int32, Cint), instance, _response_id, _setting)
         nothing
     end
-    function DirectoryList(_attributes::Maybe(Union{AbstractString, Symbol}), _file::Maybe(GFile))
+    function DirectoryList_new(_attributes::Maybe(Union{AbstractString, Symbol}), _file::Maybe(GFile))
         _attributes = if _attributes == nothing
                 C_NULL
             else
@@ -3704,7 +3704,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_drag_icon_set_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child)
         nothing
     end
-    function DragSource()
+    function DragSource_new()
         ret = ccall(("gtk_drag_source_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkDragSource, ret, true)
         ret2
@@ -3757,7 +3757,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_drag_source_set_icon", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32), instance, _paintable, _hot_x, _hot_y)
         nothing
     end
-    function DrawingArea()
+    function DrawingArea_new()
         ret = ccall(("gtk_drawing_area_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -3778,7 +3778,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_drawing_area_set_content_width", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _width)
         nothing
     end
-    function DropControllerMotion()
+    function DropControllerMotion_new()
         ret = ccall(("gtk_drop_controller_motion_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEventController, ret, true)
         ret2
@@ -3802,7 +3802,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function DropTarget(_type::Integer, _actions::Integer)
+    function DropTarget_new(_type::Integer, _actions::Integer)
         ret = ccall(("gtk_drop_target_new", libgtk4), Ptr{GObject}, (UInt64, Int32), _type, _actions)
         ret2 = convert(GtkDropTarget, ret, true)
         ret2
@@ -3830,7 +3830,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_gtypes(instance::GtkDropTarget)
-        m_n_types = Ref{UInt64}(C_NULL)
+        m_n_types = Ref{UInt64}()
         ret = ccall(("gtk_drop_target_get_gtypes", libgtk4), Ptr{UInt64}, (Ptr{GObject}, Ptr{UInt64}), instance, m_n_types)
         _n_types = m_n_types[]
         ret
@@ -3867,7 +3867,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_drop_target_set_preload", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _preload)
         nothing
     end
-    function DropTargetAsync(_formats::Maybe(GdkContentFormats), _actions::Integer)
+    function DropTargetAsync_new(_formats::Maybe(GdkContentFormats), _actions::Integer)
         _formats = if _formats == nothing
                 C_NULL
             else
@@ -3907,7 +3907,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_drop_target_async_set_formats", libgtk4), Nothing, (Ptr{GObject}, Ptr{GdkContentFormats}), instance, _formats)
         nothing
     end
-    function EditableLabel(_str::Union{AbstractString, Symbol})
+    function EditableLabel_new(_str::Union{AbstractString, Symbol})
         ret = ccall(("gtk_editable_label_new", libgtk4), Ptr{GObject}, (Cstring,), _str)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -3921,12 +3921,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_editable_label_stop_editing", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _commit)
         nothing
     end
-    function EmojiChooser()
+    function EmojiChooser_new()
         ret = ccall(("gtk_emoji_chooser_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
-    function Entry()
+    function Entry_new()
         ret = ccall(("gtk_entry_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -3992,7 +3992,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_icon_area(instance::GtkEntry, _icon_pos)
-        m_icon_area = Ref{_GdkRectangle}(C_NULL)
+        m_icon_area = Ref{_GdkRectangle}()
         ret = ccall(("gtk_entry_get_icon_area", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{_GdkRectangle}), instance, _icon_pos, m_icon_area)
         _icon_area = m_icon_area[]
         _icon_area = convert(GdkRectangle, _icon_area, false)
@@ -4282,7 +4282,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_entry_unset_invisible_char", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function EntryBuffer(_initial_chars::Maybe(Union{AbstractString, Symbol}), _n_initial_chars::Integer)
+    function EntryBuffer_new(_initial_chars::Maybe(Union{AbstractString, Symbol}), _n_initial_chars::Integer)
         _initial_chars = if _initial_chars == nothing
                 C_NULL
             else
@@ -4337,7 +4337,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_entry_buffer_set_text", libgtk4), Nothing, (Ptr{GObject}, Cstring, Int32), instance, _chars, _n_chars)
         nothing
     end
-    function EntryCompletion()
+    function EntryCompletion_new()
         ret = ccall(("gtk_entry_completion_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEntryCompletion, ret, true)
         ret2
@@ -4526,7 +4526,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_event_controller_set_propagation_phase", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _phase)
         nothing
     end
-    function EventControllerFocus()
+    function EventControllerFocus_new()
         ret = ccall(("gtk_event_controller_focus_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEventController, ret, true)
         ret2
@@ -4541,7 +4541,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function EventControllerKey()
+    function EventControllerKey_new()
         ret = ccall(("gtk_event_controller_key_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEventController, ret, true)
         ret2
@@ -4564,12 +4564,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_event_controller_key_set_im_context", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _im_context)
         nothing
     end
-    function EventControllerLegacy()
+    function EventControllerLegacy_new()
         ret = ccall(("gtk_event_controller_legacy_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEventController, ret, true)
         ret2
     end
-    function EventControllerMotion()
+    function EventControllerMotion_new()
         ret = ccall(("gtk_event_controller_motion_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEventController, ret, true)
         ret2
@@ -4584,7 +4584,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function EventControllerScroll(_flags::Integer)
+    function EventControllerScroll_new(_flags::Integer)
         ret = ccall(("gtk_event_controller_scroll_new", libgtk4), Ptr{GObject}, (Int32,), _flags)
         ret2 = convert(GtkEventController, ret, true)
         ret2
@@ -4597,12 +4597,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_event_controller_scroll_set_flags", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
-    function EveryFilter()
+    function EveryFilter_new()
         ret = ccall(("gtk_every_filter_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEveryFilter, ret, true)
         ret2
     end
-    function Expander(_label::Maybe(Union{AbstractString, Symbol}))
+    function Expander_new(_label::Maybe(Union{AbstractString, Symbol}))
         _label = if _label == nothing
                 C_NULL
             else
@@ -4712,7 +4712,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_expander_set_use_underline", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_underline)
         nothing
     end
-    function FileChooserNative(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow), _action, _accept_label::Maybe(Union{AbstractString, Symbol}), _cancel_label::Maybe(Union{AbstractString, Symbol}))
+    function FileChooserNative_new(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow), _action, _accept_label::Maybe(Union{AbstractString, Symbol}), _cancel_label::Maybe(Union{AbstractString, Symbol}))
         _title = if _title == nothing
                 C_NULL
             else
@@ -4773,12 +4773,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_file_chooser_native_set_cancel_label", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _cancel_label)
         nothing
     end
-    function FileChooserWidget(_action)
+    function FileChooserWidget_new(_action)
         ret = ccall(("gtk_file_chooser_widget_new", libgtk4), Ptr{GObject}, (Int32,), _action)
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
-    function FileFilter()
+    function FileFilter_new()
         ret = ccall(("gtk_file_filter_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkFileFilter, ret, true)
         ret2
@@ -4845,7 +4845,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function FilterListModel(_model::Maybe(GListModel), _filter::Maybe(GtkFilter))
+    function FilterListModel_new(_model::Maybe(GListModel), _filter::Maybe(GtkFilter))
         _model = if _model == nothing
                 C_NULL
             else
@@ -4912,14 +4912,14 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_filter_list_model_set_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model)
         nothing
     end
-    function Fixed()
+    function Fixed_new()
         ret = ccall(("gtk_fixed_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
     function get_child_position(instance::GtkFixed, _widget::GtkWidget)
-        m_x = Ref{Float64}(C_NULL)
-        m_y = Ref{Float64}(C_NULL)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
         ret = ccall(("gtk_fixed_get_child_position", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, _widget, m_x, m_y)
         _x = m_x[]
         _y = m_y[]
@@ -4955,7 +4955,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_fixed_set_child_transform", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GskTransform}), instance, _widget, _transform)
         nothing
     end
-    function FixedLayout()
+    function FixedLayout_new()
         ret = ccall(("gtk_fixed_layout_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkLayoutManager, ret, true)
         ret2
@@ -4973,7 +4973,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_fixed_layout_child_set_transform", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskTransform}), instance, _transform)
         nothing
     end
-    function FlattenListModel(_model::Maybe(GListModel))
+    function FlattenListModel_new(_model::Maybe(GListModel))
         _model = if _model == nothing
                 C_NULL
             else
@@ -5012,7 +5012,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_flatten_list_model_set_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model)
         nothing
     end
-    function FlowBox()
+    function FlowBox_new()
         ret = ccall(("gtk_flow_box_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -5139,7 +5139,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_flow_box_unselect_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child)
         nothing
     end
-    function FlowBoxChild()
+    function FlowBoxChild_new()
         ret = ccall(("gtk_flow_box_child_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -5175,7 +5175,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_flow_box_child_set_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child)
         nothing
     end
-    function FontButton()
+    function FontButton_new()
         ret = ccall(("gtk_font_button_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -5225,7 +5225,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_font_button_set_use_size", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_size)
         nothing
     end
-    function FontChooserDialog(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow))
+    function FontChooserDialog_new(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow))
         _title = if _title == nothing
                 C_NULL
             else
@@ -5240,12 +5240,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
-    function FontChooserWidget()
+    function FontChooserWidget_new()
         ret = ccall(("gtk_font_chooser_widget_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
-    function Frame(_label::Maybe(Union{AbstractString, Symbol}))
+    function Frame_new(_label::Maybe(Union{AbstractString, Symbol}))
         _label = if _label == nothing
                 C_NULL
             else
@@ -5317,7 +5317,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_frame_set_label_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _label_widget)
         nothing
     end
-    function GLArea()
+    function GLArea_new()
         ret = ccall(("gtk_gl_area_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -5351,8 +5351,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_required_version(instance::GtkGLArea)
-        m_major = Ref{Int32}(C_NULL)
-        m_minor = Ref{Int32}(C_NULL)
+        m_major = Ref{Int32}()
+        m_minor = Ref{Int32}()
         ret = ccall(("gtk_gl_area_get_required_version", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_major, m_minor)
         _major = m_major[]
         _minor = m_minor[]
@@ -5401,7 +5401,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_bounding_box(instance::GtkGesture)
-        m_rect = Ref{_GdkRectangle}(C_NULL)
+        m_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_gesture_get_bounding_box", libgtk4), Cint, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, m_rect)
         ret2 = convert(Bool, ret)
         _rect = m_rect[]
@@ -5409,8 +5409,8 @@ $(Expr(:toplevel, quote
         (ret2, _rect)
     end
     function get_bounding_box_center(instance::GtkGesture)
-        m_x = Ref{Float64}(C_NULL)
-        m_y = Ref{Float64}(C_NULL)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
         ret = ccall(("gtk_gesture_get_bounding_box_center", libgtk4), Cint, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_x, m_y)
         ret2 = convert(Bool, ret)
         _x = m_x[]
@@ -5460,8 +5460,8 @@ $(Expr(:toplevel, quote
             else
                 _sequence
             end
-        m_x = Ref{Float64}(C_NULL)
-        m_y = Ref{Float64}(C_NULL)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
         ret = ccall(("gtk_gesture_get_point", libgtk4), Cint, (Ptr{GObject}, Ptr{GdkEventSequence}, Ptr{Float64}, Ptr{Float64}), instance, _sequence, m_x, m_y)
         ret2 = convert(Bool, ret)
         _x = m_x[]
@@ -5521,19 +5521,19 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_ungroup", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function GestureClick()
+    function GestureClick_new()
         ret = ccall(("gtk_gesture_click_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkGesture, ret, true)
         ret2
     end
-    function GestureDrag()
+    function GestureDrag_new()
         ret = ccall(("gtk_gesture_drag_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkGesture, ret, true)
         ret2
     end
     function get_offset(instance::GtkGestureDrag)
-        m_x = Ref{Float64}(C_NULL)
-        m_y = Ref{Float64}(C_NULL)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
         ret = ccall(("gtk_gesture_drag_get_offset", libgtk4), Cint, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_x, m_y)
         ret2 = convert(Bool, ret)
         _x = m_x[]
@@ -5543,8 +5543,8 @@ $(Expr(:toplevel, quote
         (ret2, _x, _y)
     end
     function get_start_point(instance::GtkGestureDrag)
-        m_x = Ref{Float64}(C_NULL)
-        m_y = Ref{Float64}(C_NULL)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
         ret = ccall(("gtk_gesture_drag_get_start_point", libgtk4), Cint, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_x, m_y)
         ret2 = convert(Bool, ret)
         _x = m_x[]
@@ -5553,7 +5553,7 @@ $(Expr(:toplevel, quote
         _y = convert(Maybe(Real), _y)
         (ret2, _x, _y)
     end
-    function GestureLongPress()
+    function GestureLongPress_new()
         ret = ccall(("gtk_gesture_long_press_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkGesture, ret, true)
         ret2
@@ -5566,7 +5566,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_long_press_set_delay_factor", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _delay_factor)
         nothing
     end
-    function GesturePan(_orientation)
+    function GesturePan_new(_orientation)
         ret = ccall(("gtk_gesture_pan_new", libgtk4), Ptr{GObject}, (Int32,), _orientation)
         ret2 = convert(GtkGesture, ret, true)
         ret2
@@ -5580,7 +5580,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_pan_set_orientation", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _orientation)
         nothing
     end
-    function GestureRotate()
+    function GestureRotate_new()
         ret = ccall(("gtk_gesture_rotate_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkGesture, ret, true)
         ret2
@@ -5628,34 +5628,25 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_single_set_touch_only", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _touch_only)
         nothing
     end
-    function GestureStylus()
+    function GestureStylus_new()
         ret = ccall(("gtk_gesture_stylus_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkGesture, ret, true)
         ret2
     end
     function get_axes(instance::GtkGestureStylus, _axes)
         _axes = convert(Vector{Int32}, _axes)
-        m_values = Ref{Ptr{Float64}}(C_NULL)
+        m_values = Ref{Ptr{Float64}}()
         ret = ccall(("gtk_gesture_stylus_get_axes", libgtk4), Cint, (Ptr{GObject}, Ptr{Int32}, Ptr{Ptr{Float64}}), instance, _axes, m_values)
         ret2 = convert(Bool, ret)
         _values = m_values[]
         (ret2, _values)
     end
     function get_axis(instance::GtkGestureStylus, _axis)
-        m_value = Ref{Float64}(C_NULL)
+        m_value = Ref{Float64}()
         ret = ccall(("gtk_gesture_stylus_get_axis", libgtk4), Cint, (Ptr{GObject}, Int32, Ptr{Float64}), instance, _axis, m_value)
         ret2 = convert(Bool, ret)
         _value = m_value[]
         (ret2, _value)
-    end
-    function get_backlog(instance::GtkGestureStylus)
-        m_backlog = Ref{Ptr{GdkTimeCoord}}(C_NULL)
-        m_n_elems = Ref{UInt32}(C_NULL)
-        ret = ccall(("gtk_gesture_stylus_get_backlog", libgtk4), Cint, (Ptr{GObject}, Ptr{Ptr{GdkTimeCoord}}, Ptr{UInt32}), instance, m_backlog, m_n_elems)
-        ret2 = convert(Bool, ret)
-        _backlog = m_backlog[]
-        _n_elems = m_n_elems[]
-        (ret2, _backlog)
     end
     function get_device_tool(instance::GtkGestureStylus)
         ret = ccall(("gtk_gesture_stylus_get_device_tool", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
@@ -5666,21 +5657,21 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function GestureSwipe()
+    function GestureSwipe_new()
         ret = ccall(("gtk_gesture_swipe_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkGesture, ret, true)
         ret2
     end
     function get_velocity(instance::GtkGestureSwipe)
-        m_velocity_x = Ref{Float64}(C_NULL)
-        m_velocity_y = Ref{Float64}(C_NULL)
+        m_velocity_x = Ref{Float64}()
+        m_velocity_y = Ref{Float64}()
         ret = ccall(("gtk_gesture_swipe_get_velocity", libgtk4), Cint, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_velocity_x, m_velocity_y)
         ret2 = convert(Bool, ret)
         _velocity_x = m_velocity_x[]
         _velocity_y = m_velocity_y[]
         (ret2, _velocity_x, _velocity_y)
     end
-    function GestureZoom()
+    function GestureZoom_new()
         ret = ccall(("gtk_gesture_zoom_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkGesture, ret, true)
         ret2
@@ -5689,7 +5680,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_zoom_get_scale_delta", libgtk4), Float64, (Ptr{GObject},), instance)
         ret
     end
-    function Grid()
+    function Grid_new()
         ret = ccall(("gtk_grid_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -5756,10 +5747,10 @@ $(Expr(:toplevel, quote
         nothing
     end
     function query_child(instance::GtkGrid, _child::GtkWidget)
-        m_column = Ref{Int32}(C_NULL)
-        m_row = Ref{Int32}(C_NULL)
-        m_width = Ref{Int32}(C_NULL)
-        m_height = Ref{Int32}(C_NULL)
+        m_column = Ref{Int32}()
+        m_row = Ref{Int32}()
+        m_width = Ref{Int32}()
+        m_height = Ref{Int32}()
         ret = ccall(("gtk_grid_query_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, _child, m_column, m_row, m_width, m_height)
         _column = m_column[]
         _row = m_row[]
@@ -5803,7 +5794,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_grid_set_row_spacing", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _spacing)
         nothing
     end
-    function GridLayout()
+    function GridLayout_new()
         ret = ccall(("gtk_grid_layout_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkLayoutManager, ret, true)
         ret2
@@ -5891,7 +5882,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_grid_layout_child_set_row_span", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _span)
         nothing
     end
-    function GridView(_model::Maybe(GtkSelectionModel), _factory::Maybe(GtkListItemFactory))
+    function GridView_new(_model::Maybe(GtkSelectionModel), _factory::Maybe(GtkListItemFactory))
         _model = if _model == nothing
                 C_NULL
             else
@@ -5979,7 +5970,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_grid_view_set_single_click_activate", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _single_click_activate)
         nothing
     end
-    function HeaderBar()
+    function HeaderBar_new()
         ret = ccall(("gtk_header_bar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -6060,9 +6051,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_preedit_string(instance::GtkIMContext)
-        m_str = Ref{Cstring}(C_NULL)
-        m_attrs = Ref{Ptr{PangoAttrList}}(C_NULL)
-        m_cursor_pos = Ref{Int32}(C_NULL)
+        m_str = Ref{Cstring}()
+        m_attrs = Ref{Ptr{PangoAttrList}}()
+        m_cursor_pos = Ref{Int32}()
         ret = ccall(("gtk_im_context_get_preedit_string", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{PangoAttrList}}, Ptr{Int32}), instance, m_str, m_attrs, m_cursor_pos)
         _str = m_str[]
         _str = if _str == C_NULL
@@ -6076,9 +6067,9 @@ $(Expr(:toplevel, quote
         (_str, _attrs, _cursor_pos)
     end
     function get_surrounding_with_selection(instance::GtkIMContext)
-        m_text = Ref{Cstring}(C_NULL)
-        m_cursor_index = Ref{Int32}(C_NULL)
-        m_anchor_index = Ref{Int32}(C_NULL)
+        m_text = Ref{Cstring}()
+        m_cursor_index = Ref{Int32}()
+        m_anchor_index = Ref{Int32}()
         ret = ccall(("gtk_im_context_get_surrounding_with_selection", libgtk4), Cint, (Ptr{GObject}, Ptr{Cstring}, Ptr{Int32}, Ptr{Int32}), instance, m_text, m_cursor_index, m_anchor_index)
         ret2 = convert(Bool, ret)
         _text = m_text[]
@@ -6116,7 +6107,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_im_context_set_use_preedit", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_preedit)
         nothing
     end
-    function IMContextSimple()
+    function IMContextSimple_new()
         ret = ccall(("gtk_im_context_simple_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkIMContext, ret, true)
         ret2
@@ -6125,7 +6116,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_im_context_simple_add_compose_file", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _compose_file)
         nothing
     end
-    function IMMulticontext()
+    function IMMulticontext_new()
         ret = ccall(("gtk_im_multicontext_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkIMContext, ret, true)
         ret2
@@ -6179,7 +6170,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function IconView()
+    function IconView_new()
         ret = ccall(("gtk_icon_view_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -6221,7 +6212,7 @@ $(Expr(:toplevel, quote
             else
                 _cell
             end
-        m_rect = Ref{_GdkRectangle}(C_NULL)
+        m_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_icon_view_get_cell_rect", libgtk4), Cint, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{GObject}, Ptr{_GdkRectangle}), instance, _path, _cell, m_rect)
         ret2 = convert(Bool, ret)
         _rect = m_rect[]
@@ -6237,8 +6228,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_cursor(instance::GtkIconView)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_cell = Ref{Ptr{GObject}}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_cell = Ref{Ptr{GObject}}()
         ret = ccall(("gtk_icon_view_get_cursor", libgtk4), Cint, (Ptr{GObject}, Ptr{Ptr{GtkTreePath}}, Ptr{Ptr{GObject}}), instance, m_path, m_cell)
         ret2 = convert(Bool, ret)
         _path = m_path[]
@@ -6248,8 +6239,8 @@ $(Expr(:toplevel, quote
         (ret2, _path, _cell)
     end
     function get_dest_item_at_pos(instance::GtkIconView, _drag_x::Integer, _drag_y::Integer)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_pos = Ref{Int32}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_pos = Ref{Int32}()
         ret = ccall(("gtk_icon_view_get_dest_item_at_pos", libgtk4), Cint, (Ptr{GObject}, Int32, Int32, Ptr{Ptr{GtkTreePath}}, Ptr{Int32}), instance, _drag_x, _drag_y, m_path, m_pos)
         ret2 = convert(Bool, ret)
         _path = m_path[]
@@ -6259,8 +6250,8 @@ $(Expr(:toplevel, quote
         (ret2, _path, _pos)
     end
     function get_drag_dest_item(instance::GtkIconView)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_pos = Ref{Int32}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_pos = Ref{Int32}()
         ret = ccall(("gtk_icon_view_get_drag_dest_item", libgtk4), Nothing, (Ptr{GObject}, Ptr{Ptr{GtkTreePath}}, Ptr{Int32}), instance, m_path, m_pos)
         _path = m_path[]
         _path = convert(GtkTreePath, _path, true)
@@ -6269,8 +6260,8 @@ $(Expr(:toplevel, quote
         (_path, _pos)
     end
     function get_item_at_pos(instance::GtkIconView, _x::Integer, _y::Integer)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_cell = Ref{Ptr{GObject}}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_cell = Ref{Ptr{GObject}}()
         ret = ccall(("gtk_icon_view_get_item_at_pos", libgtk4), Cint, (Ptr{GObject}, Int32, Int32, Ptr{Ptr{GtkTreePath}}, Ptr{Ptr{GObject}}), instance, _x, _y, m_path, m_cell)
         ret2 = convert(Bool, ret)
         _path = m_path[]
@@ -6365,9 +6356,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_tooltip_context(instance::GtkIconView, _x::Integer, _y::Integer, _keyboard_tip::Bool)
-        m_model = Ref{Ptr{GObject}}(C_NULL)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_model = Ref{Ptr{GObject}}()
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_icon_view_get_tooltip_context", libgtk4), Cint, (Ptr{GObject}, Int32, Int32, Cint, Ptr{Ptr{GObject}}, Ptr{Ptr{GtkTreePath}}, Ptr{_GtkTreeIter}), instance, _x, _y, _keyboard_tip, m_model, m_path, m_iter)
         ret2 = convert(Bool, ret)
         _model = m_model[]
@@ -6382,8 +6373,8 @@ $(Expr(:toplevel, quote
         (ret2, _model, _path, _iter)
     end
     function get_visible_range(instance::GtkIconView)
-        m_start_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_end_path = Ref{Ptr{GtkTreePath}}(C_NULL)
+        m_start_path = Ref{Ptr{GtkTreePath}}()
+        m_end_path = Ref{Ptr{GtkTreePath}}()
         ret = ccall(("gtk_icon_view_get_visible_range", libgtk4), Cint, (Ptr{GObject}, Ptr{Ptr{GtkTreePath}}, Ptr{Ptr{GtkTreePath}}), instance, m_start_path, m_end_path)
         ret2 = convert(Bool, ret)
         _start_path = m_start_path[]
@@ -6529,7 +6520,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_icon_view_unset_model_drag_source", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function Image()
+    function Image_new()
         ret = ccall(("gtk_image_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -6687,7 +6678,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_image_set_pixel_size", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _pixel_size)
         nothing
     end
-    function InfoBar()
+    function InfoBar_new()
         ret = ccall(("gtk_info_bar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -6752,7 +6743,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_info_bar_set_show_close_button", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
-    function KeyvalTrigger(_keyval::Integer, _modifiers::Integer)
+    function KeyvalTrigger_new(_keyval::Integer, _modifiers::Integer)
         ret = ccall(("gtk_keyval_trigger_new", libgtk4), Ptr{GObject}, (UInt32, Int32), _keyval, _modifiers)
         ret2 = convert(GtkShortcutTrigger, ret, true)
         ret2
@@ -6765,7 +6756,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_keyval_trigger_get_modifiers", libgtk4), Int32, (Ptr{GObject},), instance)
         ret
     end
-    function Label(_str::Maybe(Union{AbstractString, Symbol}))
+    function Label_new(_str::Maybe(Union{AbstractString, Symbol}))
         _str = if _str == nothing
                 C_NULL
             else
@@ -6837,8 +6828,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_layout_offsets(instance::GtkLabel)
-        m_x = Ref{Int32}(C_NULL)
-        m_y = Ref{Int32}(C_NULL)
+        m_x = Ref{Int32}()
+        m_y = Ref{Int32}()
         ret = ccall(("gtk_label_get_layout_offsets", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_x, m_y)
         _x = m_x[]
         _y = m_y[]
@@ -6871,8 +6862,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_selection_bounds(instance::GtkLabel)
-        m_start = Ref{Int32}(C_NULL)
-        m_end = Ref{Int32}(C_NULL)
+        m_start = Ref{Int32}()
+        m_end = Ref{Int32}()
         ret = ccall(("gtk_label_get_selection_bounds", libgtk4), Cint, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_start, m_end)
         ret2 = convert(Bool, ret)
         _start = m_start[]
@@ -7066,10 +7057,10 @@ $(Expr(:toplevel, quote
         nothing
     end
     function measure(instance::GtkLayoutManager, _widget::GtkWidget, _orientation, _for_size::Integer)
-        m_minimum = Ref{Int32}(C_NULL)
-        m_natural = Ref{Int32}(C_NULL)
-        m_minimum_baseline = Ref{Int32}(C_NULL)
-        m_natural_baseline = Ref{Int32}(C_NULL)
+        m_minimum = Ref{Int32}()
+        m_natural = Ref{Int32}()
+        m_minimum_baseline = Ref{Int32}()
+        m_natural_baseline = Ref{Int32}()
         ret = ccall(("gtk_layout_manager_measure", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, _widget, _orientation, _for_size, m_minimum, m_natural, m_minimum_baseline, m_natural_baseline)
         _minimum = m_minimum[]
         _natural = m_natural[]
@@ -7077,7 +7068,7 @@ $(Expr(:toplevel, quote
         _natural_baseline = m_natural_baseline[]
         (_minimum, _natural, _minimum_baseline, _natural_baseline)
     end
-    function LevelBar()
+    function LevelBar_new()
         ret = ccall(("gtk_level_bar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -7115,7 +7106,7 @@ $(Expr(:toplevel, quote
             else
                 _name
             end
-        m_value = Ref{Float64}(C_NULL)
+        m_value = Ref{Float64}()
         ret = ccall(("gtk_level_bar_get_offset_value", libgtk4), Cint, (Ptr{GObject}, Cstring, Ptr{Float64}), instance, _name, m_value)
         ret2 = convert(Bool, ret)
         _value = m_value[]
@@ -7154,7 +7145,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_level_bar_set_value", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _value)
         nothing
     end
-    function LinkButton(_uri::Union{AbstractString, Symbol})
+    function LinkButton_new(_uri::Union{AbstractString, Symbol})
         ret = ccall(("gtk_link_button_new", libgtk4), Ptr{GObject}, (Cstring,), _uri)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -7191,7 +7182,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_link_button_set_visited", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visited)
         nothing
     end
-    function ListBox()
+    function ListBox_new()
         ret = ccall(("gtk_list_box_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -7335,7 +7326,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_list_box_unselect_row", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _row)
         nothing
     end
-    function ListBoxRow()
+    function ListBoxRow_new()
         ret = ccall(("gtk_list_box_row_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -7461,7 +7452,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_list_item_set_selectable", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _selectable)
         nothing
     end
-    function ListStore(_types)
+    function ListStore_new(_types)
         _types = convert(Vector{UInt64}, _types)
         _n_columns = length(_types)
         ret = ccall(("gtk_list_store_newv", libgtk4), Ptr{GObject}, (Int32, Ptr{UInt64}), _n_columns, _types)
@@ -7469,7 +7460,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function append(instance::GtkListStore)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_list_store_append", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, m_iter)
         _iter = m_iter[]
         _iter = convert(GtkTreeIter, _iter, false)
@@ -7480,14 +7471,14 @@ $(Expr(:toplevel, quote
         nothing
     end
     function insert(instance::GtkListStore, _position::Integer)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_list_store_insert", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32), instance, m_iter, _position)
         _iter = m_iter[]
         _iter = convert(GtkTreeIter, _iter, false)
         _iter
     end
     function insert_after(instance::GtkListStore, _sibling::Maybe(GtkTreeIter))
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _sibling = if _sibling == nothing
                 C_NULL
             else
@@ -7499,7 +7490,7 @@ $(Expr(:toplevel, quote
         _iter
     end
     function insert_before(instance::GtkListStore, _sibling::Maybe(GtkTreeIter))
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _sibling = if _sibling == nothing
                 C_NULL
             else
@@ -7511,7 +7502,7 @@ $(Expr(:toplevel, quote
         _iter
     end
     function insert_with_values(instance::GtkListStore, _position::Integer, _columns, _values)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _columns = convert(Vector{Int32}, _columns)
         _values = convert(Vector{_GValue}, _values)
         _n_values = length(_columns)
@@ -7544,7 +7535,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function prepend(instance::GtkListStore)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_list_store_prepend", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, m_iter)
         _iter = m_iter[]
         _iter = convert(GtkTreeIter, _iter, false)
@@ -7581,7 +7572,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_list_store_swap", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _a, _b)
         nothing
     end
-    function ListView(_model::Maybe(GtkSelectionModel), _factory::Maybe(GtkListItemFactory))
+    function ListView_new(_model::Maybe(GtkSelectionModel), _factory::Maybe(GtkListItemFactory))
         _model = if _model == nothing
                 C_NULL
             else
@@ -7662,7 +7653,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_list_view_set_single_click_activate", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _single_click_activate)
         nothing
     end
-    function LockButton(_permission::Maybe(GPermission))
+    function LockButton_new(_permission::Maybe(GPermission))
         _permission = if _permission == nothing
                 C_NULL
             else
@@ -7712,7 +7703,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_map_list_model_set_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model)
         nothing
     end
-    function MediaControls(_stream::Maybe(GtkMediaStream))
+    function MediaControls_new(_stream::Maybe(GtkMediaStream))
         _stream = if _stream == nothing
                 C_NULL
             else
@@ -7740,7 +7731,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_media_controls_set_media_stream", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _stream)
         nothing
     end
-    function MediaFile()
+    function MediaFile_new()
         ret = ccall(("gtk_media_file_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkMediaFile, ret, true)
         ret2
@@ -7951,7 +7942,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_media_stream_update", libgtk4), Nothing, (Ptr{GObject}, Int64), instance, _timestamp)
         nothing
     end
-    function MenuButton()
+    function MenuButton_new()
         ret = ccall(("gtk_menu_button_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -8099,7 +8090,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_message_dialog_set_markup", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _str)
         nothing
     end
-    function MnemonicTrigger(_keyval::Integer)
+    function MnemonicTrigger_new(_keyval::Integer)
         ret = ccall(("gtk_mnemonic_trigger_new", libgtk4), Ptr{GObject}, (UInt32,), _keyval)
         ret2 = convert(GtkMnemonicTrigger, ret, true)
         ret2
@@ -8108,7 +8099,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_mnemonic_trigger_get_keyval", libgtk4), UInt32, (Ptr{GObject},), instance)
         ret
     end
-    function MountOperation(_parent::Maybe(GtkWindow))
+    function MountOperation_new(_parent::Maybe(GtkWindow))
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -8154,7 +8145,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_multi_filter_remove", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _position)
         nothing
     end
-    function MultiSelection(_model::Maybe(GListModel))
+    function MultiSelection_new(_model::Maybe(GListModel))
         _model = if _model == nothing
                 C_NULL
             else
@@ -8181,7 +8172,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_multi_selection_set_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model)
         nothing
     end
-    function MultiSorter()
+    function MultiSorter_new()
         ret = ccall(("gtk_multi_sorter_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkMultiSorter, ret, true)
         ret2
@@ -8194,7 +8185,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_multi_sorter_remove", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _position)
         nothing
     end
-    function NamedAction(_name::Union{AbstractString, Symbol})
+    function NamedAction_new(_name::Union{AbstractString, Symbol})
         ret = ccall(("gtk_named_action_new", libgtk4), Ptr{GObject}, (Cstring,), _name)
         ret2 = convert(GtkNamedAction, ret, true)
         ret2
@@ -8265,7 +8256,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_native_dialog_show", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function NoSelection(_model::Maybe(GListModel))
+    function NoSelection_new(_model::Maybe(GListModel))
         _model = if _model == nothing
                 C_NULL
             else
@@ -8292,7 +8283,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_no_selection_set_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model)
         nothing
     end
-    function Notebook()
+    function Notebook_new()
         ret = ccall(("gtk_notebook_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -8584,7 +8575,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
-    function Overlay()
+    function Overlay_new()
         ret = ccall(("gtk_overlay_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -8633,7 +8624,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_overlay_set_measure_overlay", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cint), instance, _widget, _measure)
         nothing
     end
-    function OverlayLayout()
+    function OverlayLayout_new()
         ret = ccall(("gtk_overlay_layout_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkLayoutManager, ret, true)
         ret2
@@ -8656,7 +8647,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_overlay_layout_child_set_measure", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _measure)
         nothing
     end
-    function PadController(_group::GActionGroup, _pad::Maybe(GdkDevice))
+    function PadController_new(_group::GActionGroup, _pad::Maybe(GdkDevice))
         _pad = if _pad == nothing
                 C_NULL
             else
@@ -8671,12 +8662,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_action_entries(instance::GtkPadController, _entries)
-        _entries = convert(Vector{GtkPadActionEntry}, _entries)
+        _entries = convert(Vector{_GtkPadActionEntry}, _entries)
         _n_entries = length(_entries)
-        ret = ccall(("gtk_pad_controller_set_action_entries", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkPadActionEntry}, Int32), instance, _entries, _n_entries)
+        ret = ccall(("gtk_pad_controller_set_action_entries", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkPadActionEntry}, Int32), instance, _entries, _n_entries)
         nothing
     end
-    function PageSetup()
+    function PageSetup_new()
         ret = ccall(("gtk_page_setup_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkPageSetup, ret, true)
         ret2
@@ -8820,7 +8811,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_page_setup_to_key_file", libgtk4), Nothing, (Ptr{GObject}, Ptr{GKeyFile}, Cstring), instance, _key_file, _group_name)
         nothing
     end
-    function PageSetupUnixDialog(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow))
+    function PageSetupUnixDialog_new(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow))
         _title = if _title == nothing
                 C_NULL
             else
@@ -8853,7 +8844,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_page_setup_unix_dialog_set_print_settings", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _print_settings)
         nothing
     end
-    function Paned(_orientation)
+    function Paned_new(_orientation)
         ret = ccall(("gtk_paned_new", libgtk4), Ptr{GObject}, (Int32,), _orientation)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -8937,7 +8928,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_paned_set_wide_handle", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _wide)
         nothing
     end
-    function PasswordEntry()
+    function PasswordEntry_new()
         ret = ccall(("gtk_password_entry_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -8965,12 +8956,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_password_entry_set_show_peek_icon", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _show_peek_icon)
         nothing
     end
-    function PasswordEntryBuffer()
+    function PasswordEntryBuffer_new()
         ret = ccall(("gtk_password_entry_buffer_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEntryBuffer, ret, true)
         ret2
     end
-    function Picture()
+    function Picture_new()
         ret = ccall(("gtk_picture_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -9130,7 +9121,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_picture_set_resource", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _resource_path)
         nothing
     end
-    function Popover()
+    function Popover_new()
         ret = ccall(("gtk_popover_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -9165,8 +9156,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_offset(instance::GtkPopover)
-        m_x_offset = Ref{Int32}(C_NULL)
-        m_y_offset = Ref{Int32}(C_NULL)
+        m_x_offset = Ref{Int32}()
+        m_y_offset = Ref{Int32}()
         ret = ccall(("gtk_popover_get_offset", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_x_offset, m_y_offset)
         _x_offset = m_x_offset[]
         _x_offset = convert(Maybe(Integer), _x_offset)
@@ -9175,7 +9166,7 @@ $(Expr(:toplevel, quote
         (_x_offset, _y_offset)
     end
     function get_pointing_to(instance::GtkPopover)
-        m_rect = Ref{_GdkRectangle}(C_NULL)
+        m_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_popover_get_pointing_to", libgtk4), Cint, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, m_rect)
         ret2 = convert(Bool, ret)
         _rect = m_rect[]
@@ -9342,10 +9333,10 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_hard_margins(instance::GtkPrintContext)
-        m_top = Ref{Float64}(C_NULL)
-        m_bottom = Ref{Float64}(C_NULL)
-        m_left = Ref{Float64}(C_NULL)
-        m_right = Ref{Float64}(C_NULL)
+        m_top = Ref{Float64}()
+        m_bottom = Ref{Float64}()
+        m_left = Ref{Float64}()
+        m_right = Ref{Float64}()
         ret = ccall(("gtk_print_context_get_hard_margins", libgtk4), Cint, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}), instance, m_top, m_bottom, m_left, m_right)
         ret2 = convert(Bool, ret)
         _top = m_top[]
@@ -9376,7 +9367,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_print_context_set_cairo_context", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64), instance, _cr, _dpi_x, _dpi_y)
         nothing
     end
-    function PrintOperation()
+    function PrintOperation_new()
         ret = ccall(("gtk_print_operation_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkPrintOperation, ret, true)
         ret2
@@ -9534,7 +9525,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_print_operation_set_use_full_page", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _full_page)
         nothing
     end
-    function PrintUnixDialog(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow))
+    function PrintUnixDialog_new(_title::Maybe(Union{AbstractString, Symbol}), _parent::Maybe(GtkWindow))
         _title = if _title == nothing
                 C_NULL
             else
@@ -9629,7 +9620,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_print_unix_dialog_set_support_selection", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _support_selection)
         nothing
     end
-    function Printer(_name::Union{AbstractString, Symbol}, _backend::GtkPrintBackend, _virtual_::Bool)
+    function Printer_new(_name::Union{AbstractString, Symbol}, _backend::GtkPrintBackend, _virtual_::Bool)
         ret = ccall(("gtk_printer_new", libgtk4), Ptr{GObject}, (Cstring, Ptr{GtkPrintBackend}, Cint), _name, _backend, _virtual_)
         ret2 = convert(GtkPrinter, ret, true)
         ret2
@@ -9672,10 +9663,10 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_hard_margins(instance::GtkPrinter)
-        m_top = Ref{Float64}(C_NULL)
-        m_bottom = Ref{Float64}(C_NULL)
-        m_left = Ref{Float64}(C_NULL)
-        m_right = Ref{Float64}(C_NULL)
+        m_top = Ref{Float64}()
+        m_bottom = Ref{Float64}()
+        m_left = Ref{Float64}()
+        m_right = Ref{Float64}()
         ret = ccall(("gtk_printer_get_hard_margins", libgtk4), Cint, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}), instance, m_top, m_bottom, m_left, m_right)
         ret2 = convert(Bool, ret)
         _top = m_top[]
@@ -9685,10 +9676,10 @@ $(Expr(:toplevel, quote
         (ret2, _top, _bottom, _left, _right)
     end
     function get_hard_margins_for_paper_size(instance::GtkPrinter, _paper_size::GtkPaperSize)
-        m_top = Ref{Float64}(C_NULL)
-        m_bottom = Ref{Float64}(C_NULL)
-        m_left = Ref{Float64}(C_NULL)
-        m_right = Ref{Float64}(C_NULL)
+        m_top = Ref{Float64}()
+        m_bottom = Ref{Float64}()
+        m_left = Ref{Float64}()
+        m_right = Ref{Float64}()
         ret = ccall(("gtk_printer_get_hard_margins_for_paper_size", libgtk4), Cint, (Ptr{GObject}, Ptr{GtkPaperSize}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}, Ptr{Float64}), instance, _paper_size, m_top, m_bottom, m_left, m_right)
         ret2 = convert(Bool, ret)
         _top = m_top[]
@@ -9776,7 +9767,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_printer_request_details", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function ProgressBar()
+    function ProgressBar_new()
         ret = ccall(("gtk_progress_bar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -9866,7 +9857,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_range_rect(instance::GtkRange)
-        m_range_rect = Ref{_GdkRectangle}(C_NULL)
+        m_range_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_range_get_range_rect", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, m_range_rect)
         _range_rect = m_range_rect[]
         _range_rect = convert(GdkRectangle, _range_rect, false)
@@ -9887,8 +9878,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_slider_range(instance::GtkRange)
-        m_slider_start = Ref{Int32}(C_NULL)
-        m_slider_end = Ref{Int32}(C_NULL)
+        m_slider_start = Ref{Int32}()
+        m_slider_end = Ref{Int32}()
         ret = ccall(("gtk_range_get_slider_range", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_slider_start, m_slider_end)
         _slider_start = m_slider_start[]
         _slider_end = m_slider_end[]
@@ -9947,7 +9938,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_range_set_value", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _value)
         nothing
     end
-    function Revealer()
+    function Revealer_new()
         ret = ccall(("gtk_revealer_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -10001,7 +9992,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_revealer_set_transition_type", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _transition)
         nothing
     end
-    function Scale(_orientation, _adjustment::Maybe(GtkAdjustment))
+    function Scale_new(_orientation, _adjustment::Maybe(GtkAdjustment))
         _adjustment = if _adjustment == nothing
                 C_NULL
             else
@@ -10053,8 +10044,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_layout_offsets(instance::GtkScale)
-        m_x = Ref{Int32}(C_NULL)
-        m_y = Ref{Int32}(C_NULL)
+        m_x = Ref{Int32}()
+        m_y = Ref{Int32}()
         ret = ccall(("gtk_scale_get_layout_offsets", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_x, m_y)
         _x = m_x[]
         _y = m_y[]
@@ -10100,7 +10091,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_scale_set_value_pos", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _pos)
         nothing
     end
-    function ScaleButton(_min::Real, _max::Real, _step::Real, _icons)
+    function ScaleButton_new(_min::Real, _max::Real, _step::Real, _icons)
         _icons = if _icons == nothing
                 C_NULL
             else
@@ -10146,7 +10137,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_scale_button_set_value", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _value)
         nothing
     end
-    function Scrollbar(_orientation, _adjustment::Maybe(GtkAdjustment))
+    function Scrollbar_new(_orientation, _adjustment::Maybe(GtkAdjustment))
         _adjustment = if _adjustment == nothing
                 C_NULL
             else
@@ -10170,7 +10161,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_scrollbar_set_adjustment", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _adjustment)
         nothing
     end
-    function ScrolledWindow()
+    function ScrolledWindow_new()
         ret = ccall(("gtk_scrolled_window_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -10231,8 +10222,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_policy(instance::GtkScrolledWindow)
-        m_hscrollbar_policy = Ref{Int32}(C_NULL)
-        m_vscrollbar_policy = Ref{Int32}(C_NULL)
+        m_hscrollbar_policy = Ref{Int32}()
+        m_vscrollbar_policy = Ref{Int32}()
         ret = ccall(("gtk_scrolled_window_get_policy", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_hscrollbar_policy, m_vscrollbar_policy)
         _hscrollbar_policy = m_hscrollbar_policy[]
         _hscrollbar_policy = PolicyType(_hscrollbar_policy)
@@ -10335,7 +10326,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_scrolled_window_unset_placement", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function SearchBar()
+    function SearchBar_new()
         ret = ccall(("gtk_search_bar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -10394,7 +10385,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_search_bar_set_show_close_button", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visible)
         nothing
     end
-    function SearchEntry()
+    function SearchEntry_new()
         ret = ccall(("gtk_search_entry_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -10413,7 +10404,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_search_entry_set_key_capture_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget)
         nothing
     end
-    function SelectionFilterModel(_model::Maybe(GtkSelectionModel))
+    function SelectionFilterModel_new(_model::Maybe(GtkSelectionModel))
         _model = if _model == nothing
                 C_NULL
             else
@@ -10444,7 +10435,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_selection_filter_model_set_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model)
         nothing
     end
-    function Separator(_orientation)
+    function Separator_new(_orientation)
         ret = ccall(("gtk_separator_new", libgtk4), Ptr{GObject}, (Int32,), _orientation)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -10467,7 +10458,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_settings_reset_property", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _name)
         nothing
     end
-    function Shortcut(_trigger::Maybe(GtkShortcutTrigger), _action::Maybe(GtkShortcutAction))
+    function Shortcut_new(_trigger::Maybe(GtkShortcutTrigger), _action::Maybe(GtkShortcutAction))
         _trigger = if _trigger == nothing
                 C_NULL
             else
@@ -10532,7 +10523,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_shortcut_set_trigger", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _trigger)
         nothing
     end
-    function ShortcutController()
+    function ShortcutController_new()
         ret = ccall(("gtk_shortcut_controller_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEventController, ret, true)
         ret2
@@ -10567,7 +10558,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_shortcut_controller_set_scope", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _scope)
         nothing
     end
-    function ShortcutLabel(_accelerator::Union{AbstractString, Symbol})
+    function ShortcutLabel_new(_accelerator::Union{AbstractString, Symbol})
         ret = ccall(("gtk_shortcut_label_new", libgtk4), Ptr{GObject}, (Cstring,), _accelerator)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -10598,7 +10589,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_shortcut_label_set_disabled_text", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _disabled_text)
         nothing
     end
-    function SignalAction(_signal_name::Union{AbstractString, Symbol})
+    function SignalAction_new(_signal_name::Union{AbstractString, Symbol})
         ret = ccall(("gtk_signal_action_new", libgtk4), Ptr{GObject}, (Cstring,), _signal_name)
         ret2 = convert(GtkSignalAction, ret, true)
         ret2
@@ -10612,12 +10603,12 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function SignalListItemFactory()
+    function SignalListItemFactory_new()
         ret = ccall(("gtk_signal_list_item_factory_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkListItemFactory, ret, true)
         ret2
     end
-    function SingleSelection(_model::Maybe(GListModel))
+    function SingleSelection_new(_model::Maybe(GListModel))
         _model = if _model == nothing
                 C_NULL
             else
@@ -10679,7 +10670,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_single_selection_set_selected", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _position)
         nothing
     end
-    function SizeGroup(_mode)
+    function SizeGroup_new(_mode)
         ret = ccall(("gtk_size_group_new", libgtk4), Ptr{GObject}, (Int32,), _mode)
         ret2 = convert(GtkSizeGroup, ret, true)
         ret2
@@ -10705,7 +10696,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_size_group_set_mode", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _mode)
         nothing
     end
-    function SliceListModel(_model::Maybe(GListModel), _offset::Integer, _size::Integer)
+    function SliceListModel_new(_model::Maybe(GListModel), _offset::Integer, _size::Integer)
         _model = if _model == nothing
                 C_NULL
             else
@@ -10752,16 +10743,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_slice_list_model_set_size", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _size)
         nothing
     end
-    function Snapshot()
+    function Snapshot_new()
         ret = ccall(("gtk_snapshot_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkSnapshot, ret, true)
         ret2
-    end
-    function append_border(instance::GtkSnapshot, _outline::GskRoundedRect, _border_width, _border_color)
-        _border_width = convert(Vector{Float32}, _border_width)
-        _border_color = convert(Vector{_GdkRGBA}, _border_color)
-        ret = ccall(("gtk_snapshot_append_border", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskRoundedRect}, Ptr{Float32}, Ptr{_GdkRGBA}), instance, _outline, _border_width, _border_color)
-        nothing
     end
     function append_cairo(instance::GtkSnapshot, _bounds::GrapheneRect)
         ret = ccall(("gtk_snapshot_append_cairo", libgtk4), Ptr{cairoContext}, (Ptr{GObject}, Ptr{_GrapheneRect}), instance, _bounds)
@@ -10773,13 +10758,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function append_conic_gradient(instance::GtkSnapshot, _bounds::GrapheneRect, _center::GraphenePoint, _rotation::Real, _stops)
-        _stops = convert(Vector{GskColorStop}, _stops)
+        _stops = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
-        ret = ccall(("gtk_snapshot_append_conic_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Ptr{GskColorStop}, UInt64), instance, _bounds, _center, _rotation, _stops, _n_stops)
-        nothing
-    end
-    function append_inset_shadow(instance::GtkSnapshot, _outline::GskRoundedRect, _color::GdkRGBA, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
-        ret = ccall(("gtk_snapshot_append_inset_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskRoundedRect}, Ptr{_GdkRGBA}, Float32, Float32, Float32, Float32), instance, _outline, _color, _dx, _dy, _spread, _blur_radius)
+        ret = ccall(("gtk_snapshot_append_conic_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _rotation, _stops, _n_stops)
         nothing
     end
     function append_layout(instance::GtkSnapshot, _layout::PangoLayout, _color::GdkRGBA)
@@ -10787,31 +10768,27 @@ $(Expr(:toplevel, quote
         nothing
     end
     function append_linear_gradient(instance::GtkSnapshot, _bounds::GrapheneRect, _start_point::GraphenePoint, _end_point::GraphenePoint, _stops)
-        _stops = convert(Vector{GskColorStop}, _stops)
+        _stops = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
-        ret = ccall(("gtk_snapshot_append_linear_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{GskColorStop}, UInt64), instance, _bounds, _start_point, _end_point, _stops, _n_stops)
-        nothing
-    end
-    function append_outset_shadow(instance::GtkSnapshot, _outline::GskRoundedRect, _color::GdkRGBA, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
-        ret = ccall(("gtk_snapshot_append_outset_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskRoundedRect}, Ptr{_GdkRGBA}, Float32, Float32, Float32, Float32), instance, _outline, _color, _dx, _dy, _spread, _blur_radius)
+        ret = ccall(("gtk_snapshot_append_linear_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), instance, _bounds, _start_point, _end_point, _stops, _n_stops)
         nothing
     end
     function append_radial_gradient(instance::GtkSnapshot, _bounds::GrapheneRect, _center::GraphenePoint, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _stops)
-        _stops = convert(Vector{GskColorStop}, _stops)
+        _stops = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
-        ret = ccall(("gtk_snapshot_append_radial_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{GskColorStop}, UInt64), instance, _bounds, _center, _hradius, _vradius, _start, _end, _stops, _n_stops)
+        ret = ccall(("gtk_snapshot_append_radial_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _hradius, _vradius, _start, _end, _stops, _n_stops)
         nothing
     end
     function append_repeating_linear_gradient(instance::GtkSnapshot, _bounds::GrapheneRect, _start_point::GraphenePoint, _end_point::GraphenePoint, _stops)
-        _stops = convert(Vector{GskColorStop}, _stops)
+        _stops = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
-        ret = ccall(("gtk_snapshot_append_repeating_linear_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{GskColorStop}, UInt64), instance, _bounds, _start_point, _end_point, _stops, _n_stops)
+        ret = ccall(("gtk_snapshot_append_repeating_linear_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), instance, _bounds, _start_point, _end_point, _stops, _n_stops)
         nothing
     end
     function append_repeating_radial_gradient(instance::GtkSnapshot, _bounds::GrapheneRect, _center::GraphenePoint, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _stops)
-        _stops = convert(Vector{GskColorStop}, _stops)
+        _stops = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
-        ret = ccall(("gtk_snapshot_append_repeating_radial_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{GskColorStop}, UInt64), instance, _bounds, _center, _hradius, _vradius, _start, _end, _stops, _n_stops)
+        ret = ccall(("gtk_snapshot_append_repeating_radial_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _hradius, _vradius, _start, _end, _stops, _n_stops)
         nothing
     end
     function append_texture(instance::GtkSnapshot, _texture::GdkTexture, _bounds::GrapheneRect)
@@ -10867,12 +10844,8 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_push_repeat", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _bounds, _child_bounds)
         nothing
     end
-    function push_rounded_clip(instance::GtkSnapshot, _bounds::GskRoundedRect)
-        ret = ccall(("gtk_snapshot_push_rounded_clip", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskRoundedRect}), instance, _bounds)
-        nothing
-    end
-    function push_shadow(instance::GtkSnapshot, _shadow::GskShadow, _n_shadows::Integer)
-        ret = ccall(("gtk_snapshot_push_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskShadow}, UInt64), instance, _shadow, _n_shadows)
+    function push_shadow(instance::GtkSnapshot, _shadow::_GskShadow, _n_shadows::Integer)
+        ret = ccall(("gtk_snapshot_push_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskShadow}, UInt64), instance, _shadow, _n_shadows)
         nothing
     end
     function render_background(instance::GtkSnapshot, _context::GtkStyleContext, _x::Real, _y::Real, _width::Real, _height::Real)
@@ -10958,7 +10931,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_translate_3d", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GraphenePoint3D}), instance, _point)
         nothing
     end
-    function SortListModel(_model::Maybe(GListModel), _sorter::Maybe(GtkSorter))
+    function SortListModel_new(_model::Maybe(GListModel), _sorter::Maybe(GtkSorter))
         _model = if _model == nothing
                 C_NULL
             else
@@ -11039,7 +11012,7 @@ $(Expr(:toplevel, quote
         ret2 = SorterOrder(ret)
         ret2
     end
-    function SpinButton(_adjustment::Maybe(GtkAdjustment), _climb_rate::Real, _digits::Integer)
+    function SpinButton_new(_adjustment::Maybe(GtkAdjustment), _climb_rate::Real, _digits::Integer)
         _adjustment = if _adjustment == nothing
                 C_NULL
             else
@@ -11077,8 +11050,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_increments(instance::GtkSpinButton)
-        m_step = Ref{Float64}(C_NULL)
-        m_page = Ref{Float64}(C_NULL)
+        m_step = Ref{Float64}()
+        m_page = Ref{Float64}()
         ret = ccall(("gtk_spin_button_get_increments", libgtk4), Nothing, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_step, m_page)
         _step = m_step[]
         _page = m_page[]
@@ -11090,8 +11063,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_range(instance::GtkSpinButton)
-        m_min = Ref{Float64}(C_NULL)
-        m_max = Ref{Float64}(C_NULL)
+        m_min = Ref{Float64}()
+        m_max = Ref{Float64}()
         ret = ccall(("gtk_spin_button_get_range", libgtk4), Nothing, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_min, m_max)
         _min = m_min[]
         _max = m_max[]
@@ -11168,7 +11141,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_spin_button_update", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function Spinner()
+    function Spinner_new()
         ret = ccall(("gtk_spinner_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -11190,7 +11163,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_spinner_stop", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function Stack()
+    function Stack_new()
         ret = ccall(("gtk_stack_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -11396,7 +11369,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_stack_page_set_visible", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visible)
         nothing
     end
-    function StackSidebar()
+    function StackSidebar_new()
         ret = ccall(("gtk_stack_sidebar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -11414,7 +11387,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_stack_sidebar_set_stack", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _stack)
         nothing
     end
-    function StackSwitcher()
+    function StackSwitcher_new()
         ret = ccall(("gtk_stack_switcher_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -11437,7 +11410,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_stack_switcher_set_stack", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _stack)
         nothing
     end
-    function Statusbar()
+    function Statusbar_new()
         ret = ccall(("gtk_statusbar_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -11462,7 +11435,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_statusbar_remove_all", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _context_id)
         nothing
     end
-    function StringList(_strings)
+    function StringList_new(_strings)
         _strings = if _strings == nothing
                 C_NULL
             else
@@ -11502,7 +11475,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_string_list_take", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _string)
         nothing
     end
-    function StringObject(_string::Union{AbstractString, Symbol})
+    function StringObject_new(_string::Union{AbstractString, Symbol})
         ret = ccall(("gtk_string_object_new", libgtk4), Ptr{GObject}, (Cstring,), _string)
         ret2 = convert(GtkStringObject, ret, true)
         ret2
@@ -11533,14 +11506,14 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_border(instance::GtkStyleContext)
-        m_border = Ref{_GtkBorder}(C_NULL)
+        m_border = Ref{_GtkBorder}()
         ret = ccall(("gtk_style_context_get_border", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkBorder}), instance, m_border)
         _border = m_border[]
         _border = convert(GtkBorder, _border, false)
         _border
     end
     function get_color(instance::GtkStyleContext)
-        m_color = Ref{_GdkRGBA}(C_NULL)
+        m_color = Ref{_GdkRGBA}()
         ret = ccall(("gtk_style_context_get_color", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRGBA}), instance, m_color)
         _color = m_color[]
         _color = convert(GdkRGBA, _color, false)
@@ -11552,14 +11525,14 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_margin(instance::GtkStyleContext)
-        m_margin = Ref{_GtkBorder}(C_NULL)
+        m_margin = Ref{_GtkBorder}()
         ret = ccall(("gtk_style_context_get_margin", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkBorder}), instance, m_margin)
         _margin = m_margin[]
         _margin = convert(GtkBorder, _margin, false)
         _margin
     end
     function get_padding(instance::GtkStyleContext)
-        m_padding = Ref{_GtkBorder}(C_NULL)
+        m_padding = Ref{_GtkBorder}()
         ret = ccall(("gtk_style_context_get_padding", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkBorder}), instance, m_padding)
         _padding = m_padding[]
         _padding = convert(GtkBorder, _padding, false)
@@ -11579,7 +11552,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function lookup_color(instance::GtkStyleContext, _color_name::Union{AbstractString, Symbol})
-        m_color = Ref{_GdkRGBA}(C_NULL)
+        m_color = Ref{_GdkRGBA}()
         ret = ccall(("gtk_style_context_lookup_color", libgtk4), Cint, (Ptr{GObject}, Cstring, Ptr{_GdkRGBA}), instance, _color_name, m_color)
         ret2 = convert(Bool, ret)
         _color = m_color[]
@@ -11623,7 +11596,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function Switch()
+    function Switch_new()
         ret = ccall(("gtk_switch_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -11646,7 +11619,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_switch_set_state", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _state)
         nothing
     end
-    function Text()
+    function Text_new()
         ret = ccall(("gtk_text_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -11657,8 +11630,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_cursor_extents(instance::GtkText, _position::Integer)
-        m_strong = Ref{_GrapheneRect}(C_NULL)
-        m_weak = Ref{_GrapheneRect}(C_NULL)
+        m_strong = Ref{_GrapheneRect}()
+        m_weak = Ref{_GrapheneRect}()
         ret = ccall(("gtk_text_compute_cursor_extents", libgtk4), Nothing, (Ptr{GObject}, UInt64, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _position, m_strong, m_weak)
         _strong = m_strong[]
         _strong = convert(GrapheneRect, _strong, false)
@@ -11847,7 +11820,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_unset_invisible_char", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function TextBuffer(_table::Maybe(GtkTextTagTable))
+    function TextBuffer_new(_table::Maybe(GtkTextTagTable))
         _table = if _table == nothing
                 C_NULL
             else
@@ -11940,8 +11913,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_bounds(instance::GtkTextBuffer)
-        m_start = Ref{_GtkTextIter}(C_NULL)
-        m_end = Ref{_GtkTextIter}(C_NULL)
+        m_start = Ref{_GtkTextIter}()
+        m_end = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_bounds", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, m_start, m_end)
         _start = m_start[]
         _start = convert(GtkTextIter, _start, false)
@@ -11969,7 +11942,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_end_iter(instance::GtkTextBuffer)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_end_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, m_iter)
         _iter = m_iter[]
         _iter = convert(GtkTextIter, _iter, false)
@@ -11986,14 +11959,14 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_iter_at_child_anchor(instance::GtkTextBuffer, _anchor::GtkTextChildAnchor)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_iter_at_child_anchor", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{GObject}), instance, m_iter, _anchor)
         _iter = m_iter[]
         _iter = convert(GtkTextIter, _iter, false)
         _iter
     end
     function get_iter_at_line(instance::GtkTextBuffer, _line_number::Integer)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_iter_at_line", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Int32), instance, m_iter, _line_number)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -12001,7 +11974,7 @@ $(Expr(:toplevel, quote
         (ret2, _iter)
     end
     function get_iter_at_line_index(instance::GtkTextBuffer, _line_number::Integer, _byte_index::Integer)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_iter_at_line_index", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Int32, Int32), instance, m_iter, _line_number, _byte_index)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -12009,7 +11982,7 @@ $(Expr(:toplevel, quote
         (ret2, _iter)
     end
     function get_iter_at_line_offset(instance::GtkTextBuffer, _line_number::Integer, _char_offset::Integer)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_iter_at_line_offset", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Int32, Int32), instance, m_iter, _line_number, _char_offset)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -12017,14 +11990,14 @@ $(Expr(:toplevel, quote
         (ret2, _iter)
     end
     function get_iter_at_mark(instance::GtkTextBuffer, _mark::GtkTextMark)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_iter_at_mark", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{GObject}), instance, m_iter, _mark)
         _iter = m_iter[]
         _iter = convert(GtkTextIter, _iter, false)
         _iter
     end
     function get_iter_at_offset(instance::GtkTextBuffer, _char_offset::Integer)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_iter_at_offset", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Int32), instance, m_iter, _char_offset)
         _iter = m_iter[]
         _iter = convert(GtkTextIter, _iter, false)
@@ -12058,8 +12031,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_selection_bounds(instance::GtkTextBuffer)
-        m_start = Ref{_GtkTextIter}(C_NULL)
-        m_end = Ref{_GtkTextIter}(C_NULL)
+        m_start = Ref{_GtkTextIter}()
+        m_end = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_selection_bounds", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, m_start, m_end)
         ret2 = convert(Bool, ret)
         _start = m_start[]
@@ -12083,7 +12056,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_start_iter(instance::GtkTextBuffer)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_buffer_get_start_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, m_iter)
         _iter = m_iter[]
         _iter = convert(GtkTextIter, _iter, false)
@@ -12207,7 +12180,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_buffer_undo", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function TextChildAnchor()
+    function TextChildAnchor_new()
         ret = ccall(("gtk_text_child_anchor_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkTextChildAnchor, ret, true)
         ret2
@@ -12218,7 +12191,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_widgets(instance::GtkTextChildAnchor)
-        m_out_len = Ref{UInt32}(C_NULL)
+        m_out_len = Ref{UInt32}()
         ret = ccall(("gtk_text_child_anchor_get_widgets", libgtk4), Ptr{Ptr{GObject}}, (Ptr{GObject}, Ptr{UInt32}), instance, m_out_len)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_out_len[]))
@@ -12228,7 +12201,7 @@ $(Expr(:toplevel, quote
         _out_len = m_out_len[]
         ret2
     end
-    function TextMark(_name::Maybe(Union{AbstractString, Symbol}), _left_gravity::Bool)
+    function TextMark_new(_name::Maybe(Union{AbstractString, Symbol}), _left_gravity::Bool)
         _name = if _name == nothing
                 C_NULL
             else
@@ -12271,7 +12244,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_mark_set_visible", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
-    function TextTag(_name::Maybe(Union{AbstractString, Symbol}))
+    function TextTag_new(_name::Maybe(Union{AbstractString, Symbol}))
         _name = if _name == nothing
                 C_NULL
             else
@@ -12293,7 +12266,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_tag_set_priority", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _priority)
         nothing
     end
-    function TextTagTable()
+    function TextTagTable_new()
         ret = ccall(("gtk_text_tag_table_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkTextTagTable, ret, true)
         ret2
@@ -12320,7 +12293,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_tag_table_remove", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _tag)
         nothing
     end
-    function TextView()
+    function TextView_new()
         ret = ccall(("gtk_text_view_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -12349,8 +12322,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function buffer_to_window_coords(instance::GtkTextView, _win, _buffer_x::Integer, _buffer_y::Integer)
-        m_window_x = Ref{Int32}(C_NULL)
-        m_window_y = Ref{Int32}(C_NULL)
+        m_window_x = Ref{Int32}()
+        m_window_y = Ref{Int32}()
         ret = ccall(("gtk_text_view_buffer_to_window_coords", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _win, _buffer_x, _buffer_y, m_window_x, m_window_y)
         _window_x = m_window_x[]
         _window_y = m_window_y[]
@@ -12386,8 +12359,8 @@ $(Expr(:toplevel, quote
             else
                 _iter
             end
-        m_strong = Ref{_GdkRectangle}(C_NULL)
-        m_weak = Ref{_GdkRectangle}(C_NULL)
+        m_strong = Ref{_GdkRectangle}()
+        m_weak = Ref{_GdkRectangle}()
         ret = ccall(("gtk_text_view_get_cursor_locations", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _iter, m_strong, m_weak)
         _strong = m_strong[]
         _strong = convert(GdkRectangle, _strong, false)
@@ -12433,7 +12406,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_iter_at_location(instance::GtkTextView, _x::Integer, _y::Integer)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
         ret = ccall(("gtk_text_view_get_iter_at_location", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Int32, Int32), instance, m_iter, _x, _y)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -12441,8 +12414,8 @@ $(Expr(:toplevel, quote
         (ret2, _iter)
     end
     function get_iter_at_position(instance::GtkTextView, _x::Integer, _y::Integer)
-        m_iter = Ref{_GtkTextIter}(C_NULL)
-        m_trailing = Ref{Int32}(C_NULL)
+        m_iter = Ref{_GtkTextIter}()
+        m_trailing = Ref{Int32}()
         ret = ccall(("gtk_text_view_get_iter_at_position", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{Int32}, Int32, Int32), instance, m_iter, m_trailing, _x, _y)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -12451,7 +12424,7 @@ $(Expr(:toplevel, quote
         (ret2, _iter, _trailing)
     end
     function get_iter_location(instance::GtkTextView, _iter::GtkTextIter)
-        m_location = Ref{_GdkRectangle}(C_NULL)
+        m_location = Ref{_GdkRectangle}()
         ret = ccall(("gtk_text_view_get_iter_location", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GdkRectangle}), instance, _iter, m_location)
         _location = m_location[]
         _location = convert(GdkRectangle, _location, false)
@@ -12467,8 +12440,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_line_at_y(instance::GtkTextView, _y::Integer)
-        m_target_iter = Ref{_GtkTextIter}(C_NULL)
-        m_line_top = Ref{Int32}(C_NULL)
+        m_target_iter = Ref{_GtkTextIter}()
+        m_line_top = Ref{Int32}()
         ret = ccall(("gtk_text_view_get_line_at_y", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Int32, Ptr{Int32}), instance, m_target_iter, _y, m_line_top)
         _target_iter = m_target_iter[]
         _target_iter = convert(GtkTextIter, _target_iter, false)
@@ -12476,8 +12449,8 @@ $(Expr(:toplevel, quote
         (_target_iter, _line_top)
     end
     function get_line_yrange(instance::GtkTextView, _iter::GtkTextIter)
-        m_y = Ref{Int32}(C_NULL)
-        m_height = Ref{Int32}(C_NULL)
+        m_y = Ref{Int32}()
+        m_height = Ref{Int32}()
         ret = ccall(("gtk_text_view_get_line_yrange", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{Int32}, Ptr{Int32}), instance, _iter, m_y, m_height)
         _y = m_y[]
         _height = m_height[]
@@ -12533,7 +12506,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_visible_rect(instance::GtkTextView)
-        m_visible_rect = Ref{_GdkRectangle}(C_NULL)
+        m_visible_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_text_view_get_visible_rect", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, m_visible_rect)
         _visible_rect = m_visible_rect[]
         _visible_rect = convert(GdkRectangle, _visible_rect, false)
@@ -12693,14 +12666,14 @@ $(Expr(:toplevel, quote
         ret2
     end
     function window_to_buffer_coords(instance::GtkTextView, _win, _window_x::Integer, _window_y::Integer)
-        m_buffer_x = Ref{Int32}(C_NULL)
-        m_buffer_y = Ref{Int32}(C_NULL)
+        m_buffer_x = Ref{Int32}()
+        m_buffer_y = Ref{Int32}()
         ret = ccall(("gtk_text_view_window_to_buffer_coords", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _win, _window_x, _window_y, m_buffer_x, m_buffer_y)
         _buffer_x = m_buffer_x[]
         _buffer_y = m_buffer_y[]
         (_buffer_x, _buffer_y)
     end
-    function ToggleButton()
+    function ToggleButton_new()
         ret = ccall(("gtk_toggle_button_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -12795,7 +12768,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tooltip_set_tip_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, _rect)
         nothing
     end
-    function TreeExpander()
+    function TreeExpander_new()
         ret = ccall(("gtk_tree_expander_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -12946,7 +12919,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_list_row_set_expanded", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _expanded)
         nothing
     end
-    function TreeListRowSorter(_sorter::Maybe(GtkSorter))
+    function TreeListRowSorter_new(_sorter::Maybe(GtkSorter))
         _sorter = if _sorter == nothing
                 C_NULL
             else
@@ -12979,7 +12952,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function convert_child_iter_to_iter(instance::GtkTreeModelFilter, _child_iter::GtkTreeIter)
-        m_filter_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_filter_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_filter_convert_child_iter_to_iter", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_filter_iter, _child_iter)
         ret2 = convert(Bool, ret)
         _filter_iter = m_filter_iter[]
@@ -12996,7 +12969,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function convert_iter_to_child_iter(instance::GtkTreeModelFilter, _filter_iter::GtkTreeIter)
-        m_child_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_child_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_filter_convert_iter_to_child_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_child_iter, _filter_iter)
         _child_iter = m_child_iter[]
         _child_iter = convert(GtkTreeIter, _child_iter, false)
@@ -13037,7 +13010,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function convert_child_iter_to_iter(instance::GtkTreeModelSort, _child_iter::GtkTreeIter)
-        m_sort_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_sort_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_sort_convert_child_iter_to_iter", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_sort_iter, _child_iter)
         ret2 = convert(Bool, ret)
         _sort_iter = m_sort_iter[]
@@ -13054,7 +13027,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function convert_iter_to_child_iter(instance::GtkTreeModelSort, _sorted_iter::GtkTreeIter)
-        m_child_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_child_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_sort_convert_iter_to_child_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_child_iter, _sorted_iter)
         _child_iter = m_child_iter[]
         _child_iter = convert(GtkTreeIter, _child_iter, false)
@@ -13096,8 +13069,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_selected(instance::GtkTreeSelection)
-        m_model = Ref{Ptr{GObject}}(C_NULL)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_model = Ref{Ptr{GObject}}()
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_selection_get_selected", libgtk4), Cint, (Ptr{GObject}, Ptr{Ptr{GObject}}, Ptr{_GtkTreeIter}), instance, m_model, m_iter)
         ret2 = convert(Bool, ret)
         _model = m_model[]
@@ -13110,7 +13083,7 @@ $(Expr(:toplevel, quote
         (ret2, _model, _iter)
     end
     function get_selected_rows(instance::GtkTreeSelection)
-        m_model = Ref{Ptr{GObject}}(C_NULL)
+        m_model = Ref{Ptr{GObject}}()
         ret = ccall(("gtk_tree_selection_get_selected_rows", libgtk4), Ptr{GLib._GList{GtkTreePath}}, (Ptr{GObject}, Ptr{Ptr{GObject}}), instance, m_model)
         ret2 = GLib.GList(ret, true)
         _model = m_model[]
@@ -13171,7 +13144,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_selection_unselect_range", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{GtkTreePath}), instance, _start_path, _end_path)
         nothing
     end
-    function TreeStore(_types)
+    function TreeStore_new(_types)
         _types = convert(Vector{UInt64}, _types)
         _n_columns = length(_types)
         ret = ccall(("gtk_tree_store_newv", libgtk4), Ptr{GObject}, (Int32, Ptr{UInt64}), _n_columns, _types)
@@ -13179,7 +13152,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function append(instance::GtkTreeStore, _parent::Maybe(GtkTreeIter))
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -13195,7 +13168,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function insert(instance::GtkTreeStore, _parent::Maybe(GtkTreeIter), _position::Integer)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -13207,7 +13180,7 @@ $(Expr(:toplevel, quote
         _iter
     end
     function insert_after(instance::GtkTreeStore, _parent::Maybe(GtkTreeIter), _sibling::Maybe(GtkTreeIter))
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -13224,7 +13197,7 @@ $(Expr(:toplevel, quote
         _iter
     end
     function insert_before(instance::GtkTreeStore, _parent::Maybe(GtkTreeIter), _sibling::Maybe(GtkTreeIter))
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -13241,7 +13214,7 @@ $(Expr(:toplevel, quote
         _iter
     end
     function insert_with_values(instance::GtkTreeStore, _parent::Maybe(GtkTreeIter), _position::Integer, _columns, _values)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -13288,7 +13261,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function prepend(instance::GtkTreeStore, _parent::Maybe(GtkTreeIter))
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -13325,7 +13298,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_store_swap", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _a, _b)
         nothing
     end
-    function TreeView()
+    function TreeView_new()
         ret = ccall(("gtk_tree_view_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -13353,48 +13326,48 @@ $(Expr(:toplevel, quote
         nothing
     end
     function convert_bin_window_to_tree_coords(instance::GtkTreeView, _bx::Integer, _by::Integer)
-        m_tx = Ref{Int32}(C_NULL)
-        m_ty = Ref{Int32}(C_NULL)
+        m_tx = Ref{Int32}()
+        m_ty = Ref{Int32}()
         ret = ccall(("gtk_tree_view_convert_bin_window_to_tree_coords", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _bx, _by, m_tx, m_ty)
         _tx = m_tx[]
         _ty = m_ty[]
         (_tx, _ty)
     end
     function convert_bin_window_to_widget_coords(instance::GtkTreeView, _bx::Integer, _by::Integer)
-        m_wx = Ref{Int32}(C_NULL)
-        m_wy = Ref{Int32}(C_NULL)
+        m_wx = Ref{Int32}()
+        m_wy = Ref{Int32}()
         ret = ccall(("gtk_tree_view_convert_bin_window_to_widget_coords", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _bx, _by, m_wx, m_wy)
         _wx = m_wx[]
         _wy = m_wy[]
         (_wx, _wy)
     end
     function convert_tree_to_bin_window_coords(instance::GtkTreeView, _tx::Integer, _ty::Integer)
-        m_bx = Ref{Int32}(C_NULL)
-        m_by = Ref{Int32}(C_NULL)
+        m_bx = Ref{Int32}()
+        m_by = Ref{Int32}()
         ret = ccall(("gtk_tree_view_convert_tree_to_bin_window_coords", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _tx, _ty, m_bx, m_by)
         _bx = m_bx[]
         _by = m_by[]
         (_bx, _by)
     end
     function convert_tree_to_widget_coords(instance::GtkTreeView, _tx::Integer, _ty::Integer)
-        m_wx = Ref{Int32}(C_NULL)
-        m_wy = Ref{Int32}(C_NULL)
+        m_wx = Ref{Int32}()
+        m_wy = Ref{Int32}()
         ret = ccall(("gtk_tree_view_convert_tree_to_widget_coords", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _tx, _ty, m_wx, m_wy)
         _wx = m_wx[]
         _wy = m_wy[]
         (_wx, _wy)
     end
     function convert_widget_to_bin_window_coords(instance::GtkTreeView, _wx::Integer, _wy::Integer)
-        m_bx = Ref{Int32}(C_NULL)
-        m_by = Ref{Int32}(C_NULL)
+        m_bx = Ref{Int32}()
+        m_by = Ref{Int32}()
         ret = ccall(("gtk_tree_view_convert_widget_to_bin_window_coords", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _wx, _wy, m_bx, m_by)
         _bx = m_bx[]
         _by = m_by[]
         (_bx, _by)
     end
     function convert_widget_to_tree_coords(instance::GtkTreeView, _wx::Integer, _wy::Integer)
-        m_tx = Ref{Int32}(C_NULL)
-        m_ty = Ref{Int32}(C_NULL)
+        m_tx = Ref{Int32}()
+        m_ty = Ref{Int32}()
         ret = ccall(("gtk_tree_view_convert_widget_to_tree_coords", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}), instance, _wx, _wy, m_tx, m_ty)
         _tx = m_tx[]
         _ty = m_ty[]
@@ -13449,7 +13422,7 @@ $(Expr(:toplevel, quote
             else
                 _column
             end
-        m_rect = Ref{_GdkRectangle}(C_NULL)
+        m_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_tree_view_get_background_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{GObject}, Ptr{_GdkRectangle}), instance, _path, _column, m_rect)
         _rect = m_rect[]
         _rect = convert(GdkRectangle, _rect, false)
@@ -13466,7 +13439,7 @@ $(Expr(:toplevel, quote
             else
                 _column
             end
-        m_rect = Ref{_GdkRectangle}(C_NULL)
+        m_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_tree_view_get_cell_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{GObject}, Ptr{_GdkRectangle}), instance, _path, _column, m_rect)
         _rect = m_rect[]
         _rect = convert(GdkRectangle, _rect, false)
@@ -13487,8 +13460,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_cursor(instance::GtkTreeView)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_focus_column = Ref{Ptr{GObject}}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_focus_column = Ref{Ptr{GObject}}()
         ret = ccall(("gtk_tree_view_get_cursor", libgtk4), Nothing, (Ptr{GObject}, Ptr{Ptr{GtkTreePath}}, Ptr{Ptr{GObject}}), instance, m_path, m_focus_column)
         _path = m_path[]
         _path = convert(Maybe(GtkTreePath), _path)
@@ -13497,8 +13470,8 @@ $(Expr(:toplevel, quote
         (_path, _focus_column)
     end
     function get_dest_row_at_pos(instance::GtkTreeView, _drag_x::Integer, _drag_y::Integer)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_pos = Ref{Int32}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_pos = Ref{Int32}()
         ret = ccall(("gtk_tree_view_get_dest_row_at_pos", libgtk4), Cint, (Ptr{GObject}, Int32, Int32, Ptr{Ptr{GtkTreePath}}, Ptr{Int32}), instance, _drag_x, _drag_y, m_path, m_pos)
         ret2 = convert(Bool, ret)
         _path = m_path[]
@@ -13508,8 +13481,8 @@ $(Expr(:toplevel, quote
         (ret2, _path, _pos)
     end
     function get_drag_dest_row(instance::GtkTreeView)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_pos = Ref{Int32}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_pos = Ref{Int32}()
         ret = ccall(("gtk_tree_view_get_drag_dest_row", libgtk4), Nothing, (Ptr{GObject}, Ptr{Ptr{GtkTreePath}}, Ptr{Int32}), instance, m_path, m_pos)
         _path = m_path[]
         _path = convert(Maybe(GtkTreePath), _path)
@@ -13587,10 +13560,10 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_path_at_pos(instance::GtkTreeView, _x::Integer, _y::Integer)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_column = Ref{Ptr{GObject}}(C_NULL)
-        m_cell_x = Ref{Int32}(C_NULL)
-        m_cell_y = Ref{Int32}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_column = Ref{Ptr{GObject}}()
+        m_cell_x = Ref{Int32}()
+        m_cell_y = Ref{Int32}()
         ret = ccall(("gtk_tree_view_get_path_at_pos", libgtk4), Cint, (Ptr{GObject}, Int32, Int32, Ptr{Ptr{GtkTreePath}}, Ptr{Ptr{GObject}}, Ptr{Int32}, Ptr{Int32}), instance, _x, _y, m_path, m_column, m_cell_x, m_cell_y)
         ret2 = convert(Bool, ret)
         _path = m_path[]
@@ -13642,9 +13615,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_tooltip_context(instance::GtkTreeView, _x::Integer, _y::Integer, _keyboard_tip::Bool)
-        m_model = Ref{Ptr{GObject}}(C_NULL)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_model = Ref{Ptr{GObject}}()
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_view_get_tooltip_context", libgtk4), Cint, (Ptr{GObject}, Int32, Int32, Cint, Ptr{Ptr{GObject}}, Ptr{Ptr{GtkTreePath}}, Ptr{_GtkTreeIter}), instance, _x, _y, _keyboard_tip, m_model, m_path, m_iter)
         ret2 = convert(Bool, ret)
         _model = m_model[]
@@ -13656,8 +13629,8 @@ $(Expr(:toplevel, quote
         (ret2, _model, _path, _iter)
     end
     function get_visible_range(instance::GtkTreeView)
-        m_start_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_end_path = Ref{Ptr{GtkTreePath}}(C_NULL)
+        m_start_path = Ref{Ptr{GtkTreePath}}()
+        m_end_path = Ref{Ptr{GtkTreePath}}()
         ret = ccall(("gtk_tree_view_get_visible_range", libgtk4), Cint, (Ptr{GObject}, Ptr{Ptr{GtkTreePath}}, Ptr{Ptr{GtkTreePath}}), instance, m_start_path, m_end_path)
         ret2 = convert(Bool, ret)
         _start_path = m_start_path[]
@@ -13667,7 +13640,7 @@ $(Expr(:toplevel, quote
         (ret2, _start_path, _end_path)
     end
     function get_visible_rect(instance::GtkTreeView)
-        m_visible_rect = Ref{_GdkRectangle}(C_NULL)
+        m_visible_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_tree_view_get_visible_rect", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, m_visible_rect)
         _visible_rect = m_visible_rect[]
         _visible_rect = convert(GdkRectangle, _visible_rect, false)
@@ -13678,10 +13651,10 @@ $(Expr(:toplevel, quote
         ret
     end
     function is_blank_at_pos(instance::GtkTreeView, _x::Integer, _y::Integer)
-        m_path = Ref{Ptr{GtkTreePath}}(C_NULL)
-        m_column = Ref{Ptr{GObject}}(C_NULL)
-        m_cell_x = Ref{Int32}(C_NULL)
-        m_cell_y = Ref{Int32}(C_NULL)
+        m_path = Ref{Ptr{GtkTreePath}}()
+        m_column = Ref{Ptr{GObject}}()
+        m_cell_x = Ref{Int32}()
+        m_cell_y = Ref{Int32}()
         ret = ccall(("gtk_tree_view_is_blank_at_pos", libgtk4), Cint, (Ptr{GObject}, Int32, Int32, Ptr{Ptr{GtkTreePath}}, Ptr{Ptr{GObject}}, Ptr{Int32}, Ptr{Int32}), instance, _x, _y, m_path, m_column, m_cell_x, m_cell_y)
         ret2 = convert(Bool, ret)
         _path = m_path[]
@@ -13930,7 +13903,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_view_unset_rows_drag_source", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function TreeViewColumn()
+    function TreeViewColumn_new()
         ret = ccall(("gtk_tree_view_column_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkTreeViewColumn, ret, false)
         ret2
@@ -13945,8 +13918,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function cell_get_position(instance::GtkTreeViewColumn, _cell_renderer::GtkCellRenderer)
-        m_x_offset = Ref{Int32}(C_NULL)
-        m_width = Ref{Int32}(C_NULL)
+        m_x_offset = Ref{Int32}()
+        m_width = Ref{Int32}()
         ret = ccall(("gtk_tree_view_column_cell_get_position", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _cell_renderer, m_x_offset, m_width)
         ret2 = convert(Bool, ret)
         _x_offset = m_x_offset[]
@@ -13954,10 +13927,10 @@ $(Expr(:toplevel, quote
         (ret2, _x_offset, _width)
     end
     function cell_get_size(instance::GtkTreeViewColumn)
-        m_x_offset = Ref{Int32}(C_NULL)
-        m_y_offset = Ref{Int32}(C_NULL)
-        m_width = Ref{Int32}(C_NULL)
-        m_height = Ref{Int32}(C_NULL)
+        m_x_offset = Ref{Int32}()
+        m_y_offset = Ref{Int32}()
+        m_width = Ref{Int32}()
+        m_height = Ref{Int32}()
         ret = ccall(("gtk_tree_view_column_cell_get_size", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, m_x_offset, m_y_offset, m_width, m_height)
         _x_offset = m_x_offset[]
         _y_offset = m_y_offset[]
@@ -14175,7 +14148,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_view_column_set_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget)
         nothing
     end
-    function Video()
+    function Video_new()
         ret = ccall(("gtk_video_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -14295,7 +14268,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_video_set_resource", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _resource_path)
         nothing
     end
-    function Viewport(_hadjustment::Maybe(GtkAdjustment), _vadjustment::Maybe(GtkAdjustment))
+    function Viewport_new(_hadjustment::Maybe(GtkAdjustment), _vadjustment::Maybe(GtkAdjustment))
         _hadjustment = if _hadjustment == nothing
                 C_NULL
             else
@@ -14337,7 +14310,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_viewport_set_scroll_to_focus", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _scroll_to_focus)
         nothing
     end
-    function VolumeButton()
+    function VolumeButton_new()
         ret = ccall(("gtk_volume_button_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -14396,7 +14369,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_bounds(instance::GtkWidget, _target::GtkWidget)
-        m_out_bounds = Ref{_GrapheneRect}(C_NULL)
+        m_out_bounds = Ref{_GrapheneRect}()
         ret = ccall(("gtk_widget_compute_bounds", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}), instance, _target, m_out_bounds)
         ret2 = convert(Bool, ret)
         _out_bounds = m_out_bounds[]
@@ -14409,7 +14382,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_point(instance::GtkWidget, _target::GtkWidget, _point::GraphenePoint)
-        m_out_point = Ref{_GraphenePoint}(C_NULL)
+        m_out_point = Ref{_GraphenePoint}()
         ret = ccall(("gtk_widget_compute_point", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _target, _point, m_out_point)
         ret2 = convert(Bool, ret)
         _out_point = m_out_point[]
@@ -14417,7 +14390,7 @@ $(Expr(:toplevel, quote
         (ret2, _out_point)
     end
     function compute_transform(instance::GtkWidget, _target::GtkWidget)
-        m_out_transform = Ref{_GrapheneMatrix}(C_NULL)
+        m_out_transform = Ref{_GrapheneMatrix}()
         ret = ccall(("gtk_widget_compute_transform", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneMatrix}), instance, _target, m_out_transform)
         ret2 = convert(Bool, ret)
         _out_transform = m_out_transform[]
@@ -14466,7 +14439,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_allocation(instance::GtkWidget)
-        m_allocation = Ref{_GdkRectangle}(C_NULL)
+        m_allocation = Ref{_GdkRectangle}()
         ret = ccall(("gtk_widget_get_allocation", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, m_allocation)
         _allocation = m_allocation[]
         _allocation = convert(GdkRectangle, _allocation, false)
@@ -14711,8 +14684,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_preferred_size(instance::GtkWidget)
-        m_minimum_size = Ref{_GtkRequisition}(C_NULL)
-        m_natural_size = Ref{_GtkRequisition}(C_NULL)
+        m_minimum_size = Ref{_GtkRequisition}()
+        m_natural_size = Ref{_GtkRequisition}()
         ret = ccall(("gtk_widget_get_preferred_size", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkRequisition}, Ptr{_GtkRequisition}), instance, m_minimum_size, m_natural_size)
         _minimum_size = m_minimum_size[]
         _minimum_size = convert(GtkRequisition, _minimum_size, false)
@@ -14780,8 +14753,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_size_request(instance::GtkWidget)
-        m_width = Ref{Int32}(C_NULL)
-        m_height = Ref{Int32}(C_NULL)
+        m_width = Ref{Int32}()
+        m_height = Ref{Int32}()
         ret = ccall(("gtk_widget_get_size_request", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_width, m_height)
         _width = m_width[]
         _height = m_height[]
@@ -14948,10 +14921,10 @@ $(Expr(:toplevel, quote
         nothing
     end
     function measure(instance::GtkWidget, _orientation, _for_size::Integer)
-        m_minimum = Ref{Int32}(C_NULL)
-        m_natural = Ref{Int32}(C_NULL)
-        m_minimum_baseline = Ref{Int32}(C_NULL)
-        m_natural_baseline = Ref{Int32}(C_NULL)
+        m_minimum = Ref{Int32}()
+        m_natural = Ref{Int32}()
+        m_minimum_baseline = Ref{Int32}()
+        m_natural_baseline = Ref{Int32}()
         ret = ccall(("gtk_widget_measure", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, _orientation, _for_size, m_minimum, m_natural, m_minimum_baseline, m_natural_baseline)
         _minimum = m_minimum[]
         _natural = m_natural[]
@@ -15219,8 +15192,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function translate_coordinates(instance::GtkWidget, _dest_widget::GtkWidget, _src_x::Real, _src_y::Real)
-        m_dest_x = Ref{Float64}(C_NULL)
-        m_dest_y = Ref{Float64}(C_NULL)
+        m_dest_x = Ref{Float64}()
+        m_dest_y = Ref{Float64}()
         ret = ccall(("gtk_widget_translate_coordinates", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Float64, Float64, Ptr{Float64}, Ptr{Float64}), instance, _dest_widget, _src_x, _src_y, m_dest_x, m_dest_y)
         ret2 = convert(Bool, ret)
         _dest_x = m_dest_x[]
@@ -15247,7 +15220,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_widget_unset_state_flags", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
-    function WidgetPaintable(_widget::Maybe(GtkWidget))
+    function WidgetPaintable_new(_widget::Maybe(GtkWidget))
         _widget = if _widget == nothing
                 C_NULL
             else
@@ -15275,7 +15248,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_widget_paintable_set_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget)
         nothing
     end
-    function Window()
+    function Window_new()
         ret = ccall(("gtk_window_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -15354,8 +15327,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_default_size(instance::GtkWindow)
-        m_width = Ref{Int32}(C_NULL)
-        m_height = Ref{Int32}(C_NULL)
+        m_width = Ref{Int32}()
+        m_height = Ref{Int32}()
         ret = ccall(("gtk_window_get_default_size", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_width, m_height)
         _width = m_width[]
         _height = m_height[]
@@ -15628,7 +15601,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_window_unminimize", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function WindowControls(_side)
+    function WindowControls_new(_side)
         ret = ccall(("gtk_window_controls_new", libgtk4), Ptr{GObject}, (Int32,), _side)
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -15665,7 +15638,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_window_controls_set_side", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _side)
         nothing
     end
-    function WindowGroup()
+    function WindowGroup_new()
         ret = ccall(("gtk_window_group_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWindowGroup, ret, true)
         ret2
@@ -15683,7 +15656,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_window_group_remove_window", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _window)
         nothing
     end
-    function WindowHandle()
+    function WindowHandle_new()
         ret = ccall(("gtk_window_handle_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkWidget, ret, false)
         ret2
@@ -15867,7 +15840,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_rgba(instance::GtkColorChooser)
-        m_color = Ref{_GdkRGBA}(C_NULL)
+        m_color = Ref{_GdkRGBA}()
         ret = ccall(("gtk_color_chooser_get_rgba", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRGBA}), instance, m_color)
         _color = m_color[]
         _color = convert(GdkRGBA, _color, false)
@@ -15952,8 +15925,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_selection_bounds(instance::GtkEditable)
-        m_start_pos = Ref{Int32}(C_NULL)
-        m_end_pos = Ref{Int32}(C_NULL)
+        m_start_pos = Ref{Int32}()
+        m_end_pos = Ref{Int32}()
         ret = ccall(("gtk_editable_get_selection_bounds", libgtk4), Cint, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_start_pos, m_end_pos)
         ret2 = convert(Bool, ret)
         _start_pos = m_start_pos[]
@@ -15978,7 +15951,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function insert_text(instance::GtkEditable, _text::Union{AbstractString, Symbol}, _length::Integer, _position::Integer)
-        m_position = Ref{Int32}(C_NULL)
+        m_position = Ref{Int32}()
         m_position[] = Base.cconvert(Int32, _position)
         ret = ccall(("gtk_editable_insert_text", libgtk4), Nothing, (Ptr{GObject}, Cstring, Int32, Ptr{Int32}), instance, _text, _length, m_position)
         _position = m_position[]
@@ -16313,8 +16286,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_surface_transform(instance::GtkNative)
-        m_x = Ref{Float64}(C_NULL)
-        m_y = Ref{Float64}(C_NULL)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
         ret = ccall(("gtk_native_get_surface_transform", libgtk4), Nothing, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_x, m_y)
         _x = m_x[]
         _y = m_y[]
@@ -16361,7 +16334,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_border(instance::GtkScrollable)
-        m_border = Ref{_GtkBorder}(C_NULL)
+        m_border = Ref{_GtkBorder}()
         ret = ccall(("gtk_scrollable_get_border", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkBorder}), instance, m_border)
         ret2 = convert(Bool, ret)
         _border = m_border[]
@@ -16519,7 +16492,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_iter(instance::GtkTreeModel, _path::GtkTreePath)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_get_iter", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{GtkTreePath}), instance, m_iter, _path)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -16527,7 +16500,7 @@ $(Expr(:toplevel, quote
         (ret2, _iter)
     end
     function get_iter_first(instance::GtkTreeModel)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_get_iter_first", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, m_iter)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -16535,7 +16508,7 @@ $(Expr(:toplevel, quote
         (ret2, _iter)
     end
     function get_iter_from_string(instance::GtkTreeModel, _path_string::Union{AbstractString, Symbol})
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_get_iter_from_string", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Cstring), instance, m_iter, _path_string)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -16561,14 +16534,14 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_value(instance::GtkTreeModel, _iter::GtkTreeIter, _column::Integer)
-        m_value = Ref{_GValue}(C_NULL)
+        m_value = Ref{_GValue}()
         ret = ccall(("gtk_tree_model_get_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), instance, _iter, _column, m_value)
         _value = m_value[]
         _value = convert(GValue, _value, false)
         _value
     end
     function iter_children(instance::GtkTreeModel, _parent::Maybe(GtkTreeIter))
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -16600,7 +16573,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function iter_nth_child(instance::GtkTreeModel, _parent::Maybe(GtkTreeIter), _n::Integer)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         _parent = if _parent == nothing
                 C_NULL
             else
@@ -16613,7 +16586,7 @@ $(Expr(:toplevel, quote
         (ret2, _iter)
     end
     function iter_parent(instance::GtkTreeModel, _child::GtkTreeIter)
-        m_iter = Ref{_GtkTreeIter}(C_NULL)
+        m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_iter_parent", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_iter, _child)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
@@ -16661,8 +16634,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_sort_column_id(instance::GtkTreeSortable)
-        m_sort_column_id = Ref{Int32}(C_NULL)
-        m_order = Ref{Int32}(C_NULL)
+        m_sort_column_id = Ref{Int32}()
+        m_order = Ref{Int32}()
         ret = ccall(("gtk_tree_sortable_get_sort_column_id", libgtk4), Cint, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_sort_column_id, m_order)
         ret2 = convert(Bool, ret)
         _sort_column_id = m_sort_column_id[]

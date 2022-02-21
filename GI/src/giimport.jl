@@ -401,7 +401,7 @@ function extract_type(typeinfo::TypeInfo, info::GIStructInfo)
         TypeDesc(info,typename(info),typename(info),:(Ptr{$sname}))
         #TypeDesc(info,:Any,:(Ptr{Nothing}))
     else
-        TypeDesc(info,name,name,name)
+        TypeDesc(info,sname,sname,sname)
     end
 end
 
@@ -724,12 +724,7 @@ function create_method(info::GIFunctionInfo)
         push!(cargs, Arg(:instance, typeinfo.ctype))
     end
     if flags & GIFunction.IS_CONSTRUCTOR != 0
-        #FIXME: do this with other constructors too (need to check that arg lists are different)
-        if name===:new
-            name = Symbol("$(get_name(get_container(info)))")
-        else
-            name = Symbol("$(get_name(get_container(info)))_$name")
-        end
+        name = Symbol("$(get_name(get_container(info)))_$name")
     end
     rettypeinfo=get_return_type(info)
     rettype = extract_type(rettypeinfo)
@@ -765,7 +760,7 @@ function create_method(info::GIFunctionInfo)
             ctype = typ.ctype
             wname = Symbol("m_$(get_name(arg))")
             atyp = get_type(arg)
-            push!(prologue, :( $wname = Ref{$ctype}(C_NULL) ))
+            push!(prologue, :( $wname = Ref{$ctype}() ))
             if dir == GIDirection.INOUT
                 push!(prologue, :( $wname[] = Base.cconvert($ctype,$aname) ))
             end

@@ -53,7 +53,7 @@ GI.all_struct_methods!(exprs,ns,skiplist=skiplist,struct_skiplist=vcat(struct_sk
 
 ## object methods
 
-skiplist=[:create_closure,:activate_cell,:event,:activate,:start_editing,:filter_keypress,:trigger,:append_node,:im_context_filter_keypress]
+skiplist=[:create_closure,:activate_cell,:event,:activate,:start_editing,:filter_keypress,:trigger,:append_node,:im_context_filter_keypress,:get_backlog,:append_border,:append_inset_shadow,:append_outset_shadow,:push_rounded_clip]
 
 object_skiplist=vcat(object_skiplist,[:BoolFilter,:DropDown,:IconTheme,:MnemonicAction,:NeverTrigger,:NothingAction,:NumericSorter,:PrintJob,:PrintSettings,:RecentManager,:StringFilter,:StringSorter,:ShortcutAction,:ShortcutTrigger])
 

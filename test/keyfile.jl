@@ -7,7 +7,7 @@ using Test
 @testset "keyfile" begin
 
 for i=1:1
-    kf=GLib.KeyFile()
+    kf=GLib.KeyFile_new()
 
     @test isa(kf,GLib.GBoxed)
 
@@ -64,7 +64,7 @@ for i=1:1
     @test success
 end
 
-kf=GLib.KeyFile()
+kf=GLib.KeyFile_new()
 success=GLib.load_from_file(kf,"test.ini",GLib.Constants.KeyFileFlags.NONE)
 
 @test success

@@ -402,7 +402,7 @@ function start_main_loop()
         __init__gmainloop__()
     end
     if main_depth() == 0
-        MainLoop(nothing, true)
+        MainLoop_new(nothing, true)
         global glib_main_task = schedule(Task(glib_main))
     end
 end

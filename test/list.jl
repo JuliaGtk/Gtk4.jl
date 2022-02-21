@@ -8,7 +8,7 @@ g = GList(Ptr{GKeyFile})
 
 @test_throws UndefRefError g[1]
 
-kf=GLib.KeyFile()
+kf=GLib.KeyFile_new()
 push!(g,kf.handle)
 
 @test isa(g[1],Ptr{GKeyFile})

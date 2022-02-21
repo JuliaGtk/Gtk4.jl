@@ -214,7 +214,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function signal_list_ids(_itype::Integer)
-        m_n_ids = Ref{UInt32}(C_NULL)
+        m_n_ids = Ref{UInt32}()
         ret = ccall(("g_signal_list_ids", libgobject), Ptr{UInt32}, (UInt64, Ptr{UInt32}), _itype, m_n_ids)
         _n_ids = m_n_ids[]
         ret
@@ -233,8 +233,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function signal_parse_name(_detailed_signal::Union{AbstractString, Symbol}, _itype::Integer, _force_detail_quark::Bool)
-        m_signal_id_p = Ref{UInt32}(C_NULL)
-        m_detail_p = Ref{UInt32}(C_NULL)
+        m_signal_id_p = Ref{UInt32}()
+        m_detail_p = Ref{UInt32}()
         ret = ccall(("g_signal_parse_name", libgobject), Cint, (Cstring, UInt64, Ptr{UInt32}, Ptr{UInt32}, Cint), _detailed_signal, _itype, m_signal_id_p, m_detail_p, _force_detail_quark)
         ret2 = convert(Bool, ret)
         _signal_id_p = m_signal_id_p[]
@@ -274,8 +274,8 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_type_add_interface_dynamic", libgobject), Nothing, (UInt64, UInt64, Ptr{GObject}), _instance_type, _interface_type, _plugin)
         nothing
     end
-    function type_check_class_is_a(_g_class::GTypeClass, _is_a_type::Integer)
-        ret = ccall(("g_type_check_class_is_a", libgobject), Cint, (Ptr{GTypeClass}, UInt64), _g_class, _is_a_type)
+    function type_check_class_is_a(_g_class::_GTypeClass, _is_a_type::Integer)
+        ret = ccall(("g_type_check_class_is_a", libgobject), Cint, (Ptr{_GTypeClass}, UInt64), _g_class, _is_a_type)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -295,7 +295,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function type_children(_type::Integer)
-        m_n_children = Ref{UInt32}(C_NULL)
+        m_n_children = Ref{UInt32}()
         ret = ccall(("g_type_children", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _type, m_n_children)
         _n_children = m_n_children[]
         ret
@@ -363,19 +363,19 @@ $(Expr(:toplevel, quote
         ret
     end
     function type_interface_prerequisites(_interface_type::Integer)
-        m_n_prerequisites = Ref{UInt32}(C_NULL)
+        m_n_prerequisites = Ref{UInt32}()
         ret = ccall(("g_type_interface_prerequisites", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _interface_type, m_n_prerequisites)
         _n_prerequisites = m_n_prerequisites[]
         ret
     end
     function type_interfaces(_type::Integer)
-        m_n_interfaces = Ref{UInt32}(C_NULL)
+        m_n_interfaces = Ref{UInt32}()
         ret = ccall(("g_type_interfaces", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _type, m_n_interfaces)
         _n_interfaces = m_n_interfaces[]
         ret
     end
-    function type_name_from_class(_g_class::GTypeClass)
-        ret = ccall(("g_type_name_from_class", libgobject), Cstring, (Ptr{GTypeClass},), _g_class)
+    function type_name_from_class(_g_class::_GTypeClass)
+        ret = ccall(("g_type_name_from_class", libgobject), Cstring, (Ptr{_GTypeClass},), _g_class)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -392,8 +392,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function type_query(_type::Integer)
-        m_query = Ref{GTypeQuery}(C_NULL)
-        ret = ccall(("g_type_query", libgobject), Nothing, (UInt64, Ptr{GTypeQuery}), _type, m_query)
+        m_query = Ref{_GTypeQuery}()
+        ret = ccall(("g_type_query", libgobject), Nothing, (UInt64, Ptr{_GTypeQuery}), _type, m_query)
         _query = m_query[]
         _query
     end
