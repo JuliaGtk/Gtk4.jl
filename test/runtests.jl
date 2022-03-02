@@ -23,6 +23,10 @@ include("families.jl")
 include("layout.jl")
 end
 
+@testset "Gtk" begin
+include("gui.jl")
+end
+
 GC.gc()
 
 sleep(2)

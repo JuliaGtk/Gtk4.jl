@@ -37,9 +37,17 @@ eval(include("gen/gtk4_methods"))
 
 end
 
-import Base: push!, pushfirst!
+import Base: push!, pushfirst!, insert!, show, length
 
+export parent, hasparent, visible, destroy
+export show, hide, grab_focus, fullscreen, unfullscreen,
+    maximize, unmaximize
+
+include("base.jl")
+include("windows.jl")
 include("layout.jl")
+include("buttons.jl")
+include("text.jl")
 
 function gtk_main()
     while true
