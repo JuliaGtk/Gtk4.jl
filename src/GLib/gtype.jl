@@ -60,8 +60,8 @@ let jtypes = Expr(:block, :( g_type(::Type{Nothing}) = $(g_type_from_name(:void)
 end
 
 G_TYPE_FROM_CLASS(w::Ptr{Nothing}) = unsafe_load(convert(Ptr{GType}, w))
-G_OBJECT_GET_CLASS(w::GObject) = G_OBJECT_GET_CLASS(w.handle)
-function G_OBJECT_GET_CLASS(hnd::Ptr{GObject})
+G_OBJECT_GET_CLASS(w::T) where T <: GObject = G_OBJECT_GET_CLASS(w.handle)
+function G_OBJECT_GET_CLASS(hnd::Ptr{T}) where T <: GObject
     hnd = check_undefref(hnd)
     unsafe_load(convert(Ptr{Ptr{Nothing}}, hnd))
 end
@@ -116,7 +116,7 @@ unsafe_convert(::Type{Ptr{GObject}}, w::GObject) = getfield(w, :handle)
 # this method should be used by gtk methods returning widgets of unknown type
 # and/or that might have been wrapped by julia before,
 # instead of a direct call to the constructor
-convert(::Type{T}, w::Ptr{GObject}, owns=false) where {T <: GObject} = convert_(T, convert(Ptr{T}, w), owns) # this definition must be first due to a 0.2 dispatch bug
+convert(::Type{T}, w::Ptr{Y}, owns=false) where {T <: GObject, Y <: GObject} = convert_(T, convert(Ptr{T}, w), owns) # this definition must be first due to a 0.2 dispatch bug
 convert(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject = convert_(T, ptr, owns)
 
 # need to introduce convert_ since otherwise there was a StackOverFlow error
@@ -147,7 +147,7 @@ function convert_(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject
     ret
 end
 
-function find_leaf_type(hnd::Ptr{GObject})
+function find_leaf_type(hnd::Ptr{T}) where T <: GObject
     gtyp = G_OBJECT_CLASS_TYPE(hnd)
     typname = g_type_name(gtyp)
     while !(typname in keys(gtype_wrappers))

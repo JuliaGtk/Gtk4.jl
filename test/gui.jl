@@ -73,9 +73,8 @@ end
 end
 
 @testset "Frame" begin
-w = GtkWindow(
+w = GtkWindow(GtkFrame(),
     "Frame", 400, 400)
-G_.set_child(w,GtkFrame())
 #widgets=[f for f in w] # test iteration over GtkBin
 #@test length(widgets)==1
 destroy(w)
@@ -84,23 +83,21 @@ end
 @testset "Initially Hidden Canvas" begin
 nb = GtkNotebook()
 @test hasparent(nb)==false
-vbox = G_.Box_new(Gtk4.Constants.Orientation_VERTICAL, 0)
+vbox = GtkBox(:v)
 # c = Canvas()
 push!(nb, vbox, "A")
 #push!(nb, c, "B")
 #insert!(nb, 2, GtkLabel("Something in the middle"), "A*")
 #pushfirst!(nb, GtkLabel("Something at the beginning"), "First")
 # splice!(nb, 3)
-w = GtkWindow("TestDataViewer",600,600)
+w = GtkWindow(nb,"TestDataViewer",600,600)
 # @test pagenumber(nb,c)==3
-G_.set_child(w,nb)
 destroy(w)
 end
 
 @testset "Labelframe" begin
 f = GtkFrame("Label")
-w = GtkWindow("Labelframe", 400, 400)
-G_.set_child(w, f)
+w = GtkWindow(f,"Labelframe", 400, 400)
 set_gtk_property!(f,:label,"new label")
 @test get_gtk_property(f,:label,AbstractString) == "new label"
 destroy(w)
@@ -108,8 +105,7 @@ end
 
 @testset "notebook" begin
 nb = GtkNotebook()
-w = GtkWindow("Notebook")
-G_.set_child(w,nb)
+w = GtkWindow(nb,"Notebook")
 push!(nb, GtkButton("o_ne"), "tab _one")
 push!(nb, GtkButton("t_wo"), "tab _two")
 push!(nb, GtkButton("th_ree"), "tab t_hree")
@@ -118,4 +114,83 @@ push!(nb, GtkLabel("fo_ur"), "tab _four")
 set_gtk_property!(nb,:page,2)
 @test get_gtk_property(nb,:page,Int) == 2
 destroy(w)
+end
+
+@testset "Panedwindow" begin
+pw = GtkPaned(:h)
+w = GtkWindow(pw,"Panedwindow", 400, 400)
+pw2 = GtkPaned(:v)
+pw[1]=GtkButton("one")
+pw[2]=pw2
+@test pw[2]==pw2
+pw2[1]=GtkButton("two")
+pw2[2]=GtkButton("three")
+destroy(w)
+end
+
+@testset "Iteration and toplevel" begin
+## example of last in first covered
+## Create this GUI, then shrink window with the mouse
+f = GtkBox(:v)
+w = GtkWindow(f,"Last in, first covered", 400, 400)
+
+g1 = GtkBox(:h)
+g2 = GtkBox(:h)
+push!(f,g1)
+push!(f,g2)
+#@test f[1]==g1
+
+b11 = GtkButton("first")
+push!(g1, b11)
+b12 = GtkButton("second")
+push!(g1, b12)
+b21 = GtkButton("first")
+push!(g2, b21)
+b22 = GtkButton("second")
+push!(g2, b22)
+
+strs = ["first", "second"]
+i = 1
+for child in g1
+    @test get_gtk_property(child,:label,AbstractString) == strs[i]
+    @test toplevel(child) == w
+    i += 1
+end
+# set_gtk_property!(g1,:pack_type,b11,0) #GTK_PACK_START
+# set_gtk_property!(g1,:pack_type,b12,0) #GTK_PACK_START
+# set_gtk_property!(g2,:pack_type,b21,1) #GTK_PACK_END
+# set_gtk_property!(g2,:pack_type,b22,1) #GTK_PACK_END
+# @test get_gtk_property(g1,:pack_type, b11, Int) == 0
+
+## Now shrink window
+destroy(w)
+end
+
+@testset "Grid" begin
+    grid = GtkGrid()
+    w = GtkWindow(grid,"Grid", 400, 400)
+    b=GtkButton("2,2")
+    grid[2,2] = b
+    @test grid[2,2] == b
+    grid[2,3] = GtkButton("2,3")
+    grid[1,1] = GtkLabel("grid")
+    grid[3,1:3] = GtkButton("Tall button")
+    insert!(grid,1,:top)
+    insert!(grid,3,:bottom)
+    #insert!(grid,grid[1,2],:right)
+    #deleteat!(grid,1,:row)
+    #empty!(grid)
+    destroy(w)
+end
+
+
+@testset "Builder" begin
+b=GtkBuilder(;filename="test.glade")
+#widgets = [w for w in b]
+#@test length(widgets)==length(b)
+button = b["a_button"]
+@test isa(button,GtkButton)
+@test isa(b[1],GtkWidget)
+
+#@test_throws ErrorException b2 = Builder(;filename="test2.glade")
 end

@@ -37,13 +37,15 @@ eval(include("gen/gtk4_methods"))
 
 end
 
-import Base: push!, pushfirst!, insert!, show, length
+import Base: push!, pushfirst!, insert!, show, length, setindex!, getindex, iterate,
+             convert
 
-export parent, hasparent, visible, destroy
+export parent, hasparent, toplevel, visible, destroy
 export show, hide, grab_focus, fullscreen, unfullscreen,
     maximize, unmaximize
 
 include("base.jl")
+include("builder.jl")
 include("windows.jl")
 include("layout.jl")
 include("buttons.jl")

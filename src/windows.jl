@@ -13,6 +13,12 @@ function GtkWindow(title::Union{Nothing, AbstractString} = nothing, w::Real = -1
     win
 end
 
+function GtkWindow(widget::GtkWidget, args...)
+    w=GtkWindow(args...)
+    G_.set_child(w,widget)
+    w
+end
+
 destroy(w::GtkWindow) = G_.destroy(w)
 
 fullscreen(win::GtkWindow) = G_.fullscreen(win)
