@@ -107,12 +107,23 @@ function blame(@nospecialize(cb))
     @warn "Executing $cb:"
 end
 
+signal_handler_disconnect(w::GObject, handler_id::Culong) =
+    ccall((:g_signal_handler_disconnect, libgobject), Nothing, (Ptr{GObject}, Culong), w, handler_id)
+
+signal_handler_block(w::GObject, handler_id::Culong) =
+    ccall((:g_signal_handler_block, libgobject), Nothing, (Ptr{GObject}, Culong), w, handler_id)
+
+signal_handler_unblock(w::GObject, handler_id::Culong) =
+    ccall((:g_signal_handler_unblock, libgobject), Nothing, (Ptr{GObject}, Culong), w, handler_id)
+
 """
     tf = signal_handler_is_connected(widget, id)
 
 Return `true`/`false` depending on whether `widget` has a connected signal handler with
 the given `id`.
 """
+signal_handler_is_connected(w::GObject, handler_id::Culong) =
+    ccall((:g_signal_handler_is_connected, libgobject), Cint, (Ptr{GObject}, Culong), w, handler_id) == 1
 
 function signal_emit(w::GObject, sig::AbstractStringLike, ::Type{RT}, args...) where RT
     i = isa(sig, AbstractString) ? something(findfirst("::", sig), 0:-1) : (0:-1)

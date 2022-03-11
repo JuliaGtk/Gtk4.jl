@@ -1,4 +1,7 @@
-using Gtk4, Gtk4.G_
+using Gtk4, Gtk4.G_, Gtk4.GLib
+
+# For testing callbacks
+activate(w::GtkWidget) = G_.activate(w)
 
 @testset "Window" begin
 w = GtkWindow("Window", 400, 300)
@@ -183,6 +186,71 @@ end
     destroy(w)
 end
 
+## Widgets
+
+@testset "button, label" begin
+w = GtkWindow("Widgets")
+f = GtkBox(:v)
+G_.set_child(w,f)
+l = GtkLabel("label"); push!(f,l)
+b = GtkButton("button"); push!(f,b)
+
+set_gtk_property!(l,:label,"new label")
+@test get_gtk_property(l,:label,AbstractString) == "new label"
+set_gtk_property!(b,:label,"new label")
+@test get_gtk_property(b,:label,AbstractString) == "new label"
+
+counter = 0
+id = signal_connect(b, "activate") do widget
+    counter::Int += 1
+end
+@test GLib.signal_handler_is_connected(b, id)
+
+@test counter == 0
+activate(b)
+@test counter == 1
+signal_handler_block(b, id)
+activate(b)
+@test counter == 1
+signal_handler_unblock(b, id)
+activate(b)
+@test counter == 2
+signal_handler_disconnect(b, id)
+activate(b)
+@test counter == 2
+destroy(w)
+end
+
+
+@testset "slider/scale" begin
+sl = GtkScale(true, 1:10)
+w = GtkWindow(sl, "Scale")
+G_.set_value(sl, 3)
+@test G_.get_value(sl) == 3
+adj = GtkAdjustment(sl)
+@test get_gtk_property(adj,:value,Float64) == 3
+set_gtk_property!(adj,:upper,11)
+destroy(w)
+end
+
+@testset "spinbutton" begin
+sp = GtkSpinButton(1:10)
+w = GtkWindow(sp, "SpinButton")
+G_.set_value(sp, 3)
+@test G_.get_value(sp) == 3
+destroy(w)
+end
+
+@testset "progressbar" begin
+pb = GtkProgressBar()
+w = GtkWindow(pb, "Progress bar")
+set_gtk_property!(pb,:fraction,0.7)
+@test get_gtk_property(pb,:fraction,Float64) == 0.7
+pulse(pb)
+destroy(w)
+end
+
+
 
 @testset "Builder" begin
 b=GtkBuilder(;filename="test.glade")
@@ -193,4 +261,11 @@ button = b["a_button"]
 @test isa(b[1],GtkWidget)
 
 #@test_throws ErrorException b2 = Builder(;filename="test2.glade")
+
+s = open("test.glade","r") do f
+    read(f,String)
+end
+b3 = GtkBuilder(;buffer = s)
+
+
 end

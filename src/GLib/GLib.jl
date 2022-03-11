@@ -23,7 +23,8 @@ export GObject, GInitiallyUnowned, GInterface, GTypeInterface
 export GByteArray, GHashTable, GPtrArray
 export g_timeout_add, g_idle_add, @idle_add
 export @sigatom, cfunction_
-export gobject_ref, signal_connect
+export gobject_ref, signal_connect, signal_emit, signal_handler_disconnect
+export signal_handler_block, signal_handler_unblock
 
 export get_gtk_property, set_gtk_property!
 

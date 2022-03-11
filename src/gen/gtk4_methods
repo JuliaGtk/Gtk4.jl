@@ -1920,6 +1920,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_calendar_unmark_day", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _day)
         nothing
     end
+    function activate(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::GdkRectangle, _flags::Integer, _edit_only::Bool)
+        ret = ccall(("gtk_cell_area_activate", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Int32, Cint), instance, _context, _widget, _cell_area, _flags, _edit_only)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function add(instance::GtkCellArea, _renderer::GtkCellRenderer)
         ret = ccall(("gtk_cell_area_add", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _renderer)
         nothing
@@ -2189,154 +2194,6 @@ $(Expr(:toplevel, quote
     end
     function reset(instance::GtkCellAreaContext)
         ret = ccall(("gtk_cell_area_context_reset", libgtk4), Nothing, (Ptr{GObject},), instance)
-        nothing
-    end
-    function get_aligned_area(instance::GtkCellRenderer, _widget::GtkWidget, _flags::Integer, _cell_area::GdkRectangle)
-        m_aligned_area = Ref{_GdkRectangle}()
-        ret = ccall(("gtk_cell_renderer_get_aligned_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _widget, _flags, _cell_area, m_aligned_area)
-        _aligned_area = m_aligned_area[]
-        _aligned_area = convert(GdkRectangle, _aligned_area, false)
-        _aligned_area
-    end
-    function get_alignment(instance::GtkCellRenderer)
-        m_xalign = Ref{Float32}()
-        m_yalign = Ref{Float32}()
-        ret = ccall(("gtk_cell_renderer_get_alignment", libgtk4), Nothing, (Ptr{GObject}, Ptr{Float32}, Ptr{Float32}), instance, m_xalign, m_yalign)
-        _xalign = m_xalign[]
-        _yalign = m_yalign[]
-        (_xalign, _yalign)
-    end
-    function get_fixed_size(instance::GtkCellRenderer)
-        m_width = Ref{Int32}()
-        m_height = Ref{Int32}()
-        ret = ccall(("gtk_cell_renderer_get_fixed_size", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_width, m_height)
-        _width = m_width[]
-        _height = m_height[]
-        (_width, _height)
-    end
-    function get_is_expanded(instance::GtkCellRenderer)
-        ret = ccall(("gtk_cell_renderer_get_is_expanded", libgtk4), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_is_expander(instance::GtkCellRenderer)
-        ret = ccall(("gtk_cell_renderer_get_is_expander", libgtk4), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_padding(instance::GtkCellRenderer)
-        m_xpad = Ref{Int32}()
-        m_ypad = Ref{Int32}()
-        ret = ccall(("gtk_cell_renderer_get_padding", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_xpad, m_ypad)
-        _xpad = m_xpad[]
-        _ypad = m_ypad[]
-        (_xpad, _ypad)
-    end
-    function get_preferred_height(instance::GtkCellRenderer, _widget::GtkWidget)
-        m_minimum_size = Ref{Int32}()
-        m_natural_size = Ref{Int32}()
-        ret = ccall(("gtk_cell_renderer_get_preferred_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _widget, m_minimum_size, m_natural_size)
-        _minimum_size = m_minimum_size[]
-        _natural_size = m_natural_size[]
-        (_minimum_size, _natural_size)
-    end
-    function get_preferred_height_for_width(instance::GtkCellRenderer, _widget::GtkWidget, _width::Integer)
-        m_minimum_height = Ref{Int32}()
-        m_natural_height = Ref{Int32}()
-        ret = ccall(("gtk_cell_renderer_get_preferred_height_for_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _widget, _width, m_minimum_height, m_natural_height)
-        _minimum_height = m_minimum_height[]
-        _natural_height = m_natural_height[]
-        (_minimum_height, _natural_height)
-    end
-    function get_preferred_size(instance::GtkCellRenderer, _widget::GtkWidget)
-        m_minimum_size = Ref{_GtkRequisition}()
-        m_natural_size = Ref{_GtkRequisition}()
-        ret = ccall(("gtk_cell_renderer_get_preferred_size", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkRequisition}, Ptr{_GtkRequisition}), instance, _widget, m_minimum_size, m_natural_size)
-        _minimum_size = m_minimum_size[]
-        _minimum_size = convert(GtkRequisition, _minimum_size, false)
-        _natural_size = m_natural_size[]
-        _natural_size = convert(GtkRequisition, _natural_size, false)
-        (_minimum_size, _natural_size)
-    end
-    function get_preferred_width(instance::GtkCellRenderer, _widget::GtkWidget)
-        m_minimum_size = Ref{Int32}()
-        m_natural_size = Ref{Int32}()
-        ret = ccall(("gtk_cell_renderer_get_preferred_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _widget, m_minimum_size, m_natural_size)
-        _minimum_size = m_minimum_size[]
-        _natural_size = m_natural_size[]
-        (_minimum_size, _natural_size)
-    end
-    function get_preferred_width_for_height(instance::GtkCellRenderer, _widget::GtkWidget, _height::Integer)
-        m_minimum_width = Ref{Int32}()
-        m_natural_width = Ref{Int32}()
-        ret = ccall(("gtk_cell_renderer_get_preferred_width_for_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _widget, _height, m_minimum_width, m_natural_width)
-        _minimum_width = m_minimum_width[]
-        _natural_width = m_natural_width[]
-        (_minimum_width, _natural_width)
-    end
-    function get_request_mode(instance::GtkCellRenderer)
-        ret = ccall(("gtk_cell_renderer_get_request_mode", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret2 = SizeRequestMode(ret)
-        ret2
-    end
-    function get_sensitive(instance::GtkCellRenderer)
-        ret = ccall(("gtk_cell_renderer_get_sensitive", libgtk4), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_state(instance::GtkCellRenderer, _widget::Maybe(GtkWidget), _cell_state::Integer)
-        _widget = if _widget == nothing
-                C_NULL
-            else
-                _widget
-            end
-        ret = ccall(("gtk_cell_renderer_get_state", libgtk4), Int32, (Ptr{GObject}, Ptr{GObject}, Int32), instance, _widget, _cell_state)
-        ret
-    end
-    function get_visible(instance::GtkCellRenderer)
-        ret = ccall(("gtk_cell_renderer_get_visible", libgtk4), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function is_activatable(instance::GtkCellRenderer)
-        ret = ccall(("gtk_cell_renderer_is_activatable", libgtk4), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function set_alignment(instance::GtkCellRenderer, _xalign::Real, _yalign::Real)
-        ret = ccall(("gtk_cell_renderer_set_alignment", libgtk4), Nothing, (Ptr{GObject}, Float32, Float32), instance, _xalign, _yalign)
-        nothing
-    end
-    function set_fixed_size(instance::GtkCellRenderer, _width::Integer, _height::Integer)
-        ret = ccall(("gtk_cell_renderer_set_fixed_size", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32), instance, _width, _height)
-        nothing
-    end
-    function set_is_expanded(instance::GtkCellRenderer, _is_expanded::Bool)
-        ret = ccall(("gtk_cell_renderer_set_is_expanded", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _is_expanded)
-        nothing
-    end
-    function set_is_expander(instance::GtkCellRenderer, _is_expander::Bool)
-        ret = ccall(("gtk_cell_renderer_set_is_expander", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _is_expander)
-        nothing
-    end
-    function set_padding(instance::GtkCellRenderer, _xpad::Integer, _ypad::Integer)
-        ret = ccall(("gtk_cell_renderer_set_padding", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32), instance, _xpad, _ypad)
-        nothing
-    end
-    function set_sensitive(instance::GtkCellRenderer, _sensitive::Bool)
-        ret = ccall(("gtk_cell_renderer_set_sensitive", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _sensitive)
-        nothing
-    end
-    function set_visible(instance::GtkCellRenderer, _visible::Bool)
-        ret = ccall(("gtk_cell_renderer_set_visible", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visible)
-        nothing
-    end
-    function snapshot(instance::GtkCellRenderer, _snapshot::GtkSnapshot, _widget::GtkWidget, _background_area::GdkRectangle, _cell_area::GdkRectangle, _flags::Integer)
-        ret = ccall(("gtk_cell_renderer_snapshot", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Int32), instance, _snapshot, _widget, _background_area, _cell_area, _flags)
-        nothing
-    end
-    function stop_editing(instance::GtkCellRenderer, _canceled::Bool)
-        ret = ccall(("gtk_cell_renderer_stop_editing", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _canceled)
         nothing
     end
     function CellRendererAccel_new()
@@ -14327,6 +14184,11 @@ $(Expr(:toplevel, quote
     function action_set_enabled(instance::GtkWidget, _action_name::Union{AbstractString, Symbol}, _enabled::Bool)
         ret = ccall(("gtk_widget_action_set_enabled", libgtk4), Nothing, (Ptr{GObject}, Cstring, Cint), instance, _action_name, _enabled)
         nothing
+    end
+    function activate(instance::GtkWidget)
+        ret = ccall(("gtk_widget_activate", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
     end
     function activate_action(instance::GtkWidget, _name::Union{AbstractString, Symbol}, _args::Maybe(GVariant))
         _args = if _args == nothing

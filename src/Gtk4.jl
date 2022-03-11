@@ -46,10 +46,13 @@ export show, hide, grab_focus, fullscreen, unfullscreen,
 
 include("base.jl")
 include("builder.jl")
+include("input.jl")
 include("windows.jl")
 include("layout.jl")
 include("buttons.jl")
+include("displays.jl")
 include("text.jl")
+include("basic_exports.jl")
 
 function gtk_main()
     while true
@@ -60,12 +63,12 @@ end
 
 function __init__()
     # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
-    # ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
-    #     dirname(adwaita_icons_dir),
-    #     dirname(hicolor_icons_dir),
-    #     joinpath(dirname(GTK4_jll.libgtk4_path::String), "..", "share"),
-    #      Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
-    #  ]), Sys.iswindows() ? ";" : ":")
+    ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
+        dirname(adwaita_icons_dir),
+        dirname(hicolor_icons_dir),
+        joinpath(dirname(GTK4_jll.libgtk4_path::String), "..", "share"),
+         Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
+     ]), Sys.iswindows() ? ";" : ":")
 
      gtype_wrapper_cache_init()
 #     gboxed_cache_init()
