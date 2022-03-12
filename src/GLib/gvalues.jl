@@ -300,7 +300,7 @@ end
 #end
 #setindex!(f::FieldRef, value::K, ::Type{T}) where {K, T} = setindex!(f, convert(T,value), T)
 
-function propertynames(w::GObject)
+function gtk_propertynames(w::GObject)
     n = Ref{Cuint}()
     props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
         (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
@@ -314,13 +314,15 @@ function propertynames(w::GObject)
     names
 end
 
+propertynames(w::GObject) = (gtk_propertynames(w)...,fieldnames(typeof(w))...)
+
 function getproperty(w::GObject, name::Symbol)
-    isdefined(w, name) && return getfield(w, name)
+    in(name, fieldnames(typeof(w))) && return getfield(w, name)
     get_gtk_property(w,name)
 end
 
 function setproperty!(w::GObject, name::Symbol, val)
-    isdefined(w,name) && return setfield!(w, name, val)
+    in(name, fieldnames(typeof(w))) && return setfield!(w, name, val)
     set_gtk_property!(w,name,val)
 end
 

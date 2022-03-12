@@ -87,9 +87,9 @@ end
 nb = GtkNotebook()
 @test hasparent(nb)==false
 vbox = GtkBox(:v)
-# c = Canvas()
+c = GtkCanvas()
 push!(nb, vbox, "A")
-#push!(nb, c, "B")
+push!(nb, c, "B")
 #insert!(nb, 2, GtkLabel("Something in the middle"), "A*")
 #pushfirst!(nb, GtkLabel("Something at the beginning"), "First")
 # splice!(nb, 3)
@@ -269,3 +269,36 @@ b3 = GtkBuilder(;buffer = s)
 
 
 end
+
+@testset "Canvas & AspectFrame" begin
+c = GtkCanvas()
+f = GtkAspectFrame(0.5, 1, 0.5)
+G_.set_child(f,c)
+w = GtkWindow(f, "Canvas")
+c.draw = function(_)
+    if isdefined(c,:back)
+        ctx = Gtk4.getgc(c)
+        set_source_rgb(ctx, 1.0, 0.0, 0.0)
+        paint(ctx)
+    end
+end
+draw(c)
+destroy(w)
+end
+
+# @testset "SetCoordinates" begin
+#     cnvs = GtkCanvas()
+#     win = GtkWindow(cnvs)
+#     draw(cnvs) do c
+#         println("hello?")
+#         set_coordinates(getgc(c), BoundingBox(0, 1, 0, 1))
+#     end
+#     sleep(0.5)
+#     mtrx = Gtk.Cairo.get_matrix(getgc(cnvs))
+#     @test mtrx.xx == 300
+#     @test mtrx.yy == 280
+#     @test mtrx.xy == mtrx.yx == mtrx.x0 == mtrx.y0 == 0
+#     surf = Gtk.cairo_surface(cnvs)
+#     #a = Gtk.allocation(cnvs)
+#     #@test isa(a,Gtk.GdkRectangle)
+# end

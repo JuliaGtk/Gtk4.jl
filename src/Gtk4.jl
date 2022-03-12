@@ -40,9 +40,18 @@ end
 import Base: push!, pushfirst!, insert!, show, length, setindex!, getindex, iterate,
              convert
 
+using Reexport
+@reexport using Graphics
+import .Graphics: width, height, getgc
+
+using Cairo
+import Cairo: destroy
+
+
 export parent, hasparent, toplevel, visible, destroy
 export show, hide, grab_focus, fullscreen, unfullscreen,
     maximize, unmaximize
+export GtkCanvas
 
 include("base.jl")
 include("builder.jl")
@@ -51,6 +60,7 @@ include("windows.jl")
 include("layout.jl")
 include("buttons.jl")
 include("displays.jl")
+include("cairo.jl")
 include("text.jl")
 include("basic_exports.jl")
 
