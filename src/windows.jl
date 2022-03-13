@@ -26,3 +26,5 @@ unfullscreen(win::GtkWindow) = G_.unfullscreen(win)
 
 maximize(win::GtkWindow) = G_.maximize(win)
 unmaximize(win::GtkWindow) = G_.unmaximize(win)
+
+push!(w::GtkWindow, widget::GtkWidget) = G_.set_child(w, widget)

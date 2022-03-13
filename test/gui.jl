@@ -250,6 +250,61 @@ pulse(pb)
 destroy(w)
 end
 
+@testset "spinner" begin
+s = GtkSpinner()
+w = GtkWindow(s, "Spinner")
+start(s)
+@test get_gtk_property(s,:spinning,Bool) == true
+stop(s)
+@test get_gtk_property(s,:spinning,Bool) == false
+
+destroy(w)
+end
+
+@testset "Entry" begin
+e = GtkEntry()
+w = GtkWindow(e, "Entry")
+set_gtk_property!(e,:text,"initial")
+set_gtk_property!(e,:sensitive,false)
+
+activated = false
+signal_connect(e, :activate) do widget
+    activated = true
+end
+signal_emit(e, :activate, Nothing)
+@test activated
+
+destroy(w)
+end
+
+@testset "Statusbar" begin
+vbox = GtkBox(:v)
+w = GtkWindow(vbox, "Statusbar")
+global sb = GtkStatusbar()  # closures are not yet c-callable
+push!(vbox, sb)
+ctxid = Gtk4.context_id(sb, "Statusbar example")
+bpush = GtkButton("push item")
+bpop = GtkButton("pop item")
+push!(vbox, bpush)
+push!(vbox, bpop)
+global sb_count = 1
+function cb_sbpush(ptr,evt,id)
+    push!(sb, id, string("Item ", sb_count))
+    sb_count += 1
+    convert(Int32,false)
+end
+function cb_sbpop(ptr,evt,id)
+    pop!(sb, id)
+    convert(Int32,false)
+end
+#on_signal_button_press(cb_sbpush, bpush, false, ctxid)
+#on_signal_button_press(cb_sbpop, bpop, false, ctxid)
+
+#click(bpush)
+#click(bpop)
+empty!(sb,ctxid)
+destroy(w)
+end
 
 
 @testset "Builder" begin

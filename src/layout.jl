@@ -81,7 +81,7 @@ function insert!(grid::GtkGrid, i::Integer, side::Symbol)
     elseif side == :bottom
         G_.insert_row(grid, i)
     else
-        error(string("invalid GtkPositionType ", s))
+        error(string("invalid GtkPositionType ", side))
     end
 end
 
