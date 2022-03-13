@@ -11,6 +11,7 @@ makedocs(
         "Home" => "index.md",
         "Manual" => ["manual/gettingStarted.md",
                      "manual/properties.md",
+                     "manual/canvas.md"
                     ],
         "Reference" => "doc/reference.md",
     ],

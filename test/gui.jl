@@ -357,3 +357,25 @@ end
 #     #a = Gtk.allocation(cnvs)
 #     #@test isa(a,Gtk.GdkRectangle)
 # end
+
+# @testset "List view" begin
+# ls=GtkListStore(Int32,Bool)
+# push!(ls,(42,true))
+# ls[1,1]=44
+# push!(ls,(33,true))
+# pushfirst!(ls,(22,false))
+# popfirst!(ls)
+# @test size(ls)==(2,2)
+# insert!(ls, 2, (35, false))
+# tv=GtkTreeView(GtkTreeModel(ls))
+# r1=GtkCellRendererText()
+# r2=GtkCellRendererToggle()
+# c1=GtkTreeViewColumn("A", r1, Dict([("text",0)]))
+# c2=GtkTreeViewColumn("B", r2, Dict([("active",1)]))
+# push!(tv,c1)
+# push!(tv,c2)
+# delete!(tv, c1)
+# insert!(tv, 1, c1)
+# w = GtkWindow(tv, "List View")
+#
+# end

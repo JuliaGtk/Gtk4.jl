@@ -9,7 +9,7 @@ export new, width, height, #minsize, maxsize
     maximize, unmaximize, complete, user_action,
     keyval, prev, up, down, popup,
     convert_iter_to_child_iter, convert_child_iter_to_iter,
-    pulse,
+    pulse, widget,
     buffer, cells, search, place_cursor, select_range, selection_bounds,
     create_mark, scroll_to
     #property, margin, padding, align
@@ -28,3 +28,5 @@ export signal_connect, signal_handler_disconnect,
 export add_events, signal_emit,
     on_signal_destroy, on_signal_button_press,
     on_signal_button_release, on_signal_motion
+
+export @guarded, @idle_add

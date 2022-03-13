@@ -62,10 +62,13 @@ function draw(redraw::Function, widget::GtkCanvas)
 end
 
 function draw(widget::GtkCanvas, immediate::Bool = true)
+    if !isdefined(widget, :back)
+        return
+    end
     if isa(widget.draw, Function)
         widget.draw(widget)
     end
-    #reveal(widget, immediate)
+    G_.queue_draw(widget)
 end
 
 function getgc(c::GtkCanvas)
