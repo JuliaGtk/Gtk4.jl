@@ -34,7 +34,7 @@ struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skipl
 
 ## objects
 
-object_skiplist=[:CClosureExpression,:ClosureExpression,:ConstantExpression,:Expression,:ObjectExpression,:PropertyExpression,:ParamSpecExpression]
+object_skiplist=[:CClosureExpression,:ClosureExpression,:ConstantExpression,:Expression,:ObjectExpression,:PropertyExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
 
 GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist)
 GI.all_interfaces!(exprs,exports,ns)

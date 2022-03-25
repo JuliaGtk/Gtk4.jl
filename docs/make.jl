@@ -11,6 +11,8 @@ makedocs(
         "Home" => "index.md",
         "Manual" => ["manual/gettingStarted.md",
                      "manual/properties.md",
+                     "manual/signals.md",
+                     "manual/builder.md",
                      "manual/canvas.md"
                     ],
         "Reference" => "doc/reference.md",
@@ -20,5 +22,6 @@ makedocs(
 deploydocs(
     repo   = "github.com/JuliaGtk/Gtk4.jl.git",
     target = "build",
-    push_preview = true
+    push_preview = true,
+    devbranch = "main"
 )

@@ -348,100 +348,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_srv_target_get_weight", libgio), UInt16, (Ptr{GSrvTarget},), instance)
         ret
     end
-    function compare(instance::GUnixMountPoint, _mount2::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_compare", libgio), Int32, (Ptr{GUnixMountPoint}, Ptr{GUnixMountPoint}), instance, _mount2)
-        ret
-    end
-    function copy(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_copy", libgio), Ptr{GUnixMountPoint}, (Ptr{GUnixMountPoint},), instance)
-        ret2 = convert(GUnixMountPoint, ret, true)
-        ret2
-    end
-    function free(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_free", libgio), Nothing, (Ptr{GUnixMountPoint},), instance)
-        nothing
-    end
-    function get_device_path(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_get_device_path", libgio), Cstring, (Ptr{GUnixMountPoint},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
-        ret2
-    end
-    function get_fs_type(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_get_fs_type", libgio), Cstring, (Ptr{GUnixMountPoint},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
-        ret2
-    end
-    function get_mount_path(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_get_mount_path", libgio), Cstring, (Ptr{GUnixMountPoint},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
-        ret2
-    end
-    function get_options(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_get_options", libgio), Cstring, (Ptr{GUnixMountPoint},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
-        ret2
-    end
-    function guess_can_eject(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_guess_can_eject", libgio), Cint, (Ptr{GUnixMountPoint},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function guess_icon(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_guess_icon", libgio), Ptr{GObject}, (Ptr{GUnixMountPoint},), instance)
-        ret2 = begin
-                leaftype = GLib.find_leaf_type(ret)
-                convert(leaftype, ret, true)
-            end
-        ret2
-    end
-    function guess_name(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_guess_name", libgio), Cstring, (Ptr{GUnixMountPoint},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
-        ret2
-    end
-    function guess_symbolic_icon(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_guess_symbolic_icon", libgio), Ptr{GObject}, (Ptr{GUnixMountPoint},), instance)
-        ret2 = begin
-                leaftype = GLib.find_leaf_type(ret)
-                convert(leaftype, ret, true)
-            end
-        ret2
-    end
-    function is_loopback(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_is_loopback", libgio), Cint, (Ptr{GUnixMountPoint},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function is_readonly(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_is_readonly", libgio), Cint, (Ptr{GUnixMountPoint},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function is_user_mountable(instance::GUnixMountPoint)
-        ret = ccall(("g_unix_mount_point_is_user_mountable", libgio), Cint, (Ptr{GUnixMountPoint},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
     function AppLaunchContext_new()
         ret = ccall(("g_app_launch_context_new", libgio), Ptr{GObject}, ())
         ret2 = convert(GAppLaunchContext, ret, true)
@@ -1289,15 +1195,6 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function get_unix_fd_list(instance::GDBusMessage)
-        ret = ccall(("g_dbus_message_get_unix_fd_list", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GUnixFDList, ret, false)
-            end
-        ret2
-    end
     function lock(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_lock", libgio), Nothing, (Ptr{GObject},), instance)
         nothing
@@ -1414,15 +1311,6 @@ $(Expr(:toplevel, quote
                 _value
             end
         ret = ccall(("g_dbus_message_set_signature", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _value)
-        nothing
-    end
-    function set_unix_fd_list(instance::GDBusMessage, _fd_list::Maybe(GUnixFDList))
-        _fd_list = if _fd_list == nothing
-                C_NULL
-            else
-                _fd_list
-            end
-        ret = ccall(("g_dbus_message_set_unix_fd_list", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _fd_list)
         nothing
     end
     function to_blob(instance::GDBusMessage, _capabilities::Integer)
@@ -7298,145 +7186,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_unix_credentials_message_get_credentials", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GCredentials, ret, false)
         ret2
-    end
-    function UnixFDList_new()
-        ret = ccall(("g_unix_fd_list_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GUnixFDList, ret, true)
-        ret2
-    end
-    function UnixFDList_new_from_array(_fds)
-        _fds = convert(Vector{Int32}, _fds)
-        _n_fds = length(_fds)
-        ret = ccall(("g_unix_fd_list_new_from_array", libgio), Ptr{GObject}, (Ptr{Int32}, Int32), _fds, _n_fds)
-        ret2 = convert(GUnixFDList, ret, true)
-        ret2
-    end
-    function append(instance::GUnixFDList, _fd::Integer)
-        err = err_buf()
-        ret = ccall(("g_unix_fd_list_append", libgio), Int32, (Ptr{GObject}, Int32, Ptr{Ptr{GError}}), instance, _fd, err)
-        check_err(err)
-        ret
-    end
-    function get(instance::GUnixFDList, _index_::Integer)
-        err = err_buf()
-        ret = ccall(("g_unix_fd_list_get", libgio), Int32, (Ptr{GObject}, Int32, Ptr{Ptr{GError}}), instance, _index_, err)
-        check_err(err)
-        ret
-    end
-    function get_length(instance::GUnixFDList)
-        ret = ccall(("g_unix_fd_list_get_length", libgio), Int32, (Ptr{GObject},), instance)
-        ret
-    end
-    function peek_fds(instance::GUnixFDList)
-        m_length = Ref{Int32}()
-        ret = ccall(("g_unix_fd_list_peek_fds", libgio), Ptr{Int32}, (Ptr{GObject}, Ptr{Int32}), instance, m_length)
-        _length = m_length[]
-        ret
-    end
-    function steal_fds(instance::GUnixFDList)
-        m_length = Ref{Int32}()
-        ret = ccall(("g_unix_fd_list_steal_fds", libgio), Ptr{Int32}, (Ptr{GObject}, Ptr{Int32}), instance, m_length)
-        _length = m_length[]
-        ret
-    end
-    function UnixFDMessage_new()
-        ret = ccall(("g_unix_fd_message_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GSocketControlMessage, ret, true)
-        ret2
-    end
-    function UnixFDMessage_new_with_fd_list(_fd_list::GUnixFDList)
-        ret = ccall(("g_unix_fd_message_new_with_fd_list", libgio), Ptr{GObject}, (Ptr{GObject},), _fd_list)
-        ret2 = convert(GSocketControlMessage, ret, true)
-        ret2
-    end
-    function append_fd(instance::GUnixFDMessage, _fd::Integer)
-        err = err_buf()
-        ret = ccall(("g_unix_fd_message_append_fd", libgio), Cint, (Ptr{GObject}, Int32, Ptr{Ptr{GError}}), instance, _fd, err)
-        check_err(err)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_fd_list(instance::GUnixFDMessage)
-        ret = ccall(("g_unix_fd_message_get_fd_list", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GUnixFDList, ret, false)
-        ret2
-    end
-    function steal_fds(instance::GUnixFDMessage)
-        m_length = Ref{Int32}()
-        ret = ccall(("g_unix_fd_message_steal_fds", libgio), Ptr{Int32}, (Ptr{GObject}, Ptr{Int32}), instance, m_length)
-        _length = m_length[]
-        ret
-    end
-    function UnixInputStream_new(_fd::Integer, _close_fd::Bool)
-        ret = ccall(("g_unix_input_stream_new", libgio), Ptr{GObject}, (Int32, Cint), _fd, _close_fd)
-        ret2 = convert(GInputStream, ret, true)
-        ret2
-    end
-    function get_close_fd(instance::GUnixInputStream)
-        ret = ccall(("g_unix_input_stream_get_close_fd", libgio), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_fd(instance::GUnixInputStream)
-        ret = ccall(("g_unix_input_stream_get_fd", libgio), Int32, (Ptr{GObject},), instance)
-        ret
-    end
-    function set_close_fd(instance::GUnixInputStream, _close_fd::Bool)
-        ret = ccall(("g_unix_input_stream_set_close_fd", libgio), Nothing, (Ptr{GObject}, Cint), instance, _close_fd)
-        nothing
-    end
-    function UnixOutputStream_new(_fd::Integer, _close_fd::Bool)
-        ret = ccall(("g_unix_output_stream_new", libgio), Ptr{GObject}, (Int32, Cint), _fd, _close_fd)
-        ret2 = convert(GOutputStream, ret, true)
-        ret2
-    end
-    function get_close_fd(instance::GUnixOutputStream)
-        ret = ccall(("g_unix_output_stream_get_close_fd", libgio), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_fd(instance::GUnixOutputStream)
-        ret = ccall(("g_unix_output_stream_get_fd", libgio), Int32, (Ptr{GObject},), instance)
-        ret
-    end
-    function set_close_fd(instance::GUnixOutputStream, _close_fd::Bool)
-        ret = ccall(("g_unix_output_stream_set_close_fd", libgio), Nothing, (Ptr{GObject}, Cint), instance, _close_fd)
-        nothing
-    end
-    function UnixSocketAddress_new(_path::Union{AbstractString, Symbol})
-        ret = ccall(("g_unix_socket_address_new", libgio), Ptr{GObject}, (Cstring,), _path)
-        ret2 = convert(GSocketAddress, ret, true)
-        ret2
-    end
-    function UnixSocketAddress_new_with_type(_path, _type)
-        _path = convert(Vector{Int8}, _path)
-        _path_len = length(_path)
-        ret = ccall(("g_unix_socket_address_new_with_type", libgio), Ptr{GObject}, (Ptr{Int8}, Int32, Int32), _path, _path_len, _type)
-        ret2 = convert(GSocketAddress, ret, true)
-        ret2
-    end
-    function abstract_names_supported()
-        ret = ccall(("g_unix_socket_address_abstract_names_supported", libgio), Cint, ())
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_address_type(instance::GUnixSocketAddress)
-        ret = ccall(("g_unix_socket_address_get_address_type", libgio), Int32, (Ptr{GObject},), instance)
-        ret2 = UnixSocketAddressType(ret)
-        ret2
-    end
-    function get_path(instance::GUnixSocketAddress)
-        ret = ccall(("g_unix_socket_address_get_path", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
-        ret2
-    end
-    function get_path_len(instance::GUnixSocketAddress)
-        ret = ccall(("g_unix_socket_address_get_path_len", libgio), UInt64, (Ptr{GObject},), instance)
-        ret
     end
     function get_local()
         ret = ccall(("g_vfs_get_local", libgio), Ptr{GObject}, ())
