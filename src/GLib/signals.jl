@@ -276,8 +276,8 @@ end
 function start_main_loop()
     # if g_main_depth > 0, a glib main-loop is already running,
     # so we don't need to start a new one
-    if main_depth() == 0
-        MainLoop_new(nothing, true)
+    if G_.main_depth() == 0
+        G_.MainLoop_new(nothing, true)
         global glib_main_task = schedule(Task(glib_main))
     end
 end

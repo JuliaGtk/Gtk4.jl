@@ -19,7 +19,7 @@ using CEnum
 export Maybe
 
 export GList, GSList, glist_iter, _GSList, _GList, GError, GVariant, GType, GBoxed
-export GObject, GInitiallyUnowned, GInterface, GTypeInterface
+export GObject, GInitiallyUnowned, GInterface, GTypeInterface, _GTypeInterface
 export GByteArray, GHashTable, GPtrArray
 export g_timeout_add, g_idle_add, @idle_add
 export @sigatom, cfunction_
@@ -98,15 +98,27 @@ include("hashtable.jl")
 
 include("signals.jl")
 
+eval(include("../gen/gobject_structs"))
+eval(include("../gen/gio_structs"))
+
+module G_
+
+using Glib_jll
+
+using ..GLib, ..GLib.Constants
+
+import Base: convert, copy
+
 eval(include("../gen/glib_methods"))
 eval(include("../gen/glib_functions"))
-
-eval(include("../gen/gobject_structs"))
 eval(include("../gen/gobject_methods"))
 eval(include("../gen/gobject_functions"))
-
-eval(include("../gen/gio_structs"))
 eval(include("../gen/gio_methods"))
 eval(include("../gen/gio_functions"))
+
+end
+
+
+include("listmodel.jl")
 
 end

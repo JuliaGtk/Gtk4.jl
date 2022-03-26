@@ -38,7 +38,7 @@ eval(include("gen/gtk4_methods"))
 end
 
 import Base: push!, pushfirst!, insert!, show, length, setindex!, getindex, iterate,
-             convert, empty!
+             convert, empty!, unsafe_convert
 
 using Reexport
 @reexport using Graphics
@@ -50,7 +50,7 @@ import Cairo: destroy
 
 export parent, hasparent, toplevel, visible, destroy
 export show, hide, grab_focus, fullscreen, unfullscreen,
-    maximize, unmaximize, start, stop
+    maximize, unmaximize, start, stop, set_child, get_child
 export GtkCanvas
 
 include("base.jl")
@@ -62,7 +62,7 @@ include("buttons.jl")
 include("displays.jl")
 include("events.jl")
 include("cairo.jl")
-#include("lists.jl")
+include("lists.jl")
 include("text.jl")
 include("basic_exports.jl")
 

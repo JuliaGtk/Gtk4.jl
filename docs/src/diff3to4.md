@@ -10,6 +10,10 @@ Properties can still be set and accessed using `get_gtk_property` and `set_gtk_p
 
 Gtk.ShortNames is no more.
 
+## No showall
+
+In GTK 4.0, widgets are shown by default, so `show` and `showall` are no longer necessary.
+
 ## Events
 
 Due to changes in GTK 4.0, events are handled through "event controllers".

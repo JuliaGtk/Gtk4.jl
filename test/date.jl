@@ -6,35 +6,35 @@ using Test
 
 @testset "date" begin
 
-d=GLib.Date_new()
+d=GLib.G_.Date_new()
 @test isa(d,GLib.GBoxed)
 
-d=GLib.Date_new_dmy(5,9,2021)
+d=GLib.G_.Date_new_dmy(5,9,2021)
 @test isa(d,GLib.GBoxed)
 
-@test GLib.valid(d)
+@test GLib.G_.valid(d)
 
-@test GLib.Constants.DateWeekday_SUNDAY == GLib.get_weekday(d)
+@test GLib.Constants.DateWeekday_SUNDAY == GLib.G_.get_weekday(d)
 
-@test 248 == GLib.get_day_of_year(d)
+@test 248 == GLib.G_.get_day_of_year(d)
 
-dc=GLib.copy(d)
+dc=GLib.G_.copy(d)
 
-@test 0 == GLib.compare(d,dc)
+@test 0 == GLib.G_.compare(d,dc)
 
-GLib.add_days(dc,3)
+GLib.G_.add_days(dc,3)
 
-@test GLib.compare(d,dc) < 0
+@test GLib.G_.compare(d,dc) < 0
 
-GLib.subtract_days(dc,4)
+GLib.G_.subtract_days(dc,4)
 
-@test GLib.compare(d,dc) > 0
+@test GLib.G_.compare(d,dc) > 0
 
-GLib.order(d,dc)
+GLib.G_.order(d,dc)
 
-@test GLib.compare(d,dc) < 0
+@test GLib.G_.compare(d,dc) < 0
 
-@test GLib.date_is_leap_year(2020)
-@test !GLib.date_is_leap_year(2019)
+@test GLib.G_.date_is_leap_year(2020)
+@test !GLib.G_.date_is_leap_year(2019)
 
 end

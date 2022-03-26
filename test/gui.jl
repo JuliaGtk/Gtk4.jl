@@ -1,4 +1,4 @@
-using Gtk4, Gtk4.G_, Gtk4.GLib
+using Test, Gtk4, Gtk4.GLib, Gtk4.G_
 
 # For testing callbacks
 activate(w::GtkWidget) = G_.activate(w)

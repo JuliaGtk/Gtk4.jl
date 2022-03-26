@@ -5,16 +5,16 @@ using Test
 
 @testset "bytes" begin
 
-f=GLib.MappedFile_new("test.ini",false)
+f=GLib.G_.MappedFile_new("test.ini",false)
 @test isa(f,GLib.GBoxed)
 
-b=GLib.get_bytes(f)
+b=GLib.G_.get_bytes(f)
 @test isa(b,GBytes)
 
 a=zeros(UInt8,100)
-b2=GLib.Bytes_new(a)
+b2=GLib.G_.Bytes_new(a)
 
-@test GLib.get_size(b2) == 100
+@test GLib.G_.get_size(b2) == 100
 
 #GLib.ref(b)
 #GLib.ref(b2)

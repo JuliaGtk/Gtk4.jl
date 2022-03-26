@@ -6,22 +6,22 @@ using Test
 
 @testset "gmenu" begin
 
-m = GLib.Menu_new()
+m = GLib.G_.Menu_new()
 
 @test isa(m,GObject)
 @test isa(m,GMenuModel)
 @test isa(m,GMenu)
 
-GLib.insert(m,0,"test","test-action")
+GLib.G_.insert(m,0,"test","test-action")
 
-@test 1 == GLib.get_n_items(m)
-@test GLib.is_mutable(m)
+@test 1 == GLib.G_.get_n_items(m)
+@test GLib.G_.is_mutable(m)
 
-GLib.freeze(m)
+GLib.G_.freeze(m)
 
-@test false == GLib.is_mutable(m)
+@test false == GLib.G_.is_mutable(m)
 
-i = GLib.MenuItem_new("test2","test2-action")
+i = GLib.G_.MenuItem_new("test2","test2-action")
 @test isa(i,GObject)
 @test isa(i,GMenuItem)
 

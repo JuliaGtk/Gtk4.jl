@@ -5,17 +5,17 @@ using Test
 
 @testset "gaction" begin
 
-g=GLib.SimpleActionGroup_new()
+g=GLib.G_.SimpleActionGroup_new()
 
 @test isa(g,GSimpleActionGroup)
-@test [] == GLib.list_actions(GActionGroup(g))
+@test [] == GLib.G_.list_actions(GActionGroup(g))
 
-a=GLib.SimpleAction_new("do-something",nothing)
+a=GLib.G_.SimpleAction_new("do-something",nothing)
 
-@test "do-something" == GLib.get_name(GAction(a))
+@test "do-something" == GLib.G_.get_name(GAction(a))
 @test a.name == "do-something"
 
-@test nothing == GLib.get_parameter_type(GAction(a))
+@test nothing == GLib.G_.get_parameter_type(GAction(a))
 @test a.parameter_type == nothing
 @test a.state == nothing
 @test a.state_type == nothing

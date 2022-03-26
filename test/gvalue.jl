@@ -19,21 +19,21 @@ gv=GLib.gvalue(r)
 @test gv[Any]==r
 
 gvboxed=GLib.gvalue(GKeyFile)
-gvboxed[GKeyFile]=GLib.KeyFile_new()
+gvboxed[GKeyFile]=GLib.G_.KeyFile_new()
 
 kf=gvboxed[GKeyFile]
 @test isa(kf,GKeyFile)
 
-kf=GLib.KeyFile_new()
-GLib.set_integer(kf,"group","myint",3)
+kf=GLib.G_.KeyFile_new()
+GLib.G_.set_integer(kf,"group","myint",3)
 gvboxed[GKeyFile]=kf
 kf2=gvboxed[Any]
 @test isa(kf2,GKeyFile)
-@test GLib.get_integer(kf2,"group","myint")==3
+@test GLib.G_.get_integer(kf2,"group","myint")==3
 
 kf3=gvboxed[GKeyFile]
 @test isa(kf3,GKeyFile)
-@test GLib.get_integer(kf3,"group","myint")==3
+@test GLib.G_.get_integer(kf3,"group","myint")==3
 
 gvboxed=GLib.gvalue(GString)
 #gvboxed[GString]=GLib.string_new("another string")
@@ -43,7 +43,7 @@ gvboxed=GLib.gvalue(GString)
 #@test bytestring(s.str)=="another string"
 
 gvobject=GLib.gvalue(GObject)
-gvobject[GObject]=GLib.SimpleAction_new("do-something",nothing)
+gvobject[GObject]=GLib.G_.SimpleAction_new("do-something",nothing)
 
 obj=gvobject[GSimpleAction]
 @test isa(obj,GSimpleAction)

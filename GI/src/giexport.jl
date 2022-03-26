@@ -50,14 +50,24 @@ function struct_cache_expr!(exprs)
     push!(exprs,gboxed_types_list)
 end
 
-function struct_exprs!(exprs,exports,ns,structs;print_summary=true,excludelist=[],import_as_opaque=[])
+function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,excludelist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false)
     struct_skiplist=excludelist
+
+    if structs === nothing
+        s=get_all(ns,GIStructInfo)
+        structinfos=filter(p->∉(get_name(p),struct_skiplist),s)
+        structs = get_name.(structinfos)
+    end
 
     imported=length(structs)
     for ss in structs
         ssi=gi_find_by_name(ns,ss)
-        name=get_name(ssi)
+        name=Symbol(get_name(ssi))
         fields=get_fields(ssi)
+        if only_opaque && length(fields)>0 && !in(name,import_as_opaque)
+            imported-=1
+            continue
+        end
         if occursin("Private",String(name))
             imported-=1
             continue
@@ -79,6 +89,9 @@ function struct_exprs!(exprs,exports,ns,structs;print_summary=true,excludelist=[
             continue
         end
         push!(exports.args, get_full_name(ssi))
+        if length(fields)>0
+            push!(exports.args,get_struct_name(ssi,false))
+        end
     end
 
     if print_summary
@@ -113,7 +126,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
         end
         push!(exprs, struct_decl(ssi;force_opaque=in(name,import_as_opaque)))
         push!(exports.args, get_full_name(ssi))
-        if length(fields)>0 && !in(name,import_as_opaque)
+        if length(fields)>0
             push!(exports.args,get_struct_name(ssi,false))
         end
     end
