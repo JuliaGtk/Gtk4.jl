@@ -11,6 +11,7 @@ makedocs(
         "Home" => "index.md",
         "Manual" => ["manual/gettingStarted.md",
                      "manual/properties.md",
+                     "manual/layout.md",
                      "manual/signals.md",
                      "manual/builder.md",
                      "manual/canvas.md"

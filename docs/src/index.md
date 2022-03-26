@@ -24,6 +24,7 @@ Gtk4 is precompilable by normal mechanisms.
 ## Usage
 
   * See [Getting Started](@ref) for an introduction to using the package
+  * See [Differences between Gtk.jl and Gtk4.jl](@ref) for a summary of the differences between this package and Gtk.jl
 
 ## Attribution
 

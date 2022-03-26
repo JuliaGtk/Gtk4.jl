@@ -7,7 +7,7 @@ You will usually want to add more than one widget to your application. To this e
 
 ## Box
 
-The most simple layout widget is the `GtkBox`. It can be either be horizontally or vertical aligned. It allow to add an arbitrary number of widgets.
+The most simple layout widget is the `GtkBox`. It is one-dimensional and can be either be horizontally or vertical aligned.
 ```julia
 win = GtkWindow("New title")
 hbox = GtkBox(:h)  # :h makes a horizontal layout, :v a vertical layout
@@ -17,36 +17,19 @@ ok = GtkButton("OK")
 push!(hbox, cancel)
 push!(hbox, ok)
 ```
-We can address individual "slots" in this container:
+
+This layout may not be exactly what you'd like. Perhaps you'd like the `OK` button to fill the available space, and to insert some blank space between them:
+
 ```julia
-julia> length(hbox)
-2
-
-julia> get_gtk_property(hbox[1], :label, String)
-"Cancel"
-
-julia> get_gtk_property(hbox[2], :label, String)
-"OK"
+ok.hexpand=true
+hbox.spacing = 10
 ```
+The first line sets the `hexpand` property of the `ok` button within the `hbox` container. The second line sets the `spacing` property of `hbox` to 10 pixels.
 
-This layout may not be exactly what you'd like. Perhaps you'd like the `ok` button to fill the available space, and to insert some blank space between them:
-
-```julia
-set_gtk_property!(hbox,:expand,ok,true)
-set_gtk_property!(hbox,:spacing,10)
-```
-The first line sets the `expand` property of the `ok` button within the `hbox` container.
-
-Note that these aren't evenly-sized, and that doesn't change if we set the `cancel` button's `expand` property to `true`. `GtkButtonBox` is created specifically for this purpose, so let's use it instead:
+Note that these aren't evenly sized, and that doesn't change if we set the `cancel` button's `expand` property to `true`. The `homogeneous` property of `hbox` can be used to achieve this.
 
 ```julia
-destroy(hbox)
-ok = GtkButton("OK")
-cancel = GtkButton("Cancel")
-hbox = GtkButtonBox(:h)
-push!(win, hbox)
-push!(hbox, cancel)
-push!(hbox, ok)
+hbox.homogeneous = true
 ```
 
 Now we get this:
@@ -57,7 +40,7 @@ which may be closer to what you had in mind.
 
 ## Grid
 
-More generally, you can arrange items in a grid:
+To create two-dimensional (tabular) layouts of widgets, you can use `GtkGrid`:
 ```julia
 win = GtkWindow("A new window")
 g = GtkGrid()
@@ -70,14 +53,14 @@ c = GtkScale(false, 0:10)     # a slider
 g[1,1] = a    # Cartesian coordinates, g[x,y]
 g[2,1] = b
 g[1:2,2] = c  # spans both columns
-set_gtk_property!(g, :column_homogeneous, true)
-set_gtk_property!(g, :column_spacing, 15)  # introduce a 15-pixel gap between columns
+g.column_homogeneous = true
+g.column_spacing = 15  # introduce a 15-pixel gap between columns
 push!(win, g)
 ```
 
 The `g[x,y] = obj` assigns the location to the indicated `x,y` positions in the grid
 (note that indexing is Cartesian rather than row/column; most graphics packages address the screen using
-Cartesian coordinates where 0,0 is in the upper left).
+Cartesian coordinates where 1,1 is in the upper left).
 A range is used to indicate a span of grid cells.
 By default, each row/column will use only as much space as required to contain the objects,
 but you can force them to be of the same size by setting properties like `column_homogeneous`.
