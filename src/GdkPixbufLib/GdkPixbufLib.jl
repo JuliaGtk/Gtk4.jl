@@ -1,19 +1,36 @@
 module GdkPixbufLib
 
 using ..GLib
+using Glib_jll
 using gdk_pixbuf_jll
 
 export GdkPixbuf, GdkPixbufAnimation
+export width, height, slice
 
-import Base: convert
+import Base: convert, size, eltype, getindex, setindex!
+
+using Reexport
+@reexport using Graphics
+import .Graphics: width, height
 
 const Index{I<:Integer} = Union{I, AbstractVector{I}}
 
 eval(include("../gen/gdkpixbuf_consts"))
 eval(include("../gen/gdkpixbuf_structs"))
 
+module G_
+
+using gdk_pixbuf_jll
+
+using ..GLib
+using ..GdkPixbufLib
+
+import Base: convert, copy
+
 eval(include("../gen/gdkpixbuf_methods"))
 eval(include("../gen/gdkpixbuf_functions"))
+
+end
 
 struct RGB
     r::UInt8; g::UInt8; b::UInt8
@@ -227,8 +244,8 @@ end
 
 slice(img::GdkPixbuf, x, y) = GdkPixbufLeaf(ccall((:gdk_pixbuf_new_subpixbuf, libgdkpixbuf), Ptr{GObject},
     (Ptr{GObject}, Cint, Cint, Cint, Cint), img, first(x)-1, first(y)-1, length(x), length(y)))
-width(img::GdkPixbuf) = ccall((:gdk_pixbuf_get_width, libgdkpixbuf), Cint, (Ptr{GObject},), img)
-height(img::GdkPixbuf) = ccall((:gdk_pixbuf_get_height, libgdkpixbuf), Cint, (Ptr{GObject},), img)
+width(img::GdkPixbuf) = G_.get_width(img)
+height(img::GdkPixbuf) = G_.get_height(img)
 size(a::GdkPixbuf, i::Integer) = (i == 1 ? width(a) : (i == 2 ? height(a) : 1))
 size(a::GdkPixbuf) = (width(a), height(a))
 Base.ndims(::GdkPixbuf) = 2
@@ -269,6 +286,37 @@ Base.fill!(img::GdkPixbuf, pix) = fill!(convert(MatrixStrided, img), pix)
 function __init__()
    gtype_wrapper_cache_init()
    gboxed_cache_init()
+
+   #     # Next, ensure that gdk-pixbuf has its loaders.cache file; we generate a
+   #     # MutableArtifacts.toml file that maps in a loaders.cache we dynamically
+   #     # generate by running `gdk-pixbuf-query-loaders:`
+   #     mutable_artifacts_toml = joinpath(dirname(@__DIR__), "MutableArtifacts.toml")
+   #     loaders_cache_name = "gdk-pixbuf-loaders-cache"
+   #     #loaders_cache_hash = artifact_hash(loaders_cache_name, mutable_artifacts_toml)
+   #     #if loaders_cache_hash === nothing
+   #     #    # Run gdk-pixbuf-query-loaders, capture output,
+   #     #    loader_cache_contents = gdk_pixbuf_query_loaders() do gpql
+   #     #        withenv("GDK_PIXBUF_MODULEDIR" => gdk_pixbuf_loaders_dir) do
+   #     #            return String(read(`$gpql`))
+   #     #        end
+   #     #    end
+   #
+   #     #    # Write cache out to file in new artifact
+   #     #    loaders_cache_hash = create_artifact() do art_dir
+   #     #        open(joinpath(art_dir, "loaders.cache"), "w") do io
+   #     #            write(io, loader_cache_contents)
+   #     #        end
+   #     #    end
+   #     #    bind_artifact!(mutable_artifacts_toml,
+   #     #        loaders_cache_name,
+   #     #        loaders_cache_hash;
+   #     #        force=true
+   #     #    )
+   #     #end
+   #
+   #     # Point gdk to our cached loaders
+   #     #ENV["GDK_PIXBUF_MODULE_FILE"] = joinpath(artifact_path(loaders_cache_hash), "loaders.cache")
+   #     ENV["GDK_PIXBUF_MODULEDIR"] = gdk_pixbuf_loaders_dir
 end
 
 end

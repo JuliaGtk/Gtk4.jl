@@ -15,6 +15,7 @@ using GTK4_jll, Glib_jll
 using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
 
 using ..Gdk4
+using ..GdkPixbufLib
 
 eval(include("gen/gtk4_consts"))
 eval(include("gen/gtk4_structs"))
@@ -84,37 +85,6 @@ function __init__()
 
      gtype_wrapper_cache_init()
 #     gboxed_cache_init()
-#
-#     # Next, ensure that gdk-pixbuf has its loaders.cache file; we generate a
-#     # MutableArtifacts.toml file that maps in a loaders.cache we dynamically
-#     # generate by running `gdk-pixbuf-query-loaders:`
-#     mutable_artifacts_toml = joinpath(dirname(@__DIR__), "MutableArtifacts.toml")
-#     loaders_cache_name = "gdk-pixbuf-loaders-cache"
-#     #loaders_cache_hash = artifact_hash(loaders_cache_name, mutable_artifacts_toml)
-#     #if loaders_cache_hash === nothing
-#     #    # Run gdk-pixbuf-query-loaders, capture output,
-#     #    loader_cache_contents = gdk_pixbuf_query_loaders() do gpql
-#     #        withenv("GDK_PIXBUF_MODULEDIR" => gdk_pixbuf_loaders_dir) do
-#     #            return String(read(`$gpql`))
-#     #        end
-#     #    end
-#
-#     #    # Write cache out to file in new artifact
-#     #    loaders_cache_hash = create_artifact() do art_dir
-#     #        open(joinpath(art_dir, "loaders.cache"), "w") do io
-#     #            write(io, loader_cache_contents)
-#     #        end
-#     #    end
-#     #    bind_artifact!(mutable_artifacts_toml,
-#     #        loaders_cache_name,
-#     #        loaders_cache_hash;
-#     #        force=true
-#     #    )
-#     #end
-#
-#     # Point gdk to our cached loaders
-#     #ENV["GDK_PIXBUF_MODULE_FILE"] = joinpath(artifact_path(loaders_cache_hash), "loaders.cache")
-#     ENV["GDK_PIXBUF_MODULEDIR"] = gdk_pixbuf_loaders_dir
 #
     if Sys.islinux() || Sys.isfreebsd()
         # Needed by xkbcommon:

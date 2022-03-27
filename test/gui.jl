@@ -1,4 +1,4 @@
-using Test, Gtk4, Gtk4.GLib, Gtk4.G_
+using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4
 
 # For testing callbacks
 activate(w::GtkWidget) = G_.activate(w)
@@ -220,6 +220,60 @@ activate(b)
 @test counter == 2
 destroy(w)
 end
+
+@testset "Button with custom icon (& Pixbuf)" begin
+icon = Matrix{GdkPixbufLib.RGB}(undef, 40, 20)
+fill!(icon, GdkPixbufLib.RGB(0,0xff,0))
+icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGB(0,0,0xff))
+pb=GdkPixbuf(data=icon, has_alpha=false)
+@test eltype(pb) == GdkPixbufLib.RGB
+@test size(pb) == (40, 20)
+@test pb[1,1].g==0xff
+pb[10,10]=GdkPixbufLib.RGB(0,0,0)
+pb[20:30,1:5]=GdkPixbufLib.RGB(0xff,0,0)
+w = GtkWindow(GtkButton(GtkImage(pb)), "Icon button", 60, 40)
+pb2=copy(pb)
+@test size(pb2,2) == size(pb)[2]
+pb3=slice(pb2,11:20,11:20)
+@test size(pb3) == (10,10)
+fill!(pb3,GdkPixbufLib.RGB(0,0,0))
+destroy(w)
+end
+
+
+@testset "checkbox" begin
+w = GtkWindow("Checkbutton")
+check = GtkCheckButton("check me"); push!(w,check)
+set_gtk_property!(check,:active,true)
+@test get_gtk_property(check,:active,AbstractString) == "TRUE"
+set_gtk_property!(check,:label,"new label")
+@test get_gtk_property(check,:label,AbstractString) == "new label"
+#ctr = 0
+#tk_bind(check, "command", cb)
+#tcl(check, "invoke")
+#@test ctr == 1
+destroy(w)
+end
+
+
+@testset "LinkButton" begin
+b = GtkLinkButton("https://github.com/JuliaGtk/Gtk4.jl", "Gtk4.jl")
+w = GtkWindow(b, "LinkButton")
+destroy(w)
+end
+
+@testset "VolumeButton" begin
+b = GtkVolumeButton(0.3)
+w = GtkWindow(b, "VolumeButton", 50, 50)
+destroy(w)
+end
+
+# @testset "ColorButton" begin
+# b = GtkColorButton(Gdk4._GdkRGBA(0, 0.8, 1.0, 0.3))
+# w = GtkWindow(b, "ColorButton", 50, 50)
+# #GAccessor.rgba(ColorChooser(b), GLib.mutable(Gtk.GdkRGBA(0, 0, 0, 0)))
+# destroy(w)
+# end
 
 
 @testset "slider/scale" begin

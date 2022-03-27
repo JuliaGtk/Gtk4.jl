@@ -1,5 +1,10 @@
 GtkButton() = G_.Button_new()
 GtkButton(title::AbstractString) = G_.Button_new_with_mnemonic(title)
+function GtkButton(w::GtkWidget)
+    b = G_.Button_new()
+    G_.set_child(b,w)
+    b
+end
 
 GtkCheckButtonLeaf() = G_.CheckButton_new()
 GtkCheckButtonLeaf(title::AbstractString) = G_.CheckButton_new_with_mnemonic(title)

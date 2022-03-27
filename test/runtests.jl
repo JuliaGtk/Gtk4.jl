@@ -25,6 +25,10 @@ include("families.jl")
 include("layout.jl")
 end
 
+@testset "GdkPixbuf" begin
+include("gdkpixbuf.jl")
+end
+
 @testset "Gtk" begin
 include("gui.jl")
 include("comboboxtext.jl")
