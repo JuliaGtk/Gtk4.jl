@@ -1,11 +1,11 @@
 # Layout
 
-You will usually want to add more than one widget to your application. To this end, Gtk4 provides several layout widgets.
+You will usually want to add more than one widget to your application. To this end, Gtk4 provides many layout widgets.
 
 !!! note
     For larger projects it is advisable to create the layout using Glade in combination with GtkBuilder [Builder and Glade](@ref).
 
-## Box
+## GtkBox
 
 The most simple layout widget is the `GtkBox`. It is one-dimensional and can be either be horizontally or vertical aligned.
 ```julia
@@ -38,7 +38,7 @@ Now we get this:
 
 which may be closer to what you had in mind.
 
-## Grid
+## GtkGrid
 
 To create two-dimensional (tabular) layouts of widgets, you can use `GtkGrid`:
 ```julia
@@ -64,3 +64,9 @@ Cartesian coordinates where 1,1 is in the upper left).
 A range is used to indicate a span of grid cells.
 By default, each row/column will use only as much space as required to contain the objects,
 but you can force them to be of the same size by setting properties like `column_homogeneous`.
+
+## GtkCenterBox
+
+## GtkPaned
+
+## GtkNotebook

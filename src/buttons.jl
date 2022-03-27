@@ -1,3 +1,5 @@
+## GtkButton
+
 GtkButton() = G_.Button_new()
 GtkButton(title::AbstractString) = G_.Button_new_with_mnemonic(title)
 function GtkButton(w::GtkWidget)
@@ -6,42 +8,47 @@ function GtkButton(w::GtkWidget)
     b
 end
 
-GtkCheckButtonLeaf() = G_.CheckButton_new()
-GtkCheckButtonLeaf(title::AbstractString) = G_.CheckButton_new_with_mnemonic(title)
+setindex!(f::GtkButton, w::GtkWidget) = G_.set_child(f,w)
+getindex(f::GtkButton) = G_.get_child(f)
 
-GtkToggleButtonLeaf() = G_.ToggleButton_new()
-GtkToggleButtonLeaf(title::AbstractString) = G_.ToggleButton_new_with_mnemonic(title)
+## GtkCheckButton, GtkToggleButton, GtkSwitch
 
-GtkSwitchLeaf() = G_.Switch_new()
-function GtkSwitchLeaf(active::Bool)
-    b = GtkSwitchLeaf()
+GtkCheckButton() = G_.CheckButton_new()
+GtkCheckButton(title::AbstractString) = G_.CheckButton_new_with_mnemonic(title)
+
+GtkToggleButton() = G_.ToggleButton_new()
+GtkToggleButton(title::AbstractString) = G_.ToggleButton_new_with_mnemonic(title)
+
+GtkSwitch() = G_.Switch_new()
+function GtkSwitch(active::Bool)
+    b = GtkSwitch()
     G_.set_active(b, active)
     b
 end
 
-# GtkRadioButton
+## GtkRadioButton
 
-GtkLinkButtonLeaf(uri::AbstractString) = G_.LinkButton_new(uri)
-GtkLinkButtonLeaf(uri::AbstractString, label::AbstractString) = G_.LinkButton_new_with_label(uri, label)
-function GtkLinkButtonLeaf(uri::AbstractString, label::AbstractString, visited::Bool)
-    b = GtkLinkButtonLeaf(uri, label)
+GtkLinkButton(uri::AbstractString) = G_.LinkButton_new(uri)
+GtkLinkButton(uri::AbstractString, label::AbstractString) = G_.LinkButton_new_with_label(uri, label)
+function GtkLinkButton(uri::AbstractString, label::AbstractString, visited::Bool)
+    b = GtkLinkButton(uri, label)
     G_.set_visited(b, visited)
     b
 end
-function GtkLinkButtonLeaf(uri::AbstractString, visited::Bool)
-    b = GtkLinkButtonLeaf(uri)
+function GtkLinkButton(uri::AbstractString, visited::Bool)
+    b = GtkLinkButton(uri)
     G_.set_visited(b, visited)
     b
 end
 
-GtkVolumeButtonLeaf() = G_.VolumeButton_new()
-function GtkVolumeButtonLeaf(value::Real) # 0 <= value <= 1
-    b = GtkVolumeButtonLeaf()
+GtkVolumeButton() = G_.VolumeButton_new()
+function GtkVolumeButton(value::Real) # 0 <= value <= 1
+    b = GtkVolumeButton()
     G_.set_value(b, value)
     b
 end
 
-GtkFontButtonLeaf() = G_.FontButton_new()
+GtkFontButton() = G_.FontButton_new()
 
-GtkColorButtonLeaf() = G_.ColorButton_new()
-GtkColorButtonLeaf(color::GdkRGBA) = G_.ColorButton_new_with_rgba(color)
+GtkColorButton() = G_.ColorButton_new()
+GtkColorButton(color::GdkRGBA) = G_.ColorButton_new_with_rgba(color)

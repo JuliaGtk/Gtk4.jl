@@ -5,7 +5,7 @@ export new, width, height, #minsize, maxsize
     hide, grab_focus,
     hasparent, toplevel, set_gtk_property!, get_gtk_property,
     selected, hasselection, unselect!, selectall!, unselectall!,
-    pagenumber, present, fullscreen, unfullscreen,
+    pagenumber, present, fullscreen, unfullscreen, titlebar,
     maximize, unmaximize, complete, user_action,
     keyval, prev, up, down, popup,
     convert_iter_to_child_iter, convert_child_iter_to_iter,

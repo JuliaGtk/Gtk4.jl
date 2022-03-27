@@ -28,7 +28,18 @@ function pushfirst!(b::GtkBox,w::GtkWidget)
     b
 end
 
-### GtkPaned
+## GtkCenterBox
+
+GtkCenterBox() = G_.CenterBox_new()
+function GtkCenterBox(orientation)
+    b = GtkCenterbox()
+    b.orientation = orientation
+    b
+end
+
+## TODO: start, center, end widget
+
+## GtkPaned
 GtkPaned(orientation) = G_.Paned_new(convert(Gtk4.Constants.Orientation, orientation))
 
 function getindex(pane::GtkPaned, i::Integer)
@@ -91,10 +102,20 @@ function insert!(grid::GtkGrid, sibling, side::Symbol)
 end
 
 
-## GtkFrame — A bin with a decorative frame and optional label
+## GtkFrame — A decorative frame and optional label
 
 GtkFrame(label::AbstractString) = G_.Frame_new(label)
 GtkFrame() = G_.Frame_new(nothing)
+
+setindex!(f::GtkFrame, w::GtkWidget) = G_.set_child(f,w)
+getindex(f::GtkFrame) = G_.get_child(f)
+
+## GtkAspectFrame - A widget that preserves the aspect ratio of its child
+
+GtkAspectFrame(xalign, yalign, ratio, obey_child) = G_.AspectFrame_new(xalign, yalign, ratio, obey_child)
+
+setindex!(f::GtkAspectFrame, w::GtkWidget) = G_.set_child(f,w)
+getindex(f::GtkAspectFrame) = G_.get_child(f)
 
 ## GtkNotebook
 
@@ -124,3 +145,11 @@ pagenumber(w::GtkNotebook, child::GtkWidget) =
     G_.page_num(w, child) + 1
 
 length(w::GtkNotebook) = G_.get_n_pages(w)
+
+## GtkOverlay
+GtkOverlay() = G_.Overlay_new()
+
+setindex!(f::GtkOverlay, w::GtkWidget) = G_.set_child(f,w)
+getindex(f::GtkOverlay) = G_.get_child(f)
+
+add(f::GtkOverlay, x::GtkWidget) = G_.add_overlay(f,x)

@@ -1,5 +1,9 @@
+GtkComboBox() = G_.ComboBox_new()
 
-GtkComboBoxTextLeaf(with_entry::Bool = false) =
+setindex!(f::GtkComboBox, w::GtkWidget) = G_.set_child(f,w)
+getindex(f::GtkComboBox) = G_.get_child(f)
+
+GtkComboBoxText(with_entry::Bool = false) =
         if with_entry
             G_.ComboBoxText_new_with_entry()
         else

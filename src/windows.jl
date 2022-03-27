@@ -26,11 +26,19 @@ unfullscreen(win::GtkWindow) = G_.unfullscreen(win)
 
 maximize(win::GtkWindow) = G_.maximize(win)
 unmaximize(win::GtkWindow) = G_.unmaximize(win)
+titlebar(win::GtkWindow, w::GtkWidget) = G_.set_titlebar(win, w)
 
 push!(w::GtkWindow, widget::GtkWidget) = G_.set_child(w, widget)
+setindex!(w::GtkWindow, widget::GtkWidget) = G_.set_child(w, widget)
 
 GtkScrolledWindow() = G_.ScrolledWindow_new()
-push!(w::GtkScrolledWindow, widg::GtkWidget) = G_.set_child(w,widg)
+setindex!(w::GtkScrolledWindow, widg::GtkWidget) = G_.set_child(w,widg)
+getindex(w::GtkScrolledWindow) = G_.get_child(w,widg)
+
+GtkHeaderBar() = G_.HeaderBar_new()
+
+
+## GtkDialog
 
 function push!(d::GtkDialog, s::AbstractString, response::Integer)
     G_.add_button(d, s, response)

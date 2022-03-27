@@ -21,6 +21,25 @@ end
 empty!(img::GtkImage) = G_.clear(img)
 GdkPixbuf(img::GtkImage) = G_.get_pixbuf(img)
 
+GtkPicture(pixbuf::GdkPixbuf) = G_.Picture_new_for_pixbuf(pixbuf)
+GtkPicture(gfile::GFile) = G_.Picture_new_for_file(gfile)
+
+function GtkPicture(; resource_path = nothing, filename = nothing)
+    source_count = (resource_path !== nothing) + (filename !== nothing) + (icon_name !== nothing) + (stock_id !== nothing)
+    @assert(source_count <= 1,
+        "GdkPixbuf must have at most one resource_path, filename, stock_id, or icon_name argument")
+    if resource_path !== nothing
+        img = G_.Picture_new_for_resource(resource_path)
+    elseif filename !== nothing
+        img = G_.Picture_new_for_filename(filename)
+    else
+        img = G_.Picture_new()
+    end
+    return img
+end
+
+set_pixbuf(p::GtkPicture,pb) = G_.set_pixbuf(p,pb)
+
 GtkProgressBarLeaf() = G_.ProgressBar_new()
 pulse(progress::GtkProgressBar) = G_.pulse(progress)
 
