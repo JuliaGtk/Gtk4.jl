@@ -8,12 +8,6 @@ function convert(::Type{Gtk4.Constants.Orientation}, x::Symbol)
     end
 end
 
-## GtkAspectFrame
-GtkAspectFrame(label, xalign, yalign, ratio) = # % of available space, 0 <= a <= 1
-    G_.AspectFrame_new(xalign, yalign, ratio, false)
-GtkAspectFrame(label, xalign, yalign) = # % of available space, 0 <= a <= 1. Uses the aspect ratio of the child
-    G_.AspectFrame_new(xalign, yalign, 1., true)
-
 ## GtkBox
 
 GtkBox(orientation, spacing=0) = G_.Box_new(convert(Gtk4.Constants.Orientation, orientation), spacing)

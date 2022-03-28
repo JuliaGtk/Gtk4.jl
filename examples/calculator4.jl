@@ -4,7 +4,6 @@
 # only works if you use include() in the REPL
 
 using Gtk4, Gtk4.GLib
-import Gtk4.G_
 
 win = GtkWindow("Calculator")
 
@@ -57,7 +56,7 @@ push!(vbox, hbox1)
 push!(vbox, hbox2)
 push!(vbox, hbox3)
 push!(vbox, hbox4)
-G_.set_child(win, vbox)
+push!(win, vbox)
 
 text = ""
 
@@ -85,52 +84,52 @@ end
 function button_clicked_callback(widget)
 	if widget == b1
 		global text = text * "1"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b2
     	global text = text * "2"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b3
         global text = text * "3"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b4
     	global text = text * "4"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b5
         global text = text * "5"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b6
     	global text = text * "6"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b7
         global text = text * "7"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b8
     	global text = text * "8"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b9
         global text = text * "9"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b_plus
     	global text = text * " + "
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b_minus
         global text = text * " - "
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b_multiply
     	global text = text * " x "
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b_divide
         global text = text * " ÷ "
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b0
     	global text = text * "0"
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b_clear
         global text = ""
-        G_.set_text(label, text)
+        label.label = text
     elseif widget == b_equalto
     	global text = calculate(text)
-        G_.set_text(label, text)
+        label.label = text
     end
 end
 
