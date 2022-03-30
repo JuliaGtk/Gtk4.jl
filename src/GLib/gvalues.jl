@@ -300,6 +300,11 @@ end
 #end
 #setindex!(f::FieldRef, value::K, ::Type{T}) where {K, T} = setindex!(f, convert(T,value), T)
 
+"""
+    gtk_propertynames(w::GObject)
+
+Prints a list of property names for the GObject `w`.
+"""
 function gtk_propertynames(w::GObject)
     n = Ref{Cuint}()
     props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
@@ -325,90 +330,3 @@ function setproperty!(w::GObject, name::Symbol, val)
     in(name, fieldnames(typeof(w))) && return setfield!(w, name, val)
     set_gtk_property!(w,name,val)
 end
-
-function show(io::IO, w::GObject)
-    READABLE   = 0x00000001
-    DEPRECATED = 0x80000000
-    print(io, typeof(w), '(')
-    if unsafe_convert(Ptr{GObject}, w) == C_NULL
-        print(io, "<NULL>)")
-        return
-    end
-    n = Ref{Cuint}()
-    props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
-        (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
-    v = gvalue(String)
-    first = true
-    for i = 1:n[]
-        param = unsafe_load(unsafe_load(props, i))
-        if !first
-            print(io, ", ")
-        else
-            first = false
-        end
-        print(io, GLib.bytestring(param.name))
-        if (param.flags & READABLE) != 0 &&
-           (param.flags & DEPRECATED) == 0 &&
-           (ccall((:g_value_type_transformable, libgobject), Cint,
-                (Int, Int), param.value_type, g_type(AbstractString)) != 0)
-            ccall((:g_object_get_property, libgobject), Nothing,
-                (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, param.name, v)
-            str = ccall((:g_value_get_string, libgobject), Ptr{UInt8}, (Ptr{GValue},), v)
-            value = (str == C_NULL ? "NULL" : GLib.bytestring(str))
-            if param.value_type == g_type(AbstractString) && str != C_NULL
-                print(io, "=\"", value, '"')
-            else
-                print(io, '=', value)
-            end
-        end
-    end
-    print(io, ')')
-    ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), v)
-end
-
-function propinfo(w::GObject, name::AbstractString)
-    p = ccall((:g_object_class_find_property, libgobject), Ptr{GParamSpec}, (Ptr{Nothing}, Ptr{UInt8}), G_OBJECT_GET_CLASS(w), name)
-    if p==C_NULL
-        println("No property with that name")
-        return
-    end
-    param = unsafe_load(p)
-    println(name,": (",g_type_name(param.value_type),")")
-    if (param.flags & Constants.ParamFlags.READABLE) != 0
-        print("Readable ")
-    end
-    if (param.flags & Constants.ParamFlags.WRITABLE) != 0
-        print("Writable ")
-    end
-    if (param.flags & Constants.ParamFlags.CONSTRUCT_ONLY) != 0
-        print("Construct only ")
-    end
-    print("\n")
-    #nick = ccall((:g_param_spec_get_nick, libgobject), Ptr{UInt8}, (Ptr{GParamSpec},), p)
-    #printstyled(bytestring(nick),"\n";bold=true)
-    blurb = ccall((:g_param_spec_get_blurb, libgobject), Ptr{UInt8}, (Ptr{GParamSpec},), p)
-    println("Description: ",bytestring(blurb))
-
-    if ccall((:g_value_type_transformable, libgobject), Cint,
-        (Int, Int), param.value_type, g_type(AbstractString)) != 0
-        p_default_value = ccall((:g_param_spec_get_default_value, libgobject), Ptr{GValue}, (Ptr{GParamSpec},), p)
-        default_value = unsafe_load(p_default_value)
-        str_value = gvalue(String)
-        ccall((:g_value_transform, libgobject), Cint, (Ptr{GValue}, Ptr{GValue}), p_default_value, str_value)
-        str = ccall((:g_value_get_string, libgobject), Ptr{UInt8}, (Ptr{GValue},), str_value)
-        str = (str == C_NULL ? "NULL" : GLib.bytestring(str))
-        println("Default value: ", str)
-
-        ccall((:g_object_get_property, libgobject), Nothing,
-             (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, name, str_value)
-        str = ccall((:g_value_get_string, libgobject), Ptr{UInt8}, (Ptr{GValue},), str_value)
-        str = (str == C_NULL ? "NULL" : GLib.bytestring(str))
-
-        println("Current value: ",str)
-        ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), str_value)
-     end
-     nothing
-end
-
-bind_property(source::GObject, source_property, target::GObject, target_property) =
-    bind_property(source, source_property, target, target_property, Constants.BindingFlags.DEFAULT)

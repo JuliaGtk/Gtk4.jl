@@ -796,7 +796,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function file_set_contents_full(_filename::Union{AbstractString, Symbol}, _contents, _flags::Integer, _mode::Integer)
+    function file_set_contents_full(_filename::Union{AbstractString, Symbol}, _contents, _flags, _mode::Integer)
         _contents = convert(Vector{UInt8}, _contents)
         _length = length(_contents)
         err = err_buf()
@@ -805,7 +805,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function file_test(_filename::Union{AbstractString, Symbol}, _test::Integer)
+    function file_test(_filename::Union{AbstractString, Symbol}, _test)
         ret = ccall(("g_file_test", libgobject), Cint, (Cstring, Int32), _filename, _test)
         ret2 = convert(Bool, ret)
         ret2
@@ -906,7 +906,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function format_size_full(_size::Integer, _flags::Integer)
+    function format_size_full(_size::Integer, _flags)
         ret = ccall(("g_format_size_full", libgobject), Cstring, (UInt64, Int32), _size, _flags)
         ret2 = if ret == C_NULL
                 nothing
@@ -1418,7 +1418,7 @@ $(Expr(:toplevel, quote
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_read, _bytes_written)
     end
-    function log_default_handler(_log_domain::Maybe(Union{AbstractString, Symbol}), _log_level::Integer, _message::Maybe(Union{AbstractString, Symbol}), _unused_data::Maybe(Nothing))
+    function log_default_handler(_log_domain::Maybe(Union{AbstractString, Symbol}), _log_level, _message::Maybe(Union{AbstractString, Symbol}), _unused_data::Maybe(Nothing))
         _log_domain = if _log_domain == nothing
                 C_NULL
             else
@@ -1434,41 +1434,43 @@ $(Expr(:toplevel, quote
             else
                 _unused_data
             end
-        ret = ccall(("g_log_default_handler", libgobject), Nothing, (Cstring, Int32, Cstring, Ptr{Nothing}), _log_domain, _log_level, _message, _unused_data)
+        ret = ccall(("g_log_default_handler", libgobject), Nothing, (Cstring, UInt16, Cstring, Ptr{Nothing}), _log_domain, _log_level, _message, _unused_data)
         nothing
     end
     function log_remove_handler(_log_domain::Union{AbstractString, Symbol}, _handler_id::Integer)
         ret = ccall(("g_log_remove_handler", libgobject), Nothing, (Cstring, UInt32), _log_domain, _handler_id)
         nothing
     end
-    function log_set_always_fatal(_fatal_mask::Integer)
-        ret = ccall(("g_log_set_always_fatal", libgobject), Int32, (Int32,), _fatal_mask)
-        ret
+    function log_set_always_fatal(_fatal_mask)
+        ret = ccall(("g_log_set_always_fatal", libgobject), UInt16, (UInt16,), _fatal_mask)
+        ret2 = LogLevelFlags(ret)
+        ret2
     end
-    function log_set_fatal_mask(_log_domain::Union{AbstractString, Symbol}, _fatal_mask::Integer)
-        ret = ccall(("g_log_set_fatal_mask", libgobject), Int32, (Cstring, Int32), _log_domain, _fatal_mask)
-        ret
+    function log_set_fatal_mask(_log_domain::Union{AbstractString, Symbol}, _fatal_mask)
+        ret = ccall(("g_log_set_fatal_mask", libgobject), UInt16, (Cstring, UInt16), _log_domain, _fatal_mask)
+        ret2 = LogLevelFlags(ret)
+        ret2
     end
-    function log_variant(_log_domain::Maybe(Union{AbstractString, Symbol}), _log_level::Integer, _fields::GVariant)
+    function log_variant(_log_domain::Maybe(Union{AbstractString, Symbol}), _log_level, _fields::GVariant)
         _log_domain = if _log_domain == nothing
                 C_NULL
             else
                 _log_domain
             end
-        ret = ccall(("g_log_variant", libgobject), Nothing, (Cstring, Int32, Ptr{GVariant}), _log_domain, _log_level, _fields)
+        ret = ccall(("g_log_variant", libgobject), Nothing, (Cstring, UInt16, Ptr{GVariant}), _log_domain, _log_level, _fields)
         nothing
     end
     function log_writer_default_set_use_stderr(_use_stderr::Bool)
         ret = ccall(("g_log_writer_default_set_use_stderr", libgobject), Nothing, (Cint,), _use_stderr)
         nothing
     end
-    function log_writer_default_would_drop(_log_level::Integer, _log_domain::Maybe(Union{AbstractString, Symbol}))
+    function log_writer_default_would_drop(_log_level, _log_domain::Maybe(Union{AbstractString, Symbol}))
         _log_domain = if _log_domain == nothing
                 C_NULL
             else
                 _log_domain
             end
-        ret = ccall(("g_log_writer_default_would_drop", libgobject), Cint, (Int32, Cstring), _log_level, _log_domain)
+        ret = ccall(("g_log_writer_default_would_drop", libgobject), Cint, (UInt16, Cstring), _log_level, _log_domain)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -1845,12 +1847,12 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function regex_match_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options::Integer, _match_options::Integer)
+    function regex_match_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options, _match_options)
         ret = ccall(("g_regex_match_simple", libgobject), Cint, (Cstring, Cstring, Int32, Int32), _pattern, _string, _compile_options, _match_options)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function regex_split_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options::Integer, _match_options::Integer)
+    function regex_split_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options, _match_options)
         ret = ccall(("g_regex_split_simple", libgobject), Ptr{Cstring}, (Cstring, Cstring, Int32, Int32), _pattern, _string, _compile_options, _match_options)
         ret2 = begin
                 _len = length_zt(ret)
@@ -2344,13 +2346,13 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_test_bug_base", libgobject), Nothing, (Cstring,), _uri_pattern)
         nothing
     end
-    function test_expect_message(_log_domain::Maybe(Union{AbstractString, Symbol}), _log_level::Integer, _pattern::Union{AbstractString, Symbol})
+    function test_expect_message(_log_domain::Maybe(Union{AbstractString, Symbol}), _log_level, _pattern::Union{AbstractString, Symbol})
         _log_domain = if _log_domain == nothing
                 C_NULL
             else
                 _log_domain
             end
-        ret = ccall(("g_test_expect_message", libgobject), Nothing, (Cstring, Int32, Cstring), _log_domain, _log_level, _pattern)
+        ret = ccall(("g_test_expect_message", libgobject), Nothing, (Cstring, UInt16, Cstring), _log_domain, _log_level, _pattern)
         nothing
     end
     function test_fail()
@@ -2475,7 +2477,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function test_trap_subprocess(_test_path::Maybe(Union{AbstractString, Symbol}), _usec_timeout::Integer, _test_flags::Integer)
+    function test_trap_subprocess(_test_path::Maybe(Union{AbstractString, Symbol}), _usec_timeout::Integer, _test_flags)
         _test_path = if _test_path == nothing
                 C_NULL
             else
@@ -2804,7 +2806,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_unsetenv", libgobject), Nothing, (Cstring,), _variable)
         nothing
     end
-    function uri_build(_flags::Integer, _scheme::Union{AbstractString, Symbol}, _userinfo::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
+    function uri_build(_flags, _scheme::Union{AbstractString, Symbol}, _userinfo::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
         _userinfo = if _userinfo == nothing
                 C_NULL
             else
@@ -2829,7 +2831,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GUri, ret, true)
         ret2
     end
-    function uri_build_with_user(_flags::Integer, _scheme::Union{AbstractString, Symbol}, _user::Maybe(Union{AbstractString, Symbol}), _password::Maybe(Union{AbstractString, Symbol}), _auth_params::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
+    function uri_build_with_user(_flags, _scheme::Union{AbstractString, Symbol}, _user::Maybe(Union{AbstractString, Symbol}), _password::Maybe(Union{AbstractString, Symbol}), _auth_params::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
         _user = if _user == nothing
                 C_NULL
             else
@@ -2898,14 +2900,14 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function uri_is_valid(_uri_string::Union{AbstractString, Symbol}, _flags::Integer)
+    function uri_is_valid(_uri_string::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
         ret = ccall(("g_uri_is_valid", libgobject), Cint, (Cstring, Int32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function uri_join(_flags::Integer, _scheme::Maybe(Union{AbstractString, Symbol}), _userinfo::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
+    function uri_join(_flags, _scheme::Maybe(Union{AbstractString, Symbol}), _userinfo::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
         _scheme = if _scheme == nothing
                 C_NULL
             else
@@ -2939,7 +2941,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function uri_join_with_user(_flags::Integer, _scheme::Maybe(Union{AbstractString, Symbol}), _user::Maybe(Union{AbstractString, Symbol}), _password::Maybe(Union{AbstractString, Symbol}), _auth_params::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
+    function uri_join_with_user(_flags, _scheme::Maybe(Union{AbstractString, Symbol}), _user::Maybe(Union{AbstractString, Symbol}), _password::Maybe(Union{AbstractString, Symbol}), _auth_params::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
         _scheme = if _scheme == nothing
                 C_NULL
             else
@@ -2993,7 +2995,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function uri_parse(_uri_string::Union{AbstractString, Symbol}, _flags::Integer)
+    function uri_parse(_uri_string::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
         ret = ccall(("g_uri_parse", libgobject), Ptr{GUri}, (Cstring, Int32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
         check_err(err)
@@ -3018,7 +3020,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function uri_resolve_relative(_base_uri_string::Maybe(Union{AbstractString, Symbol}), _uri_ref::Union{AbstractString, Symbol}, _flags::Integer)
+    function uri_resolve_relative(_base_uri_string::Maybe(Union{AbstractString, Symbol}), _uri_ref::Union{AbstractString, Symbol}, _flags)
         _base_uri_string = if _base_uri_string == nothing
                 C_NULL
             else
@@ -3034,7 +3036,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function uri_split(_uri_ref::Union{AbstractString, Symbol}, _flags::Integer)
+    function uri_split(_uri_ref::Union{AbstractString, Symbol}, _flags)
         m_scheme = Ref{Cstring}()
         m_userinfo = Ref{Cstring}()
         m_host = Ref{Cstring}()
@@ -3064,7 +3066,7 @@ $(Expr(:toplevel, quote
         _fragment = convert(Maybe(Union{AbstractString, Symbol}), _fragment)
         (_scheme, _userinfo, _host, _port, _path, _query, _fragment)
     end
-    function uri_split_network(_uri_string::Union{AbstractString, Symbol}, _flags::Integer)
+    function uri_split_network(_uri_string::Union{AbstractString, Symbol}, _flags)
         m_scheme = Ref{Cstring}()
         m_host = Ref{Cstring}()
         m_port = Ref{Int32}()
@@ -3078,7 +3080,7 @@ $(Expr(:toplevel, quote
         _port = m_port[]
         (_scheme, _host, _port)
     end
-    function uri_split_with_user(_uri_ref::Union{AbstractString, Symbol}, _flags::Integer)
+    function uri_split_with_user(_uri_ref::Union{AbstractString, Symbol}, _flags)
         m_scheme = Ref{Cstring}()
         m_user = Ref{Cstring}()
         m_password = Ref{Cstring}()

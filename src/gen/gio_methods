@@ -5,7 +5,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileAttributeInfoList, ret, true)
         ret2
     end
-    function add(instance::GFileAttributeInfoList, _name::Union{AbstractString, Symbol}, _type, _flags::Integer)
+    function add(instance::GFileAttributeInfoList, _name::Union{AbstractString, Symbol}, _type, _flags)
         ret = ccall(("g_file_attribute_info_list_add", libgio), Nothing, (Ptr{_GFileAttributeInfoList}, Cstring, Int32, Int32), instance, _name, _type, _flags)
         nothing
     end
@@ -104,7 +104,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_resources_unregister", libgio), Nothing, (Ptr{GResource},), instance)
         nothing
     end
-    function enumerate_children(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
+    function enumerate_children(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
         ret = ccall(("g_resource_enumerate_children", libgio), Ptr{Cstring}, (Ptr{GResource}, Cstring, Int32, Ptr{Ptr{GError}}), instance, _path, _lookup_flags, err)
         check_err(err)
@@ -116,7 +116,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function get_info(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
+    function get_info(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags)
         m_size = Ref{UInt64}()
         m_flags = Ref{UInt32}()
         err = err_buf()
@@ -127,14 +127,14 @@ $(Expr(:toplevel, quote
         _flags = m_flags[]
         (ret2, _size, _flags)
     end
-    function lookup_data(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
+    function lookup_data(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
         ret = ccall(("g_resource_lookup_data", libgio), Ptr{GBytes}, (Ptr{GResource}, Cstring, Int32, Ptr{Ptr{GError}}), instance, _path, _lookup_flags, err)
         check_err(err)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
-    function open_stream(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
+    function open_stream(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
         ret = ccall(("g_resource_open_stream", libgio), Ptr{GObject}, (Ptr{GResource}, Cstring, Int32, Ptr{Ptr{GError}}), instance, _path, _lookup_flags, err)
         check_err(err)
@@ -393,7 +393,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_app_launch_context_unsetenv", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _variable)
         nothing
     end
-    function Application_new(_application_id::Maybe(Union{AbstractString, Symbol}), _flags::Integer)
+    function Application_new(_application_id::Maybe(Union{AbstractString, Symbol}), _flags)
         _application_id = if _application_id == nothing
                 C_NULL
             else
@@ -412,7 +412,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_application_activate", libgio), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function add_main_option(instance::GApplication, _long_name::Union{AbstractString, Symbol}, _short_name::Integer, _flags::Integer, _arg, _description::Union{AbstractString, Symbol}, _arg_description::Maybe(Union{AbstractString, Symbol}))
+    function add_main_option(instance::GApplication, _long_name::Union{AbstractString, Symbol}, _short_name::Integer, _flags, _arg, _description::Union{AbstractString, Symbol}, _arg_description::Maybe(Union{AbstractString, Symbol}))
         _arg_description = if _arg_description == nothing
                 C_NULL
             else
@@ -459,7 +459,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GApplication)
         ret = ccall(("g_application_get_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = ApplicationFlags(ret)
+        ret2
     end
     function get_inactivity_timeout(instance::GApplication)
         ret = ccall(("g_application_get_inactivity_timeout", libgio), UInt32, (Ptr{GObject},), instance)
@@ -555,7 +556,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_application_set_default", libgio), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function set_flags(instance::GApplication, _flags::Integer)
+    function set_flags(instance::GApplication, _flags)
         ret = ccall(("g_application_set_flags", libgio), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
@@ -996,7 +997,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GDBusInterfaceSkeleton)
         ret = ccall(("g_dbus_interface_skeleton_get_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = DBusInterfaceSkeletonFlags(ret)
+        ret2
     end
     function get_object_path(instance::GDBusInterfaceSkeleton)
         ret = ccall(("g_dbus_interface_skeleton_get_object_path", libgio), Cstring, (Ptr{GObject},), instance)
@@ -1017,7 +1019,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_flags(instance::GDBusInterfaceSkeleton, _flags::Integer)
+    function set_flags(instance::GDBusInterfaceSkeleton, _flags)
         ret = ccall(("g_dbus_interface_skeleton_set_flags", libgio), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
@@ -1034,7 +1036,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GDBusMessage, ret, true)
         ret2
     end
-    function DBusMessage_new_from_blob(_blob, _capabilities::Integer)
+    function DBusMessage_new_from_blob(_blob, _capabilities)
         _blob = convert(Vector{UInt8}, _blob)
         _blob_len = length(_blob)
         err = err_buf()
@@ -1117,7 +1119,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = DBusMessageFlags(ret)
+        ret2
     end
     function get_header(instance::GDBusMessage, _header_field)
         ret = ccall(("g_dbus_message_get_header", libgio), Ptr{GVariant}, (Ptr{GObject}, Int32), instance, _header_field)
@@ -1239,7 +1242,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_dbus_message_set_error_name", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _value)
         nothing
     end
-    function set_flags(instance::GDBusMessage, _flags::Integer)
+    function set_flags(instance::GDBusMessage, _flags)
         ret = ccall(("g_dbus_message_set_flags", libgio), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
@@ -1313,7 +1316,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_dbus_message_set_signature", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _value)
         nothing
     end
-    function to_blob(instance::GDBusMessage, _capabilities::Integer)
+    function to_blob(instance::GDBusMessage, _capabilities)
         m_out_size = Ref{UInt64}()
         err = err_buf()
         ret = ccall(("g_dbus_message_to_blob", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt64}, Int32, Ptr{Ptr{GError}}), instance, m_out_size, _capabilities, err)
@@ -1342,7 +1345,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GDBusObjectManagerClient, ret, true)
         ret2
     end
-    function new(_connection::GDBusConnection, _flags::Integer, _name::Union{AbstractString, Symbol}, _object_path::Union{AbstractString, Symbol}, _get_proxy_type_func::Maybe(Function), _get_proxy_type_user_data::Maybe(Nothing), _get_proxy_type_destroy_notify::Maybe(Function), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function new(_connection::GDBusConnection, _flags, _name::Union{AbstractString, Symbol}, _object_path::Union{AbstractString, Symbol}, _get_proxy_type_func::Maybe(Function), _get_proxy_type_user_data::Maybe(Nothing), _get_proxy_type_destroy_notify::Maybe(Function), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _get_proxy_type_func = if _get_proxy_type_func == nothing
                 C_NULL
             else
@@ -1383,7 +1386,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GDBusObjectManagerClient)
         ret = ccall(("g_dbus_object_manager_client_get_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = DBusObjectManagerClientFlags(ret)
+        ret2
     end
     function get_name(instance::GDBusObjectManagerClient)
         ret = ccall(("g_dbus_object_manager_client_get_name", libgio), Cstring, (Ptr{GObject},), instance)
@@ -1486,7 +1490,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GDBusServer)
         ret = ccall(("g_dbus_server_get_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = DBusServerFlags(ret)
+        ret2
     end
     function get_guid(instance::GDBusServer)
         ret = ccall(("g_dbus_server_get_guid", libgio), Cstring, (Ptr{GObject},), instance)
@@ -1995,7 +2000,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_desktop_app_info_launch_action", libgio), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}), instance, _action_name, _launch_context)
         nothing
     end
-    function launch_uris_as_manager(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{Cstring}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags::Integer, _user_setup::Maybe(Function), _user_setup_data::Maybe(Nothing), _pid_callback::Maybe(Function), _pid_callback_data::Maybe(Nothing))
+    function launch_uris_as_manager(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{Cstring}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _user_setup_data::Maybe(Nothing), _pid_callback::Maybe(Function), _pid_callback_data::Maybe(Nothing))
         _launch_context = if _launch_context == nothing
                 C_NULL
             else
@@ -2027,7 +2032,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function launch_uris_as_manager_with_fds(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{Cstring}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags::Integer, _user_setup::Maybe(Function), _user_setup_data::Maybe(Nothing), _pid_callback::Maybe(Function), _pid_callback_data::Maybe(Nothing), _stdin_fd::Integer, _stdout_fd::Integer, _stderr_fd::Integer)
+    function launch_uris_as_manager_with_fds(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{Cstring}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _user_setup_data::Maybe(Nothing), _pid_callback::Maybe(Function), _pid_callback_data::Maybe(Nothing), _stdin_fd::Integer, _stdout_fd::Integer, _stderr_fd::Integer)
         _launch_context = if _launch_context == nothing
                 C_NULL
             else
@@ -2903,7 +2908,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function splice_async(instance::GIOStream, _stream2::GIOStream, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function splice_async(instance::GIOStream, _stream2::GIOStream, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -4151,7 +4156,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function splice(instance::GOutputStream, _source::GInputStream, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function splice(instance::GOutputStream, _source::GInputStream, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -4162,7 +4167,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret
     end
-    function splice_async(instance::GOutputStream, _source::GInputStream, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function splice_async(instance::GOutputStream, _source::GInputStream, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -4626,7 +4631,7 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, true)
         ret2
     end
-    function lookup_by_name_with_flags(instance::GResolver, _hostname::Union{AbstractString, Symbol}, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function lookup_by_name_with_flags(instance::GResolver, _hostname::Union{AbstractString, Symbol}, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -4638,7 +4643,7 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, true)
         ret2
     end
-    function lookup_by_name_with_flags_async(instance::GResolver, _hostname::Union{AbstractString, Symbol}, _flags::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function lookup_by_name_with_flags_async(instance::GResolver, _hostname::Union{AbstractString, Symbol}, _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -4791,7 +4796,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_settings_apply", libgio), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function bind(instance::GSettings, _key::Union{AbstractString, Symbol}, _object::GObject, _property::Union{AbstractString, Symbol}, _flags::Integer)
+    function bind(instance::GSettings, _key::Union{AbstractString, Symbol}, _object::GObject, _property::Union{AbstractString, Symbol}, _flags)
         ret = ccall(("g_settings_bind", libgio), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}, Cstring, Int32), instance, _key, _object, _property, _flags)
         nothing
     end
@@ -5105,11 +5110,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function condition_check(instance::GSocket, _condition::Integer)
+    function condition_check(instance::GSocket, _condition)
         ret = ccall(("g_socket_condition_check", libgio), Int32, (Ptr{GObject}, Int32), instance, _condition)
-        ret
+        ret2 = IOCondition(ret)
+        ret2
     end
-    function condition_timed_wait(instance::GSocket, _condition::Integer, _timeout_us::Integer, _cancellable::Maybe(GCancellable))
+    function condition_timed_wait(instance::GSocket, _condition, _timeout_us::Integer, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -5121,7 +5127,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function condition_wait(instance::GSocket, _condition::Integer, _cancellable::Maybe(GCancellable))
+    function condition_wait(instance::GSocket, _condition, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -5753,7 +5759,8 @@ $(Expr(:toplevel, quote
     end
     function get_tls_validation_flags(instance::GSocketClient)
         ret = ccall(("g_socket_client_get_tls_validation_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = TlsCertificateFlags(ret)
+        ret2
     end
     function set_enable_proxy(instance::GSocketClient, _enable::Bool)
         ret = ccall(("g_socket_client_set_enable_proxy", libgio), Nothing, (Ptr{GObject}, Cint), instance, _enable)
@@ -5797,7 +5804,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_socket_client_set_tls", libgio), Nothing, (Ptr{GObject}, Cint), instance, _tls)
         nothing
     end
-    function set_tls_validation_flags(instance::GSocketClient, _flags::Integer)
+    function set_tls_validation_flags(instance::GSocketClient, _flags)
         ret = ccall(("g_socket_client_set_tls_validation_flags", libgio), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
@@ -6063,7 +6070,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_socket_service_stop", libgio), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function Subprocess_new(_argv, _flags::Integer)
+    function Subprocess_new(_argv, _flags)
         err = err_buf()
         ret = ccall(("g_subprocess_newv", libgio), Ptr{GObject}, (Ptr{Cstring}, Int32, Ptr{Ptr{GError}}), _argv, _flags, err)
         check_err(err)
@@ -6337,7 +6344,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function SubprocessLauncher_new(_flags::Integer)
+    function SubprocessLauncher_new(_flags)
         ret = ccall(("g_subprocess_launcher_new", libgio), Ptr{GObject}, (Int32,), _flags)
         ret2 = convert(GSubprocessLauncher, ret, true)
         ret2
@@ -6363,7 +6370,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_subprocess_launcher_set_environ", libgio), Nothing, (Ptr{GObject}, Ptr{Cstring}), instance, _env)
         nothing
     end
-    function set_flags(instance::GSubprocessLauncher, _flags::Integer)
+    function set_flags(instance::GSubprocessLauncher, _flags)
         ret = ccall(("g_subprocess_launcher_set_flags", libgio), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
@@ -6439,7 +6446,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GIOStream, ret, false)
         ret2
     end
-    function TestDBus_new(_flags::Integer)
+    function TestDBus_new(_flags)
         ret = ccall(("g_test_dbus_new", libgio), Ptr{GObject}, (Int32,), _flags)
         ret2 = convert(GTestDBus, ret, true)
         ret2
@@ -6467,7 +6474,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GTestDBus)
         ret = ccall(("g_test_dbus_get_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = TestDBusFlags(ret)
+        ret2
     end
     function stop(instance::GTestDBus)
         ret = ccall(("g_test_dbus_stop", libgio), Nothing, (Ptr{GObject},), instance)
@@ -6576,9 +6584,10 @@ $(Expr(:toplevel, quote
                 _trusted_ca
             end
         ret = ccall(("g_tls_certificate_verify", libgio), Int32, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), instance, _identity, _trusted_ca)
-        ret
+        ret2 = TlsCertificateFlags(ret)
+        ret2
     end
-    function emit_accept_certificate(instance::GTlsConnection, _peer_cert::GTlsCertificate, _errors::Integer)
+    function emit_accept_certificate(instance::GTlsConnection, _peer_cert::GTlsCertificate, _errors)
         ret = ccall(("g_tls_connection_emit_accept_certificate", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Int32), instance, _peer_cert, _errors)
         ret2 = convert(Bool, ret)
         ret2
@@ -6630,7 +6639,8 @@ $(Expr(:toplevel, quote
     end
     function get_peer_certificate_errors(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_peer_certificate_errors", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = TlsCertificateFlags(ret)
+        ret2
     end
     function get_require_close_notify(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_require_close_notify", libgio), Cint, (Ptr{GObject},), instance)
@@ -6850,7 +6860,7 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, true)
         ret2
     end
-    function verify_chain(instance::GTlsDatabase, _chain::GTlsCertificate, _purpose::Union{AbstractString, Symbol}, _identity::Maybe(GSocketConnectable), _interaction::Maybe(GTlsInteraction), _flags::Integer, _cancellable::Maybe(GCancellable))
+    function verify_chain(instance::GTlsDatabase, _chain::GTlsCertificate, _purpose::Union{AbstractString, Symbol}, _identity::Maybe(GSocketConnectable), _interaction::Maybe(GTlsInteraction), _flags, _cancellable::Maybe(GCancellable))
         _identity = if _identity == nothing
                 C_NULL
             else
@@ -6869,9 +6879,10 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_tls_database_verify_chain", libgio), Int32, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{GObject}, Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _chain, _purpose, _identity, _interaction, _flags, _cancellable, err)
         check_err(err)
-        ret
+        ret2 = TlsCertificateFlags(ret)
+        ret2
     end
-    function verify_chain_async(instance::GTlsDatabase, _chain::GTlsCertificate, _purpose::Union{AbstractString, Symbol}, _identity::Maybe(GSocketConnectable), _interaction::Maybe(GTlsInteraction), _flags::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function verify_chain_async(instance::GTlsDatabase, _chain::GTlsCertificate, _purpose::Union{AbstractString, Symbol}, _identity::Maybe(GSocketConnectable), _interaction::Maybe(GTlsInteraction), _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _identity = if _identity == nothing
                 C_NULL
             else
@@ -6904,7 +6915,8 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_tls_database_verify_chain_finish", libgio), Int32, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret
+        ret2 = TlsCertificateFlags(ret)
+        ret2
     end
     function ask_password(instance::GTlsInteraction, _password::GTlsPassword, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
@@ -7006,7 +7018,7 @@ $(Expr(:toplevel, quote
         ret2 = TlsInteractionResult(ret)
         ret2
     end
-    function TlsPassword_new(_flags::Integer, _description::Union{AbstractString, Symbol})
+    function TlsPassword_new(_flags, _description::Union{AbstractString, Symbol})
         ret = ccall(("g_tls_password_new", libgio), Ptr{GObject}, (Int32, Cstring), _flags, _description)
         ret2 = convert(GTlsPassword, ret, true)
         ret2
@@ -7022,7 +7034,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GTlsPassword)
         ret = ccall(("g_tls_password_get_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = TlsPasswordFlags(ret)
+        ret2
     end
     function get_value(instance::GTlsPassword)
         m_length = Ref{UInt64}()
@@ -7043,7 +7056,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_tls_password_set_description", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _description)
         nothing
     end
-    function set_flags(instance::GTlsPassword, _flags::Integer)
+    function set_flags(instance::GTlsPassword, _flags)
         ret = ccall(("g_tls_password_set_flags", libgio), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
@@ -7618,7 +7631,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function convert(instance::GConverter, _inbuf, _outbuf, _flags::Integer)
+    function convert(instance::GConverter, _inbuf, _outbuf, _flags)
         _inbuf = convert(Vector{UInt8}, _inbuf)
         _outbuf = convert(Vector{UInt8}, _outbuf)
         m_bytes_read = Ref{UInt64}()
@@ -7684,11 +7697,12 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function condition_check(instance::GDatagramBased, _condition::Integer)
+    function condition_check(instance::GDatagramBased, _condition)
         ret = ccall(("g_datagram_based_condition_check", libgio), Int32, (Ptr{GObject}, Int32), instance, _condition)
-        ret
+        ret2 = IOCondition(ret)
+        ret2
     end
-    function condition_wait(instance::GDatagramBased, _condition::Integer, _timeout::Integer, _cancellable::Maybe(GCancellable))
+    function condition_wait(instance::GDatagramBased, _condition, _timeout::Integer, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -7700,7 +7714,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function create_source(instance::GDatagramBased, _condition::Integer, _cancellable::Maybe(GCancellable))
+    function create_source(instance::GDatagramBased, _condition, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -7740,13 +7754,14 @@ $(Expr(:toplevel, quote
     end
     function get_validation_flags(instance::GDtlsClientConnection)
         ret = ccall(("g_dtls_client_connection_get_validation_flags", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = TlsCertificateFlags(ret)
+        ret2
     end
     function set_server_identity(instance::GDtlsClientConnection, _identity::GSocketConnectable)
         ret = ccall(("g_dtls_client_connection_set_server_identity", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _identity)
         nothing
     end
-    function set_validation_flags(instance::GDtlsClientConnection, _flags::Integer)
+    function set_validation_flags(instance::GDtlsClientConnection, _flags)
         ret = ccall(("g_dtls_client_connection_set_validation_flags", libgio), Nothing, (Ptr{GObject}, Int32), instance, _flags)
         nothing
     end
@@ -7788,7 +7803,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function emit_accept_certificate(instance::GDtlsConnection, _peer_cert::GTlsCertificate, _errors::Integer)
+    function emit_accept_certificate(instance::GDtlsConnection, _peer_cert::GTlsCertificate, _errors)
         ret = ccall(("g_dtls_connection_emit_accept_certificate", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Int32), instance, _peer_cert, _errors)
         ret2 = convert(Bool, ret)
         ret2
@@ -7850,7 +7865,8 @@ $(Expr(:toplevel, quote
     end
     function get_peer_certificate_errors(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_peer_certificate_errors", libgio), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = TlsCertificateFlags(ret)
+        ret2
     end
     function get_require_close_notify(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_require_close_notify", libgio), Cint, (Ptr{GObject},), instance)
@@ -8041,7 +8057,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function append_to(instance::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function append_to(instance::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8053,7 +8069,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
     end
-    function append_to_async(instance::GFile, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function append_to_async(instance::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8079,7 +8095,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
     end
-    function build_attribute_list_for_copy(instance::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function build_attribute_list_for_copy(instance::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8095,7 +8111,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function copy(instance::GFile, _destination::GFile, _flags::Integer, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _progress_callback_data::Maybe(Nothing))
+    function copy(instance::GFile, _destination::GFile, _flags, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _progress_callback_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8117,7 +8133,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function copy_async(instance::GFile, _destination::GFile, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _progress_callback_data::Maybe(Nothing), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function copy_async(instance::GFile, _destination::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _progress_callback_data::Maybe(Nothing), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8146,7 +8162,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_file_copy_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), instance, _destination, _flags, _io_priority, _cancellable, _progress_callback, _progress_callback_data, _callback, _user_data)
         nothing
     end
-    function copy_attributes(instance::GFile, _destination::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function copy_attributes(instance::GFile, _destination::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8165,7 +8181,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function create(instance::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function create(instance::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8177,7 +8193,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
     end
-    function create_async(instance::GFile, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function create_async(instance::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8203,7 +8219,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
     end
-    function create_readwrite(instance::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function create_readwrite(instance::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8215,7 +8231,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileIOStream, ret, true)
         ret2
     end
-    function create_readwrite_async(instance::GFile, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function create_readwrite_async(instance::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8287,7 +8303,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function eject_mountable_with_operation(instance::GFile, _flags::Integer, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function eject_mountable_with_operation(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _mount_operation = if _mount_operation == nothing
                 C_NULL
             else
@@ -8318,7 +8334,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function enumerate_children(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function enumerate_children(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8330,7 +8346,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileEnumerator, ret, true)
         ret2
     end
-    function enumerate_children_async(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function enumerate_children_async(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8703,7 +8719,7 @@ $(Expr(:toplevel, quote
         _num_files = m_num_files[]
         (ret2, _disk_usage, _num_dirs, _num_files)
     end
-    function monitor(instance::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function monitor(instance::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8715,7 +8731,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileMonitor, ret, true)
         ret2
     end
-    function monitor_directory(instance::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function monitor_directory(instance::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8727,7 +8743,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileMonitor, ret, true)
         ret2
     end
-    function monitor_file(instance::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function monitor_file(instance::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8739,7 +8755,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileMonitor, ret, true)
         ret2
     end
-    function mount_enclosing_volume(instance::GFile, _flags::Integer, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function mount_enclosing_volume(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _mount_operation = if _mount_operation == nothing
                 C_NULL
             else
@@ -8770,7 +8786,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function mount_mountable(instance::GFile, _flags::Integer, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function mount_mountable(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _mount_operation = if _mount_operation == nothing
                 C_NULL
             else
@@ -8804,7 +8820,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function move(instance::GFile, _destination::GFile, _flags::Integer, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _progress_callback_data::Maybe(Nothing))
+    function move(instance::GFile, _destination::GFile, _flags, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _progress_callback_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -8953,7 +8969,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function query_file_type(instance::GFile, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function query_file_type(instance::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9001,7 +9017,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInfo, ret, true)
         ret2
     end
-    function query_info(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function query_info(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9013,7 +9029,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInfo, ret, true)
         ret2
     end
-    function query_info_async(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function query_info_async(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9101,7 +9117,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInputStream, ret, true)
         ret2
     end
-    function replace(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function replace(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _cancellable::Maybe(GCancellable))
         _etag = if _etag == nothing
                 C_NULL
             else
@@ -9118,7 +9134,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
     end
-    function replace_async(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function replace_async(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _etag = if _etag == nothing
                 C_NULL
             else
@@ -9142,7 +9158,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_file_replace_async", libgio), Nothing, (Ptr{GObject}, Cstring, Cint, Int32, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _etag, _make_backup, _flags, _io_priority, _cancellable, _callback, _user_data)
         nothing
     end
-    function replace_contents(instance::GFile, _contents, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function replace_contents(instance::GFile, _contents, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _cancellable::Maybe(GCancellable))
         _contents = convert(Vector{UInt8}, _contents)
         _etag = if _etag == nothing
                 C_NULL
@@ -9164,7 +9180,7 @@ $(Expr(:toplevel, quote
         _new_etag = convert(Maybe(Union{AbstractString, Symbol}), _new_etag)
         (ret2, _new_etag)
     end
-    function replace_contents_async(instance::GFile, _contents, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function replace_contents_async(instance::GFile, _contents, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _contents = convert(Vector{UInt8}, _contents)
         _etag = if _etag == nothing
                 C_NULL
@@ -9190,7 +9206,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_file_replace_contents_async", libgio), Nothing, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cstring, Cint, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _contents, _length, _etag, _make_backup, _flags, _cancellable, _callback, _user_data)
         nothing
     end
-    function replace_contents_bytes_async(instance::GFile, _contents::GBytes, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function replace_contents_bytes_async(instance::GFile, _contents::GBytes, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _etag = if _etag == nothing
                 C_NULL
             else
@@ -9231,7 +9247,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
     end
-    function replace_readwrite(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function replace_readwrite(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _cancellable::Maybe(GCancellable))
         _etag = if _etag == nothing
                 C_NULL
             else
@@ -9248,7 +9264,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileIOStream, ret, true)
         ret2
     end
-    function replace_readwrite_async(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function replace_readwrite_async(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _etag = if _etag == nothing
                 C_NULL
             else
@@ -9287,7 +9303,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function set_attribute(instance::GFile, _attribute::Union{AbstractString, Symbol}, _type, _value_p::Maybe(Nothing), _flags::Integer, _cancellable::Maybe(GCancellable))
+    function set_attribute(instance::GFile, _attribute::Union{AbstractString, Symbol}, _type, _value_p::Maybe(Nothing), _flags, _cancellable::Maybe(GCancellable))
         _value_p = if _value_p == nothing
                 C_NULL
             else
@@ -9304,7 +9320,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_attribute_byte_string(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol}, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function set_attribute_byte_string(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol}, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9316,7 +9332,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_attribute_int32(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Integer, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function set_attribute_int32(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Integer, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9328,7 +9344,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_attribute_int64(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Integer, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function set_attribute_int64(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Integer, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9340,7 +9356,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_attribute_string(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol}, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function set_attribute_string(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol}, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9352,7 +9368,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_attribute_uint32(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Integer, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function set_attribute_uint32(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Integer, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9364,7 +9380,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_attribute_uint64(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Integer, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function set_attribute_uint64(instance::GFile, _attribute::Union{AbstractString, Symbol}, _value::Integer, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9376,7 +9392,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_attributes_async(instance::GFile, _info::GFileInfo, _flags::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function set_attributes_async(instance::GFile, _info::GFileInfo, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9405,7 +9421,7 @@ $(Expr(:toplevel, quote
         _info = convert(GFileInfo, _info, true)
         (ret2, _info)
     end
-    function set_attributes_from_info(instance::GFile, _info::GFileInfo, _flags::Integer, _cancellable::Maybe(GCancellable))
+    function set_attributes_from_info(instance::GFile, _info::GFileInfo, _flags, _cancellable::Maybe(GCancellable))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else
@@ -9461,7 +9477,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function start_mountable(instance::GFile, _flags::Integer, _start_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function start_mountable(instance::GFile, _flags, _start_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _start_operation = if _start_operation == nothing
                 C_NULL
             else
@@ -9492,7 +9508,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function stop_mountable(instance::GFile, _flags::Integer, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function stop_mountable(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _mount_operation = if _mount_operation == nothing
                 C_NULL
             else
@@ -9566,7 +9582,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function unmount_mountable_with_operation(instance::GFile, _flags::Integer, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function unmount_mountable_with_operation(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _mount_operation = if _mount_operation == nothing
                 C_NULL
             else

@@ -155,7 +155,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(PangoAttribute, ret, true)
         ret2
     end
-    function attr_show_new(_flags::Integer)
+    function attr_show_new(_flags)
         ret = ccall(("pango_attr_show_new", libpango), Ptr{_PangoAttribute}, (Int32,), _flags)
         ret2 = convert(PangoAttribute, ret, true)
         ret2
@@ -484,7 +484,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_shape_full", libpango), Nothing, (Cstring, Int32, Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoGlyphString}), _item_text, _item_length, _paragraph_text, _paragraph_length, _analysis, _glyphs)
         nothing
     end
-    function shape_item(_item::PangoItem, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _log_attrs::Maybe(_PangoLogAttr), _glyphs::PangoGlyphString, _flags::Integer)
+    function shape_item(_item::PangoItem, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _log_attrs::Maybe(_PangoLogAttr), _glyphs::PangoGlyphString, _flags)
         _paragraph_text = if _paragraph_text == nothing
                 C_NULL
             else
@@ -498,7 +498,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_shape_item", libpango), Nothing, (Ptr{_PangoItem}, Cstring, Int32, Ptr{_PangoLogAttr}, Ptr{_PangoGlyphString}, Int32), _item, _paragraph_text, _paragraph_length, _log_attrs, _glyphs, _flags)
         nothing
     end
-    function shape_with_flags(_item_text::Union{AbstractString, Symbol}, _item_length::Integer, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _analysis::_PangoAnalysis, _glyphs::PangoGlyphString, _flags::Integer)
+    function shape_with_flags(_item_text::Union{AbstractString, Symbol}, _item_length::Integer, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _analysis::_PangoAnalysis, _glyphs::PangoGlyphString, _flags)
         _paragraph_text = if _paragraph_text == nothing
                 C_NULL
             else

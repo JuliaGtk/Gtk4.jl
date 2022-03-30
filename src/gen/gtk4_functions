@@ -2,9 +2,10 @@ quote
 $(Expr(:toplevel, quote
     function accelerator_get_default_mod_mask()
         ret = ccall(("gtk_accelerator_get_default_mod_mask", libgtk4), Int32, ())
-        ret
+        ret2 = ModifierType(ret)
+        ret2
     end
-    function accelerator_get_label(_accelerator_key::Integer, _accelerator_mods::Integer)
+    function accelerator_get_label(_accelerator_key::Integer, _accelerator_mods)
         ret = ccall(("gtk_accelerator_get_label", libgtk4), Cstring, (UInt32, Int32), _accelerator_key, _accelerator_mods)
         ret2 = if ret == C_NULL
                 nothing
@@ -13,7 +14,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function accelerator_get_label_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods::Integer)
+    function accelerator_get_label_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods)
         _display = if _display == nothing
                 C_NULL
             else
@@ -27,7 +28,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function accelerator_name(_accelerator_key::Integer, _accelerator_mods::Integer)
+    function accelerator_name(_accelerator_key::Integer, _accelerator_mods)
         ret = ccall(("gtk_accelerator_name", libgtk4), Cstring, (UInt32, Int32), _accelerator_key, _accelerator_mods)
         ret2 = if ret == C_NULL
                 nothing
@@ -36,7 +37,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function accelerator_name_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods::Integer)
+    function accelerator_name_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods)
         _display = if _display == nothing
                 C_NULL
             else
@@ -57,6 +58,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         _accelerator_key = m_accelerator_key[]
         _accelerator_mods = m_accelerator_mods[]
+        _accelerator_mods = ModifierType(_accelerator_mods)
         (ret2, _accelerator_key, _accelerator_mods)
     end
     function accelerator_parse_with_keycode(_accelerator::Union{AbstractString, Symbol}, _display::Maybe(GdkDisplay))
@@ -73,9 +75,10 @@ $(Expr(:toplevel, quote
         _accelerator_key = m_accelerator_key[]
         _accelerator_codes = m_accelerator_codes[]
         _accelerator_mods = m_accelerator_mods[]
+        _accelerator_mods = ModifierType(_accelerator_mods)
         (ret2, _accelerator_key, _accelerator_codes, _accelerator_mods)
     end
-    function accelerator_valid(_keyval::Integer, _modifiers::Integer)
+    function accelerator_valid(_keyval::Integer, _modifiers)
         ret = ccall(("gtk_accelerator_valid", libgtk4), Cint, (UInt32, Int32), _keyval, _modifiers)
         ret2 = convert(Bool, ret)
         ret2
@@ -178,7 +181,8 @@ $(Expr(:toplevel, quote
     end
     function get_debug_flags()
         ret = ccall(("gtk_get_debug_flags", libgtk4), Int32, ())
-        ret
+        ret2 = DebugFlags(ret)
+        ret2
     end
     function get_default_language()
         ret = ccall(("gtk_get_default_language", libgtk4), Ptr{PangoLanguage}, ())
@@ -256,7 +260,7 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, true)
         ret2
     end
-    function param_spec_expression(_name::Union{AbstractString, Symbol}, _nick::Union{AbstractString, Symbol}, _blurb::Union{AbstractString, Symbol}, _flags::Integer)
+    function param_spec_expression(_name::Union{AbstractString, Symbol}, _nick::Union{AbstractString, Symbol}, _blurb::Union{AbstractString, Symbol}, _flags)
         ret = ccall(("gtk_param_spec_expression", libgtk4), Ptr{GObject}, (Cstring, Cstring, Cstring, Int32), _name, _nick, _blurb, _flags)
         ret2 = convert(GParamSpec, ret, true)
         ret2
@@ -342,7 +346,7 @@ $(Expr(:toplevel, quote
         _v = m_v[]
         (_h, _s, _v)
     end
-    function set_debug_flags(_flags::Integer)
+    function set_debug_flags(_flags)
         ret = ccall(("gtk_set_debug_flags", libgtk4), Nothing, (Int32,), _flags)
         nothing
     end

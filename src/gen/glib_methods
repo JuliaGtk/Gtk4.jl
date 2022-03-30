@@ -796,21 +796,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function load_from_bytes(instance::GKeyFile, _bytes::GBytes, _flags::Integer)
+    function load_from_bytes(instance::GKeyFile, _bytes::GBytes, _flags)
         err = err_buf()
         ret = ccall(("g_key_file_load_from_bytes", libgobject), Cint, (Ptr{GKeyFile}, Ptr{GBytes}, Int32, Ptr{Ptr{GError}}), instance, _bytes, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function load_from_data(instance::GKeyFile, _data::Union{AbstractString, Symbol}, _length::Integer, _flags::Integer)
+    function load_from_data(instance::GKeyFile, _data::Union{AbstractString, Symbol}, _length::Integer, _flags)
         err = err_buf()
         ret = ccall(("g_key_file_load_from_data", libgobject), Cint, (Ptr{GKeyFile}, Cstring, UInt64, Int32, Ptr{Ptr{GError}}), instance, _data, _length, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function load_from_data_dirs(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _flags::Integer)
+    function load_from_data_dirs(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _flags)
         m_full_path = Ref{Cstring}()
         err = err_buf()
         ret = ccall(("g_key_file_load_from_data_dirs", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Cstring}, Int32, Ptr{Ptr{GError}}), instance, _file, m_full_path, _flags, err)
@@ -824,7 +824,7 @@ $(Expr(:toplevel, quote
             end
         (ret2, _full_path)
     end
-    function load_from_dirs(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _search_dirs, _flags::Integer)
+    function load_from_dirs(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _search_dirs, _flags)
         m_full_path = Ref{Cstring}()
         err = err_buf()
         ret = ccall(("g_key_file_load_from_dirs", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Int32, Ptr{Ptr{GError}}), instance, _file, _search_dirs, m_full_path, _flags, err)
@@ -838,7 +838,7 @@ $(Expr(:toplevel, quote
             end
         (ret2, _full_path)
     end
-    function load_from_file(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _flags::Integer)
+    function load_from_file(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
         ret = ccall(("g_key_file_load_from_file", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Int32, Ptr{Ptr{GError}}), instance, _file, _flags, err)
         check_err(err)
@@ -1225,7 +1225,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_match_info_unref", libgobject), Nothing, (Ptr{GMatchInfo},), instance)
         nothing
     end
-    function Regex_new(_pattern::Union{AbstractString, Symbol}, _compile_options::Integer, _match_options::Integer)
+    function Regex_new(_pattern::Union{AbstractString, Symbol}, _compile_options, _match_options)
         err = err_buf()
         ret = ccall(("g_regex_new", libgobject), Ptr{GRegex}, (Cstring, Int32, Int32, Ptr{Ptr{GError}}), _pattern, _compile_options, _match_options, err)
         check_err(err)
@@ -1242,7 +1242,8 @@ $(Expr(:toplevel, quote
     end
     function get_compile_flags(instance::GRegex)
         ret = ccall(("g_regex_get_compile_flags", libgobject), Int32, (Ptr{GRegex},), instance)
-        ret
+        ret2 = RegexCompileFlags(ret)
+        ret2
     end
     function get_has_cr_or_lf(instance::GRegex)
         ret = ccall(("g_regex_get_has_cr_or_lf", libgobject), Cint, (Ptr{GRegex},), instance)
@@ -1251,7 +1252,8 @@ $(Expr(:toplevel, quote
     end
     function get_match_flags(instance::GRegex)
         ret = ccall(("g_regex_get_match_flags", libgobject), Int32, (Ptr{GRegex},), instance)
-        ret
+        ret2 = RegexMatchFlags(ret)
+        ret2
     end
     function get_max_backref(instance::GRegex)
         ret = ccall(("g_regex_get_max_backref", libgobject), Int32, (Ptr{GRegex},), instance)
@@ -1274,7 +1276,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_regex_get_string_number", libgobject), Int32, (Ptr{GRegex}, Cstring), instance, _name)
         ret
     end
-    function match(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options::Integer)
+    function match(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options)
         m_match_info = Ref{Ptr{GMatchInfo}}()
         ret = ccall(("g_regex_match", libgobject), Cint, (Ptr{GRegex}, Cstring, Int32, Ptr{Ptr{GMatchInfo}}), instance, _string, _match_options, m_match_info)
         ret2 = convert(Bool, ret)
@@ -1282,7 +1284,7 @@ $(Expr(:toplevel, quote
         _match_info = convert(GMatchInfo, _match_info, true)
         (ret2, _match_info)
     end
-    function match_all(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options::Integer)
+    function match_all(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options)
         m_match_info = Ref{Ptr{GMatchInfo}}()
         ret = ccall(("g_regex_match_all", libgobject), Cint, (Ptr{GRegex}, Cstring, Int32, Ptr{Ptr{GMatchInfo}}), instance, _string, _match_options, m_match_info)
         ret2 = convert(Bool, ret)
@@ -1290,7 +1292,7 @@ $(Expr(:toplevel, quote
         _match_info = convert(GMatchInfo, _match_info, true)
         (ret2, _match_info)
     end
-    function match_all_full(instance::GRegex, _string, _start_position::Integer, _match_options::Integer)
+    function match_all_full(instance::GRegex, _string, _start_position::Integer, _match_options)
         m_match_info = Ref{Ptr{GMatchInfo}}()
         _string_len = length(_string)
         err = err_buf()
@@ -1301,7 +1303,7 @@ $(Expr(:toplevel, quote
         _match_info = convert(GMatchInfo, _match_info, true)
         (ret2, _match_info)
     end
-    function match_full(instance::GRegex, _string, _start_position::Integer, _match_options::Integer)
+    function match_full(instance::GRegex, _string, _start_position::Integer, _match_options)
         m_match_info = Ref{Ptr{GMatchInfo}}()
         _string_len = length(_string)
         err = err_buf()
@@ -1317,7 +1319,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GRegex, ret, true)
         ret2
     end
-    function replace(instance::GRegex, _string, _start_position::Integer, _replacement::Union{AbstractString, Symbol}, _match_options::Integer)
+    function replace(instance::GRegex, _string, _start_position::Integer, _replacement::Union{AbstractString, Symbol}, _match_options)
         _string_len = length(_string)
         err = err_buf()
         ret = ccall(("g_regex_replace", libgobject), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, Int32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
@@ -1329,7 +1331,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function replace_literal(instance::GRegex, _string, _start_position::Integer, _replacement::Union{AbstractString, Symbol}, _match_options::Integer)
+    function replace_literal(instance::GRegex, _string, _start_position::Integer, _replacement::Union{AbstractString, Symbol}, _match_options)
         _string_len = length(_string)
         err = err_buf()
         ret = ccall(("g_regex_replace_literal", libgobject), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, Int32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
@@ -1341,7 +1343,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function split(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options::Integer)
+    function split(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options)
         ret = ccall(("g_regex_split", libgobject), Ptr{Cstring}, (Ptr{GRegex}, Cstring, Int32), instance, _string, _match_options)
         ret2 = begin
                 _len = length_zt(ret)
@@ -1351,7 +1353,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function split_full(instance::GRegex, _string, _start_position::Integer, _match_options::Integer, _max_tokens::Integer)
+    function split_full(instance::GRegex, _string, _start_position::Integer, _match_options, _max_tokens::Integer)
         _string_len = length(_string)
         err = err_buf()
         ret = ccall(("g_regex_split_full", libgobject), Ptr{Cstring}, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Int32, Int32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, _max_tokens, err)
@@ -1604,7 +1606,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GUri)
         ret = ccall(("g_uri_get_flags", libgobject), Int32, (Ptr{GUri},), instance)
-        ret
+        ret2 = UriFlags(ret)
+        ret2
     end
     function get_fragment(instance::GUri)
         ret = ccall(("g_uri_get_fragment", libgobject), Cstring, (Ptr{GUri},), instance)
@@ -1682,7 +1685,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function parse_relative(instance::GUri, _uri_ref::Union{AbstractString, Symbol}, _flags::Integer)
+    function parse_relative(instance::GUri, _uri_ref::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
         ret = ccall(("g_uri_parse_relative", libgobject), Ptr{GUri}, (Ptr{GUri}, Cstring, Int32, Ptr{Ptr{GError}}), instance, _uri_ref, _flags, err)
         check_err(err)
@@ -1698,7 +1701,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function to_string_partial(instance::GUri, _flags::Integer)
+    function to_string_partial(instance::GUri, _flags)
         ret = ccall(("g_uri_to_string_partial", libgobject), Cstring, (Ptr{GUri}, Int32), instance, _flags)
         ret2 = if ret == C_NULL
                 nothing

@@ -5,22 +5,22 @@ using Test
 
 @testset "gfile" begin
 
-path=GLib.get_home_dir()
-f=GLib.new_for_path(path)
-path2=GLib.get_path(f)
+path=GLib.G_.get_home_dir()
+f=GLib.G_.new_for_path(path)
+path2=GLib.G_.get_path(GFile(f))
 
 @test path==path2
 
-f2=GLib.dup(f)
+f2=GLib.G_.dup(GFile(f))
 
-@test path==GLib.get_path(f2)
+@test path==GLib.G_.get_path(GFile(f2))
 
-@test GLib.query_exists(f,nothing)
+@test GLib.G_.query_exists(GFile(f),nothing)
 
-@test GLib.Constants.FileType_DIRECTORY == GLib.query_file_type(f,GLib.Constants.FileQueryInfoFlags.NONE,nothing)
+@test GLib.Constants.FileType_DIRECTORY == GLib.G_.query_file_type(GFile(f),GLib.Constants.FileQueryInfoFlags_NONE,nothing)
 
-fi = GLib.query_info(f,"*",GLib.Constants.FileQueryInfoFlags.NONE,nothing)
-attributes = GLib.list_attributes(fi,nothing)
+fi = GLib.G_.query_info(GFile(f),"*",GLib.Constants.FileQueryInfoFlags_NONE,nothing)
+attributes = GLib.G_.list_attributes(fi,nothing)
 #println(attributes)
 
 end

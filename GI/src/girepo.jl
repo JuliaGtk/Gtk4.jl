@@ -384,11 +384,9 @@ function get_base_type(info::GITypeInfo)
                 # we don't have a type defined so return the name
                 return get_struct_name(interf_info)
             end
-        elseif typ===:GIEnumInfo
+        elseif typ === :GIEnumInfo || typ === :GIFlagsInfo
             storage_typ = typetag_primitive[get_storage_type(interf_info)]
             return Enum{storage_typ}
-        elseif typ===:GIFlagsInfo
-            return Int32 # TODO: get the storage type using GI
         elseif typ===:GICallbackInfo
             return Function
         elseif typ===:GIObjectInfo

@@ -26,7 +26,7 @@ export @sigatom, cfunction_
 export gobject_ref, signal_connect, signal_emit, signal_handler_disconnect
 export signal_handler_block, signal_handler_unblock
 
-export get_gtk_property, set_gtk_property!
+export get_gtk_property, set_gtk_property!, gtk_propertynames
 
 export bytestring
 
@@ -118,7 +118,7 @@ eval(include("../gen/gio_functions"))
 
 end
 
-
+include("gobject.jl")
 include("listmodel.jl")
 
 end

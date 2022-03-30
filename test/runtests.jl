@@ -14,7 +14,7 @@ include("list.jl")
 include("gvalue.jl")
 #include("gbinding.jl")
 
-#include("gfile.jl")
+include("gfile.jl")
 include("gmenu.jl")
 include("action-group.jl")
 end

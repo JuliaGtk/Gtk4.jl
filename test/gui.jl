@@ -381,7 +381,7 @@ end
 
 @testset "Canvas & AspectFrame" begin
 c = GtkCanvas()
-f = GtkAspectFrame(0.5, 1, 0.5)
+f = GtkAspectFrame(0.5, 1, 0.5, false)
 G_.set_child(f,c)
 w = GtkWindow(f, "Canvas")
 c.draw = function(_)

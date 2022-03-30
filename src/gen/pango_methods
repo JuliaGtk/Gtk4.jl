@@ -981,7 +981,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(PangoLayout, ret, true)
         ret2
     end
-    function deserialize(_context::PangoContext, _bytes::GBytes, _flags::Integer)
+    function deserialize(_context::PangoContext, _bytes::GBytes, _flags)
         err = err_buf()
         ret = ccall(("pango_layout_deserialize", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GBytes}, Int32, Ptr{Ptr{GError}}), _context, _bytes, _flags, err)
         check_err(err)
@@ -1252,7 +1252,7 @@ $(Expr(:toplevel, quote
         _new_trailing = m_new_trailing[]
         (_new_index, _new_trailing)
     end
-    function serialize(instance::PangoLayout, _flags::Integer)
+    function serialize(instance::PangoLayout, _flags)
         ret = ccall(("pango_layout_serialize", libpango), Ptr{GBytes}, (Ptr{GObject}, Int32), instance, _flags)
         ret2 = convert(GBytes, ret, true)
         ret2
@@ -1346,7 +1346,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_layout_set_wrap", libpango), Nothing, (Ptr{GObject}, Int32), instance, _wrap)
         nothing
     end
-    function write_to_file(instance::PangoLayout, _flags::Integer, _filename::Union{AbstractString, Symbol})
+    function write_to_file(instance::PangoLayout, _flags, _filename::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("pango_layout_write_to_file", libpango), Cint, (Ptr{GObject}, Int32, Cstring, Ptr{Ptr{GError}}), instance, _flags, _filename, err)
         check_err(err)

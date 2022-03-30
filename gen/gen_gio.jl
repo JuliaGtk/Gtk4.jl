@@ -21,7 +21,7 @@ struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skipl
 ## objects
 
 obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress]
-GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,output_cache_init=false)
+GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,output_cache_define=false,output_cache_init=false)
 GI.all_interfaces!(exprs,exports,ns)
 
 push!(exprs,exports)

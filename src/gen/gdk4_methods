@@ -82,7 +82,8 @@ $(Expr(:toplevel, quote
     end
     function get_anchor_hints(instance::GdkPopupLayout)
         ret = ccall(("gdk_popup_layout_get_anchor_hints", libgtk4), Int32, (Ptr{GdkPopupLayout},), instance)
-        ret
+        ret2 = AnchorHints(ret)
+        ret2
     end
     function get_anchor_rect(instance::GdkPopupLayout)
         ret = ccall(("gdk_popup_layout_get_anchor_rect", libgtk4), Ptr{_GdkRectangle}, (Ptr{GdkPopupLayout},), instance)
@@ -124,7 +125,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkPopupLayout, ret, true)
         ret2
     end
-    function set_anchor_hints(instance::GdkPopupLayout, _anchor_hints::Integer)
+    function set_anchor_hints(instance::GdkPopupLayout, _anchor_hints)
         ret = ccall(("gdk_popup_layout_set_anchor_hints", libgtk4), Nothing, (Ptr{GdkPopupLayout}, Int32), instance, _anchor_hints)
         nothing
     end
@@ -767,7 +768,8 @@ $(Expr(:toplevel, quote
     end
     function get_modifier_state(instance::GdkDevice)
         ret = ccall(("gdk_device_get_modifier_state", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = ModifierType(ret)
+        ret2
     end
     function get_name(instance::GdkDevice)
         ret = ccall(("gdk_device_get_name", libgtk4), Cstring, (Ptr{GObject},), instance)
@@ -844,7 +846,8 @@ $(Expr(:toplevel, quote
     end
     function get_axes(instance::GdkDeviceTool)
         ret = ccall(("gdk_device_tool_get_axes", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = AxisFlags(ret)
+        ret2
     end
     function get_hardware_id(instance::GdkDeviceTool)
         ret = ccall(("gdk_device_tool_get_hardware_id", libgtk4), UInt64, (Ptr{GObject},), instance)
@@ -1014,7 +1017,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_display_sync", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function translate_key(instance::GdkDisplay, _keycode::Integer, _state::Integer, _group::Integer)
+    function translate_key(instance::GdkDisplay, _keycode::Integer, _state, _group::Integer)
         m_keyval = Ref{UInt32}()
         m_effective_group = Ref{Int32}()
         m_level = Ref{Int32}()
@@ -1025,6 +1028,7 @@ $(Expr(:toplevel, quote
         _effective_group = m_effective_group[]
         _level = m_level[]
         _consumed = m_consumed[]
+        _consumed = ModifierType(_consumed)
         (ret2, _keyval, _effective_group, _level, _consumed)
     end
     function get()
@@ -1065,7 +1069,8 @@ $(Expr(:toplevel, quote
     end
     function get_actions(instance::GdkDrag)
         ret = ccall(("gdk_drag_get_actions", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = DragAction(ret)
+        ret2
     end
     function get_content(instance::GdkDrag)
         ret = ccall(("gdk_drag_get_content", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
@@ -1098,7 +1103,8 @@ $(Expr(:toplevel, quote
     end
     function get_selected_action(instance::GdkDrag)
         ret = ccall(("gdk_drag_get_selected_action", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = DragAction(ret)
+        ret2
     end
     function get_surface(instance::GdkDrag)
         ret = ccall(("gdk_drag_get_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
@@ -1149,13 +1155,14 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function finish(instance::GdkDrop, _action::Integer)
+    function finish(instance::GdkDrop, _action)
         ret = ccall(("gdk_drop_finish", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _action)
         nothing
     end
     function get_actions(instance::GdkDrop)
         ret = ccall(("gdk_drop_get_actions", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = DragAction(ret)
+        ret2
     end
     function get_device(instance::GdkDrop)
         ret = ccall(("gdk_drop_get_device", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
@@ -1249,7 +1256,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GValue, ret, false)
         ret2
     end
-    function status(instance::GdkDrop, _actions::Integer, _preferred::Integer)
+    function status(instance::GdkDrop, _actions, _preferred)
         ret = ccall(("gdk_drop_status", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32), instance, _actions, _preferred)
         nothing
     end
@@ -1303,7 +1310,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function request_phase(instance::GdkFrameClock, _phase::Integer)
+    function request_phase(instance::GdkFrameClock, _phase)
         ret = ccall(("gdk_frame_clock_request_phase", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _phase)
         nothing
     end
@@ -1484,9 +1491,10 @@ $(Expr(:toplevel, quote
     end
     function get_capabilities(instance::GdkSeat)
         ret = ccall(("gdk_seat_get_capabilities", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = SeatCapabilities(ret)
+        ret2
     end
-    function get_devices(instance::GdkSeat, _capabilities::Integer)
+    function get_devices(instance::GdkSeat, _capabilities)
         ret = ccall(("gdk_seat_get_devices", libgtk4), Ptr{GLib._GList{Ptr{GObject}}}, (Ptr{GObject}, Int32), instance, _capabilities)
         ret2 = GLib.GList(ret, false)
         ret2
@@ -1592,6 +1600,7 @@ $(Expr(:toplevel, quote
         _x = m_x[]
         _y = m_y[]
         _mask = m_mask[]
+        _mask = ModifierType(_mask)
         (ret2, _x, _y, _mask)
     end
     function get_display(instance::GdkSurface)
@@ -1757,7 +1766,8 @@ $(Expr(:toplevel, quote
     end
     function get_flags(instance::GdkPaintable)
         ret = ccall(("gdk_paintable_get_flags", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = PaintableFlags(ret)
+        ret2
     end
     function get_intrinsic_aspect_ratio(instance::GdkPaintable)
         ret = ccall(("gdk_paintable_get_intrinsic_aspect_ratio", libgtk4), Float64, (Ptr{GObject},), instance)
@@ -1835,7 +1845,8 @@ $(Expr(:toplevel, quote
     end
     function get_state(instance::GdkToplevel)
         ret = ccall(("gdk_toplevel_get_state", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
+        ret2 = ToplevelState(ret)
+        ret2
     end
     function lower(instance::GdkToplevel)
         ret = ccall(("gdk_toplevel_lower", libgtk4), Cint, (Ptr{GObject},), instance)

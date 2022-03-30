@@ -196,16 +196,18 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
     handled_symbols
 end
 
-function all_objects!(exprs,exports,ns;print_summary=true,handled=[],skiplist=[],output_cache_init=true)
+function all_objects!(exprs,exports,ns;print_summary=true,handled=[],skiplist=[],output_cache_define=true,output_cache_init=true)
     objects=get_all(ns,GIObjectInfo)
 
     imported=length(objects)
     # precompilation prevents adding directly to GLib's gtype_wrapper cache here
     # so we add to a package local cache and merge with GLib's cache in __init__()
-    gtype_cache = quote
-        gtype_wrapper_cache = Dict{Symbol, Type}()
+    if output_cache_define
+        gtype_cache = quote
+            gtype_wrapper_cache = Dict{Symbol, Type}()
+        end
+        push!(exprs,gtype_cache)
     end
-    push!(exprs,gtype_cache)
     for o in objects
         name=get_name(o)
         if name==:Object

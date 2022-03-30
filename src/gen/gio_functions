@@ -36,7 +36,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function app_info_create_from_commandline(_commandline::Union{AbstractString, Symbol}, _application_name::Maybe(Union{AbstractString, Symbol}), _flags::Integer)
+    function app_info_create_from_commandline(_commandline::Union{AbstractString, Symbol}, _application_name::Maybe(Union{AbstractString, Symbol}), _flags)
         _application_name = if _application_name == nothing
                 C_NULL
             else
@@ -733,7 +733,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GResource, ret, true)
         ret2
     end
-    function resources_enumerate_children(_path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
+    function resources_enumerate_children(_path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
         ret = ccall(("g_resources_enumerate_children", libgio), Ptr{Cstring}, (Cstring, Int32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
         check_err(err)
@@ -745,7 +745,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function resources_get_info(_path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
+    function resources_get_info(_path::Union{AbstractString, Symbol}, _lookup_flags)
         m_size = Ref{UInt64}()
         m_flags = Ref{UInt32}()
         err = err_buf()
@@ -756,14 +756,14 @@ $(Expr(:toplevel, quote
         _flags = m_flags[]
         (ret2, _size, _flags)
     end
-    function resources_lookup_data(_path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
+    function resources_lookup_data(_path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
         ret = ccall(("g_resources_lookup_data", libgio), Ptr{GBytes}, (Cstring, Int32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
         check_err(err)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
-    function resources_open_stream(_path::Union{AbstractString, Symbol}, _lookup_flags::Integer)
+    function resources_open_stream(_path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
         ret = ccall(("g_resources_open_stream", libgio), Ptr{GObject}, (Cstring, Int32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
         check_err(err)
