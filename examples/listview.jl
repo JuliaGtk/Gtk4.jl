@@ -22,4 +22,4 @@ list = GtkListView(GtkSelectionModel(GtkSingleSelection(GLib.GListModel(model)))
 signal_connect(setup_cb, factory, "setup")
 signal_connect(bind_cb, factory, "bind")
 
-push!(sw, list)
+sw[] = list

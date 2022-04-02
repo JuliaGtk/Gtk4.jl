@@ -41,6 +41,7 @@ gvboxed=GLib.gvalue(GString)
 #s=gvboxed[GString]
 #@test isa(s,GString)
 #@test bytestring(s.str)=="another string"
+@test bytestring("test")=="test"
 
 gvobject=GLib.gvalue(GObject)
 gvobject[GObject]=GLib.G_.SimpleAction_new("do-something",nothing)
@@ -53,5 +54,11 @@ obj=gvobject[Any]
 gvs=GLib.gvalues(3.0,6)
 @test Ref(gvs,1)[Any]==3.0
 @test Ref(gvs,2)[Any]==6
+
+gvstring = GLib.gvalue("")
+gvnum = GLib.gvalue(3)
+
+gvstring[] = gvnum
+@test gvstring[String] == "3"
 
 end

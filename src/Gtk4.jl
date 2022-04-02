@@ -40,7 +40,9 @@ end
 
 import Base: push!, pushfirst!, insert!, show, length, setindex!, getindex, iterate,
              convert, empty!, unsafe_convert, string, popfirst!, size, delete!,
-             deleteat!, splice!
+             deleteat!, splice!, first, parent, (:), getproperty, setproperty!
+
+import .GLib: set_gtk_property!, get_gtk_property
 
 using Reexport
 @reexport using Graphics
@@ -53,6 +55,7 @@ import Cairo: destroy
 export parent, hasparent, toplevel, visible, destroy
 export show, hide, grab_focus, fullscreen, unfullscreen,
     maximize, unmaximize, start, stop, set_child, get_child, select!
+export @load_builder
 export GtkCanvas
 
 include("base.jl")

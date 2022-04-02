@@ -4,7 +4,6 @@ const TRI = Union{Ref{_GtkTreeIter}, _GtkTreeIter}
 zero(::Type{GtkTreeIter}) = GtkTreeIter()
 copy(ti::GtkTreeIter) = ti
 copy(ti::_GtkTreeIter) = ti
-#copy(ti::Mutable{GtkTreeIter}) = mutable(ti[])
 copy(ti::Ref{_GtkTreeIter}) = Ref(ti[])
 show(io::IO, iter::GtkTreeIter) = print("GtkTreeIter(...)")
 

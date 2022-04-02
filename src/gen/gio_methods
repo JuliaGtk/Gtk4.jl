@@ -2,7 +2,7 @@ quote
 $(Expr(:toplevel, quote
     function FileAttributeInfoList_new()
         ret = ccall(("g_file_attribute_info_list_new", libgio), Ptr{_GFileAttributeInfoList}, ())
-        ret2 = convert(GFileAttributeInfoList, ret, true)
+        ret2 = convert(Union{GFileAttributeInfoList, Ref{_GFileAttributeInfoList}}, ret, true)
         ret2
     end
     function add(instance::GFileAttributeInfoList, _name::Union{AbstractString, Symbol}, _type, _flags)
@@ -11,7 +11,7 @@ $(Expr(:toplevel, quote
     end
     function dup(instance::GFileAttributeInfoList)
         ret = ccall(("g_file_attribute_info_list_dup", libgio), Ptr{_GFileAttributeInfoList}, (Ptr{_GFileAttributeInfoList},), instance)
-        ret2 = convert(GFileAttributeInfoList, ret, true)
+        ret2 = convert(Union{GFileAttributeInfoList, Ref{_GFileAttributeInfoList}}, ret, true)
         ret2
     end
     function lookup(instance::GFileAttributeInfoList, _name::Union{AbstractString, Symbol})
@@ -21,7 +21,7 @@ $(Expr(:toplevel, quote
     end
     function ref(instance::GFileAttributeInfoList)
         ret = ccall(("g_file_attribute_info_list_ref", libgio), Ptr{_GFileAttributeInfoList}, (Ptr{_GFileAttributeInfoList},), instance)
-        ret2 = convert(GFileAttributeInfoList, ret, true)
+        ret2 = convert(Union{GFileAttributeInfoList, Ref{_GFileAttributeInfoList}}, ret, true)
         ret2
     end
     function unref(instance::GFileAttributeInfoList)
@@ -854,7 +854,7 @@ $(Expr(:toplevel, quote
     end
     function source_new(instance::GCancellable)
         ret = ccall(("g_cancellable_source_new", libgio), Ptr{_GSource}, (Ptr{GObject},), instance)
-        ret2 = convert(GSource, ret, true)
+        ret2 = convert(Union{GSource, Ref{_GSource}}, ret, true)
         ret2
     end
     function CharsetConverter_new(_to_charset::Union{AbstractString, Symbol}, _from_charset::Union{AbstractString, Symbol})
@@ -7721,7 +7721,7 @@ $(Expr(:toplevel, quote
                 _cancellable
             end
         ret = ccall(("g_datagram_based_create_source", libgio), Ptr{_GSource}, (Ptr{GObject}, Int32, Ptr{GObject}), instance, _condition, _cancellable)
-        ret2 = convert(GSource, ret, true)
+        ret2 = convert(Union{GSource, Ref{_GSource}}, ret, true)
         ret2
     end
     function new(_base_socket::GDatagramBased, _server_identity::Maybe(GSocketConnectable))
@@ -9064,7 +9064,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_file_query_settable_attributes", libgio), Ptr{_GFileAttributeInfoList}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _cancellable, err)
         check_err(err)
-        ret2 = convert(GFileAttributeInfoList, ret, true)
+        ret2 = convert(Union{GFileAttributeInfoList, Ref{_GFileAttributeInfoList}}, ret, true)
         ret2
     end
     function query_writable_namespaces(instance::GFile, _cancellable::Maybe(GCancellable))
@@ -9076,7 +9076,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_file_query_writable_namespaces", libgio), Ptr{_GFileAttributeInfoList}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _cancellable, err)
         check_err(err)
-        ret2 = convert(GFileAttributeInfoList, ret, true)
+        ret2 = convert(Union{GFileAttributeInfoList, Ref{_GFileAttributeInfoList}}, ret, true)
         ret2
     end
     function read(instance::GFile, _cancellable::Maybe(GCancellable))
@@ -9722,7 +9722,7 @@ $(Expr(:toplevel, quote
                 _cancellable
             end
         ret = ccall(("g_pollable_input_stream_create_source", libgio), Ptr{_GSource}, (Ptr{GObject}, Ptr{GObject}), instance, _cancellable)
-        ret2 = convert(GSource, ret, true)
+        ret2 = convert(Union{GSource, Ref{_GSource}}, ret, true)
         ret2
     end
     function is_readable(instance::GPollableInputStream)

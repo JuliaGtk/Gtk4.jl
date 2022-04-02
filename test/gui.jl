@@ -6,14 +6,16 @@ activate(w::GtkWidget) = G_.activate(w)
 @testset "Window" begin
 w = GtkWindow("Window", 400, 300)
 
-# if !Sys.iswindows()
-#     # On windows, the wrong screen sizes are reported
-#     @test width(w) == 400
-#     @test height(w) == 300
-#     @test size(w) == (400, 300)
-#     wdth, hght = screen_size(w)
-#     @test wdth > 0 && hght > 0
-# end
+sleep(0.1) # allow the window to appear
+
+if !Sys.iswindows()
+    # On windows, the wrong screen sizes are reported
+    @test width(w) == 400
+    @test height(w) == 300
+    @test size(w) == (400, 300)
+    #wdth, hght = screen_size(w)
+    #@test wdth > 0 && hght > 0
+end
 # G_.gravity(w,10) #GRAVITY_STATIC
 # sleep(0.1)
 
@@ -94,6 +96,7 @@ push!(nb, c, "B")
 #pushfirst!(nb, GtkLabel("Something at the beginning"), "First")
 # splice!(nb, 3)
 w = GtkWindow(nb,"TestDataViewer",600,600)
+@test parent(nb) == w
 # @test pagenumber(nb,c)==3
 destroy(w)
 end
@@ -127,7 +130,8 @@ pw[1]=GtkButton("one")
 pw[2]=pw2
 @test pw[2]==pw2
 pw2[1]=GtkButton("two")
-pw2[2]=GtkButton("three")
+pw2[2]=GtkButton()
+pw2[2][]=GtkLabel("three")
 destroy(w)
 end
 
@@ -231,7 +235,10 @@ pb=GdkPixbuf(data=icon, has_alpha=false)
 @test pb[1,1].g==0xff
 pb[10,10]=GdkPixbufLib.RGB(0,0,0)
 pb[20:30,1:5]=GdkPixbufLib.RGB(0xff,0,0)
-w = GtkWindow(GtkButton(GtkImage(pb)), "Icon button", 60, 40)
+im=GtkImage(pb)
+bu=GtkButton(im)
+w = GtkWindow(bu, "Icon button", 60, 40)
+@test bu[]==im
 pb2=copy(pb)
 @test size(pb2,2) == size(pb)[2]
 pb3=slice(pb2,11:20,11:20)
@@ -248,23 +255,28 @@ set_gtk_property!(check,:active,true)
 @test get_gtk_property(check,:active,AbstractString) == "TRUE"
 set_gtk_property!(check,:label,"new label")
 @test get_gtk_property(check,:label,AbstractString) == "new label"
-#ctr = 0
-#tk_bind(check, "command", cb)
-#tcl(check, "invoke")
-#@test ctr == 1
 destroy(w)
 end
 
+@testset "switch and togglebutton" begin
+switch = GtkSwitch(true)
+w = GtkWindow(switch,"Switch")
+toggle = GtkToggleButton("toggle me")
+w[] = toggle
+destroy(w)
+end
 
 @testset "LinkButton" begin
-b = GtkLinkButton("https://github.com/JuliaGtk/Gtk4.jl", "Gtk4.jl")
+b = GtkLinkButton("https://github.com/JuliaGtk/Gtk4.jl", "Gtk4.jl", false)
 w = GtkWindow(b, "LinkButton")
+b2 = GtkLinkButton("https://github.com/JuliaGraphics/Gtk.jl", true)
+w[] = b2
 destroy(w)
 end
 
 @testset "VolumeButton" begin
 b = GtkVolumeButton(0.3)
-w = GtkWindow(b, "VolumeButton", 50, 50)
+w = GtkWindow(b, "VolumeButton", 50, 50, false)
 destroy(w)
 end
 
@@ -369,6 +381,10 @@ widgets = [w for w in b]
 button = b["a_button"]
 @test isa(button,GtkButton)
 @test isa(b[1],GtkWidget)
+
+@load_builder(b)
+
+@test button == b["a_button"]
 
 #@test_throws ErrorException b2 = Builder(;filename="test2.glade")
 
@@ -487,4 +503,36 @@ ts[iter,1] = "ONE"
 @test Gtk4.iter_n_children(GtkTreeModel(ts), iter)==1
 
 destroy(w)
+end
+
+@testset "List view" begin
+win = GtkWindow("Listview demo")
+sw = GtkScrolledWindow()
+push!(win, sw)
+
+model = GtkStringList(["Apple","Orange","Kiwi"])
+factory = GtkSignalListItemFactory()
+
+@test length(model) == 3
+@test model[2]=="Orange"
+
+function setup_cb(f, li)
+    set_child(li,GtkLabel(""))
+end
+
+function bind_cb(f, li)
+    text = li[].string
+    label = get_child(li)
+    label.label = text
+end
+
+list = GtkListView(GtkSelectionModel(GtkSingleSelection(GLib.GListModel(model))), factory)
+
+signal_connect(setup_cb, factory, "setup")
+signal_connect(bind_cb, factory, "bind")
+
+sw[]=list
+
+destroy(win)
+
 end

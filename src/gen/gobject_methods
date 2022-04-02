@@ -1,6 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    function copy(instance::GValue, _dest_value::GValue)
+    function copy(instance::GValue, _dest_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_value_copy", libgobject), Nothing, (Ptr{_GValue}, Ptr{_GValue}), instance, _dest_value)
         nothing
     end
@@ -121,7 +121,7 @@ $(Expr(:toplevel, quote
     end
     function init(instance::GValue, _g_type::Integer)
         ret = ccall(("g_value_init", libgobject), Ptr{_GValue}, (Ptr{_GValue}, UInt64), instance, _g_type)
-        ret2 = convert(GValue, ret, false)
+        ret2 = convert(Union{GValue, Ref{_GValue}}, ret, false)
         ret2
     end
     function peek_pointer(instance::GValue)
@@ -131,7 +131,7 @@ $(Expr(:toplevel, quote
     end
     function reset(instance::GValue)
         ret = ccall(("g_value_reset", libgobject), Ptr{_GValue}, (Ptr{_GValue},), instance)
-        ret2 = convert(GValue, ret, true)
+        ret2 = convert(Union{GValue, Ref{_GValue}}, ret, true)
         ret2
     end
     function set_boolean(instance::GValue, _v_boolean::Bool)
@@ -307,7 +307,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_value_take_variant", libgobject), Nothing, (Ptr{_GValue}, Ptr{GVariant}), instance, _variant)
         nothing
     end
-    function transform(instance::GValue, _dest_value::GValue)
+    function transform(instance::GValue, _dest_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_value_transform", libgobject), Cint, (Ptr{_GValue}, Ptr{_GValue}), instance, _dest_value)
         ret2 = convert(Bool, ret)
         ret2
@@ -408,7 +408,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Nothing, ret)
         ret2
     end
-    function get_property(instance::GObject, _property_name::Union{AbstractString, Symbol}, _value::GValue)
+    function get_property(instance::GObject, _property_name::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_object_get_property", libgobject), Nothing, (Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _property_name, _value)
         nothing
     end
@@ -453,7 +453,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_object_set_data", libgobject), Nothing, (Ptr{GObject}, Cstring, Ptr{Nothing}), instance, _key, _data)
         nothing
     end
-    function set_property(instance::GObject, _property_name::Union{AbstractString, Symbol}, _value::GValue)
+    function set_property(instance::GObject, _property_name::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_object_set_property", libgobject), Nothing, (Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _property_name, _value)
         nothing
     end

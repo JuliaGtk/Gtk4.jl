@@ -150,26 +150,26 @@ $(Expr(:toplevel, quote
         ret2 = convert(GParamSpec, ret, true)
         ret2
     end
-    function param_value_convert(_pspec::GParamSpec, _src_value::GValue, _dest_value::GValue, _strict_validation::Bool)
+    function param_value_convert(_pspec::GParamSpec, _src_value::Union{GValue, Ref{_GValue}}, _dest_value::Union{GValue, Ref{_GValue}}, _strict_validation::Bool)
         ret = ccall(("g_param_value_convert", libgobject), Cint, (Ptr{GObject}, Ptr{_GValue}, Ptr{_GValue}, Cint), _pspec, _src_value, _dest_value, _strict_validation)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function param_value_defaults(_pspec::GParamSpec, _value::GValue)
+    function param_value_defaults(_pspec::GParamSpec, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_param_value_defaults", libgobject), Cint, (Ptr{GObject}, Ptr{_GValue}), _pspec, _value)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function param_value_set_default(_pspec::GParamSpec, _value::GValue)
+    function param_value_set_default(_pspec::GParamSpec, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_param_value_set_default", libgobject), Nothing, (Ptr{GObject}, Ptr{_GValue}), _pspec, _value)
         nothing
     end
-    function param_value_validate(_pspec::GParamSpec, _value::GValue)
+    function param_value_validate(_pspec::GParamSpec, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_param_value_validate", libgobject), Cint, (Ptr{GObject}, Ptr{_GValue}), _pspec, _value)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function param_values_cmp(_pspec::GParamSpec, _value1::GValue, _value2::GValue)
+    function param_values_cmp(_pspec::GParamSpec, _value1::Union{GValue, Ref{_GValue}}, _value2::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_param_values_cmp", libgobject), Int32, (Ptr{GObject}, Ptr{_GValue}, Ptr{_GValue}), _pspec, _value1, _value2)
         ret
     end
@@ -177,7 +177,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_pointer_type_register_static", libgobject), UInt64, (Cstring,), _name)
         ret
     end
-    function signal_chain_from_overridden(_instance_and_params, _return_value::GValue)
+    function signal_chain_from_overridden(_instance_and_params, _return_value::Union{GValue, Ref{_GValue}})
         _instance_and_params = convert(Vector{_GValue}, _instance_and_params)
         ret = ccall(("g_signal_chain_from_overridden", libgobject), Nothing, (Ptr{_GValue}, Ptr{_GValue}), _instance_and_params, _return_value)
         nothing
@@ -253,7 +253,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_signal_stop_emission_by_name", libgobject), Nothing, (Ptr{GObject}, Cstring), _instance, _detailed_signal)
         nothing
     end
-    function strdup_value_contents(_value::GValue)
+    function strdup_value_contents(_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_strdup_value_contents", libgobject), Cstring, (Ptr{_GValue},), _value)
         ret2 = if ret == C_NULL
                 nothing
@@ -284,12 +284,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function type_check_value(_value::GValue)
+    function type_check_value(_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_type_check_value", libgobject), Cint, (Ptr{_GValue},), _value)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function type_check_value_holds(_value::GValue, _type::Integer)
+    function type_check_value_holds(_value::Union{GValue, Ref{_GValue}}, _type::Integer)
         ret = ccall(("g_type_check_value_holds", libgobject), Cint, (Ptr{_GValue}, UInt64), _value, _type)
         ret2 = convert(Bool, ret)
         ret2

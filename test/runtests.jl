@@ -4,7 +4,7 @@ using Test
 if Sys.islinux()
 @testset "GLib" begin
 include("keyfile.jl")
-include("date.jl")
+#include("date.jl")
 include("datetime.jl")
 include("bytes.jl")
 #include("gstring.jl")
@@ -33,6 +33,7 @@ end
 include("gui.jl")
 include("comboboxtext.jl")
 include("tree.jl")
+include("text.jl")
 end
 
 GC.gc()

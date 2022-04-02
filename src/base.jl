@@ -1,10 +1,10 @@
-destroy(w::GtkWidget) = G_.destroy(w)
 parent(w::GtkWidget) = G_.get_parent(w)
 hasparent(w::GtkWidget) = G_.get_parent(w) !== nothing
 toplevel(w::GtkWidget) = G_.get_root(w)
 
 width(w::GtkWidget) = G_.get_allocated_width(w)
 height(w::GtkWidget) = G_.get_allocated_height(w)
+size(w::GtkWidget) = (width(w), height(w))
 
 ### Functions and methods common to all GtkWidget objects
 visible(w::GtkWidget) = G_.get_visible(w)

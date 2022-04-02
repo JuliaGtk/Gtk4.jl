@@ -4,7 +4,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_cairo_draw_from_gl", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{GObject}, Int32, Int32, Int32, Int32, Int32, Int32, Int32), _cr, _surface, _source, _source_type, _buffer_scale, _x, _y, _width, _height)
         nothing
     end
-    function cairo_rectangle(_cr::cairoContext, _rectangle::GdkRectangle)
+    function cairo_rectangle(_cr::cairoContext, _rectangle::Union{GdkRectangle, Ref{_GdkRectangle}})
         ret = ccall(("gdk_cairo_rectangle", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRectangle}), _cr, _rectangle)
         nothing
     end
@@ -21,7 +21,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_cairo_set_source_pixbuf", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{GObject}, Float64, Float64), _cr, _pixbuf, _pixbuf_x, _pixbuf_y)
         nothing
     end
-    function cairo_set_source_rgba(_cr::cairoContext, _rgba::GdkRGBA)
+    function cairo_set_source_rgba(_cr::cairoContext, _rgba::Union{GdkRGBA, Ref{_GdkRGBA}})
         ret = ccall(("gdk_cairo_set_source_rgba", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRGBA}), _cr, _rgba)
         nothing
     end
@@ -44,7 +44,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_content_deserialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt64, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _stream, _mime_type, _type, _io_priority, _cancellable, _callback, _user_data)
         nothing
     end
-    function content_deserialize_finish(_result::GAsyncResult, _value::GValue)
+    function content_deserialize_finish(_result::GAsyncResult, _value::Union{GValue, Ref{_GValue}})
         err = err_buf()
         ret = ccall(("gdk_content_deserialize_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{_GValue}, Ptr{Ptr{GError}}), _result, _value, err)
         check_err(err)
@@ -60,7 +60,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::GValue, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+    function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = if _cancellable == nothing
                 C_NULL
             else

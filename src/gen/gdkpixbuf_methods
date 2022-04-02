@@ -2,7 +2,7 @@ quote
 $(Expr(:toplevel, quote
     function copy(instance::GdkPixbufFormat)
         ret = ccall(("gdk_pixbuf_format_copy", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Ptr{_GdkPixbufFormat},), instance)
-        ret2 = convert(GdkPixbufFormat, ret, true)
+        ret2 = convert(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, true)
         ret2
     end
     function free(instance::GdkPixbufFormat)
@@ -224,7 +224,7 @@ $(Expr(:toplevel, quote
         ret2 = if ret == C_NULL
                 nothing
             else
-                convert(GdkPixbufFormat, ret, false)
+                convert(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, false)
             end
         _width = m_width[]
         _height = m_height[]
@@ -663,7 +663,7 @@ $(Expr(:toplevel, quote
         ret2 = if ret == C_NULL
                 nothing
             else
-                convert(GdkPixbufFormat, ret, false)
+                convert(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, false)
             end
         ret2
     end

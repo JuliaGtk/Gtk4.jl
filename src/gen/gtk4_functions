@@ -83,15 +83,15 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function accessible_property_init_value(_property, _value::GValue)
+    function accessible_property_init_value(_property, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gtk_accessible_property_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _property, _value)
         nothing
     end
-    function accessible_relation_init_value(_relation, _value::GValue)
+    function accessible_relation_init_value(_relation, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gtk_accessible_relation_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _relation, _value)
         nothing
     end
-    function accessible_state_init_value(_state, _value::GValue)
+    function accessible_state_init_value(_state, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gtk_accessible_state_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _state, _value)
         nothing
     end
@@ -157,12 +157,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_distribute_natural_allocation", libgtk4), Int32, (Int32, UInt32, Ptr{_GtkRequestedSize}), _extra_space, _n_requested_sizes, _sizes)
         ret
     end
-    function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::GValue, _pspec::GParamSpec)
+    function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParamSpec)
         ret = ccall(("gtk_editable_delegate_get_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GObject}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function editable_delegate_set_property(_object::GObject, _prop_id::Integer, _value::GValue, _pspec::GParamSpec)
+    function editable_delegate_set_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParamSpec)
         ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GObject}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
@@ -433,7 +433,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkContentProvider, ret, true)
         ret2
     end
-    function tree_get_row_drag_data(_value::GValue)
+    function tree_get_row_drag_data(_value::Union{GValue, Ref{_GValue}})
         m_tree_model = Ref{Ptr{GObject}}()
         m_path = Ref{Ptr{GtkTreePath}}()
         ret = ccall(("gtk_tree_get_row_drag_data", libgtk4), Cint, (Ptr{_GValue}, Ptr{Ptr{GObject}}, Ptr{Ptr{GtkTreePath}}), _value, m_tree_model, m_path)
@@ -452,7 +452,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_row_reference_inserted", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}), _proxy, _path)
         nothing
     end
-    function value_dup_expression(_value::GValue)
+    function value_dup_expression(_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gtk_value_dup_expression", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
         ret2 = if ret == C_NULL
                 nothing
@@ -461,7 +461,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function value_get_expression(_value::GValue)
+    function value_get_expression(_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gtk_value_get_expression", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
         ret2 = if ret == C_NULL
                 nothing
@@ -470,11 +470,11 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function value_set_expression(_value::GValue, _expression::GtkExpression)
+    function value_set_expression(_value::Union{GValue, Ref{_GValue}}, _expression::GtkExpression)
         ret = ccall(("gtk_value_set_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GObject}), _value, _expression)
         nothing
     end
-    function value_take_expression(_value::GValue, _expression::Maybe(GtkExpression))
+    function value_take_expression(_value::Union{GValue, Ref{_GValue}}, _expression::Maybe(GtkExpression))
         _expression = if _expression == nothing
                 C_NULL
             else

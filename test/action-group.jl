@@ -21,4 +21,18 @@ a=GLib.G_.SimpleAction_new("do-something",nothing)
 @test a.state_type == nothing
 @test a.enabled == true
 
+repr = Base.print_to_string(a) # should display properties
+@test endswith(repr,')')
+@test occursin("name=\"do-something\"",repr)
+@test occursin("enabled=true",repr)
+
+gpropnames = gtk_propertynames(a)
+@test :name in gpropnames
+@test :enabled in gpropnames
+
+propnames = propertynames(a)
+@test :name in propnames
+@test :enabled in propnames
+@test :handle in propnames
+
 end

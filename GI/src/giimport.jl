@@ -575,8 +575,9 @@ function extract_type(typeinfo::GITypeInfo, basetype::Type{T}) where {T<:GBoxed}
     name = get_full_name(interf_info)
     sname = get_struct_name(interf_info)
     p = is_pointer(typeinfo)
+    jarg = (name != sname ? :(Union{$name,Ref{$sname}}) : name)
     ctype = is_pointer(typeinfo) ? :(Ptr{$sname}) : sname
-    TypeDesc{Type{GBoxed}}(GBoxed, name, name, ctype)
+    TypeDesc{Type{GBoxed}}(GBoxed, jarg, name, ctype)
 end
 
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) where {T <: Type{GObject}}

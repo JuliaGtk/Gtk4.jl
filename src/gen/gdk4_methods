@@ -65,7 +65,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_frame_timings_unref", libgtk4), Nothing, (Ptr{GdkFrameTimings},), instance)
         nothing
     end
-    function PopupLayout_new(_anchor_rect::GdkRectangle, _rect_anchor, _surface_anchor)
+    function PopupLayout_new(_anchor_rect::Union{GdkRectangle, Ref{_GdkRectangle}}, _rect_anchor, _surface_anchor)
         ret = ccall(("gdk_popup_layout_new", libgtk4), Ptr{GdkPopupLayout}, (Ptr{_GdkRectangle}, Int32, Int32), _anchor_rect, _rect_anchor, _surface_anchor)
         ret2 = convert(GdkPopupLayout, ret, true)
         ret2
@@ -87,7 +87,7 @@ $(Expr(:toplevel, quote
     end
     function get_anchor_rect(instance::GdkPopupLayout)
         ret = ccall(("gdk_popup_layout_get_anchor_rect", libgtk4), Ptr{_GdkRectangle}, (Ptr{GdkPopupLayout},), instance)
-        ret2 = convert(GdkRectangle, ret, false)
+        ret2 = convert(Union{GdkRectangle, Ref{_GdkRectangle}}, ret, false)
         ret2
     end
     function get_offset(instance::GdkPopupLayout)
@@ -129,7 +129,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_popup_layout_set_anchor_hints", libgtk4), Nothing, (Ptr{GdkPopupLayout}, Int32), instance, _anchor_hints)
         nothing
     end
-    function set_anchor_rect(instance::GdkPopupLayout, _anchor_rect::GdkRectangle)
+    function set_anchor_rect(instance::GdkPopupLayout, _anchor_rect::Union{GdkRectangle, Ref{_GdkRectangle}})
         ret = ccall(("gdk_popup_layout_set_anchor_rect", libgtk4), Nothing, (Ptr{GdkPopupLayout}, Ptr{_GdkRectangle}), instance, _anchor_rect)
         nothing
     end
@@ -155,10 +155,10 @@ $(Expr(:toplevel, quote
     end
     function copy(instance::GdkRGBA)
         ret = ccall(("gdk_rgba_copy", libgtk4), Ptr{_GdkRGBA}, (Ptr{_GdkRGBA},), instance)
-        ret2 = convert(GdkRGBA, ret, true)
+        ret2 = convert(Union{GdkRGBA, Ref{_GdkRGBA}}, ret, true)
         ret2
     end
-    function equal(instance::GdkRGBA, _p2::GdkRGBA)
+    function equal(instance::GdkRGBA, _p2::Union{GdkRGBA, Ref{_GdkRGBA}})
         ret = ccall(("gdk_rgba_equal", libgtk4), Cint, (Ptr{_GdkRGBA}, Ptr{_GdkRGBA}), instance, _p2)
         ret2 = convert(Bool, ret)
         ret2
@@ -200,19 +200,19 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function equal(instance::GdkRectangle, _rect2::GdkRectangle)
+    function equal(instance::GdkRectangle, _rect2::Union{GdkRectangle, Ref{_GdkRectangle}})
         ret = ccall(("gdk_rectangle_equal", libgtk4), Cint, (Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _rect2)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function intersect(instance::GdkRectangle, _src2::GdkRectangle)
+    function intersect(instance::GdkRectangle, _src2::Union{GdkRectangle, Ref{_GdkRectangle}})
         m_dest = Ref{_GdkRectangle}()
         ret = ccall(("gdk_rectangle_intersect", libgtk4), Cint, (Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _src2, m_dest)
         ret2 = convert(Bool, ret)
         _dest = m_dest[]
         (ret2, _dest)
     end
-    function union(instance::GdkRectangle, _src2::GdkRectangle)
+    function union(instance::GdkRectangle, _src2::Union{GdkRectangle, Ref{_GdkRectangle}})
         m_dest = Ref{_GdkRectangle}()
         ret = ccall(("gdk_rectangle_union", libgtk4), Nothing, (Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _src2, m_dest)
         _dest = m_dest[]
@@ -473,7 +473,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_clipboard_read_value_finish", libgtk4), Ptr{_GValue}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = convert(GValue, ret, false)
+        ret2 = convert(Union{GValue, Ref{_GValue}}, ret, false)
         ret2
     end
     function set_content(instance::GdkClipboard, _provider::Maybe(GdkContentProvider))
@@ -486,7 +486,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set(instance::GdkClipboard, _value::GValue)
+    function set(instance::GdkClipboard, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gdk_clipboard_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GValue}), instance, _value)
         nothing
     end
@@ -555,7 +555,7 @@ $(Expr(:toplevel, quote
     end
     function get_value(instance::GdkContentDeserializer)
         ret = ccall(("gdk_content_deserializer_get_value", libgtk4), Ptr{_GValue}, (Ptr{GObject},), instance)
-        ret2 = convert(GValue, ret, false)
+        ret2 = convert(Union{GValue, Ref{_GValue}}, ret, false)
         ret2
     end
     function return_error(instance::GdkContentDeserializer, _error)
@@ -571,7 +571,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkContentProvider, ret, true)
         ret2
     end
-    function ContentProvider_new_for_value(_value::GValue)
+    function ContentProvider_new_for_value(_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gdk_content_provider_new_for_value", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
         ret2 = convert(GdkContentProvider, ret, true)
         ret2
@@ -587,7 +587,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_content_provider_content_changed", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function get_value(instance::GdkContentProvider, _value::GValue)
+    function get_value(instance::GdkContentProvider, _value::Union{GValue, Ref{_GValue}})
         err = err_buf()
         ret = ccall(("gdk_content_provider_get_value", libgtk4), Cint, (Ptr{GObject}, Ptr{_GValue}, Ptr{Ptr{GError}}), instance, _value, err)
         check_err(err)
@@ -669,7 +669,7 @@ $(Expr(:toplevel, quote
     end
     function get_value(instance::GdkContentSerializer)
         ret = ccall(("gdk_content_serializer_get_value", libgtk4), Ptr{_GValue}, (Ptr{GObject},), instance)
-        ret2 = convert(GValue, ret, false)
+        ret2 = convert(Union{GValue, Ref{_GValue}}, ret, false)
         ret2
     end
     function return_error(instance::GdkContentSerializer, _error)
@@ -941,7 +941,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkClipboard, ret, false)
         ret2
     end
-    function get_setting(instance::GdkDisplay, _name::Union{AbstractString, Symbol}, _value::GValue)
+    function get_setting(instance::GdkDisplay, _name::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gdk_display_get_setting", libgtk4), Cint, (Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _name, _value)
         ret2 = convert(Bool, ret)
         ret2
@@ -1251,7 +1251,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_drop_read_value_finish", libgtk4), Ptr{_GValue}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = convert(GValue, ret, false)
+        ret2 = convert(Union{GValue, Ref{_GValue}}, ret, false)
         ret2
     end
     function status(instance::GdkDrop, _actions, _preferred)

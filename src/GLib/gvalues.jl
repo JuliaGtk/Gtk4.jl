@@ -40,7 +40,7 @@ function settype!(gv::Ref{GValue}, ::Type{T}) where T <: GBoxed
     gv
 end
 
-function setindex!(dest::Ref{GValue}, src::Ref{GValue})
+function setindex!(dest::Base.RefValue{GValue}, src::Ref{GValue})
     ccall((:g_value_transform, libgobject), Cint, (Ptr{GValue}, Ptr{GValue}), src, dest) != 0
     src
 end
