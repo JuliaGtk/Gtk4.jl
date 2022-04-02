@@ -24,21 +24,18 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_expand", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneBox}), instance, _point, m_res)
         _res = m_res[]
-        _res = convert(GrapheneBox, _res, false)
         _res
     end
     function expand_scalar(instance::GrapheneBox, _scalar::Real)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_expand_scalar", libgraphene), Nothing, (Ptr{_GrapheneBox}, Float32, Ptr{_GrapheneBox}), instance, _scalar, m_res)
         _res = m_res[]
-        _res = convert(GrapheneBox, _res, false)
         _res
     end
     function expand_vec3(instance::GrapheneBox, _vec::GrapheneVec3)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_expand_vec3", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GrapheneVec3}, Ptr{_GrapheneBox}), instance, _vec, m_res)
         _res = m_res[]
-        _res = convert(GrapheneBox, _res, false)
         _res
     end
     function free(instance::GrapheneBox)
@@ -49,14 +46,12 @@ $(Expr(:toplevel, quote
         m_sphere = Ref{_GrapheneSphere}()
         ret = ccall(("graphene_box_get_bounding_sphere", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GrapheneSphere}), instance, m_sphere)
         _sphere = m_sphere[]
-        _sphere = convert(GrapheneSphere, _sphere, false)
         _sphere
     end
     function get_center(instance::GrapheneBox)
         m_center = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_box_get_center", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}), instance, m_center)
         _center = m_center[]
-        _center = convert(GraphenePoint3D, _center, false)
         _center
     end
     function get_depth(instance::GrapheneBox)
@@ -71,21 +66,18 @@ $(Expr(:toplevel, quote
         m_max = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_box_get_max", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}), instance, m_max)
         _max = m_max[]
-        _max = convert(GraphenePoint3D, _max, false)
         _max
     end
     function get_min(instance::GrapheneBox)
         m_min = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_box_get_min", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}), instance, m_min)
         _min = m_min[]
-        _min = convert(GraphenePoint3D, _min, false)
         _min
     end
     function get_size(instance::GrapheneBox)
         m_size = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_box_get_size", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GrapheneVec3}), instance, m_size)
         _size = m_size[]
-        _size = convert(GrapheneVec3, _size, false)
         _size
     end
     function get_vertices(instance::GrapheneBox)
@@ -152,14 +144,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_box_intersection", libgraphene), Cint, (Ptr{_GrapheneBox}, Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _b, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
-        _res = convert(GrapheneBox, _res, false)
         (ret2, _res)
     end
     function union(instance::GrapheneBox, _b::GrapheneBox)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_union", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneBox, _res, false)
         _res
     end
     function Euler_alloc()
@@ -264,28 +254,24 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneEuler}()
         ret = ccall(("graphene_euler_reorder", libgraphene), Nothing, (Ptr{_GrapheneEuler}, UInt16, Ptr{_GrapheneEuler}), instance, _order, m_res)
         _res = m_res[]
-        _res = convert(GrapheneEuler, _res, false)
         _res
     end
     function to_matrix(instance::GrapheneEuler)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_euler_to_matrix", libgraphene), Nothing, (Ptr{_GrapheneEuler}, Ptr{_GrapheneMatrix}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneMatrix, _res, false)
         _res
     end
     function to_quaternion(instance::GrapheneEuler)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_euler_to_quaternion", libgraphene), Nothing, (Ptr{_GrapheneEuler}, Ptr{_GrapheneQuaternion}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuaternion, _res, false)
         _res
     end
     function to_vec3(instance::GrapheneEuler)
         m_res = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_euler_to_vec3", libgraphene), Nothing, (Ptr{_GrapheneEuler}, Ptr{_GrapheneVec3}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec3, _res, false)
         _res
     end
     function Frustum_alloc()
@@ -352,15 +338,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_matrix_decompose", libgraphene), Cint, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}, Ptr{_GrapheneQuaternion}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec4}), instance, m_translate, m_scale, m_rotate, m_shear, m_perspective)
         ret2 = convert(Bool, ret)
         _translate = m_translate[]
-        _translate = convert(GrapheneVec3, _translate, false)
         _scale = m_scale[]
-        _scale = convert(GrapheneVec3, _scale, false)
         _rotate = m_rotate[]
-        _rotate = convert(GrapheneQuaternion, _rotate, false)
         _shear = m_shear[]
-        _shear = convert(GrapheneVec3, _shear, false)
         _perspective = m_perspective[]
-        _perspective = convert(GrapheneVec4, _perspective, false)
         (ret2, _translate, _scale, _rotate, _shear, _perspective)
     end
     function determinant(instance::GrapheneMatrix)
@@ -385,7 +366,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_matrix_get_row", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, UInt32, Ptr{_GrapheneVec4}), instance, _index_, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function get_value(instance::GrapheneMatrix, _row::Integer, _col::Integer)
@@ -486,7 +466,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_interpolate", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Float64, Ptr{_GrapheneMatrix}), instance, _b, _factor, m_res)
         _res = m_res[]
-        _res = convert(GrapheneMatrix, _res, false)
         _res
     end
     function inverse(instance::GrapheneMatrix)
@@ -494,7 +473,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_matrix_inverse", libgraphene), Cint, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
-        _res = convert(GrapheneMatrix, _res, false)
         (ret2, _res)
     end
     function is_2d(instance::GrapheneMatrix)
@@ -521,7 +499,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_multiply", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneMatrix, _res, false)
         _res
     end
     function near(instance::GrapheneMatrix, _b::GrapheneMatrix, _epsilon::Real)
@@ -533,14 +510,12 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_normalize", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneMatrix, _res, false)
         _res
     end
     function perspective(instance::GrapheneMatrix, _depth::Real)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_perspective", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32, Ptr{_GrapheneMatrix}), instance, _depth, m_res)
         _res = m_res[]
-        _res = convert(GrapheneMatrix, _res, false)
         _res
     end
     function print(instance::GrapheneMatrix)
@@ -551,21 +526,18 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GraphenePoint}()
         ret = ccall(("graphene_matrix_project_point", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _p, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint, _res, false)
         _res
     end
     function project_rect(instance::GrapheneMatrix, _r::GrapheneRect)
         m_res = Ref{_GrapheneQuad}()
         ret = ccall(("graphene_matrix_project_rect", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneQuad}), instance, _r, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuad, _res, false)
         _res
     end
     function project_rect_bounds(instance::GrapheneMatrix, _r::GrapheneRect)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_matrix_project_rect_bounds", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _r, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function rotate(instance::GrapheneMatrix, _angle::Real, _axis::GrapheneVec3)
@@ -635,63 +607,54 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_matrix_transform_bounds", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _r, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function transform_box(instance::GrapheneMatrix, _b::GrapheneBox)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_matrix_transform_box", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneBox, _res, false)
         _res
     end
     function transform_point(instance::GrapheneMatrix, _p::GraphenePoint)
         m_res = Ref{_GraphenePoint}()
         ret = ccall(("graphene_matrix_transform_point", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _p, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint, _res, false)
         _res
     end
     function transform_point3d(instance::GrapheneMatrix, _p::GraphenePoint3D)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_matrix_transform_point3d", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _p, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function transform_ray(instance::GrapheneMatrix, _r::GrapheneRay)
         m_res = Ref{_GrapheneRay}()
         ret = ccall(("graphene_matrix_transform_ray", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRay}, Ptr{_GrapheneRay}), instance, _r, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRay, _res, false)
         _res
     end
     function transform_rect(instance::GrapheneMatrix, _r::GrapheneRect)
         m_res = Ref{_GrapheneQuad}()
         ret = ccall(("graphene_matrix_transform_rect", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneQuad}), instance, _r, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuad, _res, false)
         _res
     end
     function transform_sphere(instance::GrapheneMatrix, _s::GrapheneSphere)
         m_res = Ref{_GrapheneSphere}()
         ret = ccall(("graphene_matrix_transform_sphere", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneSphere}, Ptr{_GrapheneSphere}), instance, _s, m_res)
         _res = m_res[]
-        _res = convert(GrapheneSphere, _res, false)
         _res
     end
     function transform_vec3(instance::GrapheneMatrix, _v::GrapheneVec3)
         m_res = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_matrix_transform_vec3", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _v, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec3, _res, false)
         _res
     end
     function transform_vec4(instance::GrapheneMatrix, _v::GrapheneVec4)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_matrix_transform_vec4", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _v, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function translate(instance::GrapheneMatrix, _pos::GraphenePoint3D)
@@ -702,21 +665,18 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_transpose", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneMatrix, _res, false)
         _res
     end
     function unproject_point3d(instance::GrapheneMatrix, _modelview::GrapheneMatrix, _point::GraphenePoint3D)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_matrix_unproject_point3d", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _modelview, _point, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function untransform_bounds(instance::GrapheneMatrix, _r::GrapheneRect, _bounds::GrapheneRect)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_matrix_untransform_bounds", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _r, _bounds, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function untransform_point(instance::GrapheneMatrix, _p::GraphenePoint, _bounds::GrapheneRect)
@@ -724,7 +684,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_matrix_untransform_point", libgraphene), Cint, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, _p, _bounds, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
-        _res = convert(GraphenePoint, _res, false)
         (ret2, _res)
     end
     function Plane_alloc()
@@ -753,7 +712,6 @@ $(Expr(:toplevel, quote
         m_normal = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_plane_get_normal", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GrapheneVec3}), instance, m_normal)
         _normal = m_normal[]
-        _normal = convert(GrapheneVec3, _normal, false)
         _normal
     end
     function init(instance::GraphenePlane, _normal::Maybe(GrapheneVec3), _constant::Real)
@@ -790,14 +748,12 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_plane_negate", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GraphenePlane}), instance, m_res)
         _res = m_res[]
-        _res = convert(GraphenePlane, _res, false)
         _res
     end
     function normalize(instance::GraphenePlane)
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_plane_normalize", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GraphenePlane}), instance, m_res)
         _res = m_res[]
-        _res = convert(GraphenePlane, _res, false)
         _res
     end
     function transform(instance::GraphenePlane, _matrix::GrapheneMatrix, _normal_matrix::Maybe(GrapheneMatrix))
@@ -809,7 +765,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_plane_transform", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Ptr{_GraphenePlane}), instance, _matrix, _normal_matrix, m_res)
         _res = m_res[]
-        _res = convert(GraphenePlane, _res, false)
         _res
     end
     function Point_alloc()
@@ -853,7 +808,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GraphenePoint}()
         ret = ccall(("graphene_point_interpolate", libgraphene), Nothing, (Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Float64, Ptr{_GraphenePoint}), instance, _b, _factor, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint, _res, false)
         _res
     end
     function near(instance::GraphenePoint, _b::GraphenePoint, _epsilon::Real)
@@ -865,7 +819,6 @@ $(Expr(:toplevel, quote
         m_v = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_point_to_vec2", libgraphene), Nothing, (Ptr{_GraphenePoint}, Ptr{_GrapheneVec2}), instance, m_v)
         _v = m_v[]
-        _v = convert(GrapheneVec2, _v, false)
         _v
     end
     function Point3D_alloc()
@@ -877,14 +830,12 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_cross", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function distance(instance::GraphenePoint3D, _b::GraphenePoint3D)
         m_delta = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_point3d_distance", libgraphene), Float32, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec3}), instance, _b, m_delta)
         _delta = m_delta[]
-        _delta = convert(GrapheneVec3, _delta, false)
         (ret, _delta)
     end
     function dot(instance::GraphenePoint3D, _b::GraphenePoint3D)
@@ -919,7 +870,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_interpolate", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Float64, Ptr{_GraphenePoint3D}), instance, _b, _factor, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function length(instance::GraphenePoint3D)
@@ -935,28 +885,24 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_normalize", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function normalize_viewport(instance::GraphenePoint3D, _viewport::GrapheneRect, _z_near::Real, _z_far::Real)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_normalize_viewport", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GrapheneRect}, Float32, Float32, Ptr{_GraphenePoint3D}), instance, _viewport, _z_near, _z_far, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function scale(instance::GraphenePoint3D, _factor::Real)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_scale", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Float32, Ptr{_GraphenePoint3D}), instance, _factor, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function to_vec3(instance::GraphenePoint3D)
         m_v = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_point3d_to_vec3", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec3}), instance, m_v)
         _v = m_v[]
-        _v = convert(GrapheneVec3, _v, false)
         _v
     end
     function Quad_alloc()
@@ -968,7 +914,6 @@ $(Expr(:toplevel, quote
         m_r = Ref{_GrapheneRect}()
         ret = ccall(("graphene_quad_bounds", libgraphene), Nothing, (Ptr{_GrapheneQuad}, Ptr{_GrapheneRect}), instance, m_r)
         _r = m_r[]
-        _r = convert(GrapheneRect, _r, false)
         _r
     end
     function contains(instance::GrapheneQuad, _p::GraphenePoint)
@@ -1010,7 +955,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_add", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuaternion, _res, false)
         _res
     end
     function dot(instance::GrapheneQuaternion, _b::GrapheneQuaternion)
@@ -1075,35 +1019,30 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_invert", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuaternion, _res, false)
         _res
     end
     function multiply(instance::GrapheneQuaternion, _b::GrapheneQuaternion)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_multiply", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuaternion, _res, false)
         _res
     end
     function normalize(instance::GrapheneQuaternion)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_normalize", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuaternion, _res, false)
         _res
     end
     function scale(instance::GrapheneQuaternion, _factor::Real)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_scale", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Float32, Ptr{_GrapheneQuaternion}), instance, _factor, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuaternion, _res, false)
         _res
     end
     function slerp(instance::GrapheneQuaternion, _b::GrapheneQuaternion, _factor::Real)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_slerp", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}, Float32, Ptr{_GrapheneQuaternion}), instance, _b, _factor, m_res)
         _res = m_res[]
-        _res = convert(GrapheneQuaternion, _res, false)
         _res
     end
     function to_angle_vec3(instance::GrapheneQuaternion)
@@ -1112,7 +1051,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_quaternion_to_angle_vec3", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{Float32}, Ptr{_GrapheneVec3}), instance, m_angle, m_axis)
         _angle = m_angle[]
         _axis = m_axis[]
-        _axis = convert(GrapheneVec3, _axis, false)
         (_angle, _axis)
     end
     function to_angles(instance::GrapheneQuaternion)
@@ -1129,7 +1067,6 @@ $(Expr(:toplevel, quote
         m_m = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_quaternion_to_matrix", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneMatrix}), instance, m_m)
         _m = m_m[]
-        _m = convert(GrapheneMatrix, _m, false)
         _m
     end
     function to_radians(instance::GrapheneQuaternion)
@@ -1146,7 +1083,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_quaternion_to_vec4", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneVec4}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function Ray_alloc()
@@ -1167,14 +1103,12 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_ray_get_closest_point_to_point", libgraphene), Nothing, (Ptr{_GrapheneRay}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _p, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function get_direction(instance::GrapheneRay)
         m_direction = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_ray_get_direction", libgraphene), Nothing, (Ptr{_GrapheneRay}, Ptr{_GrapheneVec3}), instance, m_direction)
         _direction = m_direction[]
-        _direction = convert(GrapheneVec3, _direction, false)
         _direction
     end
     function get_distance_to_plane(instance::GrapheneRay, _p::GraphenePlane)
@@ -1189,14 +1123,12 @@ $(Expr(:toplevel, quote
         m_origin = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_ray_get_origin", libgraphene), Nothing, (Ptr{_GrapheneRay}, Ptr{_GraphenePoint3D}), instance, m_origin)
         _origin = m_origin[]
-        _origin = convert(GraphenePoint3D, _origin, false)
         _origin
     end
     function get_position_at(instance::GrapheneRay, _t::Real)
         m_position = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_ray_get_position_at", libgraphene), Nothing, (Ptr{_GrapheneRay}, Float32, Ptr{_GraphenePoint3D}), instance, _t, m_position)
         _position = m_position[]
-        _position = convert(GraphenePoint3D, _position, false)
         _position
     end
     function init(instance::GrapheneRay, _origin::Maybe(GraphenePoint3D), _direction::Maybe(GrapheneVec3))
@@ -1289,7 +1221,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_expand", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GrapheneRect}), instance, _p, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function free(instance::GrapheneRect)
@@ -1304,21 +1235,18 @@ $(Expr(:toplevel, quote
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_bottom_left", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
-        _p = convert(GraphenePoint, _p, false)
         _p
     end
     function get_bottom_right(instance::GrapheneRect)
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_bottom_right", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
-        _p = convert(GraphenePoint, _p, false)
         _p
     end
     function get_center(instance::GrapheneRect)
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_center", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
-        _p = convert(GraphenePoint, _p, false)
         _p
     end
     function get_height(instance::GrapheneRect)
@@ -1329,14 +1257,12 @@ $(Expr(:toplevel, quote
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_top_left", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
-        _p = convert(GraphenePoint, _p, false)
         _p
     end
     function get_top_right(instance::GrapheneRect)
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_top_right", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
-        _p = convert(GraphenePoint, _p, false)
         _p
     end
     function get_vertices(instance::GrapheneRect)
@@ -1376,14 +1302,12 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_inset_r", libgraphene), Nothing, (Ptr{_GrapheneRect}, Float32, Float32, Ptr{_GrapheneRect}), instance, _d_x, _d_y, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function interpolate(instance::GrapheneRect, _b::GrapheneRect, _factor::Real)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_interpolate", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}, Float64, Ptr{_GrapheneRect}), instance, _b, _factor, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function intersection(instance::GrapheneRect, _b::GrapheneRect)
@@ -1391,7 +1315,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_rect_intersection", libgraphene), Cint, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _b, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         (ret2, _res)
     end
     function normalize(instance::GrapheneRect)
@@ -1403,7 +1326,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_normalize_r", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function offset(instance::GrapheneRect, _d_x::Real, _d_y::Real)
@@ -1415,28 +1337,24 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_offset_r", libgraphene), Nothing, (Ptr{_GrapheneRect}, Float32, Float32, Ptr{_GrapheneRect}), instance, _d_x, _d_y, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function round_extents(instance::GrapheneRect)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_round_extents", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function scale(instance::GrapheneRect, _s_h::Real, _s_v::Real)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_scale", libgraphene), Nothing, (Ptr{_GrapheneRect}, Float32, Float32, Ptr{_GrapheneRect}), instance, _s_h, _s_v, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function union(instance::GrapheneRect, _b::GrapheneRect)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_union", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneRect, _res, false)
         _res
     end
     function Sphere_alloc()
@@ -1466,14 +1384,12 @@ $(Expr(:toplevel, quote
         m_box = Ref{_GrapheneBox}()
         ret = ccall(("graphene_sphere_get_bounding_box", libgraphene), Nothing, (Ptr{_GrapheneSphere}, Ptr{_GrapheneBox}), instance, m_box)
         _box = m_box[]
-        _box = convert(GrapheneBox, _box, false)
         _box
     end
     function get_center(instance::GrapheneSphere)
         m_center = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_sphere_get_center", libgraphene), Nothing, (Ptr{_GrapheneSphere}, Ptr{_GraphenePoint3D}), instance, m_center)
         _center = m_center[]
-        _center = convert(GraphenePoint3D, _center, false)
         _center
     end
     function get_radius(instance::GrapheneSphere)
@@ -1523,7 +1439,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneSphere}()
         ret = ccall(("graphene_sphere_translate", libgraphene), Nothing, (Ptr{_GrapheneSphere}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneSphere}), instance, _point, m_res)
         _res = m_res[]
-        _res = convert(GrapheneSphere, _res, false)
         _res
     end
     function Triangle_alloc()
@@ -1559,35 +1474,30 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_triangle_get_barycoords", libgraphene), Cint, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec2}), instance, _p, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         (ret2, _res)
     end
     function get_bounding_box(instance::GrapheneTriangle)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_triangle_get_bounding_box", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GrapheneBox}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneBox, _res, false)
         _res
     end
     function get_midpoint(instance::GrapheneTriangle)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_triangle_get_midpoint", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}), instance, m_res)
         _res = m_res[]
-        _res = convert(GraphenePoint3D, _res, false)
         _res
     end
     function get_normal(instance::GrapheneTriangle)
         m_res = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_triangle_get_normal", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GrapheneVec3}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec3, _res, false)
         _res
     end
     function get_plane(instance::GrapheneTriangle)
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_triangle_get_plane", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePlane}), instance, m_res)
         _res = m_res[]
-        _res = convert(GraphenePlane, _res, false)
         _res
     end
     function get_points(instance::GrapheneTriangle)
@@ -1596,11 +1506,8 @@ $(Expr(:toplevel, quote
         m_c = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_triangle_get_points", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, m_a, m_b, m_c)
         _a = m_a[]
-        _a = convert(GraphenePoint3D, _a, false)
         _b = m_b[]
-        _b = convert(GraphenePoint3D, _b, false)
         _c = m_c[]
-        _c = convert(GraphenePoint3D, _c, false)
         (_a, _b, _c)
     end
     function get_uv(instance::GrapheneTriangle, _p::Maybe(GraphenePoint3D), _uv_a::GrapheneVec2, _uv_b::GrapheneVec2, _uv_c::GrapheneVec2)
@@ -1613,7 +1520,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_triangle_get_uv", libgraphene), Cint, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _p, _uv_a, _uv_b, _uv_c, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         (ret2, _res)
     end
     function get_vertices(instance::GrapheneTriangle)
@@ -1622,11 +1528,8 @@ $(Expr(:toplevel, quote
         m_c = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_triangle_get_vertices", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, m_a, m_b, m_c)
         _a = m_a[]
-        _a = convert(GrapheneVec3, _a, false)
         _b = m_b[]
-        _b = convert(GrapheneVec3, _b, false)
         _c = m_c[]
-        _c = convert(GrapheneVec3, _c, false)
         (_a, _b, _c)
     end
     function init_from_float(instance::GrapheneTriangle, _a, _b, _c)
@@ -1686,14 +1589,12 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_add", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function divide(instance::GrapheneVec2, _b::GrapheneVec2)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_divide", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function dot(instance::GrapheneVec2, _b::GrapheneVec2)
@@ -1737,7 +1638,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_interpolate", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Float64, Ptr{_GrapheneVec2}), instance, _v2, _factor, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function length(instance::GrapheneVec2)
@@ -1748,21 +1648,18 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_max", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function min(instance::GrapheneVec2, _b::GrapheneVec2)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_min", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function multiply(instance::GrapheneVec2, _b::GrapheneVec2)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_multiply", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function near(instance::GrapheneVec2, _v2::GrapheneVec2, _epsilon::Real)
@@ -1774,28 +1671,24 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_negate", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function normalize(instance::GrapheneVec2)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_normalize", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function scale(instance::GrapheneVec2, _factor::Real)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_scale", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Float32, Ptr{_GrapheneVec2}), instance, _factor, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function subtract(instance::GrapheneVec2, _b::GrapheneVec2)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_subtract", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function to_float(instance::GrapheneVec2)
@@ -1813,14 +1706,12 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_add", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function divide(instance::GrapheneVec4, _b::GrapheneVec4)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_divide", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function dot(instance::GrapheneVec4, _b::GrapheneVec4)
@@ -1848,14 +1739,12 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec4_get_xy", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec2}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec2, _res, false)
         _res
     end
     function get_xyz(instance::GrapheneVec4)
         m_res = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_vec4_get_xyz", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec3}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec3, _res, false)
         _res
     end
     function get_y(instance::GrapheneVec4)
@@ -1896,7 +1785,6 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_interpolate", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Float64, Ptr{_GrapheneVec4}), instance, _v2, _factor, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function length(instance::GrapheneVec4)
@@ -1907,21 +1795,18 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_max", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function min(instance::GrapheneVec4, _b::GrapheneVec4)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_min", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function multiply(instance::GrapheneVec4, _b::GrapheneVec4)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_multiply", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function near(instance::GrapheneVec4, _v2::GrapheneVec4, _epsilon::Real)
@@ -1933,28 +1818,24 @@ $(Expr(:toplevel, quote
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_negate", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function normalize(instance::GrapheneVec4)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_normalize", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function scale(instance::GrapheneVec4, _factor::Real)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_scale", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Float32, Ptr{_GrapheneVec4}), instance, _factor, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function subtract(instance::GrapheneVec4, _b::GrapheneVec4)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_subtract", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
-        _res = convert(GrapheneVec4, _res, false)
         _res
     end
     function to_float(instance::GrapheneVec4)

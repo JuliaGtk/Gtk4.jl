@@ -32,6 +32,7 @@ end
 @testset "Gtk" begin
 include("gui.jl")
 include("comboboxtext.jl")
+include("tree.jl")
 end
 
 GC.gc()

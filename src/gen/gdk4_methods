@@ -210,14 +210,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_rectangle_intersect", libgtk4), Cint, (Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _src2, m_dest)
         ret2 = convert(Bool, ret)
         _dest = m_dest[]
-        _dest = convert(GdkRectangle, _dest, false)
         (ret2, _dest)
     end
     function union(instance::GdkRectangle, _src2::GdkRectangle)
         m_dest = Ref{_GdkRectangle}()
         ret = ccall(("gdk_rectangle_union", libgtk4), Nothing, (Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _src2, m_dest)
         _dest = m_dest[]
-        _dest = convert(GdkRectangle, _dest, false)
         _dest
     end
     function ToplevelLayout_new()
@@ -1442,7 +1440,6 @@ $(Expr(:toplevel, quote
         m_geometry = Ref{_GdkRectangle}()
         ret = ccall(("gdk_monitor_get_geometry", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, m_geometry)
         _geometry = m_geometry[]
-        _geometry = convert(GdkRectangle, _geometry, false)
         _geometry
     end
     function get_height_mm(instance::GdkMonitor)

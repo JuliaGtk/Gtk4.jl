@@ -606,11 +606,11 @@ end
 
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) where {T <: Type{GBoxed}}
     owns = get_ownership_transfer(arginfo) != GITransfer.NOTHING
+    typ = isa(arginfo, GIFunctionInfo) ? 0 : get_type(arginfo)
+
     if may_be_null(arginfo)
         :(($name == C_NULL ? nothing : convert($(typeinfo.jtype), $name, $owns)))
-    #elseif is_pointer(invoke(get_type, Tuple{ArgInfo}, arginfo))
-    #    :(convert($(typeinfo.jtype), $name, $owns))
-    else
+    elseif typ == 0 || (typ != 0 && is_pointer(typ))
         :(convert($(typeinfo.jtype), $name, $owns))
     end
 end

@@ -202,7 +202,6 @@ $(Expr(:toplevel, quote
         m_out_matrix = Ref{_GrapheneMatrix}()
         ret = ccall(("gsk_transform_to_matrix", libgtk4), Nothing, (Ptr{GskTransform}, Ptr{_GrapheneMatrix}), instance, m_out_matrix)
         _out_matrix = m_out_matrix[]
-        _out_matrix = convert(GrapheneMatrix, _out_matrix, false)
         _out_matrix
     end
     function to_string(instance::GskTransform)
@@ -236,14 +235,12 @@ $(Expr(:toplevel, quote
         m_out_rect = Ref{_GrapheneRect}()
         ret = ccall(("gsk_transform_transform_bounds", libgtk4), Nothing, (Ptr{GskTransform}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _rect, m_out_rect)
         _out_rect = m_out_rect[]
-        _out_rect = convert(GrapheneRect, _out_rect, false)
         _out_rect
     end
     function transform_point(instance::GskTransform, _point::GraphenePoint)
         m_out_point = Ref{_GraphenePoint}()
         ret = ccall(("gsk_transform_transform_point", libgtk4), Nothing, (Ptr{GskTransform}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _point, m_out_point)
         _out_point = m_out_point[]
-        _out_point = convert(GraphenePoint, _out_point, false)
         _out_point
     end
     function translate(instance::GskTransform, _point::GraphenePoint)

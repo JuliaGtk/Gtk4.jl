@@ -101,6 +101,7 @@ function propertyinfo(w::GObject, name::AbstractString)
      end
      nothing
 end
+propertyinfo(w::GObject,name::Symbol) = propertyinfo(w,string(name))
 
 """
     bind_property(source::GObject, source_property, target::GObject, target_property, flags = Constants.BindingFlags_DEFAULT)

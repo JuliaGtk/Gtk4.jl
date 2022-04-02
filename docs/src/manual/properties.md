@@ -2,7 +2,7 @@
 
 If you're following along, you probably noticed that creating `win` caused quite a lot of output:
 ```
-GtkWindowLeaf(accessible-role=GTK_ACCESSIBLE_ROLE_WINDOW, name="", parent, root, width-request=-1, height-request=-1, visible=TRUE, sensitive=TRUE, can-focus=TRUE, has-focus=FALSE, can-target=TRUE, focus-on-click=TRUE, focusable=FALSE, has-default=FALSE, receives-default=FALSE, cursor, has-tooltip=FALSE, tooltip-markup=NULL, tooltip-text=NULL, opacity=1.000000, overflow=GTK_OVERFLOW_HIDDEN, halign=GTK_ALIGN_FILL, valign=GTK_ALIGN_FILL, margin-start=0, margin-end=0, margin-top=0, margin-bottom=0, hexpand=FALSE, vexpand=FALSE, hexpand-set=FALSE, vexpand-set=FALSE, scale-factor=1, css-name="window", css-classes, layout-manager, title="My window", resizable=TRUE, modal=FALSE, default-width=400, default-height=200, destroy-with-parent=FALSE, hide-on-close=FALSE, icon-name=NULL, display, decorated=TRUE, deletable=TRUE, transient-for, application, default-widget, focus-widget, child, titlebar, handle-menubar-accel=TRUE, is-active=TRUE, startup-id, mnemonics-visible=FALSE, focus-visible=FALSE, maximized=FALSE, fullscreened=FALSE)
+Gtk4.GtkWindowLeaf(accessible-role=GTK_ACCESSIBLE_ROLE_WINDOW, name="", parent, root, width-request=-1, height-request=-1, visible=true, sensitive=true, can-focus=true, has-focus=false, can-target=true, focus-on-click=true, focusable=false, has-default=false, receives-default=false, cursor, has-tooltip=false, tooltip-markup=nothing, tooltip-text=nothing, opacity=1.000000, overflow=GTK_OVERFLOW_HIDDEN, halign=GTK_ALIGN_FILL, valign=GTK_ALIGN_FILL, margin-start=0, margin-end=0, margin-top=0, margin-bottom=0, hexpand=false, vexpand=false, hexpand-set=false, vexpand-set=false, scale-factor=1, css-name="window", css-classes, layout-manager, title=nothing, resizable=true, modal=false, default-width=200, default-height=200, destroy-with-parent=false, hide-on-close=false, icon-name=nothing, display, decorated=true, deletable=true, transient-for, application, default-widget, focus-widget, child, titlebar, handle-menubar-accel=true, is-active=false, startup-id, mnemonics-visible=false, focus-visible=false, maximized=false, fullscreened=false)
 ```
 This shows you a list of properties of the object and their current values. For example, notice that the `title` property is set to `"My window"`. We can change the title in the following way:
 ```julia
@@ -37,10 +37,28 @@ julia> get_gtk_property(win, :default_width)
 true
 ```
 
-Properties that are string-valued or GObject-valued can be set to `nothing`, which is equivalent to setting them to `NULL` in C (or `None` in Python).
-A list of valid properties for a GObject instance is returned by `gtk_propertynames`.
+Properties that are string-valued or GObject-valued can be set to `nothing`,
+which is equivalent to setting them to `NULL` in C (or `None` in Python). A list
+of all possible property names for a GObject instance is returned by
+`gtk_propertynames`.
 
-Some properties have convenience methods, for example:
+Information about a property, including a description, its GLib type and default
+value, can be found using `propertyinfo`:
+```julia
+julia> propertyinfo(win, :title)
+Name: title
+GType name: gchararray
+Flags: Readable Writable
+Description: The title of the window
+Default value: nothing
+Current value: nothing
+```
+
+## Getter and setter methods
+
+Some properties have corresponding getter and setter C methods that can be accessed in the submodule `G_`.
+
+Some of the most important or useful are wrapped in the Gtk4 module, for example:
 ```julia
 julia> visible(win)
 true
@@ -53,3 +71,18 @@ false
 julia> visible(win, true)
 ```
 This sequence makes the window disappear and then reappear.
+
+## Binding properties
+
+Properties can be bound to one another through the GObject signal system using the method
+`bind_property`. For example, if one wanted the title of a window `win2` to automatically track
+that of another window `win1`, one could use
+```julia
+julia> b = bind_property(win1, "title", win2, "title")
+```
+Now if one calls
+```julia
+julia> win1.title = "New title"
+```
+the title of `win2` is automatically updated to the same value. The binding can
+be released using `unbind_property(b)`.

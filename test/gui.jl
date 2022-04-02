@@ -362,9 +362,10 @@ end
 
 
 @testset "Builder" begin
-b=GtkBuilder(;filename="test.glade")
-#widgets = [w for w in b]
-#@test length(widgets)==length(b)
+b=GtkBuilder(filename="test.glade")
+widgets = [w for w in b]
+@test length(widgets)==length(b)
+@test length(b)==6
 button = b["a_button"]
 @test isa(button,GtkButton)
 @test isa(b[1],GtkWidget)
@@ -374,7 +375,7 @@ button = b["a_button"]
 s = open("test.glade","r") do f
     read(f,String)
 end
-b3 = GtkBuilder(;buffer = s)
+b3 = GtkBuilder(buffer = s)
 
 
 end
@@ -412,24 +413,78 @@ end
 #     #@test isa(a,Gtk.GdkRectangle)
 # end
 
-# @testset "List view" begin
-# ls=GtkListStore(Int32,Bool)
-# push!(ls,(42,true))
-# ls[1,1]=44
-# push!(ls,(33,true))
-# pushfirst!(ls,(22,false))
-# popfirst!(ls)
-# @test size(ls)==(2,2)
-# insert!(ls, 2, (35, false))
-# tv=GtkTreeView(GtkTreeModel(ls))
-# r1=GtkCellRendererText()
-# r2=GtkCellRendererToggle()
-# c1=GtkTreeViewColumn("A", r1, Dict([("text",0)]))
-# c2=GtkTreeViewColumn("B", r2, Dict([("active",1)]))
-# push!(tv,c1)
-# push!(tv,c2)
-# delete!(tv, c1)
-# insert!(tv, 1, c1)
-# w = GtkWindow(tv, "List View")
-#
-# end
+@testset "List view" begin
+
+ls=GtkListStore(Int32,Bool)
+push!(ls,(42,true))
+ls[1,1]=44
+push!(ls,(33,true))
+pushfirst!(ls,(22,false))
+popfirst!(ls)
+@test size(ls)==(2,2)
+insert!(ls, 2, (35, false))
+tv=GtkTreeView(GtkTreeModel(ls))
+r1=GtkCellRendererText()
+r2=GtkCellRendererToggle()
+c1=GtkTreeViewColumn("A", r1, Dict([("text",0)]))
+c2=GtkTreeViewColumn("B", r2, Dict([("active",1)]))
+push!(tv,c1)
+push!(tv,c2)
+delete!(tv, c1)
+insert!(tv, 1, c1)
+w = GtkWindow(tv, "List View")
+
+## selection
+
+selmodel = G_.get_selection(tv)
+@test hasselection(selmodel) == false
+select!(selmodel, Gtk4.iter_from_index(ls, 1))
+@test hasselection(selmodel) == true
+iter = selected(selmodel)
+@test Gtk4.index_from_iter(ls, iter) == 1
+@test ls[iter, 1] == 44
+deleteat!(ls, iter)
+select!(selmodel, Gtk4.iter_from_index(ls, 1))
+iter = selected(selmodel)
+@test ls[iter, 1] == 35
+
+G_.set_mode(selmodel,Gtk4.Constants.SelectionMode_MULTIPLE)
+selectall!(selmodel)
+iters = Gtk4.selected_rows(selmodel)
+@test length(iters) == 2
+@test ls[iters[1],1] == 35
+unselectall!(selmodel)
+
+tmSorted=GtkTreeModelSort(ls)
+#G_.set_model(tv,tmSorted)
+G_.set_sort_column_id(GtkTreeSortable(tmSorted),0,Gtk4.Constants.SortType_ASCENDING)
+it = convert_child_iter_to_iter(tmSorted,Gtk4.iter_from_index(ls, 1))
+G_.set_mode(selmodel,Gtk4.Constants.SelectionMode_SINGLE)
+#select!(selmodel, it)
+#iter = selected(selmodel)
+#@test TreeModel(tmSorted)[iter, 1] == 35
+
+empty!(ls)
+
+destroy(w)
+
+end
+
+@testset "Tree view" begin
+ts=GtkTreeStore(AbstractString)
+iter1 = push!(ts,("one",))
+iter2 = push!(ts,("two",),iter1)
+iter3 = push!(ts,("three",),iter2)
+tv=GtkTreeView(GtkTreeModel(ts))
+r1=GtkCellRendererText()
+c1=GtkTreeViewColumn("A", r1, Dict([("text",0)]))
+push!(tv,c1)
+w = GtkWindow(tv, "Tree View")
+iter = Gtk4.iter_from_index(ts, [1])
+ts[iter,1] = "ONE"
+@test ts[iter,1] == "ONE"
+@test map(i -> ts[i, 1], Gtk4.TreeIterator(ts, iter)) == ["two", "three"]
+@test Gtk4.iter_n_children(GtkTreeModel(ts), iter)==1
+
+destroy(w)
+end

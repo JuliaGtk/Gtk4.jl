@@ -1,10 +1,10 @@
-using Documenter, Gtk4
+using Documenter, Gtk4, GI
 
 makedocs(
     format = Documenter.HTML(
         prettyurls = get(ENV, "CI", nothing) == "true"
     ),
-    modules = [Gtk4],
+    modules = [Gtk4, GI],
     sitename = "Gtk4.jl",
     authors = "...",
     pages = [
@@ -14,9 +14,11 @@ makedocs(
                      "manual/layout.md",
                      "manual/signals.md",
                      "manual/builder.md",
-                     "manual/canvas.md"
+                     "manual/canvas.md",
+                     #"manual/methods.md"
                     ],
         "Reference" => "doc/reference.md",
+        #"GI Reference" => "doc/GI_reference.md"
     ],
 )
 

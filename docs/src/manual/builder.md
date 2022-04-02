@@ -32,50 +32,61 @@ the extension `.glade`. Lets assume we have created a file `myapp.glade` that lo
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkWindow" id="window1">
-    <property name="can_focus">False</property>
-    <child>
+    <property name="child">
       <object class="GtkButton" id="button1">
         <property name="label" translatable="yes">button</property>
         <property name="use_action_appearance">False</property>
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
+        <property name="focusable">1</property>
+        <property name="receives_default">1</property>
         <property name="use_action_appearance">False</property>
       </object>
-    </child>
+    </property>
   </object>
 </interface>
 ```
 
-In order to access the widgets from Julia we first create a `GtkBuilder` object that will serve as our
+In order to access the widgets from Julia we first create a `GtkBuilder` object that will serve as a
 connector between the XML definition and our Julia code.
 ```julia
 b = GtkBuilder(filename="path/to/myapp.glade")
 ```
-Alternatively, if we would store above XML definition in a Julia string `myapp` we can initalize
+Alternatively, if we store the above XML definition in a Julia string `myapp` we can initialize
 the builder by
 ```julia
 b = GtkBuilder(buffer=myapp)
 ```
 Now we want to access a widget from the XML file in order to actually display it on the screen. To do so
-we call
+we can call
 ```julia
 win = b["window1"]
 ```
-That is all that you need to know. You can thus see your builder as a kind of a widget store that you use
-when you need access to your widgets. It it therefore not really necessary to bind the widgets to local
-variables anymore but instead you can always use the builder object.
+for each widget we want to access in our Julia code. Widgets that we don't need
+to access from Julia, for example layout widgets like `GtkBox` that are being
+used only to arrange more interesting widgets for input or display, do not need
+to be loaded. You can thus see your builder as a kind of a widget store that you use
+when you need access to your widgets.
 
 !!! note
-    If you are developing the code in a package you can get the package directory using the `Pkg.dir("MyPackage")`
-    function. This allows you to put the files into the package directory and reference them in a relative manner.
-
-!!! note
-    From Julia 1.0 on, `Pkg.dir()` is deprecated. Instead, you can use the `@__DIR__` macro. For instance, if your
-    glade file is located at `MyPackage/src/builder/myuifile.ui`, you can get the full path using
+    If you are developing the code in a package you can get the package directory using the `@__DIR__` macro.
+    For instance, if your glade file is located at `MyPackage/src/builder/myuifile.ui`, you can get the full path using
     `uifile = joinpath(@__DIR__, "builder", "myuifile.ui")`.
+
+In Gtk4.jl a macro `@load_builder` is defined that iterates over the `GtkWidget`s in
+a `GtkBuilder` object and automatically assigns them to Julia variables with the same id. For
+example, if a `GtkEntry` with an id `entry1` and two `GtkButton`s with id's `button1` and `button2` are present in `myapp.glade`,
+calling
+```julia
+@load_builder(GtkBuilder(filename="myapp.glade"))
+```
+is equivalent to
+```julia
+entry1 = b["entry1"]
+button1 = b["button1"]
+button2 = b["button2"]
+```
+Note that this only works for `GtkWidget`s that implement the interface `GtkBuildable`, which excludes some objects often defined in Glade XML files.
 
 ## Callbacks
 
