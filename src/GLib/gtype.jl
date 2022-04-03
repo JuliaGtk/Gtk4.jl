@@ -15,43 +15,49 @@ struct GParamSpec
   owner_type::GType
 end
 
+mutable struct GVariant
+    handle::Ptr{GVariant}
+    function GVariant(ref::Ptr{GVariant})
+        x = new(ref)
+    end
+end
+
 const fundamental_types = (
-    #(:name,      Ctype,            JuliaType,      g_value_fn)
-    (:invalid,    Nothing,          Union{},        :error),
-    (:void,       Nothing,          Nothing,        :error),
-    (:GInterface, Ptr{Nothing},     GInterface,     :error),
-    (:gchar,      Int8,             Int8,           :schar),
-    (:guchar,     UInt8,            UInt8,          :uchar),
-    (:gboolean,   Cint,             Bool,           :boolean),
-    (:gshort,     Cshort,           Union{},        :error),
-    (:gushort,    Cushort,          Union{},        :error),
-    (:gint,       Cint,             Int32,          :int),
-    (:guint,      Cuint,            UInt32,         :uint),
-    (:glong,      Clong,            Union{},        :long),
-    (:gulong,     Culong,           Union{},        :ulong),
-    (:gint64,     Int64,            Signed,         :int64),
-    (:guint64,    UInt64,           Unsigned,       :uint64),
-    (:GEnum,      GEnum,            Union{},        :enum),
-    (:GFlags,     GEnum,            Union{},        :flags),
-    (:gfloat,     Float32,          Float32,        :float),
-    (:gdouble,    Float64,          AbstractFloat,  :double),
-    (:gchararray, Ptr{UInt8},       AbstractString, :string),
-    (:gpointer,   Ptr{Nothing},     Ptr,            :pointer),
-    (:GBoxed,     Ptr{GBoxed},      GBoxed,         :boxed),
-    (:GParam,     Ptr{GParamSpec},  Ptr{GParamSpec},:param),
-    (:GObject,    Ptr{GObject},     GObject,        :object),
-    #(:GType,      Ptr{GType},       GType,          :type),
-    (:GVariant,   Ptr{GVariant},    GVariant,       :variant),
+    #(:name,      Ctype,            JuliaType,      g_value_fn,     g_variant_fn)
+    (:invalid,    Nothing,          Union{},        :error,         :error),
+    (:void,       Nothing,          Nothing,        :error,         :error),
+    (:GInterface, Ptr{Nothing},     GInterface,     :error,         :error),
+    (:gchar,      Int8,             Int8,           :schar,         :error),
+    (:guchar,     UInt8,            UInt8,          :uchar,         :byte),
+    (:gboolean,   Cint,             Bool,           :boolean,       :boolean),
+    (:gshort,     Cshort,           Union{},        :error,         :int16),
+    (:gushort,    Cushort,          Union{},        :error,         :uint16),
+    (:gint,       Cint,             Int32,          :int,           :int32),
+    (:guint,      Cuint,            UInt32,         :uint,          :uint32),
+    (:glong,      Clong,            Union{},        :long,          :error),
+    (:gulong,     Culong,           Union{},        :ulong,         :error),
+    (:gint64,     Int64,            Signed,         :int64,         :int64),
+    (:guint64,    UInt64,           Unsigned,       :uint64,        :uint64),
+    (:GEnum,      GEnum,            Union{},        :enum,          :error),
+    (:GFlags,     GEnum,            Union{},        :flags,         :error),
+    (:gfloat,     Float32,          Float32,        :float,         :error),
+    (:gdouble,    Float64,          AbstractFloat,  :double,        :double),
+    (:gchararray, Ptr{UInt8},       AbstractString, :string,        :string),
+    (:gpointer,   Ptr{Nothing},     Ptr,            :pointer,       :error),
+    (:GBoxed,     Ptr{GBoxed},      GBoxed,         :boxed,         :error),
+    (:GParam,     Ptr{GParamSpec},  Ptr{GParamSpec},:param,         :error),
+    (:GObject,    Ptr{GObject},     GObject,        :object,        :error),
+    (:GVariant,   Ptr{GVariant},    GVariant,       :variant,       :variant),
     )
 # NOTE: in general do not cache ids, except for these fundamental values
 g_type_from_name(name::Symbol) = ccall((:g_type_from_name, libgobject), GType, (Ptr{UInt8},), name)
-const fundamental_ids = tuple(GType[g_type_from_name(name) for (name, c, j, f) in fundamental_types]...)
+const fundamental_ids = tuple(GType[g_type_from_name(name) for (name, c, j, f, v) in fundamental_types]...)
 
 """Get the GType corresponding to a Julia type or object."""
 g_type(gtyp::GType) = gtyp
 let jtypes = Expr(:block, :( g_type(::Type{Nothing}) = $(g_type_from_name(:void)) ))
     for i = 1:length(fundamental_types)
-        (name, ctype, juliatype, g_value_fn) = fundamental_types[i]
+        (name, ctype, juliatype, g_value_fn, g_variant_fn) = fundamental_types[i]
         if juliatype != Union{}
             push!(jtypes.args, :( g_type(::Type{T}) where {T <: $juliatype} = convert(GType, $(fundamental_ids[i])) ))
         end

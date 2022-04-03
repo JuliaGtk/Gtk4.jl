@@ -127,7 +127,7 @@ macro make_gvalue(pass_x, as_ctype, to_gtype, with_id, opt...)
 end
 
 function make_gvalue_from_fundamental_type(i,cm)
-  (name, ctype, juliatype, g_value_fn) = fundamental_types[i]
+  (name, ctype, juliatype, g_value_fn, g_variant_fn) = fundamental_types[i]
   fundamental_ids[i] === :error && return
   if juliatype !== Union{}
       if juliatype !==GBoxed
@@ -278,27 +278,6 @@ function set_gtk_property!(w::GObject, name::String, value)
 
     w
 end
-
-#struct FieldRef{T}
-#    obj::T
-#    field::Symbol
-#
-#    global function getproperty(obj::T, field::Symbol) where {T <: GObject}
-#        isdefined(obj, field) && return getfield(obj, field)
-#        new{T}(obj, field)
-#    end
-#
-#    FieldRef(obj::T, field::Symbol) where T = new{T}(obj, field)
-#end
-
-#getindex(f::FieldRef, ::Type{T}) where {T} = get_gtk_property(f.obj, f.field,T)
-
-#function setindex!(f::FieldRef, value::T, ::Type{T}) where {T}
-#    isdefined(f.obj,f.field) && return setfield!(f.obj, f.field, value)
-#    set_gtk_property!(f.obj, f.field, value)
-#    return f
-#end
-#setindex!(f::FieldRef, value::K, ::Type{T}) where {K, T} = setindex!(f, convert(T,value), T)
 
 """
     gtk_propertynames(w::GObject)

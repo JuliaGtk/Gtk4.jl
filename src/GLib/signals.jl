@@ -141,59 +141,7 @@ end
 
 g_stack = nothing # need to call g_loop_run from only one stack
 const g_yielded = Ref(false) # when true, use the `g_doatomic` queue to run sigatom functions
-const g_doatomic = [] # (work, notification) scheduler queue
 const g_sigatom_flag = Ref(false) # keep track of Base sigatomic state
-function g_sigatom(@nospecialize(f)) # calls f, where f never throws (but this function may throw)
-    global g_sigatom_flag, g_stack, g_doatomic
-    prev = g_sigatom_flag[]
-    stk = g_stack
-    ct = current_task()
-    if g_yielded[]
-        @assert g_stack !== nothing && g_stack != ct && !prev
-        push!(g_doatomic, (f, ct))
-        return wait()
-    end
-
-    if !prev
-        sigatomic_begin()
-        g_sigatom_flag[] = true
-    end
-    ret = nothing
-    try
-        if g_stack === ct
-            ret = f()
-        else
-            @assert g_stack === nothing && !prev
-            g_stack = ct
-            ret = f()
-        end
-    catch err
-        g_stack = stk
-        @assert g_sigatom_flag[]
-        if !prev
-            g_sigatom_flag[] = false
-            sigatomic_end() # may throw SIGINT
-        end
-        Base.println("FATAL ERROR: Gtk state corrupted by error thrown in a callback:")
-        Base.display_error(err, catch_backtrace())
-        println()
-        rethrow(err)
-    end
-    g_stack = stk
-    @assert g_sigatom_flag[]
-    if !prev
-        g_sigatom_flag[] = false
-        sigatomic_end() # may throw SIGINT
-    end
-    return ret
-end
-macro sigatom(f)
-    return quote
-        g_sigatom() do
-            $(esc(f))
-        end
-    end
-end
 
 function g_siginterruptible(f::Base.Callable, @nospecialize(cb)) # calls f (which may throw), but this function never throws
     global g_sigatom_flag, g_stack
@@ -222,6 +170,94 @@ function g_siginterruptible(f::Base.Callable, @nospecialize(cb)) # calls f (whic
     nothing
 end
 
+function g_yield(data)
+    global g_yielded
+    g_yielded[] = true
+    g_siginterruptible(yield, yield)
+    g_yielded[] = false
+    run_delayed_finalizers()
+
+    return Int32(true)
+end
+
+mutable struct _GPollFD
+  @static Sys.iswindows() ? fd::Int : fd::Cint
+  events::Cushort
+  revents::Cushort
+  _GPollFD(fd, ev) = new(fd, ev, 0)
+end
+
+mutable struct _GSourceFuncs
+    prepare::Ptr{Nothing}
+    check::Ptr{Nothing}
+    dispatch::Ptr{Nothing}
+    finalize::Ptr{Nothing}
+    closure_callback::Ptr{Nothing}
+    closure_marshal::Ptr{Nothing}
+end
+function new_gsource(source_funcs::_GSourceFuncs)
+    sizeof_gsource = GLib.WORD_SIZE
+    gsource = C_NULL
+    while gsource == C_NULL
+        sizeof_gsource += GLib.WORD_SIZE
+        gsource = ccall((:g_source_new, GLib.libglib), Ptr{Nothing}, (Ptr{_GSourceFuncs}, Int), Ref(source_funcs), sizeof_gsource)
+    end
+    gsource
+end
+
+expiration = UInt64(0)
+_isempty_workqueue() = isempty(Base.Workqueue)
+uv_loop_alive(evt) = ccall(:uv_loop_alive, Cint, (Ptr{Nothing},), evt) != 0
+
+function uv_prepare(src::Ptr{Nothing}, timeout::Ptr{Cint})
+    global expiration, uv_pollfd
+    local tmout_ms::Cint
+    evt = Base.eventloop()
+    if !_isempty_workqueue()
+        tmout_ms = 0
+    elseif !uv_loop_alive(evt)
+        tmout_ms = -1
+    elseif uv_pollfd.revents != 0
+        tmout_ms = 0
+    else
+        ccall(:uv_update_time, Nothing, (Ptr{Nothing},), evt)
+        tmout_ms = ccall(:uv_backend_timeout, Cint, (Ptr{Nothing},), evt)
+        tmout_min::Cint = (uv_pollfd::_GPollFD).fd == -1 ? 10 : 5000
+        if tmout_ms < 0 || tmout_ms > tmout_min
+            tmout_ms = tmout_min
+        end
+    end
+    timeout != C_NULL && unsafe_store!(timeout, tmout_ms)
+    if tmout_ms < 0
+        expiration = typemax(UInt64)
+    elseif tmout_ms > 0
+        now = ccall((:g_source_get_time, GLib.libglib), UInt64, (Ptr{Nothing},), src)
+        expiration = convert(UInt64, now + tmout_ms * 1000)
+    else #tmout_ms == 0
+        expiration = UInt64(0)
+    end
+    Int32(tmout_ms == 0)
+end
+function uv_check(src::Ptr{Nothing})
+    global expiration
+    ex = expiration::UInt64
+    if !_isempty_workqueue()
+        return Int32(1)
+    elseif !uv_loop_alive(Base.eventloop())
+        return Int32(0)
+    elseif ex == 0
+        return Int32(1)
+    elseif uv_pollfd.revents != 0
+        return Int32(1)
+    else
+        now = ccall((:g_source_get_time, GLib.libglib), UInt64, (Ptr{Nothing},), src)
+        return Int32(ex <= now)
+    end
+end
+function uv_dispatch(src::Ptr{Nothing}, callback::Ptr{Nothing}, data)
+    return ccall(callback, Cint, (UInt,), data)
+end
+
 sizeof_gclosure = 0
 function __init__gtype__()
     global jlref_quark = quark"julia_ref"
@@ -236,6 +272,31 @@ function __init__gtype__()
 end
 
 const main_loop_initialized=Ref(false)
+
+function __init__gmainloop__()
+    global uv_sourcefuncs = _GSourceFuncs(
+        @cfunction(uv_prepare, Cint, (Ptr{Nothing}, Ptr{Cint})),
+        @cfunction(uv_check, Cint, (Ptr{Nothing},)),
+        @cfunction(uv_dispatch, Cint, (Ptr{Nothing}, Ptr{Nothing}, Int)),
+        C_NULL, C_NULL, C_NULL)
+    src = new_gsource(uv_sourcefuncs)
+    ccall((:g_source_set_can_recurse, GLib.libglib), Nothing, (Ptr{Nothing}, Cint), src, true)
+    ccall((:g_source_set_name, GLib.libglib), Nothing, (Ptr{Nothing}, Ptr{UInt8}), src, "uv loop")
+    ccall((:g_source_set_callback, GLib.libglib), Nothing, (Ptr{Nothing}, Ptr{Nothing}, UInt, Ptr{Nothing}),
+        src, @cfunction(g_yield, Cint, (UInt,)), 1, C_NULL)
+
+    uv_fd = -1
+    # TODO: renable this after fixing integration with the default scheduler backend
+    # uv_fd = Sys.iswindows() ? -1 : ccall(:uv_backend_fd, Cint, (Ptr{Nothing},), Base.eventloop())
+    global uv_pollfd = _GPollFD(uv_fd, 0x1)
+    if (uv_pollfd::_GPollFD).fd != -1
+        ccall((:g_source_add_poll, GLib.libglib), Nothing, (Ptr{Nothing}, Ptr{_GPollFD}), src, Ref(uv_pollfd::_GPollFD))
+    end
+
+    ccall((:g_source_attach, GLib.libglib), Cuint, (Ptr{Nothing}, Ptr{Nothing}), src, C_NULL)
+    ccall((:g_source_unref, GLib.libglib), Nothing, (Ptr{Nothing},), src)
+    nothing
+end
 
 _g_callback(cb::Function) = Cint(cb())
 function g_timeout_add(cb::Function, interval::Integer)
@@ -264,39 +325,34 @@ macro idle_add(ex)
     end
 end
 
-function iteration(timer)
-    ccall((:g_main_context_iteration, libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, false)
-end
+const g_main_running = Ref{Bool}(true)
 
 function glib_main()
-    t=Timer(iteration,0.01;interval=0.005)
-    wait(t)
+    while g_main_running[]
+        ccall((:g_main_context_iteration, libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, true)
+    end
 end
 
 function start_main_loop()
     # if g_main_depth > 0, a glib main-loop is already running,
     # so we don't need to start a new one
     if G_.main_depth() == 0
-        G_.MainLoop_new(nothing, true)
         global glib_main_task = schedule(Task(glib_main))
     end
 end
 
-function process_events()
-    while ccall((:g_main_context_pending, libglib), Cint, (Ptr{Nothing},), C_NULL)!=0
-        ccall((:g_main_context_iteration, libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, false)
-    end
+function stop_main_loop()
+    g_main_running[] = false
+    ccall((:g_main_context_wakeup, libglib), Cint, (Ptr{Cvoid},), C_NULL)
 end
 
 const exiting = Ref(false)
 function __init__()
-    if isdefined(GLib, :__init__bindeps__)
-        GLib.__init__bindeps__()
-    end
     global JuliaClosureMarshal = @cfunction(GClosureMarshal, Nothing,
         (Ptr{Nothing}, Ptr{GValue}, Cuint, Ptr{GValue}, Ptr{Nothing}, Ptr{Nothing}))
     exiting[] = false
     atexit(() -> (exiting[] = true))
     __init__gtype__()
+    __init__gmainloop__()
     nothing
 end

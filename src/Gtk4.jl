@@ -42,7 +42,7 @@ import Base: push!, pushfirst!, insert!, show, length, setindex!, getindex, iter
              convert, empty!, unsafe_convert, string, popfirst!, size, delete!,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!
 
-import .GLib: set_gtk_property!, get_gtk_property
+import .GLib: set_gtk_property!, get_gtk_property, run
 
 using Reexport
 @reexport using Graphics
@@ -72,13 +72,6 @@ include("text.jl")
 include("tree.jl")
 include("basic_exports.jl")
 
-function gtk_main()
-    while true
-        ccall((:g_main_context_iteration, GLib.libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, false)
-        sleep(0.005)
-    end
-end
-
 function __init__()
     # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
     ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
@@ -101,12 +94,7 @@ function __init__()
 
     ccall((:gtk_init, libgtk4), Cvoid, ())
 
-    # if g_main_depth > 0, a glib main-loop is already running,
-    # so we don't need to start a new one
-    if ccall((:g_main_depth, GLib.libglib), Cint, ()) == 0
-        ml=ccall((:g_main_loop_new, GLib.libglib), Ptr{Cvoid}, (Ptr{Cvoid}, Cint), C_NULL, true)
-        global gtk_main_task = schedule(Task(gtk_main))
-    end
+    GLib.start_main_loop()
 end
 
 end

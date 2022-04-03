@@ -22,9 +22,10 @@ export GList, GSList, glist_iter, _GSList, _GList, GError, GVariant, GType, GBox
 export GObject, GInitiallyUnowned, GInterface, GTypeInterface, _GTypeInterface
 export GByteArray, GHashTable, GPtrArray
 export g_timeout_add, g_idle_add, @idle_add
-export @sigatom, cfunction_
+export cfunction_
 export gobject_ref, signal_connect, signal_emit, signal_handler_disconnect
 export signal_handler_block, signal_handler_unblock
+export add_action, add_stateful_action
 
 export get_gtk_property, set_gtk_property!, gtk_propertynames
 
@@ -83,7 +84,6 @@ function check_undefref(p::Ptr)
 end
 
 include("glist.jl")
-include("gvariant.jl")
 include("gtype.jl")
 include("gvalues.jl")
 
@@ -92,6 +92,7 @@ using .Constants
 
 eval(include("../gen/glib_structs"))
 
+include("gvariant.jl")
 include("gerror.jl")
 include("arrays.jl")
 include("hashtable.jl")
@@ -107,7 +108,7 @@ using Glib_jll
 
 using ..GLib, ..GLib.Constants
 
-import Base: convert, copy
+import Base: convert, copy, run
 
 eval(include("../gen/glib_methods"))
 eval(include("../gen/glib_functions"))
@@ -120,5 +121,6 @@ end
 
 include("gobject.jl")
 include("listmodel.jl")
+include("actions.jl")
 
 end

@@ -25,6 +25,9 @@ end
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
 
+GtkApplication(id = nothing, flags = GLib.Constants.ApplicationFlags_NONE) = G_.Application_new(id,flags)
+push!(app::GtkApplication, win::GtkWindow) = G_.add_window(app, win)
+
 # Shortcut for creating callbacks that don't corrupt Gtk state if
 # there's an error
 macro guarded(ex...)

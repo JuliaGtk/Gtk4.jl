@@ -31,6 +31,13 @@ titlebar(win::GtkWindow, w::GtkWidget) = G_.set_titlebar(win, w)
 push!(w::GtkWindow, widget::GtkWidget) = G_.set_child(w, widget)
 setindex!(w::GtkWindow, widget::GtkWidget) = G_.set_child(w, widget)
 
+GtkApplicationWindow(app::GtkApplication) = G_.ApplicationWindow_new(app)
+function GtkApplicationWindow(app::GtkApplication, title::AbstractString)
+    win = GtkApplicationWindow(app)
+    G_.set_title(win, title)
+    win
+end
+
 GtkScrolledWindow() = G_.ScrolledWindow_new()
 setindex!(w::GtkScrolledWindow, widg::GtkWidget) = G_.set_child(w,widg)
 getindex(w::GtkScrolledWindow) = G_.get_child(w,widg)
