@@ -69,4 +69,12 @@ but you can force them to be of the same size by setting properties like `column
 
 ## GtkPaned
 
+The `GtkPaned` widget creates two slots separated by a movable divider. Like `GtkBox`, it can
+be oriented either vertically or horizontally. To add child widgets, you can use
+```julia
+paned = GtkPaned()
+paned[1] = top_or_left_widget
+paned[2] = bottom_or_right_widget
+```
+
 ## GtkNotebook

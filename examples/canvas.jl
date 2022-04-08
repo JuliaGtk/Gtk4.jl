@@ -16,8 +16,7 @@ c = GtkCanvas()
 end
 win = GtkWindow(c, "Canvas")
 
-g=GtkGestureClick()
-push!(c,g)
+g=GtkGestureClick(c)
 
 function on_pressed(controller, n_press, x, y)
     w=widget(controller)

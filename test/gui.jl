@@ -78,10 +78,11 @@ end
 end
 
 @testset "Frame" begin
-w = GtkWindow(GtkFrame(),
+f = GtkFrame()
+w = GtkWindow(f,
     "Frame", 400, 400)
-#widgets=[f for f in w] # test iteration over GtkBin
-#@test length(widgets)==1
+f[] = GtkLabel("A boring widget")
+@test f[].label == "A boring widget"
 destroy(w)
 end
 
@@ -92,12 +93,12 @@ vbox = GtkBox(:v)
 c = GtkCanvas()
 push!(nb, vbox, "A")
 push!(nb, c, "B")
-#insert!(nb, 2, GtkLabel("Something in the middle"), "A*")
-#pushfirst!(nb, GtkLabel("Something at the beginning"), "First")
-# splice!(nb, 3)
+insert!(nb, 2, GtkLabel("Something in the middle"), "A*")
+pushfirst!(nb, GtkLabel("Something at the beginning"), "First")
+splice!(nb, 3)
 w = GtkWindow(nb,"TestDataViewer",600,600)
 @test parent(nb) == w
-# @test pagenumber(nb,c)==3
+@test pagenumber(nb,c)==3
 destroy(w)
 end
 
@@ -115,7 +116,9 @@ w = GtkWindow(nb,"Notebook")
 push!(nb, GtkButton("o_ne"), "tab _one")
 push!(nb, GtkButton("t_wo"), "tab _two")
 push!(nb, GtkButton("th_ree"), "tab t_hree")
-push!(nb, GtkLabel("fo_ur"), "tab _four")
+four = GtkLabel("fo_ur")
+push!(nb, four, "tab _four")
+@test pagenumber(nb, four) == 4
 @test length(nb) == 4
 set_gtk_property!(nb,:page,2)
 @test get_gtk_property(nb,:page,Int) == 2
@@ -128,7 +131,10 @@ w = GtkWindow(pw,"Panedwindow", 400, 400)
 pw2 = GtkPaned(:v)
 pw[1]=GtkButton("one")
 pw[2]=pw2
+@test pw[1].label == "one"
 @test pw[2]==pw2
+@test_throws ErrorException pw[3]
+@test_throws ErrorException pw[3] = GtkLabel("three")
 pw2[1]=GtkButton("two")
 pw2[2]=GtkButton()
 pw2[2][]=GtkLabel("three")
@@ -143,6 +149,7 @@ w = GtkWindow(f,"Last in, first covered", 400, 400)
 
 g1 = GtkBox(:h)
 g2 = GtkBox(:h)
+@test_throws ErrorException g3 = GtkBox(:w)
 push!(f,g1)
 push!(f,g2)
 #@test f[1]==g1
@@ -152,9 +159,9 @@ push!(g1, b11)
 b12 = GtkButton("second")
 push!(g1, b12)
 b21 = GtkButton("first")
-push!(g2, b21)
 b22 = GtkButton("second")
 push!(g2, b22)
+pushfirst!(g2, b21)
 
 strs = ["first", "second"]
 i = 1
@@ -163,14 +170,22 @@ for child in g1
     @test toplevel(child) == w
     i += 1
 end
-# set_gtk_property!(g1,:pack_type,b11,0) #GTK_PACK_START
-# set_gtk_property!(g1,:pack_type,b12,0) #GTK_PACK_START
-# set_gtk_property!(g2,:pack_type,b21,1) #GTK_PACK_END
-# set_gtk_property!(g2,:pack_type,b22,1) #GTK_PACK_END
-# @test get_gtk_property(g1,:pack_type, b11, Int) == 0
 
 ## Now shrink window
 destroy(w)
+end
+
+@testset "CenterBox" begin
+    centerbox = GtkCenterBox(:v)
+    centerbox[:start] = GtkLabel("start")
+    centerbox[:center] = GtkLabel("center")
+    centerbox[:end] = GtkLabel("end")
+    @test_throws ErrorException centerbox[:below] = GtkLabel("below")
+
+    @test centerbox[:start].label == "start"
+    @test centerbox[:center].label == "center"
+    @test centerbox[:end].label == "end"
+    @test_throws ErrorException centerbox[:above] == "above"
 end
 
 @testset "Grid" begin
@@ -184,7 +199,7 @@ end
     grid[3,1:3] = GtkButton("Tall button")
     insert!(grid,1,:top)
     insert!(grid,3,:bottom)
-    #insert!(grid,grid[1,2],:right)
+    insert!(grid,grid[1,2],Gtk4.Constants.PositionType_RIGHT)
     #deleteat!(grid,1,:row)
     #empty!(grid)
     destroy(w)
@@ -247,6 +262,12 @@ fill!(pb3,GdkPixbufLib.RGB(0,0,0))
 destroy(w)
 end
 
+@testset "Image and Picture" begin
+img = GtkImage(; icon_name = "document-open")
+p = GdkPaintable(img)
+empty!(img)
+pic = GtkPicture()
+end
 
 @testset "checkbox" begin
 w = GtkWindow("Checkbutton")
@@ -346,7 +367,7 @@ end
 @testset "Statusbar" begin
 vbox = GtkBox(:v)
 w = GtkWindow(vbox, "Statusbar")
-global sb = GtkStatusbar()  # closures are not yet c-callable
+global sb = GtkStatusbar()
 push!(vbox, sb)
 ctxid = Gtk4.context_id(sb, "Statusbar example")
 bpush = GtkButton("push item")
@@ -354,20 +375,16 @@ bpop = GtkButton("pop item")
 push!(vbox, bpush)
 push!(vbox, bpop)
 global sb_count = 1
-function cb_sbpush(ptr,evt,id)
-    push!(sb, id, string("Item ", sb_count))
-    sb_count += 1
-    convert(Int32,false)
+id = signal_connect(bpush, "activate") do widget
+    push!(sb, ctxid, string("Item ", sb_count))
+    global sb_count += 1
 end
-function cb_sbpop(ptr,evt,id)
-    pop!(sb, id)
-    convert(Int32,false)
+id = signal_connect(bpop, "activate") do widget
+    pop!(sb, ctxid)
 end
-#on_signal_button_press(cb_sbpush, bpush, false, ctxid)
-#on_signal_button_press(cb_sbpop, bpop, false, ctxid)
 
-#click(bpush)
-#click(bpop)
+activate(bpush)
+activate(bpop)
 empty!(sb,ctxid)
 destroy(w)
 end
@@ -399,8 +416,8 @@ end
 @testset "Canvas & AspectFrame" begin
 c = GtkCanvas()
 f = GtkAspectFrame(0.5, 1, 0.5, false)
-G_.set_child(f,c)
-w = GtkWindow(f, "Canvas")
+f[] = c
+@test f[] == c
 c.draw = function(_)
     if isdefined(c,:back)
         ctx = Gtk4.getgc(c)
@@ -408,7 +425,9 @@ c.draw = function(_)
         paint(ctx)
     end
 end
+w = GtkWindow(f, "Canvas")
 draw(c)
+sleep(0.5)
 destroy(w)
 end
 
@@ -511,9 +530,10 @@ sw = GtkScrolledWindow()
 push!(win, sw)
 
 model = GtkStringList(["Apple","Orange","Kiwi"])
+push!(model, "Mango")
 factory = GtkSignalListItemFactory()
 
-@test length(model) == 3
+@test length(model) == 4
 @test model[2]=="Orange"
 
 function setup_cb(f, li)
@@ -532,8 +552,39 @@ signal_connect(setup_cb, factory, "setup")
 signal_connect(bind_cb, factory, "bind")
 
 sw[]=list
+@test sw[] == list
 
 destroy(win)
+
+end
+
+@testset "overlay" begin
+c = GtkCanvas()
+o = GtkOverlay(c)
+@test o[] == c
+push!(o,GtkButton("Button"))
+w = GtkWindow(o, "overlay")
+destroy(w)
+end
+
+@testset "dialogs" begin
+
+main_window = GtkWindow("Dialog example")
+
+d = info_dialog("Here's some information",main_window)
+show(d)
+response(d,Integer(Gtk4.Constants.ResponseType_DELETE_EVENT))
+
+function get_response(d,id)
+    ans = (id == Gtk4.Constants.ResponseType_YES ? "yes" : "no")
+    destroy(d)
+end
+
+d = ask_dialog("May I ask you a question?",main_window)
+signal_connect(get_response,d,"response")
+show(d)
+
+response(d,Integer(Gtk4.Constants.ResponseType_YES))
 
 end
 

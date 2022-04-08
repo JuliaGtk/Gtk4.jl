@@ -336,7 +336,7 @@ end
 function start_main_loop()
     # if g_main_depth > 0, a glib main-loop is already running,
     # so we don't need to start a new one
-    if G_.main_depth() == 0
+    if ccall((:g_main_depth, libglib), Cint, ()) == 0
         global glib_main_task = schedule(Task(glib_main))
     end
 end

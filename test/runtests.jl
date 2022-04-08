@@ -12,7 +12,6 @@ include("mainloop.jl")
 include("list.jl")
 
 include("gvalue.jl")
-#include("gbinding.jl")
 
 include("gfile.jl")
 include("gmenu.jl")

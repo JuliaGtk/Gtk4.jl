@@ -40,7 +40,7 @@ end
 
 GtkScrolledWindow() = G_.ScrolledWindow_new()
 setindex!(w::GtkScrolledWindow, widg::GtkWidget) = G_.set_child(w,widg)
-getindex(w::GtkScrolledWindow) = G_.get_child(w,widg)
+getindex(w::GtkScrolledWindow) = G_.get_child(w)
 
 GtkHeaderBar() = G_.HeaderBar_new()
 
@@ -52,7 +52,7 @@ function push!(d::GtkDialog, s::AbstractString, response::Integer)
     d
 end
 
-function response(widget::GtkDialog, response_id::Integer)
+function response(widget::GtkDialog, response_id)
     G_.response(widget, response_id)
 end
 
@@ -69,13 +69,10 @@ end
 GtkAboutDialogLeaf() = G_.AboutDialog_new()
 
 function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent = nothing; kwargs...)
-    if parent === nothing
-        parent = C_NULL
-    end
+    parent = (parent === nothing ? C_NULL : parent)
     w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
         (Ptr{GObject}, Cint, Cint, Cint, Ptr{UInt8}),
-        parent, flags, typ, Constants.ButtonsType_NONE, C_NULL); kwargs...)
-    set_gtk_property!(w, :text, message)
+        parent, flags, typ, Constants.ButtonsType_NONE, message); kwargs...)
     for (k, v) in buttons
         push!(w, k, v)
     end
@@ -86,25 +83,32 @@ ask_dialog(message::AbstractString, parent = nothing) =
         ask_dialog(message, "No", "Yes", parent)
 
 function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing)
-    dlg = GtkMessageDialog(message, ((no_text, 0), (yes_text, 1)),
+    dlg = GtkMessageDialog(message, ((no_text, Integer(Constants.ResponseType_NO)), (yes_text, Integer(Constants.ResponseType_YES))),
             Constants.DialogFlags_DESTROY_WITH_PARENT, Constants.MessageType_QUESTION, parent)
 end
 
+function destroy_dialog(d::GtkDialog, response_id)
+    destroy(d)
+end
+
 for (func, flag) in (
-        (:info_dialog, :(GtkMessageType.INFO)),
-        (:warn_dialog, :(GtkMessageType.WARNING)),
-        (:error_dialog, :(GtkMessageType.ERROR)))
-    @eval function $func(message::AbstractString, parent = GtkNullContainer())
-        w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk), Ptr{GObject},
+        (:info_dialog, :(Constants.MessageType_INFO)),
+        (:warn_dialog, :(Constants.MessageType_WARNING)),
+        (:error_dialog, :(Constants.MessageType_ERROR)))
+    @eval function $func(message::AbstractString, parent = nothing)
+        parent = (parent === nothing ? C_NULL : parent)
+        w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
             (Ptr{GObject}, Cint, Cint, Cint, Ptr{UInt8}),
-            parent, GtkDialogFlags.DESTROY_WITH_PARENT,
-            $flag, GtkButtonsType.CLOSE, C_NULL))
-        set_gtk_property!(w, :text, message)
+            parent, Constants.DialogFlags_DESTROY_WITH_PARENT,
+            $flag, Constants.ButtonsType_CLOSE, message))
+        signal_connect(destroy_dialog,w,"response")
+        w
     end
 end
 
-function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = GtkNullContainer())
-    widget = GtkMessageDialog(message, buttons, GtkDialogFlags.DESTROY_WITH_PARENT, GtkMessageType.INFO, parent)
+function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing)
+    parent = (parent === nothing ? C_NULL : parent)
+    widget = GtkMessageDialog(message, buttons, Constants.DialogFlags_DESTROY_WITH_PARENT, Constants.MessageType_INFO, parent)
     box = content_area(widget)
     entry = GtkEntry(; text = entry_default)
     push!(box, entry)

@@ -1,22 +1,72 @@
 push!(w::GtkWidget, c::GtkEventController) = G_.add_controller(w,c)
 widget(c::GtkEventController) = G_.get_widget(c)
 
-GtkEventControllerMotion() = G_.EventControllerMotion_new()
-GtkEventControllerScroll(flags) = G_.EventControllerScroll_new(flags)
-GtkEventControllerKey() = G_.EventControllerKey_new()
-
-GtkGestureClick() = G_.GestureClick_new()
-function GtkGestureClick(button)
-    g = GtkGestureClick()
-    G_.set_button(g, button)
+function GtkEventControllerMotion(widget=nothing)
+    g = G_.EventControllerMotion_new()
+    widget !== nothing && push!(widget, g)
+    g
+end
+function GtkEventControllerScroll(flags,widget=nothing)
+    g = G_.EventControllerScroll_new(flags)
+    widget !== nothing && push!(widget, g)
+    g
+end
+function GtkEventControllerKey(widget=nothing)
+    g = G_.EventControllerKey_new()
+    widget !== nothing && push!(widget, g)
     g
 end
 
-GtkGestureDrag() = G_.GestureDrag_new()
-GtkGestureZoom() = G_.GestureZoom_new()
+function GtkGestureClick(widget=nothing,button=0)
+    g = G_.GestureClick_new()
+    button != 0 && G_.set_button(g, button)
+    widget !== nothing && push!(widget, g)
+    g
+end
+
+function GtkGestureDrag(widget=nothing)
+    g = G_.GestureDrag_new()
+    widget !== nothing && push!(widget, g)
+    g
+end
+
+function GtkGestureZoom(widget=nothing)
+    g = G_.GestureZoom_new()
+    widget !== nothing && push!(widget, g)
+    g
+end
 
 function on_signal_destroy(@nospecialize(destroy_cb::Function), widget::GtkWidget, vargs...)
     signal_connect(destroy_cb, widget, "destroy", Nothing, (), vargs...)
 end
 
+function on_signal_button_press(@nospecialize(press_cb::Function), widget::GtkWidget, vargs...)
+    g = GtkGestureClick(widget)
+    signal_connect(press_cb, g, "pressed", Cvoid, (Cint, Cdouble, Cdouble), vargs...)
+end
+function on_signal_button_release(@nospecialize(release_cb::Function), widget::GtkWidget, vargs...)
+    g = GtkGestureClick(widget)
+    signal_connect(release_cb, widget, "released", Cvoid, (Cint, Cdouble, Cdouble), vargs...)
+end
+
+
 reveal(w::GtkWidget) = G_.queue_draw(w)
+
+const default_mouse_motion_cb = (ec, x, y) -> nothing
+const default_mouse_button_cb = (ec, n_press, x, y) -> nothing
+
+const MHStack = Vector{Tuple{Symbol, Function}}
+
+mutable struct MouseHandler
+    button1press::Function
+    button1release::Function
+    motion::Function
+    stack::MHStack
+    ids::Vector{Culong}
+    widget::GtkWidget
+
+    MouseHandler(ids::Vector{Culong}) =
+        new(default_mouse_button_cb, default_mouse_button_cb, default_mouse_motion_cb,
+            Vector{Tuple{Symbol, Function}}(), ids)
+end
+MouseHandler() = MouseHandler(Culong[])

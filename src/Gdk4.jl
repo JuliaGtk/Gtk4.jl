@@ -7,6 +7,8 @@ using ..Pango
 using ..Pango.Cairo
 using ..GdkPixbufLib
 
+import Base: unsafe_convert
+
 eval(include("gen/gdk4_consts"))
 eval(include("gen/gdk4_structs"))
 

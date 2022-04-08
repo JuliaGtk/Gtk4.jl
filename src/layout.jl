@@ -26,12 +26,34 @@ end
 
 GtkCenterBox() = G_.CenterBox_new()
 function GtkCenterBox(orientation)
-    b = GtkCenterbox()
-    b.orientation = orientation
+    b = GtkCenterBox()
+    G_.set_orientation(GtkOrientable(b), convert(Gtk4.Constants.Orientation, orientation))
     b
 end
 
-## TODO: start, center, end widget
+function setindex!(b::GtkCenterBox, w::GtkWidget, pos::Symbol)
+    if pos === :start
+        G_.set_start_widget(b,w)
+    elseif pos === :center
+        G_.set_center_widget(b,w)
+    elseif pos === :end
+        G_.set_end_widget(b,w)
+    else
+        error("invalid position")
+    end
+end
+
+function getindex(b::GtkCenterBox, pos::Symbol)
+    if pos === :start
+        return G_.get_start_widget(b)
+    elseif pos === :center
+        return G_.get_center_widget(b)
+    elseif pos === :end
+        return G_.get_end_widget(b)
+    else
+        error("invalid position")
+    end
+end
 
 ## GtkPaned
 GtkPaned(orientation) = G_.Paned_new(convert(Gtk4.Constants.Orientation, orientation))
@@ -90,9 +112,8 @@ function insert!(grid::GtkGrid, i::Integer, side::Symbol)
     end
 end
 
-function insert!(grid::GtkGrid, sibling, side::Symbol)
-    pos=getfield(GtkPositionType,Symbol(uppercase(string(side))))
-    G_.insert_next_to(grid, sibling, pos)
+function insert!(grid::GtkGrid, sibling, side)
+    G_.insert_next_to(grid, sibling, side)
 end
 
 
@@ -116,10 +137,16 @@ getindex(f::GtkAspectFrame) = G_.get_child(f)
 GtkNotebook() = G_.Notebook_new()
 
 function insert!(w::GtkNotebook, position::Integer, x::GtkWidget, label::Union{GtkWidget, AbstractString})
+    if isa(label, AbstractString)
+        label = G_.Label_new(label)
+    end
     G_.insert_page(w, x, label, position - 1) + 1
     w
 end
 function pushfirst!(w::GtkNotebook, x::GtkWidget, label::Union{GtkWidget, AbstractString})
+    if isa(label, AbstractString)
+        label = G_.Label_new(label)
+    end
     G_.prepend_page(w, x, label) + 1
     w
 end
@@ -142,8 +169,13 @@ length(w::GtkNotebook) = G_.get_n_pages(w)
 
 ## GtkOverlay
 GtkOverlay() = G_.Overlay_new()
+function GtkOverlay(w::GtkWidget)
+    o = GtkOverlay()
+    o[] = w
+    o
+end
 
 setindex!(f::GtkOverlay, w::GtkWidget) = G_.set_child(f,w)
 getindex(f::GtkOverlay) = G_.get_child(f)
 
-add(f::GtkOverlay, x::GtkWidget) = G_.add_overlay(f,x)
+push!(f::GtkOverlay, x::GtkWidget) = G_.add_overlay(f,x)

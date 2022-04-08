@@ -25,7 +25,7 @@ export signal_connect, signal_handler_disconnect,
     signal_emit, g_timeout_add, g_idle_add
 
 # Gtk-specific event handling
-export add_events, signal_emit,
+export signal_emit,
     on_signal_destroy, on_signal_button_press,
     on_signal_button_release, on_signal_motion
 

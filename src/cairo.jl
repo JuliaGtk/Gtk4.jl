@@ -11,19 +11,17 @@ end
 
 mutable struct GtkCanvas <: GtkDrawingArea # NOT an @GType
     handle::Ptr{GObject}
-    #mouse::MouseHandler
+    mouse::MouseHandler
     resize::Union{Function, Nothing}
     draw::Union{Function, Nothing}
     back::CairoSurface   # backing store
-    backcc::CairoContext
 
     function GtkCanvas(w = -1, h = -1)
         da = G_.DrawingArea_new()
         G_.set_size_request(da, w, h)
         ids = Vector{Culong}(undef, 0)
-        widget = new(da.handle, nothing, nothing)
-        #widget = new(da, false, false, MouseHandler(ids), nothing, nothing)
-        #widget.mouse.widget = widget
+        widget = new(da.handle, MouseHandler(ids), nothing, nothing)
+        widget.mouse.widget = widget
 
         function on_resize(da::GtkWidget, width, height)
             widget.back = CairoARGBSurface(width, height)
@@ -36,10 +34,12 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT an @GType
 
         signal_connect(Base.inferencebarrier(on_resize), widget, "resize")
 
-        #push!(ids, on_signal_button_press(mousedown_cb, widget, false, widget.mouse))
+        g=GtkGestureClick(da)
+        ecm=GtkEventControllerMotion(da)
+
+        #push!(ids, signal_connect(mousedown_cb, g, "button-press-event", Cint, (Ptr{GdkEventButton},), vargs...)on_signal_button_press(mousedown_cb, widget, false, widget.mouse))
         #push!(ids, on_signal_button_release(mouseup_cb, widget, false, widget.mouse))
         #push!(ids, on_signal_motion(mousemove_cb, widget, 0, 0, false, widget.mouse))
-        #push!(ids, on_signal_scroll(mousescroll_cb, widget, false, widget.mouse))
         return GLib.gobject_move_ref(widget, da)
     end
 end
