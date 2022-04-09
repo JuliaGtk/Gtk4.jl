@@ -448,6 +448,13 @@ end
 #     #@test isa(a,Gtk.GdkRectangle)
 # end
 
+@testset "File Chooser" begin
+    dlg = GtkFileChooserDialog("Select file", nothing, Gtk4.Constants.FileChooserAction_OPEN,
+                            (("_Cancel", Gtk4.Constants.ResponseType_CANCEL),
+                             ("_Open", Gtk4.Constants.ResponseType_ACCEPT)))
+    destroy(dlg)
+end
+
 @testset "List view" begin
 
 ls=GtkListStore(Int32,Bool)
@@ -587,6 +594,41 @@ show(d)
 response(d,Integer(Gtk4.Constants.ResponseType_YES))
 
 end
+
+@testset "FileFilter" begin
+emptyfilter = GtkFileFilter()
+@test get_gtk_property(emptyfilter, "name") === nothing
+fname = "test.csv"
+fdisplay = "test.csv"
+fmime = "text/csv"
+csvfilter1 = GtkFileFilter("*.csv")
+@test csvfilter1.name == "*.csv"
+
+csvfilter2 = GtkFileFilter("*.csv"; name="Comma Separated Format")
+@test csvfilter2.name == "Comma Separated Format"
+
+if !Sys.iswindows()#filter fails on windows 7
+    csvfilter3 = GtkFileFilter(; mimetype="text/csv")
+    @test csvfilter3.name == "text/csv"
+end
+
+csvfilter4 = GtkFileFilter(; pattern="*.csv", mimetype="text/csv")
+# Pattern takes precedence over mime-type, causing mime-type to be ignored
+@test csvfilter4.name == "*.csv"
+end
+
+include("../examples/dialogs.jl")
+
+activate(file_open_dialog_button)
+sleep(0.1)
+activate(file_save_dialog_button)
+sleep(0.1)
+activate(file_open_dialog_native_button)
+sleep(0.1)
+activate(file_save_dialog_native_button)
+sleep(0.1)
+
+#destroy(main_window)
 
 @testset "application" begin
 

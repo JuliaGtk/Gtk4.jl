@@ -177,8 +177,10 @@ function make_gvalue_from_fundamental_type(i,cm)
   fn = Core.eval(cm, quote
     function(v::Base.Ref{GValue})
               x = ccall(($(string("g_value_get_", g_value_fn)), GLib.libgobject), $ctype, (Ptr{GValue},), v)
-              $(if g_value_fn == :string; :(x = GLib.bytestring(x)) end)
-              $(if juliatype !== Union{}
+              $(if g_value_fn == :string; :(x = (x == C_NULL ? nothing : GLib.bytestring(x))) end)
+              $(if juliatype == AbstractString
+                  :(return x)
+              elseif juliatype !== Union{}
                   :(return Base.convert($juliatype, x))
               else
                   :(return x)

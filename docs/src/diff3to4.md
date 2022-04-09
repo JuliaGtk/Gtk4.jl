@@ -12,7 +12,7 @@ Gtk.ShortNames is no more. All GObject types are mapped onto Julia types with th
 
 ## No showall
 
-In GTK 4.0, widgets are shown by default, so `show` and `showall` are no longer necessary.
+In GTK 4.0, widgets are shown by default, so `show` is no longer necessary in most situations. Exceptions include `GtkDialog`s and `GtkApplicationWindow`s.
 
 ## Events
 

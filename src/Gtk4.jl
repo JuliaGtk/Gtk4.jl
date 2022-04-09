@@ -38,7 +38,7 @@ eval(include("gen/gtk4_methods"))
 
 end
 
-import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex, iterate,
+import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
              convert, empty!, unsafe_convert, string, popfirst!, size, delete!,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!
 

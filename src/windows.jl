@@ -118,3 +118,126 @@ end
 function content_area(widget::GtkDialog)
     boxp = G_.get_content_area(widget)
 end
+
+## FileChoosers
+
+function GtkFileChooserDialog(title::AbstractString, parent::Union{Nothing,GtkWindow}, action, button_text_response; kwargs...)
+    parent = (parent === nothing ? C_NULL : parent)
+    w = GtkFileChooserDialog(ccall((:gtk_file_chooser_dialog_new, libgtk4), Ptr{GObject},
+                (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
+                title, parent, action, C_NULL); kwargs...)
+    for (k, v) in button_text_response
+        push!(w, k, Integer(v))
+    end
+    return w
+end
+
+function GtkFileChooserNative(title::AbstractString, parent::Union{Nothing,GtkWindow}, action, accept::AbstractString, cancel::AbstractString; kwargs...)
+    w = G_.FileChooserNative_new(title, parent, action, accept, cancel)
+    return w
+end
+
+const SingleComma = r"(?<!,), (?!,)"
+function GtkFileFilter(; name::Union{AbstractString, Nothing} = nothing, pattern::AbstractString = "", mimetype::AbstractString = "")
+    filt = G_.FileFilter_new()
+    if !isempty(pattern)
+        name == nothing && (name = pattern)
+        for p in split(pattern, SingleComma)
+            p = replace(p, ", , " => ", ")   # escape sequence for , is , ,
+            G_.add_pattern(filt,p)
+        end
+    elseif !isempty(mimetype)
+        name == nothing && (name = mimetype)
+        for m in split(mimetype, SingleComma)
+            m = replace(m, ", , " => ", ")
+            G_.add_mime_type(filt, m)
+        end
+    else
+        G_.add_pixbuf_formats(filt)
+    end
+    G_.set_name(filt, name === nothing || isempty(name) ? nothing : name)
+    return filt
+end
+GtkFileFilter(pattern::AbstractString; name::Union{AbstractString, Nothing} = nothing) = GtkFileFilter(; name = name, pattern = pattern)
+
+GtkFileFilter(filter::GtkFileFilter) = filter
+
+function makefilters!(dlgp::GtkFileChooser, filters::Union{AbstractVector, Tuple})
+    for f in filters
+        G_.add_filter(dlgp, GtkFileFilter(f))
+    end
+end
+
+function file_chooser_get_selection(dlg::Union{GtkFileChooserDialog,GtkFileChooserNative}, response_id)
+    dlgp = GtkFileChooser(dlg)
+    multiple = get_gtk_property(dlg, :select_multiple, Bool)
+    local selection
+    if response_id == Constants.ResponseType_ACCEPT
+        if multiple
+            filename_list = G_.get_files(dlgp)
+            selection = String[GLib.G_.get_path(GFile(f)) for f in GListModel(filename_list)]
+        else
+            gfile = G_.get_file(dlgp)
+            selection = GLib.G_.get_path(GFile(gfile))
+        end
+    else
+        if multiple
+            selection = String[]
+        else
+            selection = ""
+        end
+    end
+    destroy(dlg)
+    selection
+end
+
+function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; kwargs...)
+    parent = (parent === nothing ? C_NULL : parent)
+    dlg = GtkFileChooserDialog(title, parent, Constants.FileChooserAction_OPEN,
+                                (("_Cancel", Constants.ResponseType_CANCEL),
+                                 ("_Open",   Constants.ResponseType_ACCEPT)); kwargs...)
+    dlgp = GtkFileChooser(dlg)
+    if !isempty(filters)
+        makefilters!(dlgp, filters)
+    end
+    show(dlg)
+    dlg
+end
+
+function save_dialog(title::AbstractString, parent = GtkNullContainer(), filters::Union{AbstractVector, Tuple} = String[]; kwargs...)
+    dlg = GtkFileChooserDialog(title, parent, Constants.FileChooserAction_SAVE,
+                                (("_Cancel", Constants.ResponseType_CANCEL),
+                                 ("_Save",   Constants.ResponseType_ACCEPT)); kwargs...)
+    dlgp = GtkFileChooser(dlg)
+    if !isempty(filters)
+        makefilters!(dlgp, filters)
+    end
+    show(dlg)
+    dlg
+end
+
+## Native dialogs
+
+show(d::GtkNativeDialog) = G_.show(d)
+hide(d::GtkNativeDialog) = G_.hide(d)
+destroy(d::GtkNativeDialog) = G_.destroy(d)
+
+function open_dialog_native(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
+    dlg = GtkFileChooserNative(title, parent, Constants.FileChooserAction_OPEN, "Open", "Cancel")
+    dlgp = GtkFileChooser(dlg)
+    if !isempty(filters)
+        makefilters!(dlgp, filters)
+    end
+    show(dlg)
+    dlg
+end
+
+function save_dialog_native(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
+    dlg = GtkFileChooserNative(title, parent, Constants.FileChooserAction_SAVE,"Save","Cancel")
+    dlgp = GtkFileChooser(dlg)
+    if !isempty(filters)
+        makefilters!(dlgp, filters)
+    end
+    show(dlg)
+    dlg
+end

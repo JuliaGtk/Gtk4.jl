@@ -23,6 +23,9 @@ function iterate(w::GtkWidget, state=nothing)
     next === nothing ? nothing : (next, next)
 end
 
+eltype(::Type{GtkWidget}) = GtkWidget
+IteratorSize(::Type{GtkWidget}) = Base.SizeUnknown()
+
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
 
 GtkApplication(id = nothing, flags = GLib.Constants.ApplicationFlags_NONE) = G_.Application_new(id,flags)

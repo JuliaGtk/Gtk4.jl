@@ -27,6 +27,7 @@ GtkStringList(list = nothing) = G_.StringList_new(list)
 push!(sl::GtkStringList, str) = (G_.append(sl, str); sl)
 length(sl::GtkStringList) = length(GListModel(sl))
 getindex(sl::GtkStringList, i::Integer) = G_.get_string(sl, i - 1)
+eltype(::Type{GtkStringList}) = String
 
 ## GtkListView and GtkGridView
 
