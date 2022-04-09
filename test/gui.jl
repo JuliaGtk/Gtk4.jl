@@ -310,13 +310,16 @@ end
 
 
 @testset "slider/scale" begin
-sl = GtkScale(true, 1:10)
+sl = GtkScale(:v, 1:10)
 w = GtkWindow(sl, "Scale")
 G_.set_value(sl, 3)
+push!(sl,π,:right,"pi")
+push!(sl,-3,:left)
 @test G_.get_value(sl) == 3
 adj = GtkAdjustment(sl)
 @test get_gtk_property(adj,:value,Float64) == 3
 set_gtk_property!(adj,:upper,11)
+empty!(sl)
 destroy(w)
 end
 
@@ -628,7 +631,7 @@ sleep(0.1)
 activate(file_save_dialog_native_button)
 sleep(0.1)
 
-#destroy(main_window)
+destroy(main_window)
 
 @testset "application" begin
 

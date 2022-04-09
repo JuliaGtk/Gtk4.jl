@@ -8,6 +8,20 @@ function convert(::Type{Gtk4.Constants.Orientation}, x::Symbol)
     end
 end
 
+function convert(::Type{Gtk4.Constants.PositionType}, x::Symbol)
+    if x === :left
+        Gtk4.Constants.PositionType_LEFT
+    elseif x === :right
+        Gtk4.Constants.PositionType_RIGHT
+    elseif x === :top
+        Gtk4.Constants.PositionType_TOP
+    elseif x === :bottom
+        Gtk4.Constants.Orientation_BOTTOM
+    else
+        error("can't convert $x to GtkPositionType")
+    end
+end
+
 ## GtkBox
 
 GtkBox(orientation, spacing=0) = G_.Box_new(convert(Gtk4.Constants.Orientation, orientation), spacing)

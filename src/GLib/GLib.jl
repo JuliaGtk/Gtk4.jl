@@ -123,4 +123,21 @@ include("gobject.jl")
 include("listmodel.jl")
 include("actions.jl")
 
+const exiting = Ref(false)
+function __init__()
+    # Set XDG_DATA_DIRS so that Gio can find its schemas
+    ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
+        joinpath(dirname(Glib_jll.libglib_path::String), "..", "share"),
+         Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
+     ]), Sys.iswindows() ? ";" : ":")
+
+    global JuliaClosureMarshal = @cfunction(GClosureMarshal, Nothing,
+        (Ptr{Nothing}, Ptr{GValue}, Cuint, Ptr{GValue}, Ptr{Nothing}, Ptr{Nothing}))
+    exiting[] = false
+    atexit(() -> (exiting[] = true))
+    __init__gtype__()
+    __init__gmainloop__()
+    nothing
+end
+
 end

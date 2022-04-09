@@ -241,3 +241,24 @@ function save_dialog_native(title::AbstractString, parent = nothing, filters::Un
     show(dlg)
     dlg
 end
+
+function GtkColorChooserDialog(title::AbstractString, parent)
+    return G_.ColorChooserDialog_new(title, parent)
+end
+
+function color_chooser_dialog_get_selection(dlg::GtkColorChooserDialog, response_id)
+    dlgp = GtkColorChooser(dlg)
+    if unsafe_trunc(UInt16,response_id) == Constants.ResponseType_OK
+        selection = G_.get_rgba(dlgp)
+    else
+        selection = nothing
+    end
+    destroy(dlg)
+    selection
+end
+
+function color_dialog(title::AbstractString, parent = nothing)
+    dlg = GtkColorChooserDialog(title, parent)
+    show(dlg)
+    dlg
+end

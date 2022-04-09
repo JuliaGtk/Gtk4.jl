@@ -85,3 +85,21 @@ function open_file_save_native_dialog(b)
 end
 
 signal_connect(open_file_save_native_dialog,file_save_dialog_native_button,"clicked")
+
+## Color chooser dialog
+
+color_dialog_button = GtkButton("Color chooser dialog")
+push!(box,color_dialog_button)
+
+function get_color_response(d,id)
+    selection = Gtk4.color_chooser_dialog_get_selection(d,id)
+    @async println("selection was ",selection)
+    nothing
+end
+
+function open_color_dialog(b)
+    d = color_dialog("Pick a color",main_window)
+    signal_connect(get_color_response,d,"response")
+end
+
+signal_connect(open_color_dialog,color_dialog_button,"clicked")

@@ -345,14 +345,3 @@ function stop_main_loop()
     g_main_running[] = false
     ccall((:g_main_context_wakeup, libglib), Cint, (Ptr{Cvoid},), C_NULL)
 end
-
-const exiting = Ref(false)
-function __init__()
-    global JuliaClosureMarshal = @cfunction(GClosureMarshal, Nothing,
-        (Ptr{Nothing}, Ptr{GValue}, Cuint, Ptr{GValue}, Ptr{Nothing}, Ptr{Nothing}))
-    exiting[] = false
-    atexit(() -> (exiting[] = true))
-    __init__gtype__()
-    __init__gmainloop__()
-    nothing
-end

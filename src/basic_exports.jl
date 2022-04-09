@@ -17,6 +17,7 @@ export new, width, height, #minsize, maxsize
 
 export open_dialog, open_dialog_native, save_dialog, save_dialog_native
 export info_dialog, ask_dialog, warn_dialog, error_dialog, input_dialog
+export color_dialog
 export response
 
 # GLib-imported event handling
