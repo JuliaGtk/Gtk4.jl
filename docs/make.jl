@@ -1,4 +1,4 @@
-using Documenter, Gtk4, GI
+using Documenter, Gtk4
 
 makedocs(
     format = Documenter.HTML(

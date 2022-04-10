@@ -620,18 +620,18 @@ csvfilter4 = GtkFileFilter(; pattern="*.csv", mimetype="text/csv")
 @test csvfilter4.name == "*.csv"
 end
 
-include("../examples/dialogs.jl")
-
-activate(file_open_dialog_button)
-sleep(0.1)
-activate(file_save_dialog_button)
-sleep(0.1)
-activate(file_open_dialog_native_button)
-sleep(0.1)
-activate(file_save_dialog_native_button)
-sleep(0.1)
-
-destroy(main_window)
+# include("../examples/dialogs.jl")
+#
+# activate(file_open_dialog_button)
+# sleep(0.1)
+# activate(file_save_dialog_button)
+# sleep(0.1)
+# activate(file_open_dialog_native_button)
+# sleep(0.1)
+# activate(file_save_dialog_native_button)
+# sleep(0.1)
+#
+# destroy(main_window)
 
 @testset "application" begin
 
