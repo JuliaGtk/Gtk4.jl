@@ -97,4 +97,7 @@ function __init__()
     GLib.start_main_loop()
 end
 
+# include("precompile.jl")
+# _precompile_()
+
 end

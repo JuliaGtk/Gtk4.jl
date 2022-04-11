@@ -11,7 +11,7 @@ GtkTextTag(name::AbstractString) = G_.TextTag_new(name)
 
 const TI = Union{Ref{_GtkTextIter}, _GtkTextIter}
 zero(::Type{_GtkTextIter}) = _GtkTextIter()
-copy(ti::_GtkTextIter) = ti
+copy(ti::_GtkTextIter) = Ref(ti)
 copy(ti::Ref{_GtkTextIter}) = Ref(ti[])
 
 """
@@ -61,7 +61,7 @@ buffer(iter::TI) = convert(GtkTextBuffer,
 
 Returns the offset of `iter` (one-based index).
 """
-char_offset(iter::TI) = get_gtk_property(iter, :offset)+1
+char_offset(iter::TI) = iter.offset+1
 
 Base.cconvert(::Type{Ref{_GtkTextIter}}, it::_GtkTextIter) = Ref(it)
 Base.cconvert(::Type{Ref{_GtkTextIter}}, it::Ref{_GtkTextIter}) = Ref(it[])
@@ -70,7 +70,7 @@ Base.convert(::Type{_GtkTextIter}, it::Ref{_GtkTextIter}) = _GtkTextIter(buffer(
 struct GtkTextRange <: AbstractRange{Char}
     a::Base.RefValue{_GtkTextIter}
     b::Base.RefValue{_GtkTextIter}
-    GtkTextRange(a, b) = new(Ref(copy(a)), Ref(copy(b)))
+    GtkTextRange(a, b) = new(copy(a), copy(b))
 end
 
 #type GtkClipboard
@@ -185,8 +185,8 @@ start_(iter::TI) = Ref(iter)
 iterate(::TI, iter=start_(iter)) =
    get_gtk_property(iter, :is_end, Bool) ? nothing : (get_gtk_property(iter, :char)::Char, iter + 1)
 
-Base.:+(iter::TI, count::Integer) = (iter = Ref(copy(iter)); skip(iter, count); iter)
-Base.:-(iter::TI, count::Integer) = (iter = Ref(copy(iter)); skip(iter, -count); iter)
+Base.:+(iter::TI, count::Integer) = (iter = copy(iter); skip(iter, count); iter)
+Base.:-(iter::TI, count::Integer) = (iter = copy(iter); skip(iter, -count); iter)
 
 """
     skip(iter::Ref{_GtkTextIter}, count::Integer)
@@ -377,15 +377,15 @@ end
 
 (:)(a::TI, b::TI) = GtkTextRange(a, b)
 function getindex(r::GtkTextRange, b::Int)
-    a = Ref(copy(first(r)))
+    a = copy(first(r))
     b -= 1
     if b < 0 || (b > 0 && !skip(a, b)) || a >= last(r)
         throw(BoundsError())
     end
-    get_gtk_property(a, :char)::Char
+    a.char::Char
 end
 function length(r::GtkTextRange)
-    a = Ref(copy(first(r)))
+    a = copy(first(r))
     b = last(r)
     cnt = 0
     while a < b
@@ -583,7 +583,7 @@ end
 function insert!(text::GtkTextView, index::TI, str::AbstractString)
     Bool(ccall((:gtk_text_buffer_insert_interactive, libgtk4), Cint,
         (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{UInt8}, Cint, Cint),
-        G_.get_buffer(text), Ref(index), bytestring(str), sizeof(str), G_.get_editable(text)))
+        G_.get_buffer(text), index, bytestring(str), sizeof(str), G_.get_editable(text)))
     text
 end
 function insert!(text::GtkTextView, str::AbstractString)
@@ -663,7 +663,7 @@ end
 Implements `gtk_text_view_get_iter_at_position`.
 """
 function text_iter_at_position(view::GtkTextView, x::Integer, y::Integer)
-    buffer = view.buffer[GtkTextBuffer]
+    buffer = view.buffer
     iter = Ref(_GtkTextIter(buffer))
     text_iter_at_position(view, iter, C_NULL, Int32(x), Int32(y))
     return _GtkTextIter(buffer, char_offset(iter))
@@ -676,14 +676,14 @@ text_iter_at_position(view::GtkTextView, iter::Ref{_GtkTextIter}, trailing, x::I
 )
 
 function cursor_locations(view::GtkTextView)
-    weak = Ref{GdkRectangle}()
-    strong = Ref{GdkRectangle}()
+    weak = Ref{_GdkRectangle}()
+    strong = Ref{_GdkRectangle}()
     buffer = view.buffer
     iter = Ref(_GtkTextIter(buffer, buffer.cursor_position))
 
     ccall(
         (:gtk_text_view_get_cursor_locations, libgtk4), Cvoid,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{GdkRectangle}, Ptr{GdkRectangle}),
+        (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}),
         view, iter, strong, weak
     )
     return (iter, strong[], weak[])

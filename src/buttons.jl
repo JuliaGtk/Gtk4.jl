@@ -16,8 +16,12 @@ getindex(f::GtkButton) = G_.get_child(f)
 GtkCheckButton() = G_.CheckButton_new()
 GtkCheckButton(title::AbstractString) = G_.CheckButton_new_with_mnemonic(title)
 
+group(cb::GtkCheckButton, cb2::Union{Nothing,GtkCheckButton}) = G_.set_group(cb, cb2)
+
 GtkToggleButton() = G_.ToggleButton_new()
 GtkToggleButton(title::AbstractString) = G_.ToggleButton_new_with_mnemonic(title)
+
+group(tb::GtkToggleButton, tb2::Union{Nothing,GtkToggleButton}) = G_.set_group(tb, tb2)
 
 GtkSwitch() = G_.Switch_new()
 function GtkSwitch(active::Bool)
@@ -26,7 +30,6 @@ function GtkSwitch(active::Bool)
     b
 end
 
-## GtkRadioButton
 
 GtkLinkButton(uri::AbstractString) = G_.LinkButton_new(uri)
 GtkLinkButton(uri::AbstractString, label::AbstractString) = G_.LinkButton_new_with_label(uri, label)

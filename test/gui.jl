@@ -188,6 +188,16 @@ end
     @test_throws ErrorException centerbox[:above] == "above"
 end
 
+@testset "Expander" begin
+w = GtkWindow("Expander", 400, 400)
+ex = GtkExpander("Some buttons")
+b = GtkBox(:h)
+ex[]=b
+@test ex[]==b
+push!(w, ex)
+destroy(w)
+end
+
 @testset "Grid" begin
     grid = GtkGrid()
     w = GtkWindow(grid,"Grid", 400, 400)
@@ -301,12 +311,13 @@ w = GtkWindow(b, "VolumeButton", 50, 50, false)
 destroy(w)
 end
 
-# @testset "ColorButton" begin
-# b = GtkColorButton(Gdk4._GdkRGBA(0, 0.8, 1.0, 0.3))
-# w = GtkWindow(b, "ColorButton", 50, 50)
-# #GAccessor.rgba(ColorChooser(b), GLib.mutable(Gtk.GdkRGBA(0, 0, 0, 0)))
-# destroy(w)
-# end
+@testset "ColorButton" begin
+b = GtkColorButton()
+#b = GtkColorButton(Gdk4.G_.copy(Gdk4._GdkRGBA(0, 0.8, 1.0, 0.3)))
+w = GtkWindow(b, "ColorButton", 50, 50)
+#GAccessor.rgba(ColorChooser(b), GLib.mutable(Gtk.GdkRGBA(0, 0, 0, 0)))
+destroy(w)
+end
 
 
 @testset "slider/scale" begin
@@ -434,22 +445,21 @@ sleep(0.5)
 destroy(w)
 end
 
-# @testset "SetCoordinates" begin
-#     cnvs = GtkCanvas()
-#     win = GtkWindow(cnvs)
-#     draw(cnvs) do c
-#         println("hello?")
-#         set_coordinates(getgc(c), BoundingBox(0, 1, 0, 1))
-#     end
-#     sleep(0.5)
-#     mtrx = Gtk.Cairo.get_matrix(getgc(cnvs))
+@testset "SetCoordinates" begin
+    cnvs = GtkCanvas(300, 280)
+    draw(cnvs) do c
+        set_coordinates(getgc(c), BoundingBox(0, 1, 0, 1))
+    end
+    win = GtkWindow(cnvs)
+    # sleep(2.0)
+    # mtrx = Gtk4.Cairo.get_matrix(getgc(cnvs))
 #     @test mtrx.xx == 300
 #     @test mtrx.yy == 280
 #     @test mtrx.xy == mtrx.yx == mtrx.x0 == mtrx.y0 == 0
 #     surf = Gtk.cairo_surface(cnvs)
 #     #a = Gtk.allocation(cnvs)
 #     #@test isa(a,Gtk.GdkRectangle)
-# end
+end
 
 @testset "File Chooser" begin
     dlg = GtkFileChooserDialog("Select file", nothing, Gtk4.Constants.FileChooserAction_OPEN,

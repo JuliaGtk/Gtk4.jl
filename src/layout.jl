@@ -146,6 +146,13 @@ GtkAspectFrame(xalign, yalign, ratio, obey_child) = G_.AspectFrame_new(xalign, y
 setindex!(f::GtkAspectFrame, w::GtkWidget) = G_.set_child(f,w)
 getindex(f::GtkAspectFrame) = G_.get_child(f)
 
+## GtkExpander
+
+GtkExpander(title::AbstractString) = G_.Expander_new(title)
+
+setindex!(f::GtkExpander, w::GtkWidget) = G_.set_child(f,w)
+getindex(f::GtkExpander) = G_.get_child(f)
+
 ## GtkNotebook
 
 GtkNotebook() = G_.Notebook_new()

@@ -35,6 +35,8 @@ propnames = propertynames(a)
 @test :enabled in propnames
 @test :handle in propnames
 
+GLib.propertyinfo(a,:name)
+
 end
 
 @testset "gvariant" begin

@@ -51,22 +51,3 @@ end
 
 
 reveal(w::GtkWidget) = G_.queue_draw(w)
-
-const default_mouse_motion_cb = (ec, x, y) -> nothing
-const default_mouse_button_cb = (ec, n_press, x, y) -> nothing
-
-const MHStack = Vector{Tuple{Symbol, Function}}
-
-mutable struct MouseHandler
-    button1press::Function
-    button1release::Function
-    motion::Function
-    stack::MHStack
-    ids::Vector{Culong}
-    widget::GtkWidget
-
-    MouseHandler(ids::Vector{Culong}) =
-        new(default_mouse_button_cb, default_mouse_button_cb, default_mouse_motion_cb,
-            Vector{Tuple{Symbol, Function}}(), ids)
-end
-MouseHandler() = MouseHandler(Culong[])
