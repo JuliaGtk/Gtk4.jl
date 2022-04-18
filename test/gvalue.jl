@@ -3,6 +3,10 @@ using Test
 
 @testset "gvalue" begin
 
+gv = Ref(GValue())
+@test_throws ErrorException gv[Any]
+@test_throws ErrorException GLib.settype!(gv,GBoxed)
+
 types=[Int8,UInt8,Int16,UInt16,Int32,UInt32,Int64,UInt64,Float32,Float64,Bool]
 
 for t=types

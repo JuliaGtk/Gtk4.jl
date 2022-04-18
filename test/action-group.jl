@@ -3,14 +3,14 @@ using Test
 
 # GSimpleAction is an object with properties
 
+a=GLib.G_.SimpleAction_new("do-something",nothing)
+
 @testset "gaction" begin
 
 g=GLib.G_.SimpleActionGroup_new()
 
 @test isa(g,GSimpleActionGroup)
 @test [] == GLib.G_.list_actions(GActionGroup(g))
-
-a=GLib.G_.SimpleAction_new("do-something",nothing)
 
 @test "do-something" == GLib.G_.get_name(GAction(a))
 @test a.name == "do-something"
@@ -36,18 +36,77 @@ propnames = propertynames(a)
 @test :handle in propnames
 
 GLib.propertyinfo(a,:name)
+@test_throws ErrorException GLib.propertyinfo(a,:serial_number)
+
+action_added = Ref(false)
+
+function on_action_added(action_group, action_name)
+    action_added[] = true
+end
+
+signal_connect(on_action_added, g, "action_added")
+
+@test action_added[] == false
+push!(g,a)
+@test action_added[] == true
+
+extra_arg_ref=Ref(0)
+
+function on_action_added2(action_group, action_name, extra_arg)
+    action_added[] = true
+    extra_arg_ref[] = extra_arg
+    nothing
+end
+
+delete!(g, "do-something")
+
+signal_connect(on_action_added2, g, "action_added", Nothing, (String,), false, 3)
+
+push!(g,a)
+@test extra_arg_ref[] == 3
+
+end
+
+@testset "GListStore" begin
+
+# GListStore
+
+l = GListStore(:GSimpleAction)
+@test length(l)==0
+push!(l, a)
+@test length(l)==1
+@test l[1]==a
+@test l[2]==nothing
+
+push!(l, GLib.G_.SimpleAction_new("do-something",nothing))
+
+l2=[i for i in l]
+@test length(l2)==2
+
+empty!(l)
+@test length(l)==0
 
 end
 
 @testset "gvariant" begin
 
-types=[Int8,UInt8,Int16,UInt16,Int32,UInt32,Int64,UInt64,Float32,Float64,Bool]
+types=[UInt8,Int32,UInt32,Int64,UInt64,Float64,Bool]
 
 for t=types
     r=rand(t)
     gv=GLib.GVariant(t,r)
 
     @test gv[t]==r
+    @test GLib.GVariantType(t) == GLib.G_.get_type(gv)
 end
+
+gv1 = GLib.GVariant(UInt8,1)
+gv2 = GLib.GVariant(UInt8,2)
+
+@test gv1 != gv2
+@test gv1 < gv2
+@test gv1 <= gv2
+@test gv2 > gv1
+@test gv2 >= gv1
 
 end

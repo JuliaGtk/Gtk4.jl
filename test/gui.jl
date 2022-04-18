@@ -51,12 +51,28 @@ grab_focus(w)
 # #@test w.value === nothing    ### fails inside @testset
 end
 
-@testset "get/set property" begin
+@testset "get/set property and binding" begin
     w = GtkWindow("Window", 400, 300)
     @test w.title == "Window"
     @test w.visible
     w.visible = false
     @test w.visible == false
+
+    w2 = GtkWindow("Window 2")
+    b=bind_property(w,:title,w2,:title,GLib.Constants.BindingFlags_SYNC_CREATE)
+    @test w2.title == w.title
+
+    w.title = "Another title"
+    @test w2.title == w.title
+
+    unbind_property(b)
+
+    w.title = "New title"
+
+    @test w2.title != w.title
+
+    w.title = nothing
+
     destroy(w)
 end
 
@@ -258,6 +274,10 @@ pb=GdkPixbuf(data=icon, has_alpha=false)
 @test eltype(pb) == GdkPixbufLib.RGB
 @test size(pb) == (40, 20)
 @test pb[1,1].g==0xff
+@test pb[1:2,1:2][1,1].g==0xff
+@test GdkPixbufLib.bstride(pb,1) == 3
+@test GdkPixbufLib.bstride(pb,2) == 3*40
+@test GdkPixbufLib.bstride(pb,3) == 0
 pb[10,10]=GdkPixbufLib.RGB(0,0,0)
 pb[20:30,1:5]=GdkPixbufLib.RGB(0xff,0,0)
 im=GtkImage(pb)

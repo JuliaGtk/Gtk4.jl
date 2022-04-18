@@ -7,6 +7,10 @@ function GSimpleAction(name::AbstractString, param_type = nothing, state = nothi
 end
 
 push!(m::GActionMap, a::GAction) = G_.add_action(m,a)
+delete!(m::GActionMap, a::AbstractString) = G_.remove_action(m, a)
+
+push!(g::GSimpleActionGroup, a) = push!(GActionMap(g), GAction(a))
+delete!(g::GSimpleActionGroup, a::AbstractString) = delete!(GActionMap(g), a)
 
 function add_action(m::GActionMap, name::AbstractString, handler::Function)
     action = GSimpleAction(name)

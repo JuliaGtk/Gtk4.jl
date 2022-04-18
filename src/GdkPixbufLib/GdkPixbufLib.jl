@@ -3,6 +3,7 @@ module GdkPixbufLib
 using ..GLib
 using Glib_jll
 using gdk_pixbuf_jll
+using Scratch
 
 export GdkPixbuf, GdkPixbufAnimation
 export width, height, slice
@@ -101,7 +102,7 @@ MatrixStrided(p::Ptr{T}; kwargs...) where {T} = MatrixStrided{T}(p; kwargs...)
 MatrixStrided(::Type{T}; kwargs...) where {T} = MatrixStrided{T}(; kwargs...)
 function copy(a::MatrixStrided{T}) where T
     a2 = MatrixStrided{T}(a.nbytes, a.rowstride, a.width, a.height)
-    unsafe_copy!(a2.p, a.p, a.nbytes)
+    unsafe_copyto!(a2.p, a.p, a.nbytes)
     a2
 end
 function getindex(a::MatrixStrided{T}, x::Integer, y::Integer) where T
@@ -112,7 +113,7 @@ end
 function getindex(a::MatrixStrided{T}, x::Index, y::Index) where T
     @assert(1 <= minimum(x) && maximum(x) <= width(a), "MatrixStrided: x index must be inbounds")
     @assert(1 <= minimum(y) && maximum(y) <= height(a), "MatrixStrided: y index must be inbounds")
-    z = Matrix{T}(length(x), length(y))
+    z = Matrix{T}(undef, length(x), length(y))
     rs = a.rowstride
     st = sizeof(T)
     p = a.p

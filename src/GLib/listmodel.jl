@@ -8,7 +8,7 @@ push!(ls::GListStore, item) = (G_.append(ls, item); ls)
 empty!(ls::GListStore) = G_.remove_all(ls)
 deleteat!(ls::GListStore, i::Integer) = (G_.remove(ls, i-1);ls)
 length(ls::GListStore) = length(GListModel(ls))
-getindex(ls::GListStore, i::Integer) = getindex(GListModel(ls),i - 1)
+getindex(ls::GListStore, i::Integer) = getindex(GListModel(ls),i)
 iterate(ls::GListStore, i=0) = (i==length(ls) ? nothing : (getindex(ls, i+1),i+1))
 eltype(::Type{GListStore}) = GObject
 

@@ -174,20 +174,6 @@ ref_to(::Type{T}, x) where {T <: GObject} = gobject_ref(unsafe_convert(Ptr{GObje
 deref_to(::Type{T}, x::Ptr) where {T <: GObject} = convert(T, x)
 #empty!(li::Ptr{_LList{Ptr{T}}}) where {T <: GObject} = gc_unref(unsafe_load(li).data)
 
-### Miscellaneous types
-baremodule GConnectFlags
-    const AFTER = 1
-    const SWAPPED = 2
-    get(s::Symbol) =
-        if s === :after
-            AFTER
-        elseif s === :swapped
-            SWAPPED
-        else
-            Main.Base.error(Main.Base.string("invalid GConnectFlag ", s))
-        end
-end
-
 ### Garbage collection [prevention]
 const gc_preserve = IdDict{Any, Any}() # reference counted closures
 function gc_ref(@nospecialize(x))

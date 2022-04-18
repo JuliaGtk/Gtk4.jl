@@ -9,7 +9,7 @@ using Glib_jll
 
 import Base: convert, copy, show, size, length, getindex, setindex!, get,
              iterate, eltype, isempty, ndims, stride, strides, popfirst!,
-             empty!, append!, reverse!, pushfirst!, pop!, push!, splice!, insert!, deleteat!,
+             empty!, append!, reverse!, pushfirst!, pop!, push!, splice!, insert!, deleteat!, delete!,
              sigatomic_begin, sigatomic_end, Sys.WORD_SIZE, unsafe_convert,
              getproperty, setproperty!, propertynames, getindex, setindex!, print, replace
 
@@ -27,7 +27,7 @@ export gobject_ref, signal_connect, signal_emit, signal_handler_disconnect
 export signal_handler_block, signal_handler_unblock
 export add_action, add_stateful_action
 
-export get_gtk_property, set_gtk_property!, gtk_propertynames
+export get_gtk_property, set_gtk_property!, gtk_propertynames, bind_property, unbind_property
 
 export bytestring
 

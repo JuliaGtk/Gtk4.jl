@@ -17,7 +17,7 @@ function signal_connect_generic(@nospecialize(cb::Function), w::GObject, sig::Ab
                  callback,
                  ref,
                  deref,
-                 after * GConnectFlags.AFTER)
+                 after ? Constants.ConnectFlags_AFTER : 0)
 end
 
 # id = signal_connect(widget, :event) do obj, evt_args...
@@ -30,15 +30,7 @@ function _signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractS
     @assert sizeof_gclosure > 0
     closuref = ccall((:g_closure_new_object, libgobject), Ptr{Nothing}, (Cuint, Ptr{GObject}), sizeof_gclosure::Int + GLib.WORD_SIZE * 2, w)
     closure_env = convert(Ptr{Ptr{Nothing}}, closuref + sizeof_gclosure)
-    if gtk_call_conv
-        env = Any[param_types, user_data]
-        ref_env, deref_env = gc_ref_closure(env)
-        unsafe_store!(closure_env, ref_env, 2)
-        ccall((:g_closure_add_invalidate_notifier, libgobject), Nothing,
-            (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), closuref, ref_env, deref_env)
-    else
-        unsafe_store!(convert(Ptr{Int}, closure_env), 0, 2)
-    end
+    unsafe_store!(convert(Ptr{Int}, closure_env), 0, 2)
     ref_cb, deref_cb = invoke(gc_ref_closure, Tuple{Function}, cb)
     unsafe_store!(closure_env, ref_cb, 1)
     ccall((:g_closure_add_invalidate_notifier, libgobject), Nothing,
@@ -54,35 +46,12 @@ function GClosureMarshal(closuref::Ptr{Nothing}, return_value::Ptr{GValue}, n_pa
     closure_env = convert(Ptr{Any}, closuref + sizeof_gclosure)
     cb = unsafe_load(closure_env, 1)::Function
     gtk_calling_convention = (0 != unsafe_load(convert(Ptr{Int}, closure_env),  2))
+    @assert gtk_calling_convention == false
     params = Vector{Any}(undef, n_param_values)
     g_siginterruptible(cb) do
-        if gtk_calling_convention
-            # compatibility mode, if we must
-            param_types, user_data = unsafe_load(closure_env, 2)::Array{Any, 1}
-            length(param_types) + 1 == n_param_values || error("GCallback called with the wrong number of parameters")
-            for i = 1:n_param_values
-                gv = Ref(param_values, i)
-                gtyp = gv[].g_type
-                # avoid auto-unboxing for some builtin types in gtk_calling_convention mode
-                if g_isa(gtyp, g_type(GObject))
-                    params[i] = ccall((:g_value_get_object, libgobject), Ptr{GObject}, (Ptr{GValue},), gv)
-                elseif g_isa(gtyp, g_type(GBoxed))
-                    params[i] = ccall((:g_value_get_boxed, libgobject), Ptr{Nothing}, (Ptr{GValue},), gv)
-                elseif g_isa(gtyp, g_type(AbstractString))
-                    params[i] = ccall((:g_value_get_string, libgobject), Ptr{Nothing}, (Ptr{GValue},), gv)
-                else
-                    params[i] = gv[Any]
-                end
-                if i > 1
-                    params[i] = convert(param_types[i - 1], params[i])
-                end
-            end
-            push!(params, user_data)
-        else
-            for i = 1:n_param_values
-                r=Ref(unsafe_load(param_values, i))
-                params[i] = r[Any]
-            end
+        for i = 1:n_param_values
+            r=Ref(unsafe_load(param_values, i))
+            params[i] = r[Any]
         end
         # note: make sure not to leak any of the GValue objects into this task switch, since many of them were alloca'd
         retval = cb(params...) # widget, args...
