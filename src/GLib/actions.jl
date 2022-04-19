@@ -33,3 +33,18 @@ function run(app::GApplication)
 end
 register(app::GApplication) = G_.register(app, nothing)
 activate(app::GApplication) = G_.activate(app)
+
+GMenu() = G_.Menu_new()
+function GMenu(i::GMenuItem)
+    m = GMenu()
+    G_.set_submenu(i,m)
+    m
+end
+GMenuItem(label,detailed_action = nothing) = G_.MenuItem_new(label, detailed_action)
+
+push!(m::GMenu, i::GMenuItem) = G_.append_item(m,i)
+pushfirst!(m::GMenu, i::GMenuItem) = G_.prepend_item(m,i)
+length(m::GMenu) = G_.get_n_items(m)
+
+section(m::GMenu, label::AbstractString, section) = G_.append_section(m, label, section)
+submenu(m::GMenu, label::AbstractString, submenu) = G_.append_submenu(m, label, submenu)

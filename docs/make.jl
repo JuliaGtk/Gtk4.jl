@@ -14,6 +14,7 @@ makedocs(
                      "manual/layout.md",
                      "manual/signals.md",
                      "manual/builder.md",
+                     "manual/textwidgets.md",
                      "manual/canvas.md",
                      #"manual/methods.md"
                     ],

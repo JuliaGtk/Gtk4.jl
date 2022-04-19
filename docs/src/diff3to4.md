@@ -14,6 +14,10 @@ Gtk.ShortNames is no more. All GObject types are mapped onto Julia types with th
 
 In GTK 4.0, widgets are shown by default, so `show` is no longer necessary in most situations. Exceptions include `GtkDialog`s and `GtkApplicationWindow`s.
 
+## No GtkContainer
+
+In GTK 4.0, `GtkContainer` has been removed and most widgets derive directly from `GtkWidget`. Each class that can contain child widgets has its own functions for adding and/or removing them. In Gtk4.jl, collection interface methods like `push!` have been defined for relatively simple containers, such as `GtkBox` and `GtkWindow`. For widgets that have one child, such as `GtkWindow`, `getindex` and `setindex!` have also been defined, so that one can set a child widget using `window[] = child`.
+
 ## Events
 
 Due to changes in GTK 4.0, events are handled through "event controllers".

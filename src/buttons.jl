@@ -55,3 +55,5 @@ GtkFontButton() = G_.FontButton_new()
 
 GtkColorButton() = G_.ColorButton_new()
 GtkColorButton(color::GdkRGBA) = G_.ColorButton_new_with_rgba(color)
+
+GtkPopoverMenuBar(model::GMenu) = G_.PopoverMenuBar_new_from_model(model)

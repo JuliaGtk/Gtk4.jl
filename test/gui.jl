@@ -309,6 +309,54 @@ set_gtk_property!(check,:label,"new label")
 destroy(w)
 end
 
+@testset "checkbuttons in group" begin
+
+w = GtkWindow("Checkbutton group test")
+b = GtkBox(:v)
+cb1 = GtkCheckButton("option 1")
+cb2 = GtkCheckButton("option 2")
+w[]=b
+push!(b,cb1)
+push!(b,cb2)
+
+group(cb1,cb2)
+
+cb1.active = true
+cb2.active = true
+@test cb1.active == false
+
+group(cb1,nothing)
+
+cb1.active = true
+cb2.active = true
+@test cb1.active == true
+
+end
+
+@testset "togglebuttons in group" begin
+
+w = GtkWindow("Togglebutton group test")
+b = GtkBox(:v)
+tb1 = GtkToggleButton("option 1")
+tb2 = GtkToggleButton("option 2")
+w[]=b
+push!(b,tb1)
+push!(b,tb2)
+
+group(tb1,tb2)
+
+tb1.active = true
+tb2.active = true
+@test tb1.active == false
+
+group(tb1,nothing)
+
+tb1.active = true
+tb2.active = true
+@test tb1.active == true
+
+end
+
 @testset "switch and togglebutton" begin
 switch = GtkSwitch(true)
 w = GtkWindow(switch,"Switch")
@@ -479,6 +527,28 @@ end
 #     surf = Gtk.cairo_surface(cnvs)
 #     #a = Gtk.allocation(cnvs)
 #     #@test isa(a,Gtk.GdkRectangle)
+end
+
+@testset "Menus" begin
+using Gtk4.GLib
+
+menubar = GMenu()
+filemenu = GMenu()
+open_ = GMenuItem("Open","open")
+push!(filemenu, open_)
+new_ = GMenuItem("New","new")
+pushfirst!(filemenu, new_)
+quit = GMenuItem("Quit","quit")
+push!(filemenu, quit)
+GLib.submenu(menubar,"File",filemenu)
+
+@test length(filemenu)==3
+
+mb = GtkPopoverMenuBar(menubar)
+b = GtkBox(:h)
+push!(b,mb)
+win = GtkWindow(b, "Menus", 200, 40)
+destroy(win)
 end
 
 @testset "File Chooser" begin

@@ -65,16 +65,7 @@ julia> "Press me" was clicked!
 Alternatively, you can temporarily enable or disable individual handlers with `signal_handler_block` and `signal_handler_unblock`.
 
 The arguments of the callback depend on the signal type.
-For example, instead of using the `"clicked"` signal---for which the Julia handler should be defined with just a single argument---we could have used `"button-press-event"`:
-```julia
-b = GtkButton("Pick a mouse button")
-win = GtkWindow(b, "Callbacks")
-id = signal_connect(b, "button-press-event") do widget, event
-    println("You pressed button ", event.button)
-end
-```
-Note that this signal requires two arguments, here `widget` and `event`, and that `event` contained useful information.
-Arguments and their meaning are described along with their corresponding [signals](https://docs.gtk.org/gtk3/signal.Widget.accel-closures-changed.html).
+Arguments and their meaning are described along with their corresponding signals.
 **You should omit the final `user_data` argument described in the Gtk documentation**;
 keep in mind that you can always address other variables from inside your function block, or define the callback in terms of an anonymous function:
 ```julia
