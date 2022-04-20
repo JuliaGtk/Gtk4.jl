@@ -32,7 +32,3 @@ end
 win = GtkWindow("ComboBoxText Example",400,200)
 push!(win, cb)
 ```
-
-## GtkComboBox
-
-TODO

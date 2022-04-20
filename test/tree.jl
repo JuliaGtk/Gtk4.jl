@@ -20,7 +20,6 @@ function itemlist(types, rownames)
         c1 = GtkTreeViewColumn(rownames[i], r1, Dict([("text",i-1)]))
         G_.set_sort_column_id(c1,i-1)
         push!(cols,c1)
-        #Gtk.G_.max_width(c1,Int(200/n))
         push!(tv,c1)
     end
 
@@ -52,6 +51,19 @@ path = Gtk4.path(treeModel,iter)
 @test prev(path)
 @test string(path) == "0"
 
+path2 = copy(path)
+@test string(path2) == string(path)
+
+next(path2)
+@test string(path2) == "1"
+
+path3 = GtkTreePath("1")
+@test string(path3) == "1"
+down(path3)
+@test string(path3) == "1:0"
+
+path4 = GtkTreePath()
+
 success, iter = Gtk4.iter(treeModel,path)
 @test success == true
 @test store[iter] == (1, "London")
@@ -65,6 +77,10 @@ iter = insert!(store, iter, (0,"Paris"); how = :sibling, where=:before)
 
 @test store[[1]] == (0,"Paris")
 
+@test length(treeModel, iter) == 0
+@test string(treeModel, iter) == "0"
+@test index_from_iter(treeModel, iter) == [1]
+
 iter = insert!(store, iter, (3,"Paris child"); how = :parent, where=:after)
 path = Gtk4.path(treeModel,iter)
 @test depth(path) == 2
@@ -75,7 +91,7 @@ iter = insert!(store, [3], (4, "Barcelona"); how = :sibling, where=:after)
 store[[4],2] = "Madrid"
 splice!(store, [4])
 
-##
+## selection
 
 selection = G_.get_selection(tv)
 @test hasselection(selection) == false
@@ -88,6 +104,9 @@ select!(selection, iter)
 iters = Gtk4.selected_rows(selection)
 @test length(iters) == 1
 @test store[iters[1],1] == 0
+
+unselect!(selection, iter)
+@test length(selection) == 0
 
 empty!(store)
 

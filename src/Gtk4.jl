@@ -40,7 +40,7 @@ end
 
 import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
              convert, empty!, unsafe_convert, string, popfirst!, size, delete!,
-             deleteat!, splice!, first, parent, (:), getproperty, setproperty!
+             deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
 
 import .GLib: set_gtk_property!, get_gtk_property, run
 

@@ -2,22 +2,22 @@
 
 const TRI = Union{Ref{_GtkTreeIter}, _GtkTreeIter}
 zero(::Type{GtkTreeIter}) = GtkTreeIter()
-copy(ti::GtkTreeIter) = ti
+copy(ti::GtkTreeIter) = G_.copy(ti)
 copy(ti::_GtkTreeIter) = ti
 copy(ti::Ref{_GtkTreeIter}) = Ref(ti[])
 show(io::IO, iter::GtkTreeIter) = print("GtkTreeIter(...)")
 
-Base.cconvert(::Type{Ref{GtkTreeIter}},x::GtkTreeIter) = Ref(x)
 Base.cconvert(::Type{Ref{_GtkTreeIter}},x::_GtkTreeIter) = Ref(x)
-#Base.cconvert(::Type{Ref{GtkTreeIter}},x::Mutable{GtkTreeIter}) = Ref(x[])
 
 ### GtkTreePath
 
 GtkTreePath() = G_.TreePath_new()
-copy(path::GtkTreePath) = GtkTreePath(path.handle)
+copy(path::GtkTreePath) = G_.copy(path)
 
-next(path::GtkTreePath) = ccall((:gtk_tree_path_next, libgtk4), Nothing, (Ptr{GtkTreePath},), path)
-prev(path::GtkTreePath) = ccall((:gtk_tree_path_prev, libgtk4), Cint, (Ptr{GtkTreePath},), path) != 0
+GtkTreePath(path::AbstractString) = G_.TreePath_new_from_string(path)
+
+next(path::GtkTreePath) = G_.next(path)
+prev(path::GtkTreePath) = G_.prev(path)
 up(path::GtkTreePath) = ccall((:gtk_tree_path_up, libgtk4), Cint, (Ptr{GtkTreePath},), path) != 0
 down(path::GtkTreePath) = ccall((:gtk_tree_path_down, libgtk4), Nothing, (Ptr{GtkTreePath},), path)
 string(path::GtkTreePath) = G_.to_string(path)
@@ -35,13 +35,13 @@ end
 
 ### GtkListStore
 
-function GtkListStoreLeaf(types::Type...)
+function GtkListStore(types::Type...)
     gtypes = GLib.gtypes(types...)
     handle = ccall((:gtk_list_store_newv, libgtk4), Ptr{GObject}, (Cint, Ptr{GLib.GType}), length(types), gtypes)
     GtkListStoreLeaf(handle)
 end
 
-GtkListStoreLeaf(combo::GtkComboBoxText) = GtkListStoreLeaf(ccall((:gtk_combo_box_get_model, libgtk4), Ptr{GObject}, (Ptr{GObject},), combo))
+GtkListStore(combo::GtkComboBoxText) = GtkListStore(ccall((:gtk_combo_box_get_model, libgtk4), Ptr{GObject}, (Ptr{GObject},), combo))
 
 ## index is integer for a liststore, vector of ints for tree
 iter_from_index(store::GtkListStore, index::Int) = iter_from_string_index(store, string(index - 1))
@@ -108,7 +108,6 @@ pop!(listStore::GtkListStoreLeaf) = deleteat!(listStore, length(listStore))
 popfirst!(listStore::GtkListStoreLeaf) = deleteat!(listStore, 1)
 
 
-isvalid(listStore::GtkListStore, iter::TRI) = G_.iter_is_valid(listStore, Ref(iter))
 function isvalid(listStore::GtkListStore, iter::_GtkTreeIter)
 	_iter = Ref(iter)
 	ret = ccall(("gtk_list_store_iter_is_valid", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), listStore, _iter)
@@ -234,11 +233,6 @@ getindex(store::Union{GtkTreeStore, GtkListStore}, iter::TRI) = getindex(GtkTree
 
 getindex(store::GtkTreeStore, row::Vector{Int}, column) = getindex(store, iter_from_index(store, row), column)
 getindex(store::GtkTreeStore, row::Vector{Int}) = getindex(store, iter_from_index(store, row))
-
-
-function setindex!(store::Union{GtkListStore, GtkTreeStore}, value, iter::TRI, column::Integer)
-    G_.set_value(store, Ref(iter), column - 1, GLib.gvalue(value))
-end
 
 function setindex!(store::GtkListStore, value, iter::_GtkTreeIter, column::Integer)
     ret = ccall(("gtk_list_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, Ref(iter), column - 1, GLib.gvalue(value))
@@ -402,7 +396,7 @@ length(treeModel::GtkTreeModel, iter::TRI) = iter_n_children(treeModel, iter)
 string(treeModel::GtkTreeModel, iter::TRI) = get_string_from_iter(treeModel, iter)
 
 ## index is Int[] 1-based
-index_from_iter(treeModel::GtkTreeModel, iter::TRI) = map(int, split(get_string_from_iter(treeModel, iter), ":")) + 1
+index_from_iter(treeModel::GtkTreeModel, iter::TRI) = parse.(Int32, split(get_string_from_iter(treeModel, iter), ":")) .+ 1
 
 ## An iterator to walk a tree, e.g.,
 ## for iter in TreeIterator(store) ## or TreeIterator(store, piter)
@@ -474,7 +468,6 @@ end
 iterate(x::TreeIterator, state=start_(x)) = done_(x, state) ? nothing : next_(x, state)
 
 
-#TODO: Replace by accessor
 function iter(treeModel::GtkTreeModel, path::GtkTreePath)
   it = Ref{_GtkTreeIter}()
   ret = ccall((:gtk_tree_model_get_iter, libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{GtkTreePath}),
@@ -614,26 +607,6 @@ function expand_to_path(tree_view::GtkTreeView, path::GtkTreePath)
     G_.expand_to_path(tree_view, path)
 end
 
-function treepath(path::AbstractString)
-    ptr = ccall(
-        (:gtk_tree_path_new_from_string, libgtk4), Ptr{GtkTreePath},
-        (Ptr{UInt8},), bytestring(path)
-    )
-    return ptr == C_NULL ? GtkTreePath() : convert(GtkTreePath, ptr)
-end
-
-# There's a method wrapped in GAccessor but tries to convert to a GtkTreeModel, which
-# is an interface in Gtk
-function model(tree_view::GtkTreeView)
-    return convert(GtkTreeStore, ccall(
-        (:gtk_tree_view_get_model, libgtk4),
-        Ptr{GObject},
-        (Ptr{GObject},),
-        tree_view)
-    )
-end
-
-# TODO Use internal accessor with default values?
 function path_at_pos(treeView::GtkTreeView, x::Integer, y::Integer)
     pathPtr = Ref{Ptr{GtkTreePath}}(0)
 

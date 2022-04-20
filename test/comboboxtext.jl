@@ -24,6 +24,15 @@ using Gtk4
 
     set_gtk_property!(cbsym, :active, 1)
     @test get_gtk_property(cbsym, "active-id", String) == "b"
+
+    ls = GtkListStore(cbsym)
+    @test length(ls) == 2
+
+    @test ls[1] == ("abc","a")
+    @test ls[1,1] == "abc"
+
+    pop!(ls)
+    @test length(ls) == 1
 end
 
 @testset "populate with pushfirst!" begin

@@ -4,7 +4,11 @@ Gtk4.jl is very similar to Gtk.jl. Here is a summary of what's different.
 
 ## Properties
 
-GObject properties can still be set and accessed using `get_gtk_property` and `set_gtk_property!`. However, properties are now mapped onto Julia properties, so one can set a window title using `win.title = "My title"`. Also, ``GAccessor` no longer exists and is replaced by the getter and setter methods defined in `G_`. Whereas in Gtk.jl one could use `GAccessor.title(win,"My title")` to set the title, in Gtk4.jl the equivalent is `G_.set_title(win, "My title")`.
+GObject [properties](manual/properties.md) can still be set and accessed using `get_gtk_property` and `set_gtk_property!`. However, properties are now mapped onto Julia properties, so one can set a window title using `win.title = "My title"`. Also, ``GAccessor` no longer exists and is replaced by the getter and setter methods defined in `G_`. Whereas in Gtk.jl one could use `GAccessor.title(win,"My title")` to set the title, in Gtk4.jl the equivalent is `G_.set_title(win, "My title")`.
+
+## GAccessor has been replaced with G_
+
+The submodule Gtk.GAccessor contains getter and setter methods. The submodule Gtk4.G_ contains [automatically generated methods](manual/methods.md), which include all methods in GAccessor and many more.
 
 ## GObject names
 

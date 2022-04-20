@@ -11,13 +11,16 @@ makedocs(
         "Home" => "index.md",
         "Manual" => ["manual/gettingStarted.md",
                      "manual/properties.md",
+                     "manual/methods.md",
                      "manual/layout.md",
                      "manual/signals.md",
                      "manual/builder.md",
                      "manual/textwidgets.md",
-                     "manual/canvas.md",
-                     #"manual/methods.md"
+                     "manual/combobox.md",
+                     "manual/listtreeview.md",
+                     "manual/canvas.md"
                     ],
+        "Gtk.jl to Gtk4.jl" => "diff3to4.md",
         "Reference" => "doc/reference.md",
         #"GI Reference" => "doc/GI_reference.md"
     ],

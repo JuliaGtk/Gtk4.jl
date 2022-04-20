@@ -182,8 +182,7 @@ Base.:(>=)(lhs::TI, rhs::TI) = ccall((:gtk_text_iter_compare, libgtk4), Cint,
     (Ref{_GtkTextIter}, Ref{_GtkTextIter}), lhs, rhs) >= 0
 
 start_(iter::TI) = Ref(iter)
-iterate(::TI, iter=start_(iter)) =
-   get_gtk_property(iter, :is_end, Bool) ? nothing : (get_gtk_property(iter, :char)::Char, iter + 1)
+iterate(::TI, iter=start_(iter)) = iter.is_end ? nothing : (iter.char, iter + 1)
 
 Base.:+(iter::TI, count::Integer) = (iter = copy(iter); skip(iter, count); iter)
 Base.:-(iter::TI, count::Integer) = (iter = copy(iter); skip(iter, -count); iter)
@@ -394,14 +393,14 @@ function length(r::GtkTextRange)
         end
         cnt += 1
     end
-    cnt
+    cnt + 1
 end
 show(io::IO, r::GtkTextRange) = print("GtkTextRange(\"", r.text, "\")")
 first(r::GtkTextRange) = r.a
 last(r::GtkTextRange) = r.b
-start_(r::GtkTextRange) = start(first(r))
-next_(r::GtkTextRange, i) = next(i, i)
-done_(r::GtkTextRange, i) = (i == last(r) || done(i, i))
+start_(r::GtkTextRange) = start_(first(r))
+next_(r::GtkTextRange, i) = next_(i, i)
+done_(r::GtkTextRange, i) = (i == last(r) || done_(i, i))
 iterate(r::GtkTextRange, i=start_(r)) = done_(r, i) ? nothing : next_(r, i)
 
 function getproperty(text::GtkTextRange, key::Symbol)

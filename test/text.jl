@@ -105,6 +105,9 @@ range=its:ite
 @test range[1] == 'l'
 @test range[5] == '2'
 @test_throws BoundsError range[10]
+@test length(range) == 5
+#chars = [c for c in range]
+#println(chars)
 
 # selection
 select_range(b, its, ite)
