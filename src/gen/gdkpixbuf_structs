@@ -9,11 +9,12 @@ $(Expr(:toplevel, quote
             mask::Cstring
             relevance::Int32
         end
-        begin
-            mutable struct GdkPixbufModulePattern
-                handle::Ptr{_GdkPixbufModulePattern}
-            end
+        mutable struct GdkPixbufModulePattern
+            handle::Ptr{_GdkPixbufModulePattern}
         end
+        unsafe_convert(::Type{Ptr{_GdkPixbufModulePattern}}, box::GdkPixbufModulePattern) = begin
+                convert(Ptr{_GdkPixbufModulePattern}, box.handle)
+            end
     end
     begin
         struct _GdkPixbufFormat
@@ -27,26 +28,27 @@ $(Expr(:toplevel, quote
             disabled::Cint
             license::Cstring
         end
-        begin
-            mutable struct GdkPixbufFormat <: GBoxed
-                handle::Ptr{_GdkPixbufFormat}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: GdkPixbufFormat) = begin
-                            ccall(("gdk_pixbuf_format_get_type", libgdkpixbuf), GType, ())
-                        end
-                    function GdkPixbufFormat(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct GdkPixbufFormat <: GBoxed
+            handle::Ptr{_GdkPixbufFormat}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GdkPixbufFormat) = begin
+                        ccall(("gdk_pixbuf_format_get_type", libgdkpixbuf), GType, ())
                     end
-                    push!(gboxed_types, GdkPixbufFormat)
+                function GdkPixbufFormat(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, GdkPixbufFormat)
             end
         end
+        unsafe_convert(::Type{Ptr{_GdkPixbufFormat}}, box::GdkPixbufFormat) = begin
+                convert(Ptr{_GdkPixbufFormat}, box.handle)
+            end
     end
     begin
         gboxed_cache_init() = begin

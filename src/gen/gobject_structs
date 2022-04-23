@@ -6,21 +6,23 @@ $(Expr(:toplevel, quote
             value_name::Cstring
             value_nick::Cstring
         end
-        begin
-            mutable struct GEnumValue
-                handle::Ptr{_GEnumValue}
-            end
+        mutable struct GEnumValue
+            handle::Ptr{_GEnumValue}
         end
+        unsafe_convert(::Type{Ptr{_GEnumValue}}, box::GEnumValue) = begin
+                convert(Ptr{_GEnumValue}, box.handle)
+            end
     end
     begin
         struct _GTypeClass
             g_type::UInt64
         end
-        begin
-            mutable struct GTypeClass
-                handle::Ptr{_GTypeClass}
-            end
+        mutable struct GTypeClass
+            handle::Ptr{_GTypeClass}
         end
+        unsafe_convert(::Type{Ptr{_GTypeClass}}, box::GTypeClass) = begin
+                convert(Ptr{_GTypeClass}, box.handle)
+            end
     end
     begin
         struct _GFlagsValue
@@ -28,11 +30,12 @@ $(Expr(:toplevel, quote
             value_name::Cstring
             value_nick::Cstring
         end
-        begin
-            mutable struct GFlagsValue
-                handle::Ptr{_GFlagsValue}
-            end
+        mutable struct GFlagsValue
+            handle::Ptr{_GFlagsValue}
         end
+        unsafe_convert(::Type{Ptr{_GFlagsValue}}, box::GFlagsValue) = begin
+                convert(Ptr{_GFlagsValue}, box.handle)
+            end
     end
     begin
         struct _GEnumClass
@@ -42,11 +45,12 @@ $(Expr(:toplevel, quote
             n_values::UInt32
             values::Ptr{_GEnumValue}
         end
-        begin
-            mutable struct GEnumClass
-                handle::Ptr{_GEnumClass}
-            end
+        mutable struct GEnumClass
+            handle::Ptr{_GEnumClass}
         end
+        unsafe_convert(::Type{Ptr{_GEnumClass}}, box::GEnumClass) = begin
+                convert(Ptr{_GEnumClass}, box.handle)
+            end
     end
     begin
         struct _GFlagsClass
@@ -55,11 +59,12 @@ $(Expr(:toplevel, quote
             n_values::UInt32
             values::Ptr{_GFlagsValue}
         end
-        begin
-            mutable struct GFlagsClass
-                handle::Ptr{_GFlagsClass}
-            end
+        mutable struct GFlagsClass
+            handle::Ptr{_GFlagsClass}
         end
+        unsafe_convert(::Type{Ptr{_GFlagsClass}}, box::GFlagsClass) = begin
+                convert(Ptr{_GFlagsClass}, box.handle)
+            end
     end
     begin
         struct _GSignalInvocationHint
@@ -67,11 +72,12 @@ $(Expr(:toplevel, quote
             detail::UInt32
             run_type::Int32
         end
-        begin
-            mutable struct GSignalInvocationHint
-                handle::Ptr{_GSignalInvocationHint}
-            end
+        mutable struct GSignalInvocationHint
+            handle::Ptr{_GSignalInvocationHint}
         end
+        unsafe_convert(::Type{Ptr{_GSignalInvocationHint}}, box::GSignalInvocationHint) = begin
+                convert(Ptr{_GSignalInvocationHint}, box.handle)
+            end
     end
     begin
         struct _GSignalQuery
@@ -83,21 +89,23 @@ $(Expr(:toplevel, quote
             n_params::UInt32
             param_types::Ptr{UInt64}
         end
-        begin
-            mutable struct GSignalQuery
-                handle::Ptr{_GSignalQuery}
-            end
+        mutable struct GSignalQuery
+            handle::Ptr{_GSignalQuery}
         end
+        unsafe_convert(::Type{Ptr{_GSignalQuery}}, box::GSignalQuery) = begin
+                convert(Ptr{_GSignalQuery}, box.handle)
+            end
     end
     begin
         struct _GTypeFundamentalInfo
             type_flags::Int32
         end
-        begin
-            mutable struct GTypeFundamentalInfo
-                handle::Ptr{_GTypeFundamentalInfo}
-            end
+        mutable struct GTypeFundamentalInfo
+            handle::Ptr{_GTypeFundamentalInfo}
         end
+        unsafe_convert(::Type{Ptr{_GTypeFundamentalInfo}}, box::GTypeFundamentalInfo) = begin
+                convert(Ptr{_GTypeFundamentalInfo}, box.handle)
+            end
     end
     begin
         struct _GTypePluginClass
@@ -107,11 +115,12 @@ $(Expr(:toplevel, quote
             complete_type_info::Ptr{Nothing}
             complete_interface_info::Ptr{Nothing}
         end
-        begin
-            mutable struct GTypePluginClass
-                handle::Ptr{_GTypePluginClass}
-            end
+        mutable struct GTypePluginClass
+            handle::Ptr{_GTypePluginClass}
         end
+        unsafe_convert(::Type{Ptr{_GTypePluginClass}}, box::GTypePluginClass) = begin
+                convert(Ptr{_GTypePluginClass}, box.handle)
+            end
     end
     begin
         struct _GTypeQuery
@@ -120,11 +129,12 @@ $(Expr(:toplevel, quote
             class_size::UInt32
             instance_size::UInt32
         end
-        begin
-            mutable struct GTypeQuery
-                handle::Ptr{_GTypeQuery}
-            end
+        mutable struct GTypeQuery
+            handle::Ptr{_GTypeQuery}
         end
+        unsafe_convert(::Type{Ptr{_GTypeQuery}}, box::GTypeQuery) = begin
+                convert(Ptr{_GTypeQuery}, box.handle)
+            end
     end
     begin
         struct _GValueArray
@@ -132,26 +142,27 @@ $(Expr(:toplevel, quote
             values::Ptr{_GValue}
             n_prealloced::UInt32
         end
-        begin
-            mutable struct GValueArray <: GBoxed
-                handle::Ptr{_GValueArray}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: GValueArray) = begin
-                            ccall(("g_value_array_get_type", libgobject), GType, ())
-                        end
-                    function GValueArray(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct GValueArray <: GBoxed
+            handle::Ptr{_GValueArray}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GValueArray) = begin
+                        ccall(("g_value_array_get_type", libgobject), GType, ())
                     end
-                    push!(gboxed_types, GValueArray)
+                function GValueArray(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, GValueArray)
             end
         end
+        unsafe_convert(::Type{Ptr{_GValueArray}}, box::GValueArray) = begin
+                convert(Ptr{_GValueArray}, box.handle)
+            end
     end
     begin
         gtype_wrapper_cache = Dict{Symbol, Type}()

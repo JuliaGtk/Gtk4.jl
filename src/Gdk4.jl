@@ -33,6 +33,21 @@ end
 
 keyval(name::AbstractString) = G_.keyval_from_name(name)
 
+function GdkRGBA(r,g,b,a = 1.0)
+   s=_GdkRGBA(r,g,b,a)
+   r=ccall((:gdk_rgba_copy, libgtk4), Ptr{GdkRGBA}, (Ptr{_GdkRGBA},), Ref(s))
+   GdkRGBA(r)
+end
+
+function GdkRGBA(rgba::AbstractString)
+   r=GdkRGBA(0,0,0,0)
+   b=G_.parse(r,rgba)
+   if !b
+      error("Unable to parse into a color")
+   end
+   r
+end
+
 function __init__()
    gtype_wrapper_cache_init()
    gboxed_cache_init()

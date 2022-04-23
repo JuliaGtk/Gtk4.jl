@@ -10,11 +10,11 @@ function push!(builder::GtkBuilder; buffer = nothing, filename = nothing, resour
     @assert(source_count == 1,
         "push!(GtkBuilder) must have exactly one buffer, filename, or resource argument")
     if buffer !== nothing
-        return G_.add_from_string(builder, buffer, -1)
+        G_.add_from_string(builder, buffer, -1)
     elseif filename !== nothing
-        return G_.add_from_file(builder, filename)
+        G_.add_from_file(builder, filename)
     elseif resource !== nothing
-        return G_.add_from_resource(builder, resource)
+        G_.add_from_resource(builder, resource)
     end
     return builder
 end

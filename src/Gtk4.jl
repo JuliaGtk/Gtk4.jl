@@ -17,6 +17,8 @@ using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor
 using ..Gdk4
 using ..GdkPixbufLib
 
+import Base: unsafe_convert
+
 eval(include("gen/gtk4_consts"))
 eval(include("gen/gtk4_structs"))
 
@@ -39,7 +41,7 @@ eval(include("gen/gtk4_methods"))
 end
 
 import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
-             convert, empty!, unsafe_convert, string, popfirst!, size, delete!,
+             convert, empty!, string, popfirst!, size, delete!,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
 
 import .GLib: set_gtk_property!, get_gtk_property, run
@@ -82,8 +84,8 @@ function __init__()
      ]), Sys.iswindows() ? ";" : ":")
 
      gtype_wrapper_cache_init()
-#     gboxed_cache_init()
-#
+     gboxed_cache_init()
+
     if Sys.islinux() || Sys.isfreebsd()
         # Needed by xkbcommon:
         # https://xkbcommon.org/doc/current/group__include-path.html.  Related

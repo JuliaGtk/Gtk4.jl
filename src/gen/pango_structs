@@ -27,26 +27,27 @@ $(Expr(:toplevel, quote
             green::UInt16
             blue::UInt16
         end
-        begin
-            mutable struct PangoColor <: GBoxed
-                handle::Ptr{_PangoColor}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoColor) = begin
-                            ccall(("pango_color_get_type", libpango), GType, ())
-                        end
-                    function PangoColor(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoColor <: GBoxed
+            handle::Ptr{_PangoColor}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoColor) = begin
+                        ccall(("pango_color_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoColor)
+                function PangoColor(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoColor)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoColor}}, box::PangoColor) = begin
+                convert(Ptr{_PangoColor}, box.handle)
+            end
     end
     begin
         struct _PangoAttrClass
@@ -55,11 +56,12 @@ $(Expr(:toplevel, quote
             destroy::Ptr{Nothing}
             equal::Ptr{Nothing}
         end
-        begin
-            mutable struct PangoAttrClass
-                handle::Ptr{_PangoAttrClass}
-            end
+        mutable struct PangoAttrClass
+            handle::Ptr{_PangoAttrClass}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrClass}}, box::PangoAttrClass) = begin
+                convert(Ptr{_PangoAttrClass}, box.handle)
+            end
     end
     begin
         struct _PangoRectangle
@@ -68,11 +70,12 @@ $(Expr(:toplevel, quote
             width::Int32
             height::Int32
         end
-        begin
-            mutable struct PangoRectangle
-                handle::Ptr{_PangoRectangle}
-            end
+        mutable struct PangoRectangle
+            handle::Ptr{_PangoRectangle}
         end
+        unsafe_convert(::Type{Ptr{_PangoRectangle}}, box::PangoRectangle) = begin
+                convert(Ptr{_PangoRectangle}, box.handle)
+            end
     end
     mutable struct PangoFontDescription <: GBoxed
         handle::Ptr{PangoFontDescription}
@@ -98,26 +101,27 @@ $(Expr(:toplevel, quote
             start_index::UInt32
             end_index::UInt32
         end
-        begin
-            mutable struct PangoAttribute <: GBoxed
-                handle::Ptr{_PangoAttribute}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoAttribute) = begin
-                            ccall(("pango_attribute_get_type", libpango), GType, ())
-                        end
-                    function PangoAttribute(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoAttribute <: GBoxed
+            handle::Ptr{_PangoAttribute}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoAttribute) = begin
+                        ccall(("pango_attribute_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoAttribute)
+                function PangoAttribute(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoAttribute)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoAttribute}}, box::PangoAttribute) = begin
+                convert(Ptr{_PangoAttribute}, box.handle)
+            end
     end
     begin
         struct _PangoAnalysis
@@ -131,11 +135,12 @@ $(Expr(:toplevel, quote
             language::Ptr{PangoLanguage}
             extra_attrs::Ptr{GLib._GSList{Ptr{Nothing}}}
         end
-        begin
-            mutable struct PangoAnalysis
-                handle::Ptr{_PangoAnalysis}
-            end
+        mutable struct PangoAnalysis
+            handle::Ptr{_PangoAnalysis}
         end
+        unsafe_convert(::Type{Ptr{_PangoAnalysis}}, box::PangoAnalysis) = begin
+                convert(Ptr{_PangoAnalysis}, box.handle)
+            end
     end
     begin
         struct _PangoItem
@@ -144,37 +149,39 @@ $(Expr(:toplevel, quote
             num_chars::Int32
             analysis::_PangoAnalysis
         end
-        begin
-            mutable struct PangoItem <: GBoxed
-                handle::Ptr{_PangoItem}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoItem) = begin
-                            ccall(("pango_item_get_type", libpango), GType, ())
-                        end
-                    function PangoItem(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoItem <: GBoxed
+            handle::Ptr{_PangoItem}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoItem) = begin
+                        ccall(("pango_item_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoItem)
+                function PangoItem(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoItem)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoItem}}, box::PangoItem) = begin
+                convert(Ptr{_PangoItem}, box.handle)
+            end
     end
     begin
         struct _PangoGlyphVisAttr
             is_cluster_start::UInt32
             is_color::UInt32
         end
-        begin
-            mutable struct PangoGlyphVisAttr
-                handle::Ptr{_PangoGlyphVisAttr}
-            end
+        mutable struct PangoGlyphVisAttr
+            handle::Ptr{_PangoGlyphVisAttr}
         end
+        unsafe_convert(::Type{Ptr{_PangoGlyphVisAttr}}, box::PangoGlyphVisAttr) = begin
+                convert(Ptr{_PangoGlyphVisAttr}, box.handle)
+            end
     end
     begin
         struct _PangoGlyphGeometry
@@ -182,11 +189,12 @@ $(Expr(:toplevel, quote
             x_offset::Int32
             y_offset::Int32
         end
-        begin
-            mutable struct PangoGlyphGeometry
-                handle::Ptr{_PangoGlyphGeometry}
-            end
+        mutable struct PangoGlyphGeometry
+            handle::Ptr{_PangoGlyphGeometry}
         end
+        unsafe_convert(::Type{Ptr{_PangoGlyphGeometry}}, box::PangoGlyphGeometry) = begin
+                convert(Ptr{_PangoGlyphGeometry}, box.handle)
+            end
     end
     begin
         struct _PangoGlyphInfo
@@ -194,11 +202,12 @@ $(Expr(:toplevel, quote
             geometry::_PangoGlyphGeometry
             attr::_PangoGlyphVisAttr
         end
-        begin
-            mutable struct PangoGlyphInfo
-                handle::Ptr{_PangoGlyphInfo}
-            end
+        mutable struct PangoGlyphInfo
+            handle::Ptr{_PangoGlyphInfo}
         end
+        unsafe_convert(::Type{Ptr{_PangoGlyphInfo}}, box::PangoGlyphInfo) = begin
+                convert(Ptr{_PangoGlyphInfo}, box.handle)
+            end
     end
     begin
         struct _PangoGlyphString
@@ -207,26 +216,27 @@ $(Expr(:toplevel, quote
             log_clusters::Ptr{Int32}
             space::Int32
         end
-        begin
-            mutable struct PangoGlyphString <: GBoxed
-                handle::Ptr{_PangoGlyphString}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoGlyphString) = begin
-                            ccall(("pango_glyph_string_get_type", libpango), GType, ())
-                        end
-                    function PangoGlyphString(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoGlyphString <: GBoxed
+            handle::Ptr{_PangoGlyphString}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoGlyphString) = begin
+                        ccall(("pango_glyph_string_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoGlyphString)
+                function PangoGlyphString(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoGlyphString)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoGlyphString}}, box::PangoGlyphString) = begin
+                convert(Ptr{_PangoGlyphString}, box.handle)
+            end
     end
     begin
         struct _PangoGlyphItem
@@ -236,81 +246,87 @@ $(Expr(:toplevel, quote
             start_x_offset::Int32
             end_x_offset::Int32
         end
-        begin
-            mutable struct PangoGlyphItem <: GBoxed
-                handle::Ptr{_PangoGlyphItem}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoGlyphItem) = begin
-                            ccall(("pango_glyph_item_get_type", libpango), GType, ())
-                        end
-                    function PangoGlyphItem(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoGlyphItem <: GBoxed
+            handle::Ptr{_PangoGlyphItem}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoGlyphItem) = begin
+                        ccall(("pango_glyph_item_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoGlyphItem)
+                function PangoGlyphItem(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoGlyphItem)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoGlyphItem}}, box::PangoGlyphItem) = begin
+                convert(Ptr{_PangoGlyphItem}, box.handle)
+            end
     end
     begin
         struct _PangoAttrColor
             attr::_PangoAttribute
             color::_PangoColor
         end
-        begin
-            mutable struct PangoAttrColor
-                handle::Ptr{_PangoAttrColor}
-            end
+        mutable struct PangoAttrColor
+            handle::Ptr{_PangoAttrColor}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrColor}}, box::PangoAttrColor) = begin
+                convert(Ptr{_PangoAttrColor}, box.handle)
+            end
     end
     begin
         struct _PangoAttrFloat
             attr::_PangoAttribute
             value::Float64
         end
-        begin
-            mutable struct PangoAttrFloat
-                handle::Ptr{_PangoAttrFloat}
-            end
+        mutable struct PangoAttrFloat
+            handle::Ptr{_PangoAttrFloat}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrFloat}}, box::PangoAttrFloat) = begin
+                convert(Ptr{_PangoAttrFloat}, box.handle)
+            end
     end
     begin
         struct _PangoAttrFontDesc
             attr::_PangoAttribute
             desc::Ptr{PangoFontDescription}
         end
-        begin
-            mutable struct PangoAttrFontDesc
-                handle::Ptr{_PangoAttrFontDesc}
-            end
+        mutable struct PangoAttrFontDesc
+            handle::Ptr{_PangoAttrFontDesc}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrFontDesc}}, box::PangoAttrFontDesc) = begin
+                convert(Ptr{_PangoAttrFontDesc}, box.handle)
+            end
     end
     begin
         struct _PangoAttrFontFeatures
             attr::_PangoAttribute
             features::Cstring
         end
-        begin
-            mutable struct PangoAttrFontFeatures
-                handle::Ptr{_PangoAttrFontFeatures}
-            end
+        mutable struct PangoAttrFontFeatures
+            handle::Ptr{_PangoAttrFontFeatures}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrFontFeatures}}, box::PangoAttrFontFeatures) = begin
+                convert(Ptr{_PangoAttrFontFeatures}, box.handle)
+            end
     end
     begin
         struct _PangoAttrInt
             attr::_PangoAttribute
             value::Int32
         end
-        begin
-            mutable struct PangoAttrInt
-                handle::Ptr{_PangoAttrInt}
-            end
+        mutable struct PangoAttrInt
+            handle::Ptr{_PangoAttrInt}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrInt}}, box::PangoAttrInt) = begin
+                convert(Ptr{_PangoAttrInt}, box.handle)
+            end
     end
     mutable struct PangoAttrIterator <: GBoxed
         handle::Ptr{PangoAttrIterator}
@@ -335,11 +351,12 @@ $(Expr(:toplevel, quote
             attr::_PangoAttribute
             value::Ptr{PangoLanguage}
         end
-        begin
-            mutable struct PangoAttrLanguage
-                handle::Ptr{_PangoAttrLanguage}
-            end
+        mutable struct PangoAttrLanguage
+            handle::Ptr{_PangoAttrLanguage}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrLanguage}}, box::PangoAttrLanguage) = begin
+                convert(Ptr{_PangoAttrLanguage}, box.handle)
+            end
     end
     mutable struct PangoAttrList <: GBoxed
         handle::Ptr{PangoAttrList}
@@ -368,11 +385,12 @@ $(Expr(:toplevel, quote
             copy_func::Ptr{Nothing}
             destroy_func::Ptr{Nothing}
         end
-        begin
-            mutable struct PangoAttrShape
-                handle::Ptr{_PangoAttrShape}
-            end
+        mutable struct PangoAttrShape
+            handle::Ptr{_PangoAttrShape}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrShape}}, box::PangoAttrShape) = begin
+                convert(Ptr{_PangoAttrShape}, box.handle)
+            end
     end
     begin
         struct _PangoAttrSize
@@ -380,22 +398,24 @@ $(Expr(:toplevel, quote
             size::Int32
             absolute::UInt32
         end
-        begin
-            mutable struct PangoAttrSize
-                handle::Ptr{_PangoAttrSize}
-            end
+        mutable struct PangoAttrSize
+            handle::Ptr{_PangoAttrSize}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrSize}}, box::PangoAttrSize) = begin
+                convert(Ptr{_PangoAttrSize}, box.handle)
+            end
     end
     begin
         struct _PangoAttrString
             attr::_PangoAttribute
             value::Cstring
         end
-        begin
-            mutable struct PangoAttrString
-                handle::Ptr{_PangoAttrString}
-            end
+        mutable struct PangoAttrString
+            handle::Ptr{_PangoAttrString}
         end
+        unsafe_convert(::Type{Ptr{_PangoAttrString}}, box::PangoAttrString) = begin
+                convert(Ptr{_PangoAttrString}, box.handle)
+            end
     end
     begin
         struct _PangoFontMetrics
@@ -410,26 +430,27 @@ $(Expr(:toplevel, quote
             strikethrough_position::Int32
             strikethrough_thickness::Int32
         end
-        begin
-            mutable struct PangoFontMetrics <: GBoxed
-                handle::Ptr{_PangoFontMetrics}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoFontMetrics) = begin
-                            ccall(("pango_font_metrics_get_type", libpango), GType, ())
-                        end
-                    function PangoFontMetrics(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoFontMetrics <: GBoxed
+            handle::Ptr{_PangoFontMetrics}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoFontMetrics) = begin
+                        ccall(("pango_font_metrics_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoFontMetrics)
+                function PangoFontMetrics(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoFontMetrics)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoFontMetrics}}, box::PangoFontMetrics) = begin
+                convert(Ptr{_PangoFontMetrics}, box.handle)
+            end
     end
     begin
         struct _PangoGlyphItemIter
@@ -442,26 +463,27 @@ $(Expr(:toplevel, quote
             end_index::Int32
             end_char::Int32
         end
-        begin
-            mutable struct PangoGlyphItemIter <: GBoxed
-                handle::Ptr{_PangoGlyphItemIter}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoGlyphItemIter) = begin
-                            ccall(("pango_glyph_item_iter_get_type", libpango), GType, ())
-                        end
-                    function PangoGlyphItemIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoGlyphItemIter <: GBoxed
+            handle::Ptr{_PangoGlyphItemIter}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoGlyphItemIter) = begin
+                        ccall(("pango_glyph_item_iter_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoGlyphItemIter)
+                function PangoGlyphItemIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoGlyphItemIter)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoGlyphItemIter}}, box::PangoGlyphItemIter) = begin
+                convert(Ptr{_PangoGlyphItemIter}, box.handle)
+            end
     end
     mutable struct PangoLayoutIter <: GBoxed
         handle::Ptr{PangoLayoutIter}
@@ -490,26 +512,27 @@ $(Expr(:toplevel, quote
             is_paragraph_start::UInt32
             resolved_dir::UInt32
         end
-        begin
-            mutable struct PangoLayoutLine <: GBoxed
-                handle::Ptr{_PangoLayoutLine}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoLayoutLine) = begin
-                            ccall(("pango_layout_line_get_type", libpango), GType, ())
-                        end
-                    function PangoLayoutLine(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoLayoutLine <: GBoxed
+            handle::Ptr{_PangoLayoutLine}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoLayoutLine) = begin
+                        ccall(("pango_layout_line_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoLayoutLine)
+                function PangoLayoutLine(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoLayoutLine)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoLayoutLine}}, box::PangoLayoutLine) = begin
+                convert(Ptr{_PangoLayoutLine}, box.handle)
+            end
     end
     begin
         struct _PangoLogAttr
@@ -530,11 +553,12 @@ $(Expr(:toplevel, quote
             break_removes_preceding::UInt32
             reserved::UInt32
         end
-        begin
-            mutable struct PangoLogAttr
-                handle::Ptr{_PangoLogAttr}
-            end
+        mutable struct PangoLogAttr
+            handle::Ptr{_PangoLogAttr}
         end
+        unsafe_convert(::Type{Ptr{_PangoLogAttr}}, box::PangoLogAttr) = begin
+                convert(Ptr{_PangoLogAttr}, box.handle)
+            end
     end
     begin
         struct _PangoMatrix
@@ -545,26 +569,27 @@ $(Expr(:toplevel, quote
             x0::Float64
             y0::Float64
         end
-        begin
-            mutable struct PangoMatrix <: GBoxed
-                handle::Ptr{_PangoMatrix}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: PangoMatrix) = begin
-                            ccall(("pango_matrix_get_type", libpango), GType, ())
-                        end
-                    function PangoMatrix(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct PangoMatrix <: GBoxed
+            handle::Ptr{_PangoMatrix}
+            begin
+                (GLib.g_type(::Type{T}) where T <: PangoMatrix) = begin
+                        ccall(("pango_matrix_get_type", libpango), GType, ())
                     end
-                    push!(gboxed_types, PangoMatrix)
+                function PangoMatrix(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, PangoMatrix)
             end
         end
+        unsafe_convert(::Type{Ptr{_PangoMatrix}}, box::PangoMatrix) = begin
+                convert(Ptr{_PangoMatrix}, box.handle)
+            end
     end
     mutable struct PangoScriptIter <: GBoxed
         handle::Ptr{PangoScriptIter}

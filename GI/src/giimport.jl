@@ -108,7 +108,7 @@ function struct_decl(structinfo;force_opaque=false)
             push!(gboxed_types,$gstructname)
         end
     end
-    fieldgetter=nothing
+    conv=nothing
     if !opaque
         fieldsexpr=Expr[]
         for field in fields
@@ -122,20 +122,11 @@ function struct_decl(structinfo;force_opaque=false)
                 $(fieldsexpr...)
             end
         end
-        # fieldgetter=quote
-        #     unsafe_convert(::Type{Ptr{$ustructname}}, box::$gstructname) = convert(Ptr{$ustructname}, box.handle)
-        #     function Base.getproperty(s::$gstructname,sym::Symbol)
-        #         if sym===:handle
-        #             return getfield(s,:handle)
-        #         elseif in(sym,fieldnames($ustructname))
-        #             u=unsafe_load(Ptr{$ustructname}(s.handle))
-        #             return getfield(u,sym)
-        #         end
-        #     end
-        # end
         ustruc=unblock(ustruc)
-        fieldgetter=unblock(fieldgetter)
         push!(exprs,ustruc)
+        conv = quote
+            unsafe_convert(::Type{Ptr{$ustructname}}, box::$gstructname) = convert(Ptr{$ustructname}, box.handle)
+        end
     end
     if isboxed
         struc=quote
@@ -143,17 +134,19 @@ function struct_decl(structinfo;force_opaque=false)
                 handle::Ptr{$ustructname}
                 $fin
             end
-            #$fieldgetter
         end
     else
         struc=quote
             mutable struct $decl
                 handle::Ptr{$ustructname}
             end
-            #$fieldgetter
         end
     end
+    struc=unblock(struc)
     push!(exprs,struc)
+    if conv!==nothing
+        push!(exprs,unblock(conv))
+    end
     if force_opaque
         ustructname = get_struct_name(structinfo)
         push!(exprs,:(const $ustructname = $gstructname))

@@ -303,16 +303,6 @@ function getindex(treeModel::GtkTreeModel, iter::TRI)
     ntuple( i -> treeModel[iter, i], ncolumns(treeModel) )
 end
 
-function setindex!(treeModel::GtkTreeModel, value, iter::TRI, column::Integer)
-    G_.value(treeModel, Ref(iter), column - 1, GLib.gvalue(value))
-end
-
-function setindex!(treeModel::GtkTreeModel, values, iter::TRI)
-    for (i, v) in enumerate(values)
-        G_.value(treeModel, Ref(iter), i - 1, GLib.gvalue(v))
-    end
-end
-
 ncolumns(treeModel::GtkTreeModel) = G_.get_n_columns(treeModel)
 
 ## add in gtk_tree_model iter functions to traverse tree

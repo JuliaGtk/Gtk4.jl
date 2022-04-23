@@ -13,6 +13,8 @@ end
 
 signal_connect(open_info_dialog,info_dialog_button,"clicked")
 
+## Question dialog
+
 question_dialog_button = GtkButton("Question dialog")
 push!(box,question_dialog_button)
 
@@ -29,6 +31,23 @@ function open_question_dialog(b)
 end
 
 signal_connect(open_question_dialog,question_dialog_button,"clicked")
+
+## Input dialog
+
+input_dialog_button = GtkButton("Input dialog")
+push!(box, input_dialog_button)
+
+function get_input(d,id)
+    destroy(d)
+end
+
+function open_input_dialog(b)
+    d = input_dialog("Enter your information", "")
+    signal_connect(get_input,d,"response")
+    show(d)
+end
+
+signal_connect(open_input_dialog,input_dialog_button,"clicked")
 
 ## File open dialog
 

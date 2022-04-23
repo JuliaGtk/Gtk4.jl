@@ -86,6 +86,8 @@ path = Gtk4.path(treeModel,iter)
 @test depth(path) == 2
 @test depth(store, iter) == 1
 
+expand_to_path(tv, path)
+
 iter = insert!(store, [3], (4, "Barcelona"); how = :sibling, where=:after)
 @test store[[4],2] == "Barcelona"
 store[[4],2] = "Madrid"
@@ -109,5 +111,6 @@ unselect!(selection, iter)
 @test length(selection) == 0
 
 empty!(store)
+empty!(cols[1])
 
 end

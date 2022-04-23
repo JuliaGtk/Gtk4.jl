@@ -9,7 +9,7 @@ export new, width, height, #minsize, maxsize
     maximize, unmaximize, complete, user_action,
     keyval, prev, next, up, down, popup, menubar,
     convert_iter_to_child_iter, convert_child_iter_to_iter, index_from_iter,
-    pulse, widget, group,
+    pulse, widget, group, expand_to_path, set_pixbuf,
     buffer, cells, search, place_cursor, select_range, selection_bounds,
     create_mark, scroll_to
     #property, margin, padding, align

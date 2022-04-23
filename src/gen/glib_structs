@@ -37,24 +37,22 @@ $(Expr(:toplevel, quote
         end
     end
     begin
-        begin
-            mutable struct GDate <: GBoxed
-                handle::Ptr{GDate}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: GDate) = begin
-                            ccall(("g_date_get_type", libgobject), GType, ())
-                        end
-                    function GDate(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct GDate <: GBoxed
+            handle::Ptr{GDate}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GDate) = begin
+                        ccall(("g_date_get_type", libgobject), GType, ())
                     end
-                    push!(gboxed_types, GDate)
+                function GDate(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, GDate)
             end
         end
         const _GDate = GDate
@@ -82,11 +80,12 @@ $(Expr(:toplevel, quote
             key::Cstring
             value::UInt32
         end
-        begin
-            mutable struct GDebugKey
-                handle::Ptr{_GDebugKey}
-            end
+        mutable struct GDebugKey
+            handle::Ptr{_GDebugKey}
         end
+        unsafe_convert(::Type{Ptr{_GDebugKey}}, box::GDebugKey) = begin
+                convert(Ptr{_GDebugKey}, box.handle)
+            end
     end
     mutable struct GKeyFile <: GBoxed
         handle::Ptr{GKeyFile}
@@ -112,11 +111,12 @@ $(Expr(:toplevel, quote
             value::Ptr{Nothing}
             length::Int64
         end
-        begin
-            mutable struct GLogField
-                handle::Ptr{_GLogField}
-            end
+        mutable struct GLogField
+            handle::Ptr{_GLogField}
         end
+        unsafe_convert(::Type{Ptr{_GLogField}}, box::GLogField) = begin
+                convert(Ptr{_GLogField}, box.handle)
+            end
     end
     mutable struct GMainContext <: GBoxed
         handle::Ptr{GMainContext}
@@ -218,11 +218,12 @@ $(Expr(:toplevel, quote
             description::Cstring
             arg_description::Cstring
         end
-        begin
-            mutable struct GOptionEntry
-                handle::Ptr{_GOptionEntry}
-            end
+        mutable struct GOptionEntry
+            handle::Ptr{_GOptionEntry}
         end
+        unsafe_convert(::Type{Ptr{_GOptionEntry}}, box::GOptionEntry) = begin
+                convert(Ptr{_GOptionEntry}, box.handle)
+            end
     end
     mutable struct GRegex <: GBoxed
         handle::Ptr{GRegex}
@@ -272,31 +273,30 @@ $(Expr(:toplevel, quote
             store_int64::UInt32
             padding_dummy::UInt32
         end
-        begin
-            mutable struct GScannerConfig
-                handle::Ptr{_GScannerConfig}
-            end
+        mutable struct GScannerConfig
+            handle::Ptr{_GScannerConfig}
         end
+        unsafe_convert(::Type{Ptr{_GScannerConfig}}, box::GScannerConfig) = begin
+                convert(Ptr{_GScannerConfig}, box.handle)
+            end
     end
     begin
-        begin
-            mutable struct GSource <: GBoxed
-                handle::Ptr{GSource}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: GSource) = begin
-                            ccall(("g_source_get_type", libgobject), GType, ())
-                        end
-                    function GSource(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct GSource <: GBoxed
+            handle::Ptr{GSource}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GSource) = begin
+                        ccall(("g_source_get_type", libgobject), GType, ())
                     end
-                    push!(gboxed_types, GSource)
+                function GSource(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, GSource)
             end
         end
         const _GSource = GSource
@@ -307,11 +307,12 @@ $(Expr(:toplevel, quote
             unref::Ptr{Nothing}
             get::Ptr{Nothing}
         end
-        begin
-            mutable struct GSourceCallbackFuncs
-                handle::Ptr{_GSourceCallbackFuncs}
-            end
+        mutable struct GSourceCallbackFuncs
+            handle::Ptr{_GSourceCallbackFuncs}
         end
+        unsafe_convert(::Type{Ptr{_GSourceCallbackFuncs}}, box::GSourceCallbackFuncs) = begin
+                convert(Ptr{_GSourceCallbackFuncs}, box.handle)
+            end
     end
     begin
         struct _GString
@@ -319,26 +320,27 @@ $(Expr(:toplevel, quote
             len::UInt64
             allocated_len::UInt64
         end
-        begin
-            mutable struct GString <: GBoxed
-                handle::Ptr{_GString}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: GString) = begin
-                            ccall(("g_gstring_get_type", libgobject), GType, ())
-                        end
-                    function GString(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct GString <: GBoxed
+            handle::Ptr{_GString}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GString) = begin
+                        ccall(("g_gstring_get_type", libgobject), GType, ())
                     end
-                    push!(gboxed_types, GString)
+                function GString(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, GString)
             end
         end
+        unsafe_convert(::Type{Ptr{_GString}}, box::GString) = begin
+                convert(Ptr{_GString}, box.handle)
+            end
     end
     begin
         struct _GTestConfig
@@ -349,11 +351,12 @@ $(Expr(:toplevel, quote
             test_quiet::Cint
             test_undefined::Cint
         end
-        begin
-            mutable struct GTestConfig
-                handle::Ptr{_GTestConfig}
-            end
+        mutable struct GTestConfig
+            handle::Ptr{_GTestConfig}
         end
+        unsafe_convert(::Type{Ptr{_GTestConfig}}, box::GTestConfig) = begin
+                convert(Ptr{_GTestConfig}, box.handle)
+            end
     end
     mutable struct GTimeZone <: GBoxed
         handle::Ptr{GTimeZone}

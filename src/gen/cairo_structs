@@ -160,26 +160,27 @@ $(Expr(:toplevel, quote
             width::Float64
             height::Float64
         end
-        begin
-            mutable struct cairoRectangle <: GBoxed
-                handle::Ptr{_cairoRectangle}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: cairoRectangle) = begin
-                            ccall(("cairo_gobject_rectangle_get_type", libcairo_gobject), GType, ())
-                        end
-                    function cairoRectangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct cairoRectangle <: GBoxed
+            handle::Ptr{_cairoRectangle}
+            begin
+                (GLib.g_type(::Type{T}) where T <: cairoRectangle) = begin
+                        ccall(("cairo_gobject_rectangle_get_type", libcairo_gobject), GType, ())
                     end
-                    push!(gboxed_types, cairoRectangle)
+                function cairoRectangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, cairoRectangle)
             end
         end
+        unsafe_convert(::Type{Ptr{_cairoRectangle}}, box::cairoRectangle) = begin
+                convert(Ptr{_cairoRectangle}, box.handle)
+            end
     end
     begin
         struct _cairoRectangleInt
@@ -188,26 +189,27 @@ $(Expr(:toplevel, quote
             width::Int32
             height::Int32
         end
-        begin
-            mutable struct cairoRectangleInt <: GBoxed
-                handle::Ptr{_cairoRectangleInt}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: cairoRectangleInt) = begin
-                            ccall(("cairo_gobject_rectangle_int_get_type", libcairo_gobject), GType, ())
-                        end
-                    function cairoRectangleInt(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct cairoRectangleInt <: GBoxed
+            handle::Ptr{_cairoRectangleInt}
+            begin
+                (GLib.g_type(::Type{T}) where T <: cairoRectangleInt) = begin
+                        ccall(("cairo_gobject_rectangle_int_get_type", libcairo_gobject), GType, ())
                     end
-                    push!(gboxed_types, cairoRectangleInt)
+                function cairoRectangleInt(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, cairoRectangleInt)
             end
         end
+        unsafe_convert(::Type{Ptr{_cairoRectangleInt}}, box::cairoRectangleInt) = begin
+                convert(Ptr{_cairoRectangleInt}, box.handle)
+            end
     end
     begin
         gboxed_cache_init() = begin

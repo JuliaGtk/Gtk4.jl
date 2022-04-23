@@ -8,11 +8,12 @@ $(Expr(:toplevel, quote
             offset::Float32
             color::_GdkRGBA
         end
-        begin
-            mutable struct GskColorStop
-                handle::Ptr{_GskColorStop}
-            end
+        mutable struct GskColorStop
+            handle::Ptr{_GskColorStop}
         end
+        unsafe_convert(::Type{Ptr{_GskColorStop}}, box::GskColorStop) = begin
+                convert(Ptr{_GskColorStop}, box.handle)
+            end
     end
     begin
         struct _GskParseLocation
@@ -22,17 +23,16 @@ $(Expr(:toplevel, quote
             line_bytes::UInt64
             line_chars::UInt64
         end
-        begin
-            mutable struct GskParseLocation
-                handle::Ptr{_GskParseLocation}
-            end
+        mutable struct GskParseLocation
+            handle::Ptr{_GskParseLocation}
         end
+        unsafe_convert(::Type{Ptr{_GskParseLocation}}, box::GskParseLocation) = begin
+                convert(Ptr{_GskParseLocation}, box.handle)
+            end
     end
     begin
-        begin
-            mutable struct GskRoundedRect
-                handle::Ptr{GskRoundedRect}
-            end
+        mutable struct GskRoundedRect
+            handle::Ptr{GskRoundedRect}
         end
         const _GskRoundedRect = GskRoundedRect
     end
@@ -61,11 +61,12 @@ $(Expr(:toplevel, quote
             dy::Float32
             radius::Float32
         end
-        begin
-            mutable struct GskShadow
-                handle::Ptr{_GskShadow}
-            end
+        mutable struct GskShadow
+            handle::Ptr{_GskShadow}
         end
+        unsafe_convert(::Type{Ptr{_GskShadow}}, box::GskShadow) = begin
+                convert(Ptr{_GskShadow}, box.handle)
+            end
     end
     mutable struct GskTransform <: GBoxed
         handle::Ptr{GskTransform}

@@ -5,11 +5,12 @@ $(Expr(:toplevel, quote
             error_code::Int32
             dbus_error_name::Cstring
         end
-        begin
-            mutable struct GDBusErrorEntry
-                handle::Ptr{_GDBusErrorEntry}
-            end
+        mutable struct GDBusErrorEntry
+            handle::Ptr{_GDBusErrorEntry}
         end
+        unsafe_convert(::Type{Ptr{_GDBusErrorEntry}}, box::GDBusErrorEntry) = begin
+                convert(Ptr{_GDBusErrorEntry}, box.handle)
+            end
     end
     begin
         struct _GFileAttributeInfo
@@ -17,37 +18,39 @@ $(Expr(:toplevel, quote
             type::Int32
             flags::Int32
         end
-        begin
-            mutable struct GFileAttributeInfo
-                handle::Ptr{_GFileAttributeInfo}
-            end
+        mutable struct GFileAttributeInfo
+            handle::Ptr{_GFileAttributeInfo}
         end
+        unsafe_convert(::Type{Ptr{_GFileAttributeInfo}}, box::GFileAttributeInfo) = begin
+                convert(Ptr{_GFileAttributeInfo}, box.handle)
+            end
     end
     begin
         struct _GFileAttributeInfoList
             infos::Ptr{_GFileAttributeInfo}
             n_infos::Int32
         end
-        begin
-            mutable struct GFileAttributeInfoList <: GBoxed
-                handle::Ptr{_GFileAttributeInfoList}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: GFileAttributeInfoList) = begin
-                            ccall(("g_file_attribute_info_list_get_type", libgio), GType, ())
-                        end
-                    function GFileAttributeInfoList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct GFileAttributeInfoList <: GBoxed
+            handle::Ptr{_GFileAttributeInfoList}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GFileAttributeInfoList) = begin
+                        ccall(("g_file_attribute_info_list_get_type", libgio), GType, ())
                     end
-                    push!(gboxed_types, GFileAttributeInfoList)
+                function GFileAttributeInfoList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, GFileAttributeInfoList)
             end
         end
+        unsafe_convert(::Type{Ptr{_GFileAttributeInfoList}}, box::GFileAttributeInfoList) = begin
+                convert(Ptr{_GFileAttributeInfoList}, box.handle)
+            end
     end
     mutable struct GFileAttributeMatcher <: GBoxed
         handle::Ptr{GFileAttributeMatcher}
@@ -72,22 +75,24 @@ $(Expr(:toplevel, quote
             buffer::Ptr{Nothing}
             size::UInt64
         end
-        begin
-            mutable struct GInputVector
-                handle::Ptr{_GInputVector}
-            end
+        mutable struct GInputVector
+            handle::Ptr{_GInputVector}
         end
+        unsafe_convert(::Type{Ptr{_GInputVector}}, box::GInputVector) = begin
+                convert(Ptr{_GInputVector}, box.handle)
+            end
     end
     begin
         struct _GOutputVector
             buffer::Ptr{Nothing}
             size::UInt64
         end
-        begin
-            mutable struct GOutputVector
-                handle::Ptr{_GOutputVector}
-            end
+        mutable struct GOutputVector
+            handle::Ptr{_GOutputVector}
         end
+        unsafe_convert(::Type{Ptr{_GOutputVector}}, box::GOutputVector) = begin
+                convert(Ptr{_GOutputVector}, box.handle)
+            end
     end
     mutable struct GResource <: GBoxed
         handle::Ptr{GResource}

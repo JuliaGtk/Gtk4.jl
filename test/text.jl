@@ -10,6 +10,7 @@ b = GtkTextBuffer()
 b.text = "test"
 v = GtkTextView(b)
 @test v[:buffer, GtkTextBuffer] == b
+@test v[:editable, Bool] == true
 
 push!(w, v)
 
@@ -34,6 +35,20 @@ it = Ref(_GtkTextIter(b))
 it.line = 1
 @test it.line == 1
 
+it.line_offset = 0
+@test it.line_offset == 0
+
+it.line_index = 0
+@test it.line_index == 0
+
+it.visible_line_offset = 0
+@test it.visible_line_offset == 0
+
+it.visible_line_index = 0
+@test it.visible_line_index == 0
+
+@test it.can_insert
+
 it1 = _GtkTextIter(b, 1)
 it2 = _GtkTextIter(b, 1)
 @test it1 == it2
@@ -42,6 +57,10 @@ it2 = _GtkTextIter(b, 2)
 @test it1 < it2
 it2 -= 1
 @test Ref(it1) == it2
+
+it3 = _GtkTextIter(b, 2, 1)
+m = GtkTextMark()
+#it4 = _GtkTextIter(b, m)
 
 # tags
 Gtk4.create_tag(b, "big"; size_points = 24)
@@ -106,8 +125,15 @@ range=its:ite
 @test range[5] == '2'
 @test_throws BoundsError range[10]
 @test length(range) == 5
-#chars = [c for c in range]
-#println(chars)
+chars = [c for c in range]
+@test chars[1] == 'l'
+@test chars[5] == '2'
+
+@test range.slice == "line2"
+@test range.visible_slice == "line2"
+@test range.visible_text == "line2"
+
+#@test in(its+1,range)
 
 # selection
 select_range(b, its, ite)

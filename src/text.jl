@@ -398,10 +398,14 @@ end
 show(io::IO, r::GtkTextRange) = print("GtkTextRange(\"", r.text, "\")")
 first(r::GtkTextRange) = r.a
 last(r::GtkTextRange) = r.b
-start_(r::GtkTextRange) = start_(first(r))
-next_(r::GtkTextRange, i) = next_(i, i)
-done_(r::GtkTextRange, i) = (i == last(r) || done_(i, i))
-iterate(r::GtkTextRange, i=start_(r)) = done_(r, i) ? nothing : next_(r, i)
+start_(r::GtkTextRange) = copy(first(r))
+function next_(r::GtkTextRange, i)
+	c=i.char
+	skip(i, 1)
+	(c,i)
+end
+done_(r::GtkTextRange, i) = i[] == last(r)
+iterate(r::GtkTextRange, i=start_(r)) = done_(r,i) ? nothing : next_(r, i)
 
 function getproperty(text::GtkTextRange, key::Symbol)
     Base.in(key, fieldnames(GtkTextRange)) && return getfield(text, key)

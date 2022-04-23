@@ -297,6 +297,11 @@ img = GtkImage(; icon_name = "document-open")
 p = GdkPaintable(img)
 empty!(img)
 pic = GtkPicture()
+icon = Matrix{GdkPixbufLib.RGB}(undef, 40, 20)
+fill!(icon, GdkPixbufLib.RGB(0,0xff,0))
+icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGB(0,0,0xff))
+pb=GdkPixbuf(data=icon, has_alpha=false)
+set_pixbuf(pic, pb)
 end
 
 @testset "checkbox" begin
@@ -381,7 +386,7 @@ end
 
 @testset "ColorButton" begin
 b = GtkColorButton()
-#b = GtkColorButton(Gdk4.G_.copy(Gdk4._GdkRGBA(0, 0.8, 1.0, 0.3)))
+b = GtkColorButton(Gdk4.GdkRGBA(0, 0.8, 1.0, 0.3))
 w = GtkWindow(b, "ColorButton", 50, 50)
 #GAccessor.rgba(ColorChooser(b), GLib.mutable(Gtk.GdkRGBA(0, 0, 0, 0)))
 destroy(w)
@@ -471,6 +476,10 @@ empty!(sb,ctxid)
 destroy(w)
 end
 
+@testset "Infobar" begin
+infobar = GtkInfoBar()
+
+end
 
 @testset "Builder" begin
 b=GtkBuilder(filename="test.glade")
@@ -722,6 +731,8 @@ end
 
 include("../examples/dialogs.jl")
 
+activate(input_dialog_button)
+sleep(0.1)
 activate(file_open_dialog_button)
 sleep(0.1)
 activate(file_save_dialog_button)
@@ -729,6 +740,8 @@ sleep(0.1)
 activate(file_open_dialog_native_button)
 sleep(0.1)
 activate(file_save_dialog_native_button)
+sleep(0.1)
+activate(color_dialog_button)
 sleep(0.1)
 
 destroy(main_window)

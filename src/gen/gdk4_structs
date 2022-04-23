@@ -81,11 +81,12 @@ $(Expr(:toplevel, quote
             group::Int32
             level::Int32
         end
-        begin
-            mutable struct GdkKeymapKey
-                handle::Ptr{_GdkKeymapKey}
-            end
+        mutable struct GdkKeymapKey
+            handle::Ptr{_GdkKeymapKey}
         end
+        unsafe_convert(::Type{Ptr{_GdkKeymapKey}}, box::GdkKeymapKey) = begin
+                convert(Ptr{_GdkKeymapKey}, box.handle)
+            end
     end
     mutable struct GdkPopupLayout <: GBoxed
         handle::Ptr{GdkPopupLayout}
@@ -112,26 +113,27 @@ $(Expr(:toplevel, quote
             blue::Float32
             alpha::Float32
         end
-        begin
-            mutable struct GdkRGBA <: GBoxed
-                handle::Ptr{_GdkRGBA}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: GdkRGBA) = begin
-                            ccall(("gdk_rgba_get_type", libgtk4), GType, ())
-                        end
-                    function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct GdkRGBA <: GBoxed
+            handle::Ptr{_GdkRGBA}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GdkRGBA) = begin
+                        ccall(("gdk_rgba_get_type", libgtk4), GType, ())
                     end
-                    push!(gboxed_types, GdkRGBA)
+                function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, GdkRGBA)
             end
         end
+        unsafe_convert(::Type{Ptr{_GdkRGBA}}, box::GdkRGBA) = begin
+                convert(Ptr{_GdkRGBA}, box.handle)
+            end
     end
     begin
         struct _GdkRectangle
@@ -140,32 +142,31 @@ $(Expr(:toplevel, quote
             width::Int32
             height::Int32
         end
-        begin
-            mutable struct GdkRectangle <: GBoxed
-                handle::Ptr{_GdkRectangle}
-                begin
-                    (GLib.g_type(::Type{T}) where T <: GdkRectangle) = begin
-                            ccall(("gdk_rectangle_get_type", libgtk4), GType, ())
-                        end
-                    function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                        x = new(ref)
-                        if own
-                            finalizer(x) do x
-                                GLib.delboxed(x)
-                            end
-                        end
-                        x
+        mutable struct GdkRectangle <: GBoxed
+            handle::Ptr{_GdkRectangle}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GdkRectangle) = begin
+                        ccall(("gdk_rectangle_get_type", libgtk4), GType, ())
                     end
-                    push!(gboxed_types, GdkRectangle)
+                function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
+                push!(gboxed_types, GdkRectangle)
             end
         end
+        unsafe_convert(::Type{Ptr{_GdkRectangle}}, box::GdkRectangle) = begin
+                convert(Ptr{_GdkRectangle}, box.handle)
+            end
     end
     begin
-        begin
-            mutable struct GdkTimeCoord
-                handle::Ptr{GdkTimeCoord}
-            end
+        mutable struct GdkTimeCoord
+            handle::Ptr{GdkTimeCoord}
         end
         const _GdkTimeCoord = GdkTimeCoord
     end
