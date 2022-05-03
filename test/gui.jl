@@ -387,8 +387,8 @@ end
 @testset "ColorButton" begin
 b = GtkColorButton()
 b = GtkColorButton(Gdk4.GdkRGBA(0, 0.8, 1.0, 0.3))
+r = Gdk4.GdkRGBA("red")
 w = GtkWindow(b, "ColorButton", 50, 50)
-#GAccessor.rgba(ColorChooser(b), GLib.mutable(Gtk.GdkRGBA(0, 0, 0, 0)))
 destroy(w)
 end
 
@@ -509,6 +509,13 @@ c = GtkCanvas()
 f = GtkAspectFrame(0.5, 1, 0.5, false)
 f[] = c
 @test f[] == c
+gm = GtkEventControllerMotion(c)
+gs = GtkEventControllerScroll(Gtk4.Constants.EventControllerScrollFlags_VERTICAL,c)
+gk = GtkEventControllerKey(c)
+ggc = GtkGestureClick(c)
+ggd = GtkGestureDrag(c)
+ggz = GtkGestureZoom(c)
+@test widget(gm) == c
 c.draw = function(_)
     if isdefined(c,:back)
         ctx = Gtk4.getgc(c)
@@ -519,11 +526,22 @@ end
 w = GtkWindow(f, "Canvas")
 draw(c)
 sleep(0.5)
+reveal(c)
+destroyed = Ref(false)
+function test_destroy(w)
+    destroyed[] = true
+end
+on_signal_destroy(test_destroy, w)
 destroy(w)
+#@test destroyed[] == true
 end
 
 @testset "SetCoordinates" begin
     cnvs = GtkCanvas(300, 280)
+    sleep(0.2)
+    s = size(cnvs)
+    #@test s[1] == 300
+    #@test s[2] == 280
     draw(cnvs) do c
         set_coordinates(getgc(c), BoundingBox(0, 1, 0, 1))
     end
@@ -545,18 +563,22 @@ menubar = GMenu()
 filemenu = GMenu()
 open_ = GMenuItem("Open","open")
 push!(filemenu, open_)
-new_ = GMenuItem("New","new")
+new_ = GMenuItem("New")
+newsubmenu = GMenu(new_)
+blank = GMenuItem("Empty file","empty")
+push!(newsubmenu,blank)
+template = GMenuItem("From template...","template")
+push!(newsubmenu,template)
 pushfirst!(filemenu, new_)
 quit = GMenuItem("Quit","quit")
 push!(filemenu, quit)
 GLib.submenu(menubar,"File",filemenu)
 
-@test length(filemenu)==3
-
 mb = GtkPopoverMenuBar(menubar)
 b = GtkBox(:h)
 push!(b,mb)
 win = GtkWindow(b, "Menus", 200, 40)
+@test length(filemenu)==3
 destroy(win)
 end
 

@@ -1,4 +1,4 @@
-using Gtk4.GLib
+using Gtk4.GLib, Gtk4
 
 @testset "mainloop" begin
 
@@ -46,5 +46,33 @@ x[] = 1 #reset
 end
 sleep(0.5)
 @test x[] == 2
+
+end
+
+@testset "misc" begin
+
+unhandled = convert(Cint, false)
+
+foo1 = @guarded (x,y) -> x+y
+bar1 = @guarded (x,y) -> x+y+k
+@guarded foo2(x,y) = x+y
+@guarded bar2(x,y) = x+y+k
+@guarded function foo3(x,y)
+    x+y
+end
+@guarded function bar3(x,y)
+    x+y+k
+end
+@guarded unhandled function bar4(x,y)
+    x+y+k
+end
+
+@test foo1(3,5) == 8
+@test @test_logs (:warn, "Error in @guarded callback") bar1(3,5) == nothing
+@test foo2(3,5) == 8
+@test @test_logs (:warn, "Error in @guarded callback") bar2(3,5) == nothing
+@test foo3(3,5) == 8
+@test @test_logs (:warn, "Error in @guarded callback") bar3(3,5) == nothing
+@test @test_logs (:warn, "Error in @guarded callback") bar4(3,5) == unhandled
 
 end

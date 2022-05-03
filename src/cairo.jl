@@ -1,7 +1,7 @@
 using Cairo_jll
 using Cairo
 
-function canvas_draw_backing_store(w, cr, width, height, user_data) # cr is a Cairo context
+function canvas_draw_backing_store(w, cr, width, height, user_data) # cr is a Cairo context, user_data is a Cairo surface
     user_data==C_NULL && return
 
     ccall((:cairo_set_source_surface, libcairo), Nothing,
@@ -9,7 +9,7 @@ function canvas_draw_backing_store(w, cr, width, height, user_data) # cr is a Ca
     ccall((:cairo_paint, libcairo), Nothing, (Ptr{Nothing},), cr)
 end
 
-mutable struct GtkCanvas <: GtkDrawingArea # NOT an @GType
+mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     handle::Ptr{GObject}
     resize::Union{Function, Nothing}
     draw::Union{Function, Nothing}
@@ -34,9 +34,6 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT an @GType
 
         signal_connect(Base.inferencebarrier(on_resize), widget, "resize")
 
-        g=GtkGestureClick(da)
-        ecm=GtkEventControllerMotion(da)
-
         return GLib.gobject_move_ref(widget, da)
     end
 end
@@ -60,6 +57,7 @@ end
 
 function draw(widget::GtkCanvas, immediate::Bool = true)
     if !isdefined(widget, :back)
+        @warn("backing store not defined")
         return
     end
     if isa(widget.draw, Function)

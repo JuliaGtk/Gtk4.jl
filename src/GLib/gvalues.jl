@@ -55,7 +55,7 @@ getindex(v::Ref{GValue}, i::Int, ::Type{Nothing}) = nothing
 
 let handled = Set()
 global make_gvalue, getindex
-function make_gvalue(pass_x, as_ctype, to_gtype, with_id, cm::Module, allow_reverse::Bool = true)
+function make_gvalue(pass_x, as_ctype, to_gtype, with_id, cm::Module)
     with_id === :error && return
     if isa(with_id, Tuple)
         with_id = with_id::Tuple{Symbol, Any}
@@ -100,23 +100,6 @@ function make_gvalue(pass_x, as_ctype, to_gtype, with_id, cm::Module, allow_reve
                 return Base.convert(T, x)
             end
         end)
-    end
-    if allow_reverse
-        # Define a function that gets this gtype from a GValue and creates a Julia type.
-        # Used for GBoxed types in GV[Any].
-        fn = Core.eval(cm, quote
-            function(v::Base.Ref{GLib.GValue})
-                x = ccall(($(string("g_value_get_", to_gtype)), GLib.libgobject), $as_ctype, (Ptr{GLib.GValue},), v)
-                $(if to_gtype == :string; :(x = GLib.bytestring(x)) end)
-                $(if pass_x !== Union{}
-                    :(return Base.convert($pass_x, x))
-                else
-                    :(return x)
-                end)
-            end
-        end)
-        allow_reverse && pushfirst!(gboxed_types, pass_x)
-        return fn
     end
     return nothing
 end
@@ -194,9 +177,8 @@ const gvalue_types = Any[]
 const gboxed_types = Any[]
 const fundamental_fns = tuple(Function[ make_gvalue_from_fundamental_type(i, @__MODULE__) for
                               i in 1:length(fundamental_types)]...)
-@make_gvalue(Symbol, Ptr{UInt8}, :static_string, :(g_type(AbstractString)), false)
+@make_gvalue(Symbol, Ptr{UInt8}, :static_string, :(g_type(AbstractString)))
 #@make_gvalue(Type, GType, :gtype, (:g_gtype, :libgobject))
-#@make_gvalue(Ptr{GBoxed}, Ptr{GBoxed}, :gboxed, :(g_type(GBoxed)), false)
 
 function getindex(gv::Base.Ref{GValue}, ::Type{Any})
     gtyp = gv[].g_type

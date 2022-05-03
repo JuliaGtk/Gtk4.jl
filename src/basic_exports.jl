@@ -24,10 +24,9 @@ export response
 export signal_connect, signal_handler_disconnect,
     signal_handler_block, signal_handler_unblock, signal_handler_is_connected,
     signal_emit, g_timeout_add, g_idle_add
+export @guarded, @idle_add
 
 # Gtk-specific event handling
 export signal_emit,
     on_signal_destroy, on_signal_button_press,
     on_signal_button_release, on_signal_motion
-
-export @guarded, @idle_add

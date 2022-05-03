@@ -35,6 +35,9 @@ using ..GdkPixbufLib
 using ..Gsk4
 using ..Gtk4
 
+using ..Gtk4.Constants
+using ..Gdk4.Constants
+
 eval(include("gen/gtk4_methods"))
 # #eval(include("gen/gtk4_functions"))
 
@@ -44,7 +47,8 @@ import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex
              convert, empty!, string, popfirst!, size, delete!,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
 
-import .GLib: set_gtk_property!, get_gtk_property, run
+import .GLib: set_gtk_property!, get_gtk_property, run,
+              signal_handler_is_connected
 
 using Reexport
 @reexport using Graphics

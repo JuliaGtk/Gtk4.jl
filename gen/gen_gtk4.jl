@@ -15,6 +15,7 @@ push!(const_mod.args,:(using CEnum))
 const_exports = Expr(:export)
 
 GI.all_const_exprs!(const_mod, const_exports, ns)
+push!(const_mod.args, const_exports)
 
 push!(exprs, Expr(:toplevel,Expr(:module, true, :Constants, const_mod)))
 
