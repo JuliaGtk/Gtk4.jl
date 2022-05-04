@@ -1704,10 +1704,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_builder_set_translation_domain", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _domain)
         nothing
     end
-    function value_from_string(instance::GtkBuilder, _pspec::GParamSpec, _string::Union{AbstractString, Symbol})
+    function value_from_string(instance::GtkBuilder, _pspec::GParam, _string::Union{AbstractString, Symbol})
         m_value = Ref{_GValue}()
         err = err_buf()
-        ret = ccall(("gtk_builder_value_from_string", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{_GValue}, Ptr{Ptr{GError}}), instance, _pspec, _string, m_value, err)
+        ret = ccall(("gtk_builder_value_from_string", libgtk4), Cint, (Ptr{GObject}, Ptr{GParam}, Cstring, Ptr{_GValue}, Ptr{Ptr{GError}}), instance, _pspec, _string, m_value, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _value = m_value[]
@@ -4315,12 +4315,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_current_event(instance::GtkEventController)
-        ret = ccall(("gtk_event_controller_get_current_event", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkEvent, ret, false)
-            end
+        ret = ccall(("gtk_event_controller_get_current_event", libgtk4), Ptr{GdkEvent}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkEvent, ret)
         ret2
     end
     function get_current_event_device(instance::GtkEventController)
@@ -5292,12 +5288,8 @@ $(Expr(:toplevel, quote
             else
                 _sequence
             end
-        ret = ccall(("gtk_gesture_get_last_event", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GdkEventSequence}), instance, _sequence)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkEvent, ret, false)
-            end
+        ret = ccall(("gtk_gesture_get_last_event", libgtk4), Ptr{GdkEvent}, (Ptr{GObject}, Ptr{GdkEventSequence}), instance, _sequence)
+        ret2 = convert(GdkEvent, ret)
         ret2
     end
     function get_last_updated_sequence(instance::GtkGesture)
@@ -10613,8 +10605,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function to_node(instance::GtkSnapshot)
-        ret = ccall(("gtk_snapshot_to_node", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GskRenderNode, ret, true)
+        ret = ccall(("gtk_snapshot_to_node", libgtk4), Ptr{GskRenderNode}, (Ptr{GObject},), instance)
+        ret2 = convert(GskRenderNode, ret)
         ret2
     end
     function to_paintable(instance::GtkSnapshot, _size::Maybe(Union{GrapheneSize, Ref{_GrapheneSize}}))
@@ -15540,13 +15532,13 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_color_chooser_set_use_alpha", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_alpha)
         nothing
     end
-    function delegate_get_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParamSpec)
-        ret = ccall(("gtk_editable_delegate_get_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GObject}), _object, _prop_id, _value, _pspec)
+    function delegate_get_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
+        ret = ccall(("gtk_editable_delegate_get_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function delegate_set_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParamSpec)
-        ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GObject}), _object, _prop_id, _value, _pspec)
+    function delegate_set_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
+        ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
     end

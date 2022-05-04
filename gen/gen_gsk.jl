@@ -34,7 +34,7 @@ struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skipl
 
 ## objects
 
-GI.all_objects!(exprs,exports,ns,skiplist=[:BlendNode,:BlurNode,:BorderNode,:CairoNode,:ClipNode,:ColorMatrixNode,:ColorNode,:ConicGradientNode,:ContainerNode,:CrossFadeNode,:DebugNode,:GLShaderNode,:InsetShadowNode,:LinearGradientNode,:OpacityNode,:OutsetShadowNode,:RadialGradientNode,:RepeatNode,:RepeatingLinearGradientNode,:RepeatingRadialGradientNode,:RoundedClipNode,:RenderNode,:ShadowNode,:TextNode,:TextureNode,:TransformNode])
+GI.all_objects!(exprs,exports,ns,skiplist=[:BlendNode,:BlurNode,:BorderNode,:CairoNode,:ClipNode,:ColorMatrixNode,:ColorNode,:ConicGradientNode,:ContainerNode,:CrossFadeNode,:DebugNode,:GLShaderNode,:InsetShadowNode,:LinearGradientNode,:OpacityNode,:OutsetShadowNode,:RadialGradientNode,:RepeatNode,:RepeatingLinearGradientNode,:RepeatingRadialGradientNode,:RoundedClipNode,:ShadowNode,:TextNode,:TextureNode,:TransformNode])
 GI.all_interfaces!(exprs,exports,ns)
 
 push!(exprs,exports)

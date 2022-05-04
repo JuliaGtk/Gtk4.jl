@@ -7,6 +7,7 @@ abstract type GBoxed  end
 const  GEnum = Int32
 const  GType = Csize_t
 
+abstract type GParam end
 struct GParamSpec
   g_type_instance::Ptr{Nothing}
   name::Ptr{UInt8}

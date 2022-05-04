@@ -8,7 +8,7 @@ ns = GINamespace(:GObject,"2.0")
 
 ## structs
 
-# These are marked as "disguised" and what this means is not documentated AFAICT.
+# These are marked as "disguised" and what this means is not documented AFAICT.
 disguised = [:ParamSpecPool]
 # These are handled specially by GLib.jl so are not auto-exported.
 special = [:Value]
@@ -40,7 +40,7 @@ toplevel, exprs, exports = GI.output_exprs()
 
 structs=GI.get_structs(ns)
 
-skiplist=[:init_from_instance,:get_private]
+skiplist=[:init_from_instance,:get_private,:get_param,:set_param]
 
 filter!(x->x≠:Value,struct_skiplist)
 
@@ -51,7 +51,7 @@ symbols_handled=GI.all_struct_methods!(exprs,ns;print_detailed=true,skiplist=ski
 skiplist=[
 :bind_property_full,  # "binding friendly" GI version uses GClosure
 :watch_closure,:add_interface,:register_enum,:register_flags,:register_type,
-:getv]
+:getv,:notify_by_pspec,:interface_find_property,:interface_install_property,:interface_list_properties]
 
 GI.all_object_methods!(exprs,ns;skiplist=skiplist)
 
@@ -73,7 +73,7 @@ skiplist=vcat(handled_list,[:enum_complete_type_info,:enum_register_static,:flag
 :type_check_instance,:type_check_instance_is_a,:type_check_instance_is_fundamentally_a,
 :type_default_interface_unref,:type_free_instance,
 :type_name_from_instance,:type_register_fundamental,:type_register_static,
-:signal_set_va_marshaller,:signal_emitv])
+:signal_set_va_marshaller,:signal_emitv,:param_value_convert,:param_value_defaults,:param_value_set_default,:param_value_validate,:param_values_cmp])
 
 GI.all_functions!(exprs,ns,skiplist=skiplist,symbol_skiplist=symbols_handled)
 

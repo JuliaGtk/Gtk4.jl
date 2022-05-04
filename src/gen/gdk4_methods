@@ -320,6 +320,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_app_launch_context_set_timestamp", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _timestamp)
         nothing
     end
+    function get_button(instance::GdkButtonEvent)
+        ret = ccall(("gdk_button_event_get_button", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret
+    end
     function cairo_create(instance::GdkCairoContext)
         ret = ccall(("gdk_cairo_context_cairo_create", libgtk4), Ptr{cairoContext}, (Ptr{GObject},), instance)
         ret2 = if ret == C_NULL
@@ -680,6 +684,21 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_content_serializer_return_success", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
+    function get_detail(instance::GdkCrossingEvent)
+        ret = ccall(("gdk_crossing_event_get_detail", libgtk4), Int32, (Ptr{GdkEvent},), instance)
+        ret2 = NotifyType(ret)
+        ret2
+    end
+    function get_focus(instance::GdkCrossingEvent)
+        ret = ccall(("gdk_crossing_event_get_focus", libgtk4), Cint, (Ptr{GdkEvent},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_mode(instance::GdkCrossingEvent)
+        ret = ccall(("gdk_crossing_event_get_mode", libgtk4), Int32, (Ptr{GdkEvent},), instance)
+        ret2 = CrossingMode(ret)
+        ret2
+    end
     function Cursor_new_from_name(_name::Union{AbstractString, Symbol}, _fallback::Maybe(GdkCursor))
         _fallback = if _fallback == nothing
                 C_NULL
@@ -736,6 +755,15 @@ $(Expr(:toplevel, quote
                 nothing
             else
                 convert(GdkTexture, ret, false)
+            end
+        ret2
+    end
+    function get_drop(instance::GdkDNDEvent)
+        ret = ccall(("gdk_dnd_event_get_drop", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GdkDrop, ret, false)
             end
         ret2
     end
@@ -1258,6 +1286,149 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_drop_status", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32), instance, _actions, _preferred)
         nothing
     end
+    function _get_angle(instance::GdkEvent, _event2::GdkEvent)
+        m_angle = Ref{Float64}()
+        ret = ccall(("gdk_events_get_angle", libgtk4), Cint, (Ptr{GdkEvent}, Ptr{GdkEvent}, Ptr{Float64}), instance, _event2, m_angle)
+        ret2 = convert(Bool, ret)
+        _angle = m_angle[]
+        (ret2, _angle)
+    end
+    function _get_center(instance::GdkEvent, _event2::GdkEvent)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
+        ret = ccall(("gdk_events_get_center", libgtk4), Cint, (Ptr{GdkEvent}, Ptr{GdkEvent}, Ptr{Float64}, Ptr{Float64}), instance, _event2, m_x, m_y)
+        ret2 = convert(Bool, ret)
+        _x = m_x[]
+        _y = m_y[]
+        (ret2, _x, _y)
+    end
+    function _get_distance(instance::GdkEvent, _event2::GdkEvent)
+        m_distance = Ref{Float64}()
+        ret = ccall(("gdk_events_get_distance", libgtk4), Cint, (Ptr{GdkEvent}, Ptr{GdkEvent}, Ptr{Float64}), instance, _event2, m_distance)
+        ret2 = convert(Bool, ret)
+        _distance = m_distance[]
+        (ret2, _distance)
+    end
+    function get_axes(instance::GdkEvent)
+        m_axes = Ref{Ptr{Float64}}()
+        m_n_axes = Ref{UInt32}()
+        ret = ccall(("gdk_event_get_axes", libgtk4), Cint, (Ptr{GdkEvent}, Ptr{Ptr{Float64}}, Ptr{UInt32}), instance, m_axes, m_n_axes)
+        ret2 = convert(Bool, ret)
+        _axes = m_axes[]
+        _n_axes = m_n_axes[]
+        (ret2, _axes)
+    end
+    function get_axis(instance::GdkEvent, _axis_use)
+        m_value = Ref{Float64}()
+        ret = ccall(("gdk_event_get_axis", libgtk4), Cint, (Ptr{GdkEvent}, Int32, Ptr{Float64}), instance, _axis_use, m_value)
+        ret2 = convert(Bool, ret)
+        _value = m_value[]
+        (ret2, _value)
+    end
+    function get_device(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_device", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GdkDevice, ret, false)
+            end
+        ret2
+    end
+    function get_device_tool(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_device_tool", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GdkDeviceTool, ret, false)
+            end
+        ret2
+    end
+    function get_display(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_display", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GdkDisplay, ret, false)
+            end
+        ret2
+    end
+    function get_event_sequence(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_event_sequence", libgtk4), Ptr{GdkEventSequence}, (Ptr{GdkEvent},), instance)
+        ret2 = convert(GdkEventSequence, ret, false)
+        ret2
+    end
+    function get_event_type(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_event_type", libgtk4), Int32, (Ptr{GdkEvent},), instance)
+        ret2 = EventType(ret)
+        ret2
+    end
+    function get_history(instance::GdkEvent)
+        m_out_n_coords = Ref{UInt32}()
+        ret = ccall(("gdk_event_get_history", libgtk4), Ptr{_GdkTimeCoord}, (Ptr{GdkEvent}, Ptr{UInt32}), instance, m_out_n_coords)
+        ret2 = begin
+                ret2 = copy(unsafe_wrap(Vector{_GdkTimeCoord}, ret, m_out_n_coords[]))
+                GLib.g_free(ret)
+                ret2
+            end
+        _out_n_coords = m_out_n_coords[]
+        ret2
+    end
+    function get_modifier_state(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_modifier_state", libgtk4), Int32, (Ptr{GdkEvent},), instance)
+        ret2 = ModifierType(ret)
+        ret2
+    end
+    function get_pointer_emulated(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_pointer_emulated", libgtk4), Cint, (Ptr{GdkEvent},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_position(instance::GdkEvent)
+        m_x = Ref{Float64}()
+        m_y = Ref{Float64}()
+        ret = ccall(("gdk_event_get_position", libgtk4), Cint, (Ptr{GdkEvent}, Ptr{Float64}, Ptr{Float64}), instance, m_x, m_y)
+        ret2 = convert(Bool, ret)
+        _x = m_x[]
+        _y = m_y[]
+        (ret2, _x, _y)
+    end
+    function get_seat(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_seat", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GdkSeat, ret, false)
+            end
+        ret2
+    end
+    function get_surface(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_surface", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
+        ret2 = convert(GdkSurface, ret, false)
+        ret2
+    end
+    function get_time(instance::GdkEvent)
+        ret = ccall(("gdk_event_get_time", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret
+    end
+    function ref(instance::GdkEvent)
+        ret = ccall(("gdk_event_ref", libgtk4), Ptr{GdkEvent}, (Ptr{GdkEvent},), instance)
+        ret2 = convert(GdkEvent, ret)
+        ret2
+    end
+    function triggers_context_menu(instance::GdkEvent)
+        ret = ccall(("gdk_event_triggers_context_menu", libgtk4), Cint, (Ptr{GdkEvent},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function unref(instance::GdkEvent)
+        ret = ccall(("gdk_event_unref", libgtk4), Nothing, (Ptr{GdkEvent},), instance)
+        nothing
+    end
+    function get_in(instance::GdkFocusEvent)
+        ret = ccall(("gdk_focus_event_get_in", libgtk4), Cint, (Ptr{GdkEvent},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function begin_updating(instance::GdkFrameClock)
         ret = ccall(("gdk_frame_clock_begin_updating", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
@@ -1417,6 +1588,57 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_gl_texture_release", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
+    function get_grab_surface(instance::GdkGrabBrokenEvent)
+        ret = ccall(("gdk_grab_broken_event_get_grab_surface", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
+        ret2 = convert(GdkSurface, ret, false)
+        ret2
+    end
+    function get_implicit(instance::GdkGrabBrokenEvent)
+        ret = ccall(("gdk_grab_broken_event_get_implicit", libgtk4), Cint, (Ptr{GdkEvent},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_consumed_modifiers(instance::GdkKeyEvent)
+        ret = ccall(("gdk_key_event_get_consumed_modifiers", libgtk4), Int32, (Ptr{GdkEvent},), instance)
+        ret2 = ModifierType(ret)
+        ret2
+    end
+    function get_keycode(instance::GdkKeyEvent)
+        ret = ccall(("gdk_key_event_get_keycode", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret
+    end
+    function get_keyval(instance::GdkKeyEvent)
+        ret = ccall(("gdk_key_event_get_keyval", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret
+    end
+    function get_layout(instance::GdkKeyEvent)
+        ret = ccall(("gdk_key_event_get_layout", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret
+    end
+    function get_level(instance::GdkKeyEvent)
+        ret = ccall(("gdk_key_event_get_level", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret
+    end
+    function get_match(instance::GdkKeyEvent)
+        m_keyval = Ref{UInt32}()
+        m_modifiers = Ref{Int32}()
+        ret = ccall(("gdk_key_event_get_match", libgtk4), Cint, (Ptr{GdkEvent}, Ptr{UInt32}, Ptr{Int32}), instance, m_keyval, m_modifiers)
+        ret2 = convert(Bool, ret)
+        _keyval = m_keyval[]
+        _modifiers = m_modifiers[]
+        _modifiers = ModifierType(_modifiers)
+        (ret2, _keyval, _modifiers)
+    end
+    function is_modifier(instance::GdkKeyEvent)
+        ret = ccall(("gdk_key_event_is_modifier", libgtk4), Cint, (Ptr{GdkEvent},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function matches(instance::GdkKeyEvent, _keyval::Integer, _modifiers)
+        ret = ccall(("gdk_key_event_matches", libgtk4), Int32, (Ptr{GdkEvent}, UInt32, Int32), instance, _keyval, _modifiers)
+        ret2 = KeyMatch(ret)
+        ret2
+    end
     function MemoryTexture_new(_width::Integer, _height::Integer, _format, _bytes::GBytes, _stride::Integer)
         ret = ccall(("gdk_memory_texture_new", libgtk4), Ptr{GObject}, (Int32, Int32, Int32, Ptr{GBytes}, UInt64), _width, _height, _format, _bytes, _stride)
         ret2 = convert(GdkTexture, ret, true)
@@ -1483,6 +1705,44 @@ $(Expr(:toplevel, quote
     end
     function is_valid(instance::GdkMonitor)
         ret = ccall(("gdk_monitor_is_valid", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_axis_value(instance::GdkPadEvent)
+        m_index = Ref{UInt32}()
+        m_value = Ref{Float64}()
+        ret = ccall(("gdk_pad_event_get_axis_value", libgtk4), Nothing, (Ptr{GdkEvent}, Ptr{UInt32}, Ptr{Float64}), instance, m_index, m_value)
+        _index = m_index[]
+        _value = m_value[]
+        (_index, _value)
+    end
+    function get_button(instance::GdkPadEvent)
+        ret = ccall(("gdk_pad_event_get_button", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret
+    end
+    function get_group_mode(instance::GdkPadEvent)
+        m_group = Ref{UInt32}()
+        m_mode = Ref{UInt32}()
+        ret = ccall(("gdk_pad_event_get_group_mode", libgtk4), Nothing, (Ptr{GdkEvent}, Ptr{UInt32}, Ptr{UInt32}), instance, m_group, m_mode)
+        _group = m_group[]
+        _mode = m_mode[]
+        (_group, _mode)
+    end
+    function get_deltas(instance::GdkScrollEvent)
+        m_delta_x = Ref{Float64}()
+        m_delta_y = Ref{Float64}()
+        ret = ccall(("gdk_scroll_event_get_deltas", libgtk4), Nothing, (Ptr{GdkEvent}, Ptr{Float64}, Ptr{Float64}), instance, m_delta_x, m_delta_y)
+        _delta_x = m_delta_x[]
+        _delta_y = m_delta_y[]
+        (_delta_x, _delta_y)
+    end
+    function get_direction(instance::GdkScrollEvent)
+        ret = ccall(("gdk_scroll_event_get_direction", libgtk4), Int32, (Ptr{GdkEvent},), instance)
+        ret2 = ScrollDirection(ret)
+        ret2
+    end
+    function is_stop(instance::GdkScrollEvent)
+        ret = ccall(("gdk_scroll_event_is_stop", libgtk4), Cint, (Ptr{GdkEvent},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -1715,6 +1975,36 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_texture_save_to_png", libgtk4), Cint, (Ptr{GObject}, Cstring), instance, _filename)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function get_emulating_pointer(instance::GdkTouchEvent)
+        ret = ccall(("gdk_touch_event_get_emulating_pointer", libgtk4), Cint, (Ptr{GdkEvent},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_deltas(instance::GdkTouchpadEvent)
+        m_dx = Ref{Float64}()
+        m_dy = Ref{Float64}()
+        ret = ccall(("gdk_touchpad_event_get_deltas", libgtk4), Nothing, (Ptr{GdkEvent}, Ptr{Float64}, Ptr{Float64}), instance, m_dx, m_dy)
+        _dx = m_dx[]
+        _dy = m_dy[]
+        (_dx, _dy)
+    end
+    function get_gesture_phase(instance::GdkTouchpadEvent)
+        ret = ccall(("gdk_touchpad_event_get_gesture_phase", libgtk4), Int32, (Ptr{GdkEvent},), instance)
+        ret2 = TouchpadGesturePhase(ret)
+        ret2
+    end
+    function get_n_fingers(instance::GdkTouchpadEvent)
+        ret = ccall(("gdk_touchpad_event_get_n_fingers", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret
+    end
+    function get_pinch_angle_delta(instance::GdkTouchpadEvent)
+        ret = ccall(("gdk_touchpad_event_get_pinch_angle_delta", libgtk4), Float64, (Ptr{GdkEvent},), instance)
+        ret
+    end
+    function get_pinch_scale(instance::GdkTouchpadEvent)
+        ret = ccall(("gdk_touchpad_event_get_pinch_scale", libgtk4), Float64, (Ptr{GdkEvent},), instance)
+        ret
     end
     function get_feature_group(instance::GdkDevicePad, _feature, _feature_idx::Integer)
         ret = ccall(("gdk_device_pad_get_feature_group", libgtk4), Int32, (Ptr{GObject}, Int32, Int32), instance, _feature, _feature_idx)

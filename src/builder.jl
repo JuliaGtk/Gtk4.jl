@@ -52,7 +52,7 @@ end
 """
     @load_builder(b::GtkBuilder)
 
-Loads all GtkBuildable objects from a GtkBuilder object and assign them to Julia
+Loads all GtkBuildable objects from a GtkBuilder object and assigns them to Julia
 variables in the current module. GtkBuilder ID's are mapped onto Julia variable
 names.
 """

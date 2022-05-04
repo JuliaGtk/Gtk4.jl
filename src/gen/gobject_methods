@@ -75,11 +75,6 @@ $(Expr(:toplevel, quote
         ret2 = convert(GObject, ret, false)
         ret2
     end
-    function get_param(instance::GValue)
-        ret = ccall(("g_value_get_param", libgobject), Ptr{GObject}, (Ptr{_GValue},), instance)
-        ret2 = convert(GParamSpec, ret, false)
-        ret2
-    end
     function get_pointer(instance::GValue)
         ret = ccall(("g_value_get_pointer", libgobject), Ptr{Nothing}, (Ptr{_GValue},), instance)
         ret2 = convert(Nothing, ret)
@@ -204,15 +199,6 @@ $(Expr(:toplevel, quote
                 _v_object
             end
         ret = ccall(("g_value_set_object", libgobject), Nothing, (Ptr{_GValue}, Ptr{GObject}), instance, _v_object)
-        nothing
-    end
-    function set_param(instance::GValue, _param::Maybe(GParamSpec))
-        _param = if _param == nothing
-                C_NULL
-            else
-                _param
-            end
-        ret = ccall(("g_value_set_param", libgobject), Nothing, (Ptr{_GValue}, Ptr{GObject}), instance, _param)
         nothing
     end
     function set_pointer(instance::GValue, _v_pointer::Maybe(Nothing))
@@ -370,26 +356,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_object_compat_control", libgobject), UInt64, (UInt64, Ptr{Nothing}), _what, _data)
         ret
     end
-    function interface_find_property(_g_iface::_GTypeInterface, _property_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_object_interface_find_property", libgobject), Ptr{GObject}, (Ptr{_GTypeInterface}, Cstring), _g_iface, _property_name)
-        ret2 = convert(GParamSpec, ret, false)
-        ret2
-    end
-    function interface_install_property(_g_iface::_GTypeInterface, _pspec::GParamSpec)
-        ret = ccall(("g_object_interface_install_property", libgobject), Nothing, (Ptr{_GTypeInterface}, Ptr{GObject}), _g_iface, _pspec)
-        nothing
-    end
-    function interface_list_properties(_g_iface::_GTypeInterface)
-        m_n_properties_p = Ref{UInt32}()
-        ret = ccall(("g_object_interface_list_properties", libgobject), Ptr{Ptr{GObject}}, (Ptr{_GTypeInterface}, Ptr{UInt32}), _g_iface, m_n_properties_p)
-        ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_n_properties_p[]))
-                GLib.g_free(ret)
-                ret2 = convert.(GParamSpec, ret2, false)
-            end
-        _n_properties_p = m_n_properties_p[]
-        ret2
-    end
     function bind_property(instance::GObject, _source_property::Union{AbstractString, Symbol}, _target::GObject, _target_property::Union{AbstractString, Symbol}, _flags)
         ret = ccall(("g_object_bind_property", libgobject), Ptr{GObject}, (Ptr{GObject}, Cstring, Ptr{GObject}, Cstring, Int32), instance, _source_property, _target, _target_property, _flags)
         ret2 = convert(GBinding, ret, false)
@@ -424,10 +390,6 @@ $(Expr(:toplevel, quote
     end
     function notify(instance::GObject, _property_name::Union{AbstractString, Symbol})
         ret = ccall(("g_object_notify", libgobject), Nothing, (Ptr{GObject}, Cstring), instance, _property_name)
-        nothing
-    end
-    function notify_by_pspec(instance::GObject, _pspec::GParamSpec)
-        ret = ccall(("g_object_notify_by_pspec", libgobject), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _pspec)
         nothing
     end
     function ref(instance::GObject)

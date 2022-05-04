@@ -270,7 +270,7 @@ ctypes = Dict(GIInfo=>Ptr{GIBaseInfo},
           Symbol=>Ptr{UInt8})
 for (owner,property,typ) in [
     (:base, :name, Symbol), (:base, :namespace, Symbol), (:base, :type, Int),
-    (:base, :container, MaybeGIInfo), (:registered_type, :g_type, GType), (:object, :parent, MaybeGIInfo), (:object, :type_init, Symbol),
+    (:base, :container, MaybeGIInfo), (:registered_type, :g_type, GType), (:registered_type, :type_name, Symbol), (:object, :parent, MaybeGIInfo), (:object, :type_init, Symbol),
     (:callable, :return_type, GIInfo), (:callable, :caller_owns, EnumGI), (:registered_type, :type_init, Symbol),
     (:function, :flags, EnumGI), (:function, :symbol, Symbol), (:property, :type, GIInfo), (:property, :ownership_transfer, EnumGI), (:property, :flags, EnumGI),
     (:arg, :type, GIInfo), (:arg, :direction, EnumGI), (:arg, :ownership_transfer, EnumGI), #(:function, :property, MaybeGIInfo),
@@ -314,7 +314,7 @@ end
 
 is_gobject(::Nothing) = false
 function is_gobject(info::GIObjectInfo)
-    if GLib.g_type_name(get_g_type(info)) == :GObject
+    if get_g_type(info) == GLib.g_type(GLib.GObject)
         true
     else
         is_gobject(get_parent(info))
@@ -390,7 +390,11 @@ function get_base_type(info::GITypeInfo)
         elseif typ===:GICallbackInfo
             return Function
         elseif typ===:GIObjectInfo
-            return GObject
+            if is_gobject(interf_info)
+                return GObject
+            else
+                return get_toplevel(interf_info)
+            end
         elseif typ===:GIInterfaceInfo
             return GInterface
         else

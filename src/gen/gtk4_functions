@@ -157,13 +157,13 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_distribute_natural_allocation", libgtk4), Int32, (Int32, UInt32, Ptr{_GtkRequestedSize}), _extra_space, _n_requested_sizes, _sizes)
         ret
     end
-    function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParamSpec)
-        ret = ccall(("gtk_editable_delegate_get_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GObject}), _object, _prop_id, _value, _pspec)
+    function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
+        ret = ccall(("gtk_editable_delegate_get_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function editable_delegate_set_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParamSpec)
-        ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GObject}), _object, _prop_id, _value, _pspec)
+    function editable_delegate_set_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
+        ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -258,11 +258,6 @@ $(Expr(:toplevel, quote
     function paper_size_get_paper_sizes(_include_custom::Bool)
         ret = ccall(("gtk_paper_size_get_paper_sizes", libgtk4), Ptr{GLib._GList{GtkPaperSize}}, (Cint,), _include_custom)
         ret2 = GLib.GList(ret, true)
-        ret2
-    end
-    function param_spec_expression(_name::Union{AbstractString, Symbol}, _nick::Union{AbstractString, Symbol}, _blurb::Union{AbstractString, Symbol}, _flags)
-        ret = ccall(("gtk_param_spec_expression", libgtk4), Ptr{GObject}, (Cstring, Cstring, Cstring, Int32), _name, _nick, _blurb, _flags)
-        ret2 = convert(GParamSpec, ret, true)
         ret2
     end
     function print_error_quark()
@@ -452,26 +447,8 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_row_reference_inserted", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}), _proxy, _path)
         nothing
     end
-    function value_dup_expression(_value::Union{GValue, Ref{_GValue}})
-        ret = ccall(("gtk_value_dup_expression", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GtkExpression, ret, true)
-            end
-        ret2
-    end
-    function value_get_expression(_value::Union{GValue, Ref{_GValue}})
-        ret = ccall(("gtk_value_get_expression", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GtkExpression, ret, false)
-            end
-        ret2
-    end
     function value_set_expression(_value::Union{GValue, Ref{_GValue}}, _expression::GtkExpression)
-        ret = ccall(("gtk_value_set_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GObject}), _value, _expression)
+        ret = ccall(("gtk_value_set_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GtkExpression}), _value, _expression)
         nothing
     end
     function value_take_expression(_value::Union{GValue, Ref{_GValue}}, _expression::Maybe(GtkExpression))
@@ -480,7 +457,7 @@ $(Expr(:toplevel, quote
             else
                 _expression
             end
-        ret = ccall(("gtk_value_take_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GObject}), _value, _expression)
+        ret = ccall(("gtk_value_take_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GtkExpression}), _value, _expression)
         nothing
     end
 end))

@@ -157,9 +157,7 @@ function struct_decl(structinfo;force_opaque=false)
     unblock(e)
 end
 
-## GObject output (simpler in some ways than type declaration macros in Gtk.GLib)
-# NOTE: These are not currently used (see below for code that uses the Gtk.jl macros)
-# Leaving these here for possible future use
+## GObject/GTypeInstance output (simpler in some ways than type declaration macros in Gtk.GLib)
 
 # extract properties for a particular GObject type
 function prop_dict(info)
@@ -192,6 +190,19 @@ function prop_dict_incl_parents(objectinfo::GIObjectInfo)
     end
 end
 
+function get_toplevel(o)
+    if isa(o,GIInterfaceInfo)
+        return :GObject
+    end
+    p = o
+    o2 = o
+    while p !== nothing
+        o2 = p
+        p = get_parent(o2)
+    end
+    get_type_name(o2)
+end
+
 # For each GObject type GMyObject, we output:
 # * an abstract type "GMyObject"
 # * a leaf type "GMyObjectLeaf" that has a handle to the C pointer and a
@@ -212,12 +223,9 @@ function gobject_decl(objectinfo)
     pg_type = get_g_type(parentinfo)
     pname = Symbol(GI.GLib.g_type_name(pg_type))
 
+    exprs=Expr[]
     decl=quote
         abstract type $oname <: $pname end
-    end
-    exprs=Expr[]
-    push!(exprs,decl)
-    decl=quote
         mutable struct $leafname <: $oname
             handle::Ptr{GObject}
             function $leafname(handle::Ptr{GObject}, owns=false)
@@ -251,7 +259,7 @@ function gobject_decl(objectinfo)
     exprs
 end
 
-# For an ObjectInfo, output GObject stuff, including parent types
+# For an ObjectInfo, output GObject (or GTypeInstance) stuff, including parent types
 function obj_decl!(exprs,o,ns,handled)
     if in(get_name(o),handled)
         return
@@ -260,7 +268,34 @@ function obj_decl!(exprs,o,ns,handled)
     if p!==nothing && !in(get_name(p),handled) && get_namespace(o) == get_namespace(p)
         obj_decl!(exprs,p,ns,handled)
     end
-    append!(exprs,gobject_decl(o))
+    if is_gobject(o)
+        append!(exprs,gobject_decl(o))
+    else # for GTypeInstances
+        oname = Symbol(GI.get_type_name(o))
+        tname = get_toplevel(o)
+        leafname = Symbol(oname,"Leaf")
+        if p === nothing
+            # abstract declaration for toplevel GTypeInstance and convert method
+            d=quote
+                abstract type $oname end
+                Base.convert($oname, ptr::Ptr{$tname})=$leafname(ptr)
+                Base.unsafe_convert(::Type{Ptr{$tname}}, o::$oname) = o.handle
+            end
+            push!(exprs,d)
+        else
+            pname = GI.get_type_name(get_parent(o))
+            d=quote
+                abstract type $oname <: $pname end
+            end
+            push!(exprs,d)
+        end
+        d=quote
+            mutable struct $leafname <: $oname
+                handle::Ptr{$tname}
+            end
+        end
+        push!(exprs,d)
+    end
     push!(handled,get_name(o))
 end
 
@@ -546,8 +581,7 @@ end
 const ObjectLike = Union{GIObjectInfo, GIInterfaceInfo}
 
 function typename(info::ObjectLike)
-    g_type = get_g_type(info)
-    Symbol(GLib.g_type_name(g_type))
+    get_type_name(info)
 end
 
 function extract_type(typeinfo::GITypeInfo, basetype::Type{T}) where {T<:GObject}
@@ -614,7 +648,8 @@ function extract_type(typeinfo::TypeInfo, info::ObjectLike)
         if typename(info)===:GParam  # these are not really GObjects
             return TypeDesc(info,:GParamSpec,:(Ptr{GParamSpec}))
         end
-        TypeDesc(info,typename(info),typename(info),:(Ptr{GObject}))
+        t = get_toplevel(info)
+        TypeDesc(info,typename(info),typename(info),:(Ptr{$t}))
     else
         # a GList has implicitly pointers to all elements
         TypeDesc(info,:INVALID,:INVALID,:GObject)

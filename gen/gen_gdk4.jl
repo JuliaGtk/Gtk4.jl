@@ -26,7 +26,7 @@ GI.write_to_file(path,"gdk4_consts",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-# These are marked as "disguised" and what this means is not documentated AFAICT.
+# These are marked as "disguised" and what this means is not documented AFAICT.
 disguised = []
 struct_skiplist=vcat(disguised, [:ToplevelSize])
 
@@ -35,7 +35,7 @@ struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skipl
 
 ## objects
 
-object_skiplist=[:Event,:ButtonEvent,:CrossingEvent,:DNDEvent,:DeleteEvent,:FocusEvent,:GrabBrokenEvent,:KeyEvent,:MotionEvent,:PadEvent,:ProximityEvent,:ScrollEvent,:TouchEvent,:TouchpadEvent]
+object_skiplist=[]
 
 GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist;print_summary=true)
 GI.all_interfaces!(exprs,exports,ns)
