@@ -1,12 +1,12 @@
 quote
 $(Expr(:toplevel, quote
     function accelerator_get_default_mod_mask()
-        ret = ccall(("gtk_accelerator_get_default_mod_mask", libgtk4), Int32, ())
+        ret = ccall(("gtk_accelerator_get_default_mod_mask", libgtk4), UInt32, ())
         ret2 = ModifierType(ret)
         ret2
     end
     function accelerator_get_label(_accelerator_key::Integer, _accelerator_mods)
-        ret = ccall(("gtk_accelerator_get_label", libgtk4), Cstring, (UInt32, Int32), _accelerator_key, _accelerator_mods)
+        ret = ccall(("gtk_accelerator_get_label", libgtk4), Cstring, (UInt32, UInt32), _accelerator_key, _accelerator_mods)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -20,7 +20,7 @@ $(Expr(:toplevel, quote
             else
                 _display
             end
-        ret = ccall(("gtk_accelerator_get_label_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, Int32), _display, _accelerator_key, _keycode, _accelerator_mods)
+        ret = ccall(("gtk_accelerator_get_label_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display, _accelerator_key, _keycode, _accelerator_mods)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -29,7 +29,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function accelerator_name(_accelerator_key::Integer, _accelerator_mods)
-        ret = ccall(("gtk_accelerator_name", libgtk4), Cstring, (UInt32, Int32), _accelerator_key, _accelerator_mods)
+        ret = ccall(("gtk_accelerator_name", libgtk4), Cstring, (UInt32, UInt32), _accelerator_key, _accelerator_mods)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -43,7 +43,7 @@ $(Expr(:toplevel, quote
             else
                 _display
             end
-        ret = ccall(("gtk_accelerator_name_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, Int32), _display, _accelerator_key, _keycode, _accelerator_mods)
+        ret = ccall(("gtk_accelerator_name_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display, _accelerator_key, _keycode, _accelerator_mods)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -53,8 +53,8 @@ $(Expr(:toplevel, quote
     end
     function accelerator_parse(_accelerator::Union{AbstractString, Symbol})
         m_accelerator_key = Ref{UInt32}()
-        m_accelerator_mods = Ref{Int32}()
-        ret = ccall(("gtk_accelerator_parse", libgtk4), Cint, (Cstring, Ptr{UInt32}, Ptr{Int32}), _accelerator, m_accelerator_key, m_accelerator_mods)
+        m_accelerator_mods = Ref{UInt32}()
+        ret = ccall(("gtk_accelerator_parse", libgtk4), Cint, (Cstring, Ptr{UInt32}, Ptr{UInt32}), _accelerator, m_accelerator_key, m_accelerator_mods)
         ret2 = convert(Bool, ret)
         _accelerator_key = m_accelerator_key[]
         _accelerator_mods = m_accelerator_mods[]
@@ -69,8 +69,8 @@ $(Expr(:toplevel, quote
             end
         m_accelerator_key = Ref{UInt32}()
         m_accelerator_codes = Ref{Ptr{UInt32}}()
-        m_accelerator_mods = Ref{Int32}()
-        ret = ccall(("gtk_accelerator_parse_with_keycode", libgtk4), Cint, (Cstring, Ptr{GObject}, Ptr{UInt32}, Ptr{Ptr{UInt32}}, Ptr{Int32}), _accelerator, _display, m_accelerator_key, m_accelerator_codes, m_accelerator_mods)
+        m_accelerator_mods = Ref{UInt32}()
+        ret = ccall(("gtk_accelerator_parse_with_keycode", libgtk4), Cint, (Cstring, Ptr{GObject}, Ptr{UInt32}, Ptr{Ptr{UInt32}}, Ptr{UInt32}), _accelerator, _display, m_accelerator_key, m_accelerator_codes, m_accelerator_mods)
         ret2 = convert(Bool, ret)
         _accelerator_key = m_accelerator_key[]
         _accelerator_codes = m_accelerator_codes[]
@@ -79,20 +79,20 @@ $(Expr(:toplevel, quote
         (ret2, _accelerator_key, _accelerator_codes, _accelerator_mods)
     end
     function accelerator_valid(_keyval::Integer, _modifiers)
-        ret = ccall(("gtk_accelerator_valid", libgtk4), Cint, (UInt32, Int32), _keyval, _modifiers)
+        ret = ccall(("gtk_accelerator_valid", libgtk4), Cint, (UInt32, UInt32), _keyval, _modifiers)
         ret2 = convert(Bool, ret)
         ret2
     end
     function accessible_property_init_value(_property, _value::Union{GValue, Ref{_GValue}})
-        ret = ccall(("gtk_accessible_property_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _property, _value)
+        ret = ccall(("gtk_accessible_property_init_value", libgtk4), Nothing, (UInt32, Ptr{_GValue}), _property, _value)
         nothing
     end
     function accessible_relation_init_value(_relation, _value::Union{GValue, Ref{_GValue}})
-        ret = ccall(("gtk_accessible_relation_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _relation, _value)
+        ret = ccall(("gtk_accessible_relation_init_value", libgtk4), Nothing, (UInt32, Ptr{_GValue}), _relation, _value)
         nothing
     end
     function accessible_state_init_value(_state, _value::Union{GValue, Ref{_GValue}})
-        ret = ccall(("gtk_accessible_state_init_value", libgtk4), Nothing, (Int32, Ptr{_GValue}), _state, _value)
+        ret = ccall(("gtk_accessible_state_init_value", libgtk4), Nothing, (UInt32, Ptr{_GValue}), _state, _value)
         nothing
     end
     function bitset_iter_init_at(_set::GtkBitset, _target::Integer)
@@ -180,7 +180,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_debug_flags()
-        ret = ccall(("gtk_get_debug_flags", libgtk4), Int32, ())
+        ret = ccall(("gtk_get_debug_flags", libgtk4), UInt32, ())
         ret2 = DebugFlags(ret)
         ret2
     end
@@ -194,7 +194,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_locale_direction()
-        ret = ccall(("gtk_get_locale_direction", libgtk4), Int32, ())
+        ret = ccall(("gtk_get_locale_direction", libgtk4), UInt32, ())
         ret2 = TextDirection(ret)
         ret2
     end
@@ -342,7 +342,7 @@ $(Expr(:toplevel, quote
         (_h, _s, _v)
     end
     function set_debug_flags(_flags)
-        ret = ccall(("gtk_set_debug_flags", libgtk4), Nothing, (Int32,), _flags)
+        ret = ccall(("gtk_set_debug_flags", libgtk4), Nothing, (UInt32,), _flags)
         nothing
     end
     function show_uri(_parent::Maybe(GtkWindow), _uri::Union{AbstractString, Symbol}, _timestamp::Integer)
@@ -386,26 +386,26 @@ $(Expr(:toplevel, quote
         ret2
     end
     function test_accessible_assertion_message_role(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _expr::Union{AbstractString, Symbol}, _accessible::GtkAccessible, _expected_role, _actual_role)
-        ret = ccall(("gtk_test_accessible_assertion_message_role", libgtk4), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, Ptr{GObject}, Int32, Int32), _domain, _file, _line, _func, _expr, _accessible, _expected_role, _actual_role)
+        ret = ccall(("gtk_test_accessible_assertion_message_role", libgtk4), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, Ptr{GObject}, UInt32, UInt32), _domain, _file, _line, _func, _expr, _accessible, _expected_role, _actual_role)
         nothing
     end
     function test_accessible_has_property(_accessible::GtkAccessible, _property)
-        ret = ccall(("gtk_test_accessible_has_property", libgtk4), Cint, (Ptr{GObject}, Int32), _accessible, _property)
+        ret = ccall(("gtk_test_accessible_has_property", libgtk4), Cint, (Ptr{GObject}, UInt32), _accessible, _property)
         ret2 = convert(Bool, ret)
         ret2
     end
     function test_accessible_has_relation(_accessible::GtkAccessible, _relation)
-        ret = ccall(("gtk_test_accessible_has_relation", libgtk4), Cint, (Ptr{GObject}, Int32), _accessible, _relation)
+        ret = ccall(("gtk_test_accessible_has_relation", libgtk4), Cint, (Ptr{GObject}, UInt32), _accessible, _relation)
         ret2 = convert(Bool, ret)
         ret2
     end
     function test_accessible_has_role(_accessible::GtkAccessible, _role)
-        ret = ccall(("gtk_test_accessible_has_role", libgtk4), Cint, (Ptr{GObject}, Int32), _accessible, _role)
+        ret = ccall(("gtk_test_accessible_has_role", libgtk4), Cint, (Ptr{GObject}, UInt32), _accessible, _role)
         ret2 = convert(Bool, ret)
         ret2
     end
     function test_accessible_has_state(_accessible::GtkAccessible, _state)
-        ret = ccall(("gtk_test_accessible_has_state", libgtk4), Cint, (Ptr{GObject}, Int32), _accessible, _state)
+        ret = ccall(("gtk_test_accessible_has_state", libgtk4), Cint, (Ptr{GObject}, UInt32), _accessible, _state)
         ret2 = convert(Bool, ret)
         ret2
     end

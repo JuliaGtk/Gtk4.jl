@@ -424,7 +424,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function checksum_type_get_length(_checksum_type)
-        ret = ccall(("g_checksum_type_get_length", libgobject), Int64, (Int32,), _checksum_type)
+        ret = ccall(("g_checksum_type_get_length", libgobject), Int64, (UInt32,), _checksum_type)
         ret
     end
     function clear_error()
@@ -441,7 +441,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_checksum_for_bytes(_checksum_type, _data::GBytes)
-        ret = ccall(("g_compute_checksum_for_bytes", libgobject), Cstring, (Int32, Ptr{GBytes}), _checksum_type, _data)
+        ret = ccall(("g_compute_checksum_for_bytes", libgobject), Cstring, (UInt32, Ptr{GBytes}), _checksum_type, _data)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -452,7 +452,7 @@ $(Expr(:toplevel, quote
     function compute_checksum_for_data(_checksum_type, _data)
         _data = convert(Vector{UInt8}, _data)
         _length = length(_data)
-        ret = ccall(("g_compute_checksum_for_data", libgobject), Cstring, (Int32, Ptr{UInt8}, UInt64), _checksum_type, _data, _length)
+        ret = ccall(("g_compute_checksum_for_data", libgobject), Cstring, (UInt32, Ptr{UInt8}, UInt64), _checksum_type, _data, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -461,7 +461,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_checksum_for_string(_checksum_type, _str::Union{AbstractString, Symbol}, _length::Integer)
-        ret = ccall(("g_compute_checksum_for_string", libgobject), Cstring, (Int32, Cstring, Int64), _checksum_type, _str, _length)
+        ret = ccall(("g_compute_checksum_for_string", libgobject), Cstring, (UInt32, Cstring, Int64), _checksum_type, _str, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -470,7 +470,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_hmac_for_bytes(_digest_type, _key::GBytes, _data::GBytes)
-        ret = ccall(("g_compute_hmac_for_bytes", libgobject), Cstring, (Int32, Ptr{GBytes}, Ptr{GBytes}), _digest_type, _key, _data)
+        ret = ccall(("g_compute_hmac_for_bytes", libgobject), Cstring, (UInt32, Ptr{GBytes}, Ptr{GBytes}), _digest_type, _key, _data)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -483,7 +483,7 @@ $(Expr(:toplevel, quote
         _data = convert(Vector{UInt8}, _data)
         _key_len = length(_key)
         _length = length(_data)
-        ret = ccall(("g_compute_hmac_for_data", libgobject), Cstring, (Int32, Ptr{UInt8}, UInt64, Ptr{UInt8}, UInt64), _digest_type, _key, _key_len, _data, _length)
+        ret = ccall(("g_compute_hmac_for_data", libgobject), Cstring, (UInt32, Ptr{UInt8}, UInt64, Ptr{UInt8}, UInt64), _digest_type, _key, _key_len, _data, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -494,7 +494,7 @@ $(Expr(:toplevel, quote
     function compute_hmac_for_string(_digest_type, _key, _str::Union{AbstractString, Symbol}, _length::Integer)
         _key = convert(Vector{UInt8}, _key)
         _key_len = length(_key)
-        ret = ccall(("g_compute_hmac_for_string", libgobject), Cstring, (Int32, Ptr{UInt8}, UInt64, Cstring, Int64), _digest_type, _key, _key_len, _str, _length)
+        ret = ccall(("g_compute_hmac_for_string", libgobject), Cstring, (UInt32, Ptr{UInt8}, UInt64, Cstring, Int64), _digest_type, _key, _key_len, _str, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -528,7 +528,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function date_get_days_in_month(_month, _year::Integer)
-        ret = ccall(("g_date_get_days_in_month", libgobject), UInt8, (Int32, UInt16), _month, _year)
+        ret = ccall(("g_date_get_days_in_month", libgobject), UInt8, (UInt32, UInt16), _month, _year)
         ret
     end
     function date_get_monday_weeks_in_year(_year::Integer)
@@ -550,7 +550,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function date_valid_dmy(_day::Integer, _month, _year::Integer)
-        ret = ccall(("g_date_valid_dmy", libgobject), Cint, (UInt8, Int32, UInt16), _day, _month, _year)
+        ret = ccall(("g_date_valid_dmy", libgobject), Cint, (UInt8, UInt32, UInt16), _day, _month, _year)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -560,12 +560,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function date_valid_month(_month)
-        ret = ccall(("g_date_valid_month", libgobject), Cint, (Int32,), _month)
+        ret = ccall(("g_date_valid_month", libgobject), Cint, (UInt32,), _month)
         ret2 = convert(Bool, ret)
         ret2
     end
     function date_valid_weekday(_weekday)
-        ret = ccall(("g_date_valid_weekday", libgobject), Cint, (Int32,), _weekday)
+        ret = ccall(("g_date_valid_weekday", libgobject), Cint, (UInt32,), _weekday)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -738,7 +738,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function file_error_from_errno(_err_no::Integer)
-        ret = ccall(("g_file_error_from_errno", libgobject), Int32, (Int32,), _err_no)
+        ret = ccall(("g_file_error_from_errno", libgobject), UInt32, (Int32,), _err_no)
         ret2 = FileError(ret)
         ret2
     end
@@ -800,13 +800,13 @@ $(Expr(:toplevel, quote
         _contents = convert(Vector{UInt8}, _contents)
         _length = length(_contents)
         err = err_buf()
-        ret = ccall(("g_file_set_contents_full", libgobject), Cint, (Cstring, Ptr{UInt8}, Int64, Int32, Int32, Ptr{Ptr{GError}}), _filename, _contents, _length, _flags, _mode, err)
+        ret = ccall(("g_file_set_contents_full", libgobject), Cint, (Cstring, Ptr{UInt8}, Int64, UInt32, Int32, Ptr{Ptr{GError}}), _filename, _contents, _length, _flags, _mode, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function file_test(_filename::Union{AbstractString, Symbol}, _test)
-        ret = ccall(("g_file_test", libgobject), Cint, (Cstring, Int32), _filename, _test)
+        ret = ccall(("g_file_test", libgobject), Cint, (Cstring, UInt32), _filename, _test)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -907,7 +907,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function format_size_full(_size::Integer, _flags)
-        ret = ccall(("g_format_size_full", libgobject), Cstring, (UInt64, Int32), _size, _flags)
+        ret = ccall(("g_format_size_full", libgobject), Cstring, (UInt64, UInt32), _size, _flags)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1130,7 +1130,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_user_special_dir(_directory)
-        ret = ccall(("g_get_user_special_dir", libgobject), Cstring, (Int32,), _directory)
+        ret = ccall(("g_get_user_special_dir", libgobject), Cstring, (UInt32,), _directory)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1369,7 +1369,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function io_channel_error_from_errno(_en::Integer)
-        ret = ccall(("g_io_channel_error_from_errno", libgobject), Int32, (Int32,), _en)
+        ret = ccall(("g_io_channel_error_from_errno", libgobject), UInt32, (Int32,), _en)
         ret2 = IOChannelError(ret)
         ret2
     end
@@ -1434,7 +1434,7 @@ $(Expr(:toplevel, quote
             else
                 _unused_data
             end
-        ret = ccall(("g_log_default_handler", libgobject), Nothing, (Cstring, UInt16, Cstring, Ptr{Nothing}), _log_domain, _log_level, _message, _unused_data)
+        ret = ccall(("g_log_default_handler", libgobject), Nothing, (Cstring, UInt32, Cstring, Ptr{Nothing}), _log_domain, _log_level, _message, _unused_data)
         nothing
     end
     function log_remove_handler(_log_domain::Union{AbstractString, Symbol}, _handler_id::Integer)
@@ -1442,12 +1442,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function log_set_always_fatal(_fatal_mask)
-        ret = ccall(("g_log_set_always_fatal", libgobject), UInt16, (UInt16,), _fatal_mask)
+        ret = ccall(("g_log_set_always_fatal", libgobject), UInt32, (UInt32,), _fatal_mask)
         ret2 = LogLevelFlags(ret)
         ret2
     end
     function log_set_fatal_mask(_log_domain::Union{AbstractString, Symbol}, _fatal_mask)
-        ret = ccall(("g_log_set_fatal_mask", libgobject), UInt16, (Cstring, UInt16), _log_domain, _fatal_mask)
+        ret = ccall(("g_log_set_fatal_mask", libgobject), UInt32, (Cstring, UInt32), _log_domain, _fatal_mask)
         ret2 = LogLevelFlags(ret)
         ret2
     end
@@ -1457,7 +1457,7 @@ $(Expr(:toplevel, quote
             else
                 _log_domain
             end
-        ret = ccall(("g_log_variant", libgobject), Nothing, (Cstring, UInt16, Ptr{GVariant}), _log_domain, _log_level, _fields)
+        ret = ccall(("g_log_variant", libgobject), Nothing, (Cstring, UInt32, Ptr{GVariant}), _log_domain, _log_level, _fields)
         nothing
     end
     function log_writer_default_set_use_stderr(_use_stderr::Bool)
@@ -1470,7 +1470,7 @@ $(Expr(:toplevel, quote
             else
                 _log_domain
             end
-        ret = ccall(("g_log_writer_default_would_drop", libgobject), Cint, (UInt16, Cstring), _log_level, _log_domain)
+        ret = ccall(("g_log_writer_default_would_drop", libgobject), Cint, (UInt32, Cstring), _log_level, _log_domain)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -1848,12 +1848,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function regex_match_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options, _match_options)
-        ret = ccall(("g_regex_match_simple", libgobject), Cint, (Cstring, Cstring, Int32, Int32), _pattern, _string, _compile_options, _match_options)
+        ret = ccall(("g_regex_match_simple", libgobject), Cint, (Cstring, Cstring, UInt32, UInt32), _pattern, _string, _compile_options, _match_options)
         ret2 = convert(Bool, ret)
         ret2
     end
     function regex_split_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options, _match_options)
-        ret = ccall(("g_regex_split_simple", libgobject), Ptr{Cstring}, (Cstring, Cstring, Int32, Int32), _pattern, _string, _compile_options, _match_options)
+        ret = ccall(("g_regex_split_simple", libgobject), Ptr{Cstring}, (Cstring, Cstring, UInt32, UInt32), _pattern, _string, _compile_options, _match_options)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -1952,16 +1952,16 @@ $(Expr(:toplevel, quote
         nothing
     end
     function slice_get_config(_ckey)
-        ret = ccall(("g_slice_get_config", libgobject), Int64, (Int32,), _ckey)
+        ret = ccall(("g_slice_get_config", libgobject), Int64, (UInt32,), _ckey)
         ret
     end
     function slice_get_config_state(_ckey, _address::Integer, _n_values::UInt32)
-        ret = ccall(("g_slice_get_config_state", libgobject), Ptr{Int64}, (Int32, Int64, Ptr{UInt32}), _ckey, _address, _n_values)
+        ret = ccall(("g_slice_get_config_state", libgobject), Ptr{Int64}, (UInt32, Int64, Ptr{UInt32}), _ckey, _address, _n_values)
         ret2 = convert(Int64, ret)
         ret2
     end
     function slice_set_config(_ckey, _value::Integer)
-        ret = ccall(("g_slice_set_config", libgobject), Nothing, (Int32, Int64), _ckey, _value)
+        ret = ccall(("g_slice_set_config", libgobject), Nothing, (UInt32, Int64), _ckey, _value)
         nothing
     end
     function source_remove(_tag::Integer)
@@ -2352,7 +2352,7 @@ $(Expr(:toplevel, quote
             else
                 _log_domain
             end
-        ret = ccall(("g_test_expect_message", libgobject), Nothing, (Cstring, UInt16, Cstring), _log_domain, _log_level, _pattern)
+        ret = ccall(("g_test_expect_message", libgobject), Nothing, (Cstring, UInt32, Cstring), _log_domain, _log_level, _pattern)
         nothing
     end
     function test_fail()
@@ -2365,7 +2365,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function test_get_dir(_file_type)
-        ret = ccall(("g_test_get_dir", libgobject), Cstring, (Int32,), _file_type)
+        ret = ccall(("g_test_get_dir", libgobject), Cstring, (UInt32,), _file_type)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2392,7 +2392,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function test_log_type_name(_log_type)
-        ret = ccall(("g_test_log_type_name", libgobject), Cstring, (Int32,), _log_type)
+        ret = ccall(("g_test_log_type_name", libgobject), Cstring, (UInt32,), _log_type)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2483,7 +2483,7 @@ $(Expr(:toplevel, quote
             else
                 _test_path
             end
-        ret = ccall(("g_test_trap_subprocess", libgobject), Nothing, (Cstring, UInt64, Int32), _test_path, _usec_timeout, _test_flags)
+        ret = ccall(("g_test_trap_subprocess", libgobject), Nothing, (Cstring, UInt64, UInt32), _test_path, _usec_timeout, _test_flags)
         nothing
     end
     function thread_error_quark()
@@ -2594,7 +2594,7 @@ $(Expr(:toplevel, quote
         (ret2, _items_read, _items_written)
     end
     function unichar_break_type(_c)
-        ret = ccall(("g_unichar_break_type", libgobject), Int32, (Nothing,), _c)
+        ret = ccall(("g_unichar_break_type", libgobject), UInt32, (Nothing,), _c)
         ret2 = UnicodeBreakType(ret)
         ret2
     end
@@ -2634,7 +2634,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unichar_get_script(_ch)
-        ret = ccall(("g_unichar_get_script", libgobject), UInt16, (Nothing,), _ch)
+        ret = ccall(("g_unichar_get_script", libgobject), UInt32, (Nothing,), _ch)
         ret2 = UnicodeScript(ret)
         ret2
     end
@@ -2747,7 +2747,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function unichar_type(_c)
-        ret = ccall(("g_unichar_type", libgobject), Int32, (Nothing,), _c)
+        ret = ccall(("g_unichar_type", libgobject), UInt32, (Nothing,), _c)
         ret2 = UnicodeType(ret)
         ret2
     end
@@ -2765,12 +2765,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function unicode_script_from_iso15924(_iso15924::Integer)
-        ret = ccall(("g_unicode_script_from_iso15924", libgobject), UInt16, (UInt32,), _iso15924)
+        ret = ccall(("g_unicode_script_from_iso15924", libgobject), UInt32, (UInt32,), _iso15924)
         ret2 = UnicodeScript(ret)
         ret2
     end
     function unicode_script_to_iso15924(_script)
-        ret = ccall(("g_unicode_script_to_iso15924", libgobject), UInt32, (UInt16,), _script)
+        ret = ccall(("g_unicode_script_to_iso15924", libgobject), UInt32, (UInt32,), _script)
         ret
     end
     function unix_error_quark()
@@ -2827,7 +2827,7 @@ $(Expr(:toplevel, quote
             else
                 _fragment
             end
-        ret = ccall(("g_uri_build", libgobject), Ptr{GUri}, (Int32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
+        ret = ccall(("g_uri_build", libgobject), Ptr{GUri}, (UInt32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
         ret2 = convert(GUri, ret, true)
         ret2
     end
@@ -2862,7 +2862,7 @@ $(Expr(:toplevel, quote
             else
                 _fragment
             end
-        ret = ccall(("g_uri_build_with_user", libgobject), Ptr{GUri}, (Int32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
+        ret = ccall(("g_uri_build_with_user", libgobject), Ptr{GUri}, (UInt32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
         ret2 = convert(GUri, ret, true)
         ret2
     end
@@ -2902,7 +2902,7 @@ $(Expr(:toplevel, quote
     end
     function uri_is_valid(_uri_string::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
-        ret = ccall(("g_uri_is_valid", libgobject), Cint, (Cstring, Int32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
+        ret = ccall(("g_uri_is_valid", libgobject), Cint, (Cstring, UInt32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -2933,7 +2933,7 @@ $(Expr(:toplevel, quote
             else
                 _fragment
             end
-        ret = ccall(("g_uri_join", libgobject), Cstring, (Int32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
+        ret = ccall(("g_uri_join", libgobject), Cstring, (UInt32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2977,7 +2977,7 @@ $(Expr(:toplevel, quote
             else
                 _fragment
             end
-        ret = ccall(("g_uri_join_with_user", libgobject), Cstring, (Int32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
+        ret = ccall(("g_uri_join_with_user", libgobject), Cstring, (UInt32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2997,7 +2997,7 @@ $(Expr(:toplevel, quote
     end
     function uri_parse(_uri_string::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
-        ret = ccall(("g_uri_parse", libgobject), Ptr{GUri}, (Cstring, Int32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
+        ret = ccall(("g_uri_parse", libgobject), Ptr{GUri}, (Cstring, UInt32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
         check_err(err)
         ret2 = convert(GUri, ret, true)
         ret2
@@ -3027,7 +3027,7 @@ $(Expr(:toplevel, quote
                 _base_uri_string
             end
         err = err_buf()
-        ret = ccall(("g_uri_resolve_relative", libgobject), Cstring, (Cstring, Cstring, Int32, Ptr{Ptr{GError}}), _base_uri_string, _uri_ref, _flags, err)
+        ret = ccall(("g_uri_resolve_relative", libgobject), Cstring, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _base_uri_string, _uri_ref, _flags, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -3045,7 +3045,7 @@ $(Expr(:toplevel, quote
         m_query = Ref{Cstring}()
         m_fragment = Ref{Cstring}()
         err = err_buf()
-        ret = ccall(("g_uri_split", libgobject), Cint, (Cstring, Int32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_userinfo, m_host, m_port, m_path, m_query, m_fragment, err)
+        ret = ccall(("g_uri_split", libgobject), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_userinfo, m_host, m_port, m_path, m_query, m_fragment, err)
         check_err(err)
         _scheme = m_scheme[]
         _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
@@ -3071,7 +3071,7 @@ $(Expr(:toplevel, quote
         m_host = Ref{Cstring}()
         m_port = Ref{Int32}()
         err = err_buf()
-        ret = ccall(("g_uri_split_network", libgobject), Cint, (Cstring, Int32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Ptr{GError}}), _uri_string, _flags, m_scheme, m_host, m_port, err)
+        ret = ccall(("g_uri_split_network", libgobject), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Ptr{GError}}), _uri_string, _flags, m_scheme, m_host, m_port, err)
         check_err(err)
         _scheme = m_scheme[]
         _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
@@ -3091,7 +3091,7 @@ $(Expr(:toplevel, quote
         m_query = Ref{Cstring}()
         m_fragment = Ref{Cstring}()
         err = err_buf()
-        ret = ccall(("g_uri_split_with_user", libgobject), Cint, (Cstring, Int32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_user, m_password, m_auth_params, m_host, m_port, m_path, m_query, m_fragment, err)
+        ret = ccall(("g_uri_split_with_user", libgobject), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_user, m_password, m_auth_params, m_host, m_port, m_path, m_query, m_fragment, err)
         check_err(err)
         _scheme = m_scheme[]
         _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
@@ -3268,7 +3268,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_normalize(_str::Union{AbstractString, Symbol}, _len::Integer, _mode)
-        ret = ccall(("g_utf8_normalize", libgobject), Cstring, (Cstring, Int64, Int32), _str, _len, _mode)
+        ret = ccall(("g_utf8_normalize", libgobject), Cstring, (Cstring, Int64, UInt32), _str, _len, _mode)
         ret2 = if ret == C_NULL
                 nothing
             else

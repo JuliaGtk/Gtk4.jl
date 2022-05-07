@@ -319,7 +319,7 @@ function forward_search(iter::Ref{_GtkTextIter},
 
     Bool(ccall((:gtk_text_iter_forward_search, libgtk4),
         Cint,
-        (Ptr{_GtkTextIter}, Ptr{UInt8}, Cint, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}),
+        (Ptr{_GtkTextIter}, Ptr{UInt8}, Cuint, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}),
         iter, string(str), flag, start, stop, limit
     ))
 end
@@ -337,7 +337,7 @@ function backward_search(iter::Ref{_GtkTextIter},
 
     Bool(ccall((:gtk_text_iter_backward_search, libgtk4),
         Cint,
-        (Ptr{_GtkTextIter}, Ptr{UInt8}, Cint, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}),
+        (Ptr{_GtkTextIter}, Ptr{UInt8}, Cuint, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}),
         iter, string(str), flag, start, stop, limit
     ))
 end

@@ -321,7 +321,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_flags(instance::GBinding)
-        ret = ccall(("g_binding_get_flags", libgobject), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("g_binding_get_flags", libgobject), UInt32, (Ptr{GObject},), instance)
         ret2 = BindingFlags(ret)
         ret2
     end
@@ -357,7 +357,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function bind_property(instance::GObject, _source_property::Union{AbstractString, Symbol}, _target::GObject, _target_property::Union{AbstractString, Symbol}, _flags)
-        ret = ccall(("g_object_bind_property", libgobject), Ptr{GObject}, (Ptr{GObject}, Cstring, Ptr{GObject}, Cstring, Int32), instance, _source_property, _target, _target_property, _flags)
+        ret = ccall(("g_object_bind_property", libgobject), Ptr{GObject}, (Ptr{GObject}, Cstring, Ptr{GObject}, Cstring, UInt32), instance, _source_property, _target, _target_property, _flags)
         ret2 = convert(GBinding, ret, false)
         ret2
     end

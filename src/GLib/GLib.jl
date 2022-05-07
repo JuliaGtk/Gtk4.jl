@@ -83,11 +83,12 @@ function check_undefref(p::Ptr)
     p
 end
 
+eval(include("../gen/glib_consts"))
+
 include("glist.jl")
 include("gtype.jl")
 include("gvalues.jl")
 
-eval(include("../gen/glib_consts"))
 using .Constants
 
 eval(include("../gen/glib_structs"))

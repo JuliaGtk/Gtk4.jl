@@ -10,7 +10,6 @@ function gvalue_string_convert(str)
 end
 
 function show(io::IO, w::GObject)
-    READABLE   = 0x00000001
     DEPRECATED = 0x80000000
     print(io, typeof(w), '(')
     if unsafe_convert(Ptr{GObject}, w) == C_NULL
@@ -30,8 +29,8 @@ function show(io::IO, w::GObject)
             first = false
         end
         print(io, GLib.bytestring(param.name))
-        if (param.flags & READABLE) != 0 &&
-           (param.flags & DEPRECATED) == 0 &&
+        if (param.flags & Constants.ParamFlags_READABLE) != 0 &&
+           (UInt32(param.flags) & DEPRECATED) == 0 &&
            (ccall((:g_value_type_transformable, libgobject), Cint,
                 (Int, Int), param.value_type, g_type(AbstractString)) != 0)
             ccall((:g_object_get_property, libgobject), Nothing,

@@ -10,7 +10,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get(instance::PangoAttrIterator, _type)
-        ret = ccall(("pango_attr_iterator_get", libpango), Ptr{_PangoAttribute}, (Ptr{PangoAttrIterator}, Int32), instance, _type)
+        ret = ccall(("pango_attr_iterator_get", libpango), Ptr{_PangoAttribute}, (Ptr{PangoAttrIterator}, UInt32), instance, _type)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -351,7 +351,7 @@ $(Expr(:toplevel, quote
         (_ink_rect, _logical_rect)
     end
     function get_resolved_direction(instance::PangoLayoutLine)
-        ret = ccall(("pango_layout_line_get_resolved_direction", libpango), Int32, (Ptr{_PangoLayoutLine},), instance)
+        ret = ccall(("pango_layout_line_get_resolved_direction", libpango), UInt32, (Ptr{_PangoLayoutLine},), instance)
         ret2 = Direction(ret)
         ret2
     end
@@ -487,8 +487,8 @@ $(Expr(:toplevel, quote
     function get_range(instance::PangoScriptIter)
         m_start = Ref{Cstring}()
         m_end = Ref{Cstring}()
-        m_script = Ref{UInt16}()
-        ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{UInt16}), instance, m_start, m_end, m_script)
+        m_script = Ref{UInt32}()
+        ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{UInt32}), instance, m_start, m_end, m_script)
         _start = m_start[]
         _start = if _start == C_NULL
                 nothing
@@ -538,18 +538,18 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_tab(instance::PangoTabArray, _tab_index::Integer)
-        m_alignment = Ref{Int32}()
+        m_alignment = Ref{UInt32}()
         m_location = Ref{Int32}()
-        ret = ccall(("pango_tab_array_get_tab", libpango), Nothing, (Ptr{PangoTabArray}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _tab_index, m_alignment, m_location)
+        ret = ccall(("pango_tab_array_get_tab", libpango), Nothing, (Ptr{PangoTabArray}, Int32, Ptr{UInt32}, Ptr{Int32}), instance, _tab_index, m_alignment, m_location)
         _alignment = m_alignment[]
         _alignment = TabAlign(_alignment)
         _location = m_location[]
         (_alignment, _location)
     end
     function get_tabs(instance::PangoTabArray)
-        m_alignments = Ref{Int32}()
+        m_alignments = Ref{UInt32}()
         m_locations = Ref{Ptr{Int32}}()
-        ret = ccall(("pango_tab_array_get_tabs", libpango), Nothing, (Ptr{PangoTabArray}, Ptr{Int32}, Ptr{Ptr{Int32}}), instance, m_alignments, m_locations)
+        ret = ccall(("pango_tab_array_get_tabs", libpango), Nothing, (Ptr{PangoTabArray}, Ptr{UInt32}, Ptr{Ptr{Int32}}), instance, m_alignments, m_locations)
         _alignments = m_alignments[]
         _alignments = TabAlign(_alignments)
         _locations = m_locations[]
@@ -568,7 +568,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_tab(instance::PangoTabArray, _tab_index::Integer, _alignment, _location::Integer)
-        ret = ccall(("pango_tab_array_set_tab", libpango), Nothing, (Ptr{PangoTabArray}, Int32, Int32, Int32), instance, _tab_index, _alignment, _location)
+        ret = ccall(("pango_tab_array_set_tab", libpango), Nothing, (Ptr{PangoTabArray}, Int32, UInt32, Int32), instance, _tab_index, _alignment, _location)
         nothing
     end
     function sort(instance::PangoTabArray)
@@ -594,12 +594,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function get_base_dir(instance::PangoContext)
-        ret = ccall(("pango_context_get_base_dir", libpango), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("pango_context_get_base_dir", libpango), UInt32, (Ptr{GObject},), instance)
         ret2 = Direction(ret)
         ret2
     end
     function get_base_gravity(instance::PangoContext)
-        ret = ccall(("pango_context_get_base_gravity", libpango), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("pango_context_get_base_gravity", libpango), UInt32, (Ptr{GObject},), instance)
         ret2 = Gravity(ret)
         ret2
     end
@@ -614,12 +614,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_gravity(instance::PangoContext)
-        ret = ccall(("pango_context_get_gravity", libpango), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("pango_context_get_gravity", libpango), UInt32, (Ptr{GObject},), instance)
         ret2 = Gravity(ret)
         ret2
     end
     function get_gravity_hint(instance::PangoContext)
-        ret = ccall(("pango_context_get_gravity_hint", libpango), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("pango_context_get_gravity_hint", libpango), UInt32, (Ptr{GObject},), instance)
         ret2 = GravityHint(ret)
         ret2
     end
@@ -693,11 +693,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function set_base_dir(instance::PangoContext, _direction)
-        ret = ccall(("pango_context_set_base_dir", libpango), Nothing, (Ptr{GObject}, Int32), instance, _direction)
+        ret = ccall(("pango_context_set_base_dir", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _direction)
         nothing
     end
     function set_base_gravity(instance::PangoContext, _gravity)
-        ret = ccall(("pango_context_set_base_gravity", libpango), Nothing, (Ptr{GObject}, Int32), instance, _gravity)
+        ret = ccall(("pango_context_set_base_gravity", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _gravity)
         nothing
     end
     function set_font_description(instance::PangoContext, _desc::PangoFontDescription)
@@ -709,7 +709,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_gravity_hint(instance::PangoContext, _hint)
-        ret = ccall(("pango_context_set_gravity_hint", libpango), Nothing, (Ptr{GObject}, Int32), instance, _hint)
+        ret = ccall(("pango_context_set_gravity_hint", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _hint)
         nothing
     end
     function set_language(instance::PangoContext, _language::PangoLanguage)
@@ -740,12 +740,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get(instance::PangoCoverage, _index_::Integer)
-        ret = ccall(("pango_coverage_get", libpango), Int32, (Ptr{GObject}, Int32), instance, _index_)
+        ret = ccall(("pango_coverage_get", libpango), UInt32, (Ptr{GObject}, Int32), instance, _index_)
         ret2 = CoverageLevel(ret)
         ret2
     end
     function set(instance::PangoCoverage, _index_::Integer, _level)
-        ret = ccall(("pango_coverage_set", libpango), Nothing, (Ptr{GObject}, Int32, Int32), instance, _index_, _level)
+        ret = ccall(("pango_coverage_set", libpango), Nothing, (Ptr{GObject}, Int32, UInt32), instance, _index_, _level)
         nothing
     end
     function descriptions_free(_descs)
@@ -983,7 +983,7 @@ $(Expr(:toplevel, quote
     end
     function deserialize(_context::PangoContext, _bytes::GBytes, _flags)
         err = err_buf()
-        ret = ccall(("pango_layout_deserialize", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GBytes}, Int32, Ptr{Ptr{GError}}), _context, _bytes, _flags, err)
+        ret = ccall(("pango_layout_deserialize", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GBytes}, UInt32, Ptr{Ptr{GError}}), _context, _bytes, _flags, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -1002,7 +1002,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_alignment(instance::PangoLayout)
-        ret = ccall(("pango_layout_get_alignment", libpango), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("pango_layout_get_alignment", libpango), UInt32, (Ptr{GObject},), instance)
         ret2 = Alignment(ret)
         ret2
     end
@@ -1050,12 +1050,12 @@ $(Expr(:toplevel, quote
         (_strong_pos, _weak_pos)
     end
     function get_direction(instance::PangoLayout, _index::Integer)
-        ret = ccall(("pango_layout_get_direction", libpango), Int32, (Ptr{GObject}, Int32), instance, _index)
+        ret = ccall(("pango_layout_get_direction", libpango), UInt32, (Ptr{GObject}, Int32), instance, _index)
         ret2 = Direction(ret)
         ret2
     end
     function get_ellipsize(instance::PangoLayout)
-        ret = ccall(("pango_layout_get_ellipsize", libpango), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("pango_layout_get_ellipsize", libpango), UInt32, (Ptr{GObject},), instance)
         ret2 = EllipsizeMode(ret)
         ret2
     end
@@ -1216,7 +1216,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_wrap(instance::PangoLayout)
-        ret = ccall(("pango_layout_get_wrap", libpango), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("pango_layout_get_wrap", libpango), UInt32, (Ptr{GObject},), instance)
         ret2 = WrapMode(ret)
         ret2
     end
@@ -1253,12 +1253,12 @@ $(Expr(:toplevel, quote
         (_new_index, _new_trailing)
     end
     function serialize(instance::PangoLayout, _flags)
-        ret = ccall(("pango_layout_serialize", libpango), Ptr{GBytes}, (Ptr{GObject}, Int32), instance, _flags)
+        ret = ccall(("pango_layout_serialize", libpango), Ptr{GBytes}, (Ptr{GObject}, UInt32), instance, _flags)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function set_alignment(instance::PangoLayout, _alignment)
-        ret = ccall(("pango_layout_set_alignment", libpango), Nothing, (Ptr{GObject}, Int32), instance, _alignment)
+        ret = ccall(("pango_layout_set_alignment", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _alignment)
         nothing
     end
     function set_attributes(instance::PangoLayout, _attrs::Maybe(PangoAttrList))
@@ -1275,7 +1275,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_ellipsize(instance::PangoLayout, _ellipsize)
-        ret = ccall(("pango_layout_set_ellipsize", libpango), Nothing, (Ptr{GObject}, Int32), instance, _ellipsize)
+        ret = ccall(("pango_layout_set_ellipsize", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _ellipsize)
         nothing
     end
     function set_font_description(instance::PangoLayout, _desc::Maybe(PangoFontDescription))
@@ -1343,12 +1343,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_wrap(instance::PangoLayout, _wrap)
-        ret = ccall(("pango_layout_set_wrap", libpango), Nothing, (Ptr{GObject}, Int32), instance, _wrap)
+        ret = ccall(("pango_layout_set_wrap", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _wrap)
         nothing
     end
     function write_to_file(instance::PangoLayout, _flags, _filename::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("pango_layout_write_to_file", libpango), Cint, (Ptr{GObject}, Int32, Cstring, Ptr{Ptr{GError}}), instance, _flags, _filename, err)
+        ret = ccall(("pango_layout_write_to_file", libpango), Cint, (Ptr{GObject}, UInt32, Cstring, Ptr{Ptr{GError}}), instance, _flags, _filename, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -1400,19 +1400,19 @@ $(Expr(:toplevel, quote
         nothing
     end
     function draw_rectangle(instance::PangoRenderer, _part, _x::Integer, _y::Integer, _width::Integer, _height::Integer)
-        ret = ccall(("pango_renderer_draw_rectangle", libpango), Nothing, (Ptr{GObject}, Int32, Int32, Int32, Int32, Int32), instance, _part, _x, _y, _width, _height)
+        ret = ccall(("pango_renderer_draw_rectangle", libpango), Nothing, (Ptr{GObject}, UInt32, Int32, Int32, Int32, Int32), instance, _part, _x, _y, _width, _height)
         nothing
     end
     function draw_trapezoid(instance::PangoRenderer, _part, _y1_::Real, _x11::Real, _x21::Real, _y2::Real, _x12::Real, _x22::Real)
-        ret = ccall(("pango_renderer_draw_trapezoid", libpango), Nothing, (Ptr{GObject}, Int32, Float64, Float64, Float64, Float64, Float64, Float64), instance, _part, _y1_, _x11, _x21, _y2, _x12, _x22)
+        ret = ccall(("pango_renderer_draw_trapezoid", libpango), Nothing, (Ptr{GObject}, UInt32, Float64, Float64, Float64, Float64, Float64, Float64), instance, _part, _y1_, _x11, _x21, _y2, _x12, _x22)
         nothing
     end
     function get_alpha(instance::PangoRenderer, _part)
-        ret = ccall(("pango_renderer_get_alpha", libpango), UInt16, (Ptr{GObject}, Int32), instance, _part)
+        ret = ccall(("pango_renderer_get_alpha", libpango), UInt16, (Ptr{GObject}, UInt32), instance, _part)
         ret
     end
     function get_color(instance::PangoRenderer, _part)
-        ret = ccall(("pango_renderer_get_color", libpango), Ptr{_PangoColor}, (Ptr{GObject}, Int32), instance, _part)
+        ret = ccall(("pango_renderer_get_color", libpango), Ptr{_PangoColor}, (Ptr{GObject}, UInt32), instance, _part)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1448,11 +1448,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function part_changed(instance::PangoRenderer, _part)
-        ret = ccall(("pango_renderer_part_changed", libpango), Nothing, (Ptr{GObject}, Int32), instance, _part)
+        ret = ccall(("pango_renderer_part_changed", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _part)
         nothing
     end
     function set_alpha(instance::PangoRenderer, _part, _alpha::Integer)
-        ret = ccall(("pango_renderer_set_alpha", libpango), Nothing, (Ptr{GObject}, Int32, UInt16), instance, _part, _alpha)
+        ret = ccall(("pango_renderer_set_alpha", libpango), Nothing, (Ptr{GObject}, UInt32, UInt16), instance, _part, _alpha)
         nothing
     end
     function set_color(instance::PangoRenderer, _part, _color::Maybe(Union{PangoColor, Ref{_PangoColor}}))
@@ -1461,7 +1461,7 @@ $(Expr(:toplevel, quote
             else
                 _color
             end
-        ret = ccall(("pango_renderer_set_color", libpango), Nothing, (Ptr{GObject}, Int32, Ptr{_PangoColor}), instance, _part, _color)
+        ret = ccall(("pango_renderer_set_color", libpango), Nothing, (Ptr{GObject}, UInt32, Ptr{_PangoColor}), instance, _part, _color)
         nothing
     end
     function set_matrix(instance::PangoRenderer, _matrix::Maybe(Union{PangoMatrix, Ref{_PangoMatrix}}))

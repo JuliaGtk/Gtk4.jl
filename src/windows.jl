@@ -71,7 +71,7 @@ GtkAboutDialogLeaf() = G_.AboutDialog_new()
 function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent = nothing; kwargs...)
     parent = (parent === nothing ? C_NULL : parent)
     w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
-        (Ptr{GObject}, Cint, Cint, Cint, Ptr{UInt8}),
+        (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
         parent, flags, typ, Constants.ButtonsType_NONE, message); kwargs...)
     for (k, v) in buttons
         push!(w, k, v)
@@ -98,7 +98,7 @@ for (func, flag) in (
     @eval function $func(message::AbstractString, parent = nothing)
         parent = (parent === nothing ? C_NULL : parent)
         w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
-            (Ptr{GObject}, Cint, Cint, Cint, Ptr{UInt8}),
+            (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
             parent, Constants.DialogFlags_DESTROY_WITH_PARENT,
             $flag, Constants.ButtonsType_CLOSE, message))
         signal_connect(destroy_dialog,w,"response")

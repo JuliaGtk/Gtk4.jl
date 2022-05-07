@@ -43,7 +43,7 @@ $(Expr(:toplevel, quote
                 _application_name
             end
         err = err_buf()
-        ret = ccall(("g_app_info_create_from_commandline", libgio), Ptr{GObject}, (Cstring, Cstring, Int32, Ptr{Ptr{GError}}), _commandline, _application_name, _flags, err)
+        ret = ccall(("g_app_info_create_from_commandline", libgio), Ptr{GObject}, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _commandline, _application_name, _flags, err)
         check_err(err)
         ret2 = begin
                 leaftype = GLib.find_leaf_type(ret)
@@ -158,7 +158,7 @@ $(Expr(:toplevel, quote
             else
                 _user_data
             end
-        ret = ccall(("g_bus_get", libgio), Nothing, (UInt16, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _bus_type, _cancellable, _callback, _user_data)
+        ret = ccall(("g_bus_get", libgio), Nothing, (UInt32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _bus_type, _cancellable, _callback, _user_data)
         nothing
     end
     function bus_get_finish(_res::GAsyncResult)
@@ -175,7 +175,7 @@ $(Expr(:toplevel, quote
                 _cancellable
             end
         err = err_buf()
-        ret = ccall(("g_bus_get_sync", libgio), Ptr{GObject}, (UInt16, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
+        ret = ccall(("g_bus_get_sync", libgio), Ptr{GObject}, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
         check_err(err)
         ret2 = convert(GDBusConnection, ret, true)
         ret2
@@ -328,7 +328,7 @@ $(Expr(:toplevel, quote
                 _cancellable
             end
         err = err_buf()
-        ret = ccall(("g_dbus_address_get_for_bus_sync", libgio), Cstring, (UInt16, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
+        ret = ccall(("g_dbus_address_get_for_bus_sync", libgio), Cstring, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -579,7 +579,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function io_error_from_errno(_err_no::Integer)
-        ret = ccall(("g_io_error_from_errno", libgio), Int32, (Int32,), _err_no)
+        ret = ccall(("g_io_error_from_errno", libgio), UInt32, (Int32,), _err_no)
         ret2 = IOErrorEnum(ret)
         ret2
     end
@@ -735,7 +735,7 @@ $(Expr(:toplevel, quote
     end
     function resources_enumerate_children(_path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
-        ret = ccall(("g_resources_enumerate_children", libgio), Ptr{Cstring}, (Cstring, Int32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
+        ret = ccall(("g_resources_enumerate_children", libgio), Ptr{Cstring}, (Cstring, UInt32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
@@ -749,7 +749,7 @@ $(Expr(:toplevel, quote
         m_size = Ref{UInt64}()
         m_flags = Ref{UInt32}()
         err = err_buf()
-        ret = ccall(("g_resources_get_info", libgio), Cint, (Cstring, Int32, Ptr{UInt64}, Ptr{UInt32}, Ptr{Ptr{GError}}), _path, _lookup_flags, m_size, m_flags, err)
+        ret = ccall(("g_resources_get_info", libgio), Cint, (Cstring, UInt32, Ptr{UInt64}, Ptr{UInt32}, Ptr{Ptr{GError}}), _path, _lookup_flags, m_size, m_flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _size = m_size[]
@@ -758,14 +758,14 @@ $(Expr(:toplevel, quote
     end
     function resources_lookup_data(_path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
-        ret = ccall(("g_resources_lookup_data", libgio), Ptr{GBytes}, (Cstring, Int32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
+        ret = ccall(("g_resources_lookup_data", libgio), Ptr{GBytes}, (Cstring, UInt32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
         check_err(err)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function resources_open_stream(_path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
-        ret = ccall(("g_resources_open_stream", libgio), Ptr{GObject}, (Cstring, Int32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
+        ret = ccall(("g_resources_open_stream", libgio), Ptr{GObject}, (Cstring, UInt32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
         check_err(err)
         ret2 = convert(GInputStream, ret, true)
         ret2

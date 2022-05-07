@@ -1,6 +1,6 @@
 module GI
     using Glib_jll
-    using MacroTools, CEnum
+    using MacroTools, CEnum, BitFlags
 
     include("GLib/GLib.jl")
     using .GLib

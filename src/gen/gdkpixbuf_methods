@@ -81,7 +81,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function Pixbuf_new(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
-        ret = ccall(("gdk_pixbuf_new", libgdkpixbuf), Ptr{GObject}, (Int32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
+        ret = ccall(("gdk_pixbuf_new", libgdkpixbuf), Ptr{GObject}, (UInt32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -90,7 +90,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Pixbuf_new_from_bytes(_data::GBytes, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer)
-        ret = ccall(("gdk_pixbuf_new_from_bytes", libgdkpixbuf), Ptr{GObject}, (Ptr{GBytes}, Int32, Cint, Int32, Int32, Int32, Int32), _data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride)
+        ret = ccall(("gdk_pixbuf_new_from_bytes", libgdkpixbuf), Ptr{GObject}, (Ptr{GBytes}, UInt32, Cint, Int32, Int32, Int32, Int32), _data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride)
         ret2 = convert(GdkPixbuf, ret, true)
         ret2
     end
@@ -106,7 +106,7 @@ $(Expr(:toplevel, quote
             else
                 _destroy_fn_data
             end
-        ret = ccall(("gdk_pixbuf_new_from_data", libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, Int32, Cint, Int32, Int32, Int32, Int32, Ptr{Nothing}, Ptr{Nothing}), _data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn, _destroy_fn_data)
+        ret = ccall(("gdk_pixbuf_new_from_data", libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, UInt32, Cint, Int32, Int32, Int32, Int32, Ptr{Nothing}, Ptr{Nothing}), _data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn, _destroy_fn_data)
         ret2 = convert(GdkPixbuf, ret, true)
         ret2
     end
@@ -214,7 +214,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function calculate_rowstride(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
-        ret = ccall(("gdk_pixbuf_calculate_rowstride", libgdkpixbuf), Int32, (Int32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
+        ret = ccall(("gdk_pixbuf_calculate_rowstride", libgdkpixbuf), Int32, (UInt32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
         ret
     end
     function get_file_info(_filename::Union{AbstractString, Symbol})
@@ -302,15 +302,15 @@ $(Expr(:toplevel, quote
         ret2
     end
     function composite(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type, _overall_alpha::Integer)
-        ret = ccall(("gdk_pixbuf_composite", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, Int32, Int32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type, _overall_alpha)
+        ret = ccall(("gdk_pixbuf_composite", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32, Int32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type, _overall_alpha)
         nothing
     end
     function composite_color(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type, _overall_alpha::Integer, _check_x::Integer, _check_y::Integer, _check_size::Integer, _color1::Integer, _color2::Integer)
-        ret = ccall(("gdk_pixbuf_composite_color", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, Int32, Int32, Int32, Int32, Int32, UInt32, UInt32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type, _overall_alpha, _check_x, _check_y, _check_size, _color1, _color2)
+        ret = ccall(("gdk_pixbuf_composite_color", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32, Int32, Int32, Int32, Int32, UInt32, UInt32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type, _overall_alpha, _check_x, _check_y, _check_size, _color1, _color2)
         nothing
     end
     function composite_color_simple(instance::GdkPixbuf, _dest_width::Integer, _dest_height::Integer, _interp_type, _overall_alpha::Integer, _check_size::Integer, _color1::Integer, _color2::Integer)
-        ret = ccall(("gdk_pixbuf_composite_color_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Int32, Int32, Int32, UInt32, UInt32), instance, _dest_width, _dest_height, _interp_type, _overall_alpha, _check_size, _color1, _color2)
+        ret = ccall(("gdk_pixbuf_composite_color_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, UInt32, Int32, Int32, UInt32, UInt32), instance, _dest_width, _dest_height, _interp_type, _overall_alpha, _check_size, _color1, _color2)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -358,7 +358,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_colorspace(instance::GdkPixbuf)
-        ret = ccall(("gdk_pixbuf_get_colorspace", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret = ccall(("gdk_pixbuf_get_colorspace", libgdkpixbuf), UInt32, (Ptr{GObject},), instance)
         ret2 = Colorspace(ret)
         ret2
     end
@@ -423,7 +423,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function rotate_simple(instance::GdkPixbuf, _angle)
-        ret = ccall(("gdk_pixbuf_rotate_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32), instance, _angle)
+        ret = ccall(("gdk_pixbuf_rotate_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, UInt32), instance, _angle)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -525,11 +525,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function scale(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type)
-        ret = ccall(("gdk_pixbuf_scale", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, Int32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type)
+        ret = ccall(("gdk_pixbuf_scale", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type)
         nothing
     end
     function scale_simple(instance::GdkPixbuf, _dest_width::Integer, _dest_height::Integer, _interp_type)
-        ret = ccall(("gdk_pixbuf_scale_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Int32), instance, _dest_width, _dest_height, _interp_type)
+        ret = ccall(("gdk_pixbuf_scale_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, UInt32), instance, _dest_width, _dest_height, _interp_type)
         ret2 = if ret == C_NULL
                 nothing
             else

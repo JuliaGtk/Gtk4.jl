@@ -1,7 +1,7 @@
 quote
 $(Expr(:toplevel, quote
     $(Expr(:toplevel, :(module Constants
-  using CEnum
+  using CEnum, BitFlags
   ACTION_ALL = 7
   BUTTON_MIDDLE = 2
   BUTTON_PRIMARY = 1
@@ -2308,14 +2308,14 @@ $(Expr(:toplevel, quote
   @cenum TitlebarGesture::Int32 TitlebarGesture_DOUBLE_CLICK = 1 TitlebarGesture_RIGHT_CLICK = 2 TitlebarGesture_MIDDLE_CLICK = 3
   @cenum TouchpadGesturePhase::Int32 TouchpadGesturePhase_BEGIN = 0 TouchpadGesturePhase_UPDATE = 1 TouchpadGesturePhase_END = 2 TouchpadGesturePhase_CANCEL = 3
   @cenum VulkanError::Int32 VulkanError_UNSUPPORTED = 0 VulkanError_NOT_AVAILABLE = 1
-  @cenum AnchorHints::Int32 AnchorHints_FLIP_X = 1 AnchorHints_FLIP_Y = 2 AnchorHints_SLIDE_X = 4 AnchorHints_SLIDE_Y = 8 AnchorHints_RESIZE_X = 16 AnchorHints_RESIZE_Y = 32 AnchorHints_FLIP = 3 AnchorHints_SLIDE = 12 AnchorHints_RESIZE = 48
-  @cenum AxisFlags::Int32 AxisFlags_X = 2 AxisFlags_Y = 4 AxisFlags_DELTA_X = 8 AxisFlags_DELTA_Y = 16 AxisFlags_PRESSURE = 32 AxisFlags_XTILT = 64 AxisFlags_YTILT = 128 AxisFlags_WHEEL = 256 AxisFlags_DISTANCE = 512 AxisFlags_ROTATION = 1024 AxisFlags_SLIDER = 2048
-  @cenum DragAction::Int32 DragAction_COPY = 1 DragAction_MOVE = 2 DragAction_LINK = 4 DragAction_ASK = 8
-  @cenum FrameClockPhase::Int32 FrameClockPhase_NONE = 0 FrameClockPhase_FLUSH_EVENTS = 1 FrameClockPhase_BEFORE_PAINT = 2 FrameClockPhase_UPDATE = 4 FrameClockPhase_LAYOUT = 8 FrameClockPhase_PAINT = 16 FrameClockPhase_RESUME_EVENTS = 32 FrameClockPhase_AFTER_PAINT = 64
-  @cenum ModifierType::Int32 ModifierType_SHIFT_MASK = 1 ModifierType_LOCK_MASK = 2 ModifierType_CONTROL_MASK = 4 ModifierType_ALT_MASK = 8 ModifierType_BUTTON1_MASK = 256 ModifierType_BUTTON2_MASK = 512 ModifierType_BUTTON3_MASK = 1024 ModifierType_BUTTON4_MASK = 2048 ModifierType_BUTTON5_MASK = 4096 ModifierType_SUPER_MASK = 67108864 ModifierType_HYPER_MASK = 134217728 ModifierType_META_MASK = 268435456
-  @cenum PaintableFlags::Int32 PaintableFlags_SIZE = 1 PaintableFlags_CONTENTS = 2
-  @cenum SeatCapabilities::Int32 SeatCapabilities_NONE = 0 SeatCapabilities_POINTER = 1 SeatCapabilities_TOUCH = 2 SeatCapabilities_TABLET_STYLUS = 4 SeatCapabilities_KEYBOARD = 8 SeatCapabilities_TABLET_PAD = 16 SeatCapabilities_ALL_POINTING = 7 SeatCapabilities_ALL = 15
-  @cenum ToplevelState::Int32 ToplevelState_MINIMIZED = 1 ToplevelState_MAXIMIZED = 2 ToplevelState_STICKY = 4 ToplevelState_FULLSCREEN = 8 ToplevelState_ABOVE = 16 ToplevelState_BELOW = 32 ToplevelState_FOCUSED = 64 ToplevelState_TILED = 128 ToplevelState_TOP_TILED = 256 ToplevelState_TOP_RESIZABLE = 512 ToplevelState_RIGHT_TILED = 1024 ToplevelState_RIGHT_RESIZABLE = 2048 ToplevelState_BOTTOM_TILED = 4096 ToplevelState_BOTTOM_RESIZABLE = 8192 ToplevelState_LEFT_TILED = 16384 ToplevelState_LEFT_RESIZABLE = 32768
+  @bitflag AnchorHints::UInt32 AnchorHints_FLIP_X = 1 AnchorHints_FLIP_Y = 2 AnchorHints_SLIDE_X = 4 AnchorHints_SLIDE_Y = 8 AnchorHints_RESIZE_X = 16 AnchorHints_RESIZE_Y = 32
+  @bitflag AxisFlags::UInt32 AxisFlags_X = 2 AxisFlags_Y = 4 AxisFlags_DELTA_X = 8 AxisFlags_DELTA_Y = 16 AxisFlags_PRESSURE = 32 AxisFlags_XTILT = 64 AxisFlags_YTILT = 128 AxisFlags_WHEEL = 256 AxisFlags_DISTANCE = 512 AxisFlags_ROTATION = 1024 AxisFlags_SLIDER = 2048
+  @bitflag DragAction::UInt32 DragAction_COPY = 1 DragAction_MOVE = 2 DragAction_LINK = 4 DragAction_ASK = 8
+  @bitflag FrameClockPhase::UInt32 FrameClockPhase_NONE = 0 FrameClockPhase_FLUSH_EVENTS = 1 FrameClockPhase_BEFORE_PAINT = 2 FrameClockPhase_UPDATE = 4 FrameClockPhase_LAYOUT = 8 FrameClockPhase_PAINT = 16 FrameClockPhase_RESUME_EVENTS = 32 FrameClockPhase_AFTER_PAINT = 64
+  @bitflag ModifierType::UInt32 ModifierType_SHIFT_MASK = 1 ModifierType_LOCK_MASK = 2 ModifierType_CONTROL_MASK = 4 ModifierType_ALT_MASK = 8 ModifierType_BUTTON1_MASK = 256 ModifierType_BUTTON2_MASK = 512 ModifierType_BUTTON3_MASK = 1024 ModifierType_BUTTON4_MASK = 2048 ModifierType_BUTTON5_MASK = 4096 ModifierType_SUPER_MASK = 67108864 ModifierType_HYPER_MASK = 134217728 ModifierType_META_MASK = 268435456
+  @bitflag PaintableFlags::UInt32 PaintableFlags_SIZE = 1 PaintableFlags_CONTENTS = 2
+  @bitflag SeatCapabilities::UInt32 SeatCapabilities_NONE = 0 SeatCapabilities_POINTER = 1 SeatCapabilities_TOUCH = 2 SeatCapabilities_TABLET_STYLUS = 4 SeatCapabilities_KEYBOARD = 8 SeatCapabilities_TABLET_PAD = 16
+  @bitflag ToplevelState::UInt32 ToplevelState_MINIMIZED = 1 ToplevelState_MAXIMIZED = 2 ToplevelState_STICKY = 4 ToplevelState_FULLSCREEN = 8 ToplevelState_ABOVE = 16 ToplevelState_BELOW = 32 ToplevelState_FOCUSED = 64 ToplevelState_TILED = 128 ToplevelState_TOP_TILED = 256 ToplevelState_TOP_RESIZABLE = 512 ToplevelState_RIGHT_TILED = 1024 ToplevelState_RIGHT_RESIZABLE = 2048 ToplevelState_BOTTOM_TILED = 4096 ToplevelState_BOTTOM_RESIZABLE = 8192 ToplevelState_LEFT_TILED = 16384 ToplevelState_LEFT_RESIZABLE = 32768
   export AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, SubpixelLayout, SurfaceEdge, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState
   end)))
 end))

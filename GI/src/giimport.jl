@@ -49,6 +49,29 @@ function enum_decl2(enum)
     unblock(bloc)
 end
 
+# use BitFlags.jl
+function flags_decl(enum)
+    enumname=get_name(enum)
+    vals = get_enum_values(enum)
+    typ = typetag_primitive[get_storage_type(enum)]
+    body = Expr(:macrocall)
+    push!(body.args, Symbol("@bitflag"))
+    push!(body.args, Symbol("nothing"))
+    push!(body.args, :($enumname::UInt32))
+    seen=UInt32[]
+    for (name,val) in vals
+        val=unsafe_trunc(typ,val)  # sometimes the value returned by GI is outside the range of the enum's type
+        if (iszero(val) || ispow2(val)) && !in(val,seen)
+            fullname=enum_fullname(enumname,name)
+            push!(body.args, :($fullname = $val) )
+            push!(seen,val)
+        end
+    end
+    bloc = Expr(:block)
+    push!(bloc.args,body)
+    unblock(bloc)
+end
+
 function enum_decls(ns)
     enums = get_all(ns, GIEnumOrFlags)
     typedefs = Expr[]
@@ -433,14 +456,23 @@ function extract_type(typeinfo::TypeInfo, info::GIStructInfo)
     end
 end
 
-function extract_type(typeinfo::GITypeInfo,basetype::Type{T}) where {T<:Enum}
-    bt=Base.Enums.basetype(T)
+function extract_type(typeinfo::GITypeInfo,basetype::Type{T}) where {T<:CEnum.Cenum}
     interf_info = get_interface(typeinfo)
     name = get_name(interf_info)
-    TypeDesc{Type{Enum}}(Enum, :Any, name, Symbol(bt))
+    TypeDesc{Type{CEnum.Cenum}}(CEnum.Cenum, :Any, name, Symbol(UInt32))
 end
 
-function convert_from_c(argname::Symbol, info::ArgInfo, ti::TypeDesc{T}) where {T<:Type{Enum}}
+function convert_from_c(argname::Symbol, info::ArgInfo, ti::TypeDesc{T}) where {T<:Type{CEnum.Cenum}}
+    :( $(ti.jstype)($argname) )
+end
+
+function extract_type(typeinfo::GITypeInfo,basetype::Type{T}) where {T<:BitFlags.BitFlag}
+    interf_info = get_interface(typeinfo)
+    name = get_name(interf_info)
+    TypeDesc{Type{BitFlags.BitFlag}}(BitFlags.BitFlag, :Any, name, Symbol(UInt32))
+end
+
+function convert_from_c(argname::Symbol, info::ArgInfo, ti::TypeDesc{T}) where {T<:Type{BitFlags.BitFlag}}
     :( $(ti.jstype)($argname) )
 end
 

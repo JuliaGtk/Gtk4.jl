@@ -17,7 +17,7 @@ ns3 = GINamespace(:Gio, "2.0")
 
 const_mod = Expr(:block)
 
-push!(const_mod.args,:(using CEnum))
+push!(const_mod.args,:(using CEnum, BitFlags))
 
 const_exports = Expr(:export)
 

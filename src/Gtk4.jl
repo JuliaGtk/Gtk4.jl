@@ -44,7 +44,7 @@ eval(include("gen/gtk4_methods"))
 end
 
 import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
-             convert, empty!, string, popfirst!, size, delete!,
+             convert, empty!, string, popfirst!, size, delete!, in,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
 
 import .GLib: set_gtk_property!, get_gtk_property, run,
@@ -79,6 +79,8 @@ include("tree.jl")
 include("basic_exports.jl")
 
 function __init__()
+    in(:Gtk, names(Main, imported=true)) && error("Gtk4 is incompatible with Gtk.")
+
     # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
     ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
         dirname(adwaita_icons_dir),
