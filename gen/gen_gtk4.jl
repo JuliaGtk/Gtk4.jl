@@ -71,7 +71,7 @@ GI.write_to_file(path,"gtk4_methods",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
+skiplist=[:editable_install_properties,:value_set_expression,:value_take_expression]
 
 GI.all_functions!(exprs,ns,skiplist=skiplist)
 

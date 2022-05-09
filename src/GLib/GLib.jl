@@ -14,7 +14,7 @@ import Base: convert, copy, show, size, length, getindex, setindex!, get,
              getproperty, setproperty!, propertynames, getindex, setindex!, print, replace
 
 using Libdl
-using CEnum
+using CEnum, BitFlags
 
 export Maybe
 
@@ -81,6 +81,14 @@ function check_undefref(p::Ptr)
         throw(UndefRefError())
     end
     p
+end
+
+function Base.:(==)(b::T, i::Integer) where T<:BitFlag
+    Integer(b) == i
+end
+
+function Base.:(==)(i::Integer, b::T) where T<:BitFlag
+    Integer(b) == i
 end
 
 eval(include("../gen/glib_consts"))

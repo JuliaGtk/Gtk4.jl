@@ -33,13 +33,15 @@ end
 set_gtk_property!(w, :title, "Window 2")
 @test get_gtk_property(w, :title, AbstractString) == "Window 2"
 visible(w,false)
-@test visible(w) == false
+@test isvisible(w) == false
 visible(w,true)
-@test visible(w) == true
+@test isvisible(w) == true
 
-# gw = Gtk.gdk_window(w)
-# ox, oy = Gtk.get_origin(gw)
-#
+m = Gtk4.monitor(w)
+r = Gtk4.Gdk4.G_.get_geometry(m)
+
+#r2 = m.geometry
+
 hide(w)
 show(w)
 grab_focus(w)
@@ -62,6 +64,12 @@ end
     b=bind_property(w,:title,w2,:title,GLib.Constants.BindingFlags_SYNC_CREATE)
     @test w2.title == w.title
 
+    @test b.source == w
+    @test b.source_property == "title"
+    @test b.target == w2
+    @test b.target_property == "title"
+    @test b.flags == GLib.Constants.BindingFlags_SYNC_CREATE
+
     w.title = "Another title"
     @test w2.title == w.title
 
@@ -72,6 +80,7 @@ end
     @test w2.title != w.title
 
     w.title = nothing
+    @test w.title == nothing
 
     destroy(w)
 end

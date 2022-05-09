@@ -39,7 +39,7 @@ using ..Gtk4.Constants
 using ..Gdk4.Constants
 
 eval(include("gen/gtk4_methods"))
-# #eval(include("gen/gtk4_functions"))
+eval(include("gen/gtk4_functions"))
 
 end
 

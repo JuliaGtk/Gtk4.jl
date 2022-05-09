@@ -1,6 +1,6 @@
 module Gdk4
 
-using GTK4_jll
+using GTK4_jll, Glib_jll
 
 using ..GLib
 using ..Pango
@@ -24,7 +24,7 @@ using ..Gdk4
 using ..Pango.Cairo
 using ..GdkPixbufLib
 
-import Base: convert, copy
+import Base: convert, copy, size
 
 eval(include("gen/gdk4_methods"))
 eval(include("gen/gdk4_functions"))
@@ -46,6 +46,11 @@ function GdkRGBA(rgba::AbstractString)
       error("Unable to parse into a color")
    end
    r
+end
+
+function size(m::GdkMonitor)
+   r=G_.get_geometry(m)
+   (r.width,r.height)
 end
 
 function __init__()

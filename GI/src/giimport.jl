@@ -67,6 +67,10 @@ function flags_decl(enum)
             push!(seen,val)
         end
     end
+    if !in(zero(UInt32),seen)
+        fullname=enum_fullname(enumname,"NONE")
+        push!(body.args, :($fullname = 0))
+    end
     bloc = Expr(:block)
     push!(bloc.args,body)
     unblock(bloc)

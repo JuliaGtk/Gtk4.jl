@@ -167,10 +167,6 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function editable_install_properties(_object_class::_GObjectClass, _first_prop::Integer)
-        ret = ccall(("gtk_editable_install_properties", libgtk4), UInt32, (Ptr{_GObjectClass}, UInt32), _object_class, _first_prop)
-        ret
-    end
     function file_chooser_error_quark()
         ret = ccall(("gtk_file_chooser_error_quark", libgtk4), UInt32, ())
         ret
@@ -445,19 +441,6 @@ $(Expr(:toplevel, quote
     end
     function tree_row_reference_inserted(_proxy::GObject, _path::GtkTreePath)
         ret = ccall(("gtk_tree_row_reference_inserted", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}), _proxy, _path)
-        nothing
-    end
-    function value_set_expression(_value::Union{GValue, Ref{_GValue}}, _expression::GtkExpression)
-        ret = ccall(("gtk_value_set_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GtkExpression}), _value, _expression)
-        nothing
-    end
-    function value_take_expression(_value::Union{GValue, Ref{_GValue}}, _expression::Maybe(GtkExpression))
-        _expression = if _expression == nothing
-                C_NULL
-            else
-                _expression
-            end
-        ret = ccall(("gtk_value_take_expression", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GtkExpression}), _value, _expression)
         nothing
     end
 end))

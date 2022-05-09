@@ -130,7 +130,7 @@ end
 
 ### GtkTreeStore
 
-function GtkTreeStoreLeaf(types::Type...)
+function GtkTreeStore(types::Type...)
     gtypes = GLib.gtypes(types...)
     handle = ccall((:gtk_tree_store_newv, libgtk4), Ptr{GObject}, (Cint, Ptr{GLib.GType}), length(types), gtypes)
     GtkTreeStoreLeaf(handle)

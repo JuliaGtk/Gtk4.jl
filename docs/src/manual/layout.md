@@ -3,7 +3,7 @@
 You will usually want to add more than one widget to your application. To this end, Gtk4 provides many layout widgets.
 
 !!! note
-    For larger projects it is advisable to create the layout using Glade in combination with GtkBuilder [Builder and Glade](@ref).
+    For larger projects it is advisable to create the layout using Glade in combination with GtkBuilder. See [Builder and Glade](@ref).
 
 ## GtkBox
 
@@ -21,7 +21,7 @@ push!(hbox, ok)
 This layout may not be exactly what you'd like. Perhaps you'd like the `OK` button to fill the available space, and to insert some blank space between them:
 
 ```julia
-ok.hexpand=true
+ok.hexpand = true
 hbox.spacing = 10
 ```
 The first line sets the `hexpand` property of the `ok` button within the `hbox` container. The second line sets the `spacing` property of `hbox` to 10 pixels.
@@ -45,7 +45,7 @@ To create two-dimensional (tabular) layouts of widgets, you can use `GtkGrid`:
 win = GtkWindow("A new window")
 g = GtkGrid()
 a = GtkEntry()  # a widget for entering text
-set_gtk_property!(a, :text, "This is Gtk!")
+a.text = "This is Gtk!"
 b = GtkCheckButton("Check me!")
 c = GtkScale(false, 0:10)     # a slider
 
@@ -67,6 +67,17 @@ but you can force them to be of the same size by setting properties like `column
 
 ## GtkCenterBox
 
+The `GtkCenterBox` widget can hold 3 widgets in a line, either horizontally or
+vertically oriented. It keeps the middle widget centered. Child widgets can be set and accessed like this:
+```julia
+cb = GtkCenterBox(:h)   # :h makes a horizontal layout, :v a vertical layout
+cb[:start] = GtkButton("Left")
+cb[:center] = GtkButton("Center")
+cb[:end] = GtkButton("Right")
+```
+For vertical orientation, `:start` refers to the top widget and `:end` to the
+bottom widget.
+
 ## GtkPaned
 
 The `GtkPaned` widget creates two slots separated by a movable divider. Like `GtkBox`, it can
@@ -78,3 +89,22 @@ paned[2] = bottom_or_right_widget
 ```
 
 ## GtkNotebook
+
+The `GtkNotebook` widget places child widgets in tabs like a browser window.
+Child widgets can be inserted with a label like this:
+```julia
+nb = GtkNotebook()
+vbox = GtkBox(:v)
+hbox = GtkBox(:h)
+push!(nb, vbox, "Vertical")  # here "Vertical" is the label for the tab
+push!(nb, hbox, "Horizontal")
+```
+
+## Iterating over child widgets
+
+For any of the widgets described above (or any `GtkWidget`), you can iterate over all child widgets using
+```julia
+for w in widget
+    myfunc(w)
+end
+```

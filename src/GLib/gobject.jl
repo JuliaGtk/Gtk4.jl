@@ -90,13 +90,15 @@ function propertyinfo(w::GObject, name::AbstractString)
         printstyled("Default value: "; bold = true)
         println(gvalue_string_convert(str))
 
-        ccall((:g_object_get_property, libgobject), Nothing,
-             (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, name, str_value)
-        str = ccall((:g_value_get_string, libgobject), Ptr{UInt8}, (Ptr{GValue},), str_value)
-        printstyled("Current value: "; bold = true)
-        println(gvalue_string_convert(str))
+        if (param.flags & Constants.ParamFlags_READABLE) == Constants.ParamFlags_READABLE
+            ccall((:g_object_get_property, libgobject), Nothing,
+                (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, name, str_value)
+                str = ccall((:g_value_get_string, libgobject), Ptr{UInt8}, (Ptr{GValue},), str_value)
+                printstyled("Current value: "; bold = true)
+                println(gvalue_string_convert(str))
 
-        ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), str_value)
+                ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), str_value)
+            end
      end
      nothing
 end

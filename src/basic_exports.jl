@@ -1,7 +1,7 @@
 # generic interface:
 export new, width, height, #minsize, maxsize
     reveal, configure, draw, cairo_context,
-    visible, destroy, stop, depth, isancestor,
+    visible, isvisible, destroy, stop, depth, isancestor,
     hide, grab_focus,
     hasparent, toplevel, set_gtk_property!, get_gtk_property,
     selected, hasselection, unselect!, selectall!, unselectall!,
