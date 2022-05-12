@@ -57,7 +57,7 @@ end
 
 function draw(widget::GtkCanvas, immediate::Bool = true)
     if !isdefined(widget, :back)
-        @warn("backing store not defined")
+        #@warn("backing store not defined")
         return
     end
     if isa(widget.draw, Function)

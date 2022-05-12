@@ -76,6 +76,8 @@ fails.
 """
 grab_focus(w::GtkWidget) = G_.grab_focus(w)
 
+activate(w::GtkWidget) = G_.activate(w)
+
 """
     display(w::GtkWidget)
 

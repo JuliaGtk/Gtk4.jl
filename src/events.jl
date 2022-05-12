@@ -36,6 +36,12 @@ function GtkGestureZoom(widget=nothing)
     g
 end
 
+function GtkEventControllerFocus(widget=nothing)
+    g = G_.EventControllerFocus_new()
+    widget !== nothing && push!(widget, g)
+    g
+end
+
 function on_signal_destroy(@nospecialize(destroy_cb::Function), widget::GtkWidget, vargs...)
     signal_connect(destroy_cb, widget, "destroy", Nothing, (), vargs...)
 end

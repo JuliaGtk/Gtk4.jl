@@ -2,7 +2,8 @@ GtkLabel(title) = G_.Label_new(title)
 
 GtkTextBuffer() = G_.TextBuffer_new(nothing)
 
-GtkTextView(buffer::GtkTextBuffer = nothing) = G_.TextView_new_with_buffer(buffer)
+GtkTextView() = G_.TextView_new()
+GtkTextView(buffer::GtkTextBuffer) = G_.TextView_new_with_buffer(buffer)
 
 GtkTextMark(left_gravity::Bool = false) = G_.TextMark_new(nothing, left_gravity)
 
