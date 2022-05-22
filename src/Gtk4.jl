@@ -13,6 +13,7 @@ using ..GLib
 #using JLLWrappers
 using GTK4_jll, Glib_jll
 using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
+using CEnum, BitFlags
 
 using ..Gdk4
 using ..GdkPixbufLib
@@ -34,9 +35,6 @@ using ..Graphene
 using ..GdkPixbufLib
 using ..Gsk4
 using ..Gtk4
-
-using ..Gtk4.Constants
-using ..Gdk4.Constants
 
 eval(include("gen/gtk4_methods"))
 eval(include("gen/gtk4_functions"))

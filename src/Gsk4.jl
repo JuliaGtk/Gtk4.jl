@@ -7,6 +7,7 @@ using ..Pango
 using ..Pango.Cairo
 using ..GdkPixbufLib
 using ..Gdk4
+using CEnum, BitFlags
 
 eval(include("gen/gsk4_consts"))
 eval(include("gen/gsk4_structs"))

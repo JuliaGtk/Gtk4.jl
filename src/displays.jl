@@ -1,3 +1,9 @@
+function screen_size()
+    d=Gdk4.G_.get_default() # gdk_display_get_default
+    m=Gdk4.G_.get_monitors(d)[1]
+    size(m)
+end
+
 GtkImage(pixbuf::GdkPixbuf) = G_.Image_new_from_pixbuf(pixbuf)
 GtkImage(filename::AbstractString) = G_.Image_new_from_file(filename)
 

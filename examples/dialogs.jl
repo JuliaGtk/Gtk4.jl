@@ -19,7 +19,7 @@ question_dialog_button = GtkButton("Question dialog")
 push!(box,question_dialog_button)
 
 function get_response(d,id)
-    ans = (id == Gtk4.Constants.ResponseType_YES ? "yes" : "no")
+    ans = (id == Gtk4.ResponseType_YES ? "yes" : "no")
     @async println("You answered $ans")
     destroy(d)
 end
@@ -54,7 +54,7 @@ signal_connect(open_input_dialog,input_dialog_button,"clicked")
 file_open_dialog_button = GtkButton("File open dialog")
 push!(box,file_open_dialog_button)
 
-function get_response(d,id)
+function get_file_response(d,id)
     selection = Gtk4.file_chooser_get_selection(d,id)
     @async println("selection was ",selection)
     nothing
@@ -63,7 +63,7 @@ end
 function open_file_open_dialog(b)
     d = open_dialog("Select a file to open",main_window)
     d.select_multiple = true
-    signal_connect(get_response,d,"response")
+    signal_connect(get_file_response,d,"response")
 end
 
 signal_connect(open_file_open_dialog,file_open_dialog_button,"clicked")
@@ -76,7 +76,7 @@ push!(box,file_open_dialog_native_button)
 function open_file_open_native_dialog(b)
     d = open_dialog_native("Select a file to open",main_window)
     d.select_multiple = true
-    signal_connect(get_response,d,"response")
+    signal_connect(get_file_response,d,"response")
 end
 
 signal_connect(open_file_open_native_dialog,file_open_dialog_native_button,"clicked")
@@ -88,7 +88,7 @@ push!(box,file_save_dialog_button)
 
 function open_file_save_dialog(b)
     d = save_dialog("Save file",main_window)
-    signal_connect(get_response,d,"response")
+    signal_connect(get_file_response,d,"response")
 end
 
 signal_connect(open_file_save_dialog,file_save_dialog_button,"clicked")
@@ -100,7 +100,7 @@ push!(box,file_save_dialog_native_button)
 
 function open_file_save_native_dialog(b)
     d = save_dialog_native("Save file",main_window)
-    signal_connect(get_response,d,"response")
+    signal_connect(get_file_response,d,"response")
 end
 
 signal_connect(open_file_save_native_dialog,file_save_dialog_native_button,"clicked")

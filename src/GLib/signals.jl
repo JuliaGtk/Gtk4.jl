@@ -17,7 +17,7 @@ function signal_connect_generic(@nospecialize(cb::Function), w::GObject, sig::Ab
                  callback,
                  ref,
                  deref,
-                 after ? Constants.ConnectFlags_AFTER : 0)
+                 after ? ConnectFlags_AFTER : 0)
 end
 
 # id = signal_connect(widget, :event) do obj, evt_args...

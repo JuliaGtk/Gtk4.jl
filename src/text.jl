@@ -354,7 +354,7 @@ Returns a tuple `(found, start, stop)` where `found` indicates whether the searc
 was successful and `start` and `stop` are _GtkTextIters containing the location of the match.
 """
 function search(buffer::GtkTextBuffer, str::AbstractString, direction = :forward,
-    flag = Constants.TextSearchFlags_TEXT_ONLY)
+    flag = Gtk4.TextSearchFlags_TEXT_ONLY)
 
     start = Ref(_GtkTextIter(buffer))
     stop  = Ref(_GtkTextIter(buffer))

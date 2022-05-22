@@ -11,7 +11,7 @@ abstract type GParam end
 struct GParamSpec
   g_type_instance::Ptr{Nothing}
   name::Ptr{UInt8}
-  flags::GLib.Constants.ParamFlags
+  flags::GEnum
   value_type::GType
   owner_type::GType
 end

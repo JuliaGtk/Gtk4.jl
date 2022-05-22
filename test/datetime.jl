@@ -8,7 +8,7 @@ using Test
 tz=GLib.G_.TimeZone_new_local()
 @test isa(tz,GLib.GBoxed)
 
-#i=GLib.find_interval(tz,GLib.Constants.TimeType.STANDARD)
+#i=GLib.find_interval(tz,GLib.TimeType.STANDARD)
 #println("time zone identifier is ",GLib.get_identifier(tz))
 #println("time zone abbreviation is ",GLib.get_abbreviation(tz,0))
 

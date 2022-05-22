@@ -26,7 +26,7 @@ end
 
 set_state(m::GSimpleAction, v::GVariant) = G_.set_state(m,v)
 
-GApplication(id = nothing, flags = GLib.Constants.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
+GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
 
 function run(app::GApplication)
     ccall(("g_application_run", libgio), Int32, (Ptr{GObject}, Int32, Ptr{Cstring}), app, 0, C_NULL)

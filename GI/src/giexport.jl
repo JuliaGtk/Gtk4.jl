@@ -1,6 +1,6 @@
 # functions that output expressions for a library in bulk
 
-function all_const_exprs!(const_mod, const_exports, ns;print_summary=true)
+function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=[])
     c = get_consts(ns)
 
     for (name,val) in c
@@ -13,7 +13,8 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true)
     es=get_all(ns,GIEnumInfo)
     for e in es
         name = Symbol(get_name(e))
-        push!(const_mod.args, enum_decl2(e))
+        typeinit = in(name, skiplist) ? false : incl_typeinit
+        push!(const_mod.args, unblock(enum_decl2(e,typeinit)))
         push!(const_exports.args, name)
     end
 
@@ -24,7 +25,8 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true)
     es=get_all(ns,GIFlagsInfo)
     for e in es
         name = Symbol(get_name(e))
-        push!(const_mod.args, flags_decl(e))
+        typeinit = in(name, skiplist) ? false : incl_typeinit
+        push!(const_mod.args, flags_decl(e,typeinit))
         push!(const_exports.args, name)
     end
 

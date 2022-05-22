@@ -72,7 +72,7 @@ function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent =
     parent = (parent === nothing ? C_NULL : parent)
     w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
         (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
-        parent, flags, typ, Constants.ButtonsType_NONE, message); kwargs...)
+        parent, flags, typ, ButtonsType_NONE, message); kwargs...)
     for (k, v) in buttons
         push!(w, k, v)
     end
@@ -83,8 +83,8 @@ ask_dialog(message::AbstractString, parent = nothing) =
         ask_dialog(message, "No", "Yes", parent)
 
 function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing)
-    dlg = GtkMessageDialog(message, ((no_text, Integer(Constants.ResponseType_NO)), (yes_text, Integer(Constants.ResponseType_YES))),
-            Constants.DialogFlags_DESTROY_WITH_PARENT, Constants.MessageType_QUESTION, parent)
+    dlg = GtkMessageDialog(message, ((no_text, Integer(ResponseType_NO)), (yes_text, Integer(ResponseType_YES))),
+            DialogFlags_DESTROY_WITH_PARENT, MessageType_QUESTION, parent)
 end
 
 function destroy_dialog(d::GtkDialog, response_id)
@@ -92,15 +92,15 @@ function destroy_dialog(d::GtkDialog, response_id)
 end
 
 for (func, flag) in (
-        (:info_dialog, :(Constants.MessageType_INFO)),
-        (:warn_dialog, :(Constants.MessageType_WARNING)),
-        (:error_dialog, :(Constants.MessageType_ERROR)))
+        (:info_dialog, :(MessageType_INFO)),
+        (:warn_dialog, :(MessageType_WARNING)),
+        (:error_dialog, :(MessageType_ERROR)))
     @eval function $func(message::AbstractString, parent = nothing)
         parent = (parent === nothing ? C_NULL : parent)
         w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
             (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
-            parent, Constants.DialogFlags_DESTROY_WITH_PARENT,
-            $flag, Constants.ButtonsType_CLOSE, message))
+            parent, DialogFlags_DESTROY_WITH_PARENT,
+            $flag, ButtonsType_CLOSE, message))
         signal_connect(destroy_dialog,w,"response")
         w
     end
@@ -108,7 +108,7 @@ end
 
 function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing)
     parent = (parent === nothing ? C_NULL : parent)
-    widget = GtkMessageDialog(message, buttons, Constants.DialogFlags_DESTROY_WITH_PARENT, Constants.MessageType_INFO, parent)
+    widget = GtkMessageDialog(message, buttons, DialogFlags_DESTROY_WITH_PARENT, MessageType_INFO, parent)
     box = content_area(widget)
     entry = GtkEntry(; text = entry_default)
     push!(box, entry)
@@ -172,7 +172,7 @@ function file_chooser_get_selection(dlg::Union{GtkFileChooserDialog,GtkFileChoos
     dlgp = GtkFileChooser(dlg)
     multiple = get_gtk_property(dlg, :select_multiple, Bool)
     local selection
-    if response_id == Constants.ResponseType_ACCEPT
+    if response_id == ResponseType_ACCEPT
         if multiple
             filename_list = G_.get_files(dlgp)
             selection = String[GLib.G_.get_path(GFile(f)) for f in GListModel(filename_list)]
@@ -193,9 +193,9 @@ end
 
 function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; kwargs...)
     parent = (parent === nothing ? C_NULL : parent)
-    dlg = GtkFileChooserDialog(title, parent, Constants.FileChooserAction_OPEN,
-                                (("_Cancel", Constants.ResponseType_CANCEL),
-                                 ("_Open",   Constants.ResponseType_ACCEPT)); kwargs...)
+    dlg = GtkFileChooserDialog(title, parent, FileChooserAction_OPEN,
+                                (("_Cancel", ResponseType_CANCEL),
+                                 ("_Open",   ResponseType_ACCEPT)); kwargs...)
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)
@@ -205,9 +205,9 @@ function open_dialog(title::AbstractString, parent = nothing, filters::Union{Abs
 end
 
 function save_dialog(title::AbstractString, parent = GtkNullContainer(), filters::Union{AbstractVector, Tuple} = String[]; kwargs...)
-    dlg = GtkFileChooserDialog(title, parent, Constants.FileChooserAction_SAVE,
-                                (("_Cancel", Constants.ResponseType_CANCEL),
-                                 ("_Save",   Constants.ResponseType_ACCEPT)); kwargs...)
+    dlg = GtkFileChooserDialog(title, parent, FileChooserAction_SAVE,
+                                (("_Cancel", ResponseType_CANCEL),
+                                 ("_Save",   ResponseType_ACCEPT)); kwargs...)
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)
@@ -223,7 +223,7 @@ hide(d::GtkNativeDialog) = G_.hide(d)
 destroy(d::GtkNativeDialog) = G_.destroy(d)
 
 function open_dialog_native(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
-    dlg = GtkFileChooserNative(title, parent, Constants.FileChooserAction_OPEN, "Open", "Cancel")
+    dlg = GtkFileChooserNative(title, parent, FileChooserAction_OPEN, "Open", "Cancel")
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)
@@ -233,7 +233,7 @@ function open_dialog_native(title::AbstractString, parent = nothing, filters::Un
 end
 
 function save_dialog_native(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
-    dlg = GtkFileChooserNative(title, parent, Constants.FileChooserAction_SAVE,"Save","Cancel")
+    dlg = GtkFileChooserNative(title, parent, FileChooserAction_SAVE,"Save","Cancel")
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)
@@ -248,7 +248,7 @@ end
 
 function color_chooser_dialog_get_selection(dlg::GtkColorChooserDialog, response_id)
     dlgp = GtkColorChooser(dlg)
-    if unsafe_trunc(UInt16,response_id) == Constants.ResponseType_OK
+    if unsafe_trunc(UInt16,response_id) == ResponseType_OK
         selection = G_.get_rgba(dlgp)
     else
         selection = nothing

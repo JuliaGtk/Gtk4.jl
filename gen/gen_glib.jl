@@ -17,17 +17,15 @@ ns3 = GINamespace(:Gio, "2.0")
 
 const_mod = Expr(:block)
 
-push!(const_mod.args,:(using CEnum, BitFlags))
-
 const_exports = Expr(:export)
 
-GI.all_const_exprs!(const_mod, const_exports, ns)
-GI.all_const_exprs!(const_mod, const_exports, ns2)
-GI.all_const_exprs!(const_mod, const_exports, ns3)
+GI.all_const_exprs!(const_mod, const_exports, ns; incl_typeinit=false)
+GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:ConnectFlags,:ParamFlags,:SignalFlags,:SignalMatchType,:TypeFlags,:TypeFundamentalFlags])
+GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
 
 push!(const_mod.args,const_exports)
 
-push!(exprs, Expr(:toplevel,Expr(:module, true, :Constants, const_mod)))
+push!(exprs, const_mod)
 
 ## export constants, enums, and flags code
 GI.write_to_file(path,"glib_consts",toplevel)

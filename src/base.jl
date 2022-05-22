@@ -109,6 +109,6 @@ IteratorSize(::Type{GtkWidget}) = Base.SizeUnknown()
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
 
-GtkApplication(id = nothing, flags = GLib.Constants.ApplicationFlags_NONE) = G_.Application_new(id,flags)
+GtkApplication(id = nothing, flags = GLib.ApplicationFlags_NONE) = G_.Application_new(id,flags)
 push!(app::GtkApplication, win::GtkWindow) = G_.add_window(app, win)
 menubar(app::GtkApplication, mb) = G_.set_menubar(app, mb)

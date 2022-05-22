@@ -40,6 +40,26 @@ function settype!(gv::Ref{GValue}, ::Type{T}) where T <: GBoxed
     gv
 end
 
+function settype!(gv::Ref{GValue}, ::Type{T}) where T <: CEnum.Cenum
+    gtype = g_type(T)
+    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), gv, gtype)
+    gv
+end
+
+function setindex!(v::Base.Ref{GValue}, x, ::Type{T}) where T <: CEnum.Cenum
+    ccall((:g_value_set_enum, libgobject), Nothing, (Ptr{GLib.GValue}, Cint), v, x)
+end
+
+function settype!(gv::Ref{GValue}, ::Type{T}) where T <: BitFlag
+    gtype = g_type(T)
+    ccall((:g_value_init, libgobject), Nothing, (Ptr{GValue}, Csize_t), gv, gtype)
+    gv
+end
+
+function setindex!(v::Base.Ref{GValue}, x, ::Type{T}) where T <: BitFlag
+    ccall((:g_value_set_flags, libgobject), Nothing, (Ptr{GLib.GValue}, Cint), v, Int32(x))
+end
+
 function setindex!(dest::Base.RefValue{GValue}, src::Ref{GValue})
     ccall((:g_value_transform, libgobject), Cint, (Ptr{GValue}, Ptr{GValue}), src, dest) != 0
     src

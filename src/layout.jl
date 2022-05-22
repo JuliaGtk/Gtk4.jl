@@ -1,22 +1,22 @@
-function convert(::Type{Gtk4.Constants.Orientation}, x::Symbol)
+function convert(::Type{Gtk4.Orientation}, x::Symbol)
     if x === :h
-        Gtk4.Constants.Orientation_HORIZONTAL
+        Gtk4.Orientation_HORIZONTAL
     elseif x === :v
-        Gtk4.Constants.Orientation_VERTICAL
+        Gtk4.Orientation_VERTICAL
     else
         error("can't convert $x to GtkOrientation")
     end
 end
 
-function convert(::Type{Gtk4.Constants.PositionType}, x::Symbol)
+function convert(::Type{Gtk4.PositionType}, x::Symbol)
     if x === :left
-        Gtk4.Constants.PositionType_LEFT
+        Gtk4.PositionType_LEFT
     elseif x === :right
-        Gtk4.Constants.PositionType_RIGHT
+        Gtk4.PositionType_RIGHT
     elseif x === :top
-        Gtk4.Constants.PositionType_TOP
+        Gtk4.PositionType_TOP
     elseif x === :bottom
-        Gtk4.Constants.Orientation_BOTTOM
+        Gtk4.Orientation_BOTTOM
     else
         error("can't convert $x to GtkPositionType")
     end
@@ -24,7 +24,7 @@ end
 
 ## GtkBox
 
-GtkBox(orientation, spacing=0) = G_.Box_new(convert(Gtk4.Constants.Orientation, orientation), spacing)
+GtkBox(orientation, spacing=0) = G_.Box_new(convert(Gtk4.Orientation, orientation), spacing)
 
 function push!(b::GtkBox,w::GtkWidget)
     G_.append(b,w)
@@ -41,7 +41,7 @@ end
 GtkCenterBox() = G_.CenterBox_new()
 function GtkCenterBox(orientation)
     b = GtkCenterBox()
-    G_.set_orientation(GtkOrientable(b), convert(Gtk4.Constants.Orientation, orientation))
+    G_.set_orientation(GtkOrientable(b), convert(Gtk4.Orientation, orientation))
     b
 end
 
@@ -70,7 +70,7 @@ function getindex(b::GtkCenterBox, pos::Symbol)
 end
 
 ## GtkPaned
-GtkPaned(orientation) = G_.Paned_new(convert(Gtk4.Constants.Orientation, orientation))
+GtkPaned(orientation) = G_.Paned_new(convert(Gtk4.Orientation, orientation))
 
 function getindex(pane::GtkPaned, i::Integer)
     if i == 1

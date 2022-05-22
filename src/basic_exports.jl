@@ -2,7 +2,7 @@
 export new, width, height, #minsize, maxsize
     reveal, configure, draw, cairo_context,
     visible, isvisible, destroy, stop, depth, isancestor,
-    hide, grab_focus,
+    isrealized, hide, grab_focus,
     hasparent, toplevel, set_gtk_property!, get_gtk_property,
     selected, hasselection, unselect!, selectall!, unselectall!,
     pagenumber, present, fullscreen, unfullscreen, titlebar,
@@ -30,3 +30,6 @@ export @guarded, @idle_add
 export signal_emit,
     on_signal_destroy, on_signal_button_press,
     on_signal_button_release, on_signal_motion
+
+# Gdk info and manipulation
+export screen_size

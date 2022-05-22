@@ -31,7 +31,7 @@ end
 enum_fullname(enumname,name) = Symbol(enumname,"_",uppercase(name))
 
 # export as a Julia enum type
-function enum_decl2(enum)
+function enum_decl2(enum, incl_typeinit=true)
     enumname=get_name(enum)
     vals = get_enum_values(enum)
     typ = typetag_primitive[get_storage_type(enum)]
@@ -45,12 +45,24 @@ function enum_decl2(enum)
         push!(body.args, :($fullname = $val) )
     end
     bloc = Expr(:block)
-    push!(bloc.args,body)
+    push!(bloc.args,unblock(body))
+    if incl_typeinit
+        ti = get_type_init(enum)
+        type_init = String(ti)
+        libs=get_shlibs(GINamespace(get_namespace(enum)))
+        lib=libs[findfirst(l->(nothing!=dlsym(dlopen(l),type_init)),libs)]
+        slib=symbol_from_lib(lib)
+        gtypeinit = quote
+            GLib.g_type(::Type{T}) where {T <: $enumname} =
+                  ccall(($type_init, $slib), GType, ())
+        end
+        push!(bloc.args,unblock(gtypeinit))
+    end
     unblock(bloc)
 end
 
 # use BitFlags.jl
-function flags_decl(enum)
+function flags_decl(enum, incl_typeinit=true)
     enumname=get_name(enum)
     vals = get_enum_values(enum)
     typ = typetag_primitive[get_storage_type(enum)]
@@ -73,6 +85,18 @@ function flags_decl(enum)
     end
     bloc = Expr(:block)
     push!(bloc.args,body)
+    if incl_typeinit
+        ti = get_type_init(enum)
+        type_init = String(ti)
+        libs=get_shlibs(GINamespace(get_namespace(enum)))
+        lib=libs[findfirst(l->(nothing!=dlsym(dlopen(l),type_init)),libs)]
+        slib=symbol_from_lib(lib)
+        gtypeinit = quote
+            GLib.g_type(::Type{T}) where {T <: $enumname} =
+                  ccall(($type_init, $slib), GType, ())
+        end
+        push!(bloc.args,unblock(gtypeinit))
+    end
     unblock(bloc)
 end
 

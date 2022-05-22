@@ -1,5 +1,4 @@
 using Gtk4.GLib
-using Gtk4.GLib.Constants
 using Test
 
 # GDate is a GBoxed struct with fields but we force it to be imported as opaque
@@ -14,7 +13,7 @@ d=GLib.G_.Date_new_dmy(5,9,2021)
 
 @test GLib.G_.valid(d)
 
-@test GLib.Constants.DateWeekday_SUNDAY == GLib.G_.get_weekday(d)
+@test GLib.DateWeekday_SUNDAY == GLib.G_.get_weekday(d)
 
 @test 248 == GLib.G_.get_day_of_year(d)
 

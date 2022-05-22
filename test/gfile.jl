@@ -17,9 +17,9 @@ f2=GLib.G_.dup(GFile(f))
 
 @test GLib.G_.query_exists(GFile(f),nothing)
 
-@test GLib.Constants.FileType_DIRECTORY == GLib.G_.query_file_type(GFile(f),GLib.Constants.FileQueryInfoFlags_NONE,nothing)
+@test GLib.FileType_DIRECTORY == GLib.G_.query_file_type(GFile(f),GLib.FileQueryInfoFlags_NONE,nothing)
 
-fi = GLib.G_.query_info(GFile(f),"*",GLib.Constants.FileQueryInfoFlags_NONE,nothing)
+fi = GLib.G_.query_info(GFile(f),"*",GLib.FileQueryInfoFlags_NONE,nothing)
 attributes = GLib.G_.list_attributes(fi,nothing)
 #println(attributes)
 

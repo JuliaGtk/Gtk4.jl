@@ -11,6 +11,7 @@ end
 
 mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     handle::Ptr{GObject}
+    is_sized::Bool
     resize::Union{Function, Nothing}
     draw::Union{Function, Nothing}
     back::CairoSurface   # backing store
@@ -20,18 +21,30 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
         da = G_.DrawingArea_new()
         G_.set_size_request(da, w, h)
         ids = Vector{Culong}(undef, 0)
-        widget = new(da.handle, nothing, nothing)
+        widget = new(da.handle, false, nothing, nothing)
 
-        function on_resize(da::GtkWidget, width, height)
-            widget.back = CairoARGBSurface(width, height)
-            widget.backcc = CairoContext(widget.back)
-
-            draw_back = @cfunction(canvas_draw_backing_store, Nothing, (Ptr{GObject}, Ptr{Nothing}, Cint, Cint, Ptr{Nothing}))
-            ccall((:gtk_drawing_area_set_draw_func, libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), da.handle, draw_back, widget.back.ptr, C_NULL)
-
-            draw(widget, false)
+        function on_realize(da::GtkWidget)
+            if widget.is_sized
+                on_resize(da,1,1)
+            end
+            nothing
         end
 
+        function on_resize(da::GtkDrawingArea, width::Cint, height::Cint)
+            widget.is_sized = true
+            if G_.get_realized(widget)
+                widget.back = CairoARGBSurface(width, height)
+                widget.backcc = CairoContext(widget.back)
+
+                draw_back = @cfunction(canvas_draw_backing_store, Nothing, (Ptr{GObject}, Ptr{Nothing}, Cint, Cint, Ptr{Nothing}))
+                ccall((:gtk_drawing_area_set_draw_func, libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), da.handle, draw_back, widget.back.ptr, C_NULL)
+
+                draw(widget, false)
+            end
+            nothing
+        end
+
+        signal_connect(Base.inferencebarrier(on_realize), widget, "realize")
         signal_connect(Base.inferencebarrier(on_resize), widget, "resize")
 
         return GLib.gobject_move_ref(widget, da)
@@ -67,7 +80,7 @@ function draw(widget::GtkCanvas, immediate::Bool = true)
 end
 
 function getgc(c::GtkCanvas)
-    if !isdefined(c,:back)
+    if !isdefined(c,:backcc)
       error("GtkCanvas not yet initialized.")
     end
     return c.backcc

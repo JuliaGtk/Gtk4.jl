@@ -3,7 +3,7 @@ module Pango
 using ..GLib
 using Glib_jll
 using Pango_jll
-using CEnum
+using CEnum, BitFlags
 
 import Base: convert, copy
 

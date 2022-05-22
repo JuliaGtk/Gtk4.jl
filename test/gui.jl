@@ -60,15 +60,22 @@ end
     w.visible = false
     @test w.visible == false
 
+    # test Enum property set/get
+    @test w.halign == Gtk4.Align_FILL  # default value
+    w.halign = Gtk4.Align_CENTER
+    @test w.halign == Gtk4.Align_CENTER
+
     w2 = GtkWindow("Window 2")
-    b=bind_property(w,:title,w2,:title,GLib.Constants.BindingFlags_SYNC_CREATE)
+    b=bind_property(w,:title,w2,:title,GLib.BindingFlags_SYNC_CREATE)
     @test w2.title == w.title
 
     @test b.source == w
     @test b.source_property == "title"
     @test b.target == w2
     @test b.target_property == "title"
-    @test b.flags == GLib.Constants.BindingFlags_SYNC_CREATE
+
+    # test Flags property get
+    @test b.flags == GLib.BindingFlags_SYNC_CREATE
 
     w.title = "Another title"
     @test w2.title == w.title
@@ -234,7 +241,7 @@ end
     grid[3,1:3] = GtkButton("Tall button")
     insert!(grid,1,:top)
     insert!(grid,3,:bottom)
-    insert!(grid,grid[1,2],Gtk4.Constants.PositionType_RIGHT)
+    insert!(grid,grid[1,2],Gtk4.PositionType_RIGHT)
     #deleteat!(grid,1,:row)
     #empty!(grid)
     destroy(w)
@@ -519,7 +526,7 @@ f = GtkAspectFrame(0.5, 1, 0.5, false)
 f[] = c
 @test f[] == c
 gm = GtkEventControllerMotion(c)
-gs = GtkEventControllerScroll(Gtk4.Constants.EventControllerScrollFlags_VERTICAL,c)
+gs = GtkEventControllerScroll(Gtk4.EventControllerScrollFlags_VERTICAL,c)
 gk = GtkEventControllerKey(c)
 ggc = GtkGestureClick(c)
 ggd = GtkGestureDrag(c)
@@ -592,9 +599,9 @@ destroy(win)
 end
 
 @testset "File Chooser" begin
-    dlg = GtkFileChooserDialog("Select file", nothing, Gtk4.Constants.FileChooserAction_OPEN,
-                            (("_Cancel", Gtk4.Constants.ResponseType_CANCEL),
-                             ("_Open", Gtk4.Constants.ResponseType_ACCEPT)))
+    dlg = GtkFileChooserDialog("Select file", nothing, Gtk4.FileChooserAction_OPEN,
+                            (("_Cancel", Gtk4.ResponseType_CANCEL),
+                             ("_Open", Gtk4.ResponseType_ACCEPT)))
     destroy(dlg)
 end
 
@@ -633,7 +640,7 @@ select!(selmodel, Gtk4.iter_from_index(ls, 1))
 iter = selected(selmodel)
 @test ls[iter, 1] == 35
 
-G_.set_mode(selmodel,Gtk4.Constants.SelectionMode_MULTIPLE)
+G_.set_mode(selmodel,Gtk4.SelectionMode_MULTIPLE)
 selectall!(selmodel)
 iters = Gtk4.selected_rows(selmodel)
 @test length(iters) == 2
@@ -642,9 +649,9 @@ unselectall!(selmodel)
 
 tmSorted=GtkTreeModelSort(ls)
 #G_.set_model(tv,tmSorted)
-G_.set_sort_column_id(GtkTreeSortable(tmSorted),0,Gtk4.Constants.SortType_ASCENDING)
+G_.set_sort_column_id(GtkTreeSortable(tmSorted),0,Gtk4.SortType_ASCENDING)
 it = convert_child_iter_to_iter(tmSorted,Gtk4.iter_from_index(ls, 1))
-G_.set_mode(selmodel,Gtk4.Constants.SelectionMode_SINGLE)
+G_.set_mode(selmodel,Gtk4.SelectionMode_SINGLE)
 #select!(selmodel, it)
 #iter = selected(selmodel)
 #@test TreeModel(tmSorted)[iter, 1] == 35
@@ -723,10 +730,10 @@ main_window = GtkWindow("Dialog example")
 
 d = info_dialog("Here's some information",main_window)
 show(d)
-response(d,Integer(Gtk4.Constants.ResponseType_DELETE_EVENT))
+response(d,Integer(Gtk4.ResponseType_DELETE_EVENT))
 
 function get_response(d,id)
-    ans = (id == Gtk4.Constants.ResponseType_YES ? "yes" : "no")
+    ans = (id == Gtk4.ResponseType_YES ? "yes" : "no")
     destroy(d)
 end
 
@@ -734,7 +741,7 @@ d = ask_dialog("May I ask you a question?",main_window)
 signal_connect(get_response,d,"response")
 show(d)
 
-response(d,Integer(Gtk4.Constants.ResponseType_YES))
+response(d,Integer(Gtk4.ResponseType_YES))
 
 end
 
@@ -780,7 +787,7 @@ destroy(main_window)
 @testset "application" begin
 
 app = GtkApplication("julia.gtk4.example",
-        Gtk4.GLib.Constants.ApplicationFlags_FLAGS_NONE)
+        Gtk4.GLib.ApplicationFlags_FLAGS_NONE)
 
 Gtk4.GLib.stop_main_loop()  # g_application_run runs the loop and does other important stuff
 

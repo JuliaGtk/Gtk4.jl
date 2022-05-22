@@ -91,13 +91,12 @@ function Base.:(==)(i::Integer, b::T) where T<:BitFlag
     Integer(b) == i
 end
 
-eval(include("../gen/glib_consts"))
-
 include("glist.jl")
 include("gtype.jl")
-include("gvalues.jl")
 
-using .Constants
+eval(include("../gen/glib_consts"))
+
+include("gvalues.jl")
 
 eval(include("../gen/glib_structs"))
 
@@ -115,7 +114,7 @@ module G_
 
 using Glib_jll
 
-using ..GLib, ..GLib.Constants
+using ..GLib
 
 import Base: convert, copy, run
 

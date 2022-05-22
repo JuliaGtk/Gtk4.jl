@@ -29,7 +29,7 @@ function show(io::IO, w::GObject)
             first = false
         end
         print(io, GLib.bytestring(param.name))
-        if (param.flags & Constants.ParamFlags_READABLE) != 0 &&
+        if (ParamFlags(param.flags) & ParamFlags_READABLE) != 0 &&
            (UInt32(param.flags) & DEPRECATED) == 0 &&
            (ccall((:g_value_type_transformable, libgobject), Cint,
                 (Int, Int), param.value_type, g_type(AbstractString)) != 0)
@@ -66,13 +66,13 @@ function propertyinfo(w::GObject, name::AbstractString)
     printstyled("GType name: "; bold = true)
     println(g_type_name(param.value_type))
     printstyled("Flags: "; bold = true)
-    if (param.flags & Constants.ParamFlags_READABLE) != 0
+    if (ParamFlags(param.flags) & ParamFlags_READABLE) != 0
         print("Readable ")
     end
-    if (param.flags & Constants.ParamFlags_WRITABLE) != 0
+    if (ParamFlags(param.flags) & ParamFlags_WRITABLE) != 0
         print("Writable ")
     end
-    if (param.flags & Constants.ParamFlags_CONSTRUCT_ONLY) != 0
+    if (ParamFlags(param.flags) & ParamFlags_CONSTRUCT_ONLY) != 0
         print("Construct only ")
     end
     print("\n")
@@ -90,7 +90,7 @@ function propertyinfo(w::GObject, name::AbstractString)
         printstyled("Default value: "; bold = true)
         println(gvalue_string_convert(str))
 
-        if (param.flags & Constants.ParamFlags_READABLE) == Constants.ParamFlags_READABLE
+        if (ParamFlags(param.flags) & ParamFlags_READABLE) == ParamFlags_READABLE
             ccall((:g_object_get_property, libgobject), Nothing,
                 (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, name, str_value)
                 str = ccall((:g_value_get_string, libgobject), Ptr{UInt8}, (Ptr{GValue},), str_value)
@@ -105,14 +105,14 @@ end
 propertyinfo(w::GObject,name::Symbol) = propertyinfo(w,string(name))
 
 """
-    bind_property(source::GObject, source_property, target::GObject, target_property, flags = Constants.BindingFlags_DEFAULT)
+    bind_property(source::GObject, source_property, target::GObject, target_property, flags = BindingFlags_DEFAULT)
 
 Creates a binding between `source_property` on `source` and `target_property` on
 `target`. When `source_property` is changed, `target_property` will be updated
 to the same value. Returns a `GBinding` object that can be used to release the
 binding using `unbind_property`.
 """
-bind_property(source::GObject, source_property, target::GObject, target_property, flags = Constants.BindingFlags_DEFAULT) =
+bind_property(source::GObject, source_property, target::GObject, target_property, flags = BindingFlags_DEFAULT) =
     G_.bind_property(source, source_property, target, target_property, flags)
 
 """

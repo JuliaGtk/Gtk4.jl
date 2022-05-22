@@ -8,16 +8,16 @@ complete(completion::GtkEntryCompletion) = G_complete(completion)
 
 ## GtkScale
 
-GtkScale(orientation) = G_.Scale_new(convert(Gtk4.Constants.Orientation,orientation), nothing)
-GtkScale(orientation, adj::GtkAdjustment) = G_.Scale_new(convert(Gtk4.Constants.Orientation,orientation), adj)
-GtkScale(orientation, min, max, step) = G_.Scale_new_with_range(convert(Gtk4.Constants.Orientation,orientation), min, max, step)
+GtkScale(orientation) = G_.Scale_new(convert(Gtk4.Orientation,orientation), nothing)
+GtkScale(orientation, adj::GtkAdjustment) = G_.Scale_new(convert(Gtk4.Orientation,orientation), adj)
+GtkScale(orientation, min, max, step) = G_.Scale_new_with_range(convert(Gtk4.Orientation,orientation), min, max, step)
 GtkScale(orientation, scale::AbstractRange) = GtkScale(orientation, minimum(scale), maximum(scale), step(scale))
 function push!(scale::GtkScale, value, position, markup::AbstractString)
-    G_.add_mark(scale, value, convert(Gtk4.Constants.PositionType,position), markup)
+    G_.add_mark(scale, value, convert(Gtk4.PositionType,position), markup)
     scale
 end
 function push!(scale::GtkScale, value, position)
-    G_.add_mark(scale, value, convert(Gtk4.Constants.PositionType,position), nothing)
+    G_.add_mark(scale, value, convert(Gtk4.PositionType,position), nothing)
     scale
 end
 empty!(scale::GtkScale) = G_.clear_marks(scale)

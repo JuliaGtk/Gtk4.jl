@@ -9,13 +9,11 @@ path="../src/gen"
 
 const_mod = Expr(:block)
 
-push!(const_mod.args,:(using CEnum, BitFlags))
-
 const_exports = Expr(:export)
 
 GI.all_const_exprs!(const_mod, const_exports, ns)
 
-push!(exprs, Expr(:toplevel,Expr(:module, true, :Constants, const_mod)))
+push!(exprs, const_mod)
 
 ## export constants, enums, and flags code
 GI.write_to_file(path,"pango_consts",toplevel)

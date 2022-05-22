@@ -4,6 +4,7 @@ using ..GLib
 using Glib_jll
 using gdk_pixbuf_jll
 using Scratch
+using CEnum, BitFlags
 
 export GdkPixbuf, GdkPixbufAnimation
 export width, height, slice

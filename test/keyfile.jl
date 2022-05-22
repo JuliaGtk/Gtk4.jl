@@ -65,7 +65,7 @@ for i=1:1
 end
 
 kf=GLib.G_.KeyFile_new()
-success=GLib.G_.load_from_file(kf,"test.ini",GLib.Constants.KeyFileFlags_NONE)
+success=GLib.G_.load_from_file(kf,"test.ini",GLib.KeyFileFlags_NONE)
 
 @test success
 
