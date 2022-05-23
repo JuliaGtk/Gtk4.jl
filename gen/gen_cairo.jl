@@ -22,7 +22,7 @@ GI.write_to_file(path,"cairo_consts",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-struct_skiplist=[]
+struct_skiplist=Symbol[]
 GI.struct_cache_expr!(exprs)
 struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist)
 push!(exprs,exports)
@@ -33,7 +33,7 @@ GI.write_to_file(path,"cairo_structs",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
+skiplist=Symbol[]
 
 GI.all_functions!(exprs,ns,skiplist=skiplist)
 

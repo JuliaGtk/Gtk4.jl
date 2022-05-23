@@ -1,6 +1,6 @@
 # functions that output expressions for a library in bulk
 
-function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=[])
+function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[])
     c = get_consts(ns)
 
     for (name,val) in c
@@ -81,7 +81,8 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         end
         name = Symbol("$name")
         try
-            push!(exprs, struct_decl(ssi;force_opaque=in(name,import_as_opaque)))
+            test = coalesce(in(name,import_as_opaque),false)
+            push!(exprs, struct_decl(ssi;force_opaque=test))
         catch NotImplementedError
             if print_summary
                 printstyled(name," not implemented\n";color=:red)
@@ -103,7 +104,7 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
     struct_skiplist
 end
 
-function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false)
+function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false)
     struct_skiplist=excludelist
 
     s=get_all(ns,GIStructInfo)
@@ -126,6 +127,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
             imported-=1
             continue
         end
+
         push!(exprs, struct_decl(ssi;force_opaque=in(name,import_as_opaque)))
         push!(exports.args, get_full_name(ssi))
         if length(fields)>0
@@ -147,7 +149,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
     struct_skiplist
 end
 
-function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=[], struct_skiplist=[])
+function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=Symbol[], struct_skiplist=Symbol[])
     structs=get_structs(ns)
     handled_symbols=Symbol[]
 
@@ -198,7 +200,7 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
     handled_symbols
 end
 
-function all_objects!(exprs,exports,ns;print_summary=true,handled=[],skiplist=[],output_cache_define=true,output_cache_init=true)
+function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skiplist=Symbol[],output_cache_define=true,output_cache_init=true)
     objects=get_all(ns,GIObjectInfo)
 
     imported=length(objects)
@@ -238,7 +240,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=[],skiplist=[]
     end
 end
 
-function all_object_methods!(exprs,ns;skiplist=[],object_skiplist=[])
+function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[])
     not_implemented=0
     skipped=0
     created=0
@@ -270,7 +272,7 @@ function all_object_methods!(exprs,ns;skiplist=[],object_skiplist=[])
     end
 end
 
-function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=[])
+function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=Symbol[])
     interfaces=get_all(ns,GIInterfaceInfo)
 
     imported=length(interfaces)
@@ -293,7 +295,7 @@ function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=[])
     skiplist
 end
 
-function all_interface_methods!(exprs,ns;skiplist=[],interface_skiplist=[])
+function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Symbol[])
     not_implemented=0
     skipped=0
     created=0
@@ -325,7 +327,7 @@ function all_interface_methods!(exprs,ns;skiplist=[],interface_skiplist=[])
     end
 end
 
-function all_functions!(exprs,ns;print_summary=true,skiplist=[],symbol_skiplist=[])
+function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_skiplist=Symbol[])
     j=0
     skipped=0
     not_implemented=0

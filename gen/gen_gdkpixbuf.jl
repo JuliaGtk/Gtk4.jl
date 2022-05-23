@@ -44,9 +44,7 @@ GI.write_to_file(path,"gdkpixbuf_structs",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
-
-GI.all_struct_methods!(exprs,ns,skiplist=skiplist,struct_skiplist=struct_skiplist)
+GI.all_struct_methods!(exprs,ns,struct_skiplist=struct_skiplist)
 
 ## object methods
 
@@ -60,8 +58,6 @@ GI.write_to_file(path,"gdkpixbuf_methods",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
-
-GI.all_functions!(exprs,ns,skiplist=skiplist)
+GI.all_functions!(exprs,ns)
 
 GI.write_to_file(path,"gdkpixbuf_functions",toplevel)

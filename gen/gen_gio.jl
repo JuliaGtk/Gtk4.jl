@@ -32,9 +32,7 @@ GI.write_to_file(path,"gio_structs",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
-
-GI.all_struct_methods!(exprs,ns,skiplist=skiplist,struct_skiplist=struct_skiplist)
+GI.all_struct_methods!(exprs,ns,struct_skiplist=struct_skiplist)
 
 ## object methods
 

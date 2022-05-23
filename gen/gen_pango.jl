@@ -22,7 +22,7 @@ GI.write_to_file(path,"pango_consts",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-struct_skiplist=[]
+struct_skiplist=Symbol[]
 
 first_list=[:Language,:Color,:AttrClass,:Rectangle,:FontDescription,:Attribute,:Analysis,:Item,:GlyphVisAttr,:GlyphGeometry,:GlyphInfo,:GlyphString,:GlyphItem]
 GI.struct_cache_expr!(exprs)
@@ -54,11 +54,10 @@ GI.all_struct_methods!(exprs,ns,print_detailed=true,skiplist=skiplist,struct_ski
 skiplist=[:get_features]
 
 # skips are to avoid method name collisions
-GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=[])
+GI.all_object_methods!(exprs,ns;skiplist=skiplist)
 
-skiplist=[]
 # skips are to avoid method name collisions
-GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[])
+GI.all_interface_methods!(exprs,ns)
 
 GI.write_to_file(path,"pango_methods",toplevel)
 
@@ -66,8 +65,6 @@ GI.write_to_file(path,"pango_methods",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
-
-GI.all_functions!(exprs,ns,skiplist=skiplist)
+GI.all_functions!(exprs,ns)
 
 GI.write_to_file(path,"pango_functions",toplevel)

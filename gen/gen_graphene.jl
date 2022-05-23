@@ -24,8 +24,8 @@ GI.write_to_file(path,"graphene_consts",toplevel)
 toplevel, exprs, exports = GI.output_exprs()
 
 # These are marked as "disguised" and what this means is not documentated AFAICT.
-disguised = []
-struct_skiplist=vcat(disguised, [])
+disguised = Symbol[]
+struct_skiplist=vcat(disguised, Symbol[])
 
 first_list=[:Simd4F,:Vec3,:Simd4X4F,:Size]
 GI.struct_cache_expr!(exprs)
@@ -48,20 +48,17 @@ GI.write_to_file(path,"graphene_structs",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
-
-GI.all_struct_methods!(exprs,ns,skiplist=skiplist,struct_skiplist=struct_skiplist)
+GI.all_struct_methods!(exprs,ns,struct_skiplist=struct_skiplist)
 
 ## object methods
 
-skiplist=[]
+skiplist=Symbol[]
 
 # skips are to avoid method name collisions
-GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=[])
+GI.all_object_methods!(exprs,ns;skiplist=skiplist)
 
-skiplist=[]
 # skips are to avoid method name collisions
-GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[])
+GI.all_interface_methods!(exprs,ns)
 
 GI.write_to_file(path,"graphene_methods",toplevel)
 
@@ -98,8 +95,6 @@ end
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
-
-GI.all_functions!(exprs,ns,skiplist=skiplist)
+GI.all_functions!(exprs,ns)
 
 GI.write_to_file(path,"graphene_functions",toplevel)

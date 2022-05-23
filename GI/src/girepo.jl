@@ -113,7 +113,7 @@ end
 
 struct GINamespace
     name::Symbol
-    function GINamespace(namespace::Symbol, version=nothing)
+    function GINamespace(namespace::Symbol, version = nothing)
         #TODO: stricter version sematics?
         gi_require(namespace, version)
         new(namespace)
@@ -127,8 +127,8 @@ unsafe_convert(::Type{Ptr{UInt8}}, ns::GINamespace) = convert(Ptr{UInt8}, ns.nam
 
 Base.:(==)(a::GINamespace, b::GINamespace) = (a.name === b.name)
 
-function gi_require(namespace::Symbol, version=nothing)
-    if version==nothing
+function gi_require(namespace::Symbol, version = nothing)
+    if isnothing(version)
         version = C_NULL
     end
     GError() do error_check
@@ -373,6 +373,7 @@ function get_base_type(info::GITypeInfo)
     elseif tag == TAG_INTERFACE
         # Object Types n such -- we have to figure out what the type is
         interf_info = get_interface(info) # output here is a BaseInfo
+        isnothing(interf_info) && return Nothing
         # docs say "inspect the type of the returned BaseInfo to further query whether it is a concrete GObject, a GInterface, a structure, etc."
         typ=GIInfoTypeNames[get_type(interf_info)+1]
         if typ===:GIStructInfo
@@ -484,7 +485,8 @@ end
 
 function get_value(info::GIConstantInfo)
     typ = get_base_type(info)
-    if typ in typetag_primitive[2:12]
+    prim = coalesce(typ in typetag_primitive[2:12],false)
+    if prim
         get_constant_value(typ,info)
     elseif typ <: Number # backup
         get_constant_value(Int64,info)
@@ -509,7 +511,7 @@ function get_consts(gns,exclude_deprecated=true)
             name = Symbol("_$name") #FIXME: might collide
         end
         val = get_value(c)
-        if val != nothing
+        if val !== nothing
             push!(consts, (name,val))
         end
     end

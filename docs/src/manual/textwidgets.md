@@ -32,7 +32,7 @@ This can be used if the user should be allowed to copy the text.
 
 The justification of a label can be changed in the following way:
 ```julia
-G_.set_justify(label,Gtk4.Constants.Justification_RIGHT)
+G_.set_justify(label,Gtk4.Justification_RIGHT)
 ```
 Possible values of the enum `Justification` are `LEFT`,`RIGHT`,`CENTER`, and `FILL`.
 

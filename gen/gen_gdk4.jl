@@ -25,7 +25,7 @@ GI.write_to_file(path,"gdk4_consts",toplevel)
 toplevel, exprs, exports = GI.output_exprs()
 
 # These are marked as "disguised" and what this means is not documented AFAICT.
-disguised = []
+disguised = Symbol[]
 struct_skiplist=vcat(disguised, [:ToplevelSize])
 
 GI.struct_cache_expr!(exprs)
@@ -33,7 +33,7 @@ struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skipl
 
 ## objects
 
-object_skiplist=[]
+object_skiplist=Symbol[]
 
 GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist;print_summary=true)
 GI.all_interfaces!(exprs,exports,ns)
@@ -47,9 +47,7 @@ GI.write_to_file(path,"gdk4_structs",toplevel)
 toplevel, exprs, exports = GI.output_exprs()
 push!(struct_skiplist,:ContentFormats)
 
-skiplist=[]
-
-GI.all_struct_methods!(exprs,ns,skiplist=skiplist,struct_skiplist=struct_skiplist)
+GI.all_struct_methods!(exprs,ns,struct_skiplist=struct_skiplist)
 
 ## object methods
 
@@ -60,7 +58,7 @@ GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=object_skiplis
 
 skiplist=[:inhibit_system_shortcuts,:show_window_menu]
 # skips are to avoid method name collisions
-GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[])
+GI.all_interface_methods!(exprs,ns;skiplist=skiplist)
 
 GI.write_to_file(path,"gdk4_methods",toplevel)
 

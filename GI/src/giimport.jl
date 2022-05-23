@@ -30,6 +30,26 @@ end
 
 enum_fullname(enumname,name) = Symbol(enumname,"_",uppercase(name))
 
+function find_symbol(l,id)
+    lo = dlopen(l)
+    isnothing(lo) && return false
+    sym=dlsym(lo,id;throw_error=false)
+    return sym!==nothing
+end
+
+function typeinit_def(info)
+    name=get_name(info)
+    ti = get_type_init(info)
+    type_init = String(ti)
+    libs=get_shlibs(GINamespace(get_namespace(info)))
+    lib=libs[findfirst(l->find_symbol(l,type_init),libs)]
+    slib=symbol_from_lib(lib)
+    gtypeinit = quote
+        GLib.g_type(::Type{T}) where {T <: $name} =
+              ccall(($type_init, $slib), GType, ())
+    end
+end
+
 # export as a Julia enum type
 function enum_decl2(enum, incl_typeinit=true)
     enumname=get_name(enum)
@@ -47,15 +67,7 @@ function enum_decl2(enum, incl_typeinit=true)
     bloc = Expr(:block)
     push!(bloc.args,unblock(body))
     if incl_typeinit
-        ti = get_type_init(enum)
-        type_init = String(ti)
-        libs=get_shlibs(GINamespace(get_namespace(enum)))
-        lib=libs[findfirst(l->(nothing!=dlsym(dlopen(l),type_init)),libs)]
-        slib=symbol_from_lib(lib)
-        gtypeinit = quote
-            GLib.g_type(::Type{T}) where {T <: $enumname} =
-                  ccall(($type_init, $slib), GType, ())
-        end
+        gtypeinit = typeinit_def(enum)
         push!(bloc.args,unblock(gtypeinit))
     end
     unblock(bloc)
@@ -86,15 +98,7 @@ function flags_decl(enum, incl_typeinit=true)
     bloc = Expr(:block)
     push!(bloc.args,body)
     if incl_typeinit
-        ti = get_type_init(enum)
-        type_init = String(ti)
-        libs=get_shlibs(GINamespace(get_namespace(enum)))
-        lib=libs[findfirst(l->(nothing!=dlsym(dlopen(l),type_init)),libs)]
-        slib=symbol_from_lib(lib)
-        gtypeinit = quote
-            GLib.g_type(::Type{T}) where {T <: $enumname} =
-                  ccall(($type_init, $slib), GType, ())
-        end
+        gtypeinit = typeinit_def(enum)
         push!(bloc.args,unblock(gtypeinit))
     end
     unblock(bloc)
@@ -140,7 +144,7 @@ function struct_decl(structinfo;force_opaque=false)
     if isboxed
         type_init = String(get_type_init(structinfo))
         libs=get_shlibs(GINamespace(get_namespace(structinfo)))
-        lib=libs[findfirst(l->(nothing!=dlsym(dlopen(l),type_init)),libs)]
+        lib=libs[findfirst(l->find_symbol(l,type_init),libs)]
         slib=symbol_from_lib(lib)
         fin = quote
             GLib.g_type(::Type{T}) where {T <: $gstructname} =
@@ -251,7 +255,7 @@ function get_toplevel(o)
         o2 = p
         p = get_parent(o2)
     end
-    get_type_name(o2)
+    o2 !== nothing ? get_type_name(o2) : nothing
 end
 
 # For each GObject type GMyObject, we output:
@@ -271,6 +275,9 @@ function gobject_decl(objectinfo)
     oname = Symbol(GLib.g_type_name(g_type))
     leafname = Symbol(oname,"Leaf")
     parentinfo = get_parent(objectinfo)
+    if parentinfo === nothing
+        return Expr[]
+    end
     pg_type = get_g_type(parentinfo)
     pname = Symbol(GI.GLib.g_type_name(pg_type))
 
@@ -748,7 +755,13 @@ struct Arg
 end
 types(args::Array{Arg}) = [a.typ for a in args]
 names(args::Array{Arg}) = [a.name for a in args]
-jparams(args::Array{Arg}) = [a.typ != :Any ? :($(a.name)::$(a.typ)) : a.name for a in args]
+function jparams(args::Array{Arg})
+    arr = Union{Expr,Symbol}[]
+    for a in args
+        push!(arr, a.typ !== :Any ? :($(a.name)::$(a.typ)) : a.name)
+    end
+    arr
+end
 
 # Map library names onto exports of *_jll
 # TODO: make this more elegant
@@ -787,7 +800,7 @@ end
 function make_ccall(libs, id, rtype, args)
     argtypes = Expr(:tuple, types(args)...)
     # look up symbol in our possible libraries
-    lib=libs[findfirst(l->(nothing!=dlsym(dlopen(l),id)),libs)]
+    lib=libs[findfirst(l->find_symbol(l,id),libs)]
     slib=symbol_from_lib(lib)
     c_call = :(ccall(($id, $slib), $rtype, $argtypes))
     append!(c_call.args, names(args))
@@ -813,13 +826,16 @@ function create_method(info::GIFunctionInfo)
         push!(cargs, Arg(:instance, typeinfo.ctype))
     end
     if flags & GIFunction.IS_CONSTRUCTOR != 0
-        name = Symbol("$(get_name(get_container(info)))_$name")
+        object = get_container(info)
+        if object !== nothing
+            name = Symbol("$(get_name(object))_$name")
+        end
     end
     rettypeinfo=get_return_type(info)
     rettype = extract_type(rettypeinfo)
-    if rettype.ctype != :Nothing && !skip_return(info)
+    if rettype.ctype !== :Nothing && !skip_return(info)
         expr = convert_from_c(:ret,info,rettype)
-        if expr != nothing
+        if expr !== nothing
             push!(epilogue, :(ret2 = $expr))
             push!(retvals,:ret2)
         else
@@ -836,7 +852,7 @@ function create_method(info::GIFunctionInfo)
         if dir != GIDirection.OUT
             push!(jargs, Arg( aname, typ.jtype))
             expr = convert_to_c(aname,arg,typ)
-            if expr != nothing
+            if expr !== nothing
                 push!(prologue, :($aname = $expr))
             elseif may_be_null(arg)
                 push!(prologue, :($aname = (($aname == nothing) ? C_NULL : $aname)))
@@ -856,7 +872,7 @@ function create_method(info::GIFunctionInfo)
             push!(cargs, Arg(wname, :(Ptr{$ctype})))
             push!(epilogue,:( $aname = $wname[] ))
             expr = convert_from_c(aname,arg,typ)
-            if expr != nothing
+            if expr !== nothing
                 push!(epilogue, :($aname = $expr))
             end
             push!(retvals, aname)
@@ -883,7 +899,7 @@ function create_method(info::GIFunctionInfo)
                 push!(prologue, :($len_name = length($aname)))
             end
             len_i=findfirst(a->(a===len_name),retvals)
-            if len_i !==nothing
+            if len_i !== nothing
                 deleteat!(retvals,len_i)
             end
         end

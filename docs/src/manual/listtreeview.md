@@ -111,7 +111,7 @@ selection = G_.get_selection(tv)
 ```
 One either have single selection or multiple selections. We toggle this by calling
 ```julia
-selection = G_.set_mode(selection,Gtk4.Constants.SelectionMode_MULTIPLE)
+selection = G_.set_mode(selection,Gtk4.SelectionMode_MULTIPLE)
 ```
 We will stick with single selection for now and want to know the index of the
 selected item

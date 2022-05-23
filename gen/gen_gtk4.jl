@@ -22,10 +22,10 @@ GI.write_to_file(path,"gtk4_consts",toplevel)
 
 ## structs
 
- toplevel, exprs, exports = GI.output_exprs()
+toplevel, exprs, exports = GI.output_exprs()
 
 # These are marked as "disguised" and what this means is not documentated AFAICT.
-disguised = []
+disguised = Symbol[]
 struct_skiplist=vcat(disguised, [:PageRange])
 
 GI.struct_cache_expr!(exprs)
@@ -46,9 +46,7 @@ GI.write_to_file(path,"gtk4_structs",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[]
-
-GI.all_struct_methods!(exprs,ns,skiplist=skiplist,struct_skiplist=vcat(struct_skiplist,[:Bitset,:BitsetIter,:BuildableParseContext,:CssSection,:TextIter]);print_detailed=true)
+GI.all_struct_methods!(exprs,ns,struct_skiplist=vcat(struct_skiplist,[:Bitset,:BitsetIter,:BuildableParseContext,:CssSection,:TextIter]);print_detailed=true)
 
 ## object methods
 
