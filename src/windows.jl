@@ -28,7 +28,7 @@ maximize(win::GtkWindow) = G_.maximize(win)
 unmaximize(win::GtkWindow) = G_.unmaximize(win)
 titlebar(win::GtkWindow, w::GtkWidget) = G_.set_titlebar(win, w)
 
-push!(w::GtkWindow, widget::GtkWidget) = G_.set_child(w, widget)
+push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
 setindex!(w::GtkWindow, widget::GtkWidget) = G_.set_child(w, widget)
 
 GtkApplicationWindow(app::GtkApplication) = G_.ApplicationWindow_new(app)

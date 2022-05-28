@@ -70,6 +70,7 @@ reverse!(g)
 
 g[2]="test"
 @test g[2]=="test"
+@test get(g,2,"default")=="test"
 
 g3=copy(g)
 
@@ -134,11 +135,15 @@ reverse!(g)
 
 g[2]="test"
 @test g[2]=="test"
+@test get(g,2,"default")=="test"
 
 g3=copy(g)
 
 append!(g2,g3)
 @test length(g2)==20
+
+deleteat!(g2,4)
+@test length(g2)==19
 
 empty!(g)
 @test isempty(g)

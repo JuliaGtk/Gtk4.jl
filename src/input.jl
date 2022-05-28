@@ -30,7 +30,8 @@ GtkAdjustment(scale::GtkScale) = G_.get_adjustment(scale)
 
 ## GtkSpinButton
 
-GtkSpinButton(min, max, step) = G_.SpinButton_new_with_range(min, max, step)
+GtkSpinButton(adj::GtkAdjustment, climb_rate::Real, digits::Integer) = G_.SpinButton_new(adj,climb_rate,digits)
+GtkSpinButton(min::Real, max::Real, step::Real) = G_.SpinButton_new_with_range(min, max, step)
 GtkSpinButton(scale::AbstractRange) = GtkSpinButton(minimum(scale), maximum(scale), step(scale))
 
 GtkAdjustment(spinButton::GtkSpinButton) = G_.get_adjustment(spinButton)

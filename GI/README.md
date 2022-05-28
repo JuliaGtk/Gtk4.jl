@@ -41,18 +41,19 @@ Below are a few details about the output.
 Constant names are the same as in the C library but with the namespace removed.
 So for example the C constant `G_PRIORITY_DEFAULT` becomes `PRIORITY_DEFAULT`.
 
-Enums and flags are exported in bare submodules. So for example
-`G_SIGNAL_FLAGS_RUN_LAST` becomes `SignalFlags.RUN_LAST`. There is also experimental
-code that outputs julia enums using [CEnum.jl](https://github.com/JuliaInterop/CEnum.jl).
+Enums and flags are exported as [Cenum's](https://github.com/JuliaInterop/CEnum.jl)
+and [BitFlags](https://github.com/jmert/BitFlags.jl), respectively. The name is
+of the form EnumName_INSTANCE_NAME. So for example `G_SIGNAL_FLAGS_RUN_LAST`
+becomes `SignalFlags_RUN_LAST`.
 
 ### GObjects and GInterfaces
 
 GObject and GInterface types are named as in Gtk.jl, with the namespace
-included in the type name (for example `PangoLayout`). This differs from python
-bindings.
+included in the type name (for example `PangoLayout` or `GtkWindow`). This differs
+from python bindings.
 
 Properties are exported as Julia properties and can be accessed and set using
-`my_object.props.property_name`. Alternatively the functions `get_gtk_property` or
+`my_object.property_name`. Alternatively the functions `get_gtk_property` or
 `set_gtk_property!` can be used.
 
 ### Methods

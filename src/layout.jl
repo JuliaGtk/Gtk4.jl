@@ -199,4 +199,17 @@ end
 setindex!(f::GtkOverlay, w::GtkWidget) = G_.set_child(f,w)
 getindex(f::GtkOverlay) = G_.get_child(f)
 
-push!(f::GtkOverlay, x::GtkWidget) = G_.add_overlay(f,x)
+push!(f::GtkOverlay, x::GtkWidget) = (G_.add_overlay(f,x); f)
+
+## GtkStack
+
+GtkStack() = G_.Stack_new()
+push!(s::GtkStack, x::GtkWidget) = (G_.add_child(s,x); s)
+push!(s::GtkStack, x::GtkWidget, name::AbstractString) = (G_.add_named(s,x,name); s)
+push!(s::GtkStack, x::GtkWidget, name::AbstractString, title::AbstractString) = (G_.add_titled(s,x,name,title); s)
+getindex(s::GtkStack, name::AbstractString) = G_.get_child_by_name(s,name)
+setindex!(s::GtkStack, name::AbstractString, x::GtkWidget) = G_.add_named(s,x,name)
+
+GtkStackSwitcher() = G_.StackSwitcher_new()
+stack(w::GtkStackSwitcher) = G_.get_stack(w)
+stack(w::GtkStackSwitcher, s::GtkStack) = G_.set_stack(w,s)

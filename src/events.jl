@@ -1,4 +1,10 @@
 push!(w::GtkWidget, c::GtkEventController) = G_.add_controller(w,c)
+
+"""
+    widget(c::GtkEventController)
+
+Returns the widget associated with an event controller.
+"""
 widget(c::GtkEventController) = G_.get_widget(c)
 
 function GtkEventControllerMotion(widget=nothing)

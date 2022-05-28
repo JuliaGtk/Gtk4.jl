@@ -12,8 +12,8 @@ using CEnum, BitFlags
 eval(include("gen/gsk4_consts"))
 eval(include("gen/gsk4_structs"))
 
-#eval(include("gen/gtk4_methods"))
-#eval(include("gen/gtk4_functions"))
+#eval(include("gen/gsk4_methods"))
+#eval(include("gen/gsk4_functions"))
 
 function __init__()
    gtype_wrapper_cache_init()

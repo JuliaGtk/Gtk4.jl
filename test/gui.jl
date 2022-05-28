@@ -693,6 +693,9 @@ factory = GtkSignalListItemFactory()
 @test length(model) == 4
 @test model[2]=="Orange"
 
+l = [s for s in GLib.GListModel(model)]
+@test length(l) == 4
+
 function setup_cb(f, li)
     set_child(li,GtkLabel(""))
 end

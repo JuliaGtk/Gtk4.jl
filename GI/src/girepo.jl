@@ -29,7 +29,6 @@ end
 
 convert(::Type{Ptr{GIBaseInfo}},w::GIInfo) = w.handle
 unsafe_convert(::Type{Ptr{GIBaseInfo}},w::GIInfo) = w.handle
-#convert(::Type{GIBaseInfo},w::GIInfo) = w.handle
 
 const GIInfoTypesShortNames = (:Invalid, :Function, :Callback, :Struct, :Boxed, :Enum,
                                :Flags, :Object, :Interface, :Constant, :Unknown, :Union,
@@ -59,9 +58,7 @@ function show(io::IO, info::GIInfo)
     print(io,"(:$(get_namespace(info)), :$(get_name(info)))")
 end
 
-#show(io::IO, info::GITypeInfo) = print(io,"GITypeInfo($(extract_type(info)))")
 show(io::IO, info::GIArgInfo) = print(io,"GIArgInfo(:$(get_name(info)),$(extract_type(info)))")
-#showcompact(io::IO, info::GIArgInfo) = show(io,info) # bug in show.jl ?
 
 function show(io::IO, info::GIFunctionInfo)
     print(io, "$(get_namespace(info)).")
@@ -149,8 +146,6 @@ function gi_find_by_name(namespace::GINamespace, name::Symbol)
     GIInfo(info)
 end
 
-#GIInfo(namespace, name::Symbol) = gi_find_by_name(namespace, name)
-
 Base.length(ns::GINamespace) = Int(ccall((:g_irepository_get_n_infos, libgi), Cint,
                                (Ptr{GIRepository}, Cstring), C_NULL, ns))
 Base.iterate(ns::GINamespace, state=1) = state > length(ns) ? nothing : (GIInfo(ccall((:g_irepository_get_info, libgi), Ptr{GIBaseInfo},
@@ -220,8 +215,7 @@ rconvert(t::Type,val,owns) = convert(t,val)
 rconvert(::Type{String}, val,owns) = bytestring(val) #,owns)
 rconvert(::Type{Symbol}, val,owns) = Symbol(bytestring(val))#,owns) )
 rconvert(::Type{GIInfo}, val::Ptr{GIBaseInfo},owns) = GIInfo(val,owns)
-#rconvert{T}(::Type{Union(T,Nothing)}, val,owns) = (val == C_NULL) ? nothing : rconvert(T,val,owns)
-# :(
+
 for typ in [GIInfo, String, GObject]
     @eval rconvert(::Type{Union{$typ,Nothing}}, val,owns) = (val == C_NULL) ? nothing : rconvert($typ,val,owns)
 end

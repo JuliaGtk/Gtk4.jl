@@ -2,7 +2,7 @@ module Gtk4
 
 include("GLib/GLib.jl")
 include("Pango/Pango.jl")
-include("GdkPixbufLib/GdkPixbufLib.jl")
+include("GdkPixbufLib.jl")
 
 include("Graphene.jl")
 include("Gdk4.jl")
@@ -10,7 +10,6 @@ include("Gsk4.jl")
 
 using ..GLib
 
-#using JLLWrappers
 using GTK4_jll, Glib_jll
 using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
 using CEnum, BitFlags

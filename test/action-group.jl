@@ -69,8 +69,6 @@ end
 
 @testset "GListStore" begin
 
-# GListStore
-
 l = GListStore(:GSimpleAction)
 @test length(l)==0
 push!(l, a)
@@ -82,6 +80,9 @@ push!(l, GLib.G_.SimpleAction_new("do-something",nothing))
 
 l2=[i for i in l]
 @test length(l2)==2
+
+deleteat!(l,1)
+@test length(l)==1
 
 empty!(l)
 @test length(l)==0

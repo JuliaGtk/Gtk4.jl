@@ -8,15 +8,6 @@ Gtk4.jl is a is a Julia package providing bindings for the Gtk library: [https:/
 
 Complete Gtk documentation is available at [https://www.gtk.org/docs/](https://www.gtk.org/docs/)
 
-## Installation
-
-Install Gtk4.jl within Julia using
-
-```julia
-using Pkg
-Pkg.add("Gtk4")
-```
-
 ## Precompilation
 
 Gtk4 is precompilable by normal mechanisms.
