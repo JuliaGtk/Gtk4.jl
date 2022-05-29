@@ -5,15 +5,14 @@ Julia bindings using libgobject-introspection.
 
 This builds on https://github.com/bfredl/GI.jl
 
-It's a work in progress but is approaching a basic level of usefulness. It is
-under active development and is currently not ready to be used for anything
+It is under active development and is currently not ready to be used for anything
 outside of GTK4. The goal is to output code that simplifies the creation of
 Julia packages that wrap GObject-based libraries.
 
 This package currently assumes libgirepository is installed (outside Julia).
 It has only been tested on Linux. However, the generated code can point to
 libraries packaged using [BinaryBuilder.jl](https://github.com/JuliaPackaging/BinaryBuilder.jl),
-such as [GTK3_jll](https://github.com/JuliaBinaryWrappers/GTK3_jll.jl).
+such as [GTK4_jll](https://github.com/JuliaBinaryWrappers/GTK4_jll.jl).
 
 ## Status
 

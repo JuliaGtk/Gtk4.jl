@@ -1,10 +1,15 @@
 ## GtkEntry
 
-GtkEntryLeaf() = G_.Entry_new()
+GtkEntry() = G_.Entry_new()
+fraction(progress::GtkEntry) = G_.get_progress_fraction(progress)
+fraction(progress::GtkEntry, frac) = G_.set_progress_fraction(progress, frac)
+pulse(progress::GtkEntry) = G_.progress_pulse(progress)
+pulse_step(progress::GtkEntry, frac) = G_.set_progress_pulse_step(progress, frac)
+pulse_step(progress::GtkEntry) = G_.get_progress_pulse_step(progress)
 
 GtkEntryCompletionLeaf() = G_.EntryCompletion_new()
 
-complete(completion::GtkEntryCompletion) = G_complete(completion)
+complete(completion::GtkEntryCompletion) = G_.complete(completion)
 
 ## GtkScale
 

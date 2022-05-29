@@ -110,7 +110,8 @@ function input_dialog(message::AbstractString, entry_default::AbstractString, bu
     parent = (parent === nothing ? C_NULL : parent)
     widget = GtkMessageDialog(message, buttons, DialogFlags_DESTROY_WITH_PARENT, MessageType_INFO, parent)
     box = content_area(widget)
-    entry = GtkEntry(; text = entry_default)
+    entry = GtkEntry()
+    entry.text = entry_default
     push!(box, entry)
     return widget
 end

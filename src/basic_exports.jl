@@ -7,9 +7,9 @@ export new, width, height, #minsize, maxsize
     selected, hasselection, unselect!, selectall!, unselectall!,
     pagenumber, present, fullscreen, unfullscreen, titlebar,
     maximize, unmaximize, complete, user_action, stack,
-    keyval, prev, next, up, down, popup, menubar,
+    keyval, prev, next, up, down, popup, menubar, menu,
     convert_iter_to_child_iter, convert_child_iter_to_iter, index_from_iter,
-    pulse, widget, group, expand_to_path, set_pixbuf,
+    pulse, fraction, pulse_step, widget, group, expand_to_path, set_pixbuf,
     buffer, cells, search, place_cursor, select_range, selection_bounds,
     create_mark, scroll_to
     #margin, padding, align

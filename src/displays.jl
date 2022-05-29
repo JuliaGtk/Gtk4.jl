@@ -45,13 +45,23 @@ end
 
 set_pixbuf(p::GtkPicture,pb) = G_.set_pixbuf(p,pb)
 
+## GtkProgressBar
+
 GtkProgressBar() = G_.ProgressBar_new()
+fraction(progress::GtkProgressBar) = G_.get_fraction(progress)
+fraction(progress::GtkProgressBar, frac) = G_.set_fraction(progress, frac)
 pulse(progress::GtkProgressBar) = G_.pulse(progress)
+pulse_step(progress::GtkProgressBar, frac) = G_.set_pulse_step(progress, frac)
+pulse_step(progress::GtkProgressBar) = G_.get_pulse_step(progress)
+
+## GtkSpinner
 
 GtkSpinner() = G_.Spinner_new()
 
 start(spinner::GtkSpinner) = G_.start(spinner)
 stop(spinner::GtkSpinner) = G_.stop(spinner)
+
+## GtkStatusbar
 
 GtkStatusbar() = G_.Statusbar_new()
 context_id(status::GtkStatusbar, source) = G_.get_context_id(status, source)

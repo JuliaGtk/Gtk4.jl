@@ -56,4 +56,17 @@ GtkFontButton() = G_.FontButton_new()
 GtkColorButton() = G_.ColorButton_new()
 GtkColorButton(color::GdkRGBA) = G_.ColorButton_new_with_rgba(color)
 
+GtkMenuButton() = G_.MenuButton_new()
+
+function GtkPopoverMenu(model::GMenu, nested = false)
+    if nested
+        G_.PopoverMenu_new_from_model_full(model, PopoverMenuFlags_Nested)
+    else
+        G_.PopoverMenu_new_from_model(model)
+    end
+end
+
 GtkPopoverMenuBar(model::GMenu) = G_.PopoverMenuBar_new_from_model(model)
+
+menu(b::Union{GtkMenuButton,GtkPopoverMenu, GtkPopoverMenuBar}, model) = G_.set_menu_model(b, GMenuModel(model))
+menu(b::Union{GtkMenuButton,GtkPopoverMenu, GtkPopoverMenuBar}) = G_.get_menu_model(b)

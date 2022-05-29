@@ -311,13 +311,15 @@ end
 @testset "Image and Picture" begin
 img = GtkImage(; icon_name = "document-open")
 p = GdkPaintable(img)
+@test isa(p, GdkPaintable)
 empty!(img)
 pic = GtkPicture()
 icon = Matrix{GdkPixbufLib.RGB}(undef, 40, 20)
 fill!(icon, GdkPixbufLib.RGB(0,0xff,0))
 icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGB(0,0,0xff))
-pb=GdkPixbuf(data=icon, has_alpha=false)
+pb=GdkPixbuf(width=100, height=100, has_alpha=false)
 set_pixbuf(pic, pb)
+pic2 = GtkPicture(pb)
 end
 
 @testset "checkbox" begin
@@ -420,6 +422,11 @@ adj = GtkAdjustment(sl)
 @test get_gtk_property(adj,:value,Float64) == 3
 set_gtk_property!(adj,:upper,11)
 empty!(sl)
+
+adj2 = GtkAdjustment(5.0,0.0,10.0,1.0,5.0,5.0)
+
+sl2 = GtkScale(:h,adj2)
+sl3 = GtkScale(:v)
 destroy(w)
 end
 
@@ -429,6 +436,11 @@ w = GtkWindow(sp, "SpinButton")
 G_.set_value(sp, 3)
 @test G_.get_value(sp) == 3
 destroy(w)
+
+adj = GtkAdjustment(5.0,0.0,10.0,1.0,5.0,5.0)
+sp2 = GtkSpinButton(adj, 1.0, 2)
+adj2 = GtkAdjustment(sp2)
+@test adj == adj2
 end
 
 @testset "progressbar" begin
@@ -436,6 +448,10 @@ pb = GtkProgressBar()
 w = GtkWindow(pb, "Progress bar")
 set_gtk_property!(pb,:fraction,0.7)
 @test get_gtk_property(pb,:fraction,Float64) == 0.7
+@test fraction(pb) == 0.7
+fraction(pb,0.8)
+pulse_step(pb,0.1)
+@test pulse_step(pb) == 0.1
 pulse(pb)
 destroy(w)
 end
@@ -456,6 +472,13 @@ e = GtkEntry()
 w = GtkWindow(e, "Entry")
 set_gtk_property!(e,:text,"initial")
 set_gtk_property!(e,:sensitive,false)
+
+@test fraction(e) == 0.0
+fraction(e, 1.0)
+@test fraction(e) == 1.0
+pulse_step(e, 1.0)
+@test pulse_step(e) == 1.0
+pulse(e)
 
 activated = false
 signal_connect(e, :activate) do widget
