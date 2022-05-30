@@ -40,6 +40,11 @@ eval(include("gen/gtk4_functions"))
 
 end
 
+global const lib_version = VersionNumber(
+      G_.get_major_version(),
+      G_.get_minor_version(),
+      G_.get_micro_version())
+
 import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
              convert, empty!, string, popfirst!, size, delete!, in,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy

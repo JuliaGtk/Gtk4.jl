@@ -36,6 +36,11 @@ eval(include("gen/gdkpixbuf_functions"))
 
 end
 
+global const lib_version = VersionNumber(
+      PIXBUF_MAJOR,
+      PIXBUF_MINOR,
+      PIXBUF_MICRO)
+
 struct RGB
     r::UInt8; g::UInt8; b::UInt8
     RGB(r, g, b) = new(r, g, b)

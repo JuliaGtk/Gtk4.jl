@@ -157,6 +157,21 @@ set_gtk_property!(nb,:page,2)
 destroy(w)
 end
 
+@testset "stack" begin
+b = GtkBox(:v)
+w = GtkWindow(b, "Stack")
+sw = GtkStackSwitcher()
+push!(b,sw)
+s = GtkStack()
+push!(b,s)
+stack(sw, s)
+@test stack(sw) == s
+push!(s,GtkLabel("Titled"),"titled","Titled")
+l2 = GtkLabel("Titled #1")
+push!(s, l2, "titled2", "Titled #2")
+@test s["titled2"] == l2
+end
+
 @testset "Panedwindow" begin
 pw = GtkPaned(:h)
 w = GtkWindow(pw,"Panedwindow", 400, 400)

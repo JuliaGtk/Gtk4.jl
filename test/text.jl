@@ -8,6 +8,8 @@ import Gtk4: GtkTextIter
 w = GtkWindow()
 b = GtkTextBuffer()
 b.text = "test"
+l = [c for c in b]
+@test length(b) == length(l)
 v = GtkTextView(b)
 @test v[:buffer, GtkTextBuffer] == b
 @test v[:editable, Bool] == true

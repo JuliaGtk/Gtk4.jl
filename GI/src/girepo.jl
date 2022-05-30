@@ -154,6 +154,10 @@ Base.eltype(::Type{GINamespace}) = GIInfo
 
 getindex(ns::GINamespace, name::Symbol) = gi_find_by_name(ns, name)
 
+function prepend_search_path(s::AbstractString)
+    ccall((:g_irepository_prepend_search_path, libgi), Cvoid, (Cstring,), s)
+end
+
 function get_all(ns::GINamespace, t::Type{T},exclude_deprecated=true) where {T<:GIInfo}
     [info for info=ns if isa(info,t) && (exclude_deprecated ? !is_deprecated(info) : true)]
 end
