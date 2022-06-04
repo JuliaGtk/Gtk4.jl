@@ -234,6 +234,6 @@ c1 = GtkTreeViewColumn("A", r1, Dict([("text",0)]))
 push!(tv,c1)
 win = GtkWindow(tv, "Tree View")
 
-iter = Gtk.iter_from_index(ts, [1])
+iter = Gtk4.iter_from_index(ts, [1])
 ts[iter,1] = "ONE"
 ```

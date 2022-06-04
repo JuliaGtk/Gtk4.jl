@@ -11,7 +11,7 @@ export new, width, height, #minsize, maxsize
     convert_iter_to_child_iter, convert_child_iter_to_iter, index_from_iter,
     pulse, fraction, pulse_step, widget, group, expand_to_path, set_pixbuf,
     buffer, cells, search, place_cursor, select_range, selection_bounds,
-    create_mark, scroll_to
+    create_mark, scroll_to, queue_render
     #margin, padding, align
     #raise, focus, destroy, enabled
 

@@ -31,6 +31,13 @@ insert!(b, _GtkTextIter(b, 1), "t")
 it = _GtkTextIter(b)
 @test it.line == 0 #lines are 0-based
 @test it.starts_line == true
+@test it.ends_line == false
+
+@test it.starts_word == true
+@test it.ends_word == false
+
+@test it.starts_sentence == true
+@test it.ends_sentence == false
 
 b.text = "line1\nline2"
 it = Ref(_GtkTextIter(b))
@@ -57,12 +64,18 @@ it2 = _GtkTextIter(b, 1)
 it2 = _GtkTextIter(b, 2)
 @test (it1 == it2) == false
 @test it1 < it2
+@test it1 <= it2
+@test it2 > it1
 it2 -= 1
 @test Ref(it1) == it2
 
 it3 = _GtkTextIter(b, 2, 1)
 m = GtkTextMark()
-#it4 = _GtkTextIter(b, m)
+it4 = _GtkTextIter(b, m)
+
+@test visible(m) == false
+show(m)
+@test visible(m) == true
 
 # tags
 Gtk4.create_tag(b, "big"; size_points = 24)
@@ -153,6 +166,44 @@ bx, by = Gtk4.window_to_buffer_coords(v, wx, wy)
 iter = Gtk4.text_iter_at_position(v, 3, 2)
 
 destroy(w)
+end
+
+@testset "GtkTextBuffer" begin
+
+tv = GtkTextView()
+b = GtkTextBuffer()
+tv.buffer = b
+
+insert!(b, "text")
+
+splice!(b, _GtkTextIter(b, 5))
+
+@test b.text == "tex"
+
+b[String] = "text"
+
+st=_GtkTextIter(b, 1)
+mi=_GtkTextIter(b, 3)
+en=_GtkTextIter(b, 5)
+
+@test in(mi, st:en)
+
+select_range(b, st:en)
+
+splice!(tv)
+
+@test b.text == ""
+
+b.text = "new"
+st = _GtkTextIter(b, 4)
+place_cursor(b, st)
+insert!(tv, " text")
+@test b.text == "new text"
+
+en = _GtkTextIter(b, 9)
+splice!(tv, en)
+@test b.text == "new tex"
+
 end
 
 end

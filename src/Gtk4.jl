@@ -57,7 +57,7 @@ using Reexport
 import .Graphics: width, height, getgc
 
 using Cairo
-import Cairo: destroy
+# import Cairo: destroy
 
 
 export parent, hasparent, toplevel, visible, destroy
@@ -75,6 +75,7 @@ include("buttons.jl")
 include("displays.jl")
 include("events.jl")
 include("cairo.jl")
+include("gl_area.jl")
 include("lists.jl")
 include("text.jl")
 include("tree.jl")

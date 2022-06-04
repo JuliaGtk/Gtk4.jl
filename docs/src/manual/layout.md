@@ -100,6 +100,20 @@ push!(nb, vbox, "Vertical")  # here "Vertical" is the label for the tab
 push!(nb, hbox, "Horizontal")
 ```
 
+## GtkStack
+
+The `GtkStack` widget is a lot like `GtkNotebook`, but a separate widget `GtkStackSwitcher` controls what page is shown.
+An interface very similar to `GtkNotebook` is defined:
+```julia
+s = GtkStack()
+sw = GtkStackSwitcher()
+vbox = GtkBox(:v)
+push!(vbox, sw)
+push!(vbox, s)
+push!(s, GtkLabel("First label"), "id1", "Label 1")  # first string is an id, second is a label
+push!(s, GtkLabel("Second label"), "id2", "Label 2") # widget can be retrieved using s[id]
+```
+
 ## Iterating over child widgets
 
 For any of the widgets described above (or any `GtkWidget`), you can iterate over all child widgets using
