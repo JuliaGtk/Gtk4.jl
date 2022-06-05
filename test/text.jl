@@ -71,7 +71,7 @@ it2 -= 1
 
 it3 = _GtkTextIter(b, 2, 1)
 m = GtkTextMark()
-it4 = _GtkTextIter(b, m)
+#it4 = _GtkTextIter(b, m)
 
 @test visible(m) == false
 show(m)

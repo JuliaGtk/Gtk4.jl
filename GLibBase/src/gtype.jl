@@ -50,7 +50,7 @@ let jtypes = Expr(:block, :( g_type(::Type{Nothing}) = $(g_type_from_name(:void)
             push!(jtypes.args, :( g_type(::Type{T}) where {T <: $juliatype} = convert(GType, $(fundamental_ids[i])) ))
         end
     end
-    Core.eval(GLib, jtypes)
+    Core.eval(GLibBase, jtypes)
 end
 
 g_isa(gtyp::GType, is_a_type::GType) = ccall((:g_type_is_a, libgobject), Cint, (GType, GType), gtyp, is_a_type) != 0

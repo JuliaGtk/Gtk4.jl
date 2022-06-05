@@ -1,5 +1,7 @@
 module GLib
 
+# TODO: import and reexport GLibBase
+
 if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@optlevel"))
     @eval Base.Experimental.@optlevel 1
 end

@@ -2,12 +2,10 @@ module GI
     using Glib_jll
     using MacroTools, CEnum, BitFlags
 
-    include("GLib/GLib.jl")
-    using .GLib
-    import Glib_jll: libgobject, libglib
-    import .GLib:
-      unsafe_convert,
-      AbstractStringLike, bytestring
+    import GLibBase as GLib
+    import GLibBase:
+      unsafe_convert, GError, GObject, GType, GArray, GPtrArray, GByteArray,
+      GHashTable, GList, GInterface, GBoxed, AbstractStringLike, bytestring
 
     import Base: convert, cconvert, show, length, getindex, setindex!, uppercase, unsafe_convert
     using Libdl
