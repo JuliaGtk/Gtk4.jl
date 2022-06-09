@@ -796,21 +796,24 @@ function symbol_from_lib(libname)
     libname
 end
 
-#there's probably a better way
-function make_ccall(libs, id, rtype, args)
+function make_ccall(slib::Symbol, id, rtype, args)
     argtypes = Expr(:tuple, types(args)...)
-    # look up symbol in our possible libraries
-    lib=libs[findfirst(l->find_symbol(l,id),libs)]
-    slib=symbol_from_lib(lib)
     c_call = :(ccall(($id, $slib), $rtype, $argtypes))
     append!(c_call.args, names(args))
     c_call
 end
 
+function make_ccall(libs, id, rtype, args)
+    # look up symbol in our possible libraries
+    lib=libs[findfirst(l->find_symbol(l,id),libs)]
+    slib=symbol_from_lib(lib)
+    make_ccall(slib, id, rtype, args)
+end
+
 # with some partial-evaluation half-magic
 # (or maybe just jit-compile-time macros)
 # this could be simplified significantly
-function create_method(info::GIFunctionInfo)
+function create_method(info::GIFunctionInfo, liboverride = nothing)
     name = get_name(info)
     flags = get_flags(info)
     args = get_args(info)
@@ -923,8 +926,12 @@ function create_method(info::GIFunctionInfo)
 
     symb = get_symbol(info)
     j_call = Expr(:call, name, jparams(jargs)... )
-    libs=get_shlibs(GINamespace(get_namespace(info)))
-    c_call = :( ret = $(make_ccall(libs, string(symb), rettype.ctype, cargs)))
+    if liboverride === nothing
+        libs=get_shlibs(GINamespace(get_namespace(info)))
+        c_call = :( ret = $(make_ccall(libs, string(symb), rettype.ctype, cargs)))
+    else
+        c_call = :( ret = $(make_ccall(liboverride, string(symb), rettype.ctype, cargs)))
+    end
     if length(retvals) > 1
         retstmt = Expr(:tuple, retvals...)
     elseif length(retvals) ==1

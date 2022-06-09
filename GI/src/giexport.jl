@@ -149,7 +149,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
     struct_skiplist
 end
 
-function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=Symbol[], struct_skiplist=Symbol[])
+function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=Symbol[], struct_skiplist=Symbol[], liboverride=nothing)
     structs=get_structs(ns)
     handled_symbols=Symbol[]
 
@@ -181,7 +181,7 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
             if print_detailed
                 println(get_name(m))
             end
-            fun=create_method(m)
+            fun=create_method(m, liboverride)
             push!(exprs, fun)
             push!(handled_symbols,get_symbol(m))
             created+=1
@@ -240,7 +240,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     end
 end
 
-function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[])
+function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing)
     not_implemented=0
     skipped=0
     created=0
@@ -261,7 +261,7 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
                 continue
             end
             try
-                fun=create_method(m)
+                fun=create_method(m, liboverride)
                 push!(exprs, fun)
                 created+=1
             catch NotImplementedError
@@ -295,7 +295,7 @@ function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=Symbol[])
     skiplist
 end
 
-function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Symbol[])
+function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Symbol[], liboverride=nothing)
     not_implemented=0
     skipped=0
     created=0
@@ -316,7 +316,7 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
                 continue
             end
             try
-                fun=create_method(m)
+                fun=create_method(m, liboverride)
                 push!(exprs, fun)
                 created+=1
             catch NotImplementedError
@@ -327,7 +327,7 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
     end
 end
 
-function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_skiplist=Symbol[])
+function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_skiplist=Symbol[], liboverride=nothing)
     j=0
     skipped=0
     not_implemented=0
@@ -368,7 +368,7 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
         name = get_name(i)
         name = Symbol("$name")
         try
-            fun=create_method(i)
+            fun=create_method(i, liboverride)
             push!(exprs, fun)
             j+=1
         catch NotImplementedError

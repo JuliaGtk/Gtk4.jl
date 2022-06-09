@@ -73,7 +73,10 @@ filter!(x->x≠:Error,struct_skiplist)
 
 struct_skiplist=vcat(struct_skiplist,[:Error,:MarkupParseContext,:Source])
 
-symbols_handled=GI.all_struct_methods!(exprs,ns;print_detailed=true,skiplist=skiplist,struct_skiplist=struct_skiplist)
+# On Linux, which is the only platform where we generate code, glib symbols are present in both libgobject and libglib, and GI finds libgobject
+# first. The override points GI at libglib, which is necessary on Windows because there, libglib's symbols aren't present in libgobject.
+# This can be removed if we get GI working on all platforms.
+symbols_handled=GI.all_struct_methods!(exprs,ns;print_detailed=true,skiplist=skiplist,struct_skiplist=struct_skiplist, liboverride=:libglib)
 
 GI.write_to_file(path,"glib_methods",toplevel)
 
@@ -84,6 +87,6 @@ toplevel, exprs, exports = GI.output_exprs()
 # many of these are skipped because they involve callbacks
 skiplist=[:convert,:atomic_rc_box_release_full,:child_watch_add,:datalist_foreach,:dataset_foreach,:io_add_watch,:io_create_watch,:log_set_handler,:log_set_writer_func,:rc_box_release_full,:spawn_async,:spawn_async_with_fds,:spawn_async_with_pipes,:spawn_async_with_pipes_and_fds,:spawn_sync,:test_add_data_func,:test_add_data_func_full,:test_add_func,:test_queue_destroy,:thread_self, :unix_fd_add_full,:unix_signal_add, :datalist_get_data, :datalist_get_flags, :datalist_id_get_data, :datalist_set_flags, :datalist_unset_flags,:hook_destroy,:hook_destroy_link,:hook_free,:hook_insert_before, :hook_prepend,:hook_unref,:poll, :sequence_get,:sequence_move,:sequence_move_range,:sequence_remove,:sequence_remove_range,:sequence_set,:sequence_swap,:shell_parse_argv,:source_remove_by_funcs_user_data,:test_run_suite, :assertion_message_error,:uri_parse_params, :pattern_match,:pattern_match_string,:log_structured_array,:log_writer_default,:log_writer_format_fields,:log_writer_journald,:log_writer_standard_streams,:parse_debug_string,:child_watch_source_new,:date_strftime,:idle_source_new,:main_current_source,:timeout_source_new,:timeout_source_new_seconds,:unix_fd_source_new,:unix_signal_source_new]
 
-GI.all_functions!(exprs,ns,skiplist=skiplist,symbol_skiplist=symbols_handled)
+GI.all_functions!(exprs,ns,skiplist=skiplist,symbol_skiplist=symbols_handled, liboverride=:libglib)
 
 GI.write_to_file(path,"glib_functions",toplevel)

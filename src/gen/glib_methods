@@ -3,67 +3,67 @@ $(Expr(:toplevel, quote
     function Bytes_new(_data)
         _data = convert(Vector{UInt8}, _data)
         _size = length(_data)
-        ret = ccall(("g_bytes_new", libgobject), Ptr{GBytes}, (Ptr{UInt8}, UInt64), _data, _size)
+        ret = ccall(("g_bytes_new", libglib), Ptr{GBytes}, (Ptr{UInt8}, UInt64), _data, _size)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function Bytes_new_take(_data)
         _data = convert(Vector{UInt8}, _data)
         _size = length(_data)
-        ret = ccall(("g_bytes_new_take", libgobject), Ptr{GBytes}, (Ptr{UInt8}, UInt64), _data, _size)
+        ret = ccall(("g_bytes_new_take", libglib), Ptr{GBytes}, (Ptr{UInt8}, UInt64), _data, _size)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function compare(instance::GBytes, _bytes2::GBytes)
-        ret = ccall(("g_bytes_compare", libgobject), Int32, (Ptr{GBytes}, Ptr{GBytes}), instance, _bytes2)
+        ret = ccall(("g_bytes_compare", libglib), Int32, (Ptr{GBytes}, Ptr{GBytes}), instance, _bytes2)
         ret
     end
     function equal(instance::GBytes, _bytes2::GBytes)
-        ret = ccall(("g_bytes_equal", libgobject), Cint, (Ptr{GBytes}, Ptr{GBytes}), instance, _bytes2)
+        ret = ccall(("g_bytes_equal", libglib), Cint, (Ptr{GBytes}, Ptr{GBytes}), instance, _bytes2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function get_data(instance::GBytes)
         m_size = Ref{UInt64}()
-        ret = ccall(("g_bytes_get_data", libgobject), Ptr{UInt8}, (Ptr{GBytes}, Ptr{UInt64}), instance, m_size)
+        ret = ccall(("g_bytes_get_data", libglib), Ptr{UInt8}, (Ptr{GBytes}, Ptr{UInt64}), instance, m_size)
         _size = m_size[]
         ret
     end
     function get_size(instance::GBytes)
-        ret = ccall(("g_bytes_get_size", libgobject), UInt64, (Ptr{GBytes},), instance)
+        ret = ccall(("g_bytes_get_size", libglib), UInt64, (Ptr{GBytes},), instance)
         ret
     end
     function hash(instance::GBytes)
-        ret = ccall(("g_bytes_hash", libgobject), UInt32, (Ptr{GBytes},), instance)
+        ret = ccall(("g_bytes_hash", libglib), UInt32, (Ptr{GBytes},), instance)
         ret
     end
     function new_from_bytes(instance::GBytes, _offset::Integer, _length::Integer)
-        ret = ccall(("g_bytes_new_from_bytes", libgobject), Ptr{GBytes}, (Ptr{GBytes}, UInt64, UInt64), instance, _offset, _length)
+        ret = ccall(("g_bytes_new_from_bytes", libglib), Ptr{GBytes}, (Ptr{GBytes}, UInt64, UInt64), instance, _offset, _length)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function ref(instance::GBytes)
-        ret = ccall(("g_bytes_ref", libgobject), Ptr{GBytes}, (Ptr{GBytes},), instance)
+        ret = ccall(("g_bytes_ref", libglib), Ptr{GBytes}, (Ptr{GBytes},), instance)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function unref(instance::GBytes)
-        ret = ccall(("g_bytes_unref", libgobject), Nothing, (Ptr{GBytes},), instance)
+        ret = ccall(("g_bytes_unref", libglib), Nothing, (Ptr{GBytes},), instance)
         nothing
     end
     function unref_to_array(instance::GBytes)
-        ret = ccall(("g_bytes_unref_to_array", libgobject), Ptr{GByteArray}, (Ptr{GBytes},), instance)
+        ret = ccall(("g_bytes_unref_to_array", libglib), Ptr{GByteArray}, (Ptr{GBytes},), instance)
         ret2 = convert(GByteArray, ret, true)
         ret2
     end
     function unref_to_data(instance::GBytes)
         m_size = Ref{UInt64}()
-        ret = ccall(("g_bytes_unref_to_data", libgobject), Ptr{UInt8}, (Ptr{GBytes}, Ptr{UInt64}), instance, m_size)
+        ret = ccall(("g_bytes_unref_to_data", libglib), Ptr{UInt8}, (Ptr{GBytes}, Ptr{UInt64}), instance, m_size)
         _size = m_size[]
         ret
     end
     function Checksum_new(_checksum_type)
-        ret = ccall(("g_checksum_new", libgobject), Ptr{GChecksum}, (UInt32,), _checksum_type)
+        ret = ccall(("g_checksum_new", libglib), Ptr{GChecksum}, (UInt32,), _checksum_type)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -72,16 +72,16 @@ $(Expr(:toplevel, quote
         ret2
     end
     function copy(instance::GChecksum)
-        ret = ccall(("g_checksum_copy", libgobject), Ptr{GChecksum}, (Ptr{GChecksum},), instance)
+        ret = ccall(("g_checksum_copy", libglib), Ptr{GChecksum}, (Ptr{GChecksum},), instance)
         ret2 = convert(GChecksum, ret, true)
         ret2
     end
     function free(instance::GChecksum)
-        ret = ccall(("g_checksum_free", libgobject), Nothing, (Ptr{GChecksum},), instance)
+        ret = ccall(("g_checksum_free", libglib), Nothing, (Ptr{GChecksum},), instance)
         nothing
     end
     function get_string(instance::GChecksum)
-        ret = ccall(("g_checksum_get_string", libgobject), Cstring, (Ptr{GChecksum},), instance)
+        ret = ccall(("g_checksum_get_string", libglib), Cstring, (Ptr{GChecksum},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -90,170 +90,170 @@ $(Expr(:toplevel, quote
         ret2
     end
     function reset(instance::GChecksum)
-        ret = ccall(("g_checksum_reset", libgobject), Nothing, (Ptr{GChecksum},), instance)
+        ret = ccall(("g_checksum_reset", libglib), Nothing, (Ptr{GChecksum},), instance)
         nothing
     end
     function update(instance::GChecksum, _data)
         _data = convert(Vector{UInt8}, _data)
         _length = length(_data)
-        ret = ccall(("g_checksum_update", libgobject), Nothing, (Ptr{GChecksum}, Ptr{UInt8}, Int64), instance, _data, _length)
+        ret = ccall(("g_checksum_update", libglib), Nothing, (Ptr{GChecksum}, Ptr{UInt8}, Int64), instance, _data, _length)
         nothing
     end
     function Date_new()
-        ret = ccall(("g_date_new", libgobject), Ptr{_GDate}, ())
+        ret = ccall(("g_date_new", libglib), Ptr{_GDate}, ())
         ret2 = convert(Union{GDate, Ref{_GDate}}, ret, true)
         ret2
     end
     function Date_new_dmy(_day::Integer, _month, _year::Integer)
-        ret = ccall(("g_date_new_dmy", libgobject), Ptr{_GDate}, (UInt8, UInt32, UInt16), _day, _month, _year)
+        ret = ccall(("g_date_new_dmy", libglib), Ptr{_GDate}, (UInt8, UInt32, UInt16), _day, _month, _year)
         ret2 = convert(Union{GDate, Ref{_GDate}}, ret, true)
         ret2
     end
     function Date_new_julian(_julian_day::Integer)
-        ret = ccall(("g_date_new_julian", libgobject), Ptr{_GDate}, (UInt32,), _julian_day)
+        ret = ccall(("g_date_new_julian", libglib), Ptr{_GDate}, (UInt32,), _julian_day)
         ret2 = convert(Union{GDate, Ref{_GDate}}, ret, true)
         ret2
     end
     function add_days(instance::GDate, _n_days::Integer)
-        ret = ccall(("g_date_add_days", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _n_days)
+        ret = ccall(("g_date_add_days", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _n_days)
         nothing
     end
     function add_months(instance::GDate, _n_months::Integer)
-        ret = ccall(("g_date_add_months", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _n_months)
+        ret = ccall(("g_date_add_months", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _n_months)
         nothing
     end
     function add_years(instance::GDate, _n_years::Integer)
-        ret = ccall(("g_date_add_years", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _n_years)
+        ret = ccall(("g_date_add_years", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _n_years)
         nothing
     end
     function clamp(instance::GDate, _min_date::Union{GDate, Ref{_GDate}}, _max_date::Union{GDate, Ref{_GDate}})
-        ret = ccall(("g_date_clamp", libgobject), Nothing, (Ptr{_GDate}, Ptr{_GDate}, Ptr{_GDate}), instance, _min_date, _max_date)
+        ret = ccall(("g_date_clamp", libglib), Nothing, (Ptr{_GDate}, Ptr{_GDate}, Ptr{_GDate}), instance, _min_date, _max_date)
         nothing
     end
     function clear(instance::GDate, _n_dates::Integer)
-        ret = ccall(("g_date_clear", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _n_dates)
+        ret = ccall(("g_date_clear", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _n_dates)
         nothing
     end
     function compare(instance::GDate, _rhs::Union{GDate, Ref{_GDate}})
-        ret = ccall(("g_date_compare", libgobject), Int32, (Ptr{_GDate}, Ptr{_GDate}), instance, _rhs)
+        ret = ccall(("g_date_compare", libglib), Int32, (Ptr{_GDate}, Ptr{_GDate}), instance, _rhs)
         ret
     end
     function copy(instance::GDate)
-        ret = ccall(("g_date_copy", libgobject), Ptr{_GDate}, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_copy", libglib), Ptr{_GDate}, (Ptr{_GDate},), instance)
         ret2 = convert(Union{GDate, Ref{_GDate}}, ret, true)
         ret2
     end
     function days_between(instance::GDate, _date2::Union{GDate, Ref{_GDate}})
-        ret = ccall(("g_date_days_between", libgobject), Int32, (Ptr{_GDate}, Ptr{_GDate}), instance, _date2)
+        ret = ccall(("g_date_days_between", libglib), Int32, (Ptr{_GDate}, Ptr{_GDate}), instance, _date2)
         ret
     end
     function free(instance::GDate)
-        ret = ccall(("g_date_free", libgobject), Nothing, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_free", libglib), Nothing, (Ptr{_GDate},), instance)
         nothing
     end
     function get_day(instance::GDate)
-        ret = ccall(("g_date_get_day", libgobject), UInt8, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_day", libglib), UInt8, (Ptr{_GDate},), instance)
         ret
     end
     function get_day_of_year(instance::GDate)
-        ret = ccall(("g_date_get_day_of_year", libgobject), UInt32, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_day_of_year", libglib), UInt32, (Ptr{_GDate},), instance)
         ret
     end
     function get_iso8601_week_of_year(instance::GDate)
-        ret = ccall(("g_date_get_iso8601_week_of_year", libgobject), UInt32, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_iso8601_week_of_year", libglib), UInt32, (Ptr{_GDate},), instance)
         ret
     end
     function get_julian(instance::GDate)
-        ret = ccall(("g_date_get_julian", libgobject), UInt32, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_julian", libglib), UInt32, (Ptr{_GDate},), instance)
         ret
     end
     function get_monday_week_of_year(instance::GDate)
-        ret = ccall(("g_date_get_monday_week_of_year", libgobject), UInt32, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_monday_week_of_year", libglib), UInt32, (Ptr{_GDate},), instance)
         ret
     end
     function get_month(instance::GDate)
-        ret = ccall(("g_date_get_month", libgobject), UInt32, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_month", libglib), UInt32, (Ptr{_GDate},), instance)
         ret2 = DateMonth(ret)
         ret2
     end
     function get_sunday_week_of_year(instance::GDate)
-        ret = ccall(("g_date_get_sunday_week_of_year", libgobject), UInt32, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_sunday_week_of_year", libglib), UInt32, (Ptr{_GDate},), instance)
         ret
     end
     function get_weekday(instance::GDate)
-        ret = ccall(("g_date_get_weekday", libgobject), UInt32, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_weekday", libglib), UInt32, (Ptr{_GDate},), instance)
         ret2 = DateWeekday(ret)
         ret2
     end
     function get_year(instance::GDate)
-        ret = ccall(("g_date_get_year", libgobject), UInt16, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_get_year", libglib), UInt16, (Ptr{_GDate},), instance)
         ret
     end
     function is_first_of_month(instance::GDate)
-        ret = ccall(("g_date_is_first_of_month", libgobject), Cint, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_is_first_of_month", libglib), Cint, (Ptr{_GDate},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_last_of_month(instance::GDate)
-        ret = ccall(("g_date_is_last_of_month", libgobject), Cint, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_is_last_of_month", libglib), Cint, (Ptr{_GDate},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function order(instance::GDate, _date2::Union{GDate, Ref{_GDate}})
-        ret = ccall(("g_date_order", libgobject), Nothing, (Ptr{_GDate}, Ptr{_GDate}), instance, _date2)
+        ret = ccall(("g_date_order", libglib), Nothing, (Ptr{_GDate}, Ptr{_GDate}), instance, _date2)
         nothing
     end
     function set_day(instance::GDate, _day::Integer)
-        ret = ccall(("g_date_set_day", libgobject), Nothing, (Ptr{_GDate}, UInt8), instance, _day)
+        ret = ccall(("g_date_set_day", libglib), Nothing, (Ptr{_GDate}, UInt8), instance, _day)
         nothing
     end
     function set_dmy(instance::GDate, _day::Integer, _month, _y::Integer)
-        ret = ccall(("g_date_set_dmy", libgobject), Nothing, (Ptr{_GDate}, UInt8, UInt32, UInt16), instance, _day, _month, _y)
+        ret = ccall(("g_date_set_dmy", libglib), Nothing, (Ptr{_GDate}, UInt8, UInt32, UInt16), instance, _day, _month, _y)
         nothing
     end
     function set_julian(instance::GDate, _julian_date::Integer)
-        ret = ccall(("g_date_set_julian", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _julian_date)
+        ret = ccall(("g_date_set_julian", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _julian_date)
         nothing
     end
     function set_month(instance::GDate, _month)
-        ret = ccall(("g_date_set_month", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _month)
+        ret = ccall(("g_date_set_month", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _month)
         nothing
     end
     function set_parse(instance::GDate, _str::Union{AbstractString, Symbol})
-        ret = ccall(("g_date_set_parse", libgobject), Nothing, (Ptr{_GDate}, Cstring), instance, _str)
+        ret = ccall(("g_date_set_parse", libglib), Nothing, (Ptr{_GDate}, Cstring), instance, _str)
         nothing
     end
     function set_time_t(instance::GDate, _timet::Integer)
-        ret = ccall(("g_date_set_time_t", libgobject), Nothing, (Ptr{_GDate}, Int64), instance, _timet)
+        ret = ccall(("g_date_set_time_t", libglib), Nothing, (Ptr{_GDate}, Int64), instance, _timet)
         nothing
     end
     function set_year(instance::GDate, _year::Integer)
-        ret = ccall(("g_date_set_year", libgobject), Nothing, (Ptr{_GDate}, UInt16), instance, _year)
+        ret = ccall(("g_date_set_year", libglib), Nothing, (Ptr{_GDate}, UInt16), instance, _year)
         nothing
     end
     function subtract_days(instance::GDate, _n_days::Integer)
-        ret = ccall(("g_date_subtract_days", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _n_days)
+        ret = ccall(("g_date_subtract_days", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _n_days)
         nothing
     end
     function subtract_months(instance::GDate, _n_months::Integer)
-        ret = ccall(("g_date_subtract_months", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _n_months)
+        ret = ccall(("g_date_subtract_months", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _n_months)
         nothing
     end
     function subtract_years(instance::GDate, _n_years::Integer)
-        ret = ccall(("g_date_subtract_years", libgobject), Nothing, (Ptr{_GDate}, UInt32), instance, _n_years)
+        ret = ccall(("g_date_subtract_years", libglib), Nothing, (Ptr{_GDate}, UInt32), instance, _n_years)
         nothing
     end
     function to_struct_tm(instance::GDate, _tm::Nothing)
-        ret = ccall(("g_date_to_struct_tm", libgobject), Nothing, (Ptr{_GDate}, Ptr{Nothing}), instance, _tm)
+        ret = ccall(("g_date_to_struct_tm", libglib), Nothing, (Ptr{_GDate}, Ptr{Nothing}), instance, _tm)
         nothing
     end
     function valid(instance::GDate)
-        ret = ccall(("g_date_valid", libgobject), Cint, (Ptr{_GDate},), instance)
+        ret = ccall(("g_date_valid", libglib), Cint, (Ptr{_GDate},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function DateTime_new(_tz::GTimeZone, _year::Integer, _month::Integer, _day::Integer, _hour::Integer, _minute::Integer, _seconds::Real)
-        ret = ccall(("g_date_time_new", libgobject), Ptr{GDateTime}, (Ptr{GTimeZone}, Int32, Int32, Int32, Int32, Int32, Float64), _tz, _year, _month, _day, _hour, _minute, _seconds)
+        ret = ccall(("g_date_time_new", libglib), Ptr{GDateTime}, (Ptr{GTimeZone}, Int32, Int32, Int32, Int32, Int32, Float64), _tz, _year, _month, _day, _hour, _minute, _seconds)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -267,7 +267,7 @@ $(Expr(:toplevel, quote
             else
                 _default_tz
             end
-        ret = ccall(("g_date_time_new_from_iso8601", libgobject), Ptr{GDateTime}, (Cstring, Ptr{GTimeZone}), _text, _default_tz)
+        ret = ccall(("g_date_time_new_from_iso8601", libglib), Ptr{GDateTime}, (Cstring, Ptr{GTimeZone}), _text, _default_tz)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -276,7 +276,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DateTime_new_from_unix_local(_t::Integer)
-        ret = ccall(("g_date_time_new_from_unix_local", libgobject), Ptr{GDateTime}, (Int64,), _t)
+        ret = ccall(("g_date_time_new_from_unix_local", libglib), Ptr{GDateTime}, (Int64,), _t)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -285,7 +285,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DateTime_new_from_unix_utc(_t::Integer)
-        ret = ccall(("g_date_time_new_from_unix_utc", libgobject), Ptr{GDateTime}, (Int64,), _t)
+        ret = ccall(("g_date_time_new_from_unix_utc", libglib), Ptr{GDateTime}, (Int64,), _t)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -294,7 +294,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DateTime_new_local(_year::Integer, _month::Integer, _day::Integer, _hour::Integer, _minute::Integer, _seconds::Real)
-        ret = ccall(("g_date_time_new_local", libgobject), Ptr{GDateTime}, (Int32, Int32, Int32, Int32, Int32, Float64), _year, _month, _day, _hour, _minute, _seconds)
+        ret = ccall(("g_date_time_new_local", libglib), Ptr{GDateTime}, (Int32, Int32, Int32, Int32, Int32, Float64), _year, _month, _day, _hour, _minute, _seconds)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -303,7 +303,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DateTime_new_now(_tz::GTimeZone)
-        ret = ccall(("g_date_time_new_now", libgobject), Ptr{GDateTime}, (Ptr{GTimeZone},), _tz)
+        ret = ccall(("g_date_time_new_now", libglib), Ptr{GDateTime}, (Ptr{GTimeZone},), _tz)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -312,7 +312,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DateTime_new_now_local()
-        ret = ccall(("g_date_time_new_now_local", libgobject), Ptr{GDateTime}, ())
+        ret = ccall(("g_date_time_new_now_local", libglib), Ptr{GDateTime}, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -321,7 +321,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DateTime_new_now_utc()
-        ret = ccall(("g_date_time_new_now_utc", libgobject), Ptr{GDateTime}, ())
+        ret = ccall(("g_date_time_new_now_utc", libglib), Ptr{GDateTime}, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -330,7 +330,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DateTime_new_utc(_year::Integer, _month::Integer, _day::Integer, _hour::Integer, _minute::Integer, _seconds::Real)
-        ret = ccall(("g_date_time_new_utc", libgobject), Ptr{GDateTime}, (Int32, Int32, Int32, Int32, Int32, Float64), _year, _month, _day, _hour, _minute, _seconds)
+        ret = ccall(("g_date_time_new_utc", libglib), Ptr{GDateTime}, (Int32, Int32, Int32, Int32, Int32, Float64), _year, _month, _day, _hour, _minute, _seconds)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -339,7 +339,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add(instance::GDateTime, _timespan::Integer)
-        ret = ccall(("g_date_time_add", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Int64), instance, _timespan)
+        ret = ccall(("g_date_time_add", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int64), instance, _timespan)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -348,7 +348,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_days(instance::GDateTime, _days::Integer)
-        ret = ccall(("g_date_time_add_days", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _days)
+        ret = ccall(("g_date_time_add_days", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _days)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -357,7 +357,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_full(instance::GDateTime, _years::Integer, _months::Integer, _days::Integer, _hours::Integer, _minutes::Integer, _seconds::Real)
-        ret = ccall(("g_date_time_add_full", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Int32, Int32, Int32, Int32, Int32, Float64), instance, _years, _months, _days, _hours, _minutes, _seconds)
+        ret = ccall(("g_date_time_add_full", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32, Int32, Int32, Int32, Int32, Float64), instance, _years, _months, _days, _hours, _minutes, _seconds)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -366,7 +366,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_hours(instance::GDateTime, _hours::Integer)
-        ret = ccall(("g_date_time_add_hours", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _hours)
+        ret = ccall(("g_date_time_add_hours", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _hours)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -375,7 +375,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_minutes(instance::GDateTime, _minutes::Integer)
-        ret = ccall(("g_date_time_add_minutes", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _minutes)
+        ret = ccall(("g_date_time_add_minutes", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _minutes)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -384,7 +384,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_months(instance::GDateTime, _months::Integer)
-        ret = ccall(("g_date_time_add_months", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _months)
+        ret = ccall(("g_date_time_add_months", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _months)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -393,7 +393,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_seconds(instance::GDateTime, _seconds::Real)
-        ret = ccall(("g_date_time_add_seconds", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Float64), instance, _seconds)
+        ret = ccall(("g_date_time_add_seconds", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Float64), instance, _seconds)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -402,7 +402,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_weeks(instance::GDateTime, _weeks::Integer)
-        ret = ccall(("g_date_time_add_weeks", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _weeks)
+        ret = ccall(("g_date_time_add_weeks", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _weeks)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -411,7 +411,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_years(instance::GDateTime, _years::Integer)
-        ret = ccall(("g_date_time_add_years", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _years)
+        ret = ccall(("g_date_time_add_years", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _years)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -420,20 +420,20 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compare(instance::GDateTime, _dt2::GDateTime)
-        ret = ccall(("g_date_time_compare", libgobject), Int32, (Ptr{GDateTime}, Ptr{GDateTime}), instance, _dt2)
+        ret = ccall(("g_date_time_compare", libglib), Int32, (Ptr{GDateTime}, Ptr{GDateTime}), instance, _dt2)
         ret
     end
     function difference(instance::GDateTime, _begin::GDateTime)
-        ret = ccall(("g_date_time_difference", libgobject), Int64, (Ptr{GDateTime}, Ptr{GDateTime}), instance, _begin)
+        ret = ccall(("g_date_time_difference", libglib), Int64, (Ptr{GDateTime}, Ptr{GDateTime}), instance, _begin)
         ret
     end
     function equal(instance::GDateTime, _dt2::GDateTime)
-        ret = ccall(("g_date_time_equal", libgobject), Cint, (Ptr{GDateTime}, Ptr{GDateTime}), instance, _dt2)
+        ret = ccall(("g_date_time_equal", libglib), Cint, (Ptr{GDateTime}, Ptr{GDateTime}), instance, _dt2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function format(instance::GDateTime, _format::Union{AbstractString, Symbol})
-        ret = ccall(("g_date_time_format", libgobject), Cstring, (Ptr{GDateTime}, Cstring), instance, _format)
+        ret = ccall(("g_date_time_format", libglib), Cstring, (Ptr{GDateTime}, Cstring), instance, _format)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -442,7 +442,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function format_iso8601(instance::GDateTime)
-        ret = ccall(("g_date_time_format_iso8601", libgobject), Cstring, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_format_iso8601", libglib), Cstring, (Ptr{GDateTime},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -451,48 +451,48 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_day_of_month(instance::GDateTime)
-        ret = ccall(("g_date_time_get_day_of_month", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_day_of_month", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_day_of_week(instance::GDateTime)
-        ret = ccall(("g_date_time_get_day_of_week", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_day_of_week", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_day_of_year(instance::GDateTime)
-        ret = ccall(("g_date_time_get_day_of_year", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_day_of_year", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_hour(instance::GDateTime)
-        ret = ccall(("g_date_time_get_hour", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_hour", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_microsecond(instance::GDateTime)
-        ret = ccall(("g_date_time_get_microsecond", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_microsecond", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_minute(instance::GDateTime)
-        ret = ccall(("g_date_time_get_minute", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_minute", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_month(instance::GDateTime)
-        ret = ccall(("g_date_time_get_month", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_month", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_second(instance::GDateTime)
-        ret = ccall(("g_date_time_get_second", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_second", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_seconds(instance::GDateTime)
-        ret = ccall(("g_date_time_get_seconds", libgobject), Float64, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_seconds", libglib), Float64, (Ptr{GDateTime},), instance)
         ret
     end
     function get_timezone(instance::GDateTime)
-        ret = ccall(("g_date_time_get_timezone", libgobject), Ptr{GTimeZone}, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_timezone", libglib), Ptr{GTimeZone}, (Ptr{GDateTime},), instance)
         ret2 = convert(GTimeZone, ret, false)
         ret2
     end
     function get_timezone_abbreviation(instance::GDateTime)
-        ret = ccall(("g_date_time_get_timezone_abbreviation", libgobject), Cstring, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_timezone_abbreviation", libglib), Cstring, (Ptr{GDateTime},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -501,47 +501,47 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_utc_offset(instance::GDateTime)
-        ret = ccall(("g_date_time_get_utc_offset", libgobject), Int64, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_utc_offset", libglib), Int64, (Ptr{GDateTime},), instance)
         ret
     end
     function get_week_numbering_year(instance::GDateTime)
-        ret = ccall(("g_date_time_get_week_numbering_year", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_week_numbering_year", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_week_of_year(instance::GDateTime)
-        ret = ccall(("g_date_time_get_week_of_year", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_week_of_year", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_year(instance::GDateTime)
-        ret = ccall(("g_date_time_get_year", libgobject), Int32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_get_year", libglib), Int32, (Ptr{GDateTime},), instance)
         ret
     end
     function get_ymd(instance::GDateTime)
         m_year = Ref{Int32}()
         m_month = Ref{Int32}()
         m_day = Ref{Int32}()
-        ret = ccall(("g_date_time_get_ymd", libgobject), Nothing, (Ptr{GDateTime}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, m_year, m_month, m_day)
+        ret = ccall(("g_date_time_get_ymd", libglib), Nothing, (Ptr{GDateTime}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, m_year, m_month, m_day)
         _year = m_year[]
         _month = m_month[]
         _day = m_day[]
         (_year, _month, _day)
     end
     function hash(instance::GDateTime)
-        ret = ccall(("g_date_time_hash", libgobject), UInt32, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_hash", libglib), UInt32, (Ptr{GDateTime},), instance)
         ret
     end
     function is_daylight_savings(instance::GDateTime)
-        ret = ccall(("g_date_time_is_daylight_savings", libgobject), Cint, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_is_daylight_savings", libglib), Cint, (Ptr{GDateTime},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function ref(instance::GDateTime)
-        ret = ccall(("g_date_time_ref", libgobject), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_ref", libglib), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
         ret2 = convert(GDateTime, ret, true)
         ret2
     end
     function to_local(instance::GDateTime)
-        ret = ccall(("g_date_time_to_local", libgobject), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_to_local", libglib), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -550,7 +550,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function to_timezone(instance::GDateTime, _tz::GTimeZone)
-        ret = ccall(("g_date_time_to_timezone", libgobject), Ptr{GDateTime}, (Ptr{GDateTime}, Ptr{GTimeZone}), instance, _tz)
+        ret = ccall(("g_date_time_to_timezone", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Ptr{GTimeZone}), instance, _tz)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -559,11 +559,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function to_unix(instance::GDateTime)
-        ret = ccall(("g_date_time_to_unix", libgobject), Int64, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_to_unix", libglib), Int64, (Ptr{GDateTime},), instance)
         ret
     end
     function to_utc(instance::GDateTime)
-        ret = ccall(("g_date_time_to_utc", libgobject), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_to_utc", libglib), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -572,17 +572,17 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unref(instance::GDateTime)
-        ret = ccall(("g_date_time_unref", libgobject), Nothing, (Ptr{GDateTime},), instance)
+        ret = ccall(("g_date_time_unref", libglib), Nothing, (Ptr{GDateTime},), instance)
         nothing
     end
     function KeyFile_new()
-        ret = ccall(("g_key_file_new", libgobject), Ptr{GKeyFile}, ())
+        ret = ccall(("g_key_file_new", libglib), Ptr{GKeyFile}, ())
         ret2 = convert(GKeyFile, ret, true)
         ret2
     end
     function get_boolean(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_get_boolean", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_boolean", libglib), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -590,7 +590,7 @@ $(Expr(:toplevel, quote
     function get_boolean_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_key_file_get_boolean_list", libgobject), Ptr{Cint}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
+        ret = ccall(("g_key_file_get_boolean_list", libglib), Ptr{Cint}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Cint}, ret, m_length[]))
@@ -612,7 +612,7 @@ $(Expr(:toplevel, quote
                 _key
             end
         err = err_buf()
-        ret = ccall(("g_key_file_get_comment", libgobject), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_comment", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -623,14 +623,14 @@ $(Expr(:toplevel, quote
     end
     function get_double(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_get_double", libgobject), Float64, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_double", libglib), Float64, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret
     end
     function get_double_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_key_file_get_double_list", libgobject), Ptr{Float64}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
+        ret = ccall(("g_key_file_get_double_list", libglib), Ptr{Float64}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Float64}, ret, m_length[]))
@@ -642,7 +642,7 @@ $(Expr(:toplevel, quote
     end
     function get_groups(instance::GKeyFile)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_key_file_get_groups", libgobject), Ptr{Cstring}, (Ptr{GKeyFile}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_key_file_get_groups", libglib), Ptr{Cstring}, (Ptr{GKeyFile}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -654,20 +654,20 @@ $(Expr(:toplevel, quote
     end
     function get_int64(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_get_int64", libgobject), Int64, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_int64", libglib), Int64, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret
     end
     function get_integer(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_get_integer", libgobject), Int32, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_integer", libglib), Int32, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret
     end
     function get_integer_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_key_file_get_integer_list", libgobject), Ptr{Int32}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
+        ret = ccall(("g_key_file_get_integer_list", libglib), Ptr{Int32}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Int32}, ret, m_length[]))
@@ -680,7 +680,7 @@ $(Expr(:toplevel, quote
     function get_keys(instance::GKeyFile, _group_name::Union{AbstractString, Symbol})
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_key_file_get_keys", libgobject), Ptr{Cstring}, (Ptr{GKeyFile}, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, m_length, err)
+        ret = ccall(("g_key_file_get_keys", libglib), Ptr{Cstring}, (Ptr{GKeyFile}, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, m_length, err)
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
@@ -697,7 +697,7 @@ $(Expr(:toplevel, quote
             else
                 _locale
             end
-        ret = ccall(("g_key_file_get_locale_for_key", libgobject), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _locale)
+        ret = ccall(("g_key_file_get_locale_for_key", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _locale)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -712,7 +712,7 @@ $(Expr(:toplevel, quote
                 _locale
             end
         err = err_buf()
-        ret = ccall(("g_key_file_get_locale_string", libgobject), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale, err)
+        ret = ccall(("g_key_file_get_locale_string", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -729,7 +729,7 @@ $(Expr(:toplevel, quote
             end
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_key_file_get_locale_string_list", libgobject), Ptr{Cstring}, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale, m_length, err)
+        ret = ccall(("g_key_file_get_locale_string_list", libglib), Ptr{Cstring}, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale, m_length, err)
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
@@ -741,7 +741,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_start_group(instance::GKeyFile)
-        ret = ccall(("g_key_file_get_start_group", libgobject), Cstring, (Ptr{GKeyFile},), instance)
+        ret = ccall(("g_key_file_get_start_group", libglib), Cstring, (Ptr{GKeyFile},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -751,7 +751,7 @@ $(Expr(:toplevel, quote
     end
     function get_string(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_get_string", libgobject), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_string", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -763,7 +763,7 @@ $(Expr(:toplevel, quote
     function get_string_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_key_file_get_string_list", libgobject), Ptr{Cstring}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
+        ret = ccall(("g_key_file_get_string_list", libglib), Ptr{Cstring}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
@@ -776,13 +776,13 @@ $(Expr(:toplevel, quote
     end
     function get_uint64(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_get_uint64", libgobject), UInt64, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_uint64", libglib), UInt64, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret
     end
     function get_value(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_get_value", libgobject), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_value", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -792,20 +792,20 @@ $(Expr(:toplevel, quote
         ret2
     end
     function has_group(instance::GKeyFile, _group_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_key_file_has_group", libgobject), Cint, (Ptr{GKeyFile}, Cstring), instance, _group_name)
+        ret = ccall(("g_key_file_has_group", libglib), Cint, (Ptr{GKeyFile}, Cstring), instance, _group_name)
         ret2 = convert(Bool, ret)
         ret2
     end
     function load_from_bytes(instance::GKeyFile, _bytes::GBytes, _flags)
         err = err_buf()
-        ret = ccall(("g_key_file_load_from_bytes", libgobject), Cint, (Ptr{GKeyFile}, Ptr{GBytes}, UInt32, Ptr{Ptr{GError}}), instance, _bytes, _flags, err)
+        ret = ccall(("g_key_file_load_from_bytes", libglib), Cint, (Ptr{GKeyFile}, Ptr{GBytes}, UInt32, Ptr{Ptr{GError}}), instance, _bytes, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function load_from_data(instance::GKeyFile, _data::Union{AbstractString, Symbol}, _length::Integer, _flags)
         err = err_buf()
-        ret = ccall(("g_key_file_load_from_data", libgobject), Cint, (Ptr{GKeyFile}, Cstring, UInt64, UInt32, Ptr{Ptr{GError}}), instance, _data, _length, _flags, err)
+        ret = ccall(("g_key_file_load_from_data", libglib), Cint, (Ptr{GKeyFile}, Cstring, UInt64, UInt32, Ptr{Ptr{GError}}), instance, _data, _length, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -813,7 +813,7 @@ $(Expr(:toplevel, quote
     function load_from_data_dirs(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _flags)
         m_full_path = Ref{Cstring}()
         err = err_buf()
-        ret = ccall(("g_key_file_load_from_data_dirs", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Cstring}, UInt32, Ptr{Ptr{GError}}), instance, _file, m_full_path, _flags, err)
+        ret = ccall(("g_key_file_load_from_data_dirs", libglib), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Cstring}, UInt32, Ptr{Ptr{GError}}), instance, _file, m_full_path, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _full_path = m_full_path[]
@@ -827,7 +827,7 @@ $(Expr(:toplevel, quote
     function load_from_dirs(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _search_dirs, _flags)
         m_full_path = Ref{Cstring}()
         err = err_buf()
-        ret = ccall(("g_key_file_load_from_dirs", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Cstring}, Ptr{Cstring}, UInt32, Ptr{Ptr{GError}}), instance, _file, _search_dirs, m_full_path, _flags, err)
+        ret = ccall(("g_key_file_load_from_dirs", libglib), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Cstring}, Ptr{Cstring}, UInt32, Ptr{Ptr{GError}}), instance, _file, _search_dirs, m_full_path, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _full_path = m_full_path[]
@@ -840,7 +840,7 @@ $(Expr(:toplevel, quote
     end
     function load_from_file(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
-        ret = ccall(("g_key_file_load_from_file", libgobject), Cint, (Ptr{GKeyFile}, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _file, _flags, err)
+        ret = ccall(("g_key_file_load_from_file", libglib), Cint, (Ptr{GKeyFile}, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _file, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -857,40 +857,40 @@ $(Expr(:toplevel, quote
                 _key
             end
         err = err_buf()
-        ret = ccall(("g_key_file_remove_comment", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_remove_comment", libglib), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function remove_group(instance::GKeyFile, _group_name::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_remove_group", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Ptr{GError}}), instance, _group_name, err)
+        ret = ccall(("g_key_file_remove_group", libglib), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Ptr{GError}}), instance, _group_name, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function remove_key(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_remove_key", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_remove_key", libglib), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function save_to_file(instance::GKeyFile, _filename::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_key_file_save_to_file", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Ptr{GError}}), instance, _filename, err)
+        ret = ccall(("g_key_file_save_to_file", libglib), Cint, (Ptr{GKeyFile}, Cstring, Ptr{Ptr{GError}}), instance, _filename, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function set_boolean(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _value::Bool)
-        ret = ccall(("g_key_file_set_boolean", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cint), instance, _group_name, _key, _value)
+        ret = ccall(("g_key_file_set_boolean", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cint), instance, _group_name, _key, _value)
         nothing
     end
     function set_boolean_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _list)
         _list = convert(Vector{Cint}, _list)
         _length = length(_list)
-        ret = ccall(("g_key_file_set_boolean_list", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Cint}, UInt64), instance, _group_name, _key, _list, _length)
+        ret = ccall(("g_key_file_set_boolean_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Cint}, UInt64), instance, _group_name, _key, _list, _length)
         nothing
     end
     function set_comment(instance::GKeyFile, _group_name::Maybe(Union{AbstractString, Symbol}), _key::Maybe(Union{AbstractString, Symbol}), _comment::Union{AbstractString, Symbol})
@@ -905,69 +905,69 @@ $(Expr(:toplevel, quote
                 _key
             end
         err = err_buf()
-        ret = ccall(("g_key_file_set_comment", libgobject), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, _comment, err)
+        ret = ccall(("g_key_file_set_comment", libglib), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, _comment, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function set_double(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _value::Real)
-        ret = ccall(("g_key_file_set_double", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Float64), instance, _group_name, _key, _value)
+        ret = ccall(("g_key_file_set_double", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Float64), instance, _group_name, _key, _value)
         nothing
     end
     function set_double_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _list)
         _list = convert(Vector{Float64}, _list)
         _length = length(_list)
-        ret = ccall(("g_key_file_set_double_list", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Float64}, UInt64), instance, _group_name, _key, _list, _length)
+        ret = ccall(("g_key_file_set_double_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Float64}, UInt64), instance, _group_name, _key, _list, _length)
         nothing
     end
     function set_int64(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _value::Integer)
-        ret = ccall(("g_key_file_set_int64", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Int64), instance, _group_name, _key, _value)
+        ret = ccall(("g_key_file_set_int64", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Int64), instance, _group_name, _key, _value)
         nothing
     end
     function set_integer(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _value::Integer)
-        ret = ccall(("g_key_file_set_integer", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Int32), instance, _group_name, _key, _value)
+        ret = ccall(("g_key_file_set_integer", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Int32), instance, _group_name, _key, _value)
         nothing
     end
     function set_integer_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _list)
         _list = convert(Vector{Int32}, _list)
         _length = length(_list)
-        ret = ccall(("g_key_file_set_integer_list", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Int32}, UInt64), instance, _group_name, _key, _list, _length)
+        ret = ccall(("g_key_file_set_integer_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Int32}, UInt64), instance, _group_name, _key, _list, _length)
         nothing
     end
     function set_list_separator(instance::GKeyFile, _separator::Integer)
-        ret = ccall(("g_key_file_set_list_separator", libgobject), Nothing, (Ptr{GKeyFile}, Int8), instance, _separator)
+        ret = ccall(("g_key_file_set_list_separator", libglib), Nothing, (Ptr{GKeyFile}, Int8), instance, _separator)
         nothing
     end
     function set_locale_string(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _locale::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol})
-        ret = ccall(("g_key_file_set_locale_string", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Cstring), instance, _group_name, _key, _locale, _string)
+        ret = ccall(("g_key_file_set_locale_string", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Cstring), instance, _group_name, _key, _locale, _string)
         nothing
     end
     function set_locale_string_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _locale::Union{AbstractString, Symbol}, _list)
         _length = length(_list)
-        ret = ccall(("g_key_file_set_locale_string_list", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Cstring}, UInt64), instance, _group_name, _key, _locale, _list, _length)
+        ret = ccall(("g_key_file_set_locale_string_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Cstring}, UInt64), instance, _group_name, _key, _locale, _list, _length)
         nothing
     end
     function set_string(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol})
-        ret = ccall(("g_key_file_set_string", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _string)
+        ret = ccall(("g_key_file_set_string", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _string)
         nothing
     end
     function set_string_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _list)
         _length = length(_list)
-        ret = ccall(("g_key_file_set_string_list", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Cstring}, UInt64), instance, _group_name, _key, _list, _length)
+        ret = ccall(("g_key_file_set_string_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Cstring}, UInt64), instance, _group_name, _key, _list, _length)
         nothing
     end
     function set_uint64(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _value::Integer)
-        ret = ccall(("g_key_file_set_uint64", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, UInt64), instance, _group_name, _key, _value)
+        ret = ccall(("g_key_file_set_uint64", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, UInt64), instance, _group_name, _key, _value)
         nothing
     end
     function set_value(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol})
-        ret = ccall(("g_key_file_set_value", libgobject), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _value)
+        ret = ccall(("g_key_file_set_value", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _value)
         nothing
     end
     function to_data(instance::GKeyFile)
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_key_file_to_data", libgobject), Cstring, (Ptr{GKeyFile}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, m_length, err)
+        ret = ccall(("g_key_file_to_data", libglib), Cstring, (Ptr{GKeyFile}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, m_length, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -978,68 +978,68 @@ $(Expr(:toplevel, quote
         (ret2, _length)
     end
     function unref(instance::GKeyFile)
-        ret = ccall(("g_key_file_unref", libgobject), Nothing, (Ptr{GKeyFile},), instance)
+        ret = ccall(("g_key_file_unref", libglib), Nothing, (Ptr{GKeyFile},), instance)
         nothing
     end
     function MainContext_new()
-        ret = ccall(("g_main_context_new", libgobject), Ptr{GMainContext}, ())
+        ret = ccall(("g_main_context_new", libglib), Ptr{GMainContext}, ())
         ret2 = convert(GMainContext, ret, true)
         ret2
     end
     function acquire(instance::GMainContext)
-        ret = ccall(("g_main_context_acquire", libgobject), Cint, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_acquire", libglib), Cint, (Ptr{GMainContext},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function dispatch(instance::GMainContext)
-        ret = ccall(("g_main_context_dispatch", libgobject), Nothing, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_dispatch", libglib), Nothing, (Ptr{GMainContext},), instance)
         nothing
     end
     function is_owner(instance::GMainContext)
-        ret = ccall(("g_main_context_is_owner", libgobject), Cint, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_is_owner", libglib), Cint, (Ptr{GMainContext},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function iteration(instance::GMainContext, _may_block::Bool)
-        ret = ccall(("g_main_context_iteration", libgobject), Cint, (Ptr{GMainContext}, Cint), instance, _may_block)
+        ret = ccall(("g_main_context_iteration", libglib), Cint, (Ptr{GMainContext}, Cint), instance, _may_block)
         ret2 = convert(Bool, ret)
         ret2
     end
     function pending(instance::GMainContext)
-        ret = ccall(("g_main_context_pending", libgobject), Cint, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_pending", libglib), Cint, (Ptr{GMainContext},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function pop_thread_default(instance::GMainContext)
-        ret = ccall(("g_main_context_pop_thread_default", libgobject), Nothing, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_pop_thread_default", libglib), Nothing, (Ptr{GMainContext},), instance)
         nothing
     end
     function prepare(instance::GMainContext)
         m_priority = Ref{Int32}()
-        ret = ccall(("g_main_context_prepare", libgobject), Cint, (Ptr{GMainContext}, Ptr{Int32}), instance, m_priority)
+        ret = ccall(("g_main_context_prepare", libglib), Cint, (Ptr{GMainContext}, Ptr{Int32}), instance, m_priority)
         ret2 = convert(Bool, ret)
         _priority = m_priority[]
         (ret2, _priority)
     end
     function push_thread_default(instance::GMainContext)
-        ret = ccall(("g_main_context_push_thread_default", libgobject), Nothing, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_push_thread_default", libglib), Nothing, (Ptr{GMainContext},), instance)
         nothing
     end
     function ref(instance::GMainContext)
-        ret = ccall(("g_main_context_ref", libgobject), Ptr{GMainContext}, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_ref", libglib), Ptr{GMainContext}, (Ptr{GMainContext},), instance)
         ret2 = convert(GMainContext, ret, true)
         ret2
     end
     function release(instance::GMainContext)
-        ret = ccall(("g_main_context_release", libgobject), Nothing, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_release", libglib), Nothing, (Ptr{GMainContext},), instance)
         nothing
     end
     function unref(instance::GMainContext)
-        ret = ccall(("g_main_context_unref", libgobject), Nothing, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_unref", libglib), Nothing, (Ptr{GMainContext},), instance)
         nothing
     end
     function wakeup(instance::GMainContext)
-        ret = ccall(("g_main_context_wakeup", libgobject), Nothing, (Ptr{GMainContext},), instance)
+        ret = ccall(("g_main_context_wakeup", libglib), Nothing, (Ptr{GMainContext},), instance)
         nothing
     end
     function MainLoop_new(_context::Maybe(GMainContext), _is_running::Bool)
@@ -1048,58 +1048,58 @@ $(Expr(:toplevel, quote
             else
                 _context
             end
-        ret = ccall(("g_main_loop_new", libgobject), Ptr{GMainLoop}, (Ptr{GMainContext}, Cint), _context, _is_running)
+        ret = ccall(("g_main_loop_new", libglib), Ptr{GMainLoop}, (Ptr{GMainContext}, Cint), _context, _is_running)
         ret2 = convert(GMainLoop, ret, true)
         ret2
     end
     function get_context(instance::GMainLoop)
-        ret = ccall(("g_main_loop_get_context", libgobject), Ptr{GMainContext}, (Ptr{GMainLoop},), instance)
+        ret = ccall(("g_main_loop_get_context", libglib), Ptr{GMainContext}, (Ptr{GMainLoop},), instance)
         ret2 = convert(GMainContext, ret, false)
         ret2
     end
     function is_running(instance::GMainLoop)
-        ret = ccall(("g_main_loop_is_running", libgobject), Cint, (Ptr{GMainLoop},), instance)
+        ret = ccall(("g_main_loop_is_running", libglib), Cint, (Ptr{GMainLoop},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function quit(instance::GMainLoop)
-        ret = ccall(("g_main_loop_quit", libgobject), Nothing, (Ptr{GMainLoop},), instance)
+        ret = ccall(("g_main_loop_quit", libglib), Nothing, (Ptr{GMainLoop},), instance)
         nothing
     end
     function ref(instance::GMainLoop)
-        ret = ccall(("g_main_loop_ref", libgobject), Ptr{GMainLoop}, (Ptr{GMainLoop},), instance)
+        ret = ccall(("g_main_loop_ref", libglib), Ptr{GMainLoop}, (Ptr{GMainLoop},), instance)
         ret2 = convert(GMainLoop, ret, true)
         ret2
     end
     function run(instance::GMainLoop)
-        ret = ccall(("g_main_loop_run", libgobject), Nothing, (Ptr{GMainLoop},), instance)
+        ret = ccall(("g_main_loop_run", libglib), Nothing, (Ptr{GMainLoop},), instance)
         nothing
     end
     function unref(instance::GMainLoop)
-        ret = ccall(("g_main_loop_unref", libgobject), Nothing, (Ptr{GMainLoop},), instance)
+        ret = ccall(("g_main_loop_unref", libglib), Nothing, (Ptr{GMainLoop},), instance)
         nothing
     end
     function MappedFile_new(_filename::Union{AbstractString, Symbol}, _writable::Bool)
         err = err_buf()
-        ret = ccall(("g_mapped_file_new", libgobject), Ptr{GMappedFile}, (Cstring, Cint, Ptr{Ptr{GError}}), _filename, _writable, err)
+        ret = ccall(("g_mapped_file_new", libglib), Ptr{GMappedFile}, (Cstring, Cint, Ptr{Ptr{GError}}), _filename, _writable, err)
         check_err(err)
         ret2 = convert(GMappedFile, ret, true)
         ret2
     end
     function MappedFile_new_from_fd(_fd::Integer, _writable::Bool)
         err = err_buf()
-        ret = ccall(("g_mapped_file_new_from_fd", libgobject), Ptr{GMappedFile}, (Int32, Cint, Ptr{Ptr{GError}}), _fd, _writable, err)
+        ret = ccall(("g_mapped_file_new_from_fd", libglib), Ptr{GMappedFile}, (Int32, Cint, Ptr{Ptr{GError}}), _fd, _writable, err)
         check_err(err)
         ret2 = convert(GMappedFile, ret, true)
         ret2
     end
     function get_bytes(instance::GMappedFile)
-        ret = ccall(("g_mapped_file_get_bytes", libgobject), Ptr{GBytes}, (Ptr{GMappedFile},), instance)
+        ret = ccall(("g_mapped_file_get_bytes", libglib), Ptr{GBytes}, (Ptr{GMappedFile},), instance)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function get_contents(instance::GMappedFile)
-        ret = ccall(("g_mapped_file_get_contents", libgobject), Cstring, (Ptr{GMappedFile},), instance)
+        ret = ccall(("g_mapped_file_get_contents", libglib), Cstring, (Ptr{GMappedFile},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1108,21 +1108,21 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_length(instance::GMappedFile)
-        ret = ccall(("g_mapped_file_get_length", libgobject), UInt64, (Ptr{GMappedFile},), instance)
+        ret = ccall(("g_mapped_file_get_length", libglib), UInt64, (Ptr{GMappedFile},), instance)
         ret
     end
     function ref(instance::GMappedFile)
-        ret = ccall(("g_mapped_file_ref", libgobject), Ptr{GMappedFile}, (Ptr{GMappedFile},), instance)
+        ret = ccall(("g_mapped_file_ref", libglib), Ptr{GMappedFile}, (Ptr{GMappedFile},), instance)
         ret2 = convert(GMappedFile, ret, true)
         ret2
     end
     function unref(instance::GMappedFile)
-        ret = ccall(("g_mapped_file_unref", libgobject), Nothing, (Ptr{GMappedFile},), instance)
+        ret = ccall(("g_mapped_file_unref", libglib), Nothing, (Ptr{GMappedFile},), instance)
         nothing
     end
     function expand_references(instance::GMatchInfo, _string_to_expand::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_match_info_expand_references", libgobject), Cstring, (Ptr{GMatchInfo}, Cstring, Ptr{Ptr{GError}}), instance, _string_to_expand, err)
+        ret = ccall(("g_match_info_expand_references", libglib), Cstring, (Ptr{GMatchInfo}, Cstring, Ptr{Ptr{GError}}), instance, _string_to_expand, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -1132,7 +1132,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function fetch(instance::GMatchInfo, _match_num::Integer)
-        ret = ccall(("g_match_info_fetch", libgobject), Cstring, (Ptr{GMatchInfo}, Int32), instance, _match_num)
+        ret = ccall(("g_match_info_fetch", libglib), Cstring, (Ptr{GMatchInfo}, Int32), instance, _match_num)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1141,7 +1141,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function fetch_all(instance::GMatchInfo)
-        ret = ccall(("g_match_info_fetch_all", libgobject), Ptr{Cstring}, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_fetch_all", libglib), Ptr{Cstring}, (Ptr{GMatchInfo},), instance)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -1151,7 +1151,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function fetch_named(instance::GMatchInfo, _name::Union{AbstractString, Symbol})
-        ret = ccall(("g_match_info_fetch_named", libgobject), Cstring, (Ptr{GMatchInfo}, Cstring), instance, _name)
+        ret = ccall(("g_match_info_fetch_named", libglib), Cstring, (Ptr{GMatchInfo}, Cstring), instance, _name)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1162,7 +1162,7 @@ $(Expr(:toplevel, quote
     function fetch_named_pos(instance::GMatchInfo, _name::Union{AbstractString, Symbol})
         m_start_pos = Ref{Int32}()
         m_end_pos = Ref{Int32}()
-        ret = ccall(("g_match_info_fetch_named_pos", libgobject), Cint, (Ptr{GMatchInfo}, Cstring, Ptr{Int32}, Ptr{Int32}), instance, _name, m_start_pos, m_end_pos)
+        ret = ccall(("g_match_info_fetch_named_pos", libglib), Cint, (Ptr{GMatchInfo}, Cstring, Ptr{Int32}, Ptr{Int32}), instance, _name, m_start_pos, m_end_pos)
         ret2 = convert(Bool, ret)
         _start_pos = m_start_pos[]
         _end_pos = m_end_pos[]
@@ -1171,27 +1171,27 @@ $(Expr(:toplevel, quote
     function fetch_pos(instance::GMatchInfo, _match_num::Integer)
         m_start_pos = Ref{Int32}()
         m_end_pos = Ref{Int32}()
-        ret = ccall(("g_match_info_fetch_pos", libgobject), Cint, (Ptr{GMatchInfo}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _match_num, m_start_pos, m_end_pos)
+        ret = ccall(("g_match_info_fetch_pos", libglib), Cint, (Ptr{GMatchInfo}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _match_num, m_start_pos, m_end_pos)
         ret2 = convert(Bool, ret)
         _start_pos = m_start_pos[]
         _end_pos = m_end_pos[]
         (ret2, _start_pos, _end_pos)
     end
     function free(instance::GMatchInfo)
-        ret = ccall(("g_match_info_free", libgobject), Nothing, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_free", libglib), Nothing, (Ptr{GMatchInfo},), instance)
         nothing
     end
     function get_match_count(instance::GMatchInfo)
-        ret = ccall(("g_match_info_get_match_count", libgobject), Int32, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_get_match_count", libglib), Int32, (Ptr{GMatchInfo},), instance)
         ret
     end
     function get_regex(instance::GMatchInfo)
-        ret = ccall(("g_match_info_get_regex", libgobject), Ptr{GRegex}, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_get_regex", libglib), Ptr{GRegex}, (Ptr{GMatchInfo},), instance)
         ret2 = convert(GRegex, ret, true)
         ret2
     end
     function get_string(instance::GMatchInfo)
-        ret = ccall(("g_match_info_get_string", libgobject), Cstring, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_get_string", libglib), Cstring, (Ptr{GMatchInfo},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1200,34 +1200,34 @@ $(Expr(:toplevel, quote
         ret2
     end
     function is_partial_match(instance::GMatchInfo)
-        ret = ccall(("g_match_info_is_partial_match", libgobject), Cint, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_is_partial_match", libglib), Cint, (Ptr{GMatchInfo},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function matches(instance::GMatchInfo)
-        ret = ccall(("g_match_info_matches", libgobject), Cint, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_matches", libglib), Cint, (Ptr{GMatchInfo},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function next(instance::GMatchInfo)
         err = err_buf()
-        ret = ccall(("g_match_info_next", libgobject), Cint, (Ptr{GMatchInfo}, Ptr{Ptr{GError}}), instance, err)
+        ret = ccall(("g_match_info_next", libglib), Cint, (Ptr{GMatchInfo}, Ptr{Ptr{GError}}), instance, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function ref(instance::GMatchInfo)
-        ret = ccall(("g_match_info_ref", libgobject), Ptr{GMatchInfo}, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_ref", libglib), Ptr{GMatchInfo}, (Ptr{GMatchInfo},), instance)
         ret2 = convert(GMatchInfo, ret, true)
         ret2
     end
     function unref(instance::GMatchInfo)
-        ret = ccall(("g_match_info_unref", libgobject), Nothing, (Ptr{GMatchInfo},), instance)
+        ret = ccall(("g_match_info_unref", libglib), Nothing, (Ptr{GMatchInfo},), instance)
         nothing
     end
     function Regex_new(_pattern::Union{AbstractString, Symbol}, _compile_options, _match_options)
         err = err_buf()
-        ret = ccall(("g_regex_new", libgobject), Ptr{GRegex}, (Cstring, UInt32, UInt32, Ptr{Ptr{GError}}), _pattern, _compile_options, _match_options, err)
+        ret = ccall(("g_regex_new", libglib), Ptr{GRegex}, (Cstring, UInt32, UInt32, Ptr{Ptr{GError}}), _pattern, _compile_options, _match_options, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -1237,34 +1237,34 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_capture_count(instance::GRegex)
-        ret = ccall(("g_regex_get_capture_count", libgobject), Int32, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_get_capture_count", libglib), Int32, (Ptr{GRegex},), instance)
         ret
     end
     function get_compile_flags(instance::GRegex)
-        ret = ccall(("g_regex_get_compile_flags", libgobject), UInt32, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_get_compile_flags", libglib), UInt32, (Ptr{GRegex},), instance)
         ret2 = RegexCompileFlags(ret)
         ret2
     end
     function get_has_cr_or_lf(instance::GRegex)
-        ret = ccall(("g_regex_get_has_cr_or_lf", libgobject), Cint, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_get_has_cr_or_lf", libglib), Cint, (Ptr{GRegex},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function get_match_flags(instance::GRegex)
-        ret = ccall(("g_regex_get_match_flags", libgobject), UInt32, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_get_match_flags", libglib), UInt32, (Ptr{GRegex},), instance)
         ret2 = RegexMatchFlags(ret)
         ret2
     end
     function get_max_backref(instance::GRegex)
-        ret = ccall(("g_regex_get_max_backref", libgobject), Int32, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_get_max_backref", libglib), Int32, (Ptr{GRegex},), instance)
         ret
     end
     function get_max_lookbehind(instance::GRegex)
-        ret = ccall(("g_regex_get_max_lookbehind", libgobject), Int32, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_get_max_lookbehind", libglib), Int32, (Ptr{GRegex},), instance)
         ret
     end
     function get_pattern(instance::GRegex)
-        ret = ccall(("g_regex_get_pattern", libgobject), Cstring, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_get_pattern", libglib), Cstring, (Ptr{GRegex},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1273,12 +1273,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_string_number(instance::GRegex, _name::Union{AbstractString, Symbol})
-        ret = ccall(("g_regex_get_string_number", libgobject), Int32, (Ptr{GRegex}, Cstring), instance, _name)
+        ret = ccall(("g_regex_get_string_number", libglib), Int32, (Ptr{GRegex}, Cstring), instance, _name)
         ret
     end
     function match(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options)
         m_match_info = Ref{Ptr{GMatchInfo}}()
-        ret = ccall(("g_regex_match", libgobject), Cint, (Ptr{GRegex}, Cstring, UInt32, Ptr{Ptr{GMatchInfo}}), instance, _string, _match_options, m_match_info)
+        ret = ccall(("g_regex_match", libglib), Cint, (Ptr{GRegex}, Cstring, UInt32, Ptr{Ptr{GMatchInfo}}), instance, _string, _match_options, m_match_info)
         ret2 = convert(Bool, ret)
         _match_info = m_match_info[]
         _match_info = convert(GMatchInfo, _match_info, true)
@@ -1286,7 +1286,7 @@ $(Expr(:toplevel, quote
     end
     function match_all(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options)
         m_match_info = Ref{Ptr{GMatchInfo}}()
-        ret = ccall(("g_regex_match_all", libgobject), Cint, (Ptr{GRegex}, Cstring, UInt32, Ptr{Ptr{GMatchInfo}}), instance, _string, _match_options, m_match_info)
+        ret = ccall(("g_regex_match_all", libglib), Cint, (Ptr{GRegex}, Cstring, UInt32, Ptr{Ptr{GMatchInfo}}), instance, _string, _match_options, m_match_info)
         ret2 = convert(Bool, ret)
         _match_info = m_match_info[]
         _match_info = convert(GMatchInfo, _match_info, true)
@@ -1296,7 +1296,7 @@ $(Expr(:toplevel, quote
         m_match_info = Ref{Ptr{GMatchInfo}}()
         _string_len = length(_string)
         err = err_buf()
-        ret = ccall(("g_regex_match_all_full", libgobject), Cint, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, UInt32, Ptr{Ptr{GMatchInfo}}, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, m_match_info, err)
+        ret = ccall(("g_regex_match_all_full", libglib), Cint, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, UInt32, Ptr{Ptr{GMatchInfo}}, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, m_match_info, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _match_info = m_match_info[]
@@ -1307,7 +1307,7 @@ $(Expr(:toplevel, quote
         m_match_info = Ref{Ptr{GMatchInfo}}()
         _string_len = length(_string)
         err = err_buf()
-        ret = ccall(("g_regex_match_full", libgobject), Cint, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, UInt32, Ptr{Ptr{GMatchInfo}}, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, m_match_info, err)
+        ret = ccall(("g_regex_match_full", libglib), Cint, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, UInt32, Ptr{Ptr{GMatchInfo}}, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, m_match_info, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _match_info = m_match_info[]
@@ -1315,14 +1315,14 @@ $(Expr(:toplevel, quote
         (ret2, _match_info)
     end
     function ref(instance::GRegex)
-        ret = ccall(("g_regex_ref", libgobject), Ptr{GRegex}, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_ref", libglib), Ptr{GRegex}, (Ptr{GRegex},), instance)
         ret2 = convert(GRegex, ret, true)
         ret2
     end
     function replace(instance::GRegex, _string, _start_position::Integer, _replacement::Union{AbstractString, Symbol}, _match_options)
         _string_len = length(_string)
         err = err_buf()
-        ret = ccall(("g_regex_replace", libgobject), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
+        ret = ccall(("g_regex_replace", libglib), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -1334,7 +1334,7 @@ $(Expr(:toplevel, quote
     function replace_literal(instance::GRegex, _string, _start_position::Integer, _replacement::Union{AbstractString, Symbol}, _match_options)
         _string_len = length(_string)
         err = err_buf()
-        ret = ccall(("g_regex_replace_literal", libgobject), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
+        ret = ccall(("g_regex_replace_literal", libglib), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -1344,7 +1344,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function split(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options)
-        ret = ccall(("g_regex_split", libgobject), Ptr{Cstring}, (Ptr{GRegex}, Cstring, UInt32), instance, _string, _match_options)
+        ret = ccall(("g_regex_split", libglib), Ptr{Cstring}, (Ptr{GRegex}, Cstring, UInt32), instance, _string, _match_options)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -1356,7 +1356,7 @@ $(Expr(:toplevel, quote
     function split_full(instance::GRegex, _string, _start_position::Integer, _match_options, _max_tokens::Integer)
         _string_len = length(_string)
         err = err_buf()
-        ret = ccall(("g_regex_split_full", libgobject), Ptr{Cstring}, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, UInt32, Int32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, _max_tokens, err)
+        ret = ccall(("g_regex_split_full", libglib), Ptr{Cstring}, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, UInt32, Int32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, _max_tokens, err)
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
@@ -1367,7 +1367,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unref(instance::GRegex)
-        ret = ccall(("g_regex_unref", libgobject), Nothing, (Ptr{GRegex},), instance)
+        ret = ccall(("g_regex_unref", libglib), Nothing, (Ptr{GRegex},), instance)
         nothing
     end
     function String_new(_init::Maybe(Union{AbstractString, Symbol}))
@@ -1376,72 +1376,72 @@ $(Expr(:toplevel, quote
             else
                 _init
             end
-        ret = ccall(("g_string_new", libgobject), Ptr{_GString}, (Cstring,), _init)
+        ret = ccall(("g_string_new", libglib), Ptr{_GString}, (Cstring,), _init)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, true)
         ret2
     end
     function String_new_len(_init::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_string_new_len", libgobject), Ptr{_GString}, (Cstring, Int64), _init, _len)
+        ret = ccall(("g_string_new_len", libglib), Ptr{_GString}, (Cstring, Int64), _init, _len)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, true)
         ret2
     end
     function String_sized_new(_dfl_size::Integer)
-        ret = ccall(("g_string_sized_new", libgobject), Ptr{_GString}, (UInt64,), _dfl_size)
+        ret = ccall(("g_string_sized_new", libglib), Ptr{_GString}, (UInt64,), _dfl_size)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, true)
         ret2
     end
     function append(instance::GString, _val::Union{AbstractString, Symbol})
-        ret = ccall(("g_string_append", libgobject), Ptr{_GString}, (Ptr{_GString}, Cstring), instance, _val)
+        ret = ccall(("g_string_append", libglib), Ptr{_GString}, (Ptr{_GString}, Cstring), instance, _val)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function append_c(instance::GString, _c::Integer)
-        ret = ccall(("g_string_append_c", libgobject), Ptr{_GString}, (Ptr{_GString}, Int8), instance, _c)
+        ret = ccall(("g_string_append_c", libglib), Ptr{_GString}, (Ptr{_GString}, Int8), instance, _c)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function append_len(instance::GString, _val::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_string_append_len", libgobject), Ptr{_GString}, (Ptr{_GString}, Cstring, Int64), instance, _val, _len)
+        ret = ccall(("g_string_append_len", libglib), Ptr{_GString}, (Ptr{_GString}, Cstring, Int64), instance, _val, _len)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function append_unichar(instance::GString, _wc)
-        ret = ccall(("g_string_append_unichar", libgobject), Ptr{_GString}, (Ptr{_GString}, Nothing), instance, _wc)
+        ret = ccall(("g_string_append_unichar", libglib), Ptr{_GString}, (Ptr{_GString}, Nothing), instance, _wc)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function append_uri_escaped(instance::GString, _unescaped::Union{AbstractString, Symbol}, _reserved_chars_allowed::Union{AbstractString, Symbol}, _allow_utf8::Bool)
-        ret = ccall(("g_string_append_uri_escaped", libgobject), Ptr{_GString}, (Ptr{_GString}, Cstring, Cstring, Cint), instance, _unescaped, _reserved_chars_allowed, _allow_utf8)
+        ret = ccall(("g_string_append_uri_escaped", libglib), Ptr{_GString}, (Ptr{_GString}, Cstring, Cstring, Cint), instance, _unescaped, _reserved_chars_allowed, _allow_utf8)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function ascii_down(instance::GString)
-        ret = ccall(("g_string_ascii_down", libgobject), Ptr{_GString}, (Ptr{_GString},), instance)
+        ret = ccall(("g_string_ascii_down", libglib), Ptr{_GString}, (Ptr{_GString},), instance)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function ascii_up(instance::GString)
-        ret = ccall(("g_string_ascii_up", libgobject), Ptr{_GString}, (Ptr{_GString},), instance)
+        ret = ccall(("g_string_ascii_up", libglib), Ptr{_GString}, (Ptr{_GString},), instance)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function assign(instance::GString, _rval::Union{AbstractString, Symbol})
-        ret = ccall(("g_string_assign", libgobject), Ptr{_GString}, (Ptr{_GString}, Cstring), instance, _rval)
+        ret = ccall(("g_string_assign", libglib), Ptr{_GString}, (Ptr{_GString}, Cstring), instance, _rval)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function equal(instance::GString, _v2::Union{GString, Ref{_GString}})
-        ret = ccall(("g_string_equal", libgobject), Cint, (Ptr{_GString}, Ptr{_GString}), instance, _v2)
+        ret = ccall(("g_string_equal", libglib), Cint, (Ptr{_GString}, Ptr{_GString}), instance, _v2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function erase(instance::GString, _pos::Integer, _len::Integer)
-        ret = ccall(("g_string_erase", libgobject), Ptr{_GString}, (Ptr{_GString}, Int64, Int64), instance, _pos, _len)
+        ret = ccall(("g_string_erase", libglib), Ptr{_GString}, (Ptr{_GString}, Int64, Int64), instance, _pos, _len)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function free(instance::GString, _free_segment::Bool)
-        ret = ccall(("g_string_free", libgobject), Cstring, (Ptr{_GString}, Cint), instance, _free_segment)
+        ret = ccall(("g_string_free", libglib), Cstring, (Ptr{_GString}, Cint), instance, _free_segment)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1450,75 +1450,75 @@ $(Expr(:toplevel, quote
         ret2
     end
     function free_to_bytes(instance::GString)
-        ret = ccall(("g_string_free_to_bytes", libgobject), Ptr{GBytes}, (Ptr{_GString},), instance)
+        ret = ccall(("g_string_free_to_bytes", libglib), Ptr{GBytes}, (Ptr{_GString},), instance)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function hash(instance::GString)
-        ret = ccall(("g_string_hash", libgobject), UInt32, (Ptr{_GString},), instance)
+        ret = ccall(("g_string_hash", libglib), UInt32, (Ptr{_GString},), instance)
         ret
     end
     function insert(instance::GString, _pos::Integer, _val::Union{AbstractString, Symbol})
-        ret = ccall(("g_string_insert", libgobject), Ptr{_GString}, (Ptr{_GString}, Int64, Cstring), instance, _pos, _val)
+        ret = ccall(("g_string_insert", libglib), Ptr{_GString}, (Ptr{_GString}, Int64, Cstring), instance, _pos, _val)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function insert_c(instance::GString, _pos::Integer, _c::Integer)
-        ret = ccall(("g_string_insert_c", libgobject), Ptr{_GString}, (Ptr{_GString}, Int64, Int8), instance, _pos, _c)
+        ret = ccall(("g_string_insert_c", libglib), Ptr{_GString}, (Ptr{_GString}, Int64, Int8), instance, _pos, _c)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function insert_len(instance::GString, _pos::Integer, _val::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_string_insert_len", libgobject), Ptr{_GString}, (Ptr{_GString}, Int64, Cstring, Int64), instance, _pos, _val, _len)
+        ret = ccall(("g_string_insert_len", libglib), Ptr{_GString}, (Ptr{_GString}, Int64, Cstring, Int64), instance, _pos, _val, _len)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function insert_unichar(instance::GString, _pos::Integer, _wc)
-        ret = ccall(("g_string_insert_unichar", libgobject), Ptr{_GString}, (Ptr{_GString}, Int64, Nothing), instance, _pos, _wc)
+        ret = ccall(("g_string_insert_unichar", libglib), Ptr{_GString}, (Ptr{_GString}, Int64, Nothing), instance, _pos, _wc)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function overwrite(instance::GString, _pos::Integer, _val::Union{AbstractString, Symbol})
-        ret = ccall(("g_string_overwrite", libgobject), Ptr{_GString}, (Ptr{_GString}, UInt64, Cstring), instance, _pos, _val)
+        ret = ccall(("g_string_overwrite", libglib), Ptr{_GString}, (Ptr{_GString}, UInt64, Cstring), instance, _pos, _val)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function overwrite_len(instance::GString, _pos::Integer, _val::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_string_overwrite_len", libgobject), Ptr{_GString}, (Ptr{_GString}, UInt64, Cstring, Int64), instance, _pos, _val, _len)
+        ret = ccall(("g_string_overwrite_len", libglib), Ptr{_GString}, (Ptr{_GString}, UInt64, Cstring, Int64), instance, _pos, _val, _len)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function prepend(instance::GString, _val::Union{AbstractString, Symbol})
-        ret = ccall(("g_string_prepend", libgobject), Ptr{_GString}, (Ptr{_GString}, Cstring), instance, _val)
+        ret = ccall(("g_string_prepend", libglib), Ptr{_GString}, (Ptr{_GString}, Cstring), instance, _val)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function prepend_c(instance::GString, _c::Integer)
-        ret = ccall(("g_string_prepend_c", libgobject), Ptr{_GString}, (Ptr{_GString}, Int8), instance, _c)
+        ret = ccall(("g_string_prepend_c", libglib), Ptr{_GString}, (Ptr{_GString}, Int8), instance, _c)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function prepend_len(instance::GString, _val::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_string_prepend_len", libgobject), Ptr{_GString}, (Ptr{_GString}, Cstring, Int64), instance, _val, _len)
+        ret = ccall(("g_string_prepend_len", libglib), Ptr{_GString}, (Ptr{_GString}, Cstring, Int64), instance, _val, _len)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function prepend_unichar(instance::GString, _wc)
-        ret = ccall(("g_string_prepend_unichar", libgobject), Ptr{_GString}, (Ptr{_GString}, Nothing), instance, _wc)
+        ret = ccall(("g_string_prepend_unichar", libglib), Ptr{_GString}, (Ptr{_GString}, Nothing), instance, _wc)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function replace(instance::GString, _find::Union{AbstractString, Symbol}, _replace::Union{AbstractString, Symbol}, _limit::Integer)
-        ret = ccall(("g_string_replace", libgobject), UInt32, (Ptr{_GString}, Cstring, Cstring, UInt32), instance, _find, _replace, _limit)
+        ret = ccall(("g_string_replace", libglib), UInt32, (Ptr{_GString}, Cstring, Cstring, UInt32), instance, _find, _replace, _limit)
         ret
     end
     function set_size(instance::GString, _len::Integer)
-        ret = ccall(("g_string_set_size", libgobject), Ptr{_GString}, (Ptr{_GString}, UInt64), instance, _len)
+        ret = ccall(("g_string_set_size", libglib), Ptr{_GString}, (Ptr{_GString}, UInt64), instance, _len)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
     function truncate(instance::GString, _len::Integer)
-        ret = ccall(("g_string_truncate", libgobject), Ptr{_GString}, (Ptr{_GString}, UInt64), instance, _len)
+        ret = ccall(("g_string_truncate", libglib), Ptr{_GString}, (Ptr{_GString}, UInt64), instance, _len)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, false)
         ret2
     end
@@ -1528,7 +1528,7 @@ $(Expr(:toplevel, quote
             else
                 _identifier
             end
-        ret = ccall(("g_time_zone_new_identifier", libgobject), Ptr{GTimeZone}, (Cstring,), _identifier)
+        ret = ccall(("g_time_zone_new_identifier", libglib), Ptr{GTimeZone}, (Cstring,), _identifier)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1537,30 +1537,30 @@ $(Expr(:toplevel, quote
         ret2
     end
     function TimeZone_new_local()
-        ret = ccall(("g_time_zone_new_local", libgobject), Ptr{GTimeZone}, ())
+        ret = ccall(("g_time_zone_new_local", libglib), Ptr{GTimeZone}, ())
         ret2 = convert(GTimeZone, ret, true)
         ret2
     end
     function TimeZone_new_offset(_seconds::Integer)
-        ret = ccall(("g_time_zone_new_offset", libgobject), Ptr{GTimeZone}, (Int32,), _seconds)
+        ret = ccall(("g_time_zone_new_offset", libglib), Ptr{GTimeZone}, (Int32,), _seconds)
         ret2 = convert(GTimeZone, ret, true)
         ret2
     end
     function TimeZone_new_utc()
-        ret = ccall(("g_time_zone_new_utc", libgobject), Ptr{GTimeZone}, ())
+        ret = ccall(("g_time_zone_new_utc", libglib), Ptr{GTimeZone}, ())
         ret2 = convert(GTimeZone, ret, true)
         ret2
     end
     function adjust_time(instance::GTimeZone, _type, _time_::Int64)
-        ret = ccall(("g_time_zone_adjust_time", libgobject), Int32, (Ptr{GTimeZone}, UInt32, Ptr{Int64}), instance, _type, _time_)
+        ret = ccall(("g_time_zone_adjust_time", libglib), Int32, (Ptr{GTimeZone}, UInt32, Ptr{Int64}), instance, _type, _time_)
         ret
     end
     function find_interval(instance::GTimeZone, _type, _time_::Integer)
-        ret = ccall(("g_time_zone_find_interval", libgobject), Int32, (Ptr{GTimeZone}, UInt32, Int64), instance, _type, _time_)
+        ret = ccall(("g_time_zone_find_interval", libglib), Int32, (Ptr{GTimeZone}, UInt32, Int64), instance, _type, _time_)
         ret
     end
     function get_abbreviation(instance::GTimeZone, _interval::Integer)
-        ret = ccall(("g_time_zone_get_abbreviation", libgobject), Cstring, (Ptr{GTimeZone}, Int32), instance, _interval)
+        ret = ccall(("g_time_zone_get_abbreviation", libglib), Cstring, (Ptr{GTimeZone}, Int32), instance, _interval)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1569,7 +1569,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_identifier(instance::GTimeZone)
-        ret = ccall(("g_time_zone_get_identifier", libgobject), Cstring, (Ptr{GTimeZone},), instance)
+        ret = ccall(("g_time_zone_get_identifier", libglib), Cstring, (Ptr{GTimeZone},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1578,25 +1578,25 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_offset(instance::GTimeZone, _interval::Integer)
-        ret = ccall(("g_time_zone_get_offset", libgobject), Int32, (Ptr{GTimeZone}, Int32), instance, _interval)
+        ret = ccall(("g_time_zone_get_offset", libglib), Int32, (Ptr{GTimeZone}, Int32), instance, _interval)
         ret
     end
     function is_dst(instance::GTimeZone, _interval::Integer)
-        ret = ccall(("g_time_zone_is_dst", libgobject), Cint, (Ptr{GTimeZone}, Int32), instance, _interval)
+        ret = ccall(("g_time_zone_is_dst", libglib), Cint, (Ptr{GTimeZone}, Int32), instance, _interval)
         ret2 = convert(Bool, ret)
         ret2
     end
     function ref(instance::GTimeZone)
-        ret = ccall(("g_time_zone_ref", libgobject), Ptr{GTimeZone}, (Ptr{GTimeZone},), instance)
+        ret = ccall(("g_time_zone_ref", libglib), Ptr{GTimeZone}, (Ptr{GTimeZone},), instance)
         ret2 = convert(GTimeZone, ret, true)
         ret2
     end
     function unref(instance::GTimeZone)
-        ret = ccall(("g_time_zone_unref", libgobject), Nothing, (Ptr{GTimeZone},), instance)
+        ret = ccall(("g_time_zone_unref", libglib), Nothing, (Ptr{GTimeZone},), instance)
         nothing
     end
     function get_auth_params(instance::GUri)
-        ret = ccall(("g_uri_get_auth_params", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_auth_params", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1605,12 +1605,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_flags(instance::GUri)
-        ret = ccall(("g_uri_get_flags", libgobject), UInt32, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_flags", libglib), UInt32, (Ptr{GUri},), instance)
         ret2 = UriFlags(ret)
         ret2
     end
     function get_fragment(instance::GUri)
-        ret = ccall(("g_uri_get_fragment", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_fragment", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1619,7 +1619,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_host(instance::GUri)
-        ret = ccall(("g_uri_get_host", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_host", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1628,7 +1628,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_password(instance::GUri)
-        ret = ccall(("g_uri_get_password", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_password", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1637,7 +1637,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_path(instance::GUri)
-        ret = ccall(("g_uri_get_path", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_path", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1646,11 +1646,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_port(instance::GUri)
-        ret = ccall(("g_uri_get_port", libgobject), Int32, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_port", libglib), Int32, (Ptr{GUri},), instance)
         ret
     end
     function get_query(instance::GUri)
-        ret = ccall(("g_uri_get_query", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_query", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1659,7 +1659,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_scheme(instance::GUri)
-        ret = ccall(("g_uri_get_scheme", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_scheme", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1668,7 +1668,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_user(instance::GUri)
-        ret = ccall(("g_uri_get_user", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_user", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1677,7 +1677,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_userinfo(instance::GUri)
-        ret = ccall(("g_uri_get_userinfo", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_get_userinfo", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1687,13 +1687,13 @@ $(Expr(:toplevel, quote
     end
     function parse_relative(instance::GUri, _uri_ref::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
-        ret = ccall(("g_uri_parse_relative", libgobject), Ptr{GUri}, (Ptr{GUri}, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _uri_ref, _flags, err)
+        ret = ccall(("g_uri_parse_relative", libglib), Ptr{GUri}, (Ptr{GUri}, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _uri_ref, _flags, err)
         check_err(err)
         ret2 = convert(GUri, ret, true)
         ret2
     end
     function to_string(instance::GUri)
-        ret = ccall(("g_uri_to_string", libgobject), Cstring, (Ptr{GUri},), instance)
+        ret = ccall(("g_uri_to_string", libglib), Cstring, (Ptr{GUri},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1702,7 +1702,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function to_string_partial(instance::GUri, _flags)
-        ret = ccall(("g_uri_to_string_partial", libgobject), Cstring, (Ptr{GUri}, UInt32), instance, _flags)
+        ret = ccall(("g_uri_to_string_partial", libglib), Cstring, (Ptr{GUri}, UInt32), instance, _flags)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1718,39 +1718,39 @@ $(Expr(:toplevel, quote
             end
         _children = convert(Vector{Ptr{GVariant}}, _children)
         _n_children = length(_children)
-        ret = ccall(("g_variant_new_array", libgobject), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{Ptr{GVariant}}, UInt64), _child_type, _children, _n_children)
+        ret = ccall(("g_variant_new_array", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{Ptr{GVariant}}, UInt64), _child_type, _children, _n_children)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_boolean(_value::Bool)
-        ret = ccall(("g_variant_new_boolean", libgobject), Ptr{GVariant}, (Cint,), _value)
+        ret = ccall(("g_variant_new_boolean", libglib), Ptr{GVariant}, (Cint,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_byte(_value::Integer)
-        ret = ccall(("g_variant_new_byte", libgobject), Ptr{GVariant}, (UInt8,), _value)
+        ret = ccall(("g_variant_new_byte", libglib), Ptr{GVariant}, (UInt8,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_bytestring(_string)
         _string = convert(Vector{UInt8}, _string)
-        ret = ccall(("g_variant_new_bytestring", libgobject), Ptr{GVariant}, (Ptr{UInt8},), _string)
+        ret = ccall(("g_variant_new_bytestring", libglib), Ptr{GVariant}, (Ptr{UInt8},), _string)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_bytestring_array(_strv)
         _length = length(_strv)
-        ret = ccall(("g_variant_new_bytestring_array", libgobject), Ptr{GVariant}, (Ptr{Cstring}, Int64), _strv, _length)
+        ret = ccall(("g_variant_new_bytestring_array", libglib), Ptr{GVariant}, (Ptr{Cstring}, Int64), _strv, _length)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_dict_entry(_key::GVariant, _value::GVariant)
-        ret = ccall(("g_variant_new_dict_entry", libgobject), Ptr{GVariant}, (Ptr{GVariant}, Ptr{GVariant}), _key, _value)
+        ret = ccall(("g_variant_new_dict_entry", libglib), Ptr{GVariant}, (Ptr{GVariant}, Ptr{GVariant}), _key, _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_double(_value::Real)
-        ret = ccall(("g_variant_new_double", libgobject), Ptr{GVariant}, (Float64,), _value)
+        ret = ccall(("g_variant_new_double", libglib), Ptr{GVariant}, (Float64,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1760,32 +1760,32 @@ $(Expr(:toplevel, quote
             else
                 _elements
             end
-        ret = ccall(("g_variant_new_fixed_array", libgobject), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{Nothing}, UInt64, UInt64), _element_type, _elements, _n_elements, _element_size)
+        ret = ccall(("g_variant_new_fixed_array", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{Nothing}, UInt64, UInt64), _element_type, _elements, _n_elements, _element_size)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_from_bytes(_type::GVariantType, _bytes::GBytes, _trusted::Bool)
-        ret = ccall(("g_variant_new_from_bytes", libgobject), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{GBytes}, Cint), _type, _bytes, _trusted)
+        ret = ccall(("g_variant_new_from_bytes", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{GBytes}, Cint), _type, _bytes, _trusted)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_handle(_value::Integer)
-        ret = ccall(("g_variant_new_handle", libgobject), Ptr{GVariant}, (Int32,), _value)
+        ret = ccall(("g_variant_new_handle", libglib), Ptr{GVariant}, (Int32,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_int16(_value::Integer)
-        ret = ccall(("g_variant_new_int16", libgobject), Ptr{GVariant}, (Int16,), _value)
+        ret = ccall(("g_variant_new_int16", libglib), Ptr{GVariant}, (Int16,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_int32(_value::Integer)
-        ret = ccall(("g_variant_new_int32", libgobject), Ptr{GVariant}, (Int32,), _value)
+        ret = ccall(("g_variant_new_int32", libglib), Ptr{GVariant}, (Int32,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_int64(_value::Integer)
-        ret = ccall(("g_variant_new_int64", libgobject), Ptr{GVariant}, (Int64,), _value)
+        ret = ccall(("g_variant_new_int64", libglib), Ptr{GVariant}, (Int64,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1800,98 +1800,98 @@ $(Expr(:toplevel, quote
             else
                 _child
             end
-        ret = ccall(("g_variant_new_maybe", libgobject), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{GVariant}), _child_type, _child)
+        ret = ccall(("g_variant_new_maybe", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{GVariant}), _child_type, _child)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_object_path(_object_path::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_new_object_path", libgobject), Ptr{GVariant}, (Cstring,), _object_path)
+        ret = ccall(("g_variant_new_object_path", libglib), Ptr{GVariant}, (Cstring,), _object_path)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_objv(_strv)
         _length = length(_strv)
-        ret = ccall(("g_variant_new_objv", libgobject), Ptr{GVariant}, (Ptr{Cstring}, Int64), _strv, _length)
+        ret = ccall(("g_variant_new_objv", libglib), Ptr{GVariant}, (Ptr{Cstring}, Int64), _strv, _length)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_signature(_signature::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_new_signature", libgobject), Ptr{GVariant}, (Cstring,), _signature)
+        ret = ccall(("g_variant_new_signature", libglib), Ptr{GVariant}, (Cstring,), _signature)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_string(_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_new_string", libgobject), Ptr{GVariant}, (Cstring,), _string)
+        ret = ccall(("g_variant_new_string", libglib), Ptr{GVariant}, (Cstring,), _string)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_strv(_strv)
         _length = length(_strv)
-        ret = ccall(("g_variant_new_strv", libgobject), Ptr{GVariant}, (Ptr{Cstring}, Int64), _strv, _length)
+        ret = ccall(("g_variant_new_strv", libglib), Ptr{GVariant}, (Ptr{Cstring}, Int64), _strv, _length)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_tuple(_children)
         _children = convert(Vector{Ptr{GVariant}}, _children)
         _n_children = length(_children)
-        ret = ccall(("g_variant_new_tuple", libgobject), Ptr{GVariant}, (Ptr{Ptr{GVariant}}, UInt64), _children, _n_children)
+        ret = ccall(("g_variant_new_tuple", libglib), Ptr{GVariant}, (Ptr{Ptr{GVariant}}, UInt64), _children, _n_children)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_uint16(_value::Integer)
-        ret = ccall(("g_variant_new_uint16", libgobject), Ptr{GVariant}, (UInt16,), _value)
+        ret = ccall(("g_variant_new_uint16", libglib), Ptr{GVariant}, (UInt16,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_uint32(_value::Integer)
-        ret = ccall(("g_variant_new_uint32", libgobject), Ptr{GVariant}, (UInt32,), _value)
+        ret = ccall(("g_variant_new_uint32", libglib), Ptr{GVariant}, (UInt32,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_uint64(_value::Integer)
-        ret = ccall(("g_variant_new_uint64", libgobject), Ptr{GVariant}, (UInt64,), _value)
+        ret = ccall(("g_variant_new_uint64", libglib), Ptr{GVariant}, (UInt64,), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function Variant_new_variant(_value::GVariant)
-        ret = ccall(("g_variant_new_variant", libgobject), Ptr{GVariant}, (Ptr{GVariant},), _value)
+        ret = ccall(("g_variant_new_variant", libglib), Ptr{GVariant}, (Ptr{GVariant},), _value)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function byteswap(instance::GVariant)
-        ret = ccall(("g_variant_byteswap", libgobject), Ptr{GVariant}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_byteswap", libglib), Ptr{GVariant}, (Ptr{GVariant},), instance)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function check_format_string(instance::GVariant, _format_string::Union{AbstractString, Symbol}, _copy_only::Bool)
-        ret = ccall(("g_variant_check_format_string", libgobject), Cint, (Ptr{GVariant}, Cstring, Cint), instance, _format_string, _copy_only)
+        ret = ccall(("g_variant_check_format_string", libglib), Cint, (Ptr{GVariant}, Cstring, Cint), instance, _format_string, _copy_only)
         ret2 = convert(Bool, ret)
         ret2
     end
     function classify(instance::GVariant)
-        ret = ccall(("g_variant_classify", libgobject), UInt32, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_classify", libglib), UInt32, (Ptr{GVariant},), instance)
         ret2 = VariantClass(ret)
         ret2
     end
     function compare(instance::GVariant, _two::GVariant)
-        ret = ccall(("g_variant_compare", libgobject), Int32, (Ptr{GVariant}, Ptr{GVariant}), instance, _two)
+        ret = ccall(("g_variant_compare", libglib), Int32, (Ptr{GVariant}, Ptr{GVariant}), instance, _two)
         ret
     end
     function dup_bytestring(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_dup_bytestring", libgobject), Ptr{UInt8}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_dup_bytestring", libglib), Ptr{UInt8}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         _length = m_length[]
         ret
     end
     function dup_bytestring_array(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_dup_bytestring_array", libgobject), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_dup_bytestring_array", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         _length = m_length[]
         ret
     end
     function dup_objv(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_dup_objv", libgobject), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_dup_objv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -1903,7 +1903,7 @@ $(Expr(:toplevel, quote
     end
     function dup_string(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_dup_string", libgobject), Cstring, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_dup_string", libglib), Cstring, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1914,7 +1914,7 @@ $(Expr(:toplevel, quote
     end
     function dup_strv(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_dup_strv", libgobject), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_dup_strv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -1925,26 +1925,26 @@ $(Expr(:toplevel, quote
         ret2
     end
     function equal(instance::GVariant, _two::GVariant)
-        ret = ccall(("g_variant_equal", libgobject), Cint, (Ptr{GVariant}, Ptr{GVariant}), instance, _two)
+        ret = ccall(("g_variant_equal", libglib), Cint, (Ptr{GVariant}, Ptr{GVariant}), instance, _two)
         ret2 = convert(Bool, ret)
         ret2
     end
     function get_boolean(instance::GVariant)
-        ret = ccall(("g_variant_get_boolean", libgobject), Cint, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_boolean", libglib), Cint, (Ptr{GVariant},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function get_byte(instance::GVariant)
-        ret = ccall(("g_variant_get_byte", libgobject), UInt8, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_byte", libglib), UInt8, (Ptr{GVariant},), instance)
         ret
     end
     function get_bytestring(instance::GVariant)
-        ret = ccall(("g_variant_get_bytestring", libgobject), Ptr{UInt8}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_bytestring", libglib), Ptr{UInt8}, (Ptr{GVariant},), instance)
         ret
     end
     function get_bytestring_array(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_get_bytestring_array", libgobject), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_get_bytestring_array", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
                 GLib.g_free(ret)
@@ -1954,53 +1954,53 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_child_value(instance::GVariant, _index_::Integer)
-        ret = ccall(("g_variant_get_child_value", libgobject), Ptr{GVariant}, (Ptr{GVariant}, UInt64), instance, _index_)
+        ret = ccall(("g_variant_get_child_value", libglib), Ptr{GVariant}, (Ptr{GVariant}, UInt64), instance, _index_)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function get_data(instance::GVariant)
-        ret = ccall(("g_variant_get_data", libgobject), Ptr{Nothing}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_data", libglib), Ptr{Nothing}, (Ptr{GVariant},), instance)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function get_data_as_bytes(instance::GVariant)
-        ret = ccall(("g_variant_get_data_as_bytes", libgobject), Ptr{GBytes}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_data_as_bytes", libglib), Ptr{GBytes}, (Ptr{GVariant},), instance)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function get_double(instance::GVariant)
-        ret = ccall(("g_variant_get_double", libgobject), Float64, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_double", libglib), Float64, (Ptr{GVariant},), instance)
         ret
     end
     function get_handle(instance::GVariant)
-        ret = ccall(("g_variant_get_handle", libgobject), Int32, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_handle", libglib), Int32, (Ptr{GVariant},), instance)
         ret
     end
     function get_int16(instance::GVariant)
-        ret = ccall(("g_variant_get_int16", libgobject), Int16, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_int16", libglib), Int16, (Ptr{GVariant},), instance)
         ret
     end
     function get_int32(instance::GVariant)
-        ret = ccall(("g_variant_get_int32", libgobject), Int32, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_int32", libglib), Int32, (Ptr{GVariant},), instance)
         ret
     end
     function get_int64(instance::GVariant)
-        ret = ccall(("g_variant_get_int64", libgobject), Int64, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_int64", libglib), Int64, (Ptr{GVariant},), instance)
         ret
     end
     function get_maybe(instance::GVariant)
-        ret = ccall(("g_variant_get_maybe", libgobject), Ptr{GVariant}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_maybe", libglib), Ptr{GVariant}, (Ptr{GVariant},), instance)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function get_normal_form(instance::GVariant)
-        ret = ccall(("g_variant_get_normal_form", libgobject), Ptr{GVariant}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_normal_form", libglib), Ptr{GVariant}, (Ptr{GVariant},), instance)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function get_objv(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_get_objv", libgobject), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_get_objv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
                 GLib.g_free(ret)
@@ -2010,12 +2010,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_size(instance::GVariant)
-        ret = ccall(("g_variant_get_size", libgobject), UInt64, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_size", libglib), UInt64, (Ptr{GVariant},), instance)
         ret
     end
     function get_string(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_get_string", libgobject), Cstring, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_get_string", libglib), Cstring, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2026,7 +2026,7 @@ $(Expr(:toplevel, quote
     end
     function get_strv(instance::GVariant)
         m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_get_strv", libgobject), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret = ccall(("g_variant_get_strv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 ret2 = copy(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
                 GLib.g_free(ret)
@@ -2036,12 +2036,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_type(instance::GVariant)
-        ret = ccall(("g_variant_get_type", libgobject), Ptr{GVariantType}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_type", libglib), Ptr{GVariantType}, (Ptr{GVariant},), instance)
         ret2 = convert(GVariantType, ret, false)
         ret2
     end
     function get_type_string(instance::GVariant)
-        ret = ccall(("g_variant_get_type_string", libgobject), Cstring, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_type_string", libglib), Cstring, (Ptr{GVariant},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2050,43 +2050,43 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_uint16(instance::GVariant)
-        ret = ccall(("g_variant_get_uint16", libgobject), UInt16, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_uint16", libglib), UInt16, (Ptr{GVariant},), instance)
         ret
     end
     function get_uint32(instance::GVariant)
-        ret = ccall(("g_variant_get_uint32", libgobject), UInt32, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_uint32", libglib), UInt32, (Ptr{GVariant},), instance)
         ret
     end
     function get_uint64(instance::GVariant)
-        ret = ccall(("g_variant_get_uint64", libgobject), UInt64, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_uint64", libglib), UInt64, (Ptr{GVariant},), instance)
         ret
     end
     function get_variant(instance::GVariant)
-        ret = ccall(("g_variant_get_variant", libgobject), Ptr{GVariant}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_get_variant", libglib), Ptr{GVariant}, (Ptr{GVariant},), instance)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function hash(instance::GVariant)
-        ret = ccall(("g_variant_hash", libgobject), UInt32, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_hash", libglib), UInt32, (Ptr{GVariant},), instance)
         ret
     end
     function is_container(instance::GVariant)
-        ret = ccall(("g_variant_is_container", libgobject), Cint, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_is_container", libglib), Cint, (Ptr{GVariant},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_floating(instance::GVariant)
-        ret = ccall(("g_variant_is_floating", libgobject), Cint, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_is_floating", libglib), Cint, (Ptr{GVariant},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_normal_form(instance::GVariant)
-        ret = ccall(("g_variant_is_normal_form", libgobject), Cint, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_is_normal_form", libglib), Cint, (Ptr{GVariant},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_of_type(instance::GVariant, _type::GVariantType)
-        ret = ccall(("g_variant_is_of_type", libgobject), Cint, (Ptr{GVariant}, Ptr{GVariantType}), instance, _type)
+        ret = ccall(("g_variant_is_of_type", libglib), Cint, (Ptr{GVariant}, Ptr{GVariantType}), instance, _type)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -2096,16 +2096,16 @@ $(Expr(:toplevel, quote
             else
                 _expected_type
             end
-        ret = ccall(("g_variant_lookup_value", libgobject), Ptr{GVariant}, (Ptr{GVariant}, Cstring, Ptr{GVariantType}), instance, _key, _expected_type)
+        ret = ccall(("g_variant_lookup_value", libglib), Ptr{GVariant}, (Ptr{GVariant}, Cstring, Ptr{GVariantType}), instance, _key, _expected_type)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function n_children(instance::GVariant)
-        ret = ccall(("g_variant_n_children", libgobject), UInt64, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_n_children", libglib), UInt64, (Ptr{GVariant},), instance)
         ret
     end
     function print(instance::GVariant, _type_annotate::Bool)
-        ret = ccall(("g_variant_print", libgobject), Cstring, (Ptr{GVariant}, Cint), instance, _type_annotate)
+        ret = ccall(("g_variant_print", libglib), Cstring, (Ptr{GVariant}, Cint), instance, _type_annotate)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2114,52 +2114,52 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ref(instance::GVariant)
-        ret = ccall(("g_variant_ref", libgobject), Ptr{GVariant}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_ref", libglib), Ptr{GVariant}, (Ptr{GVariant},), instance)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function ref_sink(instance::GVariant)
-        ret = ccall(("g_variant_ref_sink", libgobject), Ptr{GVariant}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_ref_sink", libglib), Ptr{GVariant}, (Ptr{GVariant},), instance)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function store(instance::GVariant, _data::Nothing)
-        ret = ccall(("g_variant_store", libgobject), Nothing, (Ptr{GVariant}, Ptr{Nothing}), instance, _data)
+        ret = ccall(("g_variant_store", libglib), Nothing, (Ptr{GVariant}, Ptr{Nothing}), instance, _data)
         nothing
     end
     function take_ref(instance::GVariant)
-        ret = ccall(("g_variant_take_ref", libgobject), Ptr{GVariant}, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_take_ref", libglib), Ptr{GVariant}, (Ptr{GVariant},), instance)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function unref(instance::GVariant)
-        ret = ccall(("g_variant_unref", libgobject), Nothing, (Ptr{GVariant},), instance)
+        ret = ccall(("g_variant_unref", libglib), Nothing, (Ptr{GVariant},), instance)
         nothing
     end
     function VariantBuilder_new(_type::GVariantType)
-        ret = ccall(("g_variant_builder_new", libgobject), Ptr{GVariantBuilder}, (Ptr{GVariantType},), _type)
+        ret = ccall(("g_variant_builder_new", libglib), Ptr{GVariantBuilder}, (Ptr{GVariantType},), _type)
         ret2 = convert(GVariantBuilder, ret, true)
         ret2
     end
     function add_value(instance::GVariantBuilder, _value::GVariant)
-        ret = ccall(("g_variant_builder_add_value", libgobject), Nothing, (Ptr{GVariantBuilder}, Ptr{GVariant}), instance, _value)
+        ret = ccall(("g_variant_builder_add_value", libglib), Nothing, (Ptr{GVariantBuilder}, Ptr{GVariant}), instance, _value)
         nothing
     end
     function close(instance::GVariantBuilder)
-        ret = ccall(("g_variant_builder_close", libgobject), Nothing, (Ptr{GVariantBuilder},), instance)
+        ret = ccall(("g_variant_builder_close", libglib), Nothing, (Ptr{GVariantBuilder},), instance)
         nothing
     end
     function open(instance::GVariantBuilder, _type::GVariantType)
-        ret = ccall(("g_variant_builder_open", libgobject), Nothing, (Ptr{GVariantBuilder}, Ptr{GVariantType}), instance, _type)
+        ret = ccall(("g_variant_builder_open", libglib), Nothing, (Ptr{GVariantBuilder}, Ptr{GVariantType}), instance, _type)
         nothing
     end
     function ref(instance::GVariantBuilder)
-        ret = ccall(("g_variant_builder_ref", libgobject), Ptr{GVariantBuilder}, (Ptr{GVariantBuilder},), instance)
+        ret = ccall(("g_variant_builder_ref", libglib), Ptr{GVariantBuilder}, (Ptr{GVariantBuilder},), instance)
         ret2 = convert(GVariantBuilder, ret, true)
         ret2
     end
     function unref(instance::GVariantBuilder)
-        ret = ccall(("g_variant_builder_unref", libgobject), Nothing, (Ptr{GVariantBuilder},), instance)
+        ret = ccall(("g_variant_builder_unref", libglib), Nothing, (Ptr{GVariantBuilder},), instance)
         nothing
     end
     function VariantDict_new(_from_asv::Maybe(GVariant))
@@ -2168,21 +2168,21 @@ $(Expr(:toplevel, quote
             else
                 _from_asv
             end
-        ret = ccall(("g_variant_dict_new", libgobject), Ptr{GVariantDict}, (Ptr{GVariant},), _from_asv)
+        ret = ccall(("g_variant_dict_new", libglib), Ptr{GVariantDict}, (Ptr{GVariant},), _from_asv)
         ret2 = convert(GVariantDict, ret, true)
         ret2
     end
     function clear(instance::GVariantDict)
-        ret = ccall(("g_variant_dict_clear", libgobject), Nothing, (Ptr{GVariantDict},), instance)
+        ret = ccall(("g_variant_dict_clear", libglib), Nothing, (Ptr{GVariantDict},), instance)
         nothing
     end
     function contains(instance::GVariantDict, _key::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_dict_contains", libgobject), Cint, (Ptr{GVariantDict}, Cstring), instance, _key)
+        ret = ccall(("g_variant_dict_contains", libglib), Cint, (Ptr{GVariantDict}, Cstring), instance, _key)
         ret2 = convert(Bool, ret)
         ret2
     end
     function insert_value(instance::GVariantDict, _key::Union{AbstractString, Symbol}, _value::GVariant)
-        ret = ccall(("g_variant_dict_insert_value", libgobject), Nothing, (Ptr{GVariantDict}, Cstring, Ptr{GVariant}), instance, _key, _value)
+        ret = ccall(("g_variant_dict_insert_value", libglib), Nothing, (Ptr{GVariantDict}, Cstring, Ptr{GVariant}), instance, _key, _value)
         nothing
     end
     function lookup_value(instance::GVariantDict, _key::Union{AbstractString, Symbol}, _expected_type::Maybe(GVariantType))
@@ -2191,58 +2191,58 @@ $(Expr(:toplevel, quote
             else
                 _expected_type
             end
-        ret = ccall(("g_variant_dict_lookup_value", libgobject), Ptr{GVariant}, (Ptr{GVariantDict}, Cstring, Ptr{GVariantType}), instance, _key, _expected_type)
+        ret = ccall(("g_variant_dict_lookup_value", libglib), Ptr{GVariant}, (Ptr{GVariantDict}, Cstring, Ptr{GVariantType}), instance, _key, _expected_type)
         ret2 = convert(GVariant, ret)
         ret2
     end
     function ref(instance::GVariantDict)
-        ret = ccall(("g_variant_dict_ref", libgobject), Ptr{GVariantDict}, (Ptr{GVariantDict},), instance)
+        ret = ccall(("g_variant_dict_ref", libglib), Ptr{GVariantDict}, (Ptr{GVariantDict},), instance)
         ret2 = convert(GVariantDict, ret, true)
         ret2
     end
     function remove(instance::GVariantDict, _key::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_dict_remove", libgobject), Cint, (Ptr{GVariantDict}, Cstring), instance, _key)
+        ret = ccall(("g_variant_dict_remove", libglib), Cint, (Ptr{GVariantDict}, Cstring), instance, _key)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unref(instance::GVariantDict)
-        ret = ccall(("g_variant_dict_unref", libgobject), Nothing, (Ptr{GVariantDict},), instance)
+        ret = ccall(("g_variant_dict_unref", libglib), Nothing, (Ptr{GVariantDict},), instance)
         nothing
     end
     function VariantType_new(_type_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_type_new", libgobject), Ptr{GVariantType}, (Cstring,), _type_string)
+        ret = ccall(("g_variant_type_new", libglib), Ptr{GVariantType}, (Cstring,), _type_string)
         ret2 = convert(GVariantType, ret, true)
         ret2
     end
     function VariantType_new_array(_element::GVariantType)
-        ret = ccall(("g_variant_type_new_array", libgobject), Ptr{GVariantType}, (Ptr{GVariantType},), _element)
+        ret = ccall(("g_variant_type_new_array", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), _element)
         ret2 = convert(GVariantType, ret, true)
         ret2
     end
     function VariantType_new_dict_entry(_key::GVariantType, _value::GVariantType)
-        ret = ccall(("g_variant_type_new_dict_entry", libgobject), Ptr{GVariantType}, (Ptr{GVariantType}, Ptr{GVariantType}), _key, _value)
+        ret = ccall(("g_variant_type_new_dict_entry", libglib), Ptr{GVariantType}, (Ptr{GVariantType}, Ptr{GVariantType}), _key, _value)
         ret2 = convert(GVariantType, ret, true)
         ret2
     end
     function VariantType_new_maybe(_element::GVariantType)
-        ret = ccall(("g_variant_type_new_maybe", libgobject), Ptr{GVariantType}, (Ptr{GVariantType},), _element)
+        ret = ccall(("g_variant_type_new_maybe", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), _element)
         ret2 = convert(GVariantType, ret, true)
         ret2
     end
     function VariantType_new_tuple(_items)
         _items = convert(Vector{Ptr{GVariantType}}, _items)
         _length = length(_items)
-        ret = ccall(("g_variant_type_new_tuple", libgobject), Ptr{GVariantType}, (Ptr{Ptr{GVariantType}}, Int32), _items, _length)
+        ret = ccall(("g_variant_type_new_tuple", libglib), Ptr{GVariantType}, (Ptr{Ptr{GVariantType}}, Int32), _items, _length)
         ret2 = convert(GVariantType, ret, true)
         ret2
     end
     function copy(instance::GVariantType)
-        ret = ccall(("g_variant_type_copy", libgobject), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_copy", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
         ret2 = convert(GVariantType, ret, true)
         ret2
     end
     function dup_string(instance::GVariantType)
-        ret = ccall(("g_variant_type_dup_string", libgobject), Cstring, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_dup_string", libglib), Cstring, (Ptr{GVariantType},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2251,93 +2251,93 @@ $(Expr(:toplevel, quote
         ret2
     end
     function element(instance::GVariantType)
-        ret = ccall(("g_variant_type_element", libgobject), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_element", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
         ret2 = convert(GVariantType, ret, false)
         ret2
     end
     function equal(instance::GVariantType, _type2::GVariantType)
-        ret = ccall(("g_variant_type_equal", libgobject), Cint, (Ptr{GVariantType}, Ptr{GVariantType}), instance, _type2)
+        ret = ccall(("g_variant_type_equal", libglib), Cint, (Ptr{GVariantType}, Ptr{GVariantType}), instance, _type2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function first(instance::GVariantType)
-        ret = ccall(("g_variant_type_first", libgobject), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_first", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
         ret2 = convert(GVariantType, ret, false)
         ret2
     end
     function free(instance::GVariantType)
-        ret = ccall(("g_variant_type_free", libgobject), Nothing, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_free", libglib), Nothing, (Ptr{GVariantType},), instance)
         nothing
     end
     function get_string_length(instance::GVariantType)
-        ret = ccall(("g_variant_type_get_string_length", libgobject), UInt64, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_get_string_length", libglib), UInt64, (Ptr{GVariantType},), instance)
         ret
     end
     function hash(instance::GVariantType)
-        ret = ccall(("g_variant_type_hash", libgobject), UInt32, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_hash", libglib), UInt32, (Ptr{GVariantType},), instance)
         ret
     end
     function is_array(instance::GVariantType)
-        ret = ccall(("g_variant_type_is_array", libgobject), Cint, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_is_array", libglib), Cint, (Ptr{GVariantType},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_basic(instance::GVariantType)
-        ret = ccall(("g_variant_type_is_basic", libgobject), Cint, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_is_basic", libglib), Cint, (Ptr{GVariantType},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_container(instance::GVariantType)
-        ret = ccall(("g_variant_type_is_container", libgobject), Cint, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_is_container", libglib), Cint, (Ptr{GVariantType},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_definite(instance::GVariantType)
-        ret = ccall(("g_variant_type_is_definite", libgobject), Cint, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_is_definite", libglib), Cint, (Ptr{GVariantType},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_dict_entry(instance::GVariantType)
-        ret = ccall(("g_variant_type_is_dict_entry", libgobject), Cint, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_is_dict_entry", libglib), Cint, (Ptr{GVariantType},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_maybe(instance::GVariantType)
-        ret = ccall(("g_variant_type_is_maybe", libgobject), Cint, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_is_maybe", libglib), Cint, (Ptr{GVariantType},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_subtype_of(instance::GVariantType, _supertype::GVariantType)
-        ret = ccall(("g_variant_type_is_subtype_of", libgobject), Cint, (Ptr{GVariantType}, Ptr{GVariantType}), instance, _supertype)
+        ret = ccall(("g_variant_type_is_subtype_of", libglib), Cint, (Ptr{GVariantType}, Ptr{GVariantType}), instance, _supertype)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_tuple(instance::GVariantType)
-        ret = ccall(("g_variant_type_is_tuple", libgobject), Cint, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_is_tuple", libglib), Cint, (Ptr{GVariantType},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function is_variant(instance::GVariantType)
-        ret = ccall(("g_variant_type_is_variant", libgobject), Cint, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_is_variant", libglib), Cint, (Ptr{GVariantType},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
     function key(instance::GVariantType)
-        ret = ccall(("g_variant_type_key", libgobject), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_key", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
         ret2 = convert(GVariantType, ret, false)
         ret2
     end
     function n_items(instance::GVariantType)
-        ret = ccall(("g_variant_type_n_items", libgobject), UInt64, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_n_items", libglib), UInt64, (Ptr{GVariantType},), instance)
         ret
     end
     function next(instance::GVariantType)
-        ret = ccall(("g_variant_type_next", libgobject), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_next", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
         ret2 = convert(GVariantType, ret, false)
         ret2
     end
     function value(instance::GVariantType)
-        ret = ccall(("g_variant_type_value", libgobject), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
+        ret = ccall(("g_variant_type_value", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
         ret2 = convert(GVariantType, ret, false)
         ret2
     end

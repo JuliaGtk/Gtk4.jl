@@ -1,7 +1,6 @@
 module Gtk4TestModule
 using Test
 
-if Sys.islinux()
 @testset "GLib" begin
 include("keyfile.jl")
 #include("date.jl")
@@ -16,7 +15,6 @@ include("gvalue.jl")
 include("gfile.jl")
 include("gmenu.jl")
 include("action-group.jl")
-end
 end
 
 @testset "Pango" begin

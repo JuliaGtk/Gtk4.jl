@@ -1,15 +1,15 @@
 quote
 $(Expr(:toplevel, quote
     function access(_filename::Union{AbstractString, Symbol}, _mode::Integer)
-        ret = ccall(("g_access", libgobject), Int32, (Cstring, Int32), _filename, _mode)
+        ret = ccall(("g_access", libglib), Int32, (Cstring, Int32), _filename, _mode)
         ret
     end
     function ascii_digit_value(_c::Integer)
-        ret = ccall(("g_ascii_digit_value", libgobject), Int32, (Int8,), _c)
+        ret = ccall(("g_ascii_digit_value", libglib), Int32, (Int8,), _c)
         ret
     end
     function ascii_dtostr(_buffer::Union{AbstractString, Symbol}, _buf_len::Integer, _d::Real)
-        ret = ccall(("g_ascii_dtostr", libgobject), Cstring, (Cstring, Int32, Float64), _buffer, _buf_len, _d)
+        ret = ccall(("g_ascii_dtostr", libglib), Cstring, (Cstring, Int32, Float64), _buffer, _buf_len, _d)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -18,7 +18,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ascii_formatd(_buffer::Union{AbstractString, Symbol}, _buf_len::Integer, _format::Union{AbstractString, Symbol}, _d::Real)
-        ret = ccall(("g_ascii_formatd", libgobject), Cstring, (Cstring, Int32, Cstring, Float64), _buffer, _buf_len, _format, _d)
+        ret = ccall(("g_ascii_formatd", libglib), Cstring, (Cstring, Int32, Cstring, Float64), _buffer, _buf_len, _format, _d)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -27,11 +27,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ascii_strcasecmp(_s1::Union{AbstractString, Symbol}, _s2::Union{AbstractString, Symbol})
-        ret = ccall(("g_ascii_strcasecmp", libgobject), Int32, (Cstring, Cstring), _s1, _s2)
+        ret = ccall(("g_ascii_strcasecmp", libglib), Int32, (Cstring, Cstring), _s1, _s2)
         ret
     end
     function ascii_strdown(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_ascii_strdown", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_ascii_strdown", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -42,7 +42,7 @@ $(Expr(:toplevel, quote
     function ascii_string_to_signed(_str::Union{AbstractString, Symbol}, _base::Integer, _min::Integer, _max::Integer)
         m_out_num = Ref{Int64}()
         err = err_buf()
-        ret = ccall(("g_ascii_string_to_signed", libgobject), Cint, (Cstring, UInt32, Int64, Int64, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _base, _min, _max, m_out_num, err)
+        ret = ccall(("g_ascii_string_to_signed", libglib), Cint, (Cstring, UInt32, Int64, Int64, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _base, _min, _max, m_out_num, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _out_num = m_out_num[]
@@ -51,19 +51,19 @@ $(Expr(:toplevel, quote
     function ascii_string_to_unsigned(_str::Union{AbstractString, Symbol}, _base::Integer, _min::Integer, _max::Integer)
         m_out_num = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_ascii_string_to_unsigned", libgobject), Cint, (Cstring, UInt32, UInt64, UInt64, Ptr{UInt64}, Ptr{Ptr{GError}}), _str, _base, _min, _max, m_out_num, err)
+        ret = ccall(("g_ascii_string_to_unsigned", libglib), Cint, (Cstring, UInt32, UInt64, UInt64, Ptr{UInt64}, Ptr{Ptr{GError}}), _str, _base, _min, _max, m_out_num, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _out_num = m_out_num[]
         (ret2, _out_num)
     end
     function ascii_strncasecmp(_s1::Union{AbstractString, Symbol}, _s2::Union{AbstractString, Symbol}, _n::Integer)
-        ret = ccall(("g_ascii_strncasecmp", libgobject), Int32, (Cstring, Cstring, UInt64), _s1, _s2, _n)
+        ret = ccall(("g_ascii_strncasecmp", libglib), Int32, (Cstring, Cstring, UInt64), _s1, _s2, _n)
         ret
     end
     function ascii_strtod(_nptr::Union{AbstractString, Symbol})
         m_endptr = Ref{Cstring}()
-        ret = ccall(("g_ascii_strtod", libgobject), Float64, (Cstring, Ptr{Cstring}), _nptr, m_endptr)
+        ret = ccall(("g_ascii_strtod", libglib), Float64, (Cstring, Ptr{Cstring}), _nptr, m_endptr)
         _endptr = m_endptr[]
         _endptr = if _endptr == C_NULL
                 nothing
@@ -74,7 +74,7 @@ $(Expr(:toplevel, quote
     end
     function ascii_strtoll(_nptr::Union{AbstractString, Symbol}, _base::Integer)
         m_endptr = Ref{Cstring}()
-        ret = ccall(("g_ascii_strtoll", libgobject), Int64, (Cstring, Ptr{Cstring}, UInt32), _nptr, m_endptr, _base)
+        ret = ccall(("g_ascii_strtoll", libglib), Int64, (Cstring, Ptr{Cstring}, UInt32), _nptr, m_endptr, _base)
         _endptr = m_endptr[]
         _endptr = if _endptr == C_NULL
                 nothing
@@ -85,7 +85,7 @@ $(Expr(:toplevel, quote
     end
     function ascii_strtoull(_nptr::Union{AbstractString, Symbol}, _base::Integer)
         m_endptr = Ref{Cstring}()
-        ret = ccall(("g_ascii_strtoull", libgobject), UInt64, (Cstring, Ptr{Cstring}, UInt32), _nptr, m_endptr, _base)
+        ret = ccall(("g_ascii_strtoull", libglib), UInt64, (Cstring, Ptr{Cstring}, UInt32), _nptr, m_endptr, _base)
         _endptr = m_endptr[]
         _endptr = if _endptr == C_NULL
                 nothing
@@ -95,7 +95,7 @@ $(Expr(:toplevel, quote
         (ret, _endptr)
     end
     function ascii_strup(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_ascii_strup", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_ascii_strup", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -104,77 +104,77 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ascii_tolower(_c::Integer)
-        ret = ccall(("g_ascii_tolower", libgobject), Int8, (Int8,), _c)
+        ret = ccall(("g_ascii_tolower", libglib), Int8, (Int8,), _c)
         ret
     end
     function ascii_toupper(_c::Integer)
-        ret = ccall(("g_ascii_toupper", libgobject), Int8, (Int8,), _c)
+        ret = ccall(("g_ascii_toupper", libglib), Int8, (Int8,), _c)
         ret
     end
     function ascii_xdigit_value(_c::Integer)
-        ret = ccall(("g_ascii_xdigit_value", libgobject), Int32, (Int8,), _c)
+        ret = ccall(("g_ascii_xdigit_value", libglib), Int32, (Int8,), _c)
         ret
     end
     function assert_warning(_log_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _pretty_function::Union{AbstractString, Symbol}, _expression::Union{AbstractString, Symbol})
-        ret = ccall(("g_assert_warning", libgobject), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring), _log_domain, _file, _line, _pretty_function, _expression)
+        ret = ccall(("g_assert_warning", libglib), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring), _log_domain, _file, _line, _pretty_function, _expression)
         nothing
     end
     function assertion_message(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _message::Union{AbstractString, Symbol})
-        ret = ccall(("g_assertion_message", libgobject), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring), _domain, _file, _line, _func, _message)
+        ret = ccall(("g_assertion_message", libglib), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring), _domain, _file, _line, _func, _message)
         nothing
     end
     function assertion_message_cmpstr(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _expr::Union{AbstractString, Symbol}, _arg1::Union{AbstractString, Symbol}, _cmp::Union{AbstractString, Symbol}, _arg2::Union{AbstractString, Symbol})
-        ret = ccall(("g_assertion_message_cmpstr", libgobject), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, Cstring, Cstring, Cstring), _domain, _file, _line, _func, _expr, _arg1, _cmp, _arg2)
+        ret = ccall(("g_assertion_message_cmpstr", libglib), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, Cstring, Cstring, Cstring), _domain, _file, _line, _func, _expr, _arg1, _cmp, _arg2)
         nothing
     end
     function assertion_message_cmpstrv(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _expr::Union{AbstractString, Symbol}, _arg1::Union{AbstractString, Symbol}, _arg2::Union{AbstractString, Symbol}, _first_wrong_idx::Integer)
-        ret = ccall(("g_assertion_message_cmpstrv", libgobject), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, Cstring, Cstring, UInt64), _domain, _file, _line, _func, _expr, _arg1, _arg2, _first_wrong_idx)
+        ret = ccall(("g_assertion_message_cmpstrv", libglib), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, Cstring, Cstring, UInt64), _domain, _file, _line, _func, _expr, _arg1, _arg2, _first_wrong_idx)
         nothing
     end
     function atomic_int_add(_atomic::Int32, _val::Integer)
-        ret = ccall(("g_atomic_int_add", libgobject), Int32, (Ptr{Int32}, Int32), _atomic, _val)
+        ret = ccall(("g_atomic_int_add", libglib), Int32, (Ptr{Int32}, Int32), _atomic, _val)
         ret
     end
     function atomic_int_and(_atomic::UInt32, _val::Integer)
-        ret = ccall(("g_atomic_int_and", libgobject), UInt32, (Ptr{UInt32}, UInt32), _atomic, _val)
+        ret = ccall(("g_atomic_int_and", libglib), UInt32, (Ptr{UInt32}, UInt32), _atomic, _val)
         ret
     end
     function atomic_int_compare_and_exchange(_atomic::Int32, _oldval::Integer, _newval::Integer)
-        ret = ccall(("g_atomic_int_compare_and_exchange", libgobject), Cint, (Ptr{Int32}, Int32, Int32), _atomic, _oldval, _newval)
+        ret = ccall(("g_atomic_int_compare_and_exchange", libglib), Cint, (Ptr{Int32}, Int32, Int32), _atomic, _oldval, _newval)
         ret2 = convert(Bool, ret)
         ret2
     end
     function atomic_int_dec_and_test(_atomic::Int32)
-        ret = ccall(("g_atomic_int_dec_and_test", libgobject), Cint, (Ptr{Int32},), _atomic)
+        ret = ccall(("g_atomic_int_dec_and_test", libglib), Cint, (Ptr{Int32},), _atomic)
         ret2 = convert(Bool, ret)
         ret2
     end
     function atomic_int_get(_atomic::Int32)
-        ret = ccall(("g_atomic_int_get", libgobject), Int32, (Ptr{Int32},), _atomic)
+        ret = ccall(("g_atomic_int_get", libglib), Int32, (Ptr{Int32},), _atomic)
         ret
     end
     function atomic_int_inc(_atomic::Int32)
-        ret = ccall(("g_atomic_int_inc", libgobject), Nothing, (Ptr{Int32},), _atomic)
+        ret = ccall(("g_atomic_int_inc", libglib), Nothing, (Ptr{Int32},), _atomic)
         nothing
     end
     function atomic_int_or(_atomic::UInt32, _val::Integer)
-        ret = ccall(("g_atomic_int_or", libgobject), UInt32, (Ptr{UInt32}, UInt32), _atomic, _val)
+        ret = ccall(("g_atomic_int_or", libglib), UInt32, (Ptr{UInt32}, UInt32), _atomic, _val)
         ret
     end
     function atomic_int_set(_atomic::Int32, _newval::Integer)
-        ret = ccall(("g_atomic_int_set", libgobject), Nothing, (Ptr{Int32}, Int32), _atomic, _newval)
+        ret = ccall(("g_atomic_int_set", libglib), Nothing, (Ptr{Int32}, Int32), _atomic, _newval)
         nothing
     end
     function atomic_int_xor(_atomic::UInt32, _val::Integer)
-        ret = ccall(("g_atomic_int_xor", libgobject), UInt32, (Ptr{UInt32}, UInt32), _atomic, _val)
+        ret = ccall(("g_atomic_int_xor", libglib), UInt32, (Ptr{UInt32}, UInt32), _atomic, _val)
         ret
     end
     function atomic_pointer_add(_atomic::Nothing, _val::Integer)
-        ret = ccall(("g_atomic_pointer_add", libgobject), Int64, (Ptr{Nothing}, Int64), _atomic, _val)
+        ret = ccall(("g_atomic_pointer_add", libglib), Int64, (Ptr{Nothing}, Int64), _atomic, _val)
         ret
     end
     function atomic_pointer_and(_atomic::Nothing, _val::Integer)
-        ret = ccall(("g_atomic_pointer_and", libgobject), UInt64, (Ptr{Nothing}, UInt64), _atomic, _val)
+        ret = ccall(("g_atomic_pointer_and", libglib), UInt64, (Ptr{Nothing}, UInt64), _atomic, _val)
         ret
     end
     function atomic_pointer_compare_and_exchange(_atomic::Nothing, _oldval::Maybe(Nothing), _newval::Maybe(Nothing))
@@ -188,17 +188,17 @@ $(Expr(:toplevel, quote
             else
                 _newval
             end
-        ret = ccall(("g_atomic_pointer_compare_and_exchange", libgobject), Cint, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), _atomic, _oldval, _newval)
+        ret = ccall(("g_atomic_pointer_compare_and_exchange", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), _atomic, _oldval, _newval)
         ret2 = convert(Bool, ret)
         ret2
     end
     function atomic_pointer_get(_atomic::Nothing)
-        ret = ccall(("g_atomic_pointer_get", libgobject), Ptr{Nothing}, (Ptr{Nothing},), _atomic)
+        ret = ccall(("g_atomic_pointer_get", libglib), Ptr{Nothing}, (Ptr{Nothing},), _atomic)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function atomic_pointer_or(_atomic::Nothing, _val::Integer)
-        ret = ccall(("g_atomic_pointer_or", libgobject), UInt64, (Ptr{Nothing}, UInt64), _atomic, _val)
+        ret = ccall(("g_atomic_pointer_or", libglib), UInt64, (Ptr{Nothing}, UInt64), _atomic, _val)
         ret
     end
     function atomic_pointer_set(_atomic::Nothing, _newval::Maybe(Nothing))
@@ -207,62 +207,62 @@ $(Expr(:toplevel, quote
             else
                 _newval
             end
-        ret = ccall(("g_atomic_pointer_set", libgobject), Nothing, (Ptr{Nothing}, Ptr{Nothing}), _atomic, _newval)
+        ret = ccall(("g_atomic_pointer_set", libglib), Nothing, (Ptr{Nothing}, Ptr{Nothing}), _atomic, _newval)
         nothing
     end
     function atomic_pointer_xor(_atomic::Nothing, _val::Integer)
-        ret = ccall(("g_atomic_pointer_xor", libgobject), UInt64, (Ptr{Nothing}, UInt64), _atomic, _val)
+        ret = ccall(("g_atomic_pointer_xor", libglib), UInt64, (Ptr{Nothing}, UInt64), _atomic, _val)
         ret
     end
     function atomic_rc_box_acquire(_mem_block::Nothing)
-        ret = ccall(("g_atomic_rc_box_acquire", libgobject), Ptr{Nothing}, (Ptr{Nothing},), _mem_block)
+        ret = ccall(("g_atomic_rc_box_acquire", libglib), Ptr{Nothing}, (Ptr{Nothing},), _mem_block)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function atomic_rc_box_alloc(_block_size::Integer)
-        ret = ccall(("g_atomic_rc_box_alloc", libgobject), Ptr{Nothing}, (UInt64,), _block_size)
+        ret = ccall(("g_atomic_rc_box_alloc", libglib), Ptr{Nothing}, (UInt64,), _block_size)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function atomic_rc_box_alloc0(_block_size::Integer)
-        ret = ccall(("g_atomic_rc_box_alloc0", libgobject), Ptr{Nothing}, (UInt64,), _block_size)
+        ret = ccall(("g_atomic_rc_box_alloc0", libglib), Ptr{Nothing}, (UInt64,), _block_size)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function atomic_rc_box_dup(_block_size::Integer, _mem_block::Nothing)
-        ret = ccall(("g_atomic_rc_box_dup", libgobject), Ptr{Nothing}, (UInt64, Ptr{Nothing}), _block_size, _mem_block)
+        ret = ccall(("g_atomic_rc_box_dup", libglib), Ptr{Nothing}, (UInt64, Ptr{Nothing}), _block_size, _mem_block)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function atomic_rc_box_get_size(_mem_block::Nothing)
-        ret = ccall(("g_atomic_rc_box_get_size", libgobject), UInt64, (Ptr{Nothing},), _mem_block)
+        ret = ccall(("g_atomic_rc_box_get_size", libglib), UInt64, (Ptr{Nothing},), _mem_block)
         ret
     end
     function atomic_rc_box_release(_mem_block::Nothing)
-        ret = ccall(("g_atomic_rc_box_release", libgobject), Nothing, (Ptr{Nothing},), _mem_block)
+        ret = ccall(("g_atomic_rc_box_release", libglib), Nothing, (Ptr{Nothing},), _mem_block)
         nothing
     end
     function atomic_ref_count_compare(_arc::Int32, _val::Integer)
-        ret = ccall(("g_atomic_ref_count_compare", libgobject), Cint, (Ptr{Int32}, Int32), _arc, _val)
+        ret = ccall(("g_atomic_ref_count_compare", libglib), Cint, (Ptr{Int32}, Int32), _arc, _val)
         ret2 = convert(Bool, ret)
         ret2
     end
     function atomic_ref_count_dec(_arc::Int32)
-        ret = ccall(("g_atomic_ref_count_dec", libgobject), Cint, (Ptr{Int32},), _arc)
+        ret = ccall(("g_atomic_ref_count_dec", libglib), Cint, (Ptr{Int32},), _arc)
         ret2 = convert(Bool, ret)
         ret2
     end
     function atomic_ref_count_inc(_arc::Int32)
-        ret = ccall(("g_atomic_ref_count_inc", libgobject), Nothing, (Ptr{Int32},), _arc)
+        ret = ccall(("g_atomic_ref_count_inc", libglib), Nothing, (Ptr{Int32},), _arc)
         nothing
     end
     function atomic_ref_count_init(_arc::Int32)
-        ret = ccall(("g_atomic_ref_count_init", libgobject), Nothing, (Ptr{Int32},), _arc)
+        ret = ccall(("g_atomic_ref_count_init", libglib), Nothing, (Ptr{Int32},), _arc)
         nothing
     end
     function base64_decode(_text::Union{AbstractString, Symbol})
         m_out_len = Ref{UInt64}()
-        ret = ccall(("g_base64_decode", libgobject), Ptr{UInt8}, (Cstring, Ptr{UInt64}), _text, m_out_len)
+        ret = ccall(("g_base64_decode", libglib), Ptr{UInt8}, (Cstring, Ptr{UInt64}), _text, m_out_len)
         _out_len = m_out_len[]
         ret
     end
@@ -273,7 +273,7 @@ $(Expr(:toplevel, quote
         m_out_len = Ref{UInt64}()
         m_out_len[] = Base.cconvert(UInt64, _out_len)
         _out_len = length(_text)
-        ret = ccall(("g_base64_decode_inplace", libgobject), Ptr{UInt8}, (Ptr{Ptr{UInt8}}, Ptr{UInt64}), m_text, m_out_len)
+        ret = ccall(("g_base64_decode_inplace", libglib), Ptr{UInt8}, (Ptr{Ptr{UInt8}}, Ptr{UInt64}), m_text, m_out_len)
         ret2 = convert(UInt8, ret)
         _text = m_text[]
         _out_len = m_out_len[]
@@ -282,7 +282,7 @@ $(Expr(:toplevel, quote
     function base64_encode(_data)
         _data = convert(Vector{UInt8}, _data)
         _len = length(_data)
-        ret = ccall(("g_base64_encode", libgobject), Cstring, (Ptr{UInt8}, UInt64), _data, _len)
+        ret = ccall(("g_base64_encode", libglib), Cstring, (Ptr{UInt8}, UInt64), _data, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -296,7 +296,7 @@ $(Expr(:toplevel, quote
         m_state[] = Base.cconvert(Int32, _state)
         m_save = Ref{Int32}()
         m_save[] = Base.cconvert(Int32, _save)
-        ret = ccall(("g_base64_encode_close", libgobject), UInt64, (Cint, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Int32}), _break_lines, m_out, m_state, m_save)
+        ret = ccall(("g_base64_encode_close", libglib), UInt64, (Cint, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Int32}), _break_lines, m_out, m_state, m_save)
         _out = m_out[]
         _state = m_state[]
         _save = m_save[]
@@ -310,43 +310,43 @@ $(Expr(:toplevel, quote
         m_save = Ref{Int32}()
         m_save[] = Base.cconvert(Int32, _save)
         _len = length(_in)
-        ret = ccall(("g_base64_encode_step", libgobject), UInt64, (Ptr{UInt8}, UInt64, Cint, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Int32}), _in, _len, _break_lines, m_out, m_state, m_save)
+        ret = ccall(("g_base64_encode_step", libglib), UInt64, (Ptr{UInt8}, UInt64, Cint, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Int32}), _in, _len, _break_lines, m_out, m_state, m_save)
         _out = m_out[]
         _state = m_state[]
         _save = m_save[]
         (ret, _out, _state, _save)
     end
     function bit_lock(_address::Int32, _lock_bit::Integer)
-        ret = ccall(("g_bit_lock", libgobject), Nothing, (Ptr{Int32}, Int32), _address, _lock_bit)
+        ret = ccall(("g_bit_lock", libglib), Nothing, (Ptr{Int32}, Int32), _address, _lock_bit)
         nothing
     end
     function bit_nth_lsf(_mask::Integer, _nth_bit::Integer)
-        ret = ccall(("g_bit_nth_lsf", libgobject), Int32, (UInt64, Int32), _mask, _nth_bit)
+        ret = ccall(("g_bit_nth_lsf", libglib), Int32, (UInt64, Int32), _mask, _nth_bit)
         ret
     end
     function bit_nth_msf(_mask::Integer, _nth_bit::Integer)
-        ret = ccall(("g_bit_nth_msf", libgobject), Int32, (UInt64, Int32), _mask, _nth_bit)
+        ret = ccall(("g_bit_nth_msf", libglib), Int32, (UInt64, Int32), _mask, _nth_bit)
         ret
     end
     function bit_storage(_number::Integer)
-        ret = ccall(("g_bit_storage", libgobject), UInt32, (UInt64,), _number)
+        ret = ccall(("g_bit_storage", libglib), UInt32, (UInt64,), _number)
         ret
     end
     function bit_trylock(_address::Int32, _lock_bit::Integer)
-        ret = ccall(("g_bit_trylock", libgobject), Cint, (Ptr{Int32}, Int32), _address, _lock_bit)
+        ret = ccall(("g_bit_trylock", libglib), Cint, (Ptr{Int32}, Int32), _address, _lock_bit)
         ret2 = convert(Bool, ret)
         ret2
     end
     function bit_unlock(_address::Int32, _lock_bit::Integer)
-        ret = ccall(("g_bit_unlock", libgobject), Nothing, (Ptr{Int32}, Int32), _address, _lock_bit)
+        ret = ccall(("g_bit_unlock", libglib), Nothing, (Ptr{Int32}, Int32), _address, _lock_bit)
         nothing
     end
     function bookmark_file_error_quark()
-        ret = ccall(("g_bookmark_file_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_bookmark_file_error_quark", libglib), UInt32, ())
         ret
     end
     function build_filenamev(_args)
-        ret = ccall(("g_build_filenamev", libgobject), Cstring, (Ptr{Cstring},), _args)
+        ret = ccall(("g_build_filenamev", libglib), Cstring, (Ptr{Cstring},), _args)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -355,7 +355,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function build_pathv(_separator::Union{AbstractString, Symbol}, _args)
-        ret = ccall(("g_build_pathv", libgobject), Cstring, (Cstring, Ptr{Cstring}), _separator, _args)
+        ret = ccall(("g_build_pathv", libglib), Cstring, (Cstring, Ptr{Cstring}), _separator, _args)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -364,36 +364,36 @@ $(Expr(:toplevel, quote
         ret2
     end
     function byte_array_free(_array, _free_segment::Bool)
-        ret = ccall(("g_byte_array_free", libgobject), Ptr{UInt8}, (Ptr{GByteArray}, Cint), _array, _free_segment)
+        ret = ccall(("g_byte_array_free", libglib), Ptr{UInt8}, (Ptr{GByteArray}, Cint), _array, _free_segment)
         ret2 = convert(UInt8, ret)
         ret2
     end
     function byte_array_free_to_bytes(_array)
-        ret = ccall(("g_byte_array_free_to_bytes", libgobject), Ptr{GBytes}, (Ptr{GByteArray},), _array)
+        ret = ccall(("g_byte_array_free_to_bytes", libglib), Ptr{GBytes}, (Ptr{GByteArray},), _array)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function byte_array_new()
-        ret = ccall(("g_byte_array_new", libgobject), Ptr{GByteArray}, ())
+        ret = ccall(("g_byte_array_new", libglib), Ptr{GByteArray}, ())
         ret2 = convert(GByteArray, ret, true)
         ret2
     end
     function byte_array_new_take(_data)
         _data = convert(Vector{UInt8}, _data)
         _len = length(_data)
-        ret = ccall(("g_byte_array_new_take", libgobject), Ptr{GByteArray}, (Ptr{UInt8}, UInt64), _data, _len)
+        ret = ccall(("g_byte_array_new_take", libglib), Ptr{GByteArray}, (Ptr{UInt8}, UInt64), _data, _len)
         ret2 = convert(GByteArray, ret, true)
         ret2
     end
     function byte_array_steal(_array)
         m_len = Ref{UInt64}()
-        ret = ccall(("g_byte_array_steal", libgobject), Ptr{UInt8}, (Ptr{GByteArray}, Ptr{UInt64}), _array, m_len)
+        ret = ccall(("g_byte_array_steal", libglib), Ptr{UInt8}, (Ptr{GByteArray}, Ptr{UInt64}), _array, m_len)
         ret2 = convert(UInt8, ret)
         _len = m_len[]
         (ret2, _len)
     end
     function byte_array_unref(_array)
-        ret = ccall(("g_byte_array_unref", libgobject), Nothing, (Ptr{GByteArray},), _array)
+        ret = ccall(("g_byte_array_unref", libglib), Nothing, (Ptr{GByteArray},), _array)
         nothing
     end
     function canonicalize_filename(_filename::Union{AbstractString, Symbol}, _relative_to::Maybe(Union{AbstractString, Symbol}))
@@ -402,7 +402,7 @@ $(Expr(:toplevel, quote
             else
                 _relative_to
             end
-        ret = ccall(("g_canonicalize_filename", libgobject), Cstring, (Cstring, Cstring), _filename, _relative_to)
+        ret = ccall(("g_canonicalize_filename", libglib), Cstring, (Cstring, Cstring), _filename, _relative_to)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -411,11 +411,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function chdir(_path::Union{AbstractString, Symbol})
-        ret = ccall(("g_chdir", libgobject), Int32, (Cstring,), _path)
+        ret = ccall(("g_chdir", libglib), Int32, (Cstring,), _path)
         ret
     end
     function check_version(_required_major::Integer, _required_minor::Integer, _required_micro::Integer)
-        ret = ccall(("glib_check_version", libgobject), Cstring, (UInt32, UInt32, UInt32), _required_major, _required_minor, _required_micro)
+        ret = ccall(("glib_check_version", libglib), Cstring, (UInt32, UInt32, UInt32), _required_major, _required_minor, _required_micro)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -424,24 +424,24 @@ $(Expr(:toplevel, quote
         ret2
     end
     function checksum_type_get_length(_checksum_type)
-        ret = ccall(("g_checksum_type_get_length", libgobject), Int64, (UInt32,), _checksum_type)
+        ret = ccall(("g_checksum_type_get_length", libglib), Int64, (UInt32,), _checksum_type)
         ret
     end
     function clear_error()
         err = err_buf()
-        ret = ccall(("g_clear_error", libgobject), Nothing, (Ptr{Ptr{GError}},), err)
+        ret = ccall(("g_clear_error", libglib), Nothing, (Ptr{Ptr{GError}},), err)
         check_err(err)
         nothing
     end
     function close(_fd::Integer)
         err = err_buf()
-        ret = ccall(("g_close", libgobject), Cint, (Int32, Ptr{Ptr{GError}}), _fd, err)
+        ret = ccall(("g_close", libglib), Cint, (Int32, Ptr{Ptr{GError}}), _fd, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function compute_checksum_for_bytes(_checksum_type, _data::GBytes)
-        ret = ccall(("g_compute_checksum_for_bytes", libgobject), Cstring, (UInt32, Ptr{GBytes}), _checksum_type, _data)
+        ret = ccall(("g_compute_checksum_for_bytes", libglib), Cstring, (UInt32, Ptr{GBytes}), _checksum_type, _data)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -452,7 +452,7 @@ $(Expr(:toplevel, quote
     function compute_checksum_for_data(_checksum_type, _data)
         _data = convert(Vector{UInt8}, _data)
         _length = length(_data)
-        ret = ccall(("g_compute_checksum_for_data", libgobject), Cstring, (UInt32, Ptr{UInt8}, UInt64), _checksum_type, _data, _length)
+        ret = ccall(("g_compute_checksum_for_data", libglib), Cstring, (UInt32, Ptr{UInt8}, UInt64), _checksum_type, _data, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -461,7 +461,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_checksum_for_string(_checksum_type, _str::Union{AbstractString, Symbol}, _length::Integer)
-        ret = ccall(("g_compute_checksum_for_string", libgobject), Cstring, (UInt32, Cstring, Int64), _checksum_type, _str, _length)
+        ret = ccall(("g_compute_checksum_for_string", libglib), Cstring, (UInt32, Cstring, Int64), _checksum_type, _str, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -470,7 +470,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function compute_hmac_for_bytes(_digest_type, _key::GBytes, _data::GBytes)
-        ret = ccall(("g_compute_hmac_for_bytes", libgobject), Cstring, (UInt32, Ptr{GBytes}, Ptr{GBytes}), _digest_type, _key, _data)
+        ret = ccall(("g_compute_hmac_for_bytes", libglib), Cstring, (UInt32, Ptr{GBytes}, Ptr{GBytes}), _digest_type, _key, _data)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -483,7 +483,7 @@ $(Expr(:toplevel, quote
         _data = convert(Vector{UInt8}, _data)
         _key_len = length(_key)
         _length = length(_data)
-        ret = ccall(("g_compute_hmac_for_data", libgobject), Cstring, (UInt32, Ptr{UInt8}, UInt64, Ptr{UInt8}, UInt64), _digest_type, _key, _key_len, _data, _length)
+        ret = ccall(("g_compute_hmac_for_data", libglib), Cstring, (UInt32, Ptr{UInt8}, UInt64, Ptr{UInt8}, UInt64), _digest_type, _key, _key_len, _data, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -494,7 +494,7 @@ $(Expr(:toplevel, quote
     function compute_hmac_for_string(_digest_type, _key, _str::Union{AbstractString, Symbol}, _length::Integer)
         _key = convert(Vector{UInt8}, _key)
         _key_len = length(_key)
-        ret = ccall(("g_compute_hmac_for_string", libgobject), Cstring, (UInt32, Ptr{UInt8}, UInt64, Cstring, Int64), _digest_type, _key, _key_len, _str, _length)
+        ret = ccall(("g_compute_hmac_for_string", libglib), Cstring, (UInt32, Ptr{UInt8}, UInt64, Cstring, Int64), _digest_type, _key, _key_len, _str, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -503,7 +503,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function convert_error_quark()
-        ret = ccall(("g_convert_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_convert_error_quark", libglib), UInt32, ())
         ret
     end
     function convert_with_fallback(_str, _to_codeset::Union{AbstractString, Symbol}, _from_codeset::Union{AbstractString, Symbol}, _fallback::Union{AbstractString, Symbol})
@@ -512,65 +512,65 @@ $(Expr(:toplevel, quote
         m_bytes_written = Ref{UInt64}()
         _len = length(_str)
         err = err_buf()
-        ret = ccall(("g_convert_with_fallback", libgobject), Ptr{UInt8}, (Ptr{UInt8}, Int64, Cstring, Cstring, Cstring, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _str, _len, _to_codeset, _from_codeset, _fallback, m_bytes_read, m_bytes_written, err)
+        ret = ccall(("g_convert_with_fallback", libglib), Ptr{UInt8}, (Ptr{UInt8}, Int64, Cstring, Cstring, Cstring, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _str, _len, _to_codeset, _from_codeset, _fallback, m_bytes_read, m_bytes_written, err)
         check_err(err)
         _bytes_read = m_bytes_read[]
         _bytes_written = m_bytes_written[]
         (ret, _bytes_read)
     end
     function dataset_destroy(_dataset_location::Nothing)
-        ret = ccall(("g_dataset_destroy", libgobject), Nothing, (Ptr{Nothing},), _dataset_location)
+        ret = ccall(("g_dataset_destroy", libglib), Nothing, (Ptr{Nothing},), _dataset_location)
         nothing
     end
     function dataset_id_get_data(_dataset_location::Nothing, _key_id::Integer)
-        ret = ccall(("g_dataset_id_get_data", libgobject), Ptr{Nothing}, (Ptr{Nothing}, UInt32), _dataset_location, _key_id)
+        ret = ccall(("g_dataset_id_get_data", libglib), Ptr{Nothing}, (Ptr{Nothing}, UInt32), _dataset_location, _key_id)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function date_get_days_in_month(_month, _year::Integer)
-        ret = ccall(("g_date_get_days_in_month", libgobject), UInt8, (UInt32, UInt16), _month, _year)
+        ret = ccall(("g_date_get_days_in_month", libglib), UInt8, (UInt32, UInt16), _month, _year)
         ret
     end
     function date_get_monday_weeks_in_year(_year::Integer)
-        ret = ccall(("g_date_get_monday_weeks_in_year", libgobject), UInt8, (UInt16,), _year)
+        ret = ccall(("g_date_get_monday_weeks_in_year", libglib), UInt8, (UInt16,), _year)
         ret
     end
     function date_get_sunday_weeks_in_year(_year::Integer)
-        ret = ccall(("g_date_get_sunday_weeks_in_year", libgobject), UInt8, (UInt16,), _year)
+        ret = ccall(("g_date_get_sunday_weeks_in_year", libglib), UInt8, (UInt16,), _year)
         ret
     end
     function date_is_leap_year(_year::Integer)
-        ret = ccall(("g_date_is_leap_year", libgobject), Cint, (UInt16,), _year)
+        ret = ccall(("g_date_is_leap_year", libglib), Cint, (UInt16,), _year)
         ret2 = convert(Bool, ret)
         ret2
     end
     function date_valid_day(_day::Integer)
-        ret = ccall(("g_date_valid_day", libgobject), Cint, (UInt8,), _day)
+        ret = ccall(("g_date_valid_day", libglib), Cint, (UInt8,), _day)
         ret2 = convert(Bool, ret)
         ret2
     end
     function date_valid_dmy(_day::Integer, _month, _year::Integer)
-        ret = ccall(("g_date_valid_dmy", libgobject), Cint, (UInt8, UInt32, UInt16), _day, _month, _year)
+        ret = ccall(("g_date_valid_dmy", libglib), Cint, (UInt8, UInt32, UInt16), _day, _month, _year)
         ret2 = convert(Bool, ret)
         ret2
     end
     function date_valid_julian(_julian_date::Integer)
-        ret = ccall(("g_date_valid_julian", libgobject), Cint, (UInt32,), _julian_date)
+        ret = ccall(("g_date_valid_julian", libglib), Cint, (UInt32,), _julian_date)
         ret2 = convert(Bool, ret)
         ret2
     end
     function date_valid_month(_month)
-        ret = ccall(("g_date_valid_month", libgobject), Cint, (UInt32,), _month)
+        ret = ccall(("g_date_valid_month", libglib), Cint, (UInt32,), _month)
         ret2 = convert(Bool, ret)
         ret2
     end
     function date_valid_weekday(_weekday)
-        ret = ccall(("g_date_valid_weekday", libgobject), Cint, (UInt32,), _weekday)
+        ret = ccall(("g_date_valid_weekday", libglib), Cint, (UInt32,), _weekday)
         ret2 = convert(Bool, ret)
         ret2
     end
     function date_valid_year(_year::Integer)
-        ret = ccall(("g_date_valid_year", libgobject), Cint, (UInt16,), _year)
+        ret = ccall(("g_date_valid_year", libglib), Cint, (UInt16,), _year)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -580,7 +580,7 @@ $(Expr(:toplevel, quote
             else
                 _domain
             end
-        ret = ccall(("g_dcgettext", libgobject), Cstring, (Cstring, Cstring, Int32), _domain, _msgid, _category)
+        ret = ccall(("g_dcgettext", libglib), Cstring, (Cstring, Cstring, Int32), _domain, _msgid, _category)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -594,7 +594,7 @@ $(Expr(:toplevel, quote
             else
                 _domain
             end
-        ret = ccall(("g_dgettext", libgobject), Cstring, (Cstring, Cstring), _domain, _msgid)
+        ret = ccall(("g_dgettext", libglib), Cstring, (Cstring, Cstring), _domain, _msgid)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -609,7 +609,7 @@ $(Expr(:toplevel, quote
                 _tmpl
             end
         err = err_buf()
-        ret = ccall(("g_dir_make_tmp", libgobject), Cstring, (Cstring, Ptr{Ptr{GError}}), _tmpl, err)
+        ret = ccall(("g_dir_make_tmp", libglib), Cstring, (Cstring, Ptr{Ptr{GError}}), _tmpl, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -629,7 +629,7 @@ $(Expr(:toplevel, quote
             else
                 _v2
             end
-        ret = ccall(("g_direct_equal", libgobject), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
+        ret = ccall(("g_direct_equal", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -639,7 +639,7 @@ $(Expr(:toplevel, quote
             else
                 _v
             end
-        ret = ccall(("g_direct_hash", libgobject), UInt32, (Ptr{Nothing},), _v)
+        ret = ccall(("g_direct_hash", libglib), UInt32, (Ptr{Nothing},), _v)
         ret
     end
     function dngettext(_domain::Maybe(Union{AbstractString, Symbol}), _msgid::Union{AbstractString, Symbol}, _msgid_plural::Union{AbstractString, Symbol}, _n::Integer)
@@ -648,7 +648,7 @@ $(Expr(:toplevel, quote
             else
                 _domain
             end
-        ret = ccall(("g_dngettext", libgobject), Cstring, (Cstring, Cstring, Cstring, UInt64), _domain, _msgid, _msgid_plural, _n)
+        ret = ccall(("g_dngettext", libglib), Cstring, (Cstring, Cstring, Cstring, UInt64), _domain, _msgid, _msgid_plural, _n)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -657,12 +657,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function double_equal(_v1::Nothing, _v2::Nothing)
-        ret = ccall(("g_double_equal", libgobject), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
+        ret = ccall(("g_double_equal", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function double_hash(_v::Nothing)
-        ret = ccall(("g_double_hash", libgobject), UInt32, (Ptr{Nothing},), _v)
+        ret = ccall(("g_double_hash", libglib), UInt32, (Ptr{Nothing},), _v)
         ret
     end
     function dpgettext(_domain::Maybe(Union{AbstractString, Symbol}), _msgctxtid::Union{AbstractString, Symbol}, _msgidoffset::Integer)
@@ -671,7 +671,7 @@ $(Expr(:toplevel, quote
             else
                 _domain
             end
-        ret = ccall(("g_dpgettext", libgobject), Cstring, (Cstring, Cstring, UInt64), _domain, _msgctxtid, _msgidoffset)
+        ret = ccall(("g_dpgettext", libglib), Cstring, (Cstring, Cstring, UInt64), _domain, _msgctxtid, _msgidoffset)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -685,7 +685,7 @@ $(Expr(:toplevel, quote
             else
                 _domain
             end
-        ret = ccall(("g_dpgettext2", libgobject), Cstring, (Cstring, Cstring, Cstring), _domain, _context, _msgid)
+        ret = ccall(("g_dpgettext2", libglib), Cstring, (Cstring, Cstring, Cstring), _domain, _context, _msgid)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -699,7 +699,7 @@ $(Expr(:toplevel, quote
             else
                 _envp
             end
-        ret = ccall(("g_environ_getenv", libgobject), Cstring, (Ptr{Cstring}, Cstring), _envp, _variable)
+        ret = ccall(("g_environ_getenv", libglib), Cstring, (Ptr{Cstring}, Cstring), _envp, _variable)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -713,7 +713,7 @@ $(Expr(:toplevel, quote
             else
                 _envp
             end
-        ret = ccall(("g_environ_setenv", libgobject), Ptr{Cstring}, (Ptr{Cstring}, Cstring, Cstring, Cint), _envp, _variable, _value, _overwrite)
+        ret = ccall(("g_environ_setenv", libglib), Ptr{Cstring}, (Ptr{Cstring}, Cstring, Cstring, Cint), _envp, _variable, _value, _overwrite)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -728,7 +728,7 @@ $(Expr(:toplevel, quote
             else
                 _envp
             end
-        ret = ccall(("g_environ_unsetenv", libgobject), Ptr{Cstring}, (Ptr{Cstring}, Cstring), _envp, _variable)
+        ret = ccall(("g_environ_unsetenv", libglib), Ptr{Cstring}, (Ptr{Cstring}, Cstring), _envp, _variable)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -738,19 +738,19 @@ $(Expr(:toplevel, quote
         ret2
     end
     function file_error_from_errno(_err_no::Integer)
-        ret = ccall(("g_file_error_from_errno", libgobject), UInt32, (Int32,), _err_no)
+        ret = ccall(("g_file_error_from_errno", libglib), UInt32, (Int32,), _err_no)
         ret2 = FileError(ret)
         ret2
     end
     function file_error_quark()
-        ret = ccall(("g_file_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_file_error_quark", libglib), UInt32, ())
         ret
     end
     function file_get_contents(_filename::Union{AbstractString, Symbol})
         m_contents = Ref{Ptr{UInt8}}()
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_file_get_contents", libgobject), Cint, (Cstring, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Ptr{Ptr{GError}}), _filename, m_contents, m_length, err)
+        ret = ccall(("g_file_get_contents", libglib), Cint, (Cstring, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Ptr{Ptr{GError}}), _filename, m_contents, m_length, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _contents = m_contents[]
@@ -766,7 +766,7 @@ $(Expr(:toplevel, quote
             end
         m_name_used = Ref{Cstring}()
         err = err_buf()
-        ret = ccall(("g_file_open_tmp", libgobject), Int32, (Cstring, Ptr{Cstring}, Ptr{Ptr{GError}}), _tmpl, m_name_used, err)
+        ret = ccall(("g_file_open_tmp", libglib), Int32, (Cstring, Ptr{Cstring}, Ptr{Ptr{GError}}), _tmpl, m_name_used, err)
         check_err(err)
         _name_used = m_name_used[]
         _name_used = if _name_used == C_NULL
@@ -778,7 +778,7 @@ $(Expr(:toplevel, quote
     end
     function file_read_link(_filename::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_file_read_link", libgobject), Cstring, (Cstring, Ptr{Ptr{GError}}), _filename, err)
+        ret = ccall(("g_file_read_link", libglib), Cstring, (Cstring, Ptr{Ptr{GError}}), _filename, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -791,7 +791,7 @@ $(Expr(:toplevel, quote
         _contents = convert(Vector{UInt8}, _contents)
         _length = length(_contents)
         err = err_buf()
-        ret = ccall(("g_file_set_contents", libgobject), Cint, (Cstring, Ptr{UInt8}, Int64, Ptr{Ptr{GError}}), _filename, _contents, _length, err)
+        ret = ccall(("g_file_set_contents", libglib), Cint, (Cstring, Ptr{UInt8}, Int64, Ptr{Ptr{GError}}), _filename, _contents, _length, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -800,18 +800,18 @@ $(Expr(:toplevel, quote
         _contents = convert(Vector{UInt8}, _contents)
         _length = length(_contents)
         err = err_buf()
-        ret = ccall(("g_file_set_contents_full", libgobject), Cint, (Cstring, Ptr{UInt8}, Int64, UInt32, Int32, Ptr{Ptr{GError}}), _filename, _contents, _length, _flags, _mode, err)
+        ret = ccall(("g_file_set_contents_full", libglib), Cint, (Cstring, Ptr{UInt8}, Int64, UInt32, Int32, Ptr{Ptr{GError}}), _filename, _contents, _length, _flags, _mode, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function file_test(_filename::Union{AbstractString, Symbol}, _test)
-        ret = ccall(("g_file_test", libgobject), Cint, (Cstring, UInt32), _filename, _test)
+        ret = ccall(("g_file_test", libglib), Cint, (Cstring, UInt32), _filename, _test)
         ret2 = convert(Bool, ret)
         ret2
     end
     function filename_display_basename(_filename::Union{AbstractString, Symbol})
-        ret = ccall(("g_filename_display_basename", libgobject), Cstring, (Cstring,), _filename)
+        ret = ccall(("g_filename_display_basename", libglib), Cstring, (Cstring,), _filename)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -820,7 +820,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function filename_display_name(_filename::Union{AbstractString, Symbol})
-        ret = ccall(("g_filename_display_name", libgobject), Cstring, (Cstring,), _filename)
+        ret = ccall(("g_filename_display_name", libglib), Cstring, (Cstring,), _filename)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -831,7 +831,7 @@ $(Expr(:toplevel, quote
     function filename_from_uri(_uri::Union{AbstractString, Symbol})
         m_hostname = Ref{Cstring}()
         err = err_buf()
-        ret = ccall(("g_filename_from_uri", libgobject), Cstring, (Cstring, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri, m_hostname, err)
+        ret = ccall(("g_filename_from_uri", libglib), Cstring, (Cstring, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri, m_hostname, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -846,7 +846,7 @@ $(Expr(:toplevel, quote
         m_bytes_read = Ref{UInt64}()
         m_bytes_written = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_filename_from_utf8", libgobject), Cstring, (Cstring, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _utf8string, _len, m_bytes_read, m_bytes_written, err)
+        ret = ccall(("g_filename_from_utf8", libglib), Cstring, (Cstring, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _utf8string, _len, m_bytes_read, m_bytes_written, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -864,7 +864,7 @@ $(Expr(:toplevel, quote
                 _hostname
             end
         err = err_buf()
-        ret = ccall(("g_filename_to_uri", libgobject), Cstring, (Cstring, Cstring, Ptr{Ptr{GError}}), _filename, _hostname, err)
+        ret = ccall(("g_filename_to_uri", libglib), Cstring, (Cstring, Cstring, Ptr{Ptr{GError}}), _filename, _hostname, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -877,7 +877,7 @@ $(Expr(:toplevel, quote
         m_bytes_read = Ref{UInt64}()
         m_bytes_written = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_filename_to_utf8", libgobject), Cstring, (Cstring, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _opsysstring, _len, m_bytes_read, m_bytes_written, err)
+        ret = ccall(("g_filename_to_utf8", libglib), Cstring, (Cstring, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _opsysstring, _len, m_bytes_read, m_bytes_written, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -889,7 +889,7 @@ $(Expr(:toplevel, quote
         (ret2, _bytes_read, _bytes_written)
     end
     function find_program_in_path(_program::Union{AbstractString, Symbol})
-        ret = ccall(("g_find_program_in_path", libgobject), Cstring, (Cstring,), _program)
+        ret = ccall(("g_find_program_in_path", libglib), Cstring, (Cstring,), _program)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -898,7 +898,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function format_size(_size::Integer)
-        ret = ccall(("g_format_size", libgobject), Cstring, (UInt64,), _size)
+        ret = ccall(("g_format_size", libglib), Cstring, (UInt64,), _size)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -907,7 +907,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function format_size_full(_size::Integer, _flags)
-        ret = ccall(("g_format_size_full", libgobject), Cstring, (UInt64, UInt32), _size, _flags)
+        ret = ccall(("g_format_size_full", libglib), Cstring, (UInt64, UInt32), _size, _flags)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -921,11 +921,11 @@ $(Expr(:toplevel, quote
             else
                 _mem
             end
-        ret = ccall(("g_free", libgobject), Nothing, (Ptr{Nothing},), _mem)
+        ret = ccall(("g_free", libglib), Nothing, (Ptr{Nothing},), _mem)
         nothing
     end
     function get_application_name()
-        ret = ccall(("g_get_application_name", libgobject), Cstring, ())
+        ret = ccall(("g_get_application_name", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -935,7 +935,7 @@ $(Expr(:toplevel, quote
     end
     function get_charset()
         m_charset = Ref{Cstring}()
-        ret = ccall(("g_get_charset", libgobject), Cint, (Ptr{Cstring},), m_charset)
+        ret = ccall(("g_get_charset", libglib), Cint, (Ptr{Cstring},), m_charset)
         ret2 = convert(Bool, ret)
         _charset = m_charset[]
         _charset = if _charset == C_NULL
@@ -946,7 +946,7 @@ $(Expr(:toplevel, quote
         (ret2, _charset)
     end
     function get_codeset()
-        ret = ccall(("g_get_codeset", libgobject), Cstring, ())
+        ret = ccall(("g_get_codeset", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -956,7 +956,7 @@ $(Expr(:toplevel, quote
     end
     function get_console_charset()
         m_charset = Ref{Cstring}()
-        ret = ccall(("g_get_console_charset", libgobject), Cint, (Ptr{Cstring},), m_charset)
+        ret = ccall(("g_get_console_charset", libglib), Cint, (Ptr{Cstring},), m_charset)
         ret2 = convert(Bool, ret)
         _charset = m_charset[]
         _charset = if _charset == C_NULL
@@ -967,7 +967,7 @@ $(Expr(:toplevel, quote
         (ret2, _charset)
     end
     function get_current_dir()
-        ret = ccall(("g_get_current_dir", libgobject), Cstring, ())
+        ret = ccall(("g_get_current_dir", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -976,7 +976,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_environ()
-        ret = ccall(("g_get_environ", libgobject), Ptr{Cstring}, ())
+        ret = ccall(("g_get_environ", libglib), Ptr{Cstring}, ())
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -987,13 +987,13 @@ $(Expr(:toplevel, quote
     end
     function get_filename_charsets()
         m_filename_charsets = Ref{Ptr{Cstring}}()
-        ret = ccall(("g_get_filename_charsets", libgobject), Cint, (Ptr{Ptr{Cstring}},), m_filename_charsets)
+        ret = ccall(("g_get_filename_charsets", libglib), Cint, (Ptr{Ptr{Cstring}},), m_filename_charsets)
         ret2 = convert(Bool, ret)
         _filename_charsets = m_filename_charsets[]
         (ret2, _filename_charsets)
     end
     function get_home_dir()
-        ret = ccall(("g_get_home_dir", libgobject), Cstring, ())
+        ret = ccall(("g_get_home_dir", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1002,7 +1002,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_host_name()
-        ret = ccall(("g_get_host_name", libgobject), Cstring, ())
+        ret = ccall(("g_get_host_name", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1011,15 +1011,15 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_language_names()
-        ret = ccall(("g_get_language_names", libgobject), Ptr{Cstring}, ())
+        ret = ccall(("g_get_language_names", libglib), Ptr{Cstring}, ())
         ret
     end
     function get_language_names_with_category(_category_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_get_language_names_with_category", libgobject), Ptr{Cstring}, (Cstring,), _category_name)
+        ret = ccall(("g_get_language_names_with_category", libglib), Ptr{Cstring}, (Cstring,), _category_name)
         ret
     end
     function get_locale_variants(_locale::Union{AbstractString, Symbol})
-        ret = ccall(("g_get_locale_variants", libgobject), Ptr{Cstring}, (Cstring,), _locale)
+        ret = ccall(("g_get_locale_variants", libglib), Ptr{Cstring}, (Cstring,), _locale)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -1029,15 +1029,15 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_monotonic_time()
-        ret = ccall(("g_get_monotonic_time", libgobject), Int64, ())
+        ret = ccall(("g_get_monotonic_time", libglib), Int64, ())
         ret
     end
     function get_num_processors()
-        ret = ccall(("g_get_num_processors", libgobject), UInt32, ())
+        ret = ccall(("g_get_num_processors", libglib), UInt32, ())
         ret
     end
     function get_os_info(_key_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_get_os_info", libgobject), Cstring, (Cstring,), _key_name)
+        ret = ccall(("g_get_os_info", libglib), Cstring, (Cstring,), _key_name)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1046,7 +1046,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_prgname()
-        ret = ccall(("g_get_prgname", libgobject), Cstring, ())
+        ret = ccall(("g_get_prgname", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1055,7 +1055,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_real_name()
-        ret = ccall(("g_get_real_name", libgobject), Cstring, ())
+        ret = ccall(("g_get_real_name", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1064,19 +1064,19 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_real_time()
-        ret = ccall(("g_get_real_time", libgobject), Int64, ())
+        ret = ccall(("g_get_real_time", libglib), Int64, ())
         ret
     end
     function get_system_config_dirs()
-        ret = ccall(("g_get_system_config_dirs", libgobject), Ptr{Cstring}, ())
+        ret = ccall(("g_get_system_config_dirs", libglib), Ptr{Cstring}, ())
         ret
     end
     function get_system_data_dirs()
-        ret = ccall(("g_get_system_data_dirs", libgobject), Ptr{Cstring}, ())
+        ret = ccall(("g_get_system_data_dirs", libglib), Ptr{Cstring}, ())
         ret
     end
     function get_tmp_dir()
-        ret = ccall(("g_get_tmp_dir", libgobject), Cstring, ())
+        ret = ccall(("g_get_tmp_dir", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1085,7 +1085,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_user_cache_dir()
-        ret = ccall(("g_get_user_cache_dir", libgobject), Cstring, ())
+        ret = ccall(("g_get_user_cache_dir", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1094,7 +1094,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_user_config_dir()
-        ret = ccall(("g_get_user_config_dir", libgobject), Cstring, ())
+        ret = ccall(("g_get_user_config_dir", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1103,7 +1103,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_user_data_dir()
-        ret = ccall(("g_get_user_data_dir", libgobject), Cstring, ())
+        ret = ccall(("g_get_user_data_dir", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1112,7 +1112,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_user_name()
-        ret = ccall(("g_get_user_name", libgobject), Cstring, ())
+        ret = ccall(("g_get_user_name", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1121,7 +1121,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_user_runtime_dir()
-        ret = ccall(("g_get_user_runtime_dir", libgobject), Cstring, ())
+        ret = ccall(("g_get_user_runtime_dir", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1130,7 +1130,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_user_special_dir(_directory)
-        ret = ccall(("g_get_user_special_dir", libgobject), Cstring, (UInt32,), _directory)
+        ret = ccall(("g_get_user_special_dir", libglib), Cstring, (UInt32,), _directory)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1139,7 +1139,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function getenv(_variable::Union{AbstractString, Symbol})
-        ret = ccall(("g_getenv", libgobject), Cstring, (Cstring,), _variable)
+        ret = ccall(("g_getenv", libglib), Cstring, (Cstring,), _variable)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1153,7 +1153,7 @@ $(Expr(:toplevel, quote
             else
                 _key
             end
-        ret = ccall(("g_hash_table_add", libgobject), Cint, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
+        ret = ccall(("g_hash_table_add", libglib), Cint, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -1163,12 +1163,12 @@ $(Expr(:toplevel, quote
             else
                 _key
             end
-        ret = ccall(("g_hash_table_contains", libgobject), Cint, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
+        ret = ccall(("g_hash_table_contains", libglib), Cint, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
         ret2 = convert(Bool, ret)
         ret2
     end
     function hash_table_destroy(_hash_table)
-        ret = ccall(("g_hash_table_destroy", libgobject), Nothing, (Ptr{GHashTable},), _hash_table)
+        ret = ccall(("g_hash_table_destroy", libglib), Nothing, (Ptr{GHashTable},), _hash_table)
         nothing
     end
     function hash_table_insert(_hash_table, _key::Maybe(Nothing), _value::Maybe(Nothing))
@@ -1182,7 +1182,7 @@ $(Expr(:toplevel, quote
             else
                 _value
             end
-        ret = ccall(("g_hash_table_insert", libgobject), Cint, (Ptr{GHashTable}, Ptr{Nothing}, Ptr{Nothing}), _hash_table, _key, _value)
+        ret = ccall(("g_hash_table_insert", libglib), Cint, (Ptr{GHashTable}, Ptr{Nothing}, Ptr{Nothing}), _hash_table, _key, _value)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -1192,7 +1192,7 @@ $(Expr(:toplevel, quote
             else
                 _key
             end
-        ret = ccall(("g_hash_table_lookup", libgobject), Ptr{Nothing}, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
+        ret = ccall(("g_hash_table_lookup", libglib), Ptr{Nothing}, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
         ret2 = convert(Nothing, ret)
         ret2
     end
@@ -1204,7 +1204,7 @@ $(Expr(:toplevel, quote
             end
         m_orig_key = Ref{Ptr{Nothing}}()
         m_value = Ref{Ptr{Nothing}}()
-        ret = ccall(("g_hash_table_lookup_extended", libgobject), Cint, (Ptr{GHashTable}, Ptr{Nothing}, Ptr{Ptr{Nothing}}, Ptr{Ptr{Nothing}}), _hash_table, _lookup_key, m_orig_key, m_value)
+        ret = ccall(("g_hash_table_lookup_extended", libglib), Cint, (Ptr{GHashTable}, Ptr{Nothing}, Ptr{Ptr{Nothing}}, Ptr{Ptr{Nothing}}), _hash_table, _lookup_key, m_orig_key, m_value)
         ret2 = convert(Bool, ret)
         _orig_key = m_orig_key[]
         _orig_key = convert(Maybe(Nothing), _orig_key)
@@ -1218,12 +1218,12 @@ $(Expr(:toplevel, quote
             else
                 _key
             end
-        ret = ccall(("g_hash_table_remove", libgobject), Cint, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
+        ret = ccall(("g_hash_table_remove", libglib), Cint, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
         ret2 = convert(Bool, ret)
         ret2
     end
     function hash_table_remove_all(_hash_table)
-        ret = ccall(("g_hash_table_remove_all", libgobject), Nothing, (Ptr{GHashTable},), _hash_table)
+        ret = ccall(("g_hash_table_remove_all", libglib), Nothing, (Ptr{GHashTable},), _hash_table)
         nothing
     end
     function hash_table_replace(_hash_table, _key::Maybe(Nothing), _value::Maybe(Nothing))
@@ -1237,12 +1237,12 @@ $(Expr(:toplevel, quote
             else
                 _value
             end
-        ret = ccall(("g_hash_table_replace", libgobject), Cint, (Ptr{GHashTable}, Ptr{Nothing}, Ptr{Nothing}), _hash_table, _key, _value)
+        ret = ccall(("g_hash_table_replace", libglib), Cint, (Ptr{GHashTable}, Ptr{Nothing}, Ptr{Nothing}), _hash_table, _key, _value)
         ret2 = convert(Bool, ret)
         ret2
     end
     function hash_table_size(_hash_table)
-        ret = ccall(("g_hash_table_size", libgobject), UInt32, (Ptr{GHashTable},), _hash_table)
+        ret = ccall(("g_hash_table_size", libglib), UInt32, (Ptr{GHashTable},), _hash_table)
         ret
     end
     function hash_table_steal(_hash_table, _key::Maybe(Nothing))
@@ -1251,12 +1251,12 @@ $(Expr(:toplevel, quote
             else
                 _key
             end
-        ret = ccall(("g_hash_table_steal", libgobject), Cint, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
+        ret = ccall(("g_hash_table_steal", libglib), Cint, (Ptr{GHashTable}, Ptr{Nothing}), _hash_table, _key)
         ret2 = convert(Bool, ret)
         ret2
     end
     function hash_table_steal_all(_hash_table)
-        ret = ccall(("g_hash_table_steal_all", libgobject), Nothing, (Ptr{GHashTable},), _hash_table)
+        ret = ccall(("g_hash_table_steal_all", libglib), Nothing, (Ptr{GHashTable},), _hash_table)
         nothing
     end
     function hash_table_steal_extended(_hash_table, _lookup_key::Maybe(Nothing))
@@ -1267,7 +1267,7 @@ $(Expr(:toplevel, quote
             end
         m_stolen_key = Ref{Ptr{Nothing}}()
         m_stolen_value = Ref{Ptr{Nothing}}()
-        ret = ccall(("g_hash_table_steal_extended", libgobject), Cint, (Ptr{GHashTable}, Ptr{Nothing}, Ptr{Ptr{Nothing}}, Ptr{Ptr{Nothing}}), _hash_table, _lookup_key, m_stolen_key, m_stolen_value)
+        ret = ccall(("g_hash_table_steal_extended", libglib), Cint, (Ptr{GHashTable}, Ptr{Nothing}, Ptr{Ptr{Nothing}}, Ptr{Ptr{Nothing}}), _hash_table, _lookup_key, m_stolen_key, m_stolen_value)
         ret2 = convert(Bool, ret)
         _stolen_key = m_stolen_key[]
         _stolen_key = convert(Maybe(Nothing), _stolen_key)
@@ -1276,26 +1276,26 @@ $(Expr(:toplevel, quote
         (ret2, _stolen_key, _stolen_value)
     end
     function hash_table_unref(_hash_table)
-        ret = ccall(("g_hash_table_unref", libgobject), Nothing, (Ptr{GHashTable},), _hash_table)
+        ret = ccall(("g_hash_table_unref", libglib), Nothing, (Ptr{GHashTable},), _hash_table)
         nothing
     end
     function hostname_is_ascii_encoded(_hostname::Union{AbstractString, Symbol})
-        ret = ccall(("g_hostname_is_ascii_encoded", libgobject), Cint, (Cstring,), _hostname)
+        ret = ccall(("g_hostname_is_ascii_encoded", libglib), Cint, (Cstring,), _hostname)
         ret2 = convert(Bool, ret)
         ret2
     end
     function hostname_is_ip_address(_hostname::Union{AbstractString, Symbol})
-        ret = ccall(("g_hostname_is_ip_address", libgobject), Cint, (Cstring,), _hostname)
+        ret = ccall(("g_hostname_is_ip_address", libglib), Cint, (Cstring,), _hostname)
         ret2 = convert(Bool, ret)
         ret2
     end
     function hostname_is_non_ascii(_hostname::Union{AbstractString, Symbol})
-        ret = ccall(("g_hostname_is_non_ascii", libgobject), Cint, (Cstring,), _hostname)
+        ret = ccall(("g_hostname_is_non_ascii", libglib), Cint, (Cstring,), _hostname)
         ret2 = convert(Bool, ret)
         ret2
     end
     function hostname_to_ascii(_hostname::Union{AbstractString, Symbol})
-        ret = ccall(("g_hostname_to_ascii", libgobject), Cstring, (Cstring,), _hostname)
+        ret = ccall(("g_hostname_to_ascii", libglib), Cstring, (Cstring,), _hostname)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1304,7 +1304,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function hostname_to_unicode(_hostname::Union{AbstractString, Symbol})
-        ret = ccall(("g_hostname_to_unicode", libgobject), Cstring, (Cstring,), _hostname)
+        ret = ccall(("g_hostname_to_unicode", libglib), Cstring, (Cstring,), _hostname)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1318,26 +1318,26 @@ $(Expr(:toplevel, quote
             else
                 _data
             end
-        ret = ccall(("g_idle_remove_by_data", libgobject), Cint, (Ptr{Nothing},), _data)
+        ret = ccall(("g_idle_remove_by_data", libglib), Cint, (Ptr{Nothing},), _data)
         ret2 = convert(Bool, ret)
         ret2
     end
     function int64_equal(_v1::Nothing, _v2::Nothing)
-        ret = ccall(("g_int64_equal", libgobject), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
+        ret = ccall(("g_int64_equal", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function int64_hash(_v::Nothing)
-        ret = ccall(("g_int64_hash", libgobject), UInt32, (Ptr{Nothing},), _v)
+        ret = ccall(("g_int64_hash", libglib), UInt32, (Ptr{Nothing},), _v)
         ret
     end
     function int_equal(_v1::Nothing, _v2::Nothing)
-        ret = ccall(("g_int_equal", libgobject), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
+        ret = ccall(("g_int_equal", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function int_hash(_v::Nothing)
-        ret = ccall(("g_int_hash", libgobject), UInt32, (Ptr{Nothing},), _v)
+        ret = ccall(("g_int_hash", libglib), UInt32, (Ptr{Nothing},), _v)
         ret
     end
     function intern_static_string(_string::Maybe(Union{AbstractString, Symbol}))
@@ -1346,7 +1346,7 @@ $(Expr(:toplevel, quote
             else
                 _string
             end
-        ret = ccall(("g_intern_static_string", libgobject), Cstring, (Cstring,), _string)
+        ret = ccall(("g_intern_static_string", libglib), Cstring, (Cstring,), _string)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1360,7 +1360,7 @@ $(Expr(:toplevel, quote
             else
                 _string
             end
-        ret = ccall(("g_intern_string", libgobject), Cstring, (Cstring,), _string)
+        ret = ccall(("g_intern_string", libglib), Cstring, (Cstring,), _string)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1369,20 +1369,20 @@ $(Expr(:toplevel, quote
         ret2
     end
     function io_channel_error_from_errno(_en::Integer)
-        ret = ccall(("g_io_channel_error_from_errno", libgobject), UInt32, (Int32,), _en)
+        ret = ccall(("g_io_channel_error_from_errno", libglib), UInt32, (Int32,), _en)
         ret2 = IOChannelError(ret)
         ret2
     end
     function io_channel_error_quark()
-        ret = ccall(("g_io_channel_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_io_channel_error_quark", libglib), UInt32, ())
         ret
     end
     function key_file_error_quark()
-        ret = ccall(("g_key_file_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_key_file_error_quark", libglib), UInt32, ())
         ret
     end
     function listenv()
-        ret = ccall(("g_listenv", libgobject), Ptr{Cstring}, ())
+        ret = ccall(("g_listenv", libglib), Ptr{Cstring}, ())
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -1395,7 +1395,7 @@ $(Expr(:toplevel, quote
         m_bytes_read = Ref{UInt64}()
         m_bytes_written = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_locale_from_utf8", libgobject), Ptr{UInt8}, (Cstring, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _utf8string, _len, m_bytes_read, m_bytes_written, err)
+        ret = ccall(("g_locale_from_utf8", libglib), Ptr{UInt8}, (Cstring, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _utf8string, _len, m_bytes_read, m_bytes_written, err)
         check_err(err)
         _bytes_read = m_bytes_read[]
         _bytes_written = m_bytes_written[]
@@ -1407,7 +1407,7 @@ $(Expr(:toplevel, quote
         m_bytes_written = Ref{UInt64}()
         _len = length(_opsysstring)
         err = err_buf()
-        ret = ccall(("g_locale_to_utf8", libgobject), Cstring, (Ptr{UInt8}, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _opsysstring, _len, m_bytes_read, m_bytes_written, err)
+        ret = ccall(("g_locale_to_utf8", libglib), Cstring, (Ptr{UInt8}, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _opsysstring, _len, m_bytes_read, m_bytes_written, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -1434,20 +1434,20 @@ $(Expr(:toplevel, quote
             else
                 _unused_data
             end
-        ret = ccall(("g_log_default_handler", libgobject), Nothing, (Cstring, UInt32, Cstring, Ptr{Nothing}), _log_domain, _log_level, _message, _unused_data)
+        ret = ccall(("g_log_default_handler", libglib), Nothing, (Cstring, UInt32, Cstring, Ptr{Nothing}), _log_domain, _log_level, _message, _unused_data)
         nothing
     end
     function log_remove_handler(_log_domain::Union{AbstractString, Symbol}, _handler_id::Integer)
-        ret = ccall(("g_log_remove_handler", libgobject), Nothing, (Cstring, UInt32), _log_domain, _handler_id)
+        ret = ccall(("g_log_remove_handler", libglib), Nothing, (Cstring, UInt32), _log_domain, _handler_id)
         nothing
     end
     function log_set_always_fatal(_fatal_mask)
-        ret = ccall(("g_log_set_always_fatal", libgobject), UInt32, (UInt32,), _fatal_mask)
+        ret = ccall(("g_log_set_always_fatal", libglib), UInt32, (UInt32,), _fatal_mask)
         ret2 = LogLevelFlags(ret)
         ret2
     end
     function log_set_fatal_mask(_log_domain::Union{AbstractString, Symbol}, _fatal_mask)
-        ret = ccall(("g_log_set_fatal_mask", libgobject), UInt32, (Cstring, UInt32), _log_domain, _fatal_mask)
+        ret = ccall(("g_log_set_fatal_mask", libglib), UInt32, (Cstring, UInt32), _log_domain, _fatal_mask)
         ret2 = LogLevelFlags(ret)
         ret2
     end
@@ -1457,11 +1457,11 @@ $(Expr(:toplevel, quote
             else
                 _log_domain
             end
-        ret = ccall(("g_log_variant", libgobject), Nothing, (Cstring, UInt32, Ptr{GVariant}), _log_domain, _log_level, _fields)
+        ret = ccall(("g_log_variant", libglib), Nothing, (Cstring, UInt32, Ptr{GVariant}), _log_domain, _log_level, _fields)
         nothing
     end
     function log_writer_default_set_use_stderr(_use_stderr::Bool)
-        ret = ccall(("g_log_writer_default_set_use_stderr", libgobject), Nothing, (Cint,), _use_stderr)
+        ret = ccall(("g_log_writer_default_set_use_stderr", libglib), Nothing, (Cint,), _use_stderr)
         nothing
     end
     function log_writer_default_would_drop(_log_level, _log_domain::Maybe(Union{AbstractString, Symbol}))
@@ -1470,27 +1470,27 @@ $(Expr(:toplevel, quote
             else
                 _log_domain
             end
-        ret = ccall(("g_log_writer_default_would_drop", libgobject), Cint, (UInt32, Cstring), _log_level, _log_domain)
+        ret = ccall(("g_log_writer_default_would_drop", libglib), Cint, (UInt32, Cstring), _log_level, _log_domain)
         ret2 = convert(Bool, ret)
         ret2
     end
     function log_writer_is_journald(_output_fd::Integer)
-        ret = ccall(("g_log_writer_is_journald", libgobject), Cint, (Int32,), _output_fd)
+        ret = ccall(("g_log_writer_is_journald", libglib), Cint, (Int32,), _output_fd)
         ret2 = convert(Bool, ret)
         ret2
     end
     function log_writer_supports_color(_output_fd::Integer)
-        ret = ccall(("g_log_writer_supports_color", libgobject), Cint, (Int32,), _output_fd)
+        ret = ccall(("g_log_writer_supports_color", libglib), Cint, (Int32,), _output_fd)
         ret2 = convert(Bool, ret)
         ret2
     end
     function main_context_default()
-        ret = ccall(("g_main_context_default", libgobject), Ptr{GMainContext}, ())
+        ret = ccall(("g_main_context_default", libglib), Ptr{GMainContext}, ())
         ret2 = convert(GMainContext, ret, false)
         ret2
     end
     function main_context_get_thread_default()
-        ret = ccall(("g_main_context_get_thread_default", libgobject), Ptr{GMainContext}, ())
+        ret = ccall(("g_main_context_get_thread_default", libglib), Ptr{GMainContext}, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1499,40 +1499,40 @@ $(Expr(:toplevel, quote
         ret2
     end
     function main_context_ref_thread_default()
-        ret = ccall(("g_main_context_ref_thread_default", libgobject), Ptr{GMainContext}, ())
+        ret = ccall(("g_main_context_ref_thread_default", libglib), Ptr{GMainContext}, ())
         ret2 = convert(GMainContext, ret, true)
         ret2
     end
     function main_depth()
-        ret = ccall(("g_main_depth", libgobject), Int32, ())
+        ret = ccall(("g_main_depth", libglib), Int32, ())
         ret
     end
     function malloc(_n_bytes::Integer)
-        ret = ccall(("g_malloc", libgobject), Ptr{Nothing}, (UInt64,), _n_bytes)
+        ret = ccall(("g_malloc", libglib), Ptr{Nothing}, (UInt64,), _n_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function malloc0(_n_bytes::Integer)
-        ret = ccall(("g_malloc0", libgobject), Ptr{Nothing}, (UInt64,), _n_bytes)
+        ret = ccall(("g_malloc0", libglib), Ptr{Nothing}, (UInt64,), _n_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function malloc0_n(_n_blocks::Integer, _n_block_bytes::Integer)
-        ret = ccall(("g_malloc0_n", libgobject), Ptr{Nothing}, (UInt64, UInt64), _n_blocks, _n_block_bytes)
+        ret = ccall(("g_malloc0_n", libglib), Ptr{Nothing}, (UInt64, UInt64), _n_blocks, _n_block_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function malloc_n(_n_blocks::Integer, _n_block_bytes::Integer)
-        ret = ccall(("g_malloc_n", libgobject), Ptr{Nothing}, (UInt64, UInt64), _n_blocks, _n_block_bytes)
+        ret = ccall(("g_malloc_n", libglib), Ptr{Nothing}, (UInt64, UInt64), _n_blocks, _n_block_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function markup_error_quark()
-        ret = ccall(("g_markup_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_markup_error_quark", libglib), UInt32, ())
         ret
     end
     function markup_escape_text(_text::Union{AbstractString, Symbol}, _length::Integer)
-        ret = ccall(("g_markup_escape_text", libgobject), Cstring, (Cstring, Int64), _text, _length)
+        ret = ccall(("g_markup_escape_text", libglib), Cstring, (Cstring, Int64), _text, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1546,45 +1546,45 @@ $(Expr(:toplevel, quote
             else
                 _mem
             end
-        ret = ccall(("g_memdup2", libgobject), Ptr{Nothing}, (Ptr{Nothing}, UInt64), _mem, _byte_size)
+        ret = ccall(("g_memdup2", libglib), Ptr{Nothing}, (Ptr{Nothing}, UInt64), _mem, _byte_size)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function mkdir_with_parents(_pathname::Union{AbstractString, Symbol}, _mode::Integer)
-        ret = ccall(("g_mkdir_with_parents", libgobject), Int32, (Cstring, Int32), _pathname, _mode)
+        ret = ccall(("g_mkdir_with_parents", libglib), Int32, (Cstring, Int32), _pathname, _mode)
         ret
     end
     function nullify_pointer(_nullify_location::Nothing)
-        ret = ccall(("g_nullify_pointer", libgobject), Nothing, (Ptr{Nothing},), _nullify_location)
+        ret = ccall(("g_nullify_pointer", libglib), Nothing, (Ptr{Nothing},), _nullify_location)
         nothing
     end
     function number_parser_error_quark()
-        ret = ccall(("g_number_parser_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_number_parser_error_quark", libglib), UInt32, ())
         ret
     end
     function on_error_query(_prg_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_on_error_query", libgobject), Nothing, (Cstring,), _prg_name)
+        ret = ccall(("g_on_error_query", libglib), Nothing, (Cstring,), _prg_name)
         nothing
     end
     function on_error_stack_trace(_prg_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_on_error_stack_trace", libgobject), Nothing, (Cstring,), _prg_name)
+        ret = ccall(("g_on_error_stack_trace", libglib), Nothing, (Cstring,), _prg_name)
         nothing
     end
     function once_init_enter(_location::Nothing)
-        ret = ccall(("g_once_init_enter", libgobject), Cint, (Ptr{Nothing},), _location)
+        ret = ccall(("g_once_init_enter", libglib), Cint, (Ptr{Nothing},), _location)
         ret2 = convert(Bool, ret)
         ret2
     end
     function once_init_leave(_location::Nothing, _result::Integer)
-        ret = ccall(("g_once_init_leave", libgobject), Nothing, (Ptr{Nothing}, UInt64), _location, _result)
+        ret = ccall(("g_once_init_leave", libglib), Nothing, (Ptr{Nothing}, UInt64), _location, _result)
         nothing
     end
     function option_error_quark()
-        ret = ccall(("g_option_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_option_error_quark", libglib), UInt32, ())
         ret
     end
     function path_get_basename(_file_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_path_get_basename", libgobject), Cstring, (Cstring,), _file_name)
+        ret = ccall(("g_path_get_basename", libglib), Cstring, (Cstring,), _file_name)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1593,7 +1593,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function path_get_dirname(_file_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_path_get_dirname", libgobject), Cstring, (Cstring,), _file_name)
+        ret = ccall(("g_path_get_dirname", libglib), Cstring, (Cstring,), _file_name)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1602,12 +1602,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function path_is_absolute(_file_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_path_is_absolute", libgobject), Cint, (Cstring,), _file_name)
+        ret = ccall(("g_path_is_absolute", libglib), Cint, (Cstring,), _file_name)
         ret2 = convert(Bool, ret)
         ret2
     end
     function path_skip_root(_file_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_path_skip_root", libgobject), Cstring, (Cstring,), _file_name)
+        ret = ccall(("g_path_skip_root", libglib), Cstring, (Cstring,), _file_name)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1616,21 +1616,21 @@ $(Expr(:toplevel, quote
         ret2
     end
     function pattern_match_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol})
-        ret = ccall(("g_pattern_match_simple", libgobject), Cint, (Cstring, Cstring), _pattern, _string)
+        ret = ccall(("g_pattern_match_simple", libglib), Cint, (Cstring, Cstring), _pattern, _string)
         ret2 = convert(Bool, ret)
         ret2
     end
     function pointer_bit_lock(_address::Nothing, _lock_bit::Integer)
-        ret = ccall(("g_pointer_bit_lock", libgobject), Nothing, (Ptr{Nothing}, Int32), _address, _lock_bit)
+        ret = ccall(("g_pointer_bit_lock", libglib), Nothing, (Ptr{Nothing}, Int32), _address, _lock_bit)
         nothing
     end
     function pointer_bit_trylock(_address::Nothing, _lock_bit::Integer)
-        ret = ccall(("g_pointer_bit_trylock", libgobject), Cint, (Ptr{Nothing}, Int32), _address, _lock_bit)
+        ret = ccall(("g_pointer_bit_trylock", libglib), Cint, (Ptr{Nothing}, Int32), _address, _lock_bit)
         ret2 = convert(Bool, ret)
         ret2
     end
     function pointer_bit_unlock(_address::Nothing, _lock_bit::Integer)
-        ret = ccall(("g_pointer_bit_unlock", libgobject), Nothing, (Ptr{Nothing}, Int32), _address, _lock_bit)
+        ret = ccall(("g_pointer_bit_unlock", libglib), Nothing, (Ptr{Nothing}, Int32), _address, _lock_bit)
         nothing
     end
     function prefix_error_literal(_err, _prefix::Union{AbstractString, Symbol})
@@ -1639,12 +1639,12 @@ $(Expr(:toplevel, quote
             else
                 _err
             end
-        ret = ccall(("g_prefix_error_literal", libgobject), Nothing, (Ptr{GError}, Cstring), _err, _prefix)
+        ret = ccall(("g_prefix_error_literal", libglib), Nothing, (Ptr{GError}, Cstring), _err, _prefix)
         nothing
     end
     function propagate_error(_src)
         m_dest = Ref{Ptr{GError}}()
-        ret = ccall(("g_propagate_error", libgobject), Nothing, (Ptr{Ptr{GError}}, Ptr{GError}), m_dest, _src)
+        ret = ccall(("g_propagate_error", libglib), Nothing, (Ptr{Ptr{GError}}, Ptr{GError}), m_dest, _src)
         _dest = m_dest[]
         _dest
     end
@@ -1654,7 +1654,7 @@ $(Expr(:toplevel, quote
             else
                 _string
             end
-        ret = ccall(("g_quark_from_static_string", libgobject), UInt32, (Cstring,), _string)
+        ret = ccall(("g_quark_from_static_string", libglib), UInt32, (Cstring,), _string)
         ret
     end
     function quark_from_string(_string::Maybe(Union{AbstractString, Symbol}))
@@ -1663,11 +1663,11 @@ $(Expr(:toplevel, quote
             else
                 _string
             end
-        ret = ccall(("g_quark_from_string", libgobject), UInt32, (Cstring,), _string)
+        ret = ccall(("g_quark_from_string", libglib), UInt32, (Cstring,), _string)
         ret
     end
     function quark_to_string(_quark::Integer)
-        ret = ccall(("g_quark_to_string", libgobject), Cstring, (UInt32,), _quark)
+        ret = ccall(("g_quark_to_string", libglib), Cstring, (UInt32,), _quark)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1681,55 +1681,55 @@ $(Expr(:toplevel, quote
             else
                 _string
             end
-        ret = ccall(("g_quark_try_string", libgobject), UInt32, (Cstring,), _string)
+        ret = ccall(("g_quark_try_string", libglib), UInt32, (Cstring,), _string)
         ret
     end
     function random_double()
-        ret = ccall(("g_random_double", libgobject), Float64, ())
+        ret = ccall(("g_random_double", libglib), Float64, ())
         ret
     end
     function random_double_range(_begin::Real, _end::Real)
-        ret = ccall(("g_random_double_range", libgobject), Float64, (Float64, Float64), _begin, _end)
+        ret = ccall(("g_random_double_range", libglib), Float64, (Float64, Float64), _begin, _end)
         ret
     end
     function random_int()
-        ret = ccall(("g_random_int", libgobject), UInt32, ())
+        ret = ccall(("g_random_int", libglib), UInt32, ())
         ret
     end
     function random_int_range(_begin::Integer, _end::Integer)
-        ret = ccall(("g_random_int_range", libgobject), Int32, (Int32, Int32), _begin, _end)
+        ret = ccall(("g_random_int_range", libglib), Int32, (Int32, Int32), _begin, _end)
         ret
     end
     function random_set_seed(_seed::Integer)
-        ret = ccall(("g_random_set_seed", libgobject), Nothing, (UInt32,), _seed)
+        ret = ccall(("g_random_set_seed", libglib), Nothing, (UInt32,), _seed)
         nothing
     end
     function rc_box_acquire(_mem_block::Nothing)
-        ret = ccall(("g_rc_box_acquire", libgobject), Ptr{Nothing}, (Ptr{Nothing},), _mem_block)
+        ret = ccall(("g_rc_box_acquire", libglib), Ptr{Nothing}, (Ptr{Nothing},), _mem_block)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function rc_box_alloc(_block_size::Integer)
-        ret = ccall(("g_rc_box_alloc", libgobject), Ptr{Nothing}, (UInt64,), _block_size)
+        ret = ccall(("g_rc_box_alloc", libglib), Ptr{Nothing}, (UInt64,), _block_size)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function rc_box_alloc0(_block_size::Integer)
-        ret = ccall(("g_rc_box_alloc0", libgobject), Ptr{Nothing}, (UInt64,), _block_size)
+        ret = ccall(("g_rc_box_alloc0", libglib), Ptr{Nothing}, (UInt64,), _block_size)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function rc_box_dup(_block_size::Integer, _mem_block::Nothing)
-        ret = ccall(("g_rc_box_dup", libgobject), Ptr{Nothing}, (UInt64, Ptr{Nothing}), _block_size, _mem_block)
+        ret = ccall(("g_rc_box_dup", libglib), Ptr{Nothing}, (UInt64, Ptr{Nothing}), _block_size, _mem_block)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function rc_box_get_size(_mem_block::Nothing)
-        ret = ccall(("g_rc_box_get_size", libgobject), UInt64, (Ptr{Nothing},), _mem_block)
+        ret = ccall(("g_rc_box_get_size", libglib), UInt64, (Ptr{Nothing},), _mem_block)
         ret
     end
     function rc_box_release(_mem_block::Nothing)
-        ret = ccall(("g_rc_box_release", libgobject), Nothing, (Ptr{Nothing},), _mem_block)
+        ret = ccall(("g_rc_box_release", libglib), Nothing, (Ptr{Nothing},), _mem_block)
         nothing
     end
     function realloc(_mem::Maybe(Nothing), _n_bytes::Integer)
@@ -1738,7 +1738,7 @@ $(Expr(:toplevel, quote
             else
                 _mem
             end
-        ret = ccall(("g_realloc", libgobject), Ptr{Nothing}, (Ptr{Nothing}, UInt64), _mem, _n_bytes)
+        ret = ccall(("g_realloc", libglib), Ptr{Nothing}, (Ptr{Nothing}, UInt64), _mem, _n_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
@@ -1748,30 +1748,30 @@ $(Expr(:toplevel, quote
             else
                 _mem
             end
-        ret = ccall(("g_realloc_n", libgobject), Ptr{Nothing}, (Ptr{Nothing}, UInt64, UInt64), _mem, _n_blocks, _n_block_bytes)
+        ret = ccall(("g_realloc_n", libglib), Ptr{Nothing}, (Ptr{Nothing}, UInt64, UInt64), _mem, _n_blocks, _n_block_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function ref_count_compare(_rc::Int32, _val::Integer)
-        ret = ccall(("g_ref_count_compare", libgobject), Cint, (Ptr{Int32}, Int32), _rc, _val)
+        ret = ccall(("g_ref_count_compare", libglib), Cint, (Ptr{Int32}, Int32), _rc, _val)
         ret2 = convert(Bool, ret)
         ret2
     end
     function ref_count_dec(_rc::Int32)
-        ret = ccall(("g_ref_count_dec", libgobject), Cint, (Ptr{Int32},), _rc)
+        ret = ccall(("g_ref_count_dec", libglib), Cint, (Ptr{Int32},), _rc)
         ret2 = convert(Bool, ret)
         ret2
     end
     function ref_count_inc(_rc::Int32)
-        ret = ccall(("g_ref_count_inc", libgobject), Nothing, (Ptr{Int32},), _rc)
+        ret = ccall(("g_ref_count_inc", libglib), Nothing, (Ptr{Int32},), _rc)
         nothing
     end
     function ref_count_init(_rc::Int32)
-        ret = ccall(("g_ref_count_init", libgobject), Nothing, (Ptr{Int32},), _rc)
+        ret = ccall(("g_ref_count_init", libglib), Nothing, (Ptr{Int32},), _rc)
         nothing
     end
     function ref_string_acquire(_str::Union{AbstractString, Symbol})
-        ret = ccall(("g_ref_string_acquire", libgobject), Cstring, (Cstring,), _str)
+        ret = ccall(("g_ref_string_acquire", libglib), Cstring, (Cstring,), _str)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1780,11 +1780,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ref_string_length(_str::Union{AbstractString, Symbol})
-        ret = ccall(("g_ref_string_length", libgobject), UInt64, (Cstring,), _str)
+        ret = ccall(("g_ref_string_length", libglib), UInt64, (Cstring,), _str)
         ret
     end
     function ref_string_new(_str::Union{AbstractString, Symbol})
-        ret = ccall(("g_ref_string_new", libgobject), Cstring, (Cstring,), _str)
+        ret = ccall(("g_ref_string_new", libglib), Cstring, (Cstring,), _str)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1793,7 +1793,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ref_string_new_intern(_str::Union{AbstractString, Symbol})
-        ret = ccall(("g_ref_string_new_intern", libgobject), Cstring, (Cstring,), _str)
+        ret = ccall(("g_ref_string_new_intern", libglib), Cstring, (Cstring,), _str)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1802,7 +1802,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ref_string_new_len(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_ref_string_new_len", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_ref_string_new_len", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1811,13 +1811,13 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ref_string_release(_str::Union{AbstractString, Symbol})
-        ret = ccall(("g_ref_string_release", libgobject), Nothing, (Cstring,), _str)
+        ret = ccall(("g_ref_string_release", libglib), Nothing, (Cstring,), _str)
         nothing
     end
     function regex_check_replacement(_replacement::Union{AbstractString, Symbol})
         m_has_references = Ref{Cint}()
         err = err_buf()
-        ret = ccall(("g_regex_check_replacement", libgobject), Cint, (Cstring, Ptr{Cint}, Ptr{Ptr{GError}}), _replacement, m_has_references, err)
+        ret = ccall(("g_regex_check_replacement", libglib), Cint, (Cstring, Ptr{Cint}, Ptr{Ptr{GError}}), _replacement, m_has_references, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _has_references = m_has_references[]
@@ -1825,11 +1825,11 @@ $(Expr(:toplevel, quote
         (ret2, _has_references)
     end
     function regex_error_quark()
-        ret = ccall(("g_regex_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_regex_error_quark", libglib), UInt32, ())
         ret
     end
     function regex_escape_nul(_string::Union{AbstractString, Symbol}, _length::Integer)
-        ret = ccall(("g_regex_escape_nul", libgobject), Cstring, (Cstring, Int32), _string, _length)
+        ret = ccall(("g_regex_escape_nul", libglib), Cstring, (Cstring, Int32), _string, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1839,7 +1839,7 @@ $(Expr(:toplevel, quote
     end
     function regex_escape_string(_string)
         _length = length(_string)
-        ret = ccall(("g_regex_escape_string", libgobject), Cstring, (Ptr{Cstring}, Int32), _string, _length)
+        ret = ccall(("g_regex_escape_string", libglib), Cstring, (Ptr{Cstring}, Int32), _string, _length)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1848,12 +1848,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function regex_match_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options, _match_options)
-        ret = ccall(("g_regex_match_simple", libgobject), Cint, (Cstring, Cstring, UInt32, UInt32), _pattern, _string, _compile_options, _match_options)
+        ret = ccall(("g_regex_match_simple", libglib), Cint, (Cstring, Cstring, UInt32, UInt32), _pattern, _string, _compile_options, _match_options)
         ret2 = convert(Bool, ret)
         ret2
     end
     function regex_split_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options, _match_options)
-        ret = ccall(("g_regex_split_simple", libgobject), Ptr{Cstring}, (Cstring, Cstring, UInt32, UInt32), _pattern, _string, _compile_options, _match_options)
+        ret = ccall(("g_regex_split_simple", libglib), Ptr{Cstring}, (Cstring, Cstring, UInt32, UInt32), _pattern, _string, _compile_options, _match_options)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -1863,38 +1863,38 @@ $(Expr(:toplevel, quote
         ret2
     end
     function reload_user_special_dirs_cache()
-        ret = ccall(("g_reload_user_special_dirs_cache", libgobject), Nothing, ())
+        ret = ccall(("g_reload_user_special_dirs_cache", libglib), Nothing, ())
         nothing
     end
     function rmdir(_filename::Union{AbstractString, Symbol})
-        ret = ccall(("g_rmdir", libgobject), Int32, (Cstring,), _filename)
+        ret = ccall(("g_rmdir", libglib), Int32, (Cstring,), _filename)
         ret
     end
     function set_application_name(_application_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_set_application_name", libgobject), Nothing, (Cstring,), _application_name)
+        ret = ccall(("g_set_application_name", libglib), Nothing, (Cstring,), _application_name)
         nothing
     end
     function set_error_literal(_domain::Integer, _code::Integer, _message::Union{AbstractString, Symbol})
         m_err = Ref{Ptr{GError}}()
-        ret = ccall(("g_set_error_literal", libgobject), Nothing, (Ptr{Ptr{GError}}, UInt32, Int32, Cstring), m_err, _domain, _code, _message)
+        ret = ccall(("g_set_error_literal", libglib), Nothing, (Ptr{Ptr{GError}}, UInt32, Int32, Cstring), m_err, _domain, _code, _message)
         _err = m_err[]
         _err
     end
     function set_prgname(_prgname::Union{AbstractString, Symbol})
-        ret = ccall(("g_set_prgname", libgobject), Nothing, (Cstring,), _prgname)
+        ret = ccall(("g_set_prgname", libglib), Nothing, (Cstring,), _prgname)
         nothing
     end
     function setenv(_variable::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol}, _overwrite::Bool)
-        ret = ccall(("g_setenv", libgobject), Cint, (Cstring, Cstring, Cint), _variable, _value, _overwrite)
+        ret = ccall(("g_setenv", libglib), Cint, (Cstring, Cstring, Cint), _variable, _value, _overwrite)
         ret2 = convert(Bool, ret)
         ret2
     end
     function shell_error_quark()
-        ret = ccall(("g_shell_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_shell_error_quark", libglib), UInt32, ())
         ret
     end
     function shell_quote(_unquoted_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_shell_quote", libgobject), Cstring, (Cstring,), _unquoted_string)
+        ret = ccall(("g_shell_quote", libglib), Cstring, (Cstring,), _unquoted_string)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -1904,7 +1904,7 @@ $(Expr(:toplevel, quote
     end
     function shell_unquote(_quoted_string::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_shell_unquote", libgobject), Cstring, (Cstring, Ptr{Ptr{GError}}), _quoted_string, err)
+        ret = ccall(("g_shell_unquote", libglib), Cstring, (Cstring, Ptr{Ptr{GError}}), _quoted_string, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -1914,12 +1914,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function slice_alloc(_block_size::Integer)
-        ret = ccall(("g_slice_alloc", libgobject), Ptr{Nothing}, (UInt64,), _block_size)
+        ret = ccall(("g_slice_alloc", libglib), Ptr{Nothing}, (UInt64,), _block_size)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function slice_alloc0(_block_size::Integer)
-        ret = ccall(("g_slice_alloc0", libgobject), Ptr{Nothing}, (UInt64,), _block_size)
+        ret = ccall(("g_slice_alloc0", libglib), Ptr{Nothing}, (UInt64,), _block_size)
         ret2 = convert(Nothing, ret)
         ret2
     end
@@ -1929,7 +1929,7 @@ $(Expr(:toplevel, quote
             else
                 _mem_block
             end
-        ret = ccall(("g_slice_copy", libgobject), Ptr{Nothing}, (UInt64, Ptr{Nothing}), _block_size, _mem_block)
+        ret = ccall(("g_slice_copy", libglib), Ptr{Nothing}, (UInt64, Ptr{Nothing}), _block_size, _mem_block)
         ret2 = convert(Nothing, ret)
         ret2
     end
@@ -1939,7 +1939,7 @@ $(Expr(:toplevel, quote
             else
                 _mem_block
             end
-        ret = ccall(("g_slice_free1", libgobject), Nothing, (UInt64, Ptr{Nothing}), _block_size, _mem_block)
+        ret = ccall(("g_slice_free1", libglib), Nothing, (UInt64, Ptr{Nothing}), _block_size, _mem_block)
         nothing
     end
     function slice_free_chain_with_offset(_block_size::Integer, _mem_chain::Maybe(Nothing), _next_offset::Integer)
@@ -1948,24 +1948,24 @@ $(Expr(:toplevel, quote
             else
                 _mem_chain
             end
-        ret = ccall(("g_slice_free_chain_with_offset", libgobject), Nothing, (UInt64, Ptr{Nothing}, UInt64), _block_size, _mem_chain, _next_offset)
+        ret = ccall(("g_slice_free_chain_with_offset", libglib), Nothing, (UInt64, Ptr{Nothing}, UInt64), _block_size, _mem_chain, _next_offset)
         nothing
     end
     function slice_get_config(_ckey)
-        ret = ccall(("g_slice_get_config", libgobject), Int64, (UInt32,), _ckey)
+        ret = ccall(("g_slice_get_config", libglib), Int64, (UInt32,), _ckey)
         ret
     end
     function slice_get_config_state(_ckey, _address::Integer, _n_values::UInt32)
-        ret = ccall(("g_slice_get_config_state", libgobject), Ptr{Int64}, (UInt32, Int64, Ptr{UInt32}), _ckey, _address, _n_values)
+        ret = ccall(("g_slice_get_config_state", libglib), Ptr{Int64}, (UInt32, Int64, Ptr{UInt32}), _ckey, _address, _n_values)
         ret2 = convert(Int64, ret)
         ret2
     end
     function slice_set_config(_ckey, _value::Integer)
-        ret = ccall(("g_slice_set_config", libgobject), Nothing, (UInt32, Int64), _ckey, _value)
+        ret = ccall(("g_slice_set_config", libglib), Nothing, (UInt32, Int64), _ckey, _value)
         nothing
     end
     function source_remove(_tag::Integer)
-        ret = ccall(("g_source_remove", libgobject), Cint, (UInt32,), _tag)
+        ret = ccall(("g_source_remove", libglib), Cint, (UInt32,), _tag)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -1975,32 +1975,32 @@ $(Expr(:toplevel, quote
             else
                 _user_data
             end
-        ret = ccall(("g_source_remove_by_user_data", libgobject), Cint, (Ptr{Nothing},), _user_data)
+        ret = ccall(("g_source_remove_by_user_data", libglib), Cint, (Ptr{Nothing},), _user_data)
         ret2 = convert(Bool, ret)
         ret2
     end
     function source_set_name_by_id(_tag::Integer, _name::Union{AbstractString, Symbol})
-        ret = ccall(("g_source_set_name_by_id", libgobject), Nothing, (UInt32, Cstring), _tag, _name)
+        ret = ccall(("g_source_set_name_by_id", libglib), Nothing, (UInt32, Cstring), _tag, _name)
         nothing
     end
     function spaced_primes_closest(_num::Integer)
-        ret = ccall(("g_spaced_primes_closest", libgobject), UInt32, (UInt32,), _num)
+        ret = ccall(("g_spaced_primes_closest", libglib), UInt32, (UInt32,), _num)
         ret
     end
     function spawn_check_wait_status(_wait_status::Integer)
         err = err_buf()
-        ret = ccall(("g_spawn_check_wait_status", libgobject), Cint, (Int32, Ptr{Ptr{GError}}), _wait_status, err)
+        ret = ccall(("g_spawn_check_wait_status", libglib), Cint, (Int32, Ptr{Ptr{GError}}), _wait_status, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function spawn_close_pid(_pid::Integer)
-        ret = ccall(("g_spawn_close_pid", libgobject), Nothing, (Int32,), _pid)
+        ret = ccall(("g_spawn_close_pid", libglib), Nothing, (Int32,), _pid)
         nothing
     end
     function spawn_command_line_async(_command_line::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_spawn_command_line_async", libgobject), Cint, (Cstring, Ptr{Ptr{GError}}), _command_line, err)
+        ret = ccall(("g_spawn_command_line_async", libglib), Cint, (Cstring, Ptr{Ptr{GError}}), _command_line, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -2010,7 +2010,7 @@ $(Expr(:toplevel, quote
         m_standard_error = Ref{Ptr{UInt8}}()
         m_wait_status = Ref{Int32}()
         err = err_buf()
-        ret = ccall(("g_spawn_command_line_sync", libgobject), Cint, (Cstring, Ptr{Ptr{UInt8}}, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Ptr{GError}}), _command_line, m_standard_output, m_standard_error, m_wait_status, err)
+        ret = ccall(("g_spawn_command_line_sync", libglib), Cint, (Cstring, Ptr{Ptr{UInt8}}, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Ptr{GError}}), _command_line, m_standard_output, m_standard_error, m_wait_status, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _standard_output = m_standard_output[]
@@ -2019,15 +2019,15 @@ $(Expr(:toplevel, quote
         (ret2, _standard_output, _standard_error, _wait_status)
     end
     function spawn_error_quark()
-        ret = ccall(("g_spawn_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_spawn_error_quark", libglib), UInt32, ())
         ret
     end
     function spawn_exit_error_quark()
-        ret = ccall(("g_spawn_exit_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_spawn_exit_error_quark", libglib), UInt32, ())
         ret
     end
     function stpcpy(_dest::Union{AbstractString, Symbol}, _src::Union{AbstractString, Symbol})
-        ret = ccall(("g_stpcpy", libgobject), Cstring, (Cstring, Cstring), _dest, _src)
+        ret = ccall(("g_stpcpy", libglib), Cstring, (Cstring, Cstring), _dest, _src)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2036,31 +2036,31 @@ $(Expr(:toplevel, quote
         ret2
     end
     function str_equal(_v1::Nothing, _v2::Nothing)
-        ret = ccall(("g_str_equal", libgobject), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
+        ret = ccall(("g_str_equal", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function str_has_prefix(_str::Union{AbstractString, Symbol}, _prefix::Union{AbstractString, Symbol})
-        ret = ccall(("g_str_has_prefix", libgobject), Cint, (Cstring, Cstring), _str, _prefix)
+        ret = ccall(("g_str_has_prefix", libglib), Cint, (Cstring, Cstring), _str, _prefix)
         ret2 = convert(Bool, ret)
         ret2
     end
     function str_has_suffix(_str::Union{AbstractString, Symbol}, _suffix::Union{AbstractString, Symbol})
-        ret = ccall(("g_str_has_suffix", libgobject), Cint, (Cstring, Cstring), _str, _suffix)
+        ret = ccall(("g_str_has_suffix", libglib), Cint, (Cstring, Cstring), _str, _suffix)
         ret2 = convert(Bool, ret)
         ret2
     end
     function str_hash(_v::Nothing)
-        ret = ccall(("g_str_hash", libgobject), UInt32, (Ptr{Nothing},), _v)
+        ret = ccall(("g_str_hash", libglib), UInt32, (Ptr{Nothing},), _v)
         ret
     end
     function str_is_ascii(_str::Union{AbstractString, Symbol})
-        ret = ccall(("g_str_is_ascii", libgobject), Cint, (Cstring,), _str)
+        ret = ccall(("g_str_is_ascii", libglib), Cint, (Cstring,), _str)
         ret2 = convert(Bool, ret)
         ret2
     end
     function str_match_string(_search_term::Union{AbstractString, Symbol}, _potential_hit::Union{AbstractString, Symbol}, _accept_alternates::Bool)
-        ret = ccall(("g_str_match_string", libgobject), Cint, (Cstring, Cstring, Cint), _search_term, _potential_hit, _accept_alternates)
+        ret = ccall(("g_str_match_string", libglib), Cint, (Cstring, Cstring, Cint), _search_term, _potential_hit, _accept_alternates)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -2070,7 +2070,7 @@ $(Expr(:toplevel, quote
             else
                 _from_locale
             end
-        ret = ccall(("g_str_to_ascii", libgobject), Cstring, (Cstring, Cstring), _str, _from_locale)
+        ret = ccall(("g_str_to_ascii", libglib), Cstring, (Cstring, Cstring), _str, _from_locale)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2085,7 +2085,7 @@ $(Expr(:toplevel, quote
                 _translit_locale
             end
         m_ascii_alternates = Ref{Ptr{Cstring}}()
-        ret = ccall(("g_str_tokenize_and_fold", libgobject), Ptr{Cstring}, (Cstring, Cstring, Ptr{Ptr{Cstring}}), _string, _translit_locale, m_ascii_alternates)
+        ret = ccall(("g_str_tokenize_and_fold", libglib), Ptr{Cstring}, (Cstring, Cstring, Ptr{Ptr{Cstring}}), _string, _translit_locale, m_ascii_alternates)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -2102,7 +2102,7 @@ $(Expr(:toplevel, quote
         (ret2, _ascii_alternates)
     end
     function strcanon(_string::Union{AbstractString, Symbol}, _valid_chars::Union{AbstractString, Symbol}, _substitutor::Integer)
-        ret = ccall(("g_strcanon", libgobject), Cstring, (Cstring, Cstring, Int8), _string, _valid_chars, _substitutor)
+        ret = ccall(("g_strcanon", libglib), Cstring, (Cstring, Cstring, Int8), _string, _valid_chars, _substitutor)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2111,7 +2111,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strchomp(_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_strchomp", libgobject), Cstring, (Cstring,), _string)
+        ret = ccall(("g_strchomp", libglib), Cstring, (Cstring,), _string)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2120,7 +2120,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strchug(_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_strchug", libgobject), Cstring, (Cstring,), _string)
+        ret = ccall(("g_strchug", libglib), Cstring, (Cstring,), _string)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2139,11 +2139,11 @@ $(Expr(:toplevel, quote
             else
                 _str2
             end
-        ret = ccall(("g_strcmp0", libgobject), Int32, (Cstring, Cstring), _str1, _str2)
+        ret = ccall(("g_strcmp0", libglib), Int32, (Cstring, Cstring), _str1, _str2)
         ret
     end
     function strcompress(_source::Union{AbstractString, Symbol})
-        ret = ccall(("g_strcompress", libgobject), Cstring, (Cstring,), _source)
+        ret = ccall(("g_strcompress", libglib), Cstring, (Cstring,), _source)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2157,7 +2157,7 @@ $(Expr(:toplevel, quote
             else
                 _delimiters
             end
-        ret = ccall(("g_strdelimit", libgobject), Cstring, (Cstring, Cstring, Int8), _string, _delimiters, _new_delimiter)
+        ret = ccall(("g_strdelimit", libglib), Cstring, (Cstring, Cstring, Int8), _string, _delimiters, _new_delimiter)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2171,7 +2171,7 @@ $(Expr(:toplevel, quote
             else
                 _str
             end
-        ret = ccall(("g_strdup", libgobject), Cstring, (Cstring,), _str)
+        ret = ccall(("g_strdup", libglib), Cstring, (Cstring,), _str)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2180,7 +2180,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strerror(_errnum::Integer)
-        ret = ccall(("g_strerror", libgobject), Cstring, (Int32,), _errnum)
+        ret = ccall(("g_strerror", libglib), Cstring, (Int32,), _errnum)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2194,7 +2194,7 @@ $(Expr(:toplevel, quote
             else
                 _exceptions
             end
-        ret = ccall(("g_strescape", libgobject), Cstring, (Cstring, Cstring), _source, _exceptions)
+        ret = ccall(("g_strescape", libglib), Cstring, (Cstring, Cstring), _source, _exceptions)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2208,11 +2208,11 @@ $(Expr(:toplevel, quote
             else
                 _str_array
             end
-        ret = ccall(("g_strfreev", libgobject), Nothing, (Cstring,), _str_array)
+        ret = ccall(("g_strfreev", libglib), Nothing, (Cstring,), _str_array)
         nothing
     end
     function strip_context(_msgid::Union{AbstractString, Symbol}, _msgval::Union{AbstractString, Symbol})
-        ret = ccall(("g_strip_context", libgobject), Cstring, (Cstring, Cstring), _msgid, _msgval)
+        ret = ccall(("g_strip_context", libglib), Cstring, (Cstring, Cstring), _msgid, _msgval)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2226,7 +2226,7 @@ $(Expr(:toplevel, quote
             else
                 _separator
             end
-        ret = ccall(("g_strjoinv", libgobject), Cstring, (Cstring, Cstring), _separator, _str_array)
+        ret = ccall(("g_strjoinv", libglib), Cstring, (Cstring, Cstring), _separator, _str_array)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2235,15 +2235,15 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strlcat(_dest::Union{AbstractString, Symbol}, _src::Union{AbstractString, Symbol}, _dest_size::Integer)
-        ret = ccall(("g_strlcat", libgobject), UInt64, (Cstring, Cstring, UInt64), _dest, _src, _dest_size)
+        ret = ccall(("g_strlcat", libglib), UInt64, (Cstring, Cstring, UInt64), _dest, _src, _dest_size)
         ret
     end
     function strlcpy(_dest::Union{AbstractString, Symbol}, _src::Union{AbstractString, Symbol}, _dest_size::Integer)
-        ret = ccall(("g_strlcpy", libgobject), UInt64, (Cstring, Cstring, UInt64), _dest, _src, _dest_size)
+        ret = ccall(("g_strlcpy", libglib), UInt64, (Cstring, Cstring, UInt64), _dest, _src, _dest_size)
         ret
     end
     function strndup(_str::Union{AbstractString, Symbol}, _n::Integer)
-        ret = ccall(("g_strndup", libgobject), Cstring, (Cstring, UInt64), _str, _n)
+        ret = ccall(("g_strndup", libglib), Cstring, (Cstring, UInt64), _str, _n)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2252,7 +2252,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strnfill(_length::Integer, _fill_char::Integer)
-        ret = ccall(("g_strnfill", libgobject), Cstring, (UInt64, Int8), _length, _fill_char)
+        ret = ccall(("g_strnfill", libglib), Cstring, (UInt64, Int8), _length, _fill_char)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2261,7 +2261,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strreverse(_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_strreverse", libgobject), Cstring, (Cstring,), _string)
+        ret = ccall(("g_strreverse", libglib), Cstring, (Cstring,), _string)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2270,7 +2270,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strrstr(_haystack::Union{AbstractString, Symbol}, _needle::Union{AbstractString, Symbol})
-        ret = ccall(("g_strrstr", libgobject), Cstring, (Cstring, Cstring), _haystack, _needle)
+        ret = ccall(("g_strrstr", libglib), Cstring, (Cstring, Cstring), _haystack, _needle)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2279,7 +2279,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strrstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
-        ret = ccall(("g_strrstr_len", libgobject), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
+        ret = ccall(("g_strrstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2288,7 +2288,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strsignal(_signum::Integer)
-        ret = ccall(("g_strsignal", libgobject), Cstring, (Int32,), _signum)
+        ret = ccall(("g_strsignal", libglib), Cstring, (Int32,), _signum)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2297,7 +2297,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function strstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
-        ret = ccall(("g_strstr_len", libgobject), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
+        ret = ccall(("g_strstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2307,7 +2307,7 @@ $(Expr(:toplevel, quote
     end
     function strtod(_nptr::Union{AbstractString, Symbol})
         m_endptr = Ref{Cstring}()
-        ret = ccall(("g_strtod", libgobject), Float64, (Cstring, Ptr{Cstring}), _nptr, m_endptr)
+        ret = ccall(("g_strtod", libglib), Float64, (Cstring, Ptr{Cstring}), _nptr, m_endptr)
         _endptr = m_endptr[]
         _endptr = if _endptr == C_NULL
                 nothing
@@ -2317,33 +2317,33 @@ $(Expr(:toplevel, quote
         (ret, _endptr)
     end
     function strv_contains(_strv::Union{AbstractString, Symbol}, _str::Union{AbstractString, Symbol})
-        ret = ccall(("g_strv_contains", libgobject), Cint, (Cstring, Cstring), _strv, _str)
+        ret = ccall(("g_strv_contains", libglib), Cint, (Cstring, Cstring), _strv, _str)
         ret2 = convert(Bool, ret)
         ret2
     end
     function strv_equal(_strv1::Union{AbstractString, Symbol}, _strv2::Union{AbstractString, Symbol})
-        ret = ccall(("g_strv_equal", libgobject), Cint, (Cstring, Cstring), _strv1, _strv2)
+        ret = ccall(("g_strv_equal", libglib), Cint, (Cstring, Cstring), _strv1, _strv2)
         ret2 = convert(Bool, ret)
         ret2
     end
     function strv_get_type()
-        ret = ccall(("g_strv_get_type", libgobject), UInt64, ())
+        ret = ccall(("g_strv_get_type", libglib), UInt64, ())
         ret
     end
     function strv_length(_str_array::Union{AbstractString, Symbol})
-        ret = ccall(("g_strv_length", libgobject), UInt32, (Cstring,), _str_array)
+        ret = ccall(("g_strv_length", libglib), UInt32, (Cstring,), _str_array)
         ret
     end
     function test_assert_expected_messages_internal(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol})
-        ret = ccall(("g_test_assert_expected_messages_internal", libgobject), Nothing, (Cstring, Cstring, Int32, Cstring), _domain, _file, _line, _func)
+        ret = ccall(("g_test_assert_expected_messages_internal", libglib), Nothing, (Cstring, Cstring, Int32, Cstring), _domain, _file, _line, _func)
         nothing
     end
     function test_bug(_bug_uri_snippet::Union{AbstractString, Symbol})
-        ret = ccall(("g_test_bug", libgobject), Nothing, (Cstring,), _bug_uri_snippet)
+        ret = ccall(("g_test_bug", libglib), Nothing, (Cstring,), _bug_uri_snippet)
         nothing
     end
     function test_bug_base(_uri_pattern::Union{AbstractString, Symbol})
-        ret = ccall(("g_test_bug_base", libgobject), Nothing, (Cstring,), _uri_pattern)
+        ret = ccall(("g_test_bug_base", libglib), Nothing, (Cstring,), _uri_pattern)
         nothing
     end
     function test_expect_message(_log_domain::Maybe(Union{AbstractString, Symbol}), _log_level, _pattern::Union{AbstractString, Symbol})
@@ -2352,20 +2352,20 @@ $(Expr(:toplevel, quote
             else
                 _log_domain
             end
-        ret = ccall(("g_test_expect_message", libgobject), Nothing, (Cstring, UInt32, Cstring), _log_domain, _log_level, _pattern)
+        ret = ccall(("g_test_expect_message", libglib), Nothing, (Cstring, UInt32, Cstring), _log_domain, _log_level, _pattern)
         nothing
     end
     function test_fail()
-        ret = ccall(("g_test_fail", libgobject), Nothing, ())
+        ret = ccall(("g_test_fail", libglib), Nothing, ())
         nothing
     end
     function test_failed()
-        ret = ccall(("g_test_failed", libgobject), Cint, ())
+        ret = ccall(("g_test_failed", libglib), Cint, ())
         ret2 = convert(Bool, ret)
         ret2
     end
     function test_get_dir(_file_type)
-        ret = ccall(("g_test_get_dir", libgobject), Cstring, (UInt32,), _file_type)
+        ret = ccall(("g_test_get_dir", libglib), Cstring, (UInt32,), _file_type)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2374,7 +2374,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function test_get_path()
-        ret = ccall(("g_test_get_path", libgobject), Cstring, ())
+        ret = ccall(("g_test_get_path", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2388,11 +2388,11 @@ $(Expr(:toplevel, quote
             else
                 _msg
             end
-        ret = ccall(("g_test_incomplete", libgobject), Nothing, (Cstring,), _msg)
+        ret = ccall(("g_test_incomplete", libglib), Nothing, (Cstring,), _msg)
         nothing
     end
     function test_log_type_name(_log_type)
-        ret = ccall(("g_test_log_type_name", libgobject), Cstring, (UInt32,), _log_type)
+        ret = ccall(("g_test_log_type_name", libglib), Cstring, (UInt32,), _log_type)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2406,31 +2406,31 @@ $(Expr(:toplevel, quote
             else
                 _gfree_pointer
             end
-        ret = ccall(("g_test_queue_free", libgobject), Nothing, (Ptr{Nothing},), _gfree_pointer)
+        ret = ccall(("g_test_queue_free", libglib), Nothing, (Ptr{Nothing},), _gfree_pointer)
         nothing
     end
     function test_rand_double()
-        ret = ccall(("g_test_rand_double", libgobject), Float64, ())
+        ret = ccall(("g_test_rand_double", libglib), Float64, ())
         ret
     end
     function test_rand_double_range(_range_start::Real, _range_end::Real)
-        ret = ccall(("g_test_rand_double_range", libgobject), Float64, (Float64, Float64), _range_start, _range_end)
+        ret = ccall(("g_test_rand_double_range", libglib), Float64, (Float64, Float64), _range_start, _range_end)
         ret
     end
     function test_rand_int()
-        ret = ccall(("g_test_rand_int", libgobject), Int32, ())
+        ret = ccall(("g_test_rand_int", libglib), Int32, ())
         ret
     end
     function test_rand_int_range(_begin::Integer, _end::Integer)
-        ret = ccall(("g_test_rand_int_range", libgobject), Int32, (Int32, Int32), _begin, _end)
+        ret = ccall(("g_test_rand_int_range", libglib), Int32, (Int32, Int32), _begin, _end)
         ret
     end
     function test_run()
-        ret = ccall(("g_test_run", libgobject), Int32, ())
+        ret = ccall(("g_test_run", libglib), Int32, ())
         ret
     end
     function test_set_nonfatal_assertions()
-        ret = ccall(("g_test_set_nonfatal_assertions", libgobject), Nothing, ())
+        ret = ccall(("g_test_set_nonfatal_assertions", libglib), Nothing, ())
         nothing
     end
     function test_skip(_msg::Maybe(Union{AbstractString, Symbol}))
@@ -2439,41 +2439,41 @@ $(Expr(:toplevel, quote
             else
                 _msg
             end
-        ret = ccall(("g_test_skip", libgobject), Nothing, (Cstring,), _msg)
+        ret = ccall(("g_test_skip", libglib), Nothing, (Cstring,), _msg)
         nothing
     end
     function test_subprocess()
-        ret = ccall(("g_test_subprocess", libgobject), Cint, ())
+        ret = ccall(("g_test_subprocess", libglib), Cint, ())
         ret2 = convert(Bool, ret)
         ret2
     end
     function test_summary(_summary::Union{AbstractString, Symbol})
-        ret = ccall(("g_test_summary", libgobject), Nothing, (Cstring,), _summary)
+        ret = ccall(("g_test_summary", libglib), Nothing, (Cstring,), _summary)
         nothing
     end
     function test_timer_elapsed()
-        ret = ccall(("g_test_timer_elapsed", libgobject), Float64, ())
+        ret = ccall(("g_test_timer_elapsed", libglib), Float64, ())
         ret
     end
     function test_timer_last()
-        ret = ccall(("g_test_timer_last", libgobject), Float64, ())
+        ret = ccall(("g_test_timer_last", libglib), Float64, ())
         ret
     end
     function test_timer_start()
-        ret = ccall(("g_test_timer_start", libgobject), Nothing, ())
+        ret = ccall(("g_test_timer_start", libglib), Nothing, ())
         nothing
     end
     function test_trap_assertions(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _assertion_flags::Integer, _pattern::Union{AbstractString, Symbol})
-        ret = ccall(("g_test_trap_assertions", libgobject), Nothing, (Cstring, Cstring, Int32, Cstring, UInt64, Cstring), _domain, _file, _line, _func, _assertion_flags, _pattern)
+        ret = ccall(("g_test_trap_assertions", libglib), Nothing, (Cstring, Cstring, Int32, Cstring, UInt64, Cstring), _domain, _file, _line, _func, _assertion_flags, _pattern)
         nothing
     end
     function test_trap_has_passed()
-        ret = ccall(("g_test_trap_has_passed", libgobject), Cint, ())
+        ret = ccall(("g_test_trap_has_passed", libglib), Cint, ())
         ret2 = convert(Bool, ret)
         ret2
     end
     function test_trap_reached_timeout()
-        ret = ccall(("g_test_trap_reached_timeout", libgobject), Cint, ())
+        ret = ccall(("g_test_trap_reached_timeout", libglib), Cint, ())
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -2483,11 +2483,11 @@ $(Expr(:toplevel, quote
             else
                 _test_path
             end
-        ret = ccall(("g_test_trap_subprocess", libgobject), Nothing, (Cstring, UInt64, UInt32), _test_path, _usec_timeout, _test_flags)
+        ret = ccall(("g_test_trap_subprocess", libglib), Nothing, (Cstring, UInt64, UInt32), _test_path, _usec_timeout, _test_flags)
         nothing
     end
     function thread_error_quark()
-        ret = ccall(("g_thread_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_thread_error_quark", libglib), UInt32, ())
         ret
     end
     function thread_exit(_retval::Maybe(Nothing))
@@ -2496,54 +2496,54 @@ $(Expr(:toplevel, quote
             else
                 _retval
             end
-        ret = ccall(("g_thread_exit", libgobject), Nothing, (Ptr{Nothing},), _retval)
+        ret = ccall(("g_thread_exit", libglib), Nothing, (Ptr{Nothing},), _retval)
         nothing
     end
     function thread_pool_get_max_idle_time()
-        ret = ccall(("g_thread_pool_get_max_idle_time", libgobject), UInt32, ())
+        ret = ccall(("g_thread_pool_get_max_idle_time", libglib), UInt32, ())
         ret
     end
     function thread_pool_get_max_unused_threads()
-        ret = ccall(("g_thread_pool_get_max_unused_threads", libgobject), Int32, ())
+        ret = ccall(("g_thread_pool_get_max_unused_threads", libglib), Int32, ())
         ret
     end
     function thread_pool_get_num_unused_threads()
-        ret = ccall(("g_thread_pool_get_num_unused_threads", libgobject), UInt32, ())
+        ret = ccall(("g_thread_pool_get_num_unused_threads", libglib), UInt32, ())
         ret
     end
     function thread_pool_set_max_idle_time(_interval::Integer)
-        ret = ccall(("g_thread_pool_set_max_idle_time", libgobject), Nothing, (UInt32,), _interval)
+        ret = ccall(("g_thread_pool_set_max_idle_time", libglib), Nothing, (UInt32,), _interval)
         nothing
     end
     function thread_pool_set_max_unused_threads(_max_threads::Integer)
-        ret = ccall(("g_thread_pool_set_max_unused_threads", libgobject), Nothing, (Int32,), _max_threads)
+        ret = ccall(("g_thread_pool_set_max_unused_threads", libglib), Nothing, (Int32,), _max_threads)
         nothing
     end
     function thread_pool_stop_unused_threads()
-        ret = ccall(("g_thread_pool_stop_unused_threads", libgobject), Nothing, ())
+        ret = ccall(("g_thread_pool_stop_unused_threads", libglib), Nothing, ())
         nothing
     end
     function thread_yield()
-        ret = ccall(("g_thread_yield", libgobject), Nothing, ())
+        ret = ccall(("g_thread_yield", libglib), Nothing, ())
         nothing
     end
     function try_malloc(_n_bytes::Integer)
-        ret = ccall(("g_try_malloc", libgobject), Ptr{Nothing}, (UInt64,), _n_bytes)
+        ret = ccall(("g_try_malloc", libglib), Ptr{Nothing}, (UInt64,), _n_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function try_malloc0(_n_bytes::Integer)
-        ret = ccall(("g_try_malloc0", libgobject), Ptr{Nothing}, (UInt64,), _n_bytes)
+        ret = ccall(("g_try_malloc0", libglib), Ptr{Nothing}, (UInt64,), _n_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function try_malloc0_n(_n_blocks::Integer, _n_block_bytes::Integer)
-        ret = ccall(("g_try_malloc0_n", libgobject), Ptr{Nothing}, (UInt64, UInt64), _n_blocks, _n_block_bytes)
+        ret = ccall(("g_try_malloc0_n", libglib), Ptr{Nothing}, (UInt64, UInt64), _n_blocks, _n_block_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function try_malloc_n(_n_blocks::Integer, _n_block_bytes::Integer)
-        ret = ccall(("g_try_malloc_n", libgobject), Ptr{Nothing}, (UInt64, UInt64), _n_blocks, _n_block_bytes)
+        ret = ccall(("g_try_malloc_n", libglib), Ptr{Nothing}, (UInt64, UInt64), _n_blocks, _n_block_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
@@ -2553,7 +2553,7 @@ $(Expr(:toplevel, quote
             else
                 _mem
             end
-        ret = ccall(("g_try_realloc", libgobject), Ptr{Nothing}, (Ptr{Nothing}, UInt64), _mem, _n_bytes)
+        ret = ccall(("g_try_realloc", libglib), Ptr{Nothing}, (Ptr{Nothing}, UInt64), _mem, _n_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
@@ -2563,7 +2563,7 @@ $(Expr(:toplevel, quote
             else
                 _mem
             end
-        ret = ccall(("g_try_realloc_n", libgobject), Ptr{Nothing}, (Ptr{Nothing}, UInt64, UInt64), _mem, _n_blocks, _n_block_bytes)
+        ret = ccall(("g_try_realloc_n", libglib), Ptr{Nothing}, (Ptr{Nothing}, UInt64, UInt64), _mem, _n_blocks, _n_block_bytes)
         ret2 = convert(Nothing, ret)
         ret2
     end
@@ -2571,7 +2571,7 @@ $(Expr(:toplevel, quote
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
         err = err_buf()
-        ret = ccall(("g_ucs4_to_utf16", libgobject), Ptr{UInt16}, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_ucs4_to_utf16", libglib), Ptr{UInt16}, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = convert(UInt16, ret)
         _items_read = m_items_read[]
@@ -2582,7 +2582,7 @@ $(Expr(:toplevel, quote
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
         err = err_buf()
-        ret = ccall(("g_ucs4_to_utf8", libgobject), Cstring, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_ucs4_to_utf8", libglib), Cstring, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -2594,17 +2594,17 @@ $(Expr(:toplevel, quote
         (ret2, _items_read, _items_written)
     end
     function unichar_break_type(_c)
-        ret = ccall(("g_unichar_break_type", libgobject), UInt32, (Nothing,), _c)
+        ret = ccall(("g_unichar_break_type", libglib), UInt32, (Nothing,), _c)
         ret2 = UnicodeBreakType(ret)
         ret2
     end
     function unichar_combining_class(_uc)
-        ret = ccall(("g_unichar_combining_class", libgobject), Int32, (Nothing,), _uc)
+        ret = ccall(("g_unichar_combining_class", libglib), Int32, (Nothing,), _uc)
         ret
     end
     function unichar_compose(_a, _b)
         m_ch = Ref{Nothing}()
-        ret = ccall(("g_unichar_compose", libgobject), Cint, (Nothing, Nothing, Ptr{Nothing}), _a, _b, m_ch)
+        ret = ccall(("g_unichar_compose", libglib), Cint, (Nothing, Nothing, Ptr{Nothing}), _a, _b, m_ch)
         ret2 = convert(Bool, ret)
         _ch = m_ch[]
         (ret2, _ch)
@@ -2612,120 +2612,120 @@ $(Expr(:toplevel, quote
     function unichar_decompose(_ch)
         m_a = Ref{Nothing}()
         m_b = Ref{Nothing}()
-        ret = ccall(("g_unichar_decompose", libgobject), Cint, (Nothing, Ptr{Nothing}, Ptr{Nothing}), _ch, m_a, m_b)
+        ret = ccall(("g_unichar_decompose", libglib), Cint, (Nothing, Ptr{Nothing}, Ptr{Nothing}), _ch, m_a, m_b)
         ret2 = convert(Bool, ret)
         _a = m_a[]
         _b = m_b[]
         (ret2, _a, _b)
     end
     function unichar_digit_value(_c)
-        ret = ccall(("g_unichar_digit_value", libgobject), Int32, (Nothing,), _c)
+        ret = ccall(("g_unichar_digit_value", libglib), Int32, (Nothing,), _c)
         ret
     end
     function unichar_fully_decompose(_ch, _compat::Bool, _result_len::Integer)
         m_result = Ref{Nothing}()
-        ret = ccall(("g_unichar_fully_decompose", libgobject), UInt64, (Nothing, Cint, Ptr{Nothing}, UInt64), _ch, _compat, m_result, _result_len)
+        ret = ccall(("g_unichar_fully_decompose", libglib), UInt64, (Nothing, Cint, Ptr{Nothing}, UInt64), _ch, _compat, m_result, _result_len)
         _result = m_result[]
         (ret, _result)
     end
     function unichar_get_mirror_char(_ch, _mirrored_ch::Nothing)
-        ret = ccall(("g_unichar_get_mirror_char", libgobject), Cint, (Nothing, Ptr{Nothing}), _ch, _mirrored_ch)
+        ret = ccall(("g_unichar_get_mirror_char", libglib), Cint, (Nothing, Ptr{Nothing}), _ch, _mirrored_ch)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_get_script(_ch)
-        ret = ccall(("g_unichar_get_script", libgobject), UInt32, (Nothing,), _ch)
+        ret = ccall(("g_unichar_get_script", libglib), UInt32, (Nothing,), _ch)
         ret2 = UnicodeScript(ret)
         ret2
     end
     function unichar_isalnum(_c)
-        ret = ccall(("g_unichar_isalnum", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isalnum", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_isalpha(_c)
-        ret = ccall(("g_unichar_isalpha", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isalpha", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_iscntrl(_c)
-        ret = ccall(("g_unichar_iscntrl", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_iscntrl", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_isdefined(_c)
-        ret = ccall(("g_unichar_isdefined", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isdefined", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_isdigit(_c)
-        ret = ccall(("g_unichar_isdigit", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isdigit", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_isgraph(_c)
-        ret = ccall(("g_unichar_isgraph", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isgraph", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_islower(_c)
-        ret = ccall(("g_unichar_islower", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_islower", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_ismark(_c)
-        ret = ccall(("g_unichar_ismark", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_ismark", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_isprint(_c)
-        ret = ccall(("g_unichar_isprint", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isprint", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_ispunct(_c)
-        ret = ccall(("g_unichar_ispunct", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_ispunct", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_isspace(_c)
-        ret = ccall(("g_unichar_isspace", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isspace", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_istitle(_c)
-        ret = ccall(("g_unichar_istitle", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_istitle", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_isupper(_c)
-        ret = ccall(("g_unichar_isupper", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isupper", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_iswide(_c)
-        ret = ccall(("g_unichar_iswide", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_iswide", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_iswide_cjk(_c)
-        ret = ccall(("g_unichar_iswide_cjk", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_iswide_cjk", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_isxdigit(_c)
-        ret = ccall(("g_unichar_isxdigit", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_isxdigit", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_iszerowidth(_c)
-        ret = ccall(("g_unichar_iszerowidth", libgobject), Cint, (Nothing,), _c)
+        ret = ccall(("g_unichar_iszerowidth", libglib), Cint, (Nothing,), _c)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_to_utf8(_c)
         m_outbuf = Ref{Cstring}()
-        ret = ccall(("g_unichar_to_utf8", libgobject), Int32, (Nothing, Ptr{Cstring}), _c, m_outbuf)
+        ret = ccall(("g_unichar_to_utf8", libglib), Int32, (Nothing, Ptr{Cstring}), _c, m_outbuf)
         _outbuf = m_outbuf[]
         _outbuf = if _outbuf == C_NULL
                 nothing
@@ -2735,75 +2735,75 @@ $(Expr(:toplevel, quote
         (ret, _outbuf)
     end
     function unichar_tolower(_c)
-        ret = ccall(("g_unichar_tolower", libgobject), Nothing, (Nothing,), _c)
+        ret = ccall(("g_unichar_tolower", libglib), Nothing, (Nothing,), _c)
         nothing
     end
     function unichar_totitle(_c)
-        ret = ccall(("g_unichar_totitle", libgobject), Nothing, (Nothing,), _c)
+        ret = ccall(("g_unichar_totitle", libglib), Nothing, (Nothing,), _c)
         nothing
     end
     function unichar_toupper(_c)
-        ret = ccall(("g_unichar_toupper", libgobject), Nothing, (Nothing,), _c)
+        ret = ccall(("g_unichar_toupper", libglib), Nothing, (Nothing,), _c)
         nothing
     end
     function unichar_type(_c)
-        ret = ccall(("g_unichar_type", libgobject), UInt32, (Nothing,), _c)
+        ret = ccall(("g_unichar_type", libglib), UInt32, (Nothing,), _c)
         ret2 = UnicodeType(ret)
         ret2
     end
     function unichar_validate(_ch)
-        ret = ccall(("g_unichar_validate", libgobject), Cint, (Nothing,), _ch)
+        ret = ccall(("g_unichar_validate", libglib), Cint, (Nothing,), _ch)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unichar_xdigit_value(_c)
-        ret = ccall(("g_unichar_xdigit_value", libgobject), Int32, (Nothing,), _c)
+        ret = ccall(("g_unichar_xdigit_value", libglib), Int32, (Nothing,), _c)
         ret
     end
     function unicode_canonical_ordering(_string::Nothing, _len::Integer)
-        ret = ccall(("g_unicode_canonical_ordering", libgobject), Nothing, (Ptr{Nothing}, UInt64), _string, _len)
+        ret = ccall(("g_unicode_canonical_ordering", libglib), Nothing, (Ptr{Nothing}, UInt64), _string, _len)
         nothing
     end
     function unicode_script_from_iso15924(_iso15924::Integer)
-        ret = ccall(("g_unicode_script_from_iso15924", libgobject), UInt32, (UInt32,), _iso15924)
+        ret = ccall(("g_unicode_script_from_iso15924", libglib), UInt32, (UInt32,), _iso15924)
         ret2 = UnicodeScript(ret)
         ret2
     end
     function unicode_script_to_iso15924(_script)
-        ret = ccall(("g_unicode_script_to_iso15924", libgobject), UInt32, (UInt32,), _script)
+        ret = ccall(("g_unicode_script_to_iso15924", libglib), UInt32, (UInt32,), _script)
         ret
     end
     function unix_error_quark()
-        ret = ccall(("g_unix_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_unix_error_quark", libglib), UInt32, ())
         ret
     end
     function unix_get_passwd_entry(_user_name::Union{AbstractString, Symbol})
         err = err_buf()
-        ret = ccall(("g_unix_get_passwd_entry", libgobject), Ptr{Nothing}, (Cstring, Ptr{Ptr{GError}}), _user_name, err)
+        ret = ccall(("g_unix_get_passwd_entry", libglib), Ptr{Nothing}, (Cstring, Ptr{Ptr{GError}}), _user_name, err)
         check_err(err)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function unix_open_pipe(_fds::Int32, _flags::Integer)
         err = err_buf()
-        ret = ccall(("g_unix_open_pipe", libgobject), Cint, (Ptr{Int32}, Int32, Ptr{Ptr{GError}}), _fds, _flags, err)
+        ret = ccall(("g_unix_open_pipe", libglib), Cint, (Ptr{Int32}, Int32, Ptr{Ptr{GError}}), _fds, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unix_set_fd_nonblocking(_fd::Integer, _nonblock::Bool)
         err = err_buf()
-        ret = ccall(("g_unix_set_fd_nonblocking", libgobject), Cint, (Int32, Cint, Ptr{Ptr{GError}}), _fd, _nonblock, err)
+        ret = ccall(("g_unix_set_fd_nonblocking", libglib), Cint, (Int32, Cint, Ptr{Ptr{GError}}), _fd, _nonblock, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function unlink(_filename::Union{AbstractString, Symbol})
-        ret = ccall(("g_unlink", libgobject), Int32, (Cstring,), _filename)
+        ret = ccall(("g_unlink", libglib), Int32, (Cstring,), _filename)
         ret
     end
     function unsetenv(_variable::Union{AbstractString, Symbol})
-        ret = ccall(("g_unsetenv", libgobject), Nothing, (Cstring,), _variable)
+        ret = ccall(("g_unsetenv", libglib), Nothing, (Cstring,), _variable)
         nothing
     end
     function uri_build(_flags, _scheme::Union{AbstractString, Symbol}, _userinfo::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
@@ -2827,7 +2827,7 @@ $(Expr(:toplevel, quote
             else
                 _fragment
             end
-        ret = ccall(("g_uri_build", libgobject), Ptr{GUri}, (UInt32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
+        ret = ccall(("g_uri_build", libglib), Ptr{GUri}, (UInt32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
         ret2 = convert(GUri, ret, true)
         ret2
     end
@@ -2862,12 +2862,12 @@ $(Expr(:toplevel, quote
             else
                 _fragment
             end
-        ret = ccall(("g_uri_build_with_user", libgobject), Ptr{GUri}, (UInt32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
+        ret = ccall(("g_uri_build_with_user", libglib), Ptr{GUri}, (UInt32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
         ret2 = convert(GUri, ret, true)
         ret2
     end
     function uri_error_quark()
-        ret = ccall(("g_uri_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_uri_error_quark", libglib), UInt32, ())
         ret
     end
     function uri_escape_bytes(_unescaped, _reserved_chars_allowed::Maybe(Union{AbstractString, Symbol}))
@@ -2878,7 +2878,7 @@ $(Expr(:toplevel, quote
                 _reserved_chars_allowed
             end
         _length = length(_unescaped)
-        ret = ccall(("g_uri_escape_bytes", libgobject), Cstring, (Ptr{UInt8}, UInt64, Cstring), _unescaped, _length, _reserved_chars_allowed)
+        ret = ccall(("g_uri_escape_bytes", libglib), Cstring, (Ptr{UInt8}, UInt64, Cstring), _unescaped, _length, _reserved_chars_allowed)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2892,7 +2892,7 @@ $(Expr(:toplevel, quote
             else
                 _reserved_chars_allowed
             end
-        ret = ccall(("g_uri_escape_string", libgobject), Cstring, (Cstring, Cstring, Cint), _unescaped, _reserved_chars_allowed, _allow_utf8)
+        ret = ccall(("g_uri_escape_string", libglib), Cstring, (Cstring, Cstring, Cint), _unescaped, _reserved_chars_allowed, _allow_utf8)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2902,7 +2902,7 @@ $(Expr(:toplevel, quote
     end
     function uri_is_valid(_uri_string::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
-        ret = ccall(("g_uri_is_valid", libgobject), Cint, (Cstring, UInt32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
+        ret = ccall(("g_uri_is_valid", libglib), Cint, (Cstring, UInt32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -2933,7 +2933,7 @@ $(Expr(:toplevel, quote
             else
                 _fragment
             end
-        ret = ccall(("g_uri_join", libgobject), Cstring, (UInt32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
+        ret = ccall(("g_uri_join", libglib), Cstring, (UInt32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2977,7 +2977,7 @@ $(Expr(:toplevel, quote
             else
                 _fragment
             end
-        ret = ccall(("g_uri_join_with_user", libgobject), Cstring, (UInt32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
+        ret = ccall(("g_uri_join_with_user", libglib), Cstring, (UInt32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -2986,7 +2986,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function uri_list_extract_uris(_uri_list::Union{AbstractString, Symbol})
-        ret = ccall(("g_uri_list_extract_uris", libgobject), Ptr{Cstring}, (Cstring,), _uri_list)
+        ret = ccall(("g_uri_list_extract_uris", libglib), Ptr{Cstring}, (Cstring,), _uri_list)
         ret2 = begin
                 _len = length_zt(ret)
                 ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
@@ -2997,13 +2997,13 @@ $(Expr(:toplevel, quote
     end
     function uri_parse(_uri_string::Union{AbstractString, Symbol}, _flags)
         err = err_buf()
-        ret = ccall(("g_uri_parse", libgobject), Ptr{GUri}, (Cstring, UInt32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
+        ret = ccall(("g_uri_parse", libglib), Ptr{GUri}, (Cstring, UInt32, Ptr{Ptr{GError}}), _uri_string, _flags, err)
         check_err(err)
         ret2 = convert(GUri, ret, true)
         ret2
     end
     function uri_parse_scheme(_uri::Union{AbstractString, Symbol})
-        ret = ccall(("g_uri_parse_scheme", libgobject), Cstring, (Cstring,), _uri)
+        ret = ccall(("g_uri_parse_scheme", libglib), Cstring, (Cstring,), _uri)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3012,7 +3012,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function uri_peek_scheme(_uri::Union{AbstractString, Symbol})
-        ret = ccall(("g_uri_peek_scheme", libgobject), Cstring, (Cstring,), _uri)
+        ret = ccall(("g_uri_peek_scheme", libglib), Cstring, (Cstring,), _uri)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3027,7 +3027,7 @@ $(Expr(:toplevel, quote
                 _base_uri_string
             end
         err = err_buf()
-        ret = ccall(("g_uri_resolve_relative", libgobject), Cstring, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _base_uri_string, _uri_ref, _flags, err)
+        ret = ccall(("g_uri_resolve_relative", libglib), Cstring, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _base_uri_string, _uri_ref, _flags, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -3045,7 +3045,7 @@ $(Expr(:toplevel, quote
         m_query = Ref{Cstring}()
         m_fragment = Ref{Cstring}()
         err = err_buf()
-        ret = ccall(("g_uri_split", libgobject), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_userinfo, m_host, m_port, m_path, m_query, m_fragment, err)
+        ret = ccall(("g_uri_split", libglib), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_userinfo, m_host, m_port, m_path, m_query, m_fragment, err)
         check_err(err)
         _scheme = m_scheme[]
         _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
@@ -3071,7 +3071,7 @@ $(Expr(:toplevel, quote
         m_host = Ref{Cstring}()
         m_port = Ref{Int32}()
         err = err_buf()
-        ret = ccall(("g_uri_split_network", libgobject), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Ptr{GError}}), _uri_string, _flags, m_scheme, m_host, m_port, err)
+        ret = ccall(("g_uri_split_network", libglib), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Ptr{GError}}), _uri_string, _flags, m_scheme, m_host, m_port, err)
         check_err(err)
         _scheme = m_scheme[]
         _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
@@ -3091,7 +3091,7 @@ $(Expr(:toplevel, quote
         m_query = Ref{Cstring}()
         m_fragment = Ref{Cstring}()
         err = err_buf()
-        ret = ccall(("g_uri_split_with_user", libgobject), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_user, m_password, m_auth_params, m_host, m_port, m_path, m_query, m_fragment, err)
+        ret = ccall(("g_uri_split_with_user", libglib), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_user, m_password, m_auth_params, m_host, m_port, m_path, m_query, m_fragment, err)
         check_err(err)
         _scheme = m_scheme[]
         _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
@@ -3123,7 +3123,7 @@ $(Expr(:toplevel, quote
                 _illegal_characters
             end
         err = err_buf()
-        ret = ccall(("g_uri_unescape_bytes", libgobject), Ptr{GBytes}, (Cstring, Int64, Cstring, Ptr{Ptr{GError}}), _escaped_string, _length, _illegal_characters, err)
+        ret = ccall(("g_uri_unescape_bytes", libglib), Ptr{GBytes}, (Cstring, Int64, Cstring, Ptr{Ptr{GError}}), _escaped_string, _length, _illegal_characters, err)
         check_err(err)
         ret2 = convert(GBytes, ret, true)
         ret2
@@ -3144,7 +3144,7 @@ $(Expr(:toplevel, quote
             else
                 _illegal_characters
             end
-        ret = ccall(("g_uri_unescape_segment", libgobject), Cstring, (Cstring, Cstring, Cstring), _escaped_string, _escaped_string_end, _illegal_characters)
+        ret = ccall(("g_uri_unescape_segment", libglib), Cstring, (Cstring, Cstring, Cstring), _escaped_string, _escaped_string_end, _illegal_characters)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3158,7 +3158,7 @@ $(Expr(:toplevel, quote
             else
                 _illegal_characters
             end
-        ret = ccall(("g_uri_unescape_string", libgobject), Cstring, (Cstring, Cstring), _escaped_string, _illegal_characters)
+        ret = ccall(("g_uri_unescape_string", libglib), Cstring, (Cstring, Cstring), _escaped_string, _illegal_characters)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3167,14 +3167,14 @@ $(Expr(:toplevel, quote
         ret2
     end
     function usleep(_microseconds::Integer)
-        ret = ccall(("g_usleep", libgobject), Nothing, (UInt64,), _microseconds)
+        ret = ccall(("g_usleep", libglib), Nothing, (UInt64,), _microseconds)
         nothing
     end
     function utf16_to_ucs4(_str::UInt16, _len::Integer)
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
         err = err_buf()
-        ret = ccall(("g_utf16_to_ucs4", libgobject), Ptr{Nothing}, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_utf16_to_ucs4", libglib), Ptr{Nothing}, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = convert(Nothing, ret)
         _items_read = m_items_read[]
@@ -3185,7 +3185,7 @@ $(Expr(:toplevel, quote
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
         err = err_buf()
-        ret = ccall(("g_utf16_to_utf8", libgobject), Cstring, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_utf16_to_utf8", libglib), Cstring, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = if ret == C_NULL
                 nothing
@@ -3197,7 +3197,7 @@ $(Expr(:toplevel, quote
         (ret2, _items_read, _items_written)
     end
     function utf8_casefold(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_utf8_casefold", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_utf8_casefold", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3206,11 +3206,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_collate(_str1::Union{AbstractString, Symbol}, _str2::Union{AbstractString, Symbol})
-        ret = ccall(("g_utf8_collate", libgobject), Int32, (Cstring, Cstring), _str1, _str2)
+        ret = ccall(("g_utf8_collate", libglib), Int32, (Cstring, Cstring), _str1, _str2)
         ret
     end
     function utf8_collate_key(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_utf8_collate_key", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_utf8_collate_key", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3219,7 +3219,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_collate_key_for_filename(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_utf8_collate_key_for_filename", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_utf8_collate_key_for_filename", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3233,7 +3233,7 @@ $(Expr(:toplevel, quote
             else
                 _end
             end
-        ret = ccall(("g_utf8_find_next_char", libgobject), Cstring, (Cstring, Cstring), _p, _end)
+        ret = ccall(("g_utf8_find_next_char", libglib), Cstring, (Cstring, Cstring), _p, _end)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3242,7 +3242,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_find_prev_char(_str::Union{AbstractString, Symbol}, _p::Union{AbstractString, Symbol})
-        ret = ccall(("g_utf8_find_prev_char", libgobject), Cstring, (Cstring, Cstring), _str, _p)
+        ret = ccall(("g_utf8_find_prev_char", libglib), Cstring, (Cstring, Cstring), _str, _p)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3251,15 +3251,15 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_get_char(_p::Union{AbstractString, Symbol})
-        ret = ccall(("g_utf8_get_char", libgobject), Nothing, (Cstring,), _p)
+        ret = ccall(("g_utf8_get_char", libglib), Nothing, (Cstring,), _p)
         nothing
     end
     function utf8_get_char_validated(_p::Union{AbstractString, Symbol}, _max_len::Integer)
-        ret = ccall(("g_utf8_get_char_validated", libgobject), Nothing, (Cstring, Int64), _p, _max_len)
+        ret = ccall(("g_utf8_get_char_validated", libglib), Nothing, (Cstring, Int64), _p, _max_len)
         nothing
     end
     function utf8_make_valid(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_utf8_make_valid", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_utf8_make_valid", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3268,7 +3268,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_normalize(_str::Union{AbstractString, Symbol}, _len::Integer, _mode)
-        ret = ccall(("g_utf8_normalize", libgobject), Cstring, (Cstring, Int64, UInt32), _str, _len, _mode)
+        ret = ccall(("g_utf8_normalize", libglib), Cstring, (Cstring, Int64, UInt32), _str, _len, _mode)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3277,7 +3277,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_offset_to_pointer(_str::Union{AbstractString, Symbol}, _offset::Integer)
-        ret = ccall(("g_utf8_offset_to_pointer", libgobject), Cstring, (Cstring, Int64), _str, _offset)
+        ret = ccall(("g_utf8_offset_to_pointer", libglib), Cstring, (Cstring, Int64), _str, _offset)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3286,11 +3286,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_pointer_to_offset(_str::Union{AbstractString, Symbol}, _pos::Union{AbstractString, Symbol})
-        ret = ccall(("g_utf8_pointer_to_offset", libgobject), Int64, (Cstring, Cstring), _str, _pos)
+        ret = ccall(("g_utf8_pointer_to_offset", libglib), Int64, (Cstring, Cstring), _str, _pos)
         ret
     end
     function utf8_prev_char(_p::Union{AbstractString, Symbol})
-        ret = ccall(("g_utf8_prev_char", libgobject), Cstring, (Cstring,), _p)
+        ret = ccall(("g_utf8_prev_char", libglib), Cstring, (Cstring,), _p)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3299,7 +3299,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_strchr(_p::Union{AbstractString, Symbol}, _len::Integer, _c)
-        ret = ccall(("g_utf8_strchr", libgobject), Cstring, (Cstring, Int64, Nothing), _p, _len, _c)
+        ret = ccall(("g_utf8_strchr", libglib), Cstring, (Cstring, Int64, Nothing), _p, _len, _c)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3308,7 +3308,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_strdown(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_utf8_strdown", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_utf8_strdown", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3317,11 +3317,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_strlen(_p::Union{AbstractString, Symbol}, _max::Integer)
-        ret = ccall(("g_utf8_strlen", libgobject), Int64, (Cstring, Int64), _p, _max)
+        ret = ccall(("g_utf8_strlen", libglib), Int64, (Cstring, Int64), _p, _max)
         ret
     end
     function utf8_strncpy(_dest::Union{AbstractString, Symbol}, _src::Union{AbstractString, Symbol}, _n::Integer)
-        ret = ccall(("g_utf8_strncpy", libgobject), Cstring, (Cstring, Cstring, UInt64), _dest, _src, _n)
+        ret = ccall(("g_utf8_strncpy", libglib), Cstring, (Cstring, Cstring, UInt64), _dest, _src, _n)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3330,7 +3330,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_strrchr(_p::Union{AbstractString, Symbol}, _len::Integer, _c)
-        ret = ccall(("g_utf8_strrchr", libgobject), Cstring, (Cstring, Int64, Nothing), _p, _len, _c)
+        ret = ccall(("g_utf8_strrchr", libglib), Cstring, (Cstring, Int64, Nothing), _p, _len, _c)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3339,7 +3339,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_strreverse(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_utf8_strreverse", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_utf8_strreverse", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3348,7 +3348,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_strup(_str::Union{AbstractString, Symbol}, _len::Integer)
-        ret = ccall(("g_utf8_strup", libgobject), Cstring, (Cstring, Int64), _str, _len)
+        ret = ccall(("g_utf8_strup", libglib), Cstring, (Cstring, Int64), _str, _len)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3357,7 +3357,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function utf8_substring(_str::Union{AbstractString, Symbol}, _start_pos::Integer, _end_pos::Integer)
-        ret = ccall(("g_utf8_substring", libgobject), Cstring, (Cstring, Int64, Int64), _str, _start_pos, _end_pos)
+        ret = ccall(("g_utf8_substring", libglib), Cstring, (Cstring, Int64, Int64), _str, _start_pos, _end_pos)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3369,7 +3369,7 @@ $(Expr(:toplevel, quote
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
         err = err_buf()
-        ret = ccall(("g_utf8_to_ucs4", libgobject), Ptr{Nothing}, (Cstring, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_utf8_to_ucs4", libglib), Ptr{Nothing}, (Cstring, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = convert(Nothing, ret)
         _items_read = m_items_read[]
@@ -3378,7 +3378,7 @@ $(Expr(:toplevel, quote
     end
     function utf8_to_ucs4_fast(_str::Union{AbstractString, Symbol}, _len::Integer)
         m_items_written = Ref{Int64}()
-        ret = ccall(("g_utf8_to_ucs4_fast", libgobject), Ptr{Nothing}, (Cstring, Int64, Ptr{Int64}), _str, _len, m_items_written)
+        ret = ccall(("g_utf8_to_ucs4_fast", libglib), Ptr{Nothing}, (Cstring, Int64, Ptr{Int64}), _str, _len, m_items_written)
         ret2 = convert(Nothing, ret)
         _items_written = m_items_written[]
         (ret2, _items_written)
@@ -3387,7 +3387,7 @@ $(Expr(:toplevel, quote
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
         err = err_buf()
-        ret = ccall(("g_utf8_to_utf16", libgobject), Ptr{UInt16}, (Cstring, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_utf8_to_utf16", libglib), Ptr{UInt16}, (Cstring, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = convert(UInt16, ret)
         _items_read = m_items_read[]
@@ -3398,7 +3398,7 @@ $(Expr(:toplevel, quote
         _str = convert(Vector{UInt8}, _str)
         m_end = Ref{Cstring}()
         _max_len = length(_str)
-        ret = ccall(("g_utf8_validate", libgobject), Cint, (Ptr{UInt8}, Int64, Ptr{Cstring}), _str, _max_len, m_end)
+        ret = ccall(("g_utf8_validate", libglib), Cint, (Ptr{UInt8}, Int64, Ptr{Cstring}), _str, _max_len, m_end)
         ret2 = convert(Bool, ret)
         _end = m_end[]
         _end = if _end == C_NULL
@@ -3412,7 +3412,7 @@ $(Expr(:toplevel, quote
         _str = convert(Vector{UInt8}, _str)
         m_end = Ref{Cstring}()
         _max_len = length(_str)
-        ret = ccall(("g_utf8_validate_len", libgobject), Cint, (Ptr{UInt8}, UInt64, Ptr{Cstring}), _str, _max_len, m_end)
+        ret = ccall(("g_utf8_validate_len", libglib), Cint, (Ptr{UInt8}, UInt64, Ptr{Cstring}), _str, _max_len, m_end)
         ret2 = convert(Bool, ret)
         _end = m_end[]
         _end = if _end == C_NULL
@@ -3423,12 +3423,12 @@ $(Expr(:toplevel, quote
         (ret2, _end)
     end
     function uuid_string_is_valid(_str::Union{AbstractString, Symbol})
-        ret = ccall(("g_uuid_string_is_valid", libgobject), Cint, (Cstring,), _str)
+        ret = ccall(("g_uuid_string_is_valid", libglib), Cint, (Cstring,), _str)
         ret2 = convert(Bool, ret)
         ret2
     end
     function uuid_string_random()
-        ret = ccall(("g_uuid_string_random", libgobject), Cstring, ())
+        ret = ccall(("g_uuid_string_random", libglib), Cstring, ())
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3437,21 +3437,21 @@ $(Expr(:toplevel, quote
         ret2
     end
     function variant_get_gtype()
-        ret = ccall(("g_variant_get_gtype", libgobject), UInt64, ())
+        ret = ccall(("g_variant_get_gtype", libglib), UInt64, ())
         ret
     end
     function variant_is_object_path(_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_is_object_path", libgobject), Cint, (Cstring,), _string)
+        ret = ccall(("g_variant_is_object_path", libglib), Cint, (Cstring,), _string)
         ret2 = convert(Bool, ret)
         ret2
     end
     function variant_is_signature(_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_is_signature", libgobject), Cint, (Cstring,), _string)
+        ret = ccall(("g_variant_is_signature", libglib), Cint, (Cstring,), _string)
         ret2 = convert(Bool, ret)
         ret2
     end
     function variant_parse_error_print_context(_error, _source_str::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_parse_error_print_context", libgobject), Cstring, (Ptr{GError}, Cstring), _error, _source_str)
+        ret = ccall(("g_variant_parse_error_print_context", libglib), Cstring, (Ptr{GError}, Cstring), _error, _source_str)
         ret2 = if ret == C_NULL
                 nothing
             else
@@ -3460,20 +3460,20 @@ $(Expr(:toplevel, quote
         ret2
     end
     function variant_parse_error_quark()
-        ret = ccall(("g_variant_parse_error_quark", libgobject), UInt32, ())
+        ret = ccall(("g_variant_parse_error_quark", libglib), UInt32, ())
         ret
     end
     function variant_type_checked_(_arg0::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_type_checked_", libgobject), Ptr{GVariantType}, (Cstring,), _arg0)
+        ret = ccall(("g_variant_type_checked_", libglib), Ptr{GVariantType}, (Cstring,), _arg0)
         ret2 = convert(GVariantType, ret, false)
         ret2
     end
     function variant_type_string_get_depth_(_type_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_type_string_get_depth_", libgobject), UInt64, (Cstring,), _type_string)
+        ret = ccall(("g_variant_type_string_get_depth_", libglib), UInt64, (Cstring,), _type_string)
         ret
     end
     function variant_type_string_is_valid(_type_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_type_string_is_valid", libgobject), Cint, (Cstring,), _type_string)
+        ret = ccall(("g_variant_type_string_is_valid", libglib), Cint, (Cstring,), _type_string)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -3484,7 +3484,7 @@ $(Expr(:toplevel, quote
                 _limit
             end
         m_endptr = Ref{Cstring}()
-        ret = ccall(("g_variant_type_string_scan", libgobject), Cint, (Cstring, Cstring, Ptr{Cstring}), _string, _limit, m_endptr)
+        ret = ccall(("g_variant_type_string_scan", libglib), Cint, (Cstring, Cstring, Ptr{Cstring}), _string, _limit, m_endptr)
         ret2 = convert(Bool, ret)
         _endptr = m_endptr[]
         _endptr = if _endptr == C_NULL
