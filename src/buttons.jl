@@ -8,7 +8,7 @@ function GtkButton(w::GtkWidget)
     b
 end
 
-setindex!(f::GtkButton, w::GtkWidget) = G_.set_child(f,w)
+setindex!(f::GtkButton, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkButton) = G_.get_child(f)
 
 ## GtkCheckButton, GtkToggleButton, GtkSwitch

@@ -1,6 +1,6 @@
 GtkComboBox() = G_.ComboBox_new()
 
-setindex!(f::GtkComboBox, w::GtkWidget) = G_.set_child(f,w)
+setindex!(f::GtkComboBox, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkComboBox) = G_.get_child(f)
 
 GtkComboBoxText(with_entry::Bool = false) =

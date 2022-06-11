@@ -11,6 +11,8 @@ GtkEntryCompletionLeaf() = G_.EntryCompletion_new()
 
 complete(completion::GtkEntryCompletion) = G_.complete(completion)
 
+GtkSearchEntry() = G_.SearchEntry_new()
+
 ## GtkScale
 
 GtkScale(orientation) = G_.Scale_new(convert(Gtk4.Orientation,orientation), nothing)

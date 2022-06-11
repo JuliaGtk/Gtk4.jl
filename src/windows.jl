@@ -29,7 +29,7 @@ unmaximize(win::GtkWindow) = G_.unmaximize(win)
 titlebar(win::GtkWindow, w::GtkWidget) = G_.set_titlebar(win, w)
 
 push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
-setindex!(w::GtkWindow, widget::GtkWidget) = G_.set_child(w, widget)
+setindex!(w::GtkWindow, widget::Union{Nothing,GtkWidget}) = G_.set_child(w, widget)
 
 GtkApplicationWindow(app::GtkApplication) = G_.ApplicationWindow_new(app)
 function GtkApplicationWindow(app::GtkApplication, title::AbstractString)
@@ -39,7 +39,7 @@ function GtkApplicationWindow(app::GtkApplication, title::AbstractString)
 end
 
 GtkScrolledWindow() = G_.ScrolledWindow_new()
-setindex!(w::GtkScrolledWindow, widg::GtkWidget) = G_.set_child(w,widg)
+setindex!(w::GtkScrolledWindow, widg::Union{Nothing,GtkWidget}) = G_.set_child(w,widg)
 getindex(w::GtkScrolledWindow) = G_.get_child(w)
 
 GtkHeaderBar() = G_.HeaderBar_new()

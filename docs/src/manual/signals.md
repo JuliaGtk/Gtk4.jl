@@ -1,7 +1,7 @@
 # Signals and Callbacks
 
 A button is not much use if it doesn't do anything.
-Gtk+ uses _signals_ as a method for communicating that something of interest has happened.
+GTK uses _signals_ as a method for communicating that something of interest has happened.
 Most signals will be _emitted_ as a consequence of user interaction: clicking on a button,
 closing a window, or just moving the mouse. You _connect_ your signals to particular functions
 to make something happen.
@@ -19,7 +19,7 @@ id = signal_connect(button_clicked_callback, b, "clicked")
 ```
 
 Here, `button_clicked_callback` is a *callback function*, something
-designed to be called by GTK+ to implement the response to user
+designed to be called by GTK to implement the response to user
 action.  You use the `signal_connect` function to specify when it
 should be called: in this case, when widget `b` (your button) emits
 the `"clicked"` signal.
@@ -50,7 +50,7 @@ julia> GtkButton(action-name=NULL, action-target, related-action, use-action-app
 "Press me" was clicked!
 ```
 Notice that _both_ of the callback functions executed!
-Gtk+ allows you to define multiple signal handlers for a given object; even the execution order can be [specified](https://docs.gtk.org/gobject/concepts.html#signals).
+GTK allows you to define multiple signal handlers for a given object; even the execution order can be [specified](https://docs.gtk.org/gobject/concepts.html#signals).
 Callbacks for some [signals](https://docs.gtk.org/gtk3/signal.Widget.accel-closures-changed.html) require that you return an `Int32`, with value 0 if you want the next handler to run or 1 if you want to prevent any other handlers from running on this event.
 
 The [`"clicked"` signal callback](https://docs.gtk.org/gtk3/method.Button.clicked.html) should return `nothing` (`void` in C parlance), so you can't prevent other callbacks from running.
@@ -66,10 +66,8 @@ Alternatively, you can temporarily enable or disable individual handlers with `s
 
 The arguments of the callback depend on the signal type.
 Arguments and their meaning are described along with their corresponding signals.
-**You should omit the final `user_data` argument described in the Gtk documentation**;
+**You should omit the final `user_data` argument described in the GTK documentation**;
 keep in mind that you can always address other variables from inside your function block, or define the callback in terms of an anonymous function:
 ```julia
 id = signal_connect((widget, event) -> cb_buttonpressed(widget, event, guistate, drawfunction, ...), b, "button-press-event")
 ```
-
-In some situations you may want or need to use an [approach that is more analogous to julia's `@cfunction` callback syntax](../doc/more_signals.md). One advantage of this alternative approach is that, in cases of error, the backtraces are much more informative.

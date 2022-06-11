@@ -1,13 +1,13 @@
 # Layout
 
-You will usually want to add more than one widget to your application. To this end, Gtk4 provides many layout widgets.
+Gtk4 provides many layout widgets for arranging widgets in a window.
 
 !!! note
-    For larger projects it is advisable to create the layout using Glade in combination with GtkBuilder. See [Builder and Glade](@ref).
+    For larger projects it might be a good idea to create the layout using Glade in combination with `GtkBuilder`. See [Builder and Glade](@ref).
 
 ## GtkBox
 
-The most simple layout widget is the `GtkBox`. It is one-dimensional and can be either be horizontally or vertical aligned.
+The simplest layout widget is the `GtkBox`. It is one-dimensional and can be either be horizontally or vertical aligned.
 ```julia
 win = GtkWindow("New title")
 hbox = GtkBox(:h)  # :h makes a horizontal layout, :v a vertical layout
@@ -24,19 +24,13 @@ This layout may not be exactly what you'd like. Perhaps you'd like the `OK` butt
 ok.hexpand = true
 hbox.spacing = 10
 ```
-The first line sets the `hexpand` property of the `ok` button within the `hbox` container. The second line sets the `spacing` property of `hbox` to 10 pixels.
+The first line sets the `hexpand` property of the `ok` button within the `hbox` container. In GTK4, a separate `vexpand` property controls whether the widget expands in the vertical direction. The second line sets the `spacing` property of `hbox` to 10 pixels.
 
-Note that these aren't evenly sized, and that doesn't change if we set the `cancel` button's `expand` property to `true`. The `homogeneous` property of `hbox` can be used to achieve this.
+Note that these aren't evenly sized, and that doesn't change if we set the `cancel` button's `hexpand` property to `true`. The `homogeneous` property of `hbox` can be used to achieve this.
 
 ```julia
 hbox.homogeneous = true
 ```
-
-Now we get this:
-
-![window](figures/twobuttons.png)
-
-which may be closer to what you had in mind.
 
 ## GtkGrid
 
@@ -47,13 +41,13 @@ g = GtkGrid()
 a = GtkEntry()  # a widget for entering text
 a.text = "This is Gtk!"
 b = GtkCheckButton("Check me!")
-c = GtkScale(false, 0:10)     # a slider
+c = GtkScale(:h, 0:10)     # a slider
 
 # Now let's place these graphical elements into the Grid:
 g[1,1] = a    # Cartesian coordinates, g[x,y]
 g[2,1] = b
 g[1:2,2] = c  # spans both columns
-g.column_homogeneous = true
+g.column_homogeneous = true # grid forces columns to have the same width
 g.column_spacing = 15  # introduce a 15-pixel gap between columns
 push!(win, g)
 ```
@@ -80,7 +74,7 @@ bottom widget.
 
 ## GtkPaned
 
-The `GtkPaned` widget creates two slots separated by a movable divider. Like `GtkBox`, it can
+The `GtkPaned` widget creates two slots separated by a movable divider. Like `GtkBox` and `GtkCenterBox`, it can
 be oriented either vertically or horizontally. To add child widgets, you can use
 ```julia
 paned = GtkPaned()

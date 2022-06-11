@@ -30,8 +30,7 @@ Errors in the `draw` function can corrupt Gtk4's internal state; if
 this happens, you have to quit julia and start a fresh session. To
 avoid this problem, the `@guarded` macro wraps your code in a
 `try/catch` block and prevents the corruption. It is especially useful
-when initially writing and debugging code. See [further
-discussion](../doc/more_signals.md) about when `@guarded` is relevant.
+when initially writing and debugging code.
 
 Mouse events can be handled using event controllers. The event controller for
 mouse clicks is GtkGestureClick. We first create this event controller, then

@@ -84,8 +84,6 @@ for c in [c1, c2, c3]
 end
 ```
 
-![listview1](../assets/listview1.jpg)
-
 ## Sorting
 
 We next want to make the tree view sortable
@@ -139,9 +137,6 @@ end
 ```
 Another useful signal is "row-activated" that will be triggered by a double click
 of the user.
-
-!!! note
-    getting multiple selections still not implemented.
 
 ## Filtering
 

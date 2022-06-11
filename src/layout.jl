@@ -45,7 +45,7 @@ function GtkCenterBox(orientation)
     b
 end
 
-function setindex!(b::GtkCenterBox, w::GtkWidget, pos::Symbol)
+function setindex!(b::GtkCenterBox, w::Union{Nothing,GtkWidget}, pos::Symbol)
     if pos === :start
         G_.set_start_widget(b,w)
     elseif pos === :center
@@ -84,7 +84,7 @@ function getindex(pane::GtkPaned, i::Integer)
     return x
 end
 
-function setindex!(pane::GtkPaned, child, i::Integer)
+function setindex!(pane::GtkPaned, child::Union{Nothing,GtkWidget}, i::Integer)
     if i == 1
         G_.set_start_child(pane, child)
     elseif i == 2
@@ -136,21 +136,21 @@ end
 GtkFrame(label::AbstractString) = G_.Frame_new(label)
 GtkFrame() = G_.Frame_new(nothing)
 
-setindex!(f::GtkFrame, w::GtkWidget) = G_.set_child(f,w)
+setindex!(f::GtkFrame, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkFrame) = G_.get_child(f)
 
 ## GtkAspectFrame - A widget that preserves the aspect ratio of its child
 
 GtkAspectFrame(xalign, yalign, ratio, obey_child) = G_.AspectFrame_new(xalign, yalign, ratio, obey_child)
 
-setindex!(f::GtkAspectFrame, w::GtkWidget) = G_.set_child(f,w)
+setindex!(f::GtkAspectFrame, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkAspectFrame) = G_.get_child(f)
 
 ## GtkExpander
 
 GtkExpander(title::AbstractString) = G_.Expander_new(title)
 
-setindex!(f::GtkExpander, w::GtkWidget) = G_.set_child(f,w)
+setindex!(f::GtkExpander, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkExpander) = G_.get_child(f)
 
 ## GtkNotebook
@@ -196,7 +196,7 @@ function GtkOverlay(w::GtkWidget)
     o
 end
 
-setindex!(f::GtkOverlay, w::GtkWidget) = G_.set_child(f,w)
+setindex!(f::GtkOverlay, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkOverlay) = G_.get_child(f)
 
 push!(f::GtkOverlay, x::GtkWidget) = (G_.add_overlay(f,x); f)

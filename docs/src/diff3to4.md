@@ -10,17 +10,17 @@ GObject [properties](manual/properties.md) can still be set and accessed using `
 
 GTK constants in Gtk4.jl are in the main module instead of a `Constants` submodule.
 
-In Gtk.jl, GTK's enum and flags constants were turned into integers. In Gtk4.jl, these are now mapped onto Julia enums, specifically the implementations [CEnum.jl](https://github.com/JuliaInterop/CEnum.jl) for enums and [BitFlags.jl](https://github.com/jmert/BitFlags.jl) for flags. This improves understandability when a function returns an enum or flag, but the downside is the sometimes extreme length of the enum's name. To mitigate this, `convert` methods are defined for the most commonly used enums so that shorter symbols can be used instead of the full enum name. For example, `:h` can be used instead of `Gtk4.Orientation_HORIZONTAL` in `GtkBox(orientation, spacing)`.
+In Gtk.jl, GTK's enum and flags constants were turned into integers. In Gtk4.jl, these are now mapped onto Julia enums, specifically the implementations [CEnum.jl](https://github.com/JuliaInterop/CEnum.jl) for enums and [BitFlags.jl](https://github.com/jmert/BitFlags.jl) for flags. This improves understandability when a function returns an enum or flag, but the downside is the sometimes extreme length of the enum's name. To mitigate this, `convert` methods are defined for commonly used enums so that shorter symbols can be used instead of the full enum name. For example, `:h` can be used instead of `Gtk4.Orientation_HORIZONTAL` in `GtkBox(orientation, spacing)`.
 
 ## G_ contains automatically generated methods
 
-In Gtk.jl, the submodule `Gtk.GAccessor` contains getter and setter methods. The submodule `Gtk4.G_` contains [automatically generated methods](manual/methods.md), which include all methods in `GAccessor` and many more. These methods directly call the C functions in libgtk and thus use 0-based indexing. They do translate between Julia types and C types, for example converting `nothing` to `C_NULL` and vice versa.
+In Gtk.jl, the submodule `Gtk.GAccessor` contains getter and setter methods, which often correspond to object properties. In Gtk4.jl, the submodule `Gtk4.G_` contains [automatically generated methods](manual/methods.md), which include all methods in `GAccessor` and many more. These methods directly call the C functions in libgtk and thus use 0-based indexing. Where possible, they translate between Julia types and C types, for example converting `nothing` to `C_NULL` and vice versa.
 
 For consistency, the getter and setter methods in `G_` keep their full names, including "set" and "get". For example, to set the title of a window, use `set_title(w, "text")` rather than `title(w, "text")`.
 
 ## GObject names
 
-The equivalent of `Gtk.ShortNames` doesn't exist. All `GObject` types are mapped onto Julia types with the same name.
+The equivalent of `Gtk.ShortNames` doesn't exist. All `GObject` types are mapped onto Julia types with the same name. It would probably be better to leave out the namespace, as is done in the Python `pygobject` bindings, but that might lead to name collisions between Gtk types and Julia types or between Gtk and other GObject libraries.
 
 ## No showall
 

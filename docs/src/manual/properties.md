@@ -4,22 +4,19 @@ If you're following along, you probably noticed that creating `win` caused quite
 ```
 Gtk4.GtkWindowLeaf(accessible-role=GTK_ACCESSIBLE_ROLE_WINDOW, name="", parent, root, width-request=-1, height-request=-1, visible=true, sensitive=true, can-focus=true, has-focus=false, can-target=true, focus-on-click=true, focusable=false, has-default=false, receives-default=false, cursor, has-tooltip=false, tooltip-markup=nothing, tooltip-text=nothing, opacity=1.000000, overflow=GTK_OVERFLOW_HIDDEN, halign=GTK_ALIGN_FILL, valign=GTK_ALIGN_FILL, margin-start=0, margin-end=0, margin-top=0, margin-bottom=0, hexpand=false, vexpand=false, hexpand-set=false, vexpand-set=false, scale-factor=1, css-name="window", css-classes, layout-manager, title=nothing, resizable=true, modal=false, default-width=200, default-height=200, destroy-with-parent=false, hide-on-close=false, icon-name=nothing, display, decorated=true, deletable=true, transient-for, application, default-widget, focus-widget, child, titlebar, handle-menubar-accel=true, is-active=false, startup-id, mnemonics-visible=false, focus-visible=false, maximized=false, fullscreened=false)
 ```
-This shows you a list of properties of the object and their current values. For example, notice that the `title` property is set to `"My window"`. We can change the title in the following way:
+This shows you a list of properties of the object and their current values. All GTK widgets, including windows, are subclasses of GObject, which have various properties that control how the widgets are displayed. For example, notice that the `title` property is set to `"My window"`. In this package, GObject properties are mapped onto Julia properties. We can change the title in the following way:
 ```julia
 julia> win.title = "New title"
 ```
-or equivalently use `set_gtk_property!`:
-```julia
-julia> set_gtk_property!(win, :title, "New title")
-```
-
 To get the title we can use:
 ```julia
 julia> title = win.title
 "New title"
 ```
-or equivalently use `get_gtk_property!`:
+
+We can also use `set_gtk_property!` and `get_gtk_property!` to set or get GObject properties:
 ```julia
+julia> set_gtk_property!(win, :title, "New title")
 julia> get_gtk_property(win, :title)
 "New title"
 ```
@@ -58,7 +55,7 @@ Current value: nothing
 
 Some properties have corresponding getter and setter C methods that can be accessed in the submodule `G_`.
 
-Some of the most important or useful are wrapped in the Gtk4 module, for example:
+Some of the most important or useful are also pulled into the Gtk4 module. For example the function `visible` just calls `G_.set_visible` and `G_.get_visible`:
 ```julia
 julia> visible(win)
 true

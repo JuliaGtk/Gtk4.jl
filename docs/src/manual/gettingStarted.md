@@ -14,10 +14,14 @@ We will now go through this example step by step. First the package is loaded `u
 ```julia
 push!(win,b)
 ```
+Since a `GtkWindow` can have only one child widget, we could have added the button to the window using
+```julia
+win[] = b
+```
 
 ## Extended Example
 
-We will now extend the example to let the button actually do something. To this end we first define a callback function that will be executed when the user clicks the button. Our callback function is supposed to change the window title of the application
+We will now extend the example to let the button actually do something. To this end we first define a callback function that will be executed when the user clicks the button. Our callback function just prints a message.
 ```julia
 function on_button_clicked(w)
   println("The button has been clicked")

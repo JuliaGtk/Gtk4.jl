@@ -11,18 +11,19 @@ A `GtkLabel` is constructed by calling
 ```julia
 label = GtkLabel("My text")
 ```
-The text of a label can be changed using
+The text of a label can be changed using the `label` property or `G_.set_text`
 ```julia
 G_.set_text(label,"My other text")
+label.label = "My final text"
 ```
 Furthermore, a label has limited support for adding formatted text. This is done
-using the `markup` function:
+using the `G_.set_markup` function:
 ```julia
 G_.set_markup(label,"""<b>My bold text</b>\n
                           <a href=\"https://www.gtk.org\"
                           title=\"Our website\">GTK+ website</a>""")
 ```
-The syntax for this markup text is borrowed from html and explained [here](https://docs.gtk.org/Pango/pango_markup.html).
+The syntax for this markup text is borrowed from HTML and explained [here](https://docs.gtk.org/Pango/pango_markup.html).
 
 A label can be made selectable using
 ```julia
@@ -41,7 +42,7 @@ Automatic line wrapping can be enabled using
 G_.set_text(label,repeat("Very long text! ",20))
 G_.set_wrap(label,true)
 ```
-Note that this will only happen, if the size of the widget is limited using layout constraints.
+Note that wrapping will only occur if the size of the widget is limited using layout constraints.
 
 ## Entry
 
@@ -51,9 +52,9 @@ ent = GtkEntry()
 ent.text = "My String"
 str = ent.text
 ```
-The maximum number of characters can be limited using `set_gtk_property!(ent,:max_length,10)`.
+The maximum number of characters can be limited using `ent.max_length = 10`.
 
-Sometimes you might want to make the widget non-editable. This can be done by a call
+Sometimes you might want to make the widget non-editable. This can be done by the call
 ```julia
 # using the accessor methods
 G_.set_editable(GtkEditable(ent),false)
@@ -71,7 +72,3 @@ To get notified by changes to the entry one can listen the "changed" event.
 
 A special variant of the entry that can be used as a search box is `GtkSearchEntry`. It is equipped
 with a button to clear the entry.
-
-!!! note
-    Currently `GtkSearchEntry` is not fully wrapped in Gtk4.jl but if you add it using Glade, it can
-    be used as an alternative to the ``GtkEntry`
