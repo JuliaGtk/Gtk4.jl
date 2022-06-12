@@ -536,7 +536,7 @@ infobar = GtkInfoBar()
 end
 
 @testset "Builder" begin
-b=GtkBuilder(filename="test.glade")
+b=GtkBuilder(filename="test.ui")
 widgets = [w for w in b]
 @test length(widgets)==length(b)
 @test length(b)==6
@@ -548,9 +548,9 @@ button = b["a_button"]
 
 @test button == b["a_button"]
 
-#@test_throws ErrorException b2 = Builder(;filename="test2.glade")
+#@test_throws ErrorException b2 = Builder(;filename="test2.ui")
 
-s = open("test.glade","r") do f
+s = open("test.ui","r") do f
     read(f,String)
 end
 b3 = GtkBuilder(buffer = s)

@@ -3,7 +3,7 @@
 Gtk4 provides many layout widgets for arranging widgets in a window.
 
 !!! note
-    For larger projects it might be a good idea to create the layout using Glade in combination with `GtkBuilder`. See [Builder and Glade](@ref).
+    For larger projects it might be a good idea to create the layout using Cambalache in combination with `GtkBuilder`. See [Builder](@ref).
 
 ## GtkBox
 

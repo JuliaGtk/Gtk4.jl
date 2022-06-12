@@ -1,4 +1,4 @@
-# Builder and Glade
+# Builder
 
 Until now we have created and arranged all widgets entirely using Julia code. While this works fine
 for small examples, it has the issue that we are tightly coupling the appearance from our application
@@ -6,24 +6,13 @@ with the logic of our program code. In addition the linear way of procedural Jul
 very well with complex user interfaces arranged in deeply nested tables and boxes.
 
 Fortunately, there is a much better way to design user interfaces that strictly separates the layout
-from the code. This is done by an XML based file format that allows for describing any widget
-arrangements. The XML file is usually not manually created but designed graphically using
-[Glade](https://glade.gnome.org) in a WYSIWYG (what you see is what you get) manner. In order to use
-the interface in your Julia Gtk4 application you will need `GtkBuilder`.
+from the code. This is done by an XML based file format that allows for describing any arrangement of widgets.
+In order to use the interface in your Julia Gtk4 application you will need `GtkBuilder`.
 
-## Glade
+For GTK version 3 and earlier, [Glade](https://glade.gnome.org) is often used as a GUI tool for creating GtkBuilder XML files in a WYSIWYG (what you see is what you get) manner, but Glade wasn't ported to GTK version 4. Instead [Cambalache](https://flathub.org/apps/details/ar.xjuan.Cambalache) can be used or the XML can be edited by hand.
 
-Glade lets you create complex user interfaces by graphically arranging them together in a user
-friendly way. There are many good [tutorials](https://wiki.gnome.org/action/show/Apps/Glade/Tutorials)
-out there so that we will skip a detailed introduction here.
-
-The important thing when putting together the interface with glade is to give each widget that you
-later want to interface with a meaningful ID.
-
-## Builder
-
-Once we have created the interface with Glade the result can be stored in an XML file that usually has
-the extension `.glade`. Lets assume we have created a file `myapp.glade` that looks like
+Once we have created the XML interface the result can be stored in an XML file that usually has
+the extension `.ui`. Lets assume we have created a file `myapp.ui` that looks like
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -46,7 +35,7 @@ the extension `.glade`. Lets assume we have created a file `myapp.glade` that lo
 In order to access the widgets from Julia we first create a `GtkBuilder` object that will serve as a
 connector between the XML definition and our Julia code.
 ```julia
-b = GtkBuilder(filename="path/to/myapp.glade")
+b = GtkBuilder(filename="path/to/myapp.ui")
 ```
 Alternatively, if we store the above XML definition in a Julia string `myapp` we can initialize
 the builder by
@@ -66,15 +55,15 @@ when you need access to your widgets.
 
 !!! note
     If you are developing the code in a package you can get the package directory using the `@__DIR__` macro.
-    For instance, if your glade file is located at `MyPackage/src/builder/myuifile.ui`, you can get the full path using
+    For instance, if your UI file is located at `MyPackage/src/builder/myuifile.ui`, you can get the full path using
     `uifile = joinpath(@__DIR__, "builder", "myuifile.ui")`.
 
 In Gtk4.jl a macro `@load_builder` is defined that iterates over the `GtkWidget`s in
 a `GtkBuilder` object and automatically assigns them to Julia variables with the same id. For
-example, if a `GtkEntry` with an id `entry1` and two `GtkButton`s with id's `button1` and `button2` are present in `myapp.glade`,
+example, if a `GtkEntry` with an id `entry1` and two `GtkButton`s with id's `button1` and `button2` are present in `myapp.ui`,
 calling
 ```julia
-@load_builder(GtkBuilder(filename="myapp.glade"))
+@load_builder(GtkBuilder(filename="myapp.ui"))
 ```
 is equivalent to
 ```julia
@@ -82,7 +71,7 @@ entry1 = b["entry1"]
 button1 = b["button1"]
 button2 = b["button2"]
 ```
-Note that this only works for `GtkWidget`s that implement the interface `GtkBuildable`, which excludes some objects often defined in Glade XML files, for example `GtkAdjustment`.
+Note that this only works for `GtkWidget`s that implement the interface `GtkBuildable`, which excludes some objects often defined in UI files, for example `GtkAdjustment`.
 
 ## Callbacks
 
