@@ -33,7 +33,7 @@ end
 const  AbstractStringLike = Union{AbstractString, Symbol}
 bytestring(s) = String(s)
 bytestring(s::Symbol) = s
-bytestring(s::Ptr{UInt8}) = unsafe_string(s)
+bytestring(s::Ptr{UInt8}) = s == C_NULL ? nothing : unsafe_string(s)
 # bytestring(s::Ptr{UInt8}, own::Bool=false) = unsafe_string(s)
 
 g_malloc(s::Integer) = ccall((:g_malloc, libglib), Ptr{Nothing}, (Csize_t,), s)

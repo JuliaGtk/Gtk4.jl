@@ -40,6 +40,9 @@ end
 function typeinit_def(info)
     name=get_name(info)
     ti = get_type_init(info)
+    if ti == :nothing
+        return nothing
+    end
     type_init = String(ti)
     libs=get_shlibs(GINamespace(get_namespace(info)))
     lib=libs[findfirst(l->find_symbol(l,type_init),libs)]
@@ -68,7 +71,7 @@ function enum_decl2(enum, incl_typeinit=true)
     push!(bloc.args,unblock(body))
     if incl_typeinit
         gtypeinit = typeinit_def(enum)
-        push!(bloc.args,unblock(gtypeinit))
+        gtypeinit !== nothing && push!(bloc.args,unblock(gtypeinit))
     end
     unblock(bloc)
 end
@@ -796,14 +799,14 @@ function symbol_from_lib(libname)
     libname
 end
 
-function make_ccall(slib::Symbol, id, rtype, args)
+function make_ccall(slib::Union{String,Symbol}, id, rtype, args)
     argtypes = Expr(:tuple, types(args)...)
     c_call = :(ccall(($id, $slib), $rtype, $argtypes))
     append!(c_call.args, names(args))
     c_call
 end
 
-function make_ccall(libs, id, rtype, args)
+function make_ccall(libs::AbstractArray, id, rtype, args)
     # look up symbol in our possible libraries
     lib=libs[findfirst(l->find_symbol(l,id),libs)]
     slib=symbol_from_lib(lib)
