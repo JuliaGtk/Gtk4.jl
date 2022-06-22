@@ -339,7 +339,7 @@ function obj_decl!(exprs,o,ns,handled)
             # abstract declaration for toplevel GTypeInstance and convert method
             d=quote
                 abstract type $oname end
-                Base.convert($oname, ptr::Ptr{$tname})=$leafname(ptr)
+                Base.convert(::Type{$oname}, ptr::Ptr{$tname}) = $leafname(ptr)
                 Base.unsafe_convert(::Type{Ptr{$tname}}, o::$oname) = o.handle
             end
             push!(exprs,d)

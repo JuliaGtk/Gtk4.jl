@@ -14,7 +14,8 @@ c = GtkCanvas()
     set_source_rgb(ctx, 0, 0, 1)
     fill(ctx)
 end
-win = GtkWindow(c, "Canvas")
+win = GtkWindow("Canvas")
+win[] = c
 
 g=GtkGestureClick(c)
 
