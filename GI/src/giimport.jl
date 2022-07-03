@@ -284,6 +284,10 @@ function gobject_decl(objectinfo)
     pg_type = get_g_type(parentinfo)
     pname = Symbol(GI.GLib.g_type_name(pg_type))
 
+    if oname === :void
+        println("get_g_type returns void -- not in library? : ", get_name(objectinfo))
+    end
+
     exprs=Expr[]
     decl=quote
         abstract type $oname <: $pname end
@@ -363,6 +367,10 @@ end
 function ginterface_decl(interfaceinfo)
     g_type = get_g_type(interfaceinfo)
     iname = Symbol(GLib.g_type_name(g_type))
+
+    if iname === :void
+        println("get_g_type returns void -- not in library? : ", get_name(interfaceinfo))
+    end
     decl=quote
         struct $iname <: GInterface
             handle::Ptr{GObject}

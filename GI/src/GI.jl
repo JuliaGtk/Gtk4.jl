@@ -1,5 +1,5 @@
 module GI
-    using Glib_jll
+    using Glib_jll, gobject_introspection_jll
     using MacroTools, CEnum, BitFlags
 
     import GLibBase as GLib
@@ -16,7 +16,7 @@ module GI
     export const_expr
     export extract_type
 
-    libgi = "libgirepository-1.0"
+    libgi = gobject_introspection_jll.libgirepository
 
     global const libgi_version = VersionNumber(
       ccall((:gi_get_major_version, libgi), Cint, ()),

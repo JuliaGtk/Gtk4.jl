@@ -1633,15 +1633,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_pointer_bit_unlock", libglib), Nothing, (Ptr{Nothing}, Int32), _address, _lock_bit)
         nothing
     end
-    function prefix_error_literal(_err, _prefix::Union{AbstractString, Symbol})
-        _err = if _err == nothing
-                C_NULL
-            else
-                _err
-            end
-        ret = ccall(("g_prefix_error_literal", libglib), Nothing, (Ptr{GError}, Cstring), _err, _prefix)
-        nothing
-    end
     function propagate_error(_src)
         m_dest = Ref{Ptr{GError}}()
         ret = ccall(("g_propagate_error", libglib), Nothing, (Ptr{Ptr{GError}}, Ptr{GError}), m_dest, _src)
@@ -1987,13 +1978,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_spaced_primes_closest", libglib), UInt32, (UInt32,), _num)
         ret
     end
-    function spawn_check_wait_status(_wait_status::Integer)
-        err = err_buf()
-        ret = ccall(("g_spawn_check_wait_status", libglib), Cint, (Int32, Ptr{Ptr{GError}}), _wait_status, err)
-        check_err(err)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
     function spawn_close_pid(_pid::Integer)
         ret = ccall(("g_spawn_close_pid", libglib), Nothing, (Int32,), _pid)
         nothing
@@ -2005,18 +1989,16 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function spawn_command_line_sync(_command_line::Union{AbstractString, Symbol})
+    function spawn_command_line_sync(_command_line::Union{AbstractString, Symbol}, _exit_status::Int32)
         m_standard_output = Ref{Ptr{UInt8}}()
         m_standard_error = Ref{Ptr{UInt8}}()
-        m_wait_status = Ref{Int32}()
         err = err_buf()
-        ret = ccall(("g_spawn_command_line_sync", libglib), Cint, (Cstring, Ptr{Ptr{UInt8}}, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Ptr{GError}}), _command_line, m_standard_output, m_standard_error, m_wait_status, err)
+        ret = ccall(("g_spawn_command_line_sync", libglib), Cint, (Cstring, Ptr{Ptr{UInt8}}, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Ptr{GError}}), _command_line, m_standard_output, m_standard_error, _exit_status, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _standard_output = m_standard_output[]
         _standard_error = m_standard_error[]
-        _wait_status = m_wait_status[]
-        (ret2, _standard_output, _standard_error, _wait_status)
+        (ret2, _standard_output, _standard_error)
     end
     function spawn_error_quark()
         ret = ccall(("g_spawn_error_quark", libglib), UInt32, ())

@@ -26,7 +26,7 @@ struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skipl
 
 ## objects and interfaces
 
-GI.all_objects!(exprs,exports,ns;handled=[:Object])
+GI.all_objects!(exprs,exports,ns;handled=[:Object],skiplist=[:BindingGroup,:SignalGroup])
 push!(exprs,:(gtype_wrapper_cache[:GObject] = GObjectLeaf))
 GI.all_interfaces!(exprs,exports,ns)
 
@@ -53,7 +53,7 @@ skiplist=[
 :watch_closure,:add_interface,:register_enum,:register_flags,:register_type,
 :getv,:notify_by_pspec,:interface_find_property,:interface_install_property,:interface_list_properties]
 
-GI.all_object_methods!(exprs,ns;skiplist=skiplist)
+GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=[:BindingGroup,:SignalGroup])
 
 GI.write_to_file(path,"gobject_methods",toplevel)
 
