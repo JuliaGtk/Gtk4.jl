@@ -11,8 +11,6 @@ import Base: convert, size, length, getindex, setindex!, get,
              sigatomic_begin, sigatomic_end, Sys.WORD_SIZE, unsafe_convert, getproperty,
              getindex, setindex!
 
-using Libdl
-
 export GInterface, GType, GObject, GBoxed
 export GEnum, GError, GValue, gvalue, g_type
 export GHashTable, GByteArray, GArray, GPtrArray

@@ -2,8 +2,10 @@ module GI
     using Glib_jll, gobject_introspection_jll
     using MacroTools, CEnum, BitFlags
 
-    import GLibBase as GLib
-    import GLibBase:
+    include("GLibBase/GLibBase.jl")
+
+    import .GLibBase as GLib
+    import .GLibBase:
       unsafe_convert, GError, GObject, GType, GArray, GPtrArray, GByteArray,
       GHashTable, GList, GInterface, GBoxed, AbstractStringLike, bytestring
 
