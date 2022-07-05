@@ -99,6 +99,18 @@ function monitor(w::GtkWidget)
     Gdk4.G_.get_monitor_at_surface(d,s)
 end
 
+function cursor(w::GtkWidget, c::Union{Nothing,GdkCursor})
+    G_.set_cursor(w, c)
+end
+
+function cursor(w::GtkWidget, n::AbstractString)
+    G_.set_cursor_from_name(w, n)
+end
+
+function cursor(w::GtkWidget)
+    G_.get_cursor(w)
+end
+
 function iterate(w::GtkWidget, state=nothing)
     next = (state === nothing ? G_.get_first_child(w) : G_.get_next_sibling(state))
     next === nothing ? nothing : (next, next)
@@ -108,6 +120,8 @@ eltype(::Type{GtkWidget}) = GtkWidget
 IteratorSize(::Type{GtkWidget}) = Base.SizeUnknown()
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
+
+## GtkApplication
 
 GtkApplication(id = nothing, flags = GLib.ApplicationFlags_NONE) = G_.Application_new(id,flags)
 push!(app::GtkApplication, win::GtkWindow) = G_.add_window(app, win)

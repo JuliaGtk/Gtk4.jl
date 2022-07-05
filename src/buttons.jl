@@ -11,7 +11,11 @@ end
 setindex!(f::GtkButton, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkButton) = G_.get_child(f)
 
-## GtkCheckButton, GtkToggleButton, GtkSwitch
+function on_signal_clicked(@nospecialize(clicked_cb::Function), widget::GtkButton, vargs...)
+    signal_connect(clicked_cb, widget, "clicked", Nothing, (), vargs...)
+end
+
+## GtkCheckButton, GtkToggleButton
 
 GtkCheckButton() = G_.CheckButton_new()
 GtkCheckButton(title::AbstractString) = G_.CheckButton_new_with_mnemonic(title)
@@ -23,6 +27,14 @@ GtkToggleButton(title::AbstractString) = G_.ToggleButton_new_with_mnemonic(title
 
 group(tb::GtkToggleButton, tb2::Union{Nothing,GtkToggleButton}) = G_.set_group(tb, tb2)
 
+# GtkToggleButton is a subclass of GtkButton so "clicked" signal is also available for it
+# GtkCheckButton only has "toggled"
+function on_signal_toggled(@nospecialize(toggled_cb::Function), widget::Union{GtkToggleButton,GtkCheckButton}, vargs...)
+    signal_connect(toggled_cb, widget, "toggled", Nothing, (), vargs...)
+end
+
+## GtkSwitch
+
 GtkSwitch() = G_.Switch_new()
 function GtkSwitch(active::Bool)
     b = GtkSwitch()
@@ -30,6 +42,7 @@ function GtkSwitch(active::Bool)
     b
 end
 
+## GtkLinkButton
 
 GtkLinkButton(uri::AbstractString) = G_.LinkButton_new(uri)
 GtkLinkButton(uri::AbstractString, label::AbstractString) = G_.LinkButton_new_with_label(uri, label)

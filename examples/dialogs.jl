@@ -6,12 +6,13 @@ main_window[]=box
 info_dialog_button = GtkButton("Info dialog")
 push!(box,info_dialog_button)
 
-function open_info_dialog(b)
+function open_info_dialog(b, user_data)
     d = info_dialog("Here's some information",main_window)
     show(d)
+    nothing
 end
 
-signal_connect(open_info_dialog,info_dialog_button,"clicked")
+Gtk4.on_signal_clicked(open_info_dialog, info_dialog_button)
 
 ## Question dialog
 

@@ -45,12 +45,7 @@ r = Gtk4.Gdk4.G_.get_geometry(m)
 hide(w)
 show(w)
 grab_focus(w)
-#
-# destroy(w); yield()
-# @test !get_gtk_property(w, :visible, Bool)
-# w=WeakRef(w)
-# GC.gc(); yield(); GC.gc()
-# #@test w.value === nothing    ### fails inside @testset
+
 end
 
 @testset "get/set property and binding" begin
@@ -123,6 +118,7 @@ nb = GtkNotebook()
 @test hasparent(nb)==false
 vbox = GtkBox(:v)
 c = GtkCanvas()
+cursor(c,"crosshair")
 push!(nb, vbox, "A")
 push!(nb, c, "B")
 insert!(nb, 2, GtkLabel("Something in the middle"), "A*")
@@ -335,6 +331,10 @@ icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGB(0,0,0xff))
 pb=GdkPixbuf(width=100, height=100, has_alpha=false)
 set_pixbuf(pic, pb)
 pic2 = GtkPicture(pb)
+
+texture = GdkTexture(pb)
+@test width(texture)==100
+@test height(texture)==100
 end
 
 @testset "checkbox" begin
@@ -398,8 +398,15 @@ end
 @testset "switch and togglebutton" begin
 switch = GtkSwitch(true)
 w = GtkWindow(switch,"Switch")
+
+function do_something(b, user_data)
+    nothing
+end
+
 toggle = GtkToggleButton("toggle me")
+Gtk4.on_signal_toggled(do_something, toggle)
 w[] = toggle
+
 destroy(w)
 end
 
@@ -421,6 +428,7 @@ end
 b = GtkColorButton()
 b = GtkColorButton(Gdk4.GdkRGBA(0, 0.8, 1.0, 0.3))
 r = Gdk4.GdkRGBA("red")
+@test_throws ErrorException q = Gdk4.GdkRGBA("octarine")
 w = GtkWindow(b, "ColorButton", 50, 50)
 destroy(w)
 end
@@ -762,6 +770,9 @@ o = GtkOverlay(c)
 @test o[] == c
 push!(o,GtkButton("Button"))
 w = GtkWindow(o, "overlay")
+curs = GdkCursor("crosshair")
+cursor(c, curs)
+@test curs == cursor(c)
 destroy(w)
 end
 
@@ -784,6 +795,10 @@ show(d)
 
 response(d,Integer(Gtk4.ResponseType_YES))
 
+end
+
+@testset "keyval" begin
+@test keyval("H") == Gdk4.KEY_H
 end
 
 @testset "FileFilter" begin

@@ -10,6 +10,8 @@ using ..GdkPixbufLib
 import Base: unsafe_convert, size
 using CEnum, BitFlags
 
+import Graphics: width, height
+
 eval(include("gen/gdk4_consts"))
 eval(include("gen/gdk4_structs"))
 
@@ -48,6 +50,23 @@ function GdkRGBA(rgba::AbstractString)
    end
    r
 end
+
+## GdkTexture
+
+GdkTexture(p::GdkPixbuf) = G_.Texture_new_for_pixbuf(p)
+width(t::GdkTexture) = G_.get_width(t)
+height(t::GdkTexture) = G_.get_height(t)
+
+## GdkCursor
+
+function GdkCursor(name::AbstractString, fallback = nothing)
+   G_.Cursor_new_from_name(name, fallback)
+end
+function GdkCursor(texture::GdkTexture, hotspot_x::Integer, hotspot_y::Integer, fallback = nothing)
+   G_.Cursor_new_from_texture(texture, hotspot_x, hotspot_y, fallback)
+end
+
+## GdkMonitor
 
 function size(m::GdkMonitor)
    r=G_.get_geometry(m)

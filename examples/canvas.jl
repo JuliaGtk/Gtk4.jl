@@ -15,6 +15,7 @@ c = GtkCanvas()
     fill(ctx)
 end
 win = GtkWindow("Canvas")
+cursor(c, "crosshair")
 win[] = c
 
 g=GtkGestureClick(c)
