@@ -65,9 +65,19 @@ signal_connect(on_action_added2, g, "action_added", Nothing, (String,), false, 3
 push!(g,a)
 @test extra_arg_ref[] == 3
 
+# test keyword constructor
+
+a2 = GSimpleAction("do-something-else";enabled=false)
+@test a2.enabled == false
+
+a3 = GSimpleAction("do-something-again";enabled=true)
+@test a3.enabled == true
+
 end
 
 @testset "GListStore" begin
+
+
 
 l = GListStore(:GSimpleAction)
 @test length(l)==0

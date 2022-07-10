@@ -253,6 +253,12 @@ function addref(@nospecialize(x::GObject))
     gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
     nothing
 end
+function gobject_maybe_sink(handle,owns)
+    is_floating = (ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle)!=0)
+    if !owns || is_floating # if owns is true then we already have a reference, but if it's floating we should sink it
+        GLib.gc_ref_sink(handle)
+    end
+end
 function gobject_ref(x::T) where T <: GObject
     gc_preserve_glib_lock[] = true
     strong = get(gc_preserve_glib, x, nothing)

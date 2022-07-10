@@ -1,4 +1,4 @@
-using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4
+using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4, Gtk4.GdkPixbufLib
 
 # For testing callbacks
 activate(w::GtkWidget) = G_.activate(w)

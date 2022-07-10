@@ -187,7 +187,7 @@ bstride(a, i) = stride(a, i) * sizeof(eltype(a))
 #GdkPixbuf(xpm_data = [...])
 #GdkPixbuf(data = [...], has_alpha = true)
 #GdkPixbuf(width = 1, height = 1, has_alpha = true)
-function GdkPixbufLeaf(; stream = nothing, resource_path = nothing, filename = nothing, xpm_data = nothing, inline_data = nothing, data = nothing,
+function GdkPixbuf(; stream = nothing, resource_path = nothing, filename = nothing, xpm_data = nothing, inline_data = nothing, data = nothing,
         width = -1, height = -1, preserve_aspect_ratio = true, has_alpha = nothing)
     source_count = (stream !== nothing) + (resource_path !== nothing) + (filename !== nothing) +
         (xpm_data !== nothing) + (inline_data !== nothing) + (data !== nothing)
@@ -246,12 +246,12 @@ function GdkPixbufLeaf(; stream = nothing, resource_path = nothing, filename = n
         pixbuf = ccall((:gdk_pixbuf_new, libgdkpixbuf), Ptr{GObject},
             (Cint, Cint, Cint, Cint, Cint), 0, alpha, 8, width, height)
     end
-    return GdkPixbufLeaf(pixbuf)
+    return GdkPixbuf(pixbuf)
 end
 #GdkPixbufLoader for new with type/mimetype
 #GdkPixbuf(callback, stream, width = -1, height = -1, preserve_aspect_ratio = true)
 
-slice(img::GdkPixbuf, x, y) = GdkPixbufLeaf(ccall((:gdk_pixbuf_new_subpixbuf, libgdkpixbuf), Ptr{GObject},
+slice(img::GdkPixbuf, x, y) = GdkPixbuf(ccall((:gdk_pixbuf_new_subpixbuf, libgdkpixbuf), Ptr{GObject},
     (Ptr{GObject}, Cint, Cint, Cint, Cint), img, first(x)-1, first(y)-1, length(x), length(y)))
 width(img::GdkPixbuf) = G_.get_width(img)
 height(img::GdkPixbuf) = G_.get_height(img)

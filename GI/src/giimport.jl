@@ -297,19 +297,13 @@ function gobject_decl(objectinfo)
                 if handle == C_NULL
                     error($("Cannot construct $leafname with a NULL pointer"))
                 end
-                is_floating = (ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle)!=0)
-                if !owns || is_floating # if owns is true then we already have a reference, but if it's floating we should sink it
-                    GLib.gc_ref_sink(handle)
-                end
+                GLib.gobject_maybe_sink(handle,owns)
                 return gobject_ref(new(handle))
             end
         end
         local kwargs
         function $leafname(args...; kwargs...)
-            if isempty(kwargs)
-                error(MethodError($leafname, args))
-            end
-            w = $leafname(args...)
+            w = $oname(args...)
             for (kw, val) in kwargs
                 set_gtk_property!(w, kw, val)
             end
