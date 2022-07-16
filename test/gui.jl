@@ -1,18 +1,14 @@
 using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4, Gtk4.GdkPixbufLib
 
-# For testing callbacks
-activate(w::GtkWidget) = G_.activate(w)
-
 @testset "Window" begin
 w = GtkWindow("Window", 400, 300)
 
 sleep(0.1) # allow the window to appear
 
-if false && !Sys.iswindows()
+if !Sys.iswindows()
     # On windows, the wrong screen sizes are reported
     @test width(w) == 400
     @test height(w) == 300
-    @test size(w) == (400, 300)
     #wdth, hght = screen_size(w)
     #@test wdth > 0 && hght > 0
 end
@@ -29,9 +25,6 @@ end
 # if G_.position(w) == pos
 #     @warn("The Window Manager did not move the Gtk Window when requested")
 # end
-@test get_gtk_property(w, "title", AbstractString) == "Window"
-set_gtk_property!(w, :title, "Window 2")
-@test get_gtk_property(w, :title, AbstractString) == "Window 2"
 visible(w,false)
 @test isvisible(w) == false
 visible(w,true)
@@ -125,6 +118,7 @@ insert!(nb, 2, GtkLabel("Something in the middle"), "A*")
 pushfirst!(nb, GtkLabel("Something at the beginning"), "First")
 splice!(nb, 3)
 w = GtkWindow(nb,"TestDataViewer",600,600)
+@test w[] == nb
 @test parent(nb) == w
 @test pagenumber(nb,c)==3
 destroy(w)
@@ -133,8 +127,6 @@ end
 @testset "Labelframe" begin
 f = GtkFrame("Label")
 w = GtkWindow(f,"Labelframe", 400, 400)
-set_gtk_property!(f,:label,"new label")
-@test get_gtk_property(f,:label,AbstractString) == "new label"
 destroy(w)
 end
 
@@ -148,8 +140,6 @@ four = GtkLabel("fo_ur")
 push!(nb, four, "tab _four")
 @test pagenumber(nb, four) == 4
 @test length(nb) == 4
-set_gtk_property!(nb,:page,2)
-@test get_gtk_property(nb,:page,Int) == 2
 destroy(w)
 end
 
@@ -267,11 +257,6 @@ G_.set_child(w,f)
 l = GtkLabel("label"); push!(f,l)
 b = GtkButton("button"); push!(f,b)
 
-set_gtk_property!(l,:label,"new label")
-@test get_gtk_property(l,:label,AbstractString) == "new label"
-set_gtk_property!(b,:label,"new label")
-@test get_gtk_property(b,:label,AbstractString) == "new label"
-
 counter = 0
 id = signal_connect(b, "activate") do widget
     counter::Int += 1
@@ -340,10 +325,6 @@ end
 @testset "checkbox" begin
 w = GtkWindow("Checkbutton")
 check = GtkCheckButton("check me"); push!(w,check)
-set_gtk_property!(check,:active,true)
-@test get_gtk_property(check,:active,AbstractString) == "TRUE"
-set_gtk_property!(check,:label,"new label")
-@test get_gtk_property(check,:label,AbstractString) == "new label"
 destroy(w)
 end
 
@@ -556,8 +537,6 @@ button = b["a_button"]
 
 @test button == b["a_button"]
 
-#@test_throws ErrorException b2 = Builder(;filename="test2.ui")
-
 s = open("test.ui","r") do f
     read(f,String)
 end
@@ -577,6 +556,8 @@ gk = GtkEventControllerKey(c)
 ggc = GtkGestureClick(c)
 ggd = GtkGestureDrag(c)
 ggz = GtkGestureZoom(c)
+t = Gtk4.find_controller(c,GtkEventControllerMotion)
+@test t==gm
 @test widget(gm) == c
 c.draw = function(_)
     if isdefined(c,:back)
@@ -593,29 +574,28 @@ destroyed = Ref(false)
 function test_destroy(w)
     destroyed[] = true
 end
-on_signal_destroy(test_destroy, w)
+on_signal_destroy(test_destroy, c)
 destroy(w)
+#sleep(0.5)
 #@test destroyed[] == true
 end
 
 @testset "SetCoordinates" begin
     cnvs = GtkCanvas(300, 280)
     sleep(0.2)
-    s = size(cnvs)
-    #@test s[1] == 300
-    #@test s[2] == 280
     draw(cnvs) do c
         set_coordinates(getgc(c), BoundingBox(0, 1, 0, 1))
     end
     win = GtkWindow(cnvs)
-    # sleep(2.0)
-    # mtrx = Gtk4.Cairo.get_matrix(getgc(cnvs))
-#     @test mtrx.xx == 300
-#     @test mtrx.yy == 280
-#     @test mtrx.xy == mtrx.yx == mtrx.x0 == mtrx.y0 == 0
-#     surf = Gtk.cairo_surface(cnvs)
-#     #a = Gtk.allocation(cnvs)
-#     #@test isa(a,Gtk.GdkRectangle)
+    sleep(1.0)
+    s = size(cnvs)
+    @test s[1] == 300
+    @test s[2] == 280
+    mtrx = Gtk4.Cairo.get_matrix(getgc(cnvs))
+    @test mtrx.xx == 300
+    @test mtrx.yy == 280
+    @test mtrx.xy == mtrx.yx == mtrx.x0 == mtrx.y0 == 0
+    surf = Gtk4.cairo_surface(cnvs)
 end
 
 @testset "Menus" begin
@@ -826,17 +806,17 @@ end
 include("../examples/dialogs.jl")
 
 activate(input_dialog_button)
-sleep(0.1)
+sleep(0.3)
 activate(file_open_dialog_button)
-sleep(0.1)
+sleep(0.3)
 activate(file_save_dialog_button)
-sleep(0.1)
+sleep(0.3)
 activate(file_open_dialog_native_button)
-sleep(0.1)
+sleep(0.3)
 activate(file_save_dialog_native_button)
-sleep(0.1)
+sleep(0.3)
 activate(color_dialog_button)
-sleep(0.1)
+sleep(0.3)
 
 destroy(main_window)
 

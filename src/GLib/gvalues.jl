@@ -65,10 +65,6 @@ function setindex!(dest::Base.RefValue{GValue}, src::Ref{GValue})
     src
 end
 
-#setindex!(::Type{Nothing}, v::Ref{GValue}) = v
-setindex!(v::Ref{GValue}, x) = setindex!(v, x, typeof(x))
-setindex!(gv::Ref{GValue}, x, i::Int) = setindex!(Ref(gv, i), x)
-
 getindex(gv::Ref{GValue}, i::Int, ::Type{T}) where {T} = getindex(Ref(gv, i), T)
 getindex(gv::Ref{GValue}, i::Int) = getindex(Ref(gv, i))
 getindex(v::Ref{GValue}, i::Int, ::Type{Nothing}) = nothing
@@ -275,7 +271,7 @@ function set_gtk_property!(w::GObject, name::String, value)
         gv = Ref(GValue())
         ccall((:g_object_get_property, libgobject), Nothing,
             (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, name, gv)
-            ccall((:g_value_reset, libgobject), Nothing, (Ptr{GValue},), gv)
+        ccall((:g_value_reset, libgobject), Nothing, (Ptr{GValue},), gv)
     end
     ccall((:g_object_set_property, libgobject), Nothing,
         (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, name, gv)

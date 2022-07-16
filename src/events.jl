@@ -7,6 +7,20 @@ Returns the widget associated with an event controller.
 """
 widget(c::GtkEventController) = G_.get_widget(c)
 
+"""
+    find_controller(w::GtkWidget, ::Type{T}) where T <: GtkEventController
+
+Returns an event controller of type T connected to a widget, or nothing if one
+doesn't exist. This function is intended for testing purposes (to simulate
+events) and is not recommended for other purposes, as there is a performance
+penalty for creating a list of a widget's event controllers.
+"""
+function find_controller(w::GtkWidget, ::Type{T}) where T<: GtkEventController
+    list = GListModel(G_.observe_controllers(w))
+    i=findfirst(c->isa(c,T), list)
+    i!==nothing ? list[i] : nothing
+end
+
 function GtkEventControllerMotion(widget=nothing)
     g = G_.EventControllerMotion_new()
     widget !== nothing && push!(widget, g)
@@ -49,13 +63,14 @@ function GtkEventControllerFocus(widget=nothing)
 end
 
 function on_signal_destroy(@nospecialize(destroy_cb::Function), widget::GtkWidget, vargs...)
-    signal_connect(destroy_cb, widget, "destroy", Nothing, (), vargs...)
+    signal_connect(destroy_cb, widget, "destroy", Cvoid, (), vargs...)
 end
 
 function on_signal_button_press(@nospecialize(press_cb::Function), widget::GtkWidget, vargs...)
     g = GtkGestureClick(widget)
     signal_connect(press_cb, g, "pressed", Cvoid, (Cint, Cdouble, Cdouble), vargs...)
 end
+
 function on_signal_button_release(@nospecialize(release_cb::Function), widget::GtkWidget, vargs...)
     g = GtkGestureClick(widget)
     signal_connect(release_cb, widget, "released", Cvoid, (Cint, Cdouble, Cdouble), vargs...)

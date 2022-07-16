@@ -144,13 +144,68 @@ function signal_emit(w::GObject, sig::AbstractStringLike, ::Type{RT}, args...) w
     end
     signal_id = ccall((:g_signal_lookup, libgobject), Cuint, (Ptr{UInt8}, Csize_t), sig, G_OBJECT_CLASS_TYPE(w))
     return_value = RT === Nothing ? C_NULL : gvalue(RT)
-    ccall((:g_signal_emitv, libgobject), Nothing, (Ptr{GValue}, Cuint, UInt32, Ptr{GValue}), gvalues(w, args...), signal_id, detail, return_value)
+    gvals = gvalues(w, args...)
+    GC.@preserve gvals return_value ccall((:g_signal_emitv, libgobject), Nothing, (Ptr{GValue}, Cuint, UInt32, Ptr{GValue}), gvals, signal_id, detail, return_value)
     RT === Nothing ? nothing : return_value[RT]
 end
 
 g_stack = nothing # need to call g_loop_run from only one stack
 const g_yielded = Ref(false) # when true, use the `g_doatomic` queue to run sigatom functions
+const g_doatomic = [] # (work, notification) scheduler queue
 const g_sigatom_flag = Ref(false) # keep track of Base sigatomic state
+function g_sigatom(@nospecialize(f)) # calls f, where f never throws (but this function may throw)
+    global g_sigatom_flag, g_stack, g_doatomic
+    prev = g_sigatom_flag[]
+    stk = g_stack
+    ct = current_task()
+    if g_yielded[]
+        @assert g_stack !== nothing
+        @assert g_stack != ct
+        @assert !prev
+        push!(g_doatomic, (f, ct))
+        return wait()
+    end
+
+    if !prev
+        Base.sigatomic_begin()
+        g_sigatom_flag[] = true
+    end
+    ret = nothing
+    try
+        if g_stack === ct
+            ret = f()
+        else
+            @assert g_stack === nothing && !prev
+            g_stack = ct
+            ret = f()
+        end
+    catch err
+        g_stack = stk
+        @assert g_sigatom_flag[]
+        if !prev
+            g_sigatom_flag[] = false
+            Base.sigatomic_end() # may throw SIGINT
+        end
+        Base.println("FATAL ERROR: Gtk state corrupted by error thrown in a callback:")
+        Base.display_error(err, catch_backtrace())
+        println()
+        rethrow(err)
+    end
+    g_stack = stk
+    @assert g_sigatom_flag[]
+    if !prev
+        g_sigatom_flag[] = false
+        Base.sigatomic_end() # may throw SIGINT
+    end
+    return ret
+end
+macro sigatom(f)
+    return quote
+        g_sigatom() do
+            $(esc(f))
+        end
+    end
+end
 
 function g_siginterruptible(f::Base.Callable, @nospecialize(cb)) # calls f (which may throw), but this function never throws
     global g_sigatom_flag, g_stack
@@ -160,7 +215,7 @@ function g_siginterruptible(f::Base.Callable, @nospecialize(cb)) # calls f (whic
         if prev
             # also know that current_task() === g_stack
             g_sigatom_flag[] = false
-            sigatomic_end() # may throw SIGINT
+            Base.sigatomic_end() # may throw SIGINT
         end
         f()
     catch err
@@ -173,20 +228,35 @@ function g_siginterruptible(f::Base.Callable, @nospecialize(cb)) # calls f (whic
     end
     @assert !g_sigatom_flag[]
     if prev
-        sigatomic_begin()
+        Base.sigatomic_begin()
         g_sigatom_flag[] = true
     end
     nothing
 end
 
 function g_yield(data)
-    global g_yielded
-    g_yielded[] = true
-    g_siginterruptible(yield, yield)
-    g_yielded[] = false
-    run_delayed_finalizers()
+    global g_yielded, g_doatomic
+    while true
+        g_yielded[] = true
+        g_siginterruptible(yield, yield)
+        g_yielded[] = false
+        run_delayed_finalizers()
 
-    return Int32(true)
+        if isempty(g_doatomic)
+            return Int32(true)
+        else
+            f, t = pop!(g_doatomic)
+            ret = nothing
+            iserror = false
+            try
+                ret = f()
+            catch err
+                iserror = true
+                ret = err
+            end
+            schedule(t, ret, error = iserror)
+        end
+    end
 end
 
 mutable struct _GPollFD
@@ -336,7 +406,7 @@ end
 
 const g_main_running = Ref{Bool}(true)
 
-function glib_main()
+glib_main() = GLib.g_sigatom() do
     while g_main_running[]
         ccall((:g_main_context_iteration, libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, true)
     end

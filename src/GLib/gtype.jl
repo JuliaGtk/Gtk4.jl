@@ -79,11 +79,6 @@ g_isa(gtyp, is_a_type) = g_isa(g_type(gtyp), g_type(is_a_type))
 g_type_parent(child::GType) = ccall((:g_type_parent, libgobject), GType, (GType,), child)
 g_type_name(g_type::GType) = Symbol(bytestring(ccall((:g_type_name, libgobject), Ptr{UInt8}, (GType,), g_type)))
 
-g_type_test_flags(g_type::GType, flag) = ccall((:g_type_test_flags, libgobject), Bool, (GType, GEnum), g_type, flag)
-const G_TYPE_FLAG_CLASSED           = 1 << 0
-const G_TYPE_FLAG_INSTANTIATABLE    = 1 << 1
-const G_TYPE_FLAG_DERIVABLE         = 1 << 2
-const G_TYPE_FLAG_DEEP_DERIVABLE    = 1 << 3
 mutable struct GObjectLeaf <: GObject
     handle::Ptr{GObject}
     function GObjectLeaf(handle::Ptr{GObject},owns=false)
@@ -93,8 +88,6 @@ mutable struct GObjectLeaf <: GObject
         return gobject_ref(new(handle))
     end
 end
-
-g_type(obj::GObject) = g_type(typeof(obj))
 
 gtypes(types...) = GType[g_type(t) for t in types]
 
@@ -106,8 +99,6 @@ macro quark_str(q)
 end
 
 unsafe_convert(::Type{Ptr{T}}, box::T) where {T <: GBoxed} = convert(Ptr{T}, box.handle)
-convert(::Type{GBoxed}, boxed::GBoxed) = boxed
-convert(::Type{T}, boxed::T) where {T <: GBoxed} = boxed
 convert(::Type{T}, boxed::GBoxed) where {T <: GBoxed} = convert(T, boxed.handle)
 #convert(::Type{T}, unbox::Ptr{GBoxed}) where {T <: GBoxed} = convert(T, convert(Ptr{T}, unbox))
 convert(::Type{T}, unbox::Ptr{T}, owns=false) where {T <: GBoxed} = T(unbox, owns)
@@ -330,9 +321,6 @@ end
 gc_unref(::Ptr{GObject}, x::GObject) = gc_unref(x)
 gc_ref_closure(x::GObject) = (gc_ref(x), C_NULL)
 
-function gc_force_floating(x::GObject)
-    ccall((:g_object_force_floating, libgobject), Nothing, (Ptr{GObject},), x)
-end
 function gobject_move_ref(new::GObject, old::GObject)
     h = unsafe_convert(Ptr{GObject}, new)
     @assert h == unsafe_convert(Ptr{GObject}, old) != C_NULL

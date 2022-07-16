@@ -19,7 +19,9 @@ function GtkWindow(widget::GtkWidget, args...)
     w
 end
 
-destroy(w::GtkWindow) = G_.destroy(w)
+function destroy(w::GtkWindow)
+    @sigatom G_.destroy(w)
+end
 
 fullscreen(win::GtkWindow) = G_.fullscreen(win)
 unfullscreen(win::GtkWindow) = G_.unfullscreen(win)
@@ -30,6 +32,7 @@ titlebar(win::GtkWindow, w::GtkWidget) = G_.set_titlebar(win, w)
 
 push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
 setindex!(w::GtkWindow, widget::Union{Nothing,GtkWidget}) = G_.set_child(w, widget)
+getindex(w::GtkWindow) = G_.get_child(w)
 
 GtkApplicationWindow(app::GtkApplication) = G_.ApplicationWindow_new(app)
 function GtkApplicationWindow(app::GtkApplication, title::AbstractString)

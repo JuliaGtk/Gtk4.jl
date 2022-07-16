@@ -36,10 +36,14 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
                 widget.back = CairoARGBSurface(width, height)
                 widget.backcc = CairoContext(widget.back)
 
+                if isa(widget.resize, Function)
+                    widget.resize(widget)
+                end
+
                 draw_back = @cfunction(canvas_draw_backing_store, Nothing, (Ptr{GObject}, Ptr{Nothing}, Cint, Cint, Ptr{Nothing}))
                 ccall((:gtk_drawing_area_set_draw_func, libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), da.handle, draw_back, widget.back.ptr, C_NULL)
 
-                draw(widget, false)
+                draw(widget)
             end
             nothing
         end
@@ -57,18 +61,20 @@ end
 
 function resize(config::Function, widget::GtkCanvas)
     widget.resize = config
-    widget.resize(widget)
-    draw(widget, false)
+    if G_.get_realized(widget) && widget.is_sized
+        widget.resize(widget)
+        draw(widget)
+    end
     nothing
 end
 
 function draw(redraw::Function, widget::GtkCanvas)
     widget.draw = redraw
-    draw(widget, false)
+    draw(widget)
     nothing
 end
 
-function draw(widget::GtkCanvas, immediate::Bool = true)
+function draw(widget::GtkCanvas)
     if !isdefined(widget, :back)
         #@warn("backing store not defined")
         return

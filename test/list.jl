@@ -217,5 +217,34 @@ empty!(g)
 
 end
 
+@testset "pointers" begin
+
+g = GList(Ptr{Int64})
+
+for i=1:10
+    push!(g,Ptr{Int64}(i))
+end
+
+@test !isempty(g)
+@test length(g)==10
+
+empty!(g)
+@test isempty(g)
+
+g = GSList(Ptr{Int64})
+
+for i=1:10
+    push!(g,Ptr{Int64}(i))
+end
+
+@test !isempty(g)
+@test length(g)==10
+
+empty!(g)
+@test isempty(g)
+
+
+end
+
 GC.gc()
 end

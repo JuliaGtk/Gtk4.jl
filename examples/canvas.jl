@@ -14,6 +14,10 @@ c = GtkCanvas()
     set_source_rgb(ctx, 0, 0, 1)
     fill(ctx)
 end
+
+resize(c) do widget
+    
+end
 win = GtkWindow("Canvas")
 cursor(c, "crosshair")
 win[] = c

@@ -69,6 +69,7 @@ function enum_decl2(enum, incl_typeinit=true)
     end
     bloc = Expr(:block)
     push!(bloc.args,unblock(body))
+    # if this enum has a GType we need to define GLib.g_type() to support storing this in GValue
     if incl_typeinit
         gtypeinit = typeinit_def(enum)
         gtypeinit !== nothing && push!(bloc.args,unblock(gtypeinit))

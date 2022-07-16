@@ -66,3 +66,38 @@ gvstring[] = gvnum
 @test gvstring[String] == "3"
 
 end
+
+@testset "gvalue enums" begin
+
+gv = GLib.gvalue(GLib.FileType_REGULAR)
+
+gv = GLib.gvalue(GLib.BindingFlags_BIDIRECTIONAL)
+
+end
+
+@testset "gobject properties" begin
+
+action_name = "do-something"
+a = GSimpleAction(action_name)
+@test a.name == action_name
+@test get_gtk_property(a, "name") == action_name
+@test get_gtk_property(a, "name", String) == action_name
+@test get_gtk_property(a, "name", String) == action_name
+@test get_gtk_property(a, :name, String) == action_name
+
+@test get_gtk_property(a, :state, GVariant) === nothing
+
+# test AbstractString
+astring = SubString("namerino", 1, 4)
+@test get_gtk_property(a, astring) == action_name
+@test get_gtk_property(a, astring, String) == action_name
+
+a.enabled = true
+@test a.enabled
+
+astring = SubString("enablediddley", 1, 7)
+set_gtk_property!(a, astring, false)
+@test a.enabled == false
+set_gtk_property!(a, astring, Bool, 1)
+
+end

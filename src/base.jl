@@ -49,7 +49,9 @@ isvisible(w::GtkWidget) = G_.is_visible(w)
 Control visibility of `w`. Note that `w` will not be visible unless its parent
 is also visible.
 """
-visible(w::GtkWidget, state::Bool) = G_.set_visible(w,state)
+function visible(w::GtkWidget, state::Bool)
+    @sigatom G_.set_visible(w,state)
+end
 
 """
     show(w::GtkWidget)
@@ -57,7 +59,7 @@ visible(w::GtkWidget, state::Bool) = G_.set_visible(w,state)
 Flag `w` to be displayed and return `w`.
 """
 function show(w::GtkWidget)
-    G_.show(w)
+    @sigatom G_.show(w)
     w
 end
 
@@ -66,7 +68,10 @@ end
 
 Flag `w` to be hidden and return `w`. This is the opposite of `show`.
 """
-hide(w::GtkWidget) = (G_.hide(w); w)
+function hide(w::GtkWidget)
+    @sigatom G_.hide(w)
+    w
+end
 
 """
     grab_focus(w::GtkWidget)
@@ -116,8 +121,8 @@ function iterate(w::GtkWidget, state=nothing)
     next === nothing ? nothing : (next, next)
 end
 
-eltype(::Type{GtkWidget}) = GtkWidget
-IteratorSize(::Type{GtkWidget}) = Base.SizeUnknown()
+eltype(::Type{T}) where T <: GtkWidget = GtkWidget
+IteratorSize(::Type{T}) where T <: GtkWidget = Base.SizeUnknown()
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
 
