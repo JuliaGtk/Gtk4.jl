@@ -1,7 +1,24 @@
-function screen_size()
-    d=Gdk4.G_.get_default() # gdk_display_get_default
-    m=Gdk4.G_.get_monitors(d)[1]
-    size(m)
+"""
+    screen_size(widget=nothing)
+
+Returns a tuple `(width,height)` that gives the primary monitor size for the
+display where `widget` is being displayed, or the default display if `widget` is
+unrealized or not given.
+"""
+function screen_size(widget=nothing)
+    if widget!== nothing && G_.get_realized(widget)
+        d=G_.get_display(widget)
+    else
+        d=Gdk4.G_.get_default() # gdk_display_get_default
+        if d===nothing
+            error("No default display, no way to return screen_size")
+        end
+    end
+
+    m=Gdk4.G_.get_monitors(d)
+    m===nothing && error("Unable to get list of monitors")
+    length(m)==0 && error("No monitors found")
+    size(m[1])
 end
 
 GtkImage(pixbuf::GdkPixbuf) = G_.Image_new_from_pixbuf(pixbuf)
