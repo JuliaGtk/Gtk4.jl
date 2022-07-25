@@ -5,8 +5,7 @@ w = GtkWindow("Window", 400, 300)
 
 sleep(0.1) # allow the window to appear
 
-if !Sys.iswindows()
-    # On windows, the wrong screen sizes are reported
+if Sys.islinux()
     @test width(w) == 400
     @test height(w) == 300
     #wdth, hght = screen_size(w)
