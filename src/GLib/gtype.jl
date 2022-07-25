@@ -104,6 +104,16 @@ convert(::Type{T}, boxed::GBoxed) where {T <: GBoxed} = convert(T, boxed.handle)
 convert(::Type{T}, unbox::Ptr{T}, owns=false) where {T <: GBoxed} = T(unbox, owns)
 convert(::Type{T}, unbox::Ptr{GBoxed}, owns=false) where {T <: GBoxed} = T(unbox, owns)
 
+function delboxed(x::GBoxed)
+    T=typeof(x)
+    gtype = g_type(T)
+    @debug begin
+        name = g_type_name(gtype)
+        "g_boxed_free($(x.handle)::$name)"
+    end
+    ccall((:g_boxed_free, libgobject), Nothing, (GType, Ptr{GBoxed},), gtype, x.handle)
+end
+
 cconvert(::Type{Ptr{GObject}}, @nospecialize(x::GObject)) = x
 
 # All GObjects are expected to have a 'handle' field
@@ -130,7 +140,7 @@ function convert_(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject
     x = ccall((:g_object_get_qdata, libgobject), Ptr{GObject}, (Ptr{GObject}, UInt32), hnd, jlref_quark::UInt32)
     if x != C_NULL
         ret = gobject_ref(unsafe_pointer_to_objref(x)::T)
-        if owns # we already had a reference so we should unreference the one we just received
+        if owns # we already had a reference so we should get rid of the one we just received
             gc_unref(hnd)
         end
     else
@@ -161,6 +171,7 @@ function wrap_gobject(hnd::Ptr{GObject},owns=false)
     return T(hnd,owns)
 end
 
+### GList support for GObject
 eltype(::Type{_LList{T}}) where {T <: GObject} = T
 ref_to(::Type{T}, x) where {T <: GObject} = gobject_ref(unsafe_convert(Ptr{GObject}, x))
 deref_to(::Type{T}, x::Ptr) where {T <: GObject} = convert(T, x)
@@ -196,10 +207,15 @@ gc_ref_closure(@nospecialize(cb::Function)) = (invoke(gc_ref, Tuple{Any}, cb), @
 gc_ref_closure(x::T) where {T} = (gc_ref(x), @cfunction(_gc_unref, Nothing, (Any, Ptr{Nothing})))
 
 # generally, you shouldn't be calling gc_ref(::Ptr{GObject})
-gc_ref(x::Ptr{GObject}) = ccall((:g_object_ref, libgobject), Nothing, (Ptr{GObject},), x)
-gc_unref(x::Ptr{GObject}) = ccall((:g_object_unref, libgobject), Nothing, (Ptr{GObject},), x)
-gc_ref_sink(x::Ptr{GObject}) = ccall((:g_object_ref_sink, libgobject), Nothing, (Ptr{GObject},), x)
-
+function gc_ref(x::Ptr{GObject})
+    ccall((:g_object_ref, libgobject), Nothing, (Ptr{GObject},), x)
+end
+function gc_unref(x::Ptr{GObject})
+    ccall((:g_object_unref, libgobject), Nothing, (Ptr{GObject},), x)
+end
+function gc_ref_sink(x::Ptr{GObject})
+    ccall((:g_object_ref_sink, libgobject), Nothing, (Ptr{GObject},), x)
+end
 const gc_preserve_glib = Dict{Union{WeakRef, GObject}, Bool}() # glib objects
 const gc_preserve_glib_lock = Ref(false) # to satisfy this lock, must never decrement a ref counter while it is held
 const topfinalizer = Ref(true) # keep recursion to a minimum by only iterating from the top
@@ -244,7 +260,7 @@ function addref(@nospecialize(x::GObject))
     gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
     nothing
 end
-function gobject_maybe_sink(handle,owns)
+function gobject_maybe_sink(handle,owns::Bool)
     is_floating = (ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle)!=0)
     if !owns || is_floating # if owns is true then we already have a reference, but if it's floating we should sink it
         GLib.gc_ref_sink(handle)
@@ -270,6 +286,7 @@ function gobject_ref(x::T) where T <: GObject
         end
     elseif strong
         # oops, we previously deleted the link, but now it's back
+        gc_ref(x.handle)
         addref(Ref{GObject}(x)[])
     else
         # already gc-protected, nothing to do
@@ -329,10 +346,4 @@ function gobject_move_ref(new::GObject, old::GObject)
     gc_ref(new)
     gc_unref(h)
     new
-end
-
-function delboxed(x::GBoxed)
-    T=typeof(x)
-    gtype = g_type(T)
-    ccall((:g_boxed_free, libgobject), Nothing, (GType, Ptr{GBoxed},), gtype, x.handle)
 end
