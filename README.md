@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/JuliaGtk/Gtk4.jl/workflows/CI/badge.svg)](https://github.com/JuliaGtk/Gtk4.jl/actions?query=workflow%3ACI)
 [![codecov.io](https://codecov.io/github/JuliaGtk/Gtk4.jl/coverage.svg?branch=main)](https://codecov.io/github/JuliaGtk/Gtk4.jl?branch=main)
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://docs.juliahub.com/Gtk4)
+[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliagtk.github.io/Gtk4.jl/dev/)
 
 GUI building using the [GTK](https://www.gtk.org) library, version 4. For a mature Julia package that supports GTK version 3, see [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl).
 
