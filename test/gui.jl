@@ -3,9 +3,9 @@ using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4, Gtk4.GdkPixbufLib
 @testset "Window" begin
 w = GtkWindow("Window", 400, 300)
 
-sleep(0.1) # allow the window to appear
+sleep(0.5) # allow the window to appear
 
-if Sys.islinux()
+if !Sys.iswindows()
     @test width(w) == 400
     @test height(w) == 300
     #wdth, hght = screen_size(w)

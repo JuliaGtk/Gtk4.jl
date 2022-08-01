@@ -12,7 +12,7 @@ function g_timeout_add_cb()
 end
 
 g_idle_add(g_timeout_add_cb)
-sleep(0.5)
+sleep(1.0)
 @test x[] == 2
 
 x[] = 1 #reset
