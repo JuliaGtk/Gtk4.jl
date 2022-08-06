@@ -4,7 +4,7 @@ win = GtkWindow("Listview demo")
 sw = GtkScrolledWindow()
 push!(win, sw)
 
-model = GtkStringList(["Apple","Orange","Kiwi"])
+model = GtkStringList(string.(names(Gtk4)))
 factory = GtkSignalListItemFactory()
 
 function setup_cb(f, li)

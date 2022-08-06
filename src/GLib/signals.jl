@@ -1,4 +1,4 @@
-# id = VERSION >= v"0.4-"get, :event, Nothing, (ArgsT...)) do ptr, evt_args..., closure
+# id = signal_connect(widget, :event, Nothing, (ArgsT...)) do ptr, evt_args..., closure
 #    stuff
 # end
 function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike,
@@ -116,6 +116,11 @@ function blame(@nospecialize(cb))
     @warn "Executing $cb:"
 end
 
+"""
+    signal_handler_disconnect(w::GObject, id)
+
+Disconnect a signal handler from a widget `w` by its `id`.
+"""
 signal_handler_disconnect(w::GObject, handler_id::Culong) =
     ccall((:g_signal_handler_disconnect, libgobject), Nothing, (Ptr{GObject}, Culong), w, handler_id)
 
@@ -126,7 +131,7 @@ signal_handler_unblock(w::GObject, handler_id::Culong) =
     ccall((:g_signal_handler_unblock, libgobject), Nothing, (Ptr{GObject}, Culong), w, handler_id)
 
 """
-    tf = signal_handler_is_connected(widget, id)
+    signal_handler_is_connected(widget, id) -> Bool
 
 Return `true`/`false` depending on whether `widget` has a connected signal handler with
 the given `id`.
@@ -378,6 +383,16 @@ function __init__gmainloop__()
 end
 
 _g_callback(cb::Function) = Cint(cb())
+
+"""
+    g_timeout_add(f, interval)
+
+Add a function `f` that will be called every `interval` milliseconds by the GTK
+main loop. The function is expected to return a `Cint`. If it returns 0, the
+function will not be called again. Otherwise it will be called the next time.
+
+Related GTK function: [`g_idle_add`()](https://docs.gtk.org/glib/func.idle_add.html)
+"""
 function g_timeout_add(cb::Function, interval::Integer)
     callback = @cfunction(_g_callback, Cint, (Ref{Function},))
     ref, deref = gc_ref_closure(cb)
@@ -386,6 +401,16 @@ function g_timeout_add(cb::Function, interval::Integer)
         0, UInt32(interval), callback, ref, deref)
 end
 
+"""
+    g_idle_add(f)
+
+Add a Julia function `f` that will be called when there are no higher priority
+GTK events to be processed. This function can be used from any thread.
+
+See also [`@idle_add`](@ref).
+
+Related GTK function: [`g_idle_add`()](https://docs.gtk.org/glib/func.idle_add.html)
+"""
 function g_idle_add(cb::Function)
     callback = @cfunction(_g_callback, Cint, (Ref{Function},))
     ref, deref = gc_ref_closure(cb)
@@ -394,7 +419,17 @@ function g_idle_add(cb::Function)
         0, callback, ref, deref)
 end
 
-# Shortcut for g_idle_add
+"""
+    @idle_add(ex)
+
+Create a function from an expression `ex` that will be called when there are no
+higher priority GTK events to be processed. This function can be used from any
+thread.
+
+See also [`g_idle_add`](@ref).
+
+Related GTK function: [`g_idle_add`()](https://docs.gtk.org/glib/func.idle_add.html)
+"""
 macro idle_add(ex)
     quote
     g_idle_add() do
@@ -407,11 +442,20 @@ end
 const g_main_running = Ref{Bool}(true)
 
 glib_main() = GLib.g_sigatom() do
+    # gtk_main() was deprecated in GTK 4.0, hence we iterate the loop ourselves
     while g_main_running[]
         ccall((:g_main_context_iteration, libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, true)
     end
 end
 
+"""
+    start_main_loop()
+
+If the default GLib main event loop is not already running, start a Julia task
+that runs it.
+
+See also [`stop_main_loop`](@ref).
+"""
 function start_main_loop()
     # if g_main_depth > 0, a glib main-loop is already running,
     # so we don't need to start a new one
@@ -420,6 +464,15 @@ function start_main_loop()
     end
 end
 
+"""
+    stop_main_loop()
+
+Stops the default GLib main loop after the next iteration. Does not affect loop
+operation if GApplication's run() method is being used instead of
+GLib.start_main_loop().
+
+See also [`start_main_loop`](@ref).
+"""
 function stop_main_loop()
     g_main_running[] = false
     ccall((:g_main_context_wakeup, libglib), Cint, (Ptr{Cvoid},), C_NULL)

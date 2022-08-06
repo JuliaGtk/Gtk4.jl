@@ -12,8 +12,10 @@ widget(c::GtkEventController) = G_.get_widget(c)
 
 Returns an event controller of type T connected to a widget, or nothing if one
 doesn't exist. This function is intended for testing purposes (to simulate
-events) and is not recommended for other purposes, as there is a performance
+events) and is not recommended otherwise, as there is a performance
 penalty for creating a list of a widget's event controllers.
+
+Related GTK function: [`gtk_widget_observe_controllers`](https://docs.gtk.org/gtk4/method.Widget.observe_controllers.html))
 """
 function find_controller(w::GtkWidget, ::Type{T}) where T<: GtkEventController
     list = GListModel(G_.observe_controllers(w))

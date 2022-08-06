@@ -3,13 +3,19 @@
 
 Returns the parent widget of `w`, or `nothing` if the widget has not been set as
 the child of another widget (or is a toplevel widget, like a `GtkWindow`).
+
+See also [`toplevel`](@ref).
+
+Related GTK function: [`gtk_widget_get_parent`()](https://docs.gtk.org/gtk4/method.Widget.get_parent.html)
 """
 parent(w::GtkWidget) = G_.get_parent(w)
 
 """
-    hasparent(w::GtkWidget)
+    hasparent(w::GtkWidget) -> Bool
 
 Returns `true` if `w` has a parent widget.
+
+See also [`parent`](@ref).
 """
 hasparent(w::GtkWidget) = G_.get_parent(w) !== nothing
 
@@ -17,29 +23,39 @@ hasparent(w::GtkWidget) = G_.get_parent(w) !== nothing
     toplevel(w::GtkWidget)
 
 Returns the topmost ancestor of `w`, which in most cases will be a `GtkWindow`.
+
+See also [`parent`](@ref).
+
+Related GTK function: [`gtk_widget_get_root`()](https://docs.gtk.org/gtk4/method.Widget.get_root.html)
 """
 toplevel(w::GtkWidget) = G_.get_root(w)
 
 """
     width(w::GtkWidget)
 
-Returns the allocated width of `w`.
+Returns the allocated width of `w` in pixels.
+
+Related GTK function: [`gtk_widget_get_allocated_width`()](https://docs.gtk.org/gtk4/method.Widget.get_allocated_width.html)
 """
 width(w::GtkWidget) = G_.get_allocated_width(w)
 
 """
     height(w::GtkWidget)
 
-Returns the allocated height of `w`.
+Returns the allocated height of `w` in pixels.
+
+Related GTK function: [`gtk_widget_get_allocated_height`()](https://docs.gtk.org/gtk4/method.Widget.get_allocated_height.html)
 """
 height(w::GtkWidget) = G_.get_allocated_height(w)
 
 size(w::GtkWidget) = (width(w), height(w))
 
 """
-    isvisible(w::GtkWidget)
+    isvisible(w::GtkWidget) -> Bool
 
 Returns whether `w` and all of its parents are marked as visible.
+
+Related GTK function: [`gtk_widget_is_visible`()](https://docs.gtk.org/gtk4/method.Widget.is_visible.html)
 """
 isvisible(w::GtkWidget) = G_.is_visible(w)
 

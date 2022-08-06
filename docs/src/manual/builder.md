@@ -2,17 +2,16 @@
 
 Until now we have created and arranged all widgets entirely using Julia code. While this works fine
 for small examples, it has the issue that we are tightly coupling the appearance from our application
-with the logic of our program code. In addition the linear way of procedural Julia code does not fit
-very well with complex user interfaces arranged in deeply nested tables and boxes.
+with the logic of our program code.
 
-Fortunately, there is a much better way to design user interfaces that strictly separates the layout
+There is an alternative way to design user interfaces that strictly separates the layout
 from the code. This is done by an XML based file format that allows for describing any arrangement of widgets.
 In order to use the interface in your Julia Gtk4 application you will need `GtkBuilder`.
 
-For GTK version 3 and earlier, [Glade](https://glade.gnome.org) is often used as a GUI tool for creating GtkBuilder XML files in a WYSIWYG (what you see is what you get) manner, but Glade wasn't ported to GTK version 4. Instead [Cambalache](https://flathub.org/apps/details/ar.xjuan.Cambalache) can be used or the XML can be edited by hand.
+For GTK version 3 and earlier, [Glade](https://glade.gnome.org) is often used as a GUI tool for creating GtkBuilder XML files in a WYSIWYG (what you see is what you get) manner, but Glade wasn't ported to GTK version 4. Instead [Cambalache](https://flathub.org/apps/details/ar.xjuan.Cambalache) can be used (or the XML can be created by hand).
 
 Once we have created the XML interface the result can be stored in an XML file that usually has
-the extension `.ui`. Lets assume we have created a file `myapp.ui` that looks like
+the extension `.ui`. Let's assume we have created a file `myapp.ui` that looks like
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -71,7 +70,7 @@ entry1 = b["entry1"]
 button1 = b["button1"]
 button2 = b["button2"]
 ```
-Note that this only works for `GtkWidget`s that implement the interface `GtkBuildable`, which excludes some objects often defined in UI files, for example `GtkAdjustment`.
+Note that this only works for `GtkWidget`s that implement the interface `GtkBuildable`, which excludes some objects often defined in UI files, for example `GtkAdjustment`. Those objects will have to be fetched using calls to `get_object`.
 
 ## Callbacks
 

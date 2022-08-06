@@ -23,7 +23,22 @@ function destroy(w::GtkWindow)
     @sigatom G_.destroy(w)
 end
 
+"""
+    fullscreen(win::GtkWindow)
+
+Set `win` to fullscreen mode.
+
+See also [`unfullscreen`](@ref)
+"""
 fullscreen(win::GtkWindow) = G_.fullscreen(win)
+
+"""
+    unfullscreen(win::GtkWindow)
+
+If `win` is in fullscreen mode, return it to normal mode.
+
+See also [`fullscreen`](@ref)
+"""
 unfullscreen(win::GtkWindow) = G_.unfullscreen(win)
 
 maximize(win::GtkWindow) = G_.maximize(win)

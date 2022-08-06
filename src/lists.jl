@@ -36,6 +36,7 @@ GtkGridView(model=nothing, factory=nothing) = G_.GridView_new(model, factory)
 
 GtkSignalListItemFactory() = G_.SignalListItemFactory_new()
 GtkSingleSelection(model) = G_.SingleSelection_new(model)
+GtkMultiSelection(model) = G_.MultiSelection_new(model)
 
 getindex(li::GtkListItem) = G_.get_item(li)
 set_child(li::GtkListItem, w) = G_.set_child(li, w)

@@ -51,7 +51,7 @@ end
 """
     propertyinfo(w::GObject, name)
 
-Prints available information about a property of the GObject `w`, including a
+Prints information about a property of the GObject `w`, including a
 brief description, its type, its default value, and its current value.
 """
 function propertyinfo(w::GObject, name::AbstractString)
@@ -111,6 +111,10 @@ Creates a binding between `source_property` on `source` and `target_property` on
 `target`. When `source_property` is changed, `target_property` will be updated
 to the same value. Returns a `GBinding` object that can be used to release the
 binding using `unbind_property`.
+
+See also [`unbind_property`](@ref).
+
+Related GTK function: [`g_object_bind_property`](https://docs.gtk.org/gobject/method.Object.bind_property.html)
 """
 bind_property(source::GObject, source_property, target::GObject, target_property, flags = BindingFlags_DEFAULT) =
     G_.bind_property(source, source_property, target, target_property, flags)
@@ -119,5 +123,9 @@ bind_property(source::GObject, source_property, target::GObject, target_property
     unbind_property(b::GBinding)
 
 Releases a binding created by `bind_property`.
-    """
+
+See also [`bind_property`](@ref).
+
+Related GTK function: [`g_binding_unbind`](https://docs.gtk.org/gobject/method.Binding.unbind.html)
+"""
 unbind_property(b::GBinding) = G_.unbind(b)

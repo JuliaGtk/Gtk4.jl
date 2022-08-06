@@ -54,7 +54,13 @@ const fundamental_types = (
 g_type_from_name(name::Symbol) = ccall((:g_type_from_name, libgobject), GType, (Ptr{UInt8},), name)
 const fundamental_ids = tuple(GType[g_type_from_name(name) for (name, c, j, f, v) in fundamental_types]...)
 
-"""Get the GType corresponding to a Julia type or object."""
+"""
+    g_type(x)
+
+Get the GType corresponding to a Julia type or object. See
+[GLib documentation](https://docs.gtk.org/gobject/concepts.html) for more
+information.
+"""
 g_type(gtyp::GType) = gtyp
 let jtypes = Expr(:block, :( g_type(::Type{Nothing}) = $(g_type_from_name(:void)) ))
     for i = 1:length(fundamental_types)
