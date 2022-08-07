@@ -1,29 +1,22 @@
 using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4, Gtk4.GdkPixbufLib
 
 @testset "Window" begin
+
 w = GtkWindow("Window", 400, 300)
 
-sleep(0.5) # allow the window to appear
+# window doesn't acquire a width right away and there doesn't seem to be a way
+# of finding this out, so we just wait
+while width(w) == 0
+    sleep(0.1)
+end
 
 if !Sys.iswindows()
     @test width(w) == 400
     @test height(w) == 300
-    #wdth, hght = screen_size(w)
-    #@test wdth > 0 && hght > 0
+    wdth, hght = screen_size(w)
+    @test wdth > 0 && hght > 0
 end
-# G_.gravity(w,10) #GRAVITY_STATIC
-# sleep(0.1)
 
-## Check Window positions
-# pos = G_.position(w)
-# if G_.position(w) != pos
-#     @warn("The Window Manager did move the Gtk Window in show")
-# end
-# G_.position(w, 100, 100)
-# sleep(0.1)
-# if G_.position(w) == pos
-#     @warn("The Window Manager did not move the Gtk Window when requested")
-# end
 visible(w,false)
 @test isvisible(w) == false
 visible(w,true)

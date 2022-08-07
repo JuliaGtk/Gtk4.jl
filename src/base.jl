@@ -66,7 +66,7 @@ Control visibility of `w`. Note that `w` will not be visible unless its parent
 is also visible.
 """
 function visible(w::GtkWidget, state::Bool)
-    @sigatom G_.set_visible(w,state)
+    G_.set_visible(w,state)
 end
 
 """
@@ -75,7 +75,7 @@ end
 Flag `w` to be displayed and return `w`.
 """
 function show(w::GtkWidget)
-    @sigatom G_.show(w)
+    G_.show(w)
     w
 end
 
@@ -85,7 +85,7 @@ end
 Flag `w` to be hidden and return `w`. This is the opposite of `show`.
 """
 function hide(w::GtkWidget)
-    @sigatom G_.hide(w)
+    G_.hide(w)
     w
 end
 
@@ -141,6 +141,10 @@ eltype(::Type{T}) where T <: GtkWidget = GtkWidget
 IteratorSize(::Type{T}) where T <: GtkWidget = Base.SizeUnknown()
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
+
+## GtkWidgetPaintable
+
+GtkWidgetPaintable(w::GtkWidget) = G_.WidgetPaintable_new(w)
 
 ## GtkApplication
 

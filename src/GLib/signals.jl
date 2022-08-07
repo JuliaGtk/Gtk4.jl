@@ -204,13 +204,6 @@ function g_sigatom(@nospecialize(f)) # calls f, where f never throws (but this f
     end
     return ret
 end
-macro sigatom(f)
-    return quote
-        g_sigatom() do
-            $(esc(f))
-        end
-    end
-end
 
 function g_siginterruptible(f::Base.Callable, @nospecialize(cb)) # calls f (which may throw), but this function never throws
     global g_sigatom_flag, g_stack

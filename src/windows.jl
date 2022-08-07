@@ -20,7 +20,7 @@ function GtkWindow(widget::GtkWidget, args...)
 end
 
 function destroy(w::GtkWindow)
-    @sigatom G_.destroy(w)
+    G_.destroy(w)
 end
 
 """
