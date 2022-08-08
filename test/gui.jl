@@ -10,12 +10,13 @@ while width(w) == 0
     sleep(0.1)
 end
 
-if !Sys.iswindows()
-    @test width(w) == 400
-    @test height(w) == 300
-    wdth, hght = screen_size(w)
-    @test wdth > 0 && hght > 0
-end
+@test width(w) == 400
+@test height(w) == 300
+wdth, hght = screen_size(w)
+@test wdth > 0 && hght > 0
+
+wdth, hght = screen_size()
+@test wdth > 0 && hght > 0
 
 visible(w,false)
 @test isvisible(w) == false
@@ -235,6 +236,8 @@ end
     insert!(grid,1,:top)
     insert!(grid,3,:bottom)
     insert!(grid,grid[1,2],Gtk4.PositionType_RIGHT)
+
+    @test_throws ErrorException insert!(grid,1,:above)
     #deleteat!(grid,1,:row)
     #empty!(grid)
     destroy(w)
@@ -297,9 +300,14 @@ destroy(w)
 end
 
 @testset "Image and Picture" begin
+# empty image
+img = GtkImage()
+p = Gtk4.paintable(img)
+@test p === nothing
+# named icon
 img = GtkImage(; icon_name = "document-open")
-p = GdkPaintable(img)
-@test isa(p, GdkPaintable)
+p = Gtk4.paintable(img)
+@test p === nothing
 empty!(img)
 pic = GtkPicture()
 icon = Matrix{GdkPixbufLib.RGB}(undef, 40, 20)
@@ -785,10 +793,8 @@ csvfilter1 = GtkFileFilter("*.csv")
 csvfilter2 = GtkFileFilter("*.csv"; name="Comma Separated Format")
 @test csvfilter2.name == "Comma Separated Format"
 
-if !Sys.iswindows()#filter fails on windows 7
-    csvfilter3 = GtkFileFilter(; mimetype="text/csv")
-    @test csvfilter3.name == "text/csv"
-end
+csvfilter3 = GtkFileFilter(; mimetype="text/csv")
+@test csvfilter3.name == "text/csv"
 
 csvfilter4 = GtkFileFilter(; pattern="*.csv", mimetype="text/csv")
 # Pattern takes precedence over mime-type, causing mime-type to be ignored

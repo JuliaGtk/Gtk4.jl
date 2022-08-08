@@ -81,5 +81,5 @@ end
 
 GtkPopoverMenuBar(model::GMenu) = G_.PopoverMenuBar_new_from_model(model)
 
-menu(b::Union{GtkMenuButton,GtkPopoverMenu, GtkPopoverMenuBar}, model) = G_.set_menu_model(b, GMenuModel(model))
-menu(b::Union{GtkMenuButton,GtkPopoverMenu, GtkPopoverMenuBar}) = G_.get_menu_model(b)
+menu_model(b::Union{GtkMenuButton,GtkPopoverMenu, GtkPopoverMenuBar}, model) = G_.set_menu_model(b, GMenuModel(model))
+menu_model(b::Union{GtkMenuButton,GtkPopoverMenu, GtkPopoverMenuBar}) = G_.get_menu_model(b)

@@ -19,6 +19,13 @@ function GtkWindow(widget::GtkWidget, args...)
     w
 end
 
+"""
+    destroy(win::GtkWindow)
+
+Destroy `win` and unreference all widgets in its hierarchy.
+
+Related GTK function: [`gtk_window_destroy`()]($(gtkdoc_method_url("gtk4","Window","destroy")))
+"""
 function destroy(w::GtkWindow)
     G_.destroy(w)
 end
@@ -28,7 +35,9 @@ end
 
 Set `win` to fullscreen mode.
 
-See also [`unfullscreen`](@ref)
+See also [`unfullscreen`](@ref).
+
+Related GTK function: [`gtk_window_fullscreen`()]($(gtkdoc_method_url("gtk4","Window","fullscreen")))
 """
 fullscreen(win::GtkWindow) = G_.fullscreen(win)
 
@@ -37,11 +46,32 @@ fullscreen(win::GtkWindow) = G_.fullscreen(win)
 
 If `win` is in fullscreen mode, return it to normal mode.
 
-See also [`fullscreen`](@ref)
+See also [`fullscreen`](@ref).
+
+Related GTK function: [`gtk_window_unfullscreen`()]($(gtkdoc_method_url("gtk4","Window","unfullscreen")))
 """
 unfullscreen(win::GtkWindow) = G_.unfullscreen(win)
 
+"""
+    maximize(win::GtkWindow)
+
+Request that the window `win` be maximized.
+
+See also [`unmaximize`](@ref).
+
+Related GTK function: [`gtk_window_maximize`()]($(gtkdoc_method_url("gtk4","Window","maximize")))
+"""
 maximize(win::GtkWindow) = G_.maximize(win)
+
+"""
+    unmaximize(win::GtkWindow)
+
+If `win` is maximized, return it to its former size.
+
+See also [`maximize`](@ref).
+
+Related GTK function: [`gtk_window_unmaximize`()]($(gtkdoc_method_url("gtk4","Window","unmaximize")))
+"""
 unmaximize(win::GtkWindow) = G_.unmaximize(win)
 titlebar(win::GtkWindow, w::GtkWidget) = G_.set_titlebar(win, w)
 

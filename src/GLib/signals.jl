@@ -384,7 +384,7 @@ Add a function `f` that will be called every `interval` milliseconds by the GTK
 main loop. The function is expected to return a `Cint`. If it returns 0, the
 function will not be called again. Otherwise it will be called the next time.
 
-Related GTK function: [`g_idle_add`()](https://docs.gtk.org/glib/func.idle_add.html)
+Related GTK function: [`g_timeout_add`()]($(gtkdoc_func_url("glib","timeout_add")))
 """
 function g_timeout_add(cb::Function, interval::Integer)
     callback = @cfunction(_g_callback, Cint, (Ref{Function},))
@@ -402,7 +402,7 @@ GTK events to be processed. This function can be used from any thread.
 
 See also [`@idle_add`](@ref).
 
-Related GTK function: [`g_idle_add`()](https://docs.gtk.org/glib/func.idle_add.html)
+Related GTK function: [`g_idle_add`()]($(gtkdoc_func_url("glib","idle_add")))
 """
 function g_idle_add(cb::Function)
     callback = @cfunction(_g_callback, Cint, (Ref{Function},))
@@ -421,7 +421,7 @@ thread.
 
 See also [`g_idle_add`](@ref).
 
-Related GTK function: [`g_idle_add`()](https://docs.gtk.org/glib/func.idle_add.html)
+Related GTK function: [`g_idle_add`()]($(gtkdoc_func_url("glib","idle_add")))
 """
 macro idle_add(ex)
     quote

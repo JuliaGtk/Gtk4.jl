@@ -40,7 +40,8 @@ function GtkImage(; resource_path = nothing, filename = nothing, icon_name = not
     return img
 end
 empty!(img::GtkImage) = G_.clear(img)
-GdkPaintable(img::GtkImage) = G_.get_paintable(img)
+storage_type(img::GtkImage) = G_.get_storage_type(img)
+paintable(img::GtkImage) = G_.get_paintable(img)
 
 GtkPicture(pixbuf::GdkPixbuf) = G_.Picture_new_for_pixbuf(pixbuf)
 #GtkPicture(p::GdkPaintable) = G_.Picture_new_for_paintable(p)

@@ -6,7 +6,7 @@ the child of another widget (or is a toplevel widget, like a `GtkWindow`).
 
 See also [`toplevel`](@ref).
 
-Related GTK function: [`gtk_widget_get_parent`()](https://docs.gtk.org/gtk4/method.Widget.get_parent.html)
+Related GTK function: [`gtk_widget_get_parent`()]($(gtkdoc_method_url("gtk4","Widget","get_parent")))
 """
 parent(w::GtkWidget) = G_.get_parent(w)
 
@@ -26,7 +26,7 @@ Returns the topmost ancestor of `w`, which in most cases will be a `GtkWindow`.
 
 See also [`parent`](@ref).
 
-Related GTK function: [`gtk_widget_get_root`()](https://docs.gtk.org/gtk4/method.Widget.get_root.html)
+Related GTK function: [`gtk_widget_get_root`()]($(gtkdoc_method_url("gtk4","Widget","get_root")))
 """
 toplevel(w::GtkWidget) = G_.get_root(w)
 
@@ -35,7 +35,7 @@ toplevel(w::GtkWidget) = G_.get_root(w)
 
 Returns the allocated width of `w` in pixels.
 
-Related GTK function: [`gtk_widget_get_allocated_width`()](https://docs.gtk.org/gtk4/method.Widget.get_allocated_width.html)
+Related GTK function: [`gtk_widget_get_allocated_width`()]($(gtkdoc_method_url("gtk4","Widget","get_allocated_width")))
 """
 width(w::GtkWidget) = G_.get_allocated_width(w)
 
@@ -44,7 +44,7 @@ width(w::GtkWidget) = G_.get_allocated_width(w)
 
 Returns the allocated height of `w` in pixels.
 
-Related GTK function: [`gtk_widget_get_allocated_height`()](https://docs.gtk.org/gtk4/method.Widget.get_allocated_height.html)
+Related GTK function: [`gtk_widget_get_allocated_height`()]($(gtkdoc_method_url("gtk4","Widget","get_allocated_height")))
 """
 height(w::GtkWidget) = G_.get_allocated_height(w)
 
@@ -55,7 +55,7 @@ size(w::GtkWidget) = (width(w), height(w))
 
 Returns whether `w` and all of its parents are marked as visible.
 
-Related GTK function: [`gtk_widget_is_visible`()](https://docs.gtk.org/gtk4/method.Widget.is_visible.html)
+Related GTK function: [`gtk_widget_is_visible`()]($(gtkdoc_method_url("gtk4","Widget","is_visible")))
 """
 isvisible(w::GtkWidget) = G_.is_visible(w)
 
@@ -64,6 +64,8 @@ isvisible(w::GtkWidget) = G_.is_visible(w)
 
 Control visibility of `w`. Note that `w` will not be visible unless its parent
 is also visible.
+
+Related GTK function: [`gtk_widget_set_visible`()]($(gtkdoc_method_url("gtk4","Widget","set_visible")))
 """
 function visible(w::GtkWidget, state::Bool)
     G_.set_visible(w,state)
@@ -73,6 +75,8 @@ end
     show(w::GtkWidget)
 
 Flag `w` to be displayed and return `w`.
+
+Related GTK function: [`gtk_widget_show`()]($(gtkdoc_method_url("gtk4","Widget","show")))
 """
 function show(w::GtkWidget)
     G_.show(w)
@@ -83,6 +87,8 @@ end
     hide(w::GtkWidget)
 
 Flag `w` to be hidden and return `w`. This is the opposite of `show`.
+
+Related GTK function: [`gtk_widget_hide`()]($(gtkdoc_method_url("gtk4","Widget","hide")))
 """
 function hide(w::GtkWidget)
     G_.hide(w)
@@ -94,6 +100,8 @@ end
 
 Gives `w` the keyboard focus for the window it is in. Returns `false` if this
 fails.
+
+Related GTK function: [`gtk_widget_grab_focus`()]($(gtkdoc_method_url("gtk4","Widget","grab_focus")))
 """
 grab_focus(w::GtkWidget) = G_.grab_focus(w)
 
@@ -104,13 +112,16 @@ activate(w::GtkWidget) = G_.activate(w)
 
 Gets the `GdkDisplay` for `w`. Should only be called if `w` has been added to
 a widget hierarchy.
+
+Related GTK function: [`gtk_widget_get_display`()]($(gtkdoc_method_url("gtk4","Widget","get_display")))
 """
 display(w::GtkWidget) = G_.get_display(w)
 
 """
     monitor(w::GtkWidget)
 
-Gets the `GdkMonitor` for `w`.
+Gets the `GdkMonitor` where `w` is displayed, or `nothing` if the widget is not
+part of a widget hierarchy.
 """
 function monitor(w::GtkWidget)
     d = display(w)
@@ -120,6 +131,14 @@ function monitor(w::GtkWidget)
     Gdk4.G_.get_monitor_at_surface(d,s)
 end
 
+"""
+    cursor(w::GtkWidget, c)
+
+Sets a cursor `c` when the mouse is over a widget `w`. If `c` is `nothing`, use
+the default cursor for `w`.
+
+Related GTK function: [`gtk_widget_set_cursor`()]($(gtkdoc_method_url("gtk4","Widget","set_cursor")))
+"""
 function cursor(w::GtkWidget, c::Union{Nothing,GdkCursor})
     G_.set_cursor(w, c)
 end
@@ -128,6 +147,13 @@ function cursor(w::GtkWidget, n::AbstractString)
     G_.set_cursor_from_name(w, n)
 end
 
+"""
+    cursor(w::GtkWidget)
+
+Gets the cursor `c` for a widget `w`.
+
+Related GTK function: [`gtk_widget_get_cursor`()]($(gtkdoc_method_url("gtk4","Widget","get_cursor")))
+"""
 function cursor(w::GtkWidget)
     G_.get_cursor(w)
 end

@@ -28,13 +28,11 @@ export signal_handler_block, signal_handler_unblock
 export add_action, add_stateful_action
 
 export get_gtk_property, set_gtk_property!, gtk_propertynames, bind_property, unbind_property
-
 export bytestring
-
 export length_zt, err_buf, check_err
+export gtkdoc_method_url, gtkdoc_func_url
 
 export gtype_wrappers, GVariantDict, GBytes, GVariantType
-
 export GValue, GParamSpec, GTypeModule, _GValue
 
 Maybe(T) = Union{T,Nothing}
@@ -63,6 +61,10 @@ g_malloc(s::Integer) = ccall((:g_malloc, libglib), Ptr{Nothing}, (Csize_t,), s)
 g_free(p::Ptr) = ccall((:g_free, libglib), Nothing, (Ptr{Nothing},), p)
 g_free(p::Cstring) = ccall((:g_free, libglib), Nothing, (Cstring,), p)
 g_strfreev(p) = ccall((:g_strfreev, libglib), Nothing, (Ptr{Ptr{Nothing}},), p)
+
+gtkdoc_class_url(ns,class)="https://docs.gtk.org/$(ns)/class.$(class).html"
+gtkdoc_method_url(ns,class,method)="https://docs.gtk.org/$(ns)/method.$(class).$(method).html"
+gtkdoc_func_url(ns,func)="https://docs.gtk.org/$(ns)/func.$(func).html"
 
 # related to array handling
 function length_zt(arr::Ptr)

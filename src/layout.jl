@@ -16,7 +16,7 @@ function convert(::Type{Gtk4.PositionType}, x::Symbol)
     elseif x === :top
         Gtk4.PositionType_TOP
     elseif x === :bottom
-        Gtk4.Orientation_BOTTOM
+        Gtk4.PositionType_BOTTOM
     else
         error("can't convert $x to GtkPositionType")
     end
@@ -112,14 +112,15 @@ function setindex!(grid::GtkGrid, child, i::Union{T, AbstractRange{T}}, j::Union
     G_.attach(grid, child, first(i)-1, first(j)-1, length(i), length(j))
 end
 
-function insert!(grid::GtkGrid, i::Integer, side::Symbol)
-    if side == :left
+function insert!(grid::GtkGrid, i::Integer, side)
+    side = convert(Gtk4.PositionType, side)
+    if side == Gtk4.PositionType_LEFT
         G_.insert_column(grid, i - 1)
-    elseif side == :right
+    elseif side == Gtk4.PositionType_RIGHT
         G_.insert_column(grid, i)
-    elseif side == :top
+    elseif side == Gtk4.PositionType_TOP
         G_.insert_row(grid, i - 1)
-    elseif side == :bottom
+    elseif side == Gtk4.PositionType_BOTTOM
         G_.insert_row(grid, i)
     else
         error(string("invalid GtkPositionType ", side))
@@ -127,6 +128,7 @@ function insert!(grid::GtkGrid, i::Integer, side::Symbol)
 end
 
 function insert!(grid::GtkGrid, sibling, side)
+    side = convert(Gtk4.PositionType, side)
     G_.insert_next_to(grid, sibling, side)
 end
 
