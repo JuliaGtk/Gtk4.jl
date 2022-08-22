@@ -1,4 +1,4 @@
-using Gtk4, Graphics
+using Gtk4
 
 c = GtkCanvas()
 @guarded draw(c) do widget
@@ -16,7 +16,7 @@ c = GtkCanvas()
 end
 
 resize(c) do widget
-    
+
 end
 win = GtkWindow("Canvas")
 cursor(c, "crosshair")

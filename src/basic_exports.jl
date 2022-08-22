@@ -1,19 +1,21 @@
 # generic interface:
-export new, width, height, #minsize, maxsize
+export new, width, height, set_child, get_child,
     reveal, configure, draw, cairo_context,
-    visible, isvisible, destroy, stop, depth, isancestor,
-    isrealized, hide, grab_focus, activate,
-    hasparent, toplevel, set_gtk_property!, get_gtk_property,
-    selected, hasselection, unselect!, selectall!, unselectall!,
+    visible, isvisible, destroy, start, stop, depth, isancestor,
+    isrealized, hide, show, grab_focus, activate,
+    hasparent, parent, toplevel, set_gtk_property!, get_gtk_property,
+    selected, hasselection, select!, unselect!, selectall!, unselectall!,
     pagenumber, present, fullscreen, unfullscreen, titlebar,
     maximize, unmaximize, complete, user_action, stack,
     keyval, prev, next, up, down, popup, menubar, menu,
     convert_iter_to_child_iter, convert_child_iter_to_iter, index_from_iter,
     pulse, fraction, pulse_step, widget, group, expand_to_path, set_pixbuf,
     buffer, cells, search, place_cursor, select_range, selection_bounds,
-    create_mark, scroll_to, queue_render, cursor
+    create_mark, scroll_to, queue_render, cursor, @load_builder
     #margin, padding, align
-    #raise, focus, destroy, enabled
+    #raise, focus, enabled
+
+export resize, GtkCanvas
 
 export open_dialog, open_dialog_native, save_dialog, save_dialog_native
 export info_dialog, ask_dialog, warn_dialog, error_dialog, input_dialog

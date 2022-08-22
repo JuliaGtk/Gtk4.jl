@@ -100,7 +100,9 @@ createShaderProgram(vertexShader, fragmentShader) = createShaderProgram(prog->0,
 global GLSL_VERSION = ""
 function createcontextinfo()
 	global GLSL_VERSION
-	glsl = split(unsafe_string(glGetString(GL_SHADING_LANGUAGE_VERSION)), ['.', ' '])
+	verstring=glGetString(GL_SHADING_LANGUAGE_VERSION)
+	verstring == C_NULL && error("Can't set up GL context")
+	glsl = split(unsafe_string(verstring), ['.', ' '])
 	if length(glsl) >= 2
 		glsl = VersionNumber(parse(Int, glsl[1]), parse(Int, glsl[2]))
 		GLSL_VERSION = string(glsl.major) * rpad(string(glsl.minor),2,"0")

@@ -57,14 +57,7 @@ using Reexport
 import .Graphics: width, height, getgc
 
 using Cairo
-# import Cairo: destroy
-
-
-export parent, hasparent, toplevel, visible, destroy
-export show, hide, grab_focus, fullscreen, unfullscreen,
-    maximize, unmaximize, start, stop, set_child, get_child, select!
-export @load_builder
-export GtkCanvas
+import Cairo: destroy
 
 include("base.jl")
 include("builder.jl")
