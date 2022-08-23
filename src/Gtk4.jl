@@ -49,6 +49,10 @@ import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex
              convert, empty!, string, popfirst!, size, delete!, in,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
 
+@static if VERSION >= v"1.9"
+    import Base: stack
+end
+
 import .GLib: set_gtk_property!, get_gtk_property, run,
               signal_handler_is_connected
 
@@ -96,7 +100,8 @@ function __init__()
                                           "share", "X11", "xkb")
     end
 
-    ccall((:gtk_init, libgtk4), Cvoid, ())
+    success = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
+    success || error("gtk_init_check() failed.")
 
     GLib.start_main_loop()
 end
