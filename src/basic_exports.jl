@@ -1,5 +1,5 @@
 # generic interface:
-export new, width, height, set_child, get_child,
+export width, height, set_child, get_child,
     reveal, configure, draw, cairo_context,
     visible, isvisible, destroy, start, stop, depth, isancestor,
     isrealized, hide, show, grab_focus, activate,

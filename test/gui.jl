@@ -143,8 +143,8 @@ sw = GtkStackSwitcher()
 push!(b,sw)
 s = GtkStack()
 push!(b,s)
-stack(sw, s)
-@test stack(sw) == s
+Gtk4.stack(sw, s)
+@test Gtk4.stack(sw) == s
 push!(s,GtkLabel("Titled"),"titled","Titled")
 l2 = GtkLabel("Titled #1")
 push!(s, l2, "titled2", "Titled #2")
