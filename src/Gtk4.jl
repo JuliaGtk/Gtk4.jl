@@ -17,7 +17,7 @@ using CEnum, BitFlags
 using ..Gdk4
 using ..GdkPixbufLib
 
-import Base: unsafe_convert
+import Base: unsafe_convert, length, size, parent
 
 eval(include("gen/gtk4_consts"))
 eval(include("gen/gtk4_structs"))
@@ -40,6 +40,30 @@ eval(include("gen/gtk4_functions"))
 
 end
 
+# define accessor methods in Gtk4
+skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten methods from Gtk.jl are probably better
+            :filter, :string, :first, :error, # conflicts with Base exports
+            :width,:height,:scale,            # conflicts with Graphics exports
+            :show_text,:text,:status]         # conflicts with Cairo exports
+
+for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
+    ms=methods(getfield(Gtk4.G_,func))
+    v=Symbol(string(func)[5:end])
+    v in skiplist && continue
+    for m in filter(x->GLib.isgetter(x),ms)
+        eval(GLib.gen_getter(func,v,m))
+    end
+end
+
+for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
+    ms=methods(getfield(Gtk4.G_,func))
+    v=Symbol(string(func)[5:end])
+    v in skiplist && continue
+    for m in filter(x->GLib.issetter(x),ms)
+        eval(GLib.gen_setter(func,v,m))
+    end
+end
+
 global const lib_version = VersionNumber(
       G_.get_major_version(),
       G_.get_minor_version(),
@@ -58,7 +82,7 @@ import .GLib: set_gtk_property!, get_gtk_property, run,
 
 using Reexport
 @reexport using Graphics
-import .Graphics: width, height, getgc
+import .Graphics: width, height, getgc, scale
 
 using Cairo
 import Cairo: destroy

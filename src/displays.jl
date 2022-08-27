@@ -40,8 +40,6 @@ function GtkImage(; resource_path = nothing, filename = nothing, icon_name = not
     return img
 end
 empty!(img::GtkImage) = G_.clear(img)
-storage_type(img::GtkImage) = G_.get_storage_type(img)
-paintable(img::GtkImage) = G_.get_paintable(img)
 
 GtkPicture(pixbuf::GdkPixbuf) = G_.Picture_new_for_pixbuf(pixbuf)
 #GtkPicture(p::GdkPaintable) = G_.Picture_new_for_paintable(p)
@@ -66,11 +64,7 @@ set_pixbuf(p::GtkPicture,pb) = G_.set_pixbuf(p,pb)
 ## GtkProgressBar
 
 GtkProgressBar() = G_.ProgressBar_new()
-fraction(progress::GtkProgressBar) = G_.get_fraction(progress)
-fraction(progress::GtkProgressBar, frac) = G_.set_fraction(progress, frac)
 pulse(progress::GtkProgressBar) = G_.pulse(progress)
-pulse_step(progress::GtkProgressBar, frac) = G_.set_pulse_step(progress, frac)
-pulse_step(progress::GtkProgressBar) = G_.get_pulse_step(progress)
 
 ## GtkSpinner
 

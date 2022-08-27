@@ -695,6 +695,5 @@ end
 
 ####  GtkTextMark  ####
 
-visible(w::GtkTextMark) = G_.get_visible(w)
 visible(w::GtkTextMark, state::Bool) = G_.set_visible(w,state)
 show(w::GtkTextMark) = visible(w, true)

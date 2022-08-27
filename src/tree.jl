@@ -471,8 +471,6 @@ function path(treeModel::GtkTreeModel, iter::TRI)
                             treeModel, iter ) )
 end
 
-depth(path::GtkTreePath) = G_.get_depth(path)
-
 ### GtkTreeSortable
 
 ### GtkCellRenderer
@@ -609,13 +607,6 @@ function path_at_pos(treeView::GtkTreeView, x::Integer, y::Integer)
         path = GtkTreePath()
     end
     ret, path
-end
-
-### GtkCellLayout
-function cells(cellLayout::GtkCellLayout)
-  cells = GLib.GList(ccall((:gtk_cell_layout_get_cells, libgtk4),
-             Ptr{GLib._GList{GtkCellRenderer}}, (Ptr{GObject},), cellLayout))
-  return cells
 end
 
 ### To be done

@@ -1,4 +1,4 @@
-"""
+@doc """
     parent(w::GtkWidget)
 
 Returns the parent widget of `w`, or `nothing` if the widget has not been set as
@@ -7,8 +7,7 @@ the child of another widget (or is a toplevel widget, like a `GtkWindow`).
 See also [`toplevel`](@ref).
 
 Related GTK function: [`gtk_widget_get_parent`()]($(gtkdoc_method_url("gtk4","Widget","get_parent")))
-"""
-parent(w::GtkWidget) = G_.get_parent(w)
+""" parent
 
 """
     hasparent(w::GtkWidget) -> Bool
@@ -107,15 +106,14 @@ grab_focus(w::GtkWidget) = G_.grab_focus(w)
 
 activate(w::GtkWidget) = G_.activate(w)
 
-"""
+@doc """
     display(w::GtkWidget)
 
 Gets the `GdkDisplay` for `w`. Should only be called if `w` has been added to
 a widget hierarchy.
 
 Related GTK function: [`gtk_widget_get_display`()]($(gtkdoc_method_url("gtk4","Widget","get_display")))
-"""
-display(w::GtkWidget) = G_.get_display(w)
+""" display
 
 """
     monitor(w::GtkWidget)
@@ -147,16 +145,13 @@ function cursor(w::GtkWidget, n::AbstractString)
     G_.set_cursor_from_name(w, n)
 end
 
-"""
+@doc """
     cursor(w::GtkWidget)
 
 Gets the cursor `c` for a widget `w`.
 
 Related GTK function: [`gtk_widget_get_cursor`()]($(gtkdoc_method_url("gtk4","Widget","get_cursor")))
-"""
-function cursor(w::GtkWidget)
-    G_.get_cursor(w)
-end
+""" cursor
 
 function iterate(w::GtkWidget, state=nothing)
     next = (state === nothing ? G_.get_first_child(w) : G_.get_next_sibling(state))
@@ -176,4 +171,3 @@ GtkWidgetPaintable(w::GtkWidget) = G_.WidgetPaintable_new(w)
 
 GtkApplication(id = nothing, flags = GLib.ApplicationFlags_NONE) = G_.Application_new(id,flags)
 push!(app::GtkApplication, win::GtkWindow) = G_.add_window(app, win)
-menubar(app::GtkApplication, mb) = G_.set_menubar(app, mb)

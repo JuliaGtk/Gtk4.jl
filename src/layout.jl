@@ -213,5 +213,4 @@ getindex(s::GtkStack, name::AbstractString) = G_.get_child_by_name(s,name)
 setindex!(s::GtkStack, name::AbstractString, x::GtkWidget) = G_.add_named(s,x,name)
 
 GtkStackSwitcher() = G_.StackSwitcher_new()
-stack(w::GtkStackSwitcher) = G_.get_stack(w)
 stack(w::GtkStackSwitcher, s::GtkStack) = G_.set_stack(w,s)

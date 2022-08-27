@@ -13,9 +13,7 @@ export width, height, slice
 
 import Base: convert, size, eltype, getindex, setindex!
 
-using Reexport
-@reexport using Graphics
-import .Graphics: width, height
+import Graphics: width, height
 
 const Index{I<:Integer} = Union{I, AbstractVector{I}}
 

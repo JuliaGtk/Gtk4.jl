@@ -164,10 +164,6 @@ function input_dialog(message::AbstractString, entry_default::AbstractString, bu
     return widget
 end
 
-function content_area(widget::GtkDialog)
-    boxp = G_.get_content_area(widget)
-end
-
 ## FileChoosers
 
 function GtkFileChooserDialog(title::AbstractString, parent::Union{Nothing,GtkWindow}, action, button_text_response; kwargs...)

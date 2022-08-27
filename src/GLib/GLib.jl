@@ -85,6 +85,47 @@ function check_undefref(p::Ptr)
     p
 end
 
+# accessor generation
+isgetter(m) = length(m.sig.parameters)==2
+issetter(m) = length(m.sig.parameters)==3
+
+function _extract_instance_type(m)
+    tv, decls, file, line = Base.arg_decl_parts(m)
+    # type unfortunately has a namespace attached
+    p=split(decls[2][2],".")
+    length(p)==0 && error("Empty instance type in accessor generation for $m: maybe skip this one?")
+    length(p)>3 && error("Too many namespaces in accessor generation for $m.")
+    p
+end
+
+# for an instance method in `G_`, generate a getter method
+function gen_getter(func,v,m)
+    p=_extract_instance_type(m)
+    t=Symbol(p[end]) # the type name
+    length(p)==1 && return :($v(x::$t)=G_.$func(x))
+    ns=Symbol(p[1])
+    if length(p)==2
+        return :($v(x::$ns.$t)=G_.$func(x))
+    elseif length(p)==3
+        ns2=Symbol(p[2])
+        return :($v(x::$ns.$ns2.$t)=G_.$func(x))
+    end
+end
+
+# for an instance method in `G_`, generate a setter method
+function gen_setter(func,v,m)
+    p=_extract_instance_type(m)
+    t=Symbol(p[end]) # the type name
+    length(p)==1 && return :($v(x::$t,y)=G_.$func(x,y))
+    ns=Symbol(p[1])
+    if length(p)==2
+        return :($v(x::$ns.$t,y)=G_.$func(x,y))
+    elseif length(p)==3
+        ns2=Symbol(p[2])
+        return :($v(x::$ns.$ns2.$t,y)=G_.$func(x,y))
+    end
+end
+
 function Base.:(==)(b::T, i::Integer) where T<:BitFlag
     Integer(b) == i
 end
