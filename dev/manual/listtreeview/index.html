@@ -12,12 +12,12 @@ julia&gt; ls[1,1] = &quot;Pete&quot;
 rTog = GtkCellRendererToggle()</code></pre><p>Finally we create for each column a <code>TreeViewColumn</code> object</p><pre><code class="language-julia">c1 = GtkTreeViewColumn(&quot;Name&quot;, rTxt, Dict([(&quot;text&quot;,0)]))
 c2 = GtkTreeViewColumn(&quot;Age&quot;, rTxt, Dict([(&quot;text&quot;,1)]))
 c3 = GtkTreeViewColumn(&quot;Female&quot;, rTog, Dict([(&quot;active&quot;,2)]))</code></pre><p>We need to push these column description objects to the tree view</p><pre><code class="language-julia">push!(tv, c1, c2, c3)</code></pre><p>Then we can display the tree view widget in a window</p><pre><code class="language-julia">win = GtkWindow(tv, &quot;List View&quot;)</code></pre><p>If you prefer that the columns are resizable by the user call</p><pre><code class="language-julia">for c in [c1, c2, c3]
-    G_.set_resizable(c, true)
+    Gtk4.resizable(c, true)
 end</code></pre><h2 id="Sorting-1"><a class="docs-heading-anchor" href="#Sorting-1">Sorting</a><a class="docs-heading-anchor-permalink" href="#Sorting-1" title="Permalink"></a></h2><p>We next want to make the tree view sortable</p><pre><code class="language-julia">for (i,c) in enumerate([c1,c2,c3])
-  G_.set_sort_column_id(c,i-1)
+  Gtk4.sort_column_id(c,i-1)
 end</code></pre><p>If you now click on one of the column headers, the data will be sorted with respect to the selected column. You can even make the columns reorderable</p><pre><code class="language-julia">for (i,c) in enumerate([c1, c2, c3])
-    G_.set_reorderable(c, i)
-end</code></pre><h2 id="Selection-1"><a class="docs-heading-anchor" href="#Selection-1">Selection</a><a class="docs-heading-anchor-permalink" href="#Selection-1" title="Permalink"></a></h2><p>Usually the interesting bit of a list will be the entry being selected. This is done using an additional <code>GtkTreeSelection</code> object that can be retrieved by</p><pre><code class="language-julia">selection = G_.get_selection(tv)</code></pre><p>One either have single selection or multiple selections. We toggle this by calling</p><pre><code class="language-julia">selection = G_.set_mode(selection,Gtk4.SelectionMode_MULTIPLE)</code></pre><p>We will stick with single selection for now and want to know the index of the selected item</p><pre><code class="language-julia">julia&gt; ls[selected(selection),1]
+    Gtk4.reorderable(c, true)
+end</code></pre><h2 id="Selection-1"><a class="docs-heading-anchor" href="#Selection-1">Selection</a><a class="docs-heading-anchor-permalink" href="#Selection-1" title="Permalink"></a></h2><p>Usually the interesting bit of a list will be the entry being selected. This is done using an additional <code>GtkTreeSelection</code> object that can be retrieved by</p><pre><code class="language-julia">selection = Gtk4.selection(tv)</code></pre><p>One either have single selection or multiple selections. We toggle this by calling</p><pre><code class="language-julia">selection = Gtk4.mode(selection,Gtk4.SelectionMode_MULTIPLE)</code></pre><p>We will stick with single selection for now and want to know the index of the selected item</p><pre><code class="language-julia">julia&gt; ls[selected(selection),1]
 &quot;Pete&quot;</code></pre><p>Since it can happen that no item has been selected at all, it is a good idea to put this into an if statement</p><pre><code class="language-julia">if hasselection(selection)
   # do something with selected(selection)
 end</code></pre><p>Sometimes you want to invoke an action of an item is selected. This can be done by</p><pre><code class="language-julia">signal_connect(selection, &quot;changed&quot;) do widget
@@ -27,7 +27,7 @@ end</code></pre><p>Sometimes you want to invoke an action of an item is selected
     # now you can to something with the selected item
     println(&quot;Name: &quot;, ls[currentIt,1], &quot; Age: &quot;, ls[currentIt,1])
   end
-end</code></pre><p>Another useful signal is &quot;row-activated&quot; that will be triggered by a double click of the user.</p><h2 id="Filtering-1"><a class="docs-heading-anchor" href="#Filtering-1">Filtering</a><a class="docs-heading-anchor-permalink" href="#Filtering-1" title="Permalink"></a></h2><p>A very useful thing is to apply a filter to a list view such that only a subset of data is shown. We can do this using the <code>GtkTreeModelFilter</code> type. It is as the <code>GtkListStore</code> a <code>GtkTreeModel</code> and therefore we can assign it to a tree view. So the idea is to wrap a <code>GtkListStore</code> in a <code>GtkTreeModelFilter</code> and assign that to the tree view.</p><p>Next question is how to decide which row of the list store should be shown and which shouldn&#39;t. We will do this by adding an additional column to the list store that is hidden. The column will be of type <code>Bool</code> and a value <code>true</code> indicates that the entry is to be shown while <code>false</code> indicates the opposite. We make the filtering based on this column by a call to <code>G_.setvisible_column</code>. The full example now looks like this:</p><pre><code class="language-julia">using Gtk4
+end</code></pre><p>Another useful signal is &quot;row-activated&quot; that will be triggered by a double click of the user.</p><h2 id="Filtering-1"><a class="docs-heading-anchor" href="#Filtering-1">Filtering</a><a class="docs-heading-anchor-permalink" href="#Filtering-1" title="Permalink"></a></h2><p>A very useful thing is to apply a filter to a list view such that only a subset of data is shown. We can do this using the <code>GtkTreeModelFilter</code> type. It is as the <code>GtkListStore</code> a <code>GtkTreeModel</code> and therefore we can assign it to a tree view. So the idea is to wrap a <code>GtkListStore</code> in a <code>GtkTreeModelFilter</code> and assign that to the tree view.</p><p>Next question is how to decide which row of the list store should be shown and which shouldn&#39;t. We will do this by adding an additional column to the list store that is hidden. The column will be of type <code>Bool</code> and a value <code>true</code> indicates that the entry is to be shown while <code>false</code> indicates the opposite. We make the filtering based on this column by a call to <code>Gtk4.visible_column</code>. The full example now looks like this:</p><pre><code class="language-julia">using Gtk4
 
 ls = GtkListStore(String, Int, Bool, Bool)
 push!(ls,(&quot;Peter&quot;,20,false,true))
@@ -43,11 +43,11 @@ c2 = GtkTreeViewColumn(&quot;Age&quot;, rTxt, Dict([(&quot;text&quot;,1)]), sort
 c3 = GtkTreeViewColumn(&quot;Female&quot;, rTog, Dict([(&quot;active&quot;,2)]), sort_column_id=2)
 
 tmFiltered = GtkTreeModelFilter(ls)
-G_.set_visible_column(tmFiltered,3)
+Gtk4.visible_column(tmFiltered,3)
 tv = GtkTreeView(GtkTreeModel(tmFiltered))
 push!(tv, c1, c2, c3)
 
-selection = G_.get_selection(tv)
+selection = Gtk4.selection(tv)
 
 signal_connect(selection, &quot;changed&quot;) do widget
   if hasselection(selection)
@@ -90,4 +90,4 @@ push!(tv,c1)
 win = GtkWindow(tv, &quot;Tree View&quot;)
 
 iter = Gtk4.iter_from_index(ts, [1])
-ts[iter,1] = &quot;ONE&quot;</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../combobox/">« Combobox</a><a class="docs-footer-nextpage" href="../canvas/">Drawing on Canvas »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Saturday 27 August 2022 01:26">Saturday 27 August 2022</span>. Using Julia version 1.8.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+ts[iter,1] = &quot;ONE&quot;</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../combobox/">« Combobox</a><a class="docs-footer-nextpage" href="../canvas/">Drawing on Canvas »</a></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Saturday 27 August 2022 14:15">Saturday 27 August 2022</span>. Using Julia version 1.8.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
