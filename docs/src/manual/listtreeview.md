@@ -80,7 +80,7 @@ win = GtkWindow(tv, "List View")
 If you prefer that the columns are resizable by the user call
 ```julia
 for c in [c1, c2, c3]
-    G_.set_resizable(c, true)
+    Gtk4.resizable(c, true)
 end
 ```
 
@@ -89,14 +89,14 @@ end
 We next want to make the tree view sortable
 ```julia
 for (i,c) in enumerate([c1,c2,c3])
-  G_.set_sort_column_id(c,i-1)
+  Gtk4.sort_column_id(c,i-1)
 end
 ```
 If you now click on one of the column headers, the data will be sorted
 with respect to the selected column. You can even make the columns reorderable
 ```julia
 for (i,c) in enumerate([c1, c2, c3])
-    G_.set_reorderable(c, i)
+    Gtk4.reorderable(c, true)
 end
 ```
 
@@ -105,11 +105,11 @@ end
 Usually the interesting bit of a list will be the entry being selected. This
 is done using an additional `GtkTreeSelection` object that can be retrieved by
 ```julia
-selection = G_.get_selection(tv)
+selection = Gtk4.selection(tv)
 ```
 One either have single selection or multiple selections. We toggle this by calling
 ```julia
-selection = G_.set_mode(selection,Gtk4.SelectionMode_MULTIPLE)
+selection = Gtk4.mode(selection,Gtk4.SelectionMode_MULTIPLE)
 ```
 We will stick with single selection for now and want to know the index of the
 selected item
@@ -150,7 +150,7 @@ Next question is how to decide which row of the list store should be shown
 and which shouldn't. We will do this by adding an additional column to the list
 store that is hidden. The column will be of type `Bool` and a value `true` indicates
 that the entry is to be shown while `false` indicates the opposite.
-We make the filtering based on this column by a call to `G_.setvisible_column`.
+We make the filtering based on this column by a call to `Gtk4.visible_column`.
 The full example now looks like this:
 
 ```julia
@@ -170,11 +170,11 @@ c2 = GtkTreeViewColumn("Age", rTxt, Dict([("text",1)]), sort_column_id=1)
 c3 = GtkTreeViewColumn("Female", rTog, Dict([("active",2)]), sort_column_id=2)
 
 tmFiltered = GtkTreeModelFilter(ls)
-G_.set_visible_column(tmFiltered,3)
+Gtk4.visible_column(tmFiltered,3)
 tv = GtkTreeView(GtkTreeModel(tmFiltered))
 push!(tv, c1, c2, c3)
 
-selection = G_.get_selection(tv)
+selection = Gtk4.selection(tv)
 
 signal_connect(selection, "changed") do widget
   if hasselection(selection)

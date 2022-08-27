@@ -461,8 +461,8 @@ end
     stop_main_loop()
 
 Stops the default GLib main loop after the next iteration. Does not affect loop
-operation if GApplication's run() method is being used instead of
-GLib.start_main_loop().
+operation if GApplication's `run()` method is being used instead of
+`GLib.start_main_loop()`.
 
 See also [`start_main_loop`](@ref).
 """

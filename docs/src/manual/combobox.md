@@ -10,7 +10,7 @@ a subtype of the latter.
 The following example shows how to fill a `GtkComboBoxText` with elements and
 listen on the `changed` event:
 ```julia
-using Gtk4, Gtk4.G_
+using Gtk4
 
 cb = GtkComboBoxText()
 choices = ["one", "two", "three", "four"]
@@ -24,7 +24,7 @@ signal_connect(cb, "changed") do widget, others...
   # get the active index
   idx = cb.active
   # get the active string
-  str = G_.get_active_text(cb)
+  str = Gtk4.active_text(cb)
   println("Active element is \"$str\" at index $idx")
 end
 

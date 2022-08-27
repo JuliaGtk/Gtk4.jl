@@ -53,9 +53,7 @@ Current value: nothing
 
 ## Getter and setter methods
 
-Some properties have corresponding getter and setter C methods that can be accessed in the submodule `G_`.
-
-Some of the most important or useful are also pulled into the Gtk4 module. For example the function `visible` just calls `G_.set_visible` and `G_.get_visible`:
+Some properties have corresponding getter and setter C methods. It's recommended that you use these when they exist, as they are a little faster and more type stable. For example the function `visible` gets or sets the property "visible" of a `GtkWidget`:
 ```julia
 julia> visible(win)
 true
@@ -68,6 +66,11 @@ false
 julia> visible(win, true)
 ```
 This sequence makes the window disappear and then reappear.
+
+The most important accessors are exported from `Gtk4` but the more obscure will have to be called including the module name. For example, the property `resizable` for a `GtkWindow`, which controls whether a user is allowed to resize the window, can be set using
+```julia
+julia> Gtk4.resizable(win, false)
+```
 
 ## Binding properties
 

@@ -4,13 +4,13 @@ Gtk4.jl builds on and is very similar to Gtk.jl. Here is a summary of what's dif
 
 ## Properties
 
-GObject [properties](manual/properties.md) can still be set and accessed using `get_gtk_property` and `set_gtk_property!`. However, properties are now mapped onto Julia properties, so one can set a window title using `win.title = "My title"`.  Also, `GAccessor` no longer exists and is replaced by getter and setter methods defined in `G_`. Whereas in Gtk.jl one could use `GAccessor.title(win,"My title")` to set the title, in Gtk4.jl the equivalent is `G_.set_title(win, "My title")`.
+GObject [properties](manual/properties.md) can still be set and accessed using `get_gtk_property` and `set_gtk_property!`. However, properties are now mapped onto Julia properties, so one can set a window title using `win.title = "My title"`.  Also, the submodule `GAccessor` no longer exists. Getter and setter methods are now in the main `Gtk4` module, but most are not exported. Whereas in Gtk.jl one uses `GAccessor.title(win,"My title")` to set the title, in Gtk4.jl the equivalent is `Gtk4.title(win, "My title")`.
 
 ## Constants, enums, and flags
 
 GTK constants in Gtk4.jl are in the main module instead of a `Constants` submodule.
 
-In Gtk.jl, GTK's enum and flags constants were turned into integers. In Gtk4.jl, these are now mapped onto Julia enums, specifically the implementations [CEnum.jl](https://github.com/JuliaInterop/CEnum.jl) for enums and [BitFlags.jl](https://github.com/jmert/BitFlags.jl) for flags. This improves understandability when a function returns an enum or flag, but the downside is the sometimes extreme length of the enum's name. To mitigate this, `convert` methods are defined for commonly used enums so that shorter symbols can be used instead of the full enum name. For example, `:h` can be used instead of `Gtk4.Orientation_HORIZONTAL` in `GtkBox(orientation, spacing)`.
+In Gtk.jl, GTK's enum and flags constants are turned into integers. In Gtk4.jl, these are now mapped onto Julia enums, specifically the implementations [CEnum.jl](https://github.com/JuliaInterop/CEnum.jl) for enums and [BitFlags.jl](https://github.com/jmert/BitFlags.jl) for flags. This improves understandability when a function returns an enum or flag, but the downside is the sometimes extreme length of the enum's name. To mitigate this, `convert` methods are defined for commonly used enums so that shorter symbols can be used instead of the full enum name. For example, `:h` can be used instead of `Gtk4.Orientation_HORIZONTAL` in `GtkBox(orientation, spacing)`.
 
 ## G_ contains automatically generated methods
 
@@ -20,7 +20,7 @@ For consistency, the getter and setter methods in `G_` keep their full names, in
 
 ## GObject names
 
-The equivalent of `Gtk.ShortNames` doesn't exist. All `GObject` types are mapped onto Julia types with the same name. It would probably be better to leave out the namespace, as is done in the Python `pygobject` bindings, but that might lead to name collisions between Gtk types and Julia types or between Gtk and other GObject libraries.
+The equivalent of `Gtk.ShortNames` doesn't exist. All `GObject` types are mapped onto Julia types with the same name. Leaving out the namespace, as is done in the Python `pygobject` bindings, might have lead to name collisions between Gtk types and Julia types or between Gtk and other GObject libraries.
 
 ## No showall
 
