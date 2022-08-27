@@ -40,35 +40,6 @@ eval(include("gen/gtk4_functions"))
 
 end
 
-# define accessor methods in Gtk4
-skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten methods from Gtk.jl are probably better
-            :filter, :string, :first, :error, # conflicts with Base exports
-            :width,:height,:scale,            # conflicts with Graphics exports
-            :show_text,:text,:status]         # conflicts with Cairo exports
-
-for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
-    ms=methods(getfield(Gtk4.G_,func))
-    v=Symbol(string(func)[5:end])
-    v in skiplist && continue
-    for m in filter(x->GLib.isgetter(x),ms)
-        eval(GLib.gen_getter(func,v,m))
-    end
-end
-
-for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
-    ms=methods(getfield(Gtk4.G_,func))
-    v=Symbol(string(func)[5:end])
-    v in skiplist && continue
-    for m in filter(x->GLib.issetter(x),ms)
-        eval(GLib.gen_setter(func,v,m))
-    end
-end
-
-global const lib_version = VersionNumber(
-      G_.get_major_version(),
-      G_.get_minor_version(),
-      G_.get_micro_version())
-
 import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
              convert, empty!, string, popfirst!, size, delete!, in,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
@@ -85,7 +56,31 @@ using Reexport
 import .Graphics: width, height, getgc, scale
 
 using Cairo
-import Cairo: destroy
+import Cairo: destroy, show_text, text, status
+
+# define accessor methods in Gtk4
+skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten methods from Gtk.jl are probably better
+            :filter, :string, :first, :error] # conflicts with Base exports
+
+for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
+    ms=methods(getfield(Gtk4.G_,func))
+    v=Symbol(string(func)[5:end])
+    v in skiplist && continue
+    for m in ms
+        GLib.isgetter(m) || continue
+        eval(GLib.gen_getter(func,v,m))
+    end
+end
+
+for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
+    ms=methods(getfield(Gtk4.G_,func))
+    v=Symbol(string(func)[5:end])
+    v in skiplist && continue
+    for m in ms
+        GLib.issetter(m) || continue
+        eval(GLib.gen_setter(func,v,m))
+    end
+end
 
 include("base.jl")
 include("builder.jl")
@@ -101,6 +96,11 @@ include("lists.jl")
 include("text.jl")
 include("tree.jl")
 include("basic_exports.jl")
+
+global const lib_version = VersionNumber(
+      G_.get_major_version(),
+      G_.get_minor_version(),
+      G_.get_micro_version())
 
 function __init__()
     in(:Gtk, names(Main, imported=true)) && error("Gtk4 is incompatible with Gtk.")

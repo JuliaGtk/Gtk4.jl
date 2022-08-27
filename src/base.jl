@@ -29,23 +29,21 @@ Related GTK function: [`gtk_widget_get_root`()]($(gtkdoc_method_url("gtk4","Widg
 """
 toplevel(w::GtkWidget) = G_.get_root(w)
 
-"""
+@doc """
     width(w::GtkWidget)
 
 Returns the allocated width of `w` in pixels.
 
 Related GTK function: [`gtk_widget_get_allocated_width`()]($(gtkdoc_method_url("gtk4","Widget","get_allocated_width")))
-"""
-width(w::GtkWidget) = G_.get_allocated_width(w)
+""" width
 
-"""
+@doc """
     height(w::GtkWidget)
 
 Returns the allocated height of `w` in pixels.
 
 Related GTK function: [`gtk_widget_get_allocated_height`()]($(gtkdoc_method_url("gtk4","Widget","get_allocated_height")))
-"""
-height(w::GtkWidget) = G_.get_allocated_height(w)
+""" height
 
 size(w::GtkWidget) = (width(w), height(w))
 
