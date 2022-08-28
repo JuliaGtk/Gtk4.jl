@@ -146,10 +146,9 @@ end
 state = State(0,nothing)
 
 function on_realized(a)
-	Gtk4.G_.make_current(a)
+	make_current(a)
 	createcontextinfo()
-	e = Gtk4.G_.get_error(a)
-	if e != C_NULL
+	if get_error(a) != C_NULL
 		@async println("Error!")
 		return
 	end

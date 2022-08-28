@@ -11,7 +11,8 @@ export width, height, set_child, get_child,
     convert_iter_to_child_iter, convert_child_iter_to_iter, index_from_iter,
     pulse, fraction, pulse_step, widget, group, expand_to_path, set_pixbuf,
     buffer, cells, search, place_cursor, select_range, selection_bounds,
-    create_mark, scroll_to, queue_render, cursor, @load_builder
+    create_mark, scroll_to, cursor, @load_builder,
+    queue_render, make_current, get_error
     #margin, padding, align
     #raise, focus, enabled
 
