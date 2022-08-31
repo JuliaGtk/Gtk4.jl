@@ -1,10 +1,13 @@
 # functions that output expressions for a library in bulk
 
 function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[])
+    loaded=Symbol[]
     c = get_consts(ns)
 
     for (name,val) in c
+        in(name, skiplist) && continue
         push!(const_mod.args, const_expr("$name",val))
+        push!(loaded,name)
     end
     if print_summary && length(c)>0
         printstyled("Generated ",length(c)," constants\n";color=:green)
@@ -16,6 +19,7 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
         typeinit = in(name, skiplist) ? false : incl_typeinit
         push!(const_mod.args, unblock(enum_decl2(e,typeinit)))
         push!(const_exports.args, name)
+        push!(loaded,name)
     end
 
     if print_summary && length(es)>0
@@ -28,11 +32,13 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
         typeinit = in(name, skiplist) ? false : incl_typeinit
         push!(const_mod.args, flags_decl(e,typeinit))
         push!(const_exports.args, name)
+        push!(loaded,name)
     end
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," flags\n";color=:green)
     end
+    loaded
 end
 
 function all_const_exprs(ns;print_summary=true)

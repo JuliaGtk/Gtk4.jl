@@ -37,6 +37,13 @@ bytestring(s::Ptr{UInt8}) = s == C_NULL ? nothing : unsafe_string(s)
 g_malloc(s::Integer) = ccall((:g_malloc, libglib), Ptr{Nothing}, (Csize_t,), s)
 g_free(p::Ptr) = ccall((:g_free, libglib), Nothing, (Ptr{Nothing},), p)
 
+gtkdoc_const_url(ns,name)="https://docs.gtk.org/$(ns)/const.$(name).html"
+gtkdoc_enum_url(ns,name)="https://docs.gtk.org/$(ns)/enum.$(name).html"
+gtkdoc_flags_url(ns,name)="https://docs.gtk.org/$(ns)/flags.$(name).html"
+gtkdoc_class_url(ns,class)="https://docs.gtk.org/$(ns)/class.$(class).html"
+gtkdoc_method_url(ns,class,method)="https://docs.gtk.org/$(ns)/method.$(class).$(method).html"
+gtkdoc_func_url(ns,func)="https://docs.gtk.org/$(ns)/func.$(func).html"
+
 include("glist.jl")
 
 mutable struct GVariant

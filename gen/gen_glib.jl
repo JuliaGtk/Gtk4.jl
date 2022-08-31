@@ -1,4 +1,6 @@
-using GI
+using gobject_introspection_jll
+ENV["GI_TYPELIB_PATH"]=gobject_introspection_jll.find_artifact_dir()*"/lib/girepository-1.0"
+using GI, EzXML
 
 toplevel, exprs, exports = GI.output_exprs()
 
@@ -9,20 +11,28 @@ ns = GINamespace(:GLib, "2.0")
 ns2 = GINamespace(:GObject, "2.0")
 ns3 = GINamespace(:Gio, "2.0")
 
-# This exports constants, structs, functions, etc. from the glib library. Most
-# of the functionality overlaps what can be done in Julia, but it is a
-# good starting point for getting GI.jl working fully.
+# This exports constants, structs, functions, etc. from the glib library
 
-## constants, enums, and flags, put in a "Constants" submodule
+# Constants for GLib, GObject, and Gio are grouped together. Structs and methods
+# are kept separate because we need to interweave the automatically generated
+# code with hand-written code. See "gen_gobject.jl" and "gen_gio.jl".
 
 const_mod = Expr(:block)
 
 const_exports = Expr(:export)
 
-GI.all_const_exprs!(const_mod, const_exports, ns; incl_typeinit=false)
-GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:ConnectFlags,:ParamFlags,:SignalFlags,:SignalMatchType,:TypeFlags,:TypeFundamentalFlags])
-GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
+# Out of principle, let's skip some mathematical constants that are stored to only 6 decimals
+const_skip = [:E,:LN2,:LN10,:LOG_2_BASE_10,:PI,:PI_2,:PI_4,:SQRT2]
 
+c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=const_skip; incl_typeinit=false)
+d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
+GI.append_const_docs!(const_mod.args, "glib", d, c)
+c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:ConnectFlags,:ParamFlags,:SignalFlags,:SignalMatchType,:TypeFlags,:TypeFundamentalFlags])
+d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns2)).gir")
+GI.append_const_docs!(const_mod.args, "gobject", d, c)
+c = GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
+d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns3)).gir")
+GI.append_const_docs!(const_mod.args, "gio", d, c)
 push!(const_mod.args,const_exports)
 
 push!(exprs, const_mod)
@@ -34,7 +44,7 @@ GI.write_to_file(path,"glib_consts",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-# These are marked as "disguised" and what this means is not documentated AFAICT.
+# These are marked as "disguised" and what this means is not documented AFAICT.
 disguised = [:AsyncQueue, :BookmarkFile, :Data, :Dir, :Hmac, :Iconv,
             :OptionContext, :PatternSpec, :Rand, :Sequence, :SequenceIter,
             :SourcePrivate, :StatBuf, :StringChunk, :StrvBuilder, :TestCase,

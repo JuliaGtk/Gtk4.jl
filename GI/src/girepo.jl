@@ -171,6 +171,20 @@ function get_c_prefix(ns)
     end
 end
 
+function get_version(ns::GINamespace)
+    ret = ccall((:g_irepository_get_version, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    if ret != C_NULL
+        bytestring(ret)
+    else
+        ""
+    end
+end
+
+function ns_id(ns::GINamespace)
+    v=get_version(ns)
+    "$(ns.name)-$(v)"
+end
+
 function bytestring_array(ptr)
     ret=String[]
     i=1
