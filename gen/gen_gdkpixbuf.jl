@@ -11,7 +11,9 @@ const_mod = Expr(:block)
 
 const_exports = Expr(:export)
 
-GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=[:PixbufFormatFlags])
+c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=[:PixbufFormatFlags])
+d = readxml(gdk_pixbuf_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
+GI.append_const_docs!(const_mod.args, "gdk-pixbuf", d, c)
 
 push!(exprs, const_mod)
 
