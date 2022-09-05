@@ -1,5 +1,16 @@
 module Gtk4
 
+import Base: unsafe_convert, length, size, parent, push!, pushfirst!, insert!,
+             pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
+             convert, empty!, string, popfirst!, size, delete!, in,
+             deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
+@static if VERSION >= v"1.9"
+    import Base: stack
+end
+
+import CEnum: @cenum
+import BitFlags: @bitflag
+
 include("GLib/GLib.jl")
 include("Pango/Pango.jl")
 include("GdkPixbufLib.jl")
@@ -12,12 +23,14 @@ using ..GLib
 
 using GTK4_jll, Glib_jll
 using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
-using CEnum, BitFlags
 
 using ..Gdk4
 using ..GdkPixbufLib
 
-import Base: unsafe_convert, length, size, parent
+using Reexport
+@reexport using Graphics
+import .Graphics: width, height, getgc, scale
+import Cairo: destroy, show_text, text, status
 
 eval(include("gen/gtk4_consts"))
 eval(include("gen/gtk4_structs"))
@@ -40,23 +53,8 @@ eval(include("gen/gtk4_functions"))
 
 end
 
-import Base: push!, pushfirst!, insert!, pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
-             convert, empty!, string, popfirst!, size, delete!, in,
-             deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
-
-@static if VERSION >= v"1.9"
-    import Base: stack
-end
-
 import .GLib: set_gtk_property!, get_gtk_property, run,
               signal_handler_is_connected
-
-using Reexport
-@reexport using Graphics
-import .Graphics: width, height, getgc, scale
-
-using Cairo
-import Cairo: destroy, show_text, text, status
 
 # define accessor methods in Gtk4
 skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten methods from Gtk.jl are probably better

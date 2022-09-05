@@ -18,7 +18,7 @@ function itemlist(types, rownames)
     for i=1:length(types)
         r1 = GtkCellRendererText()
         c1 = GtkTreeViewColumn(rownames[i], r1, Dict([("text",i-1)]))
-        G_.set_sort_column_id(c1,i-1)
+        Gtk4.sort_column_id(c1,i-1)
         push!(cols,c1)
         push!(tv,c1)
     end
@@ -95,7 +95,7 @@ splice!(store, [4])
 
 ## selection
 
-selection = G_.get_selection(tv)
+selection = Gtk4.selection(tv)
 @test hasselection(selection) == false
 
 iter = Gtk4.iter_from_string_index(store,"0")

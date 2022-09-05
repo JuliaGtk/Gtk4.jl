@@ -1,4 +1,4 @@
-using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4, Gtk4.GdkPixbufLib
+using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4, Gtk4.GdkPixbufLib, Cairo
 
 @testset "Window" begin
 
@@ -248,7 +248,7 @@ end
 @testset "button, label" begin
 w = GtkWindow("Widgets")
 f = GtkBox(:v)
-G_.set_child(w,f)
+Gtk4.child(w,f)
 l = GtkLabel("label"); push!(f,l)
 b = GtkButton("button"); push!(f,b)
 
@@ -418,10 +418,10 @@ end
 @testset "slider/scale" begin
 sl = GtkScale(:v, 1:10)
 w = GtkWindow(sl, "Scale")
-G_.set_value(sl, 3)
+Gtk4.value(sl, 3)
 push!(sl,π,:right,"pi")
 push!(sl,-3,:left)
-@test G_.get_value(sl) == 3
+@test Gtk4.value(sl) == 3
 adj = GtkAdjustment(sl)
 @test get_gtk_property(adj,:value,Float64) == 3
 set_gtk_property!(adj,:upper,11)
@@ -437,8 +437,8 @@ end
 @testset "spinbutton" begin
 sp = GtkSpinButton(1:10)
 w = GtkWindow(sp, "SpinButton")
-G_.set_value(sp, 3)
-@test G_.get_value(sp) == 3
+Gtk4.value(sp, 3)
+@test Gtk4.value(sp) == 3
 destroy(w)
 
 adj = GtkAdjustment(5.0,0.0,10.0,1.0,5.0,5.0)
@@ -591,7 +591,7 @@ end
     s = size(cnvs)
     @test s[1] == 300
     @test s[2] == 280
-    mtrx = Gtk4.Cairo.get_matrix(getgc(cnvs))
+    mtrx = Cairo.get_matrix(getgc(cnvs))
     @test mtrx.xx == 300
     @test mtrx.yy == 280
     @test mtrx.xy == mtrx.yx == mtrx.x0 == mtrx.y0 == 0
@@ -654,7 +654,7 @@ w = GtkWindow(tv, "List View")
 
 ## selection
 
-selmodel = G_.get_selection(tv)
+selmodel = Gtk4.selection(tv)
 @test hasselection(selmodel) == false
 select!(selmodel, Gtk4.iter_from_index(ls, 1))
 @test hasselection(selmodel) == true
@@ -666,7 +666,7 @@ select!(selmodel, Gtk4.iter_from_index(ls, 1))
 iter = selected(selmodel)
 @test ls[iter, 1] == 35
 
-G_.set_mode(selmodel,Gtk4.SelectionMode_MULTIPLE)
+Gtk4.mode(selmodel,Gtk4.SelectionMode_MULTIPLE)
 selectall!(selmodel)
 iters = Gtk4.selected_rows(selmodel)
 @test length(iters) == 2
@@ -677,7 +677,7 @@ tmSorted=GtkTreeModelSort(ls)
 #G_.set_model(tv,tmSorted)
 G_.set_sort_column_id(GtkTreeSortable(tmSorted),0,Gtk4.SortType_ASCENDING)
 it = convert_child_iter_to_iter(tmSorted,Gtk4.iter_from_index(ls, 1))
-G_.set_mode(selmodel,Gtk4.SelectionMode_SINGLE)
+Gtk4.mode(selmodel,Gtk4.SelectionMode_SINGLE)
 #select!(selmodel, it)
 #iter = selected(selmodel)
 #@test TreeModel(tmSorted)[iter, 1] == 35

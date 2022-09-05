@@ -4,17 +4,17 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@optle
     @eval Base.Experimental.@optlevel 1
 end
 
-# Import `libglib` and `libgobject`
-using Glib_jll
-
 import Base: convert, copy, show, size, length, getindex, setindex!, get,
              iterate, eltype, isempty, ndims, stride, strides, popfirst!,
              empty!, append!, reverse!, pushfirst!, pop!, push!, splice!, insert!, deleteat!, delete!,
              sigatomic_begin, sigatomic_end, Sys.WORD_SIZE, unsafe_convert,
              getproperty, setproperty!, propertynames, getindex, setindex!, print, replace
+import CEnum: @cenum, CEnum
+import BitFlags: @bitflag, BitFlag
 
+# Import `libglib` and `libgobject`
+using Glib_jll
 using Libdl
-using CEnum, BitFlags
 
 export Maybe
 
