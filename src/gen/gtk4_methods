@@ -834,11 +834,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_action_bar_set_revealed", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _revealed)
         nothing
     end
-    function get()
-        ret = ccall(("gtk_activate_action_get", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkActivateAction, ret, false)
-        ret2
-    end
     function Adjustment_new(_value::Real, _lower::Real, _upper::Real, _step_increment::Real, _page_increment::Real, _page_size::Real)
         ret = ccall(("gtk_adjustment_new", libgtk4), Ptr{GObject}, (Float64, Float64, Float64, Float64, Float64, Float64), _value, _lower, _upper, _step_increment, _page_increment, _page_size)
         ret2 = convert(GtkAdjustment, ret, false)
@@ -10149,15 +10144,6 @@ $(Expr(:toplevel, quote
     function Separator_new(_orientation)
         ret = ccall(("gtk_separator_new", libgtk4), Ptr{GObject}, (UInt32,), _orientation)
         ret2 = convert(GtkWidget, ret, false)
-        ret2
-    end
-    function get_default()
-        ret = ccall(("gtk_settings_get_default", libgtk4), Ptr{GObject}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GtkSettings, ret, false)
-            end
         ret2
     end
     function get_for_display(_display::GdkDisplay)

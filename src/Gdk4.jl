@@ -1,38 +1,5 @@
-module Gdk4
-
-using GTK4_jll, Glib_jll
-
-using ..GLib
-using ..Pango
-using ..Pango.Cairo
-using ..GdkPixbufLib
-
-import Base: unsafe_convert, size
-using CEnum, BitFlags
-
-import Graphics: width, height
-
-eval(include("gen/gdk4_consts"))
-eval(include("gen/gdk4_structs"))
-
 export _GdkRGBA, _GdkRectangle
 export keyval
-
-module G_
-
-using GTK4_jll
-
-using ..GLib
-using ..Gdk4
-using ..Pango.Cairo
-using ..GdkPixbufLib
-
-import Base: convert, copy, size
-
-eval(include("gen/gdk4_methods"))
-eval(include("gen/gdk4_functions"))
-
-end
 
 keyval(name::AbstractString) = G_.keyval_from_name(name)
 
@@ -54,8 +21,6 @@ end
 ## GdkTexture
 
 GdkTexture(p::GdkPixbuf) = G_.Texture_new_for_pixbuf(p)
-width(t::GdkTexture) = G_.get_width(t)
-height(t::GdkTexture) = G_.get_height(t)
 
 ## GdkCursor
 
@@ -71,11 +36,4 @@ end
 function size(m::GdkMonitor)
    r=G_.get_geometry(m)
    (r.width,r.height)
-end
-
-function __init__()
-   gtype_wrapper_cache_init()
-   gboxed_cache_init()
-end
-
 end

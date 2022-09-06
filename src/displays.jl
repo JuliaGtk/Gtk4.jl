@@ -9,13 +9,13 @@ function screen_size(widget=nothing)
     if widget!== nothing && G_.get_realized(widget)
         d=G_.get_display(widget)
     else
-        d=Gdk4.G_.get_default() # gdk_display_get_default
+        d=G_.get_default() # gdk_display_get_default
         if d===nothing
             error("No default display, no way to return screen_size")
         end
     end
 
-    m=Gdk4.G_.get_monitors(d)
+    m=G_.get_monitors(d)
     m===nothing && error("Unable to get list of monitors")
     length(m)==0 && error("No monitors found")
     size(m[1])

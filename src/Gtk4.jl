@@ -16,15 +16,12 @@ include("Pango/Pango.jl")
 include("GdkPixbufLib.jl")
 
 include("Graphene.jl")
-include("Gdk4.jl")
-include("Gsk4.jl")
 
 using ..GLib
 
 using GTK4_jll, Glib_jll
 using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
 
-using ..Gdk4
 using ..GdkPixbufLib
 
 using Reexport
@@ -32,6 +29,10 @@ using Reexport
 import .Graphics: width, height, getgc, scale
 import Cairo: destroy, show_text, text, status
 
+eval(include("gen/gdk4_consts"))
+eval(include("gen/gdk4_structs"))
+eval(include("gen/gsk4_consts"))
+eval(include("gen/gsk4_structs"))
 eval(include("gen/gtk4_consts"))
 eval(include("gen/gtk4_structs"))
 
@@ -40,14 +41,14 @@ module G_
 using GTK4_jll, Glib_jll
 
 using ..GLib
-using ..Gdk4
 using ..Pango
 using ..Pango.Cairo
 using ..Graphene
 using ..GdkPixbufLib
-using ..Gsk4
 using ..Gtk4
 
+eval(include("gen/gdk4_methods"))
+eval(include("gen/gdk4_functions"))
 eval(include("gen/gtk4_methods"))
 eval(include("gen/gtk4_functions"))
 
@@ -80,6 +81,7 @@ for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
     end
 end
 
+include("Gdk4.jl")
 include("base.jl")
 include("builder.jl")
 include("input.jl")

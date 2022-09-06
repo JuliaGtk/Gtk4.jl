@@ -1,4 +1,4 @@
-using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.Gdk4, Gtk4.GdkPixbufLib, Cairo
+using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.GdkPixbufLib, Cairo
 
 @testset "Window" begin
 
@@ -24,7 +24,7 @@ visible(w,true)
 @test isvisible(w) == true
 
 m = Gtk4.monitor(w)
-r = Gtk4.Gdk4.G_.get_geometry(m)
+r = Gtk4.G_.get_geometry(m)
 
 #r2 = m.geometry
 
@@ -407,9 +407,9 @@ end
 
 @testset "ColorButton" begin
 b = GtkColorButton()
-b = GtkColorButton(Gdk4.GdkRGBA(0, 0.8, 1.0, 0.3))
-r = Gdk4.GdkRGBA("red")
-@test_throws ErrorException q = Gdk4.GdkRGBA("octarine")
+b = GtkColorButton(GdkRGBA(0, 0.8, 1.0, 0.3))
+r = GdkRGBA("red")
+@test_throws ErrorException q = GdkRGBA("octarine")
 w = GtkWindow(b, "ColorButton", 50, 50)
 destroy(w)
 end
@@ -778,7 +778,7 @@ response(d,Integer(Gtk4.ResponseType_YES))
 end
 
 @testset "keyval" begin
-@test keyval("H") == Gdk4.KEY_H
+@test keyval("H") == Gtk4.KEY_H
 end
 
 @testset "FileFilter" begin

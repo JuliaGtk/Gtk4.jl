@@ -201,7 +201,7 @@ w = GtkWindow("GL example", wh, wh)
 glarea = GtkGLArea()
 
 signal_connect(on_realized, glarea, "realize")
-signal_connect(on_render, glarea, "render", Cint, (Ptr{Gtk4.Gdk4.GdkGLContext},))
+signal_connect(on_render, glarea, "render", Cint, (Ptr{Gtk4.GdkGLContext},))
 
 w[]=glarea
 

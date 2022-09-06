@@ -124,7 +124,7 @@ function monitor(w::GtkWidget)
     tl = toplevel(w)
     tl === nothing && return nothing
     s = G_.get_surface(GtkNative(tl))
-    Gdk4.G_.get_monitor_at_surface(d,s)
+    G_.get_monitor_at_surface(d,s)
 end
 
 """
