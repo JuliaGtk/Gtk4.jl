@@ -1,7 +1,7 @@
 # Builder
 
 Until now we have created and arranged all widgets entirely using Julia code. While this works fine
-for small examples, it has the issue that we are tightly coupling the appearance from our application
+for small examples, it has the issue that we are tightly coupling the appearance of our application
 with the logic of our program code.
 
 There is an alternative way to design user interfaces that strictly separates the layout

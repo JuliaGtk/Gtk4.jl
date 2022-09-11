@@ -27,14 +27,20 @@ end
 GtkBox(orientation, spacing=0) = G_.Box_new(convert(Gtk4.Orientation, orientation), spacing)
 
 function push!(b::GtkBox,w::GtkWidget)
+    hasparent(w) && error("Widget already has a parent")
     G_.append(b,w)
     b
 end
 
 function pushfirst!(b::GtkBox,w::GtkWidget)
+    hasparent(w) && error("Widget already has a parent")
     G_.prepend(b,w)
     b
 end
+
+## GtkSeparator
+
+GtkSeparator(orientation) = G_.Separator_new(convert(Gtk4.Orientation, orientation))
 
 ## GtkCenterBox
 
@@ -137,6 +143,11 @@ end
 
 GtkFrame(label::AbstractString) = G_.Frame_new(label)
 GtkFrame() = G_.Frame_new(nothing)
+function GtkFrame(w::GtkWidget)
+    f = GtkFrame()
+    f[] = w
+    f
+end
 
 setindex!(f::GtkFrame, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkFrame) = G_.get_child(f)
@@ -210,7 +221,7 @@ push!(s::GtkStack, x::GtkWidget) = (G_.add_child(s,x); s)
 push!(s::GtkStack, x::GtkWidget, name::AbstractString) = (G_.add_named(s,x,name); s)
 push!(s::GtkStack, x::GtkWidget, name::AbstractString, title::AbstractString) = (G_.add_titled(s,x,name,title); s)
 getindex(s::GtkStack, name::AbstractString) = G_.get_child_by_name(s,name)
-setindex!(s::GtkStack, name::AbstractString, x::GtkWidget) = G_.add_named(s,x,name)
+setindex!(s::GtkStack, x::GtkWidget, name::AbstractString) = G_.add_named(s,x,name)
 
 GtkStackSwitcher() = G_.StackSwitcher_new()
 stack(w::GtkStackSwitcher, s::GtkStack) = G_.set_stack(w,s)

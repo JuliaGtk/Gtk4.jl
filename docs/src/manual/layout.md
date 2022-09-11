@@ -32,6 +32,14 @@ Note that these aren't evenly sized, and that doesn't change if we set the `canc
 hbox.homogeneous = true
 ```
 
+To add a line between widgets in a `GtkBox`, you can use `GtkSeparator`.
+
+```julia
+sep = GtkSeparator(:h)
+push!(hbox, sep)
+# add more widgets here
+```
+
 ## GtkGrid
 
 To create two-dimensional (tabular) layouts of widgets, you can use `GtkGrid`:

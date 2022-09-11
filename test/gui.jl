@@ -149,6 +149,13 @@ push!(s,GtkLabel("Titled"),"titled","Titled")
 l2 = GtkLabel("Titled #1")
 push!(s, l2, "titled2", "Titled #2")
 @test s["titled2"] == l2
+l3 = GtkLabel("Named #1")
+push!(s,l3,"named1")
+@test s["named1"] == l3
+push!(s,GtkLabel("Just a child"))
+l4 = GtkLabel("Named #2")
+s["named2"] = l4
+@test s["named2"] == l4
 end
 
 @testset "Panedwindow" begin
@@ -178,7 +185,6 @@ g2 = GtkBox(:h)
 @test_throws ErrorException g3 = GtkBox(:w)
 push!(f,g1)
 push!(f,g2)
-#@test f[1]==g1
 
 b11 = GtkButton("first")
 push!(g1, b11)
@@ -188,6 +194,8 @@ b21 = GtkButton("first")
 b22 = GtkButton("second")
 push!(g2, b22)
 pushfirst!(g2, b21)
+push!(g2, GtkSeparator(:h))
+@test_throws ErrorException push!(g2, b11)
 
 strs = ["first", "second"]
 i = 1
@@ -197,7 +205,6 @@ for child in g1
     i += 1
 end
 
-## Now shrink window
 destroy(w)
 end
 
@@ -476,6 +483,10 @@ e = GtkEntry()
 w = GtkWindow(e, "Entry")
 set_gtk_property!(e,:text,"initial")
 set_gtk_property!(e,:sensitive,false)
+
+b = GtkEntryBuffer("different")
+buffer(e, b)
+@test e.text == "different"
 
 @test fraction(e) == 0.0
 fraction(e, 1.0)

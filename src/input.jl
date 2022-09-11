@@ -7,6 +7,10 @@ pulse(progress::GtkEntry) = G_.progress_pulse(progress)
 pulse_step(progress::GtkEntry, frac) = G_.set_progress_pulse_step(progress, frac)
 pulse_step(progress::GtkEntry) = G_.get_progress_pulse_step(progress)
 
+function GtkEntryBuffer(initial_text = nothing)
+    G_.EntryBuffer_new(initial_text, -1)
+end
+
 GtkEntryCompletionLeaf() = G_.EntryCompletion_new()
 
 complete(completion::GtkEntryCompletion) = G_.complete(completion)

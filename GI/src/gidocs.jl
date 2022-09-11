@@ -5,7 +5,8 @@ function append_doc!(exprs, docstring, name)
 end
 
 function doc_add_link(docstring, l)
-    "$docstring\n \nGTK docs: $l"
+    # FIXME: should escape the string in the square brackets because the underscores mess up the markdown formatting
+    "$docstring\n \nGTK docs: [$l]($l)"
 end
 
 function doc_item(d, name, t)
