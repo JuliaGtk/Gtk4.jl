@@ -30,7 +30,7 @@ GI.struct_exprs!(exprs,exports,ns,first_list)
 
 struct_skiplist=vcat(first_list,struct_skiplist)
 
-struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist)
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist)
 
 ## objects
 

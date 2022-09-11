@@ -8,7 +8,8 @@ module GI
     import .GLibBase:
       unsafe_convert, GError, GObject, GType, GArray, GPtrArray, GByteArray,
       GHashTable, GList, GInterface, GBoxed, AbstractStringLike, bytestring,
-      gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url, gtkdoc_func_url
+      gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
+      gtkdoc_func_url, gtkdoc_struc_url, gtkdoc_object_url
 
     import Base: convert, cconvert, show, length, getindex, setindex!, uppercase, unsafe_convert
     using Libdl

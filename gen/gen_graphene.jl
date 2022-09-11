@@ -33,7 +33,7 @@ GI.struct_exprs!(exprs,exports,ns,first_list)
 
 struct_skiplist=vcat(struct_skiplist,first_list)
 
-struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:Frustum,:Quad])
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:Frustum,:Quad])
 
 ## objects
 

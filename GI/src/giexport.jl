@@ -112,6 +112,7 @@ end
 
 function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false)
     struct_skiplist=excludelist
+    loaded=Symbol[]
 
     s=get_all(ns,GIStructInfo)
     ss=filter(p->∉(get_name(p),struct_skiplist),s)
@@ -136,6 +137,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
 
         push!(exprs, struct_decl(ssi;force_opaque=in(name,import_as_opaque)))
         push!(exports.args, get_full_name(ssi))
+        push!(loaded, name)
         if length(fields)>0
             push!(exports.args,get_struct_name(ssi,false))
         end
@@ -152,7 +154,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
         printstyled("Generated ",imported," structs out of ",length(s),"\n";color=:green)
     end
 
-    struct_skiplist
+    struct_skiplist, loaded
 end
 
 function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=Symbol[], struct_skiplist=Symbol[], liboverride=nothing)
@@ -210,6 +212,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     objects=get_all(ns,GIObjectInfo)
 
     imported=length(objects)
+    loaded=Symbol[]
     # precompilation prevents adding directly to GLib's gtype_wrapper cache here
     # so we add to a package local cache and merge with GLib's cache in __init__()
     if output_cache_define
@@ -234,6 +237,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
         end
         obj_decl!(exprs,o,ns,handled)
         push!(exports.args, get_full_name(o))
+        push!(loaded, name)
     end
     if output_cache_init
         gtype_cache_init = quote
@@ -244,6 +248,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     if print_summary
         printstyled("Created ",imported," objects out of ",length(objects),"\n";color=:green)
     end
+    loaded
 end
 
 function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing)
@@ -414,4 +419,14 @@ function output_exprs()
     exprs = body.args
     exports = Expr(:export)
     toplevel, exprs, exports
+end
+
+# Read from XML
+isdisguised(c) = haskey(c,"disguised") && (c["disguised"] == "1")
+
+function read_disguised(d)
+    ns=namespace(d.root)
+    all_recs=findall("//x:namespace/x:record",d.root, ["x"=>ns])
+    n=findall(isdisguised,all_recs)
+    [Symbol(ni["name"]) for ni in all_recs[n]]
 end

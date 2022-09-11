@@ -5,6 +5,7 @@ toplevel, exprs, exports = GI.output_exprs()
 path="../src/gen"
 
 ns = GINamespace(:Gsk,"4.0")
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 ## constants, enums, and flags, put in a "Constants" submodule
 
@@ -12,7 +13,8 @@ const_mod = Expr(:block)
 
 const_exports = Expr(:export)
 
-GI.all_const_exprs!(const_mod, const_exports, ns)
+c = GI.all_const_exprs!(const_mod, const_exports, ns)
+GI.append_const_docs!(const_mod.args, "gsk4", d, c)
 
 push!(exprs, const_mod)
 
@@ -28,11 +30,13 @@ disguised = Symbol[]
 struct_skiplist=vcat(disguised, Symbol[])
 
 GI.struct_cache_expr!(exprs)
-struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:RoundedRect])
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:RoundedRect],output_cache_init=false)
+GI.append_struc_docs!(exprs, "gsk4", d, c, ns)
 
 ## objects
 
-GI.all_objects!(exprs,exports,ns,skiplist=[:BlendNode,:BlurNode,:BorderNode,:CairoNode,:ClipNode,:ColorMatrixNode,:ColorNode,:ConicGradientNode,:ContainerNode,:CrossFadeNode,:DebugNode,:GLShaderNode,:InsetShadowNode,:LinearGradientNode,:OpacityNode,:OutsetShadowNode,:RadialGradientNode,:RepeatNode,:RepeatingLinearGradientNode,:RepeatingRadialGradientNode,:RoundedClipNode,:ShadowNode,:TextNode,:TextureNode,:TransformNode])
+c = GI.all_objects!(exprs,exports,ns,skiplist=[:BlendNode,:BlurNode,:BorderNode,:CairoNode,:ClipNode,:ColorMatrixNode,:ColorNode,:ConicGradientNode,:ContainerNode,:CrossFadeNode,:DebugNode,:GLShaderNode,:InsetShadowNode,:LinearGradientNode,:OpacityNode,:OutsetShadowNode,:RadialGradientNode,:RepeatNode,:RepeatingLinearGradientNode,:RepeatingRadialGradientNode,:RoundedClipNode,:ShadowNode,:TextNode,:TextureNode,:TransformNode],output_cache_define=false,output_cache_init=false)
+GI.append_object_docs!(exprs, "gsk4", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns)
 
 push!(exprs,exports)

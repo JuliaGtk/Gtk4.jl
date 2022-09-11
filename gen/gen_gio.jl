@@ -5,23 +5,25 @@ toplevel, exprs, exports = GI.output_exprs()
 path="../src/gen"
 
 ns = GINamespace(:Gio,"2.0")
+d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 ## structs
 
 toplevel, exprs, exports = GI.output_exprs()
 
-# These are marked as "disguised" and what this means is not documentated AFAICT.
-disguised = [:IOExtension,:IOExtensionPoint,:IOModuleScope,:IOSchedulerJob,:IOStreamAdapter]
+disguised = GI.read_disguised(d)
 struct_skiplist=vcat(disguised, [:ActionEntry,:DBusAnnotationInfo,:DBusArgInfo,:DBusInterfaceInfo,
 :DBusInterfaceVTable,:DBusMethodInfo,:DBusPropertyInfo,:DBusSignalInfo,:DBusSubtreeVTable,
 :DBusNodeInfo,:InputMessage,:OutputMessage,:StaticResource,:UnixMountEntry,:UnixMountPoint])
 
-struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,output_cache_init=false)
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,output_cache_init=false)
+GI.append_struc_docs!(exprs, "gio", d, c, ns)
 
 ## objects
 
 obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus]
-GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,output_cache_define=false,output_cache_init=false)
+c = GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,output_cache_define=false,output_cache_init=false)
+GI.append_object_docs!(exprs, "gio", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns;skiplist=[:DebugController,:PowerProfileMonitor])
 
 push!(exprs,exports)

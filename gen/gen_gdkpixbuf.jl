@@ -3,6 +3,7 @@ using GI
 toplevel, exprs, exports = GI.output_exprs()
 
 ns = GINamespace(:GdkPixbuf,"2.0")
+d = readxml(gdk_pixbuf_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
 path="../src/gen"
 
 ## constants, enums, and flags, put in a "Constants" submodule
@@ -12,7 +13,6 @@ const_mod = Expr(:block)
 const_exports = Expr(:export)
 
 c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=[:PixbufFormatFlags])
-d = readxml(gdk_pixbuf_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
 GI.append_const_docs!(const_mod.args, "gdk-pixbuf", d, c)
 
 push!(exprs, const_mod)
@@ -24,7 +24,8 @@ GI.write_to_file(path,"gdkpixbuf_consts",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-struct_skiplist=[:PixbufModule]
+disguised = GI.read_disguised(d)
+struct_skiplist=vcat(disguised,[:PixbufModule])
 
 first_list=[:PixbufModulePattern]
 
@@ -33,11 +34,13 @@ GI.struct_exprs!(exprs,exports,ns,first_list;excludelist=struct_skiplist)
 
 struct_skiplist=vcat(first_list,struct_skiplist)
 
-struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist)
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist)
+GI.append_struc_docs!(exprs, "gdk-pixbuf", d, c, ns)
 
 ## objects
 
-GI.all_objects!(exprs,exports,ns)
+c = GI.all_objects!(exprs,exports,ns)
+GI.append_object_docs!(exprs, "gdk-pixbuf", d, c, ns)
 push!(exprs,exports)
 
 GI.write_to_file(path,"gdkpixbuf_structs",toplevel)

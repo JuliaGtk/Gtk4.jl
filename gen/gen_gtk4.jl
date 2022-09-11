@@ -5,6 +5,7 @@ toplevel, exprs, exports = GI.output_exprs()
 path="../src/gen"
 
 ns = GINamespace(:Gtk,"4.0")
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 ## constants, enums, and flags, put in a "Constants" submodule
 
@@ -12,7 +13,8 @@ const_mod = Expr(:block)
 
 const_exports = Expr(:export)
 
-GI.all_const_exprs!(const_mod, const_exports, ns; skiplist= [:CssParserError,:CssParserWarning])
+c = GI.all_const_exprs!(const_mod, const_exports, ns; skiplist= [:CssParserError,:CssParserWarning])
+GI.append_const_docs!(const_mod.args, "gtk4", d, c)
 push!(const_mod.args, const_exports)
 
 push!(exprs, const_mod)
@@ -29,13 +31,15 @@ disguised = Symbol[]
 struct_skiplist=vcat(disguised, [:PageRange])
 
 GI.struct_cache_expr!(exprs)
-struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:BitsetIter,:BuildableParser])
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:BitsetIter,:BuildableParser],output_cache_init=false)
+GI.append_struc_docs!(exprs, "gtk4", d, c, ns)
 
 ## objects
 
 object_skiplist=[:CClosureExpression,:ClosureExpression,:ConstantExpression,:Expression,:ObjectExpression,:PropertyExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
 
-GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist)
+c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist,output_cache_define=false,output_cache_init=false)
+GI.append_object_docs!(exprs, "gtk4", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns)
 
 push!(exprs,exports)
@@ -50,7 +54,7 @@ GI.all_struct_methods!(exprs,ns,struct_skiplist=vcat(struct_skiplist,[:Bitset,:B
 
 ## object methods
 
-skiplist=[:create_closure,:activate_cell,:event,:start_editing,:filter_keypress,:trigger,:append_node,:im_context_filter_keypress,:get_backlog,:append_border,:append_inset_shadow,:append_outset_shadow,:push_rounded_clip]
+skiplist=[:create_closure,:activate_cell,:event,:start_editing,:filter_keypress,:trigger,:append_node,:im_context_filter_keypress,:get_backlog,:append_border,:append_inset_shadow,:append_outset_shadow,:push_rounded_clip,:get,:get_default]
 
 object_skiplist=vcat(object_skiplist,[:BoolFilter,:CellRenderer,:DropDown,:IconTheme,:MnemonicAction,:NeverTrigger,:NothingAction,:NumericSorter,:PrintJob,:PrintSettings,:RecentManager,:StringFilter,:StringSorter,:ShortcutAction,:ShortcutTrigger])
 

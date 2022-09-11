@@ -30,7 +30,8 @@ export add_action, add_stateful_action
 export get_gtk_property, set_gtk_property!, gtk_propertynames, bind_property, unbind_property
 export bytestring
 export length_zt, err_buf, check_err
-export gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url, gtkdoc_func_url
+export gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
+       gtkdoc_func_url, gtkdoc_struc_url
 
 export gtype_wrappers, GVariantDict, GBytes, GVariantType
 export GValue, GParamSpec, GTypeModule, _GValue
@@ -65,6 +66,7 @@ g_strfreev(p) = ccall((:g_strfreev, libglib), Nothing, (Ptr{Ptr{Nothing}},), p)
 gtkdoc_const_url(ns,name)="https://docs.gtk.org/$(ns)/const.$(name).html"
 gtkdoc_enum_url(ns,name)="https://docs.gtk.org/$(ns)/enum.$(name).html"
 gtkdoc_flags_url(ns,name)="https://docs.gtk.org/$(ns)/flags.$(name).html"
+gtkdoc_struc_url(ns,name)="https://docs.gtk.org/$(ns)/struct.$(name).html"
 gtkdoc_class_url(ns,class)="https://docs.gtk.org/$(ns)/class.$(class).html"
 gtkdoc_method_url(ns,class,method)="https://docs.gtk.org/$(ns)/method.$(class).$(method).html"
 gtkdoc_func_url(ns,func)="https://docs.gtk.org/$(ns)/func.$(func).html"

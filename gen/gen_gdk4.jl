@@ -5,6 +5,7 @@ toplevel, exprs, exports = GI.output_exprs()
 path="../src/gen"
 
 ns = GINamespace(:Gdk,"4.0")
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 ## constants, enums, and flags, put in a "Constants" submodule
 
@@ -12,7 +13,8 @@ const_mod = Expr(:block)
 
 const_exports = Expr(:export)
 
-GI.all_const_exprs!(const_mod, const_exports, ns)
+c = GI.all_const_exprs!(const_mod, const_exports, ns)
+GI.append_const_docs!(const_mod.args, "gdk4", d, c)
 push!(const_mod.args, const_exports)
 
 push!(exprs, const_mod)
@@ -29,13 +31,15 @@ disguised = Symbol[]
 struct_skiplist=vcat(disguised, [:ToplevelSize])
 
 GI.struct_cache_expr!(exprs)
-struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:TimeCoord])
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:TimeCoord])
+GI.append_struc_docs!(exprs, "gdk4", d, c, ns)
 
 ## objects
 
 object_skiplist=Symbol[]
 
-GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist;print_summary=true)
+c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist;print_summary=true)
+GI.append_object_docs!(exprs, "gdk4", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns)
 
 push!(exprs,exports)

@@ -6,7 +6,7 @@ end
 
 function doc_add_link(docstring, l)
     # FIXME: should escape the string in the square brackets because the underscores mess up the markdown formatting
-    "$docstring\n \nGTK docs: [$l]($l)"
+    "$docstring\n \nDetails can be found in the [GTK docs]($l)."
 end
 
 function doc_item(d, name, t)
@@ -59,6 +59,26 @@ function append_const_docs!(exprs, ns, d, c)
         if dc !== nothing
             dc = GI.doc_flags_add_link(dc, x, ns)
             GI.append_doc!(exprs, dc, x)
+        end
+    end
+end
+
+function append_struc_docs!(exprs, ns, d, c, gins)
+    for x in c
+        dc = GI.doc_struc(d,x)
+        if dc !== nothing
+            dc = GI.doc_struc_add_link(dc, x, ns)
+            GI.append_doc!(exprs, dc, get_full_name(gins[x]))
+        end
+    end
+end
+
+function append_object_docs!(exprs, ns, d, c, gins)
+    for x in c
+        dc = GI.doc_object(d,x)
+        if dc !== nothing
+            dc = GI.doc_object_add_link(dc, x, ns)
+            GI.append_doc!(exprs, dc, get_full_name(gins[x]))
         end
     end
 end

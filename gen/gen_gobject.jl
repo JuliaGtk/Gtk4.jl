@@ -5,11 +5,11 @@ toplevel, exprs, exports = GI.output_exprs()
 path="../src/gen"
 
 ns = GINamespace(:GObject,"2.0")
+d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 ## structs
 
-# These are marked as "disguised" and what this means is not documented AFAICT.
-disguised = [:ParamSpecPool]
+disguised = GI.read_disguised(d)
 # These are handled specially by GLib.jl so are not auto-exported.
 special = [:Value]
 import_as_opaque = [:ObjectClass]
@@ -22,11 +22,13 @@ GI.struct_exprs!(exprs,exports,ns,first_list)
 
 struct_skiplist=vcat(struct_skiplist,first_list)
 
-struct_skiplist = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=import_as_opaque,output_cache_init=false)
+struct_skiplist, c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=import_as_opaque,output_cache_init=false)
+GI.append_struc_docs!(exprs, "gobject", d, c, ns)
 
 ## objects and interfaces
 
-GI.all_objects!(exprs,exports,ns;handled=[:Object],skiplist=[:BindingGroup,:SignalGroup])
+c = GI.all_objects!(exprs,exports,ns;handled=[:Object],skiplist=[:BindingGroup,:SignalGroup])
+GI.append_object_docs!(exprs, "gobject", d, c, ns)
 push!(exprs,:(gtype_wrapper_cache[:GObject] = GObjectLeaf))
 GI.all_interfaces!(exprs,exports,ns)
 

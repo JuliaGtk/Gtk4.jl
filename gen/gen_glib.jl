@@ -25,8 +25,8 @@ const_exports = Expr(:export)
 const_skip = [:E,:LN2,:LN10,:LOG_2_BASE_10,:PI,:PI_2,:PI_4,:SQRT2]
 
 c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=const_skip; incl_typeinit=false)
-d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
-GI.append_const_docs!(const_mod.args, "glib", d, c)
+dglib = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
+GI.append_const_docs!(const_mod.args, "glib", dglib, c)
 c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:ConnectFlags,:ParamFlags,:SignalFlags,:SignalMatchType,:TypeFlags,:TypeFundamentalFlags])
 d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns2)).gir")
 GI.append_const_docs!(const_mod.args, "gobject", d, c)
@@ -44,11 +44,9 @@ GI.write_to_file(path,"glib_consts",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-# These are marked as "disguised" and what this means is not documented AFAICT.
-disguised = [:AsyncQueue, :BookmarkFile, :Data, :Dir, :Hmac, :Iconv,
-            :OptionContext, :PatternSpec, :Rand, :Sequence, :SequenceIter,
-            :SourcePrivate, :StatBuf, :StringChunk, :StrvBuilder, :TestCase,
-            :TestSuite, :Timer, :TreeNode]
+# Some structs are marked as "disguised" in the XML and what this means is not clear to me,
+# but they look like they are of no use to us.
+disguised = GI.read_disguised(dglib)
 
 # These are handled specially by GLib.jl so are not auto-exported.
 special = [:List,:SList,:Error,:Variant,:HashTable,:Array,:ByteArray,:PtrArray,:SourceFuncs]
@@ -62,8 +60,8 @@ struct_skiplist=vcat(disguised, special, [:Cond,:HashTableIter,:Hook,
     :RecMutex,:Scanner,
     :TestLogBuffer,:TestLogMsg,:Thread,:ThreadPool,:Tree,:UriParamsIter])
 
-GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=import_as_opaque)
-
+_, c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=import_as_opaque)
+GI.append_struc_docs!(exprs, "glib", dglib, c, ns)
 push!(exprs,exports)
 
 GI.write_to_file(path,"glib_structs",toplevel)
@@ -86,7 +84,7 @@ struct_skiplist=vcat(struct_skiplist,[:Error,:MarkupParseContext,:Source])
 # On Linux, which is the only platform where we generate code, glib symbols are present in both libgobject and libglib, and GI finds libgobject
 # first. The override points GI at libglib, which is necessary on Windows because there, libglib's symbols aren't present in libgobject.
 # This can be removed if we get GI working on all platforms.
-symbols_handled=GI.all_struct_methods!(exprs,ns;print_detailed=true,skiplist=skiplist,struct_skiplist=struct_skiplist, liboverride=:libglib)
+symbols_handled=GI.all_struct_methods!(exprs,ns;print_detailed=false,skiplist=skiplist,struct_skiplist=struct_skiplist, liboverride=:libglib)
 
 GI.write_to_file(path,"glib_methods",toplevel)
 
