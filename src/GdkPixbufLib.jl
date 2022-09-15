@@ -34,6 +34,29 @@ eval(include("gen/gdkpixbuf_functions"))
 
 end
 
+# define accessor methods
+skiplist = [ :file_info ]
+
+for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
+    ms=methods(getfield(GdkPixbufLib.G_,func))
+    v=Symbol(string(func)[5:end])
+    v in skiplist && continue
+    for m in ms
+        GLib.isgetter(m) || continue
+        eval(GLib.gen_getter(func,v,m))
+    end
+end
+
+for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
+    ms=methods(getfield(GdkPixbufLib.G_,func))
+    v=Symbol(string(func)[5:end])
+    v in skiplist && continue
+    for m in ms
+        GLib.issetter(m) || continue
+        eval(GLib.gen_setter(func,v,m))
+    end
+end
+
 global const lib_version = VersionNumber(
       PIXBUF_MAJOR,
       PIXBUF_MINOR,
@@ -251,8 +274,6 @@ end
 
 slice(img::GdkPixbuf, x, y) = GdkPixbuf(ccall((:gdk_pixbuf_new_subpixbuf, libgdkpixbuf), Ptr{GObject},
     (Ptr{GObject}, Cint, Cint, Cint, Cint), img, first(x)-1, first(y)-1, length(x), length(y)))
-width(img::GdkPixbuf) = G_.get_width(img)
-height(img::GdkPixbuf) = G_.get_height(img)
 size(a::GdkPixbuf, i::Integer) = (i == 1 ? width(a) : (i == 2 ? height(a) : 1))
 size(a::GdkPixbuf) = (width(a), height(a))
 Base.ndims(::GdkPixbuf) = 2

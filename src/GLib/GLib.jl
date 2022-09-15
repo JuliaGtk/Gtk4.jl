@@ -107,28 +107,14 @@ end
 function gen_getter(func,v,m)
     p=_extract_instance_type(m)
     t=Symbol(p[end]) # the type name
-    length(p)==1 && return :($v(x::$t)=G_.$func(x))
-    ns=Symbol(p[1])
-    if length(p)==2
-        return :($v(x::$ns.$t)=G_.$func(x))
-    elseif length(p)==3
-        ns2=Symbol(p[2])
-        return :($v(x::$ns.$ns2.$t)=G_.$func(x))
-    end
+    return :($v(x::$t)=G_.$func(x))
 end
 
 # for an instance method in `G_`, generate a setter method
 function gen_setter(func,v,m)
     p=_extract_instance_type(m)
     t=Symbol(p[end]) # the type name
-    length(p)==1 && return :($v(x::$t,y)=G_.$func(x,y))
-    ns=Symbol(p[1])
-    if length(p)==2
-        return :($v(x::$ns.$t,y)=G_.$func(x,y))
-    elseif length(p)==3
-        ns2=Symbol(p[2])
-        return :($v(x::$ns.$ns2.$t,y)=G_.$func(x,y))
-    end
+    return :($v(x::$t,y)=G_.$func(x,y))
 end
 
 function Base.:(==)(b::T, i::Integer) where T<:BitFlag
