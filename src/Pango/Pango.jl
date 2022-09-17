@@ -3,9 +3,10 @@ module Pango
 using ..GLib
 using Glib_jll
 using Pango_jll
-using CEnum, BitFlags
 
 import Base: convert, copy
+import CEnum: @cenum, CEnum
+import BitFlags: @bitflag, BitFlag
 
 eval(include("../gen/pango_consts"))
 eval(include("../gen/pango_structs"))

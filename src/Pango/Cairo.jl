@@ -1,7 +1,9 @@
 module Cairo
 
 using ..GLib
-using CEnum, BitFlags
+
+import CEnum: @cenum, CEnum
+import BitFlags: @bitflag, BitFlag
 
 eval(include("../gen/cairo_consts"))
 eval(include("../gen/cairo_structs"))

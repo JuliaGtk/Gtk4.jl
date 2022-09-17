@@ -321,7 +321,7 @@ icon = Matrix{GdkPixbufLib.RGB}(undef, 40, 20)
 fill!(icon, GdkPixbufLib.RGB(0,0xff,0))
 icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGB(0,0,0xff))
 pb=GdkPixbuf(width=100, height=100, has_alpha=false)
-set_pixbuf(pic, pb)
+Gtk4.pixbuf(pic, pb)
 pic2 = GtkPicture(pb)
 
 texture = GdkTexture(pb)
@@ -533,6 +533,26 @@ end
 @testset "Infobar" begin
 infobar = GtkInfoBar()
 
+end
+
+# CSS
+
+@testset "CssProviderLeaf(filename=\"...\")" begin
+    style_file = joinpath(dirname(@__FILE__), "style_test.css")
+
+    l = GtkLabel("I am some large blue text!")
+
+    provider = GtkCssProvider(filename=style_file)
+
+    sc = Gtk4.style_context(l)
+    push!(sc, provider, 600)
+
+    w = GtkWindow(l)
+    show(w)
+
+    ### add css tests here
+
+    destroy(w)
 end
 
 @testset "Builder" begin

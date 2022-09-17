@@ -1,8 +1,9 @@
 module Graphene
 
 using ..GLib
-using CEnum
 using Graphene_jll
+
+import CEnum: @cenum, CEnum
 
 eval(include("gen/graphene_consts"))
 eval(include("gen/graphene_structs"))

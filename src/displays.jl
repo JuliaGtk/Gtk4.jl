@@ -21,6 +21,8 @@ function screen_size(widget=nothing)
     size(m[1])
 end
 
+# GtkImage (for fixed-size images, such as icons)
+
 GtkImage(pixbuf::GdkPixbuf) = G_.Image_new_from_pixbuf(pixbuf)
 GtkImage(filename::AbstractString) = G_.Image_new_from_file(filename)
 
@@ -41,8 +43,10 @@ function GtkImage(; resource_path = nothing, filename = nothing, icon_name = not
 end
 empty!(img::GtkImage) = G_.clear(img)
 
+# GtkPicture (for displaying an image at its natural size)
+
 GtkPicture(pixbuf::GdkPixbuf) = G_.Picture_new_for_pixbuf(pixbuf)
-#GtkPicture(p::GdkPaintable) = G_.Picture_new_for_paintable(p)
+GtkPicture(p::GdkPaintable) = G_.Picture_new_for_paintable(p)
 GtkPicture(gfile::GFile) = G_.Picture_new_for_file(gfile)
 
 function GtkPicture(; resource_path = nothing, filename = nothing)
@@ -58,8 +62,6 @@ function GtkPicture(; resource_path = nothing, filename = nothing)
     end
     return img
 end
-
-set_pixbuf(p::GtkPicture,pb) = G_.set_pixbuf(p,pb)
 
 ## GtkProgressBar
 

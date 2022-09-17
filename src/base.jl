@@ -165,6 +165,25 @@ convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
 
 GtkWidgetPaintable(w::GtkWidget) = G_.WidgetPaintable_new(w)
 
+## CSS, style
+
+function GtkCssProviderLeaf(; data = nothing, filename = nothing)
+    source_count = (data !== nothing) + (filename !== nothing)
+    @assert(source_count <= 1,
+        "GtkCssProvider must have at most one data or filename argument")
+    provider = G_.CssProvider_new()
+    if data !== nothing
+        G_.load_from_data(provider, collect(data))
+    elseif filename !== nothing
+        G_.load_from_path(provider, filename)
+    end
+    return provider
+end
+
+function push!(context::GtkStyleContext, provider, priority::Integer)
+    G_.add_provider(context, GtkStyleProvider(provider), priority)
+end
+
 ## GtkApplication
 
 GtkApplication(id = nothing, flags = GLib.ApplicationFlags_NONE) = G_.Application_new(id,flags)

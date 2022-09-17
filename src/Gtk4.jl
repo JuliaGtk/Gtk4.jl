@@ -14,7 +14,6 @@ import BitFlags: @bitflag
 include("GLib/GLib.jl")
 include("Pango/Pango.jl")
 include("GdkPixbufLib.jl")
-
 include("Graphene.jl")
 
 using ..GLib

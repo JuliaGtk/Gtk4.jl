@@ -2,6 +2,8 @@ module GI
     using Glib_jll, gobject_introspection_jll
     using MacroTools, CEnum, BitFlags, EzXML
 
+    @static gobject_introspection_jll.is_available() || error("gobject_introspection_jll is not available on this platform")
+
     include("GLibBase/GLibBase.jl")
 
     import .GLibBase as GLib
