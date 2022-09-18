@@ -1,5 +1,11 @@
 # extracting documentation strings from .gir XML files
 
+function read_gir(m::Module, ns::GINamespace)
+    d = m.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir"
+    !isa(d,String) && error("Can't find GIR")
+    EzXML.readxml(d)
+end
+
 function append_doc!(exprs, docstring, name)
     push!(exprs, Expr(:macrocall, Symbol("@doc"), nothing, docstring, name))
 end
@@ -9,10 +15,14 @@ function doc_add_link(docstring, l)
     "$docstring\n \nDetails can be found in the [GTK docs]($l)."
 end
 
+_name_match(n, name)=n["name"]==String(name)
+
 function doc_item(d, name, t)
-    ns=namespace(d.root)
-    all_items=findall("//x:namespace/x:$t",d.root, ["x"=>ns])
-    n=findfirst(c->c["name"]==String(name),all_items)
+    r = d.root
+    r === nothing && return nothing
+    ns=EzXML.namespace(r)
+    all_items=findall("//x:namespace/x:$t",r, ["x"=>ns])::Vector{EzXML.Node}
+    n=findfirst(Base.Fix2(_name_match, name),all_items)
     if n !== nothing
         for e in eachelement(all_items[n])
             if e.name == "doc"

@@ -165,7 +165,8 @@ function g_sigatom(@nospecialize(f)) # calls f, where f never throws (but this f
     ct = current_task()
     if g_yielded[]
         @assert g_stack !== nothing
-        @assert g_stack != ct
+        b = (g_stack != ct)::Bool
+        @assert b
         @assert !prev
         push!(g_doatomic, (f, ct))
         return wait()

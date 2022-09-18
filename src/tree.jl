@@ -45,7 +45,10 @@ GtkListStore(combo::GtkComboBoxText) = GtkListStore(ccall((:gtk_combo_box_get_mo
 
 ## index is integer for a liststore, vector of ints for tree
 iter_from_index(store::GtkListStore, index::Int) = iter_from_string_index(store, string(index - 1))
-index_from_iter(store::GtkListStore, iter::TRI) = parse(Int, get_string_from_iter(GtkTreeModel(store), iter)) + 1
+function index_from_iter(store::GtkListStore, iter::TRI)
+	s = get_string_from_iter(GtkTreeModel(store), iter)
+	s !== nothing ? parse(Int, s) + 1 : 0
+end
 
 function list_store_set_values(store::GtkListStore, iter, values)
 	riter = Ref(iter)
@@ -224,6 +227,8 @@ isancestor(treeStore::GtkTreeStore, iter::TRI, descendant::TRI) =
           (Ptr{GObject}, Ref{_GtkTreeIter}, Ref{_GtkTreeIter}),
           treeStore, iter, descendant) != 0
 
+isancestor(treeStore::GtkTreeStore, iter::Nothing, descendant::TRI) = false
+
 depth(treeStore::GtkTreeStore, iter::TRI) =
     ccall((:gtk_tree_store_iter_depth, libgtk4), Cint, (Ptr{GObject}, Ref{_GtkTreeIter}), treeStore, iter)
 
@@ -309,12 +314,11 @@ ncolumns(treeModel::GtkTreeModel) = G_.get_n_columns(treeModel)
 
 ## Most gtk function pass in a Mutable Iter and return a bool
 ## Update iter to point to first iterm
-# function get_iter_first(treeModel::GtkTreeModel, iter = Ref{_GtkTreeIter}())
-#     ret = ccall((:gtk_tree_model_get_iter_first, libgtk4), Cint,
-#           (Ptr{GObject}, Ptr{_GtkTreeIter}),
-#           treeModel, iter)
-#     ret != 0
-# end
+function get_iter_first(treeModel::GtkTreeModel, iter::Ref{_GtkTreeIter})
+    ret = ccall((:gtk_tree_model_get_iter_first, libgtk4), Cint,
+        (Ptr{GObject}, Ptr{_GtkTreeIter}), treeModel, iter)
+    ret != 0
+end
 
 ## return (Bool, iter)
 function get_iter_next(treeModel::GtkTreeModel, iter::Ref{_GtkTreeIter})
@@ -386,7 +390,10 @@ length(treeModel::GtkTreeModel, iter::TRI) = iter_n_children(treeModel, iter)
 string(treeModel::GtkTreeModel, iter::TRI) = get_string_from_iter(treeModel, iter)
 
 ## index is Int[] 1-based
-index_from_iter(treeModel::GtkTreeModel, iter::TRI) = parse.(Int32, split(get_string_from_iter(treeModel, iter), ":")) .+ 1
+function index_from_iter(treeModel::GtkTreeModel, iter::TRI)
+	s = get_string_from_iter(treeModel, iter)
+	s !== nothing ? (parse.(Int32, split(s, ":")) .+ 1) : nothing
+end
 
 ## An iterator to walk a tree, e.g.,
 ## for iter in TreeIterator(store) ## or TreeIterator(store, piter)
@@ -402,13 +409,14 @@ Base.IteratorSize(::TreeIterator) = Base.SizeUnknown()
 
 ## iterator interface for depth first search
 function start_(x::TreeIterator)
-    isa(x.iter, Nothing) ? nothing : Ref(copy(x.iter))
+	i = x.iter
+    i === nothing ? nothing : Ref(copy(i))
 end
 
 function done_(x::TreeIterator, state)
-    iter = Ref{GtkTreeIter}()
+    iter = Ref{_GtkTreeIter}()
 
-    isa(state, Nothing) && return (!get_iter_first(x.model, iter))   # special case root
+    state === nothing && return (!get_iter_first(x.model, iter))   # special case root
 
     state = copy(state)
 
@@ -419,7 +427,7 @@ function done_(x::TreeIterator, state)
     # or a valid ancestor of piter has a sibling
     up(x.model, state) || return(true)
 
-    while isa(x.iter, Nothing) || isancestor(x.store, x.iter, state)
+    while x.iter === nothing || isancestor(x.store, x.iter, state)
         next(x.model, copy(state)) && return(false) # has a sibling
         up(x.model, state) || return(true)
     end
@@ -428,9 +436,9 @@ end
 
 
 function next_(x::TreeIterator, state)
-    iter = Ref{GtkTreeIter}()
+    iter = Ref{_GtkTreeIter}()
 
-    if isa(state, Nothing)      # special case root
+    if state === nothing      # special case root
         get_iter_first(x.model, iter)
         return(iter, iter)
     end
@@ -447,7 +455,7 @@ function next_(x::TreeIterator, state)
 
     up(x.model, state)
 
-    while isa(x.iter, Nothing) || isancestor(x.store, x.iter, state)
+    while x.iter === nothing || isancestor(x.store, x.iter, state)
         cstate = copy(state)
         next(x.model, cstate) && return(cstate, cstate) # return the sibling of state
         up(x.model, state)

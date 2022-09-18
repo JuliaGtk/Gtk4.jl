@@ -830,9 +830,11 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
     jargs = Arg[]
     if flags & GIFunction.IS_METHOD != 0
         object = get_container(info)
-        typeinfo = extract_type(InstanceType,object)
-        push!(jargs, Arg(:instance, typeinfo.jtype))
-        push!(cargs, Arg(:instance, typeinfo.ctype))
+        if object !== nothing
+            typeinfo = extract_type(InstanceType,object)
+            push!(jargs, Arg(:instance, typeinfo.jtype))
+            push!(cargs, Arg(:instance, typeinfo.ctype))
+        end
     end
     if flags & GIFunction.IS_CONSTRUCTOR != 0
         object = get_container(info)

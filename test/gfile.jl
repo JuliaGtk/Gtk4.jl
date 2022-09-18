@@ -5,7 +5,8 @@ using Test
 
 @testset "gfile" begin
 
-path=GLib.G_.get_home_dir()
+path=pwd()
+
 f=GLib.G_.new_for_path(path)
 path2=GLib.G_.get_path(GFile(f))
 

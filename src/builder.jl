@@ -39,7 +39,7 @@ function load_builder(b::GtkBuilder,cm::Module)
                  if !startswith(name,"___")
                      sname = Symbol(name)
                      if !Base.isidentifier(sname)
-                         warn("$sname is not a valid variable name.")
+                         @warn("$sname is not a valid variable name.")
                          continue
                      end
                      Core.eval(cm,:($sname = $obj))

@@ -158,6 +158,12 @@ function prepend_search_path(s::AbstractString)
     ccall((:g_irepository_prepend_search_path, libgi), Cvoid, (Cstring,), s)
 end
 
+function prepend_search_path(mod::Module)
+    d = mod.find_artifact_dir()*"/lib/girepository-1.0"
+    d === Missing && error("Artifact directory not found")
+    prepend_search_path(d)
+end
+
 function get_all(ns::GINamespace, t::Type{T},exclude_deprecated=true) where {T<:GIInfo}
     [info for info=ns if isa(info,t) && (exclude_deprecated ? !is_deprecated(info) : true)]
 end
@@ -207,8 +213,9 @@ end
 
 function get_shlibs(ns)
     names = ccall((:g_irepository_get_shared_library, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
-    if names != C_NULL
-        [bytestring(s) for s in split(bytestring(names),",")]
+    bnames = bytestring(names)
+    if bnames !== nothing
+        [bytestring(s) for s in split(bnames,",")]
     else
         String[]
     end

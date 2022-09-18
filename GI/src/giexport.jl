@@ -425,8 +425,10 @@ end
 isdisguised(c) = haskey(c,"disguised") && (c["disguised"] == "1")
 
 function read_disguised(d)
-    ns=namespace(d.root)
-    all_recs=findall("//x:namespace/x:record",d.root, ["x"=>ns])
+    r = d.root
+    isnothing(r) && return Symbol[]
+    ns=EzXML.namespace(r)
+    all_recs=findall("//x:namespace/x:record",r, ["x"=>ns])
     n=findall(isdisguised,all_recs)
     [Symbol(ni["name"]) for ni in all_recs[n]]
 end

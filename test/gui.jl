@@ -24,7 +24,9 @@ visible(w,true)
 @test isvisible(w) == true
 
 m = Gtk4.monitor(w)
-r = Gtk4.G_.get_geometry(m)
+if m!==nothing
+    r = Gtk4.G_.get_geometry(m)
+end
 
 #r2 = m.geometry
 
@@ -299,10 +301,12 @@ bu=GtkButton(im)
 w = GtkWindow(bu, "Icon button", 60, 40)
 @test bu[]==im
 pb2=copy(pb)
-@test size(pb2,2) == size(pb)[2]
-pb3=slice(pb2,11:20,11:20)
-@test size(pb3) == (10,10)
-fill!(pb3,GdkPixbufLib.RGB(0,0,0))
+if pb2!==nothing
+    @test size(pb2,2) == size(pb)[2]
+    pb3=slice(pb2,11:20,11:20)
+    @test size(pb3) == (10,10)
+    fill!(pb3,GdkPixbufLib.RGB(0,0,0))
+end
 destroy(w)
 end
 

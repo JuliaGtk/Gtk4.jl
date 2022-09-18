@@ -1,7 +1,7 @@
 using gobject_introspection_jll, gdk_pixbuf_jll
 using GI
-GI.prepend_search_path(gobject_introspection_jll.find_artifact_dir()*"/lib/girepository-1.0")
-GI.prepend_search_path(gdk_pixbuf_jll.find_artifact_dir()*"/lib/girepository-1.0")
+GI.prepend_search_path(gobject_introspection_jll)
+GI.prepend_search_path(gdk_pixbuf_jll)
 include("gen_glib.jl")
 include("gen_gobject.jl")
 include("gen_gio.jl")

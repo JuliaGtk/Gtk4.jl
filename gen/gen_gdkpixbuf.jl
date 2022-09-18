@@ -3,7 +3,7 @@ using GI
 toplevel, exprs, exports = GI.output_exprs()
 
 ns = GINamespace(:GdkPixbuf,"2.0")
-d = readxml(gdk_pixbuf_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
+d = GI.read_gir(gdk_pixbuf_jll, ns)
 path="../src/gen"
 
 ## constants, enums, and flags, put in a "Constants" submodule

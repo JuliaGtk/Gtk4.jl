@@ -5,7 +5,7 @@ toplevel, exprs, exports = GI.output_exprs()
 path="../src/gen"
 
 ns = GINamespace(:Gio,"2.0")
-d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
+d = GI.read_gir(gobject_introspection_jll, ns)
 
 ## structs
 

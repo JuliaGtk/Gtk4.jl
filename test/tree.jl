@@ -1,4 +1,4 @@
-#using Gtk, Test
+using Gtk4, Test
 
 @testset "tree" begin
 
@@ -26,7 +26,7 @@ function itemlist(types, rownames)
     return (tv,list,cols)
 end
 
-tv, store, cols = itemlist([Int, String], ["No", "Name"])
+tv::GtkTreeView, store, cols = itemlist([Int, String], ["No", "Name"])
 treeModel = GtkTreeModel(store)
 
 wscroll[] = tv
@@ -59,7 +59,7 @@ next(path2)
 
 path3 = GtkTreePath("1")
 @test string(path3) == "1"
-down(path3)
+path3 !== nothing && down(path3)
 @test string(path3) == "1:0"
 
 path4 = GtkTreePath()

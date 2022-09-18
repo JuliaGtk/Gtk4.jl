@@ -25,13 +25,13 @@ const_exports = Expr(:export)
 const_skip = [:E,:LN2,:LN10,:LOG_2_BASE_10,:PI,:PI_2,:PI_4,:SQRT2]
 
 c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=const_skip; incl_typeinit=false)
-dglib = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns)).gir")
+dglib = GI.read_gir(gobject_introspection_jll, ns)
 GI.append_const_docs!(const_mod.args, "glib", dglib, c)
 c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:ConnectFlags,:ParamFlags,:SignalFlags,:SignalMatchType,:TypeFlags,:TypeFundamentalFlags])
-d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns2)).gir")
+d = GI.read_gir(gobject_introspection_jll, ns2)
 GI.append_const_docs!(const_mod.args, "gobject", d, c)
 c = GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
-d = readxml(gobject_introspection_jll.find_artifact_dir()*"/share/gir-1.0/$(GI.ns_id(ns3)).gir")
+d = GI.read_gir(gobject_introspection_jll, ns3)
 GI.append_const_docs!(const_mod.args, "gio", d, c)
 push!(const_mod.args,const_exports)
 
