@@ -6,14 +6,14 @@ using gdk_pixbuf_jll
 using Librsvg_jll
 using JLLWrappers
 using Scratch
-using CEnum, BitFlags
+
+import Base: convert, size, eltype, getindex, setindex!
+import CEnum: @cenum
+import BitFlags: @bitflag
+import Graphics: width, height
 
 export GdkPixbuf, GdkPixbufAnimation
 export width, height, slice
-
-import Base: convert, size, eltype, getindex, setindex!
-
-import Graphics: width, height
 
 const Index{I<:Integer} = Union{I, AbstractVector{I}}
 
@@ -314,6 +314,41 @@ Base.fill!(img::GdkPixbuf, pix) = fill!(convert(MatrixStrided, img), pix)
 function __init__()
     gtype_wrapper_cache_init()
     gboxed_cache_init()
+
+    cache_dir = @get_scratch!("gdk-pixbuf-cache")
+    treehash_cache_path = joinpath(cache_dir, "gdk_pixbuf_treehash.cache")
+    loaders_cache_path = joinpath(cache_dir, "loaders.cache")
+    gdk_pixbuf_treehash = basename(gdk_pixbuf_jll.artifact_dir)
+    if !isfile(treehash_cache_path) || read(treehash_cache_path) != gdk_pixbuf_treehash
+        function query_pixbuf_loaders(dir::String;
+                                      extra_env::Vector{Pair{String,String}} = Pair{String,String}[])
+            gpql = gdk_pixbuf_query_loaders()
+            return readchomp(addenv(gpql, "GDK_PIXBUF_MODULEDIR" => dir, extra_env...))
+        end
+
+        open(loaders_cache_path, write=true) do io
+            # Cache builtin gdx-pixbuf modules
+            write(io, query_pixbuf_loaders(gdk_pixbuf_loaders_dir))
+            println(io)
+
+            # If Librsvg_jll is available, cache that one too
+            if Librsvg_jll.is_available()
+                librsvg_module_dir = dirname(Librsvg_jll.libpixbufloader_svg)
+                write(io, query_pixbuf_loaders(librsvg_module_dir; extra_env = [
+                    JLLWrappers.LIBPATH_env=>Librsvg_jll.LIBPATH[],
+                ]))
+                println(io)
+            end
+        end
+
+        rm(treehash_cache_path; force=true)
+        open(treehash_cache_path, write=true) do io
+            write(io, gdk_pixbuf_treehash)
+        end
+    end
+
+    # Point gdk to our cached loaders
+    ENV["GDK_PIXBUF_MODULE_FILE"] = loaders_cache_path
 end
 
 end
