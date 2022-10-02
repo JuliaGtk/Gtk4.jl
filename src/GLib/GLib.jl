@@ -168,6 +168,7 @@ end
 
 include("gobject.jl")
 include("listmodel.jl")
+include("loop.jl")
 include("actions.jl")
 
 const exiting = Ref(false)

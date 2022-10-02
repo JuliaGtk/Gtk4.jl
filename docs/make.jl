@@ -18,7 +18,8 @@ makedocs(
                      "manual/textwidgets.md",
                      "manual/combobox.md",
                      "manual/listtreeview.md",
-                     "manual/canvas.md"
+                     "manual/canvas.md",
+                     "manual/nonreplusage.md"
                     ],
         "Gtk.jl to Gtk4.jl" => "diff3to4.md",
         "Gtk4 Reference" => "doc/reference.md",

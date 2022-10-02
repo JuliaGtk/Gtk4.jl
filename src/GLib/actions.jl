@@ -26,14 +26,6 @@ end
 
 set_state(m::GSimpleAction, v::GVariant) = G_.set_state(m,v)
 
-GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
-
-function run(app::GApplication)
-    ccall(("g_application_run", libgio), Int32, (Ptr{GObject}, Int32, Ptr{Cstring}), app, 0, C_NULL)
-end
-register(app::GApplication) = G_.register(app, nothing)
-activate(app::GApplication) = G_.activate(app)
-
 GMenu() = G_.Menu_new()
 function GMenu(i::GMenuItem)
     m = GMenu()

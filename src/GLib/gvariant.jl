@@ -53,6 +53,6 @@ function variant_type_string(::Type{T}) where T
     type_string
 end
 
-GVariantType(t::Type) where T = G_.VariantType_new(variant_type_string(t))
+GVariantType(t::Type{T}) where T = G_.VariantType_new(variant_type_string(t))
 
 Base.:(==)(lhs::GVariantType, rhs::GVariantType) = G_.equal(lhs,rhs)

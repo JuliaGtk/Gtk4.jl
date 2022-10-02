@@ -126,7 +126,9 @@ function __init__()
     success = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
     success || error("gtk_init_check() failed.")
 
-    GLib.start_main_loop()
+    if isinteractive()
+        GLib.start_main_loop()
+    end
 end
 
 include("precompile.jl")
