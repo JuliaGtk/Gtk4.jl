@@ -135,6 +135,8 @@ four = GtkLabel("fo_ur")
 push!(nb, four, "tab _four")
 @test pagenumber(nb, four) == 4
 @test length(nb) == 4
+empty!(nb)
+@test length(nb) == 0
 destroy(w)
 end
 
@@ -236,19 +238,26 @@ end
 @testset "Grid" begin
     grid = GtkGrid()
     w = GtkWindow(grid,"Grid", 400, 400)
-    b=GtkButton("2,2")
-    grid[2,2] = b
-    @test grid[2,2] == b
-    grid[2,3] = GtkButton("2,3")
-    grid[1,1] = GtkLabel("grid")
-    grid[3,1:3] = GtkButton("Tall button")
+    for i=1:5, j=1:5
+        b=GtkButton("$i,$j")
+        grid[i,j] = b
+        @test grid[i,j] == b
+    end
+    deleteat!(grid,4,:row)
+    deleteat!(grid,4,:col)
+
+    tb = GtkButton("Tall button")
+    grid[3,1:3] = tb
+    delete!(grid, tb)
     insert!(grid,1,:top)
     insert!(grid,3,:bottom)
     insert!(grid,grid[1,2],Gtk4.PositionType_RIGHT)
 
     @test_throws ErrorException insert!(grid,1,:above)
-    #deleteat!(grid,1,:row)
-    #empty!(grid)
+    for w in grid
+        println(w)
+    end
+    empty!(grid)
     destroy(w)
 end
 
@@ -456,6 +465,28 @@ adj = GtkAdjustment(5.0,0.0,10.0,1.0,5.0,5.0)
 sp2 = GtkSpinButton(adj, 1.0, 2)
 adj2 = GtkAdjustment(sp2)
 @test adj == adj2
+
+configure(adj2; value = 2.0, lower = 1.0, upper = 20.0, step_increment = 2.0, page_increment = 10.0, page_size = 10.0)
+@test adj2.value == 2.0
+@test adj2.lower == 1.0
+@test adj2.upper == 20.0
+@test adj2.step_increment == 2.0
+@test adj2.page_increment == 10.0
+@test adj2.page_size == 10.0
+configure(adj2) # should change nothing
+@test adj2.value == 2.0
+@test adj2.lower == 1.0
+@test adj2.upper == 20.0
+@test adj2.step_increment == 2.0
+@test adj2.page_increment == 10.0
+@test adj2.page_size == 10.0
+
+configure(sp2; climb_rate = 2.0, digits = 3)
+@test sp2.climb_rate == 2.0
+@test sp2.digits == 3
+configure(sp2) # should change nothing
+@test sp2.climb_rate == 2.0
+@test sp2.digits == 3
 end
 
 @testset "progressbar" begin
@@ -783,8 +814,10 @@ end
 c = GtkCanvas()
 o = GtkOverlay(c)
 @test o[] == c
-push!(o,GtkButton("Button"))
+b=GtkButton("Button")
+add_overlay(o,b)
 w = GtkWindow(o, "overlay")
+remove_overlay(o,b)
 curs = GdkCursor("crosshair")
 cursor(c, curs)
 @test curs == cursor(c)

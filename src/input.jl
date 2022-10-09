@@ -39,6 +39,34 @@ GtkAdjustment(value, lower, upper, step_increment, page_increment, page_size) = 
 
 GtkAdjustment(scale::GtkScale) = G_.get_adjustment(scale)
 
+"""
+    configure(adj::GtkAdjustment; value = nothing, lower = nothing, upper = nothing, step_increment = nothing, page_increment = nothing, page_size = nothing)
+
+Sets all properties of an adjustment, while only resulting in one emission of
+the `changed` signal.
+"""
+function configure(adj::GtkAdjustment; value = nothing, lower = nothing, upper = nothing, step_increment = nothing, page_increment = nothing, page_size = nothing)
+    if value === nothing
+        value = G_.get_value(adj)
+    end
+    if lower === nothing
+        lower = G_.get_lower(adj)
+    end
+    if upper === nothing
+        upper = G_.get_upper(adj)
+    end
+    if step_increment === nothing
+        step_increment = G_.get_step_increment(adj)
+    end
+    if page_increment === nothing
+        page_increment = G_.get_page_increment(adj)
+    end
+    if page_size === nothing
+        page_size = G_.get_page_size(adj)
+    end
+    G_.configure(adj, value, lower, upper, step_increment, page_increment, page_size)
+end
+
 ## GtkSpinButton
 
 GtkSpinButton(adj::GtkAdjustment, climb_rate::Real, digits::Integer) = G_.SpinButton_new(adj,climb_rate,digits)
@@ -46,3 +74,19 @@ GtkSpinButton(min::Real, max::Real, step::Real) = G_.SpinButton_new_with_range(m
 GtkSpinButton(scale::AbstractRange) = GtkSpinButton(minimum(scale), maximum(scale), step(scale))
 
 GtkAdjustment(spinButton::GtkSpinButton) = G_.get_adjustment(spinButton)
+
+"""
+    configure(sb::GtkSpinButton; adj = nothing, climb_rate = nothing, digits = nothing)
+
+Sets all properties of a `GtkSpinButton`, while only resulting in one emission of
+the `changed` signal.
+"""
+function configure(sb::GtkSpinButton; adj = nothing, climb_rate = nothing, digits = nothing)
+    if climb_rate === nothing
+        climb_rate = G_.get_climb_rate(sb)
+    end
+    if digits === nothing
+        digits = G_.get_digits(sb)
+    end
+    G_.configure(sb, adj, climb_rate, digits)
+end

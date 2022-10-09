@@ -18,9 +18,9 @@ if !isinteractive()
 end
 ```
 
-By waiting on a `Condition`, Julia will keep running until a signal handler calls `notify(c)`. This pattern allows for multiple events to trigger the condition, such as a button press, or one of many windows to be closed. Program flow will resume at `wait` line, after which it would terminate in this example.
+By waiting on a `Condition`, Julia will keep running until a signal handler calls `notify(c)`. This pattern allows for multiple events to trigger the condition, such as a button press, or one of many windows to be closed. Program flow will resume at the `wait` line, after which it would terminate in this example.
 
-In the common case we simply wish to wait for a single window to be closed, this can be shortened by using `waitforsignal`:
+In the common case that we simply wish to wait for a single window to be closed, this can be shortened by using `waitforsignal`:
 
 ```julia
 win = GtkWindow("gtkwait")

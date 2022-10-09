@@ -38,6 +38,18 @@ function pushfirst!(b::GtkBox,w::GtkWidget)
     b
 end
 
+function delete!(box::GtkBox, w::GtkWidget)
+    G_.remove(box, w)
+    box
+end
+
+function empty!(box::GtkBox)
+    for w in box
+        G_.remove(w)
+    end
+    box
+end
+
 ## GtkSeparator
 
 GtkSeparator(orientation) = G_.Separator_new(convert(Gtk4.Orientation, orientation))
@@ -131,13 +143,36 @@ function insert!(grid::GtkGrid, i::Integer, side)
     else
         error(string("invalid GtkPositionType ", side))
     end
+    nothing
 end
 
 function insert!(grid::GtkGrid, sibling, side)
     side = convert(Gtk4.PositionType, side)
     G_.insert_next_to(grid, sibling, side)
+    sibling
 end
 
+function delete!(grid::GtkGrid, w::GtkWidget)
+    G_.remove(grid, w)
+    grid
+end
+
+function deleteat!(grid::GtkGrid, i::Integer, side::Symbol)
+    if side === :row
+        G_.remove_row(grid, i-1)
+    elseif side === :col
+        G_.remove_column(grid, i-1)
+    else
+        error(string("invalid GtkPositionType ", s))
+    end
+end
+
+function empty!(grid::GtkGrid)
+    while (w = G_.get_first_child(grid)) !== nothing
+        G_.remove(grid, w)
+    end
+    grid
+end
 
 ## GtkFrame — A decorative frame and optional label
 
@@ -201,6 +236,13 @@ pagenumber(w::GtkNotebook, child::GtkWidget) =
 
 length(w::GtkNotebook) = G_.get_n_pages(w)
 
+function empty!(w::GtkNotebook)
+    while G_.get_n_pages(w) > 0
+        G_.remove_page(w,0)
+    end
+    w
+end
+
 ## GtkOverlay
 GtkOverlay() = G_.Overlay_new()
 function GtkOverlay(w::GtkWidget)
@@ -212,7 +254,14 @@ end
 setindex!(f::GtkOverlay, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkOverlay) = G_.get_child(f)
 
-push!(f::GtkOverlay, x::GtkWidget) = (G_.add_overlay(f,x); f)
+function add_overlay(f::GtkOverlay, x::GtkWidget, clip_overlay=false, measure_overlay=false)
+    G_.add_overlay(f,x)
+    clip_overlay && G_.set_clip_overlay(f,x,true)
+    measure_overlay && G_.set_measure_overlay(f,x,true)
+end
+remove_overlay(f::GtkOverlay, x::GtkWidget) = G_.remove_overlay(f,x)
+set_clip_overlay(f::GtkOverlay, x::GtkWidget, b::Bool) = G_.set_clip_overlay(f,x,b)
+set_measure_overlay(f::GtkOverlay, x::GtkWidget, b::Bool) = G_.set_measure_overlay(f,x,b)
 
 ## GtkStack
 
