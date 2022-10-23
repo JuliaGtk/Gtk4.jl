@@ -65,6 +65,7 @@ function GtkVolumeButton(value::Real) # 0 <= value <= 1
 end
 
 GtkFontButton() = G_.FontButton_new()
+GtkFontButton(font::AbstractString) = G_.FontButton_new_with_font(font)
 
 GtkColorButton() = G_.ColorButton_new()
 GtkColorButton(color::GdkRGBA) = G_.ColorButton_new_with_rgba(color)

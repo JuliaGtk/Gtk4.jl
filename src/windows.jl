@@ -127,41 +127,113 @@ function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent =
     w
 end
 
-ask_dialog(message::AbstractString, parent = nothing) =
-        ask_dialog(message, "No", "Yes", parent)
+"""
+    ask_dialog(question::AbstractString, parent = nothing; timeout = -1)
 
-function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing)
+Create a dialog with a message `question` and two buttons "No" and "Yes". Returns `true` if
+"Yes" is selected and `false` if "No" is selected or the dialog (or its parent window
+`parent`) is closed. The optional input `timeout` (disabled by default) can be used to set
+a time in seconds after which the dialog will close and `false` will be returned.
+"""
+ask_dialog(question::AbstractString, parent = nothing; timeout = -1) =
+        ask_dialog(question, "No", "Yes", parent; timeout = timeout)
+
+function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
     dlg = GtkMessageDialog(message, ((no_text, Integer(ResponseType_NO)), (yes_text, Integer(ResponseType_YES))),
             DialogFlags_DESTROY_WITH_PARENT, MessageType_QUESTION, parent)
+    response = Ref{Int32}()
+    c = Condition()
+
+    function on_response(dlg,response_id)
+        response[] = response_id
+        notify(c)
+    end
+
+    signal_connect(on_response,dlg,"response")
+    show(dlg)
+
+    if timeout > 0
+        emit(timer) = G_.response(dlg,Integer(Gtk4.ResponseType_NO))
+        Timer(emit, timeout)
+    end
+
+    wait(c)
+    destroy(dlg)
+    response[] == Integer(ResponseType_YES)
 end
 
-function destroy_dialog(d::GtkDialog, response_id)
-    destroy(d)
-end
+"""
+    info_dialog(message::AbstractString, parent = nothing; timeout = -1)
+
+Create a dialog with an informational message `message`. Returns when the dialog (or its
+parent window `parent`) is closed. The optional input `timeout` (disabled by default) can be
+used to set a time in seconds after which the dialog will close and `false` will be
+returned.
+""" info_dialog
 
 for (func, flag) in (
         (:info_dialog, :(MessageType_INFO)),
         (:warn_dialog, :(MessageType_WARNING)),
         (:error_dialog, :(MessageType_ERROR)))
-    @eval function $func(message::AbstractString, parent = nothing)
+    @eval function $func(message::AbstractString, parent = nothing; timeout = -1)
         parent = (parent === nothing ? C_NULL : parent)
-        w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
-            (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
-            parent, DialogFlags_DESTROY_WITH_PARENT,
-            $flag, ButtonsType_CLOSE, message))
-        signal_connect(destroy_dialog,w,"response")
-        w
+        dlg = GtkMessageDialog(message, (("Close",0),), DialogFlags_DESTROY_WITH_PARENT, $flag, parent)
+        c = Condition()
+
+        function destroy_dialog(dlg,response_id)
+            notify(c)
+        end
+
+        signal_connect(destroy_dialog,dlg,"response")
+        show(dlg)
+
+        if timeout > 0
+            emit(timer) = G_.response(dlg,Integer(Gtk4.ResponseType_CANCEL))
+            Timer(emit, timeout)
+        end
+
+        wait(c)
+        destroy(dlg)
     end
 end
 
-function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing)
-    parent = (parent === nothing ? C_NULL : parent)
-    widget = GtkMessageDialog(message, buttons, DialogFlags_DESTROY_WITH_PARENT, MessageType_INFO, parent)
-    box = content_area(widget)
+"""
+    input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
+
+Create a dialog with a message `message` and a text entry. Returns the string in the entry
+when the "Accept" button is pressed, or `entry_default` if "Cancel" is pressed or the dialog
+or its parent window `parent` is closed. The optional input `timeout` (disabled by default)
+can be used to set a time in seconds after which the dialog will close and `entry_default`
+will be returned.
+"""
+function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
+    #parent = (parent === nothing ? C_NULL : parent)
+    dlg = GtkMessageDialog(message, buttons, DialogFlags_DESTROY_WITH_PARENT, MessageType_INFO, parent)
+    box = content_area(dlg)
     entry = GtkEntry()
     entry.text = entry_default
     push!(box, entry)
-    return widget
+    c = Condition()
+    response = Ref{String}("")
+
+    function on_response(dlg,response_id)
+        if response_id == 1
+            response[] = text(GtkEditable(entry))
+        end
+        notify(c)
+    end
+
+    signal_connect(on_response,dlg,"response")
+    show(dlg)
+
+    if timeout > 0
+        emit(timer) = G_.response(dlg,0)
+        Timer(emit, timeout)
+    end
+
+    wait(c)
+    destroy(dlg)
+    response[]
 end
 
 ## FileChoosers
@@ -236,74 +308,117 @@ function file_chooser_get_selection(dlg::Union{GtkFileChooserDialog,GtkFileChoos
     selection
 end
 
-function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; kwargs...)
-    parent = (parent === nothing ? C_NULL : parent)
-    dlg = GtkFileChooserDialog(title, parent, FileChooserAction_OPEN,
-                                (("_Cancel", ResponseType_CANCEL),
-                                 ("_Open",   ResponseType_ACCEPT)); kwargs...)
-    dlgp = GtkFileChooser(dlg)
-    if !isempty(filters)
-        makefilters!(dlgp, filters)
-    end
-    show(dlg)
-    dlg
-end
-
-function save_dialog(title::AbstractString, parent = GtkNullContainer(), filters::Union{AbstractVector, Tuple} = String[]; kwargs...)
-    dlg = GtkFileChooserDialog(title, parent, FileChooserAction_SAVE,
-                                (("_Cancel", ResponseType_CANCEL),
-                                 ("_Save",   ResponseType_ACCEPT)); kwargs...)
-    dlgp = GtkFileChooser(dlg)
-    if !isempty(filters)
-        makefilters!(dlgp, filters)
-    end
-    show(dlg)
-    dlg
-end
-
-## Native dialogs
+## Native file dialogs
 
 show(d::GtkNativeDialog) = G_.show(d)
 hide(d::GtkNativeDialog) = G_.hide(d)
 destroy(d::GtkNativeDialog) = G_.destroy(d)
 
-function open_dialog_native(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
+function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false)
     dlg = GtkFileChooserNative(title, parent, FileChooserAction_OPEN, "Open", "Cancel")
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)
     end
+    response = Ref{Int32}(Int32(ResponseType_CANCEL))
+
+    c = Condition()
+
+    function on_response(dlg,response_id)
+        response[] = response_id
+        notify(c)
+    end
+
+    signal_connect(on_response, dlg, "response")
     show(dlg)
-    dlg
+
+    if timeout > 0
+        emit(timer) = (G_.destroy(dlg); notify(c))
+        Timer(emit, timeout)
+    end
+
+    wait(c)
+
+    if ResponseType(unsafe_trunc(UInt16,response[])) == ResponseType_ACCEPT
+        file = G_.get_file(dlgp)
+        sel = GLib.G_.get_path(GFile(file))
+    else
+        sel = ""
+    end
+
+    destroy(dlg)
+    sel
 end
 
-function save_dialog_native(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
-    dlg = GtkFileChooserNative(title, parent, FileChooserAction_SAVE,"Save","Cancel")
+function save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout=-1)
+    dlg = GtkFileChooserNative(title, parent, FileChooserAction_SAVE, "Save", "Cancel")
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)
     end
+
+    response = Ref{Int32}(Int32(ResponseType_CANCEL))
+
+    c = Condition()
+
+    function on_response(dlg,response_id)
+        response[] = response_id
+        notify(c)
+    end
+
+    signal_connect(on_response, dlg, "response")
     show(dlg)
-    dlg
+
+    if timeout > 0
+        emit(timer) = (G_.destroy(dlg); notify(c))
+        Timer(emit, timeout)
+    end
+
+    wait(c)
+
+    if ResponseType(unsafe_trunc(UInt16,response[])) == ResponseType_ACCEPT
+        file = G_.get_file(dlgp)
+        sel = GLib.G_.get_path(GFile(file))
+    else
+        sel = ""
+    end
+
+    destroy(dlg)
+    sel
 end
+
+## Other chooser dialogs
 
 function GtkColorChooserDialog(title::AbstractString, parent)
     return G_.ColorChooserDialog_new(title, parent)
 end
 
-function color_chooser_dialog_get_selection(dlg::GtkColorChooserDialog, response_id)
-    dlgp = GtkColorChooser(dlg)
-    if unsafe_trunc(UInt16,response_id) == ResponseType_OK
-        selection = G_.get_rgba(dlgp)
-    else
-        selection = nothing
-    end
-    destroy(dlg)
-    selection
-end
-
-function color_dialog(title::AbstractString, parent = nothing)
+function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
     dlg = GtkColorChooserDialog(title, parent)
+
+    response = Ref{Union{Nothing,_GdkRGBA}}()
+
+    c = Condition()
+
+    function on_response(dlg,response_id)
+        dlgp = GtkColorChooser(dlg)
+        if unsafe_trunc(UInt16,response_id) == ResponseType_OK
+            response[] = G_.get_rgba(dlgp)
+        else
+            response[] = nothing
+        end
+        notify(c)
+    end
+
+    signal_connect(on_response, dlg, "response")
     show(dlg)
-    dlg
+
+    if timeout > 0
+        emit(timer) = G_.response(dlg,Integer(Gtk4.ResponseType_CANCEL))
+        Timer(emit, timeout)
+    end
+
+    wait(c)
+    destroy(dlg)
+    response[]
 end

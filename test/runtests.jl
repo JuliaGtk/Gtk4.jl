@@ -27,6 +27,7 @@ include("gdkpixbuf.jl")
 end
 
 @testset "Gtk" begin
+include("gui/dialogs.jl")
 include("gui.jl")
 include("comboboxtext.jl")
 include("tree.jl")

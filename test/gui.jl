@@ -99,6 +99,9 @@ w = GtkWindow(f,
 f[] = GtkLabel("A boring widget")
 @test f[].label == "A boring widget"
 destroy(w)
+l = GtkLabel("Another widget")
+f = GtkFrame(l)
+@test f[] == l
 end
 
 @testset "Initially Hidden Canvas" begin
@@ -200,6 +203,17 @@ push!(g2, b22)
 pushfirst!(g2, b21)
 push!(g2, GtkSeparator(:h))
 @test_throws ErrorException push!(g2, b11)
+function n_children(w::GtkWidget)
+    i=0
+    for c in w
+        i=i+1
+    end
+    i
+end
+
+@test n_children(g2) == 3
+empty!(g2)
+@test n_children(g2) == 0
 
 strs = ["first", "second"]
 i = 1
@@ -245,6 +259,8 @@ end
     end
     deleteat!(grid,4,:row)
     deleteat!(grid,4,:col)
+    @test_throws ErrorException insert!(grid,6,:above)
+    @test_throws ErrorException deleteat!(grid,6,:below)
 
     tb = GtkButton("Tall button")
     grid[3,1:3] = tb
@@ -254,9 +270,6 @@ end
     insert!(grid,grid[1,2],Gtk4.PositionType_RIGHT)
 
     @test_throws ErrorException insert!(grid,1,:above)
-    for w in grid
-        println(w)
-    end
     empty!(grid)
     destroy(w)
 end
@@ -353,7 +366,8 @@ end
 w = GtkWindow("Checkbutton group test")
 b = GtkBox(:v)
 cb1 = GtkCheckButton("option 1")
-cb2 = GtkCheckButton("option 2")
+cb2 = GtkCheckButton()
+Gtk4.label(cb2, "option 2")
 w[]=b
 push!(b,cb1)
 push!(b,cb2)
@@ -377,7 +391,8 @@ end
 w = GtkWindow("Togglebutton group test")
 b = GtkBox(:v)
 tb1 = GtkToggleButton("option 1")
-tb2 = GtkToggleButton("option 2")
+tb2 = GtkToggleButton()
+tb2.label = "option 2"
 w[]=b
 push!(b,tb1)
 push!(b,tb2)
@@ -407,6 +422,15 @@ end
 toggle = GtkToggleButton("toggle me")
 Gtk4.on_signal_toggled(do_something, toggle)
 w[] = toggle
+
+destroy(w)
+end
+
+@testset "FontButton" begin
+fb = GtkFontButton()
+w = GtkWindow(fb)
+
+fb2 = GtkFontButton("Sans Italic 12")
 
 destroy(w)
 end
@@ -824,27 +848,6 @@ cursor(c, curs)
 destroy(w)
 end
 
-@testset "dialogs" begin
-
-main_window = GtkWindow("Dialog example")
-
-d = info_dialog("Here's some information",main_window)
-show(d)
-response(d,Integer(Gtk4.ResponseType_DELETE_EVENT))
-
-function get_response(d,id)
-    ans = (id == Gtk4.ResponseType_YES ? "yes" : "no")
-    destroy(d)
-end
-
-d = ask_dialog("May I ask you a question?",main_window)
-signal_connect(get_response,d,"response")
-show(d)
-
-response(d,Integer(Gtk4.ResponseType_YES))
-
-end
-
 @testset "keyval" begin
 @test keyval("H") == Gtk4.KEY_H
 end
@@ -868,23 +871,6 @@ csvfilter4 = GtkFileFilter(; pattern="*.csv", mimetype="text/csv")
 # Pattern takes precedence over mime-type, causing mime-type to be ignored
 @test csvfilter4.name == "*.csv"
 end
-
-include("../examples/dialogs.jl")
-
-activate(input_dialog_button)
-sleep(0.3)
-activate(file_open_dialog_button)
-sleep(0.3)
-activate(file_save_dialog_button)
-sleep(0.3)
-activate(file_open_dialog_native_button)
-sleep(0.3)
-activate(file_save_dialog_native_button)
-sleep(0.3)
-activate(color_dialog_button)
-sleep(0.3)
-
-destroy(main_window)
 
 @testset "application" begin
 

@@ -12,7 +12,6 @@ import Base: convert, copy, show, size, length, getindex, setindex!, get,
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag
 
-# Import `libglib` and `libgobject`
 using Glib_jll
 using Libdl
 

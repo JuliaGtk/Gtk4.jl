@@ -63,6 +63,11 @@ function GtkPicture(; resource_path = nothing, filename = nothing)
     return img
 end
 
+## GtkLevelBar
+
+GtkLevelBar() = G_.LevelBar_new()
+GtkLevelBar(min_value, max_value) = G_.LevelBar_new_for_interval(min_value, max_value)
+
 ## GtkProgressBar
 
 GtkProgressBar() = G_.ProgressBar_new()

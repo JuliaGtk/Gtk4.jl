@@ -44,8 +44,9 @@ function delete!(box::GtkBox, w::GtkWidget)
 end
 
 function empty!(box::GtkBox)
-    for w in box
-        G_.remove(w)
+    children=collect(box) # removing widgets disrupts the iterator
+    for w in children
+        G_.remove(box,w)
     end
     box
 end
@@ -140,8 +141,6 @@ function insert!(grid::GtkGrid, i::Integer, side)
         G_.insert_row(grid, i - 1)
     elseif side == Gtk4.PositionType_BOTTOM
         G_.insert_row(grid, i)
-    else
-        error(string("invalid GtkPositionType ", side))
     end
     nothing
 end
@@ -157,13 +156,13 @@ function delete!(grid::GtkGrid, w::GtkWidget)
     grid
 end
 
-function deleteat!(grid::GtkGrid, i::Integer, side::Symbol)
-    if side === :row
+function deleteat!(grid::GtkGrid, i::Integer, rowcol::Symbol)
+    if rowcol === :row
         G_.remove_row(grid, i-1)
-    elseif side === :col
+    elseif rowcol === :col
         G_.remove_column(grid, i-1)
     else
-        error(string("invalid GtkPositionType ", s))
+        error(string("rowcol must be row or col, got ", rowcol))
     end
 end
 
@@ -172,6 +171,12 @@ function empty!(grid::GtkGrid)
         G_.remove(grid, w)
     end
     grid
+end
+
+function query_child(grid::GtkGrid, w::GtkWidget)
+    parent(w) != grid && error("GtkWidget is not a child of GtkGrid.")
+    col, row, w, h = G_.query_child(grid,w)
+    (col + 1, row + 1, w, h)
 end
 
 ## GtkFrame — A decorative frame and optional label
