@@ -1,6 +1,10 @@
+module ExampleApplication
+
 using Gtk4, Gtk4.GLib
 
 # Simple demonstration of GtkApplication
+
+const rapp = Ref{GtkApplication}()
 
 function on_state_changed(a,v)
     Gtk4.GLib.set_state(a,v)
@@ -12,8 +16,9 @@ function on_new_clicked(a,v)
 end
 
 function new_window()
+    app = rapp[]
     window = GtkApplicationWindow(app, "")
-    id = Gtk4.id(window)
+    id = Gtk4.G_.get_id(window)
     window.title = "GtkApplication example: $id"
 
     button_box = GtkBox(:v)
@@ -46,20 +51,19 @@ function activate(app)
     new_window()
 end
 
-app = GtkApplication("julia.gtk4.example",
+function julia_main()::Cint
+    app = GtkApplication("julia.gtk4.example",
         Gtk4.GLib.ApplicationFlags_FLAGS_NONE)
 
-if isinteractive()
-    Gtk4.GLib.stop_main_loop()  # g_application_run will run the loop
+    rapp[] = app
+
+    Gtk4.signal_connect(activate, app, :activate)
+
+    # When all windows are closed, loop automatically stops running
+
+    Gtk4.run(app)
+
+    return 0
 end
 
-Gtk4.signal_connect(activate, app, :activate)
-
-# When all windows are closed, loop automatically stops running
-
-if isinteractive()
-    loop()=Gtk4.run(app)
-    t = schedule(Task(loop))
-else
-    Gtk4.run(app)
 end
