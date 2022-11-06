@@ -24,7 +24,7 @@ GI.append_struc_docs!(exprs, "gio", d, c, ns)
 obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus]
 c = GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,output_cache_define=false,output_cache_init=false)
 GI.append_object_docs!(exprs, "gio", d, c, ns)
-GI.all_interfaces!(exprs,exports,ns;skiplist=[:DebugController,:PowerProfileMonitor])
+GI.all_interfaces!(exprs,exports,ns;skiplist=[])
 
 push!(exprs,exports)
 

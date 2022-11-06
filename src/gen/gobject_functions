@@ -35,6 +35,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_gtype_get_type", libgobject), UInt64, ())
         ret
     end
+    function param_value_is_valid(_pspec::GParam, _value::Union{GValue, Ref{_GValue}})
+        ret = ccall(("g_param_value_is_valid", libgobject), Cint, (Ptr{GParam}, Ptr{_GValue}), _pspec, _value)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function pointer_type_register_static(_name::Union{AbstractString, Symbol})
         ret = ccall(("g_pointer_type_register_static", libgobject), UInt64, (Cstring,), _name)
         ret

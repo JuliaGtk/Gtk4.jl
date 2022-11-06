@@ -2330,6 +2330,15 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInfo, ret, true)
         ret2
     end
+    function get_access_date_time(instance::GFileInfo)
+        ret = ccall(("g_file_info_get_access_date_time", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GDateTime, ret, true)
+            end
+        ret2
+    end
     function get_attribute_as_string(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
         ret = ccall(("g_file_info_get_attribute_as_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _attribute)
         ret2 = if ret == C_NULL
@@ -2421,6 +2430,15 @@ $(Expr(:toplevel, quote
                 nothing
             else
                 bytestring(ret, false)
+            end
+        ret2
+    end
+    function get_creation_date_time(instance::GFileInfo)
+        ret = ccall(("g_file_info_get_creation_date_time", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GDateTime, ret, true)
             end
         ret2
     end
@@ -2568,6 +2586,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_file_info_remove_attribute", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _attribute)
         nothing
     end
+    function set_access_date_time(instance::GFileInfo, _atime::GDateTime)
+        ret = ccall(("g_file_info_set_access_date_time", libgio), Nothing, (Ptr{GObject}, Ptr{GDateTime}), instance, _atime)
+        nothing
+    end
     function set_attribute(instance::GFileInfo, _attribute::Union{AbstractString, Symbol}, _type, _value_p::Nothing)
         ret = ccall(("g_file_info_set_attribute", libgio), Nothing, (Ptr{GObject}, Cstring, UInt32, Ptr{Nothing}), instance, _attribute, _type, _value_p)
         nothing
@@ -2619,6 +2641,10 @@ $(Expr(:toplevel, quote
     end
     function set_content_type(instance::GFileInfo, _content_type::Union{AbstractString, Symbol})
         ret = ccall(("g_file_info_set_content_type", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _content_type)
+        nothing
+    end
+    function set_creation_date_time(instance::GFileInfo, _creation_time::GDateTime)
+        ret = ccall(("g_file_info_set_creation_date_time", libgio), Nothing, (Ptr{GObject}, Ptr{GDateTime}), instance, _creation_time)
         nothing
     end
     function set_display_name(instance::GFileInfo, _display_name::Union{AbstractString, Symbol})
@@ -4027,6 +4053,15 @@ $(Expr(:toplevel, quote
                 _body
             end
         ret = ccall(("g_notification_set_body", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _body)
+        nothing
+    end
+    function set_category(instance::GNotification, _category::Maybe(Union{AbstractString, Symbol}))
+        _category = if _category == nothing
+                C_NULL
+            else
+                _category
+            end
+        ret = ccall(("g_notification_set_category", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _category)
         nothing
     end
     function set_default_action(instance::GNotification, _detailed_action::Union{AbstractString, Symbol})
@@ -5521,7 +5556,11 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_socket_address_enumerator_next", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _cancellable, err)
         check_err(err)
-        ret2 = convert(GSocketAddress, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GSocketAddress, ret, true)
+            end
         ret2
     end
     function next_async(instance::GSocketAddressEnumerator, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -5547,7 +5586,11 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_socket_address_enumerator_next_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = convert(GSocketAddress, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GSocketAddress, ret, true)
+            end
         ret2
     end
     function SocketClient_new()
@@ -6516,6 +6559,13 @@ $(Expr(:toplevel, quote
         ret2 = convert(GTlsCertificate, ret, true)
         ret2
     end
+    function TlsCertificate_new_from_file_with_password(_file::Union{AbstractString, Symbol}, _password::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_tls_certificate_new_from_file_with_password", libgio), Ptr{GObject}, (Cstring, Cstring, Ptr{Ptr{GError}}), _file, _password, err)
+        check_err(err)
+        ret2 = convert(GTlsCertificate, ret, true)
+        ret2
+    end
     function TlsCertificate_new_from_files(_cert_file::Union{AbstractString, Symbol}, _key_file::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("g_tls_certificate_new_from_files", libgio), Ptr{GObject}, (Cstring, Cstring, Ptr{Ptr{GError}}), _cert_file, _key_file, err)
@@ -6542,6 +6592,20 @@ $(Expr(:toplevel, quote
         ret2 = convert(GTlsCertificate, ret, true)
         ret2
     end
+    function TlsCertificate_new_from_pkcs12(_data, _password::Maybe(Union{AbstractString, Symbol}))
+        _data = convert(Vector{UInt8}, _data)
+        _password = if _password == nothing
+                C_NULL
+            else
+                _password
+            end
+        _length = length(_data)
+        err = err_buf()
+        ret = ccall(("g_tls_certificate_new_from_pkcs12", libgio), Ptr{GObject}, (Ptr{UInt8}, UInt64, Cstring, Ptr{Ptr{GError}}), _data, _length, _password, err)
+        check_err(err)
+        ret2 = convert(GTlsCertificate, ret, true)
+        ret2
+    end
     function list_new_from_file(_file::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("g_tls_certificate_list_new_from_file", libgio), Ptr{GLib._GList{Ptr{GObject}}}, (Cstring, Ptr{Ptr{GError}}), _file, err)
@@ -6549,12 +6613,56 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, true)
         ret2
     end
+    function get_dns_names(instance::GTlsCertificate)
+        ret = ccall(("g_tls_certificate_get_dns_names", libgio), Ptr{GPtrArray}, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_ip_addresses(instance::GTlsCertificate)
+        ret = ccall(("g_tls_certificate_get_ip_addresses", libgio), Ptr{GPtrArray}, (Ptr{GObject},), instance)
+        ret
+    end
     function get_issuer(instance::GTlsCertificate)
         ret = ccall(("g_tls_certificate_get_issuer", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = if ret == C_NULL
                 nothing
             else
                 convert(GTlsCertificate, ret, false)
+            end
+        ret2
+    end
+    function get_issuer_name(instance::GTlsCertificate)
+        ret = ccall(("g_tls_certificate_get_issuer_name", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
+            end
+        ret2
+    end
+    function get_not_valid_after(instance::GTlsCertificate)
+        ret = ccall(("g_tls_certificate_get_not_valid_after", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GDateTime, ret, true)
+            end
+        ret2
+    end
+    function get_not_valid_before(instance::GTlsCertificate)
+        ret = ccall(("g_tls_certificate_get_not_valid_before", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GDateTime, ret, true)
+            end
+        ret2
+    end
+    function get_subject_name(instance::GTlsCertificate)
+        ret = ccall(("g_tls_certificate_get_subject_name", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
             end
         ret2
     end
@@ -6589,6 +6697,15 @@ $(Expr(:toplevel, quote
                 nothing
             else
                 convert(GTlsCertificate, ret, false)
+            end
+        ret2
+    end
+    function get_ciphersuite_name(instance::GTlsConnection)
+        ret = ccall(("g_tls_connection_get_ciphersuite_name", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
             end
         ret2
     end
@@ -6631,6 +6748,11 @@ $(Expr(:toplevel, quote
     function get_peer_certificate_errors(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_peer_certificate_errors", libgio), UInt32, (Ptr{GObject},), instance)
         ret2 = TlsCertificateFlags(ret)
+        ret2
+    end
+    function get_protocol_version(instance::GTlsConnection)
+        ret = ccall(("g_tls_connection_get_protocol_version", libgio), UInt32, (Ptr{GObject},), instance)
+        ret2 = TlsProtocolVersion(ret)
         ret2
     end
     function get_require_close_notify(instance::GTlsConnection)
@@ -7529,9 +7651,9 @@ $(Expr(:toplevel, quote
         _enabled = m_enabled[]
         _enabled = convert(Bool, _enabled)
         _parameter_type = m_parameter_type[]
-        _parameter_type = convert(GVariantType, _parameter_type, true)
+        _parameter_type = convert(GVariantType, _parameter_type, false)
         _state_type = m_state_type[]
-        _state_type = convert(GVariantType, _state_type, true)
+        _state_type = convert(GVariantType, _state_type, false)
         _state_hint = m_state_hint[]
         _state_hint = convert(GVariant, _state_hint)
         _state = m_state[]
@@ -7715,6 +7837,15 @@ $(Expr(:toplevel, quote
         ret2 = convert(Union{GSource, Ref{_GSource}}, ret, true)
         ret2
     end
+    function get_debug_enabled(instance::GDebugController)
+        ret = ccall(("g_debug_controller_get_debug_enabled", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_debug_enabled(instance::GDebugController, _debug_enabled::Bool)
+        ret = ccall(("g_debug_controller_set_debug_enabled", libgio), Nothing, (Ptr{GObject}, Cint), instance, _debug_enabled)
+        nothing
+    end
     function new(_base_socket::GDatagramBased, _server_identity::Maybe(GSocketConnectable))
         _server_identity = if _server_identity == nothing
                 C_NULL
@@ -7743,17 +7874,8 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function get_validation_flags(instance::GDtlsClientConnection)
-        ret = ccall(("g_dtls_client_connection_get_validation_flags", libgio), UInt32, (Ptr{GObject},), instance)
-        ret2 = TlsCertificateFlags(ret)
-        ret2
-    end
     function set_server_identity(instance::GDtlsClientConnection, _identity::GSocketConnectable)
         ret = ccall(("g_dtls_client_connection_set_server_identity", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _identity)
-        nothing
-    end
-    function set_validation_flags(instance::GDtlsClientConnection, _flags)
-        ret = ccall(("g_dtls_client_connection_set_validation_flags", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _flags)
         nothing
     end
     function close(instance::GDtlsConnection, _cancellable::Maybe(GCancellable))
@@ -7818,6 +7940,15 @@ $(Expr(:toplevel, quote
         _data = convert(GByteArray, _data, false)
         (ret2, _data)
     end
+    function get_ciphersuite_name(instance::GDtlsConnection)
+        ret = ccall(("g_dtls_connection_get_ciphersuite_name", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, true)
+            end
+        ret2
+    end
     function get_database(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_database", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = if ret == C_NULL
@@ -7857,6 +7988,11 @@ $(Expr(:toplevel, quote
     function get_peer_certificate_errors(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_peer_certificate_errors", libgio), UInt32, (Ptr{GObject},), instance)
         ret2 = TlsCertificateFlags(ret)
+        ret2
+    end
+    function get_protocol_version(instance::GDtlsConnection)
+        ret = ccall(("g_dtls_connection_get_protocol_version", libgio), UInt32, (Ptr{GObject},), instance)
+        ret2 = TlsProtocolVersion(ret)
         ret2
     end
     function get_require_close_notify(instance::GDtlsConnection)
@@ -8031,6 +8167,77 @@ $(Expr(:toplevel, quote
         m_iostream = Ref{Ptr{GObject}}()
         err = err_buf()
         ret = ccall(("g_file_new_tmp", libgio), Ptr{GObject}, (Cstring, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), _tmpl, m_iostream, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        _iostream = m_iostream[]
+        _iostream = convert(GFileIOStream, _iostream, true)
+        (ret2, _iostream)
+    end
+    function new_tmp_async(_tmpl::Maybe(Union{AbstractString, Symbol}), _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _tmpl = if _tmpl == nothing
+                C_NULL
+            else
+                _tmpl
+            end
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("g_file_new_tmp_async", libgio), Nothing, (Cstring, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _tmpl, _io_priority, _cancellable, _callback, _user_data)
+        nothing
+    end
+    function new_tmp_dir_async(_tmpl::Maybe(Union{AbstractString, Symbol}), _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _tmpl = if _tmpl == nothing
+                C_NULL
+            else
+                _tmpl
+            end
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("g_file_new_tmp_dir_async", libgio), Nothing, (Cstring, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _tmpl, _io_priority, _cancellable, _callback, _user_data)
+        nothing
+    end
+    function new_tmp_dir_finish(_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_file_new_tmp_dir_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
+    end
+    function new_tmp_finish(_result::GAsyncResult)
+        m_iostream = Ref{Ptr{GObject}}()
+        err = err_buf()
+        ret = ccall(("g_file_new_tmp_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), _result, m_iostream, err)
         check_err(err)
         ret2 = begin
                 leaftype = GLib.find_leaf_type(ret)
@@ -8697,6 +8904,32 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function make_symbolic_link_async(instance::GFile, _symlink_value::Union{AbstractString, Symbol}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("g_file_make_symbolic_link_async", libgio), Nothing, (Ptr{GObject}, Cstring, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _symlink_value, _io_priority, _cancellable, _callback, _user_data)
+        nothing
+    end
+    function make_symbolic_link_finish(instance::GFile, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_file_make_symbolic_link_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function measure_disk_usage_finish(instance::GFile, _result::GAsyncResult)
         m_disk_usage = Ref{UInt64}()
         m_num_dirs = Ref{UInt64}()
@@ -8829,6 +9062,42 @@ $(Expr(:toplevel, quote
             end
         err = err_buf()
         ret = ccall(("g_file_move", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _destination, _flags, _cancellable, _progress_callback, _progress_callback_data, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function move_async(instance::GFile, _destination::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _progress_callback_data::Maybe(Nothing), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _progress_callback = if _progress_callback == nothing
+                C_NULL
+            else
+                _progress_callback
+            end
+        _progress_callback_data = if _progress_callback_data == nothing
+                C_NULL
+            else
+                _progress_callback_data
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("g_file_move_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), instance, _destination, _flags, _io_priority, _cancellable, _progress_callback, _progress_callback_data, _callback, _user_data)
+        nothing
+    end
+    function move_finish(instance::GFile, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_file_move_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -9734,6 +10003,19 @@ $(Expr(:toplevel, quote
         check_err(err)
         _buffer = m_buffer[]
         (ret, _buffer)
+    end
+    function dup_default()
+        ret = ccall(("g_power_profile_monitor_dup_default", libgio), Ptr{GObject}, ())
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
+    end
+    function get_power_saver_enabled(instance::GPowerProfileMonitor)
+        ret = ccall(("g_power_profile_monitor_get_power_saver_enabled", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
     end
     function get_default_for_protocol(_protocol::Union{AbstractString, Symbol})
         ret = ccall(("g_proxy_get_default_for_protocol", libgio), Ptr{GObject}, (Cstring,), _protocol)

@@ -4,6 +4,25 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_access", libglib), Int32, (Cstring, Int32), _filename, _mode)
         ret
     end
+    function aligned_alloc(_n_blocks::Integer, _n_block_bytes::Integer, _alignment::Integer)
+        ret = ccall(("g_aligned_alloc", libglib), Ptr{Nothing}, (UInt64, UInt64, UInt64), _n_blocks, _n_block_bytes, _alignment)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function aligned_alloc0(_n_blocks::Integer, _n_block_bytes::Integer, _alignment::Integer)
+        ret = ccall(("g_aligned_alloc0", libglib), Ptr{Nothing}, (UInt64, UInt64, UInt64), _n_blocks, _n_block_bytes, _alignment)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function aligned_free(_mem::Maybe(Nothing))
+        _mem = if _mem == nothing
+                C_NULL
+            else
+                _mem
+            end
+        ret = ccall(("g_aligned_free", libglib), Nothing, (Ptr{Nothing},), _mem)
+        nothing
+    end
     function ascii_digit_value(_c::Integer)
         ret = ccall(("g_ascii_digit_value", libglib), Int32, (Int8,), _c)
         ret
@@ -144,10 +163,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function atomic_int_compare_and_exchange_full(_atomic::Int32, _oldval::Integer, _newval::Integer)
+        m_preval = Ref{Int32}()
+        ret = ccall(("g_atomic_int_compare_and_exchange_full", libglib), Cint, (Ptr{Int32}, Int32, Int32, Ptr{Int32}), _atomic, _oldval, _newval, m_preval)
+        ret2 = convert(Bool, ret)
+        _preval = m_preval[]
+        (ret2, _preval)
+    end
     function atomic_int_dec_and_test(_atomic::Int32)
         ret = ccall(("g_atomic_int_dec_and_test", libglib), Cint, (Ptr{Int32},), _atomic)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function atomic_int_exchange(_atomic::Int32, _newval::Integer)
+        ret = ccall(("g_atomic_int_exchange", libglib), Int32, (Ptr{Int32}, Int32), _atomic, _newval)
+        ret
     end
     function atomic_int_get(_atomic::Int32)
         ret = ccall(("g_atomic_int_get", libglib), Int32, (Ptr{Int32},), _atomic)
@@ -190,6 +220,39 @@ $(Expr(:toplevel, quote
             end
         ret = ccall(("g_atomic_pointer_compare_and_exchange", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), _atomic, _oldval, _newval)
         ret2 = convert(Bool, ret)
+        ret2
+    end
+    function atomic_pointer_compare_and_exchange_full(_atomic::Nothing, _oldval::Maybe(Nothing), _newval::Maybe(Nothing))
+        _oldval = if _oldval == nothing
+                C_NULL
+            else
+                _oldval
+            end
+        _newval = if _newval == nothing
+                C_NULL
+            else
+                _newval
+            end
+        m_preval = Ref{Ptr{Nothing}}()
+        ret = ccall(("g_atomic_pointer_compare_and_exchange_full", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Ptr{Nothing}}), _atomic, _oldval, _newval, m_preval)
+        ret2 = convert(Bool, ret)
+        _preval = m_preval[]
+        _preval = convert(Nothing, _preval)
+        (ret2, _preval)
+    end
+    function atomic_pointer_exchange(_atomic::Maybe(Nothing), _newval::Maybe(Nothing))
+        _atomic = if _atomic == nothing
+                C_NULL
+            else
+                _atomic
+            end
+        _newval = if _newval == nothing
+                C_NULL
+            else
+                _newval
+            end
+        ret = ccall(("g_atomic_pointer_exchange", libglib), Ptr{Nothing}, (Ptr{Nothing}, Ptr{Nothing}), _atomic, _newval)
+        ret2 = convert(Nothing, ret)
         ret2
     end
     function atomic_pointer_get(_atomic::Nothing)
@@ -1138,6 +1201,15 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
+    function get_user_state_dir()
+        ret = ccall(("g_get_user_state_dir", libglib), Cstring, ())
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                bytestring(ret, false)
+            end
+        ret2
+    end
     function getenv(_variable::Union{AbstractString, Symbol})
         ret = ccall(("g_getenv", libglib), Cstring, (Cstring,), _variable)
         ret2 = if ret == C_NULL
@@ -1211,6 +1283,10 @@ $(Expr(:toplevel, quote
         _value = m_value[]
         _value = convert(Maybe(Nothing), _value)
         (ret2, _orig_key, _value)
+    end
+    function hash_table_new_similar(_other_hash_table)
+        ret = ccall(("g_hash_table_new_similar", libglib), Ptr{GHashTable}, (Ptr{GHashTable},), _other_hash_table)
+        ret
     end
     function hash_table_remove(_hash_table, _key::Maybe(Nothing))
         _key = if _key == nothing
@@ -1437,6 +1513,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_log_default_handler", libglib), Nothing, (Cstring, UInt32, Cstring, Ptr{Nothing}), _log_domain, _log_level, _message, _unused_data)
         nothing
     end
+    function log_get_debug_enabled()
+        ret = ccall(("g_log_get_debug_enabled", libglib), Cint, ())
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function log_remove_handler(_log_domain::Union{AbstractString, Symbol}, _handler_id::Integer)
         ret = ccall(("g_log_remove_handler", libglib), Nothing, (Cstring, UInt32), _log_domain, _handler_id)
         nothing
@@ -1445,6 +1526,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_log_set_always_fatal", libglib), UInt32, (UInt32,), _fatal_mask)
         ret2 = LogLevelFlags(ret)
         ret2
+    end
+    function log_set_debug_enabled(_enabled::Bool)
+        ret = ccall(("g_log_set_debug_enabled", libglib), Nothing, (Cint,), _enabled)
+        nothing
     end
     function log_set_fatal_mask(_log_domain::Union{AbstractString, Symbol}, _fatal_mask)
         ret = ccall(("g_log_set_fatal_mask", libglib), UInt32, (Cstring, UInt32), _log_domain, _fatal_mask)
@@ -1631,6 +1716,15 @@ $(Expr(:toplevel, quote
     end
     function pointer_bit_unlock(_address::Nothing, _lock_bit::Integer)
         ret = ccall(("g_pointer_bit_unlock", libglib), Nothing, (Ptr{Nothing}, Int32), _address, _lock_bit)
+        nothing
+    end
+    function prefix_error_literal(_err, _prefix::Union{AbstractString, Symbol})
+        _err = if _err == nothing
+                C_NULL
+            else
+                _err
+            end
+        ret = ccall(("g_prefix_error_literal", libglib), Nothing, (Ptr{GError}, Cstring), _err, _prefix)
         nothing
     end
     function propagate_error(_src)
@@ -1978,6 +2072,13 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_spaced_primes_closest", libglib), UInt32, (UInt32,), _num)
         ret
     end
+    function spawn_check_wait_status(_wait_status::Integer)
+        err = err_buf()
+        ret = ccall(("g_spawn_check_wait_status", libglib), Cint, (Int32, Ptr{Ptr{GError}}), _wait_status, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function spawn_close_pid(_pid::Integer)
         ret = ccall(("g_spawn_close_pid", libglib), Nothing, (Int32,), _pid)
         nothing
@@ -1989,16 +2090,18 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function spawn_command_line_sync(_command_line::Union{AbstractString, Symbol}, _exit_status::Int32)
+    function spawn_command_line_sync(_command_line::Union{AbstractString, Symbol})
         m_standard_output = Ref{Ptr{UInt8}}()
         m_standard_error = Ref{Ptr{UInt8}}()
+        m_wait_status = Ref{Int32}()
         err = err_buf()
-        ret = ccall(("g_spawn_command_line_sync", libglib), Cint, (Cstring, Ptr{Ptr{UInt8}}, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Ptr{GError}}), _command_line, m_standard_output, m_standard_error, _exit_status, err)
+        ret = ccall(("g_spawn_command_line_sync", libglib), Cint, (Cstring, Ptr{Ptr{UInt8}}, Ptr{Ptr{UInt8}}, Ptr{Int32}, Ptr{Ptr{GError}}), _command_line, m_standard_output, m_standard_error, m_wait_status, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _standard_output = m_standard_output[]
         _standard_error = m_standard_error[]
-        (ret2, _standard_output, _standard_error)
+        _wait_status = m_wait_status[]
+        (ret2, _standard_output, _standard_error, _wait_status)
     end
     function spawn_error_quark()
         ret = ccall(("g_spawn_error_quark", libglib), UInt32, ())
@@ -2766,7 +2869,8 @@ $(Expr(:toplevel, quote
         ret2 = convert(Nothing, ret)
         ret2
     end
-    function unix_open_pipe(_fds::Int32, _flags::Integer)
+    function unix_open_pipe(_fds, _flags::Integer)
+        _fds = convert(Vector{Int32}, _fds)
         err = err_buf()
         ret = ccall(("g_unix_open_pipe", libglib), Cint, (Ptr{Int32}, Int32, Ptr{Ptr{GError}}), _fds, _flags, err)
         check_err(err)

@@ -986,6 +986,11 @@ $(Expr(:toplevel, quote
         ret2 = convert(GMainContext, ret, true)
         ret2
     end
+    function MainContext_new_with_flags(_flags)
+        ret = ccall(("g_main_context_new_with_flags", libglib), Ptr{GMainContext}, (UInt32,), _flags)
+        ret2 = convert(GMainContext, ret, true)
+        ret2
+    end
     function acquire(instance::GMainContext)
         ret = ccall(("g_main_context_acquire", libglib), Cint, (Ptr{GMainContext},), instance)
         ret2 = convert(Bool, ret)
@@ -1187,7 +1192,7 @@ $(Expr(:toplevel, quote
     end
     function get_regex(instance::GMatchInfo)
         ret = ccall(("g_match_info_get_regex", libglib), Ptr{GRegex}, (Ptr{GMatchInfo},), instance)
-        ret2 = convert(GRegex, ret, true)
+        ret2 = convert(GRegex, ret, false)
         ret2
     end
     function get_string(instance::GMatchInfo)
@@ -1224,6 +1229,40 @@ $(Expr(:toplevel, quote
     function unref(instance::GMatchInfo)
         ret = ccall(("g_match_info_unref", libglib), Nothing, (Ptr{GMatchInfo},), instance)
         nothing
+    end
+    function PatternSpec_new(_pattern::Union{AbstractString, Symbol})
+        ret = ccall(("g_pattern_spec_new", libglib), Ptr{GPatternSpec}, (Cstring,), _pattern)
+        ret2 = convert(GPatternSpec, ret, true)
+        ret2
+    end
+    function copy(instance::GPatternSpec)
+        ret = ccall(("g_pattern_spec_copy", libglib), Ptr{GPatternSpec}, (Ptr{GPatternSpec},), instance)
+        ret2 = convert(GPatternSpec, ret, true)
+        ret2
+    end
+    function equal(instance::GPatternSpec, _pspec2::GPatternSpec)
+        ret = ccall(("g_pattern_spec_equal", libglib), Cint, (Ptr{GPatternSpec}, Ptr{GPatternSpec}), instance, _pspec2)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function free(instance::GPatternSpec)
+        ret = ccall(("g_pattern_spec_free", libglib), Nothing, (Ptr{GPatternSpec},), instance)
+        nothing
+    end
+    function match(instance::GPatternSpec, _string_length::Integer, _string::Union{AbstractString, Symbol}, _string_reversed::Maybe(Union{AbstractString, Symbol}))
+        _string_reversed = if _string_reversed == nothing
+                C_NULL
+            else
+                _string_reversed
+            end
+        ret = ccall(("g_pattern_spec_match", libglib), Cint, (Ptr{GPatternSpec}, UInt64, Cstring, Cstring), instance, _string_length, _string, _string_reversed)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function match_string(instance::GPatternSpec, _string::Union{AbstractString, Symbol})
+        ret = ccall(("g_pattern_spec_match_string", libglib), Cint, (Ptr{GPatternSpec}, Cstring), instance, _string)
+        ret2 = convert(Bool, ret)
+        ret2
     end
     function Regex_new(_pattern::Union{AbstractString, Symbol}, _compile_options, _match_options)
         err = err_buf()

@@ -27,7 +27,7 @@ GI.append_struc_docs!(exprs, "gobject", d, c, ns)
 
 ## objects and interfaces
 
-c = GI.all_objects!(exprs,exports,ns;handled=[:Object],skiplist=[:BindingGroup,:SignalGroup])
+c = GI.all_objects!(exprs,exports,ns;handled=[:Object],skiplist=[:SignalGroup])
 GI.append_object_docs!(exprs, "gobject", d, c, ns)
 push!(exprs,:(gtype_wrapper_cache[:GObject] = GObjectLeaf))
 GI.all_interfaces!(exprs,exports,ns)

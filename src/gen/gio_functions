@@ -73,6 +73,35 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
+    function app_info_get_default_for_type_async(_content_type::Union{AbstractString, Symbol}, _must_support_uris::Bool, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("g_app_info_get_default_for_type_async", libgio), Nothing, (Cstring, Cint, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _content_type, _must_support_uris, _cancellable, _callback, _user_data)
+        nothing
+    end
+    function app_info_get_default_for_type_finish(_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_app_info_get_default_for_type_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
+    end
     function app_info_get_default_for_uri_scheme(_uri_scheme::Union{AbstractString, Symbol})
         ret = ccall(("g_app_info_get_default_for_uri_scheme", libgio), Ptr{GObject}, (Cstring,), _uri_scheme)
         ret2 = begin
@@ -82,6 +111,35 @@ $(Expr(:toplevel, quote
                     leaftype = GLib.find_leaf_type(ret)
                     convert(leaftype, ret, true)
                 end
+            end
+        ret2
+    end
+    function app_info_get_default_for_uri_scheme_async(_uri_scheme::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("g_app_info_get_default_for_uri_scheme_async", libgio), Nothing, (Cstring, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _uri_scheme, _cancellable, _callback, _user_data)
+        nothing
+    end
+    function app_info_get_default_for_uri_scheme_finish(_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_app_info_get_default_for_uri_scheme_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
             end
         ret2
     end
@@ -428,6 +486,11 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function dbus_is_error_name(_string::Union{AbstractString, Symbol})
+        ret = ccall(("g_dbus_is_error_name", libgio), Cint, (Cstring,), _string)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function dbus_is_guid(_string::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_is_guid", libgio), Cint, (Cstring,), _string)
         ret2 = convert(Bool, ret)
@@ -544,6 +607,77 @@ $(Expr(:toplevel, quote
         _iostream = convert(GFileIOStream, _iostream, true)
         (ret2, _iostream)
     end
+    function file_new_tmp_async(_tmpl::Maybe(Union{AbstractString, Symbol}), _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _tmpl = if _tmpl == nothing
+                C_NULL
+            else
+                _tmpl
+            end
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("g_file_new_tmp_async", libgio), Nothing, (Cstring, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _tmpl, _io_priority, _cancellable, _callback, _user_data)
+        nothing
+    end
+    function file_new_tmp_dir_async(_tmpl::Maybe(Union{AbstractString, Symbol}), _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
+        _tmpl = if _tmpl == nothing
+                C_NULL
+            else
+                _tmpl
+            end
+        _cancellable = if _cancellable == nothing
+                C_NULL
+            else
+                _cancellable
+            end
+        _callback = if _callback == nothing
+                C_NULL
+            else
+                _callback
+            end
+        _user_data = if _user_data == nothing
+                C_NULL
+            else
+                _user_data
+            end
+        ret = ccall(("g_file_new_tmp_dir_async", libgio), Nothing, (Cstring, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _tmpl, _io_priority, _cancellable, _callback, _user_data)
+        nothing
+    end
+    function file_new_tmp_dir_finish(_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_file_new_tmp_dir_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
+    end
+    function file_new_tmp_finish(_result::GAsyncResult)
+        m_iostream = Ref{Ptr{GObject}}()
+        err = err_buf()
+        ret = ccall(("g_file_new_tmp_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), _result, m_iostream, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        _iostream = m_iostream[]
+        _iostream = convert(GFileIOStream, _iostream, true)
+        (ret2, _iostream)
+    end
     function file_parse_name(_parse_name::Union{AbstractString, Symbol})
         ret = ccall(("g_file_parse_name", libgio), Ptr{GObject}, (Cstring,), _parse_name)
         ret2 = begin
@@ -580,6 +714,11 @@ $(Expr(:toplevel, quote
     end
     function io_error_from_errno(_err_no::Integer)
         ret = ccall(("g_io_error_from_errno", libgio), UInt32, (Int32,), _err_no)
+        ret2 = IOErrorEnum(ret)
+        ret2
+    end
+    function io_error_from_file_error(_file_error)
+        ret = ccall(("g_io_error_from_file_error", libgio), UInt32, (UInt32,), _file_error)
         ret2 = IOErrorEnum(ret)
         ret2
     end
@@ -697,6 +836,14 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_written)
+    end
+    function power_profile_monitor_dup_default()
+        ret = ccall(("g_power_profile_monitor_dup_default", libgio), Ptr{GObject}, ())
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
     end
     function proxy_get_default_for_protocol(_protocol::Union{AbstractString, Symbol})
         ret = ccall(("g_proxy_get_default_for_protocol", libgio), Ptr{GObject}, (Cstring,), _protocol)

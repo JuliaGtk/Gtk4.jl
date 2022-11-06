@@ -167,10 +167,10 @@ $(Expr(:toplevel, quote
     @doc "The class of an enumeration type holds information about its\npossible values.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.EnumClass.html)." GEnumClass
     @doc "The class of a flags type holds information about its\npossible values.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.FlagsClass.html)." GFlagsClass
     @doc "The #GSignalInvocationHint structure is used to pass on additional information\nto callbacks during a signal emission.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.SignalInvocationHint.html)." GSignalInvocationHint
-    @doc "A structure holding in-depth information for a specific signal. It is\nfilled in by the g_signal_query() function.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.SignalQuery.html)." GSignalQuery
+    @doc "A structure holding in-depth information for a specific signal.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.SignalQuery.html)." GSignalQuery
     @doc "A structure that provides information to the type system which is\nused specifically for managing fundamental types.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeFundamentalInfo.html)." GTypeFundamentalInfo
     @doc "The #GTypePlugin interface is used by the type system in order to handle\nthe lifecycle of dynamically loaded types.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypePluginClass.html)." GTypePluginClass
-    @doc "A structure holding information for a specific type.\nIt is filled in by the g_type_query() function.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
+    @doc "A structure holding information for a specific type.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
     @doc "A #GValueArray contains an array of #GValue elements.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.ValueArray.html)." GValueArray
     begin
         gtype_wrapper_cache = Dict{Symbol, Type}()
@@ -198,6 +198,31 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GBinding] = GBindingLeaf
         function GBinding(args...; kwargs...)
             GBindingLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GBindingGroup <: GObject end
+        mutable struct GBindingGroupLeaf <: GBindingGroup
+            handle::Ptr{GObject}
+            function GBindingGroupLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GBindingGroupLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GBindingGroupLeaf(args...; kwargs...)
+            w = GBindingGroup(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GBindingGroup] = GBindingGroupLeaf
+        function GBindingGroup(args...; kwargs...)
+            GBindingGroupLeaf(args...; kwargs...)
         end
     end
     begin
@@ -256,7 +281,8 @@ $(Expr(:toplevel, quote
             end
     end
     @doc "#GBinding is the representation of a binding between a property on a\n#GObject instance (or source) and another property on another #GObject\ninstance (or target).\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.Binding.html)." GBinding
-    @doc "All the fields in the GInitiallyUnowned structure\nare private to the #GInitiallyUnowned implementation and should never be\naccessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.InitiallyUnowned.html)." GInitiallyUnowned
+    @doc "The #GBindingGroup can be used to bind multiple properties\nfrom an object collectively.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.BindingGroup.html)." GBindingGroup
+    @doc "A type for objects that have an initially floating reference.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.InitiallyUnowned.html)." GInitiallyUnowned
     @doc "#GTypeModule provides a simple implementation of the #GTypePlugin\ninterface.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.TypeModule.html)." GTypeModule
     gtype_wrapper_cache[:GObject] = GObjectLeaf
     begin
@@ -268,6 +294,6 @@ $(Expr(:toplevel, quote
                 end
         end
     end
-    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GInitiallyUnowned, GTypeModule, GTypePlugin
+    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingGroup, GInitiallyUnowned, GTypeModule, GTypePlugin
 end))
 end

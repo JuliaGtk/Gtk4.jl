@@ -225,6 +225,24 @@ $(Expr(:toplevel, quote
                 convert(Ptr{_GOptionEntry}, box.handle)
             end
     end
+    mutable struct GPatternSpec <: GBoxed
+        handle::Ptr{GPatternSpec}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GPatternSpec) = begin
+                    ccall(("g_pattern_spec_get_type", libgobject), GType, ())
+                end
+            function GPatternSpec(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GPatternSpec)
+        end
+    end
     mutable struct GRegex <: GBoxed
         handle::Ptr{GRegex}
         begin
@@ -454,9 +472,9 @@ $(Expr(:toplevel, quote
             end
     end
     @doc "A simple refcounted data type representing an immutable sequence of zero or\nmore bytes from an unspecified origin.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Bytes.html)." GBytes
-    @doc "An opaque structure representing a checksumming operation.\nTo create a new GChecksum, use g_checksum_new(). To free\na GChecksum, use g_checksum_free().\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Checksum.html)." GChecksum
+    @doc "An opaque structure representing a checksumming operation.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Checksum.html)." GChecksum
     @doc "Represents a day between January 1, Year 1 and a few thousand years in\nthe future. None of its members should be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Date.html)." GDate
-    @doc "`GDateTime` is an opaque structure whose members\ncannot be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.DateTime.html)." GDateTime
+    @doc "An opaque structure that represents a date and time, including a time zone.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.DateTime.html)." GDateTime
     @doc "Associates a string with a bit flag.\nUsed in g_parse_debug_string().\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.DebugKey.html)." GDebugKey
     @doc "The GKeyFile struct contains only private data\nand should not be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.KeyFile.html)." GKeyFile
     @doc "Structure representing a single field in a structured log entry. See\ng_log_structured() for details.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.LogField.html)." GLogField
@@ -466,6 +484,7 @@ $(Expr(:toplevel, quote
     @doc "A parse context is used to parse a stream of bytes that\nyou expect to contain marked-up text.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.MarkupParseContext.html)." GMarkupParseContext
     @doc "A GMatchInfo is an opaque struct used to return information about\nmatches.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.MatchInfo.html)." GMatchInfo
     @doc "A GOptionEntry struct defines a single option. To have an effect, they\nmust be added to a #GOptionGroup with g_option_context_add_main_entries()\nor g_option_group_add_entries().\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.OptionEntry.html)." GOptionEntry
+    @doc "A GPatternSpec struct is the 'compiled' form of a pattern. This\nstructure is opaque and its fields cannot be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.PatternSpec.html)." GPatternSpec
     @doc "The g_regex_*() functions implement regular\nexpression pattern matching using syntax and semantics similar to\nPerl regular expression.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Regex.html)." GRegex
     @doc "Specifies the #GScanner parser configuration. Most settings can\nbe changed during the parsing phase and will affect the lexical\nparsing of the next unpeeked token.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.ScannerConfig.html)." GScannerConfig
     @doc "The `GSource` struct is an opaque data type\nrepresenting an event source.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Source.html)." GSource
@@ -476,6 +495,6 @@ $(Expr(:toplevel, quote
     @doc "A utility type for constructing container-type #GVariant instances.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantBuilder.html)." GVariantBuilder
     @doc "#GVariantDict is a mutable interface to #GVariant dictionaries.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantDict.html)." GVariantDict
     @doc "This section introduces the GVariant type system. It is based, in\nlarge part, on the D-Bus type system, with two major changes and\nsome minor lifting of restrictions. The\n[D-Bus specification](http://dbus.freedesktop.org/doc/dbus-specification.html),\ntherefore, provides a significant amount of\ninformation that is useful when working with GVariant.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantType.html)." GVariantType
-    export GBytes, GChecksum, GDate, _GDate, GDateTime, GDebugKey, _GDebugKey, GKeyFile, GLogField, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, _GOptionEntry, GRegex, GScannerConfig, _GScannerConfig, GSource, _GSource, GSourceCallbackFuncs, _GSourceCallbackFuncs, GString, _GString, GTestConfig, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType
+    export GBytes, GChecksum, GDate, _GDate, GDateTime, GDebugKey, _GDebugKey, GKeyFile, GLogField, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, _GOptionEntry, GPatternSpec, GRegex, GScannerConfig, _GScannerConfig, GSource, _GSource, GSourceCallbackFuncs, _GSourceCallbackFuncs, GString, _GString, GTestConfig, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType
 end))
 end
