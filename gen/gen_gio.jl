@@ -46,7 +46,7 @@ skiplist=[:new_for_bus,:export,:add_option_group,:make_pollfd,:get_info,
 GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=vcat(obj_skiplist,[:AppInfoMonitor,:DBusConnection,:DBusMenuModel,:DBusProxy,:DBusMethodInvocation,:IOModule,:SimpleProxyResolver,:UnixMountMonitor,:Task]))
 
 skiplist=[:add_action_entries,:get_info,:receive_messages,:send_messages,
-:writev_nonblocking]
+:writev_nonblocking,:dup_default]
 # skips are to avoid method name collisions
 GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[:App,:AppInfo,:DBusObjectManager,:Drive,:Icon,:Mount,:NetworkMonitor,:PollableOutputStream,:ProxyResolver,:SocketConnectable,:TlsBackend,:TlsClientConnection,:Volume])
 

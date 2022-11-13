@@ -61,6 +61,8 @@ path3 = GtkTreePath("1")
 @test string(path3) == "1"
 path3 !== nothing && down(path3)
 @test string(path3) == "1:0"
+@test up(path3)
+@test string(path3) == "1"
 
 path4 = GtkTreePath()
 
@@ -68,6 +70,7 @@ success, iter = Gtk4.iter(treeModel,path)
 @test success == true
 @test store[iter] == (1, "London")
 
+@test_throws ErrorException Gtk4.iter_from_string_index(store, "1:0:0:0")
 iter = Gtk4.iter_from_string_index(store,"0")
 @test Gtk4.isvalid(store,iter)
 @test store[iter] == (1, "London")

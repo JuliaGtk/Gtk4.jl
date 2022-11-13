@@ -1,7 +1,6 @@
 ## GtkTreeView
 
 const TRI = Union{Ref{_GtkTreeIter}, _GtkTreeIter}
-zero(::Type{GtkTreeIter}) = GtkTreeIter()
 copy(ti::GtkTreeIter) = G_.copy(ti)
 copy(ti::_GtkTreeIter) = ti
 copy(ti::Ref{_GtkTreeIter}) = Ref(ti[])
@@ -27,7 +26,7 @@ string(path::GtkTreePath) = G_.to_string(path)
 ## Get an iter corresponding to an index specified as a string
 function iter_from_string_index(store, index::AbstractString)
     success, iter = G_.get_iter_from_string(GtkTreeModel(store), index)
-    if !isvalid(store, iter)
+    if !success || !isvalid(store, iter)
         error("invalid index: $index")
     end
     iter
@@ -51,11 +50,7 @@ function index_from_iter(store::GtkListStore, iter::TRI)
 end
 
 function list_store_set_values(store::GtkListStore, iter, values)
-	riter = Ref(iter)
-    for (i, value) in enumerate(values)
-        ccall((:gtk_list_store_set_value, libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Cint, Ptr{GValue}),
-              store, riter, i - 1, GLib.gvalue(value))
-    end
+	G_.set(store, Ref(iter), 0:(length(values)-1), GLib.gvalues(values...))
 end
 
 function push!(listStore::GtkListStore, values::Tuple)
@@ -142,26 +137,16 @@ end
 iter_from_index(store::GtkTreeStoreLeaf, index::Vector{Int}) = iter_from_string_index(store, join(index.-1, ":"))
 
 function tree_store_set_values(treeStore::GtkTreeStoreLeaf, iter, values)
-	riter = Ref(iter)
-    for (i, value) in enumerate(values)
-        ccall((:gtk_tree_store_set_value, libgtk4), Nothing, (Ptr{GObject}, Ref{_GtkTreeIter}, Cint, Ptr{GValue}),
-              treeStore, riter, i - 1, GLib.gvalue(value))
-    end
+	G_.set(treeStore, Ref(iter), 0:(length(values)-1), GLib.gvalues(values...))
     iter
 end
 
 
 function push!(treeStore::GtkTreeStore, values::Tuple, parent = nothing)
-	m_iter = Ref{_GtkTreeIter}()
-	_parent = (parent === nothing ? C_NULL : parent)
-	if isa(_parent,_GtkTreeIter)
-		_parent=Ref(_parent)
+	if isa(parent,_GtkTreeIter)
+		parent=Ref(parent)
 	end
-	ret = ccall(("gtk_tree_store_append", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), treeStore, m_iter, _parent)
-	iter = m_iter[]
-
-    tree_store_set_values(treeStore, iter, values)
-    iter
+	G_.insert_with_values(treeStore, parent, -1, 0:(length(values)-1), GLib.gvalues(values...))
 end
 
 function pushfirst!(treeStore::GtkTreeStore, values::Tuple, parent = nothing)

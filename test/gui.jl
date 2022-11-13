@@ -794,6 +794,8 @@ ts[iter,1] = "ONE"
 @test map(i -> ts[i, 1], Gtk4.TreeIterator(ts, iter)) == ["two", "three"]
 @test Gtk4.iter_n_children(GtkTreeModel(ts), iter)==1
 
+pushfirst!(ts,("first child of two",),iter2)
+
 destroy(w)
 end
 
