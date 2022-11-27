@@ -38,9 +38,9 @@ function GtkEventControllerKey(widget=nothing)
     g
 end
 
-function GtkGestureClick(widget=nothing,button=0)
+function GtkGestureClick(widget=nothing,button=1)
     g = G_.GestureClick_new()
-    button != 0 && G_.set_button(g, button)
+    button != 1 && G_.set_button(g, button)
     widget !== nothing && push!(widget, g)
     g
 end

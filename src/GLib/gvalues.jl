@@ -65,6 +65,11 @@ function setindex!(dest::Base.RefValue{GValue}, src::Ref{GValue})
     src
 end
 
+function setindex!(dest::Ptr{GValue}, src::Ref{GValue})
+    ccall((:g_value_transform, libgobject), Cint, (Ptr{GValue}, Ptr{GValue}), src, dest) != 0
+    src
+end
+
 getindex(gv::Ref{GValue}, i::Int, ::Type{T}) where {T} = getindex(Ref(gv, i), T)
 getindex(gv::Ref{GValue}, i::Int) = getindex(Ref(gv, i))
 getindex(v::Ref{GValue}, i::Int, ::Type{Nothing}) = nothing
