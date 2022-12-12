@@ -1,4 +1,4 @@
-function GtkWindow(title::Union{Nothing, AbstractString} = nothing, w::Real = -1, h::Real = -1, resizable::Bool = true)
+function GtkWindow(title::Union{Nothing, AbstractString} = nothing, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
     win = G_.Window_new()
     if title !== nothing
         G_.set_title(win, title)
@@ -9,7 +9,7 @@ function GtkWindow(title::Union{Nothing, AbstractString} = nothing, w::Real = -1
         G_.set_resizable(win, false)
         G_.set_size_request(win, w, h)
     end
-    show(win)
+    show_window && show(win)
     win
 end
 
@@ -18,6 +18,8 @@ function GtkWindow(widget::GtkWidget, args...)
     G_.set_child(w,widget)
     w
 end
+
+default_size(win::GtkWindow, w, h) = G_.set_default_size(win, w, h)
 
 """
     destroy(win::GtkWindow)
@@ -73,6 +75,19 @@ See also [`maximize`](@ref).
 Related GTK function: [`gtk_window_unmaximize`()]($(gtkdoc_method_url("gtk4","Window","unmaximize")))
 """
 unmaximize(win::GtkWindow) = G_.unmaximize(win)
+
+"""
+    present(win::GtkWindow)
+    present(win::GtkWindow, timestamp)
+
+Presents a window to the user. Usually means move it to the front. According to the GTK docs, this
+function "should not be used" without including a timestamp for the user's request.
+
+Related GTK function: [`gtk_window_present`()]($(gtkdoc_method_url("gtk4","Window","present")))
+Related GTK function: [`gtk_window_present_with_time`()]($(gtkdoc_method_url("gtk4","Window","present_with_time")))
+"""
+present(win::GtkWindow) = G_.present(win)
+present(win::GtkWindow, timestamp) = G_.present_with_time(win, timestamp)
 titlebar(win::GtkWindow, w::GtkWidget) = G_.set_titlebar(win, w)
 
 push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
