@@ -28,6 +28,7 @@ end
 
 @testset "Gtk" begin
 include("gui/dialogs.jl")
+include("gui/layout.jl")
 include("gui.jl")
 include("comboboxtext.jl")
 include("tree.jl")

@@ -1,6 +1,6 @@
 # generic interface:
 export width, height, set_child, get_child,
-    reveal, configure, draw, cairo_context,
+    reveal, configure!, draw, cairo_context,
     visible, isvisible, destroy, start, stop, depth, isancestor,
     isrealized, hide, show, grab_focus, activate,
     hasparent, parent, toplevel, set_gtk_property!, get_gtk_property,
