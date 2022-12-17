@@ -1,0 +1,1348 @@
+quote
+$(Expr(:toplevel, quote
+    begin
+        gboxed_types = Any[]
+    end
+    mutable struct AdwSpringParams <: GBoxed
+        handle::Ptr{AdwSpringParams}
+        begin
+            (GLib.g_type(::Type{T}) where T <: AdwSpringParams) = begin
+                    ccall(("adw_spring_params_get_type", "libadwaita-1.so.0"), GType, ())
+                end
+            function AdwSpringParams(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, AdwSpringParams)
+        end
+    end
+    begin
+        gboxed_cache_init() = begin
+                append!(GLib.gboxed_types, gboxed_types)
+            end
+    end
+    begin
+        gtype_wrapper_cache = Dict{Symbol, Type}()
+    end
+    begin
+        abstract type AdwWindow <: GtkWindow end
+        mutable struct AdwWindowLeaf <: AdwWindow
+            handle::Ptr{GObject}
+            function AdwWindowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwWindowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwWindowLeaf(args...; kwargs...)
+            w = AdwWindow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwWindow] = AdwWindowLeaf
+        function AdwWindow(args...; kwargs...)
+            AdwWindowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwAboutWindow <: AdwWindow end
+        mutable struct AdwAboutWindowLeaf <: AdwAboutWindow
+            handle::Ptr{GObject}
+            function AdwAboutWindowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwAboutWindowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwAboutWindowLeaf(args...; kwargs...)
+            w = AdwAboutWindow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwAboutWindow] = AdwAboutWindowLeaf
+        function AdwAboutWindow(args...; kwargs...)
+            AdwAboutWindowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwPreferencesRow <: GtkListBoxRow end
+        mutable struct AdwPreferencesRowLeaf <: AdwPreferencesRow
+            handle::Ptr{GObject}
+            function AdwPreferencesRowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwPreferencesRowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwPreferencesRowLeaf(args...; kwargs...)
+            w = AdwPreferencesRow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwPreferencesRow] = AdwPreferencesRowLeaf
+        function AdwPreferencesRow(args...; kwargs...)
+            AdwPreferencesRowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwActionRow <: AdwPreferencesRow end
+        mutable struct AdwActionRowLeaf <: AdwActionRow
+            handle::Ptr{GObject}
+            function AdwActionRowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwActionRowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwActionRowLeaf(args...; kwargs...)
+            w = AdwActionRow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwActionRow] = AdwActionRowLeaf
+        function AdwActionRow(args...; kwargs...)
+            AdwActionRowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwAnimation <: GObject end
+        mutable struct AdwAnimationLeaf <: AdwAnimation
+            handle::Ptr{GObject}
+            function AdwAnimationLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwAnimationLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwAnimationLeaf(args...; kwargs...)
+            w = AdwAnimation(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwAnimation] = AdwAnimationLeaf
+        function AdwAnimation(args...; kwargs...)
+            AdwAnimationLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwAnimationTarget <: GObject end
+        mutable struct AdwAnimationTargetLeaf <: AdwAnimationTarget
+            handle::Ptr{GObject}
+            function AdwAnimationTargetLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwAnimationTargetLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwAnimationTargetLeaf(args...; kwargs...)
+            w = AdwAnimationTarget(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwAnimationTarget] = AdwAnimationTargetLeaf
+        function AdwAnimationTarget(args...; kwargs...)
+            AdwAnimationTargetLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwApplication <: GtkApplication end
+        mutable struct AdwApplicationLeaf <: AdwApplication
+            handle::Ptr{GObject}
+            function AdwApplicationLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwApplicationLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwApplicationLeaf(args...; kwargs...)
+            w = AdwApplication(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwApplication] = AdwApplicationLeaf
+        function AdwApplication(args...; kwargs...)
+            AdwApplicationLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwApplicationWindow <: GtkApplicationWindow end
+        mutable struct AdwApplicationWindowLeaf <: AdwApplicationWindow
+            handle::Ptr{GObject}
+            function AdwApplicationWindowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwApplicationWindowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwApplicationWindowLeaf(args...; kwargs...)
+            w = AdwApplicationWindow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwApplicationWindow] = AdwApplicationWindowLeaf
+        function AdwApplicationWindow(args...; kwargs...)
+            AdwApplicationWindowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwAvatar <: GtkWidget end
+        mutable struct AdwAvatarLeaf <: AdwAvatar
+            handle::Ptr{GObject}
+            function AdwAvatarLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwAvatarLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwAvatarLeaf(args...; kwargs...)
+            w = AdwAvatar(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwAvatar] = AdwAvatarLeaf
+        function AdwAvatar(args...; kwargs...)
+            AdwAvatarLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwBin <: GtkWidget end
+        mutable struct AdwBinLeaf <: AdwBin
+            handle::Ptr{GObject}
+            function AdwBinLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwBinLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwBinLeaf(args...; kwargs...)
+            w = AdwBin(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwBin] = AdwBinLeaf
+        function AdwBin(args...; kwargs...)
+            AdwBinLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwButtonContent <: GtkWidget end
+        mutable struct AdwButtonContentLeaf <: AdwButtonContent
+            handle::Ptr{GObject}
+            function AdwButtonContentLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwButtonContentLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwButtonContentLeaf(args...; kwargs...)
+            w = AdwButtonContent(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwButtonContent] = AdwButtonContentLeaf
+        function AdwButtonContent(args...; kwargs...)
+            AdwButtonContentLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwCallbackAnimationTarget <: AdwAnimationTarget end
+        mutable struct AdwCallbackAnimationTargetLeaf <: AdwCallbackAnimationTarget
+            handle::Ptr{GObject}
+            function AdwCallbackAnimationTargetLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwCallbackAnimationTargetLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwCallbackAnimationTargetLeaf(args...; kwargs...)
+            w = AdwCallbackAnimationTarget(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwCallbackAnimationTarget] = AdwCallbackAnimationTargetLeaf
+        function AdwCallbackAnimationTarget(args...; kwargs...)
+            AdwCallbackAnimationTargetLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwCarousel <: GtkWidget end
+        mutable struct AdwCarouselLeaf <: AdwCarousel
+            handle::Ptr{GObject}
+            function AdwCarouselLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwCarouselLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwCarouselLeaf(args...; kwargs...)
+            w = AdwCarousel(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwCarousel] = AdwCarouselLeaf
+        function AdwCarousel(args...; kwargs...)
+            AdwCarouselLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwCarouselIndicatorDots <: GtkWidget end
+        mutable struct AdwCarouselIndicatorDotsLeaf <: AdwCarouselIndicatorDots
+            handle::Ptr{GObject}
+            function AdwCarouselIndicatorDotsLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwCarouselIndicatorDotsLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwCarouselIndicatorDotsLeaf(args...; kwargs...)
+            w = AdwCarouselIndicatorDots(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwCarouselIndicatorDots] = AdwCarouselIndicatorDotsLeaf
+        function AdwCarouselIndicatorDots(args...; kwargs...)
+            AdwCarouselIndicatorDotsLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwCarouselIndicatorLines <: GtkWidget end
+        mutable struct AdwCarouselIndicatorLinesLeaf <: AdwCarouselIndicatorLines
+            handle::Ptr{GObject}
+            function AdwCarouselIndicatorLinesLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwCarouselIndicatorLinesLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwCarouselIndicatorLinesLeaf(args...; kwargs...)
+            w = AdwCarouselIndicatorLines(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwCarouselIndicatorLines] = AdwCarouselIndicatorLinesLeaf
+        function AdwCarouselIndicatorLines(args...; kwargs...)
+            AdwCarouselIndicatorLinesLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwClamp <: GtkWidget end
+        mutable struct AdwClampLeaf <: AdwClamp
+            handle::Ptr{GObject}
+            function AdwClampLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwClampLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwClampLeaf(args...; kwargs...)
+            w = AdwClamp(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwClamp] = AdwClampLeaf
+        function AdwClamp(args...; kwargs...)
+            AdwClampLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwClampLayout <: GtkLayoutManager end
+        mutable struct AdwClampLayoutLeaf <: AdwClampLayout
+            handle::Ptr{GObject}
+            function AdwClampLayoutLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwClampLayoutLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwClampLayoutLeaf(args...; kwargs...)
+            w = AdwClampLayout(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwClampLayout] = AdwClampLayoutLeaf
+        function AdwClampLayout(args...; kwargs...)
+            AdwClampLayoutLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwClampScrollable <: GtkWidget end
+        mutable struct AdwClampScrollableLeaf <: AdwClampScrollable
+            handle::Ptr{GObject}
+            function AdwClampScrollableLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwClampScrollableLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwClampScrollableLeaf(args...; kwargs...)
+            w = AdwClampScrollable(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwClampScrollable] = AdwClampScrollableLeaf
+        function AdwClampScrollable(args...; kwargs...)
+            AdwClampScrollableLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwComboRow <: AdwActionRow end
+        mutable struct AdwComboRowLeaf <: AdwComboRow
+            handle::Ptr{GObject}
+            function AdwComboRowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwComboRowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwComboRowLeaf(args...; kwargs...)
+            w = AdwComboRow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwComboRow] = AdwComboRowLeaf
+        function AdwComboRow(args...; kwargs...)
+            AdwComboRowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwEntryRow <: AdwPreferencesRow end
+        mutable struct AdwEntryRowLeaf <: AdwEntryRow
+            handle::Ptr{GObject}
+            function AdwEntryRowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwEntryRowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwEntryRowLeaf(args...; kwargs...)
+            w = AdwEntryRow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwEntryRow] = AdwEntryRowLeaf
+        function AdwEntryRow(args...; kwargs...)
+            AdwEntryRowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwEnumListItem <: GObject end
+        mutable struct AdwEnumListItemLeaf <: AdwEnumListItem
+            handle::Ptr{GObject}
+            function AdwEnumListItemLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwEnumListItemLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwEnumListItemLeaf(args...; kwargs...)
+            w = AdwEnumListItem(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwEnumListItem] = AdwEnumListItemLeaf
+        function AdwEnumListItem(args...; kwargs...)
+            AdwEnumListItemLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwEnumListModel <: GObject end
+        mutable struct AdwEnumListModelLeaf <: AdwEnumListModel
+            handle::Ptr{GObject}
+            function AdwEnumListModelLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwEnumListModelLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwEnumListModelLeaf(args...; kwargs...)
+            w = AdwEnumListModel(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwEnumListModel] = AdwEnumListModelLeaf
+        function AdwEnumListModel(args...; kwargs...)
+            AdwEnumListModelLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwExpanderRow <: AdwPreferencesRow end
+        mutable struct AdwExpanderRowLeaf <: AdwExpanderRow
+            handle::Ptr{GObject}
+            function AdwExpanderRowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwExpanderRowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwExpanderRowLeaf(args...; kwargs...)
+            w = AdwExpanderRow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwExpanderRow] = AdwExpanderRowLeaf
+        function AdwExpanderRow(args...; kwargs...)
+            AdwExpanderRowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwFlap <: GtkWidget end
+        mutable struct AdwFlapLeaf <: AdwFlap
+            handle::Ptr{GObject}
+            function AdwFlapLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwFlapLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwFlapLeaf(args...; kwargs...)
+            w = AdwFlap(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwFlap] = AdwFlapLeaf
+        function AdwFlap(args...; kwargs...)
+            AdwFlapLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwHeaderBar <: GtkWidget end
+        mutable struct AdwHeaderBarLeaf <: AdwHeaderBar
+            handle::Ptr{GObject}
+            function AdwHeaderBarLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwHeaderBarLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwHeaderBarLeaf(args...; kwargs...)
+            w = AdwHeaderBar(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwHeaderBar] = AdwHeaderBarLeaf
+        function AdwHeaderBar(args...; kwargs...)
+            AdwHeaderBarLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwLeaflet <: GtkWidget end
+        mutable struct AdwLeafletLeaf <: AdwLeaflet
+            handle::Ptr{GObject}
+            function AdwLeafletLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwLeafletLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwLeafletLeaf(args...; kwargs...)
+            w = AdwLeaflet(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwLeaflet] = AdwLeafletLeaf
+        function AdwLeaflet(args...; kwargs...)
+            AdwLeafletLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwLeafletPage <: GObject end
+        mutable struct AdwLeafletPageLeaf <: AdwLeafletPage
+            handle::Ptr{GObject}
+            function AdwLeafletPageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwLeafletPageLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwLeafletPageLeaf(args...; kwargs...)
+            w = AdwLeafletPage(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwLeafletPage] = AdwLeafletPageLeaf
+        function AdwLeafletPage(args...; kwargs...)
+            AdwLeafletPageLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwMessageDialog <: GtkWindow end
+        mutable struct AdwMessageDialogLeaf <: AdwMessageDialog
+            handle::Ptr{GObject}
+            function AdwMessageDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwMessageDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwMessageDialogLeaf(args...; kwargs...)
+            w = AdwMessageDialog(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwMessageDialog] = AdwMessageDialogLeaf
+        function AdwMessageDialog(args...; kwargs...)
+            AdwMessageDialogLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwPasswordEntryRow <: AdwEntryRow end
+        mutable struct AdwPasswordEntryRowLeaf <: AdwPasswordEntryRow
+            handle::Ptr{GObject}
+            function AdwPasswordEntryRowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwPasswordEntryRowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwPasswordEntryRowLeaf(args...; kwargs...)
+            w = AdwPasswordEntryRow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwPasswordEntryRow] = AdwPasswordEntryRowLeaf
+        function AdwPasswordEntryRow(args...; kwargs...)
+            AdwPasswordEntryRowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwPreferencesGroup <: GtkWidget end
+        mutable struct AdwPreferencesGroupLeaf <: AdwPreferencesGroup
+            handle::Ptr{GObject}
+            function AdwPreferencesGroupLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwPreferencesGroupLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwPreferencesGroupLeaf(args...; kwargs...)
+            w = AdwPreferencesGroup(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwPreferencesGroup] = AdwPreferencesGroupLeaf
+        function AdwPreferencesGroup(args...; kwargs...)
+            AdwPreferencesGroupLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwPreferencesPage <: GtkWidget end
+        mutable struct AdwPreferencesPageLeaf <: AdwPreferencesPage
+            handle::Ptr{GObject}
+            function AdwPreferencesPageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwPreferencesPageLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwPreferencesPageLeaf(args...; kwargs...)
+            w = AdwPreferencesPage(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwPreferencesPage] = AdwPreferencesPageLeaf
+        function AdwPreferencesPage(args...; kwargs...)
+            AdwPreferencesPageLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwPreferencesWindow <: AdwWindow end
+        mutable struct AdwPreferencesWindowLeaf <: AdwPreferencesWindow
+            handle::Ptr{GObject}
+            function AdwPreferencesWindowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwPreferencesWindowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwPreferencesWindowLeaf(args...; kwargs...)
+            w = AdwPreferencesWindow(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwPreferencesWindow] = AdwPreferencesWindowLeaf
+        function AdwPreferencesWindow(args...; kwargs...)
+            AdwPreferencesWindowLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwPropertyAnimationTarget <: AdwAnimationTarget end
+        mutable struct AdwPropertyAnimationTargetLeaf <: AdwPropertyAnimationTarget
+            handle::Ptr{GObject}
+            function AdwPropertyAnimationTargetLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwPropertyAnimationTargetLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwPropertyAnimationTargetLeaf(args...; kwargs...)
+            w = AdwPropertyAnimationTarget(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwPropertyAnimationTarget] = AdwPropertyAnimationTargetLeaf
+        function AdwPropertyAnimationTarget(args...; kwargs...)
+            AdwPropertyAnimationTargetLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwSplitButton <: GtkWidget end
+        mutable struct AdwSplitButtonLeaf <: AdwSplitButton
+            handle::Ptr{GObject}
+            function AdwSplitButtonLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwSplitButtonLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwSplitButtonLeaf(args...; kwargs...)
+            w = AdwSplitButton(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwSplitButton] = AdwSplitButtonLeaf
+        function AdwSplitButton(args...; kwargs...)
+            AdwSplitButtonLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwSpringAnimation <: AdwAnimation end
+        mutable struct AdwSpringAnimationLeaf <: AdwSpringAnimation
+            handle::Ptr{GObject}
+            function AdwSpringAnimationLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwSpringAnimationLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwSpringAnimationLeaf(args...; kwargs...)
+            w = AdwSpringAnimation(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwSpringAnimation] = AdwSpringAnimationLeaf
+        function AdwSpringAnimation(args...; kwargs...)
+            AdwSpringAnimationLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwSqueezer <: GtkWidget end
+        mutable struct AdwSqueezerLeaf <: AdwSqueezer
+            handle::Ptr{GObject}
+            function AdwSqueezerLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwSqueezerLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwSqueezerLeaf(args...; kwargs...)
+            w = AdwSqueezer(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwSqueezer] = AdwSqueezerLeaf
+        function AdwSqueezer(args...; kwargs...)
+            AdwSqueezerLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwSqueezerPage <: GObject end
+        mutable struct AdwSqueezerPageLeaf <: AdwSqueezerPage
+            handle::Ptr{GObject}
+            function AdwSqueezerPageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwSqueezerPageLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwSqueezerPageLeaf(args...; kwargs...)
+            w = AdwSqueezerPage(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwSqueezerPage] = AdwSqueezerPageLeaf
+        function AdwSqueezerPage(args...; kwargs...)
+            AdwSqueezerPageLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwStatusPage <: GtkWidget end
+        mutable struct AdwStatusPageLeaf <: AdwStatusPage
+            handle::Ptr{GObject}
+            function AdwStatusPageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwStatusPageLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwStatusPageLeaf(args...; kwargs...)
+            w = AdwStatusPage(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwStatusPage] = AdwStatusPageLeaf
+        function AdwStatusPage(args...; kwargs...)
+            AdwStatusPageLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwStyleManager <: GObject end
+        mutable struct AdwStyleManagerLeaf <: AdwStyleManager
+            handle::Ptr{GObject}
+            function AdwStyleManagerLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwStyleManagerLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwStyleManagerLeaf(args...; kwargs...)
+            w = AdwStyleManager(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwStyleManager] = AdwStyleManagerLeaf
+        function AdwStyleManager(args...; kwargs...)
+            AdwStyleManagerLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwSwipeTracker <: GObject end
+        mutable struct AdwSwipeTrackerLeaf <: AdwSwipeTracker
+            handle::Ptr{GObject}
+            function AdwSwipeTrackerLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwSwipeTrackerLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwSwipeTrackerLeaf(args...; kwargs...)
+            w = AdwSwipeTracker(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwSwipeTracker] = AdwSwipeTrackerLeaf
+        function AdwSwipeTracker(args...; kwargs...)
+            AdwSwipeTrackerLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwTabBar <: GtkWidget end
+        mutable struct AdwTabBarLeaf <: AdwTabBar
+            handle::Ptr{GObject}
+            function AdwTabBarLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwTabBarLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwTabBarLeaf(args...; kwargs...)
+            w = AdwTabBar(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwTabBar] = AdwTabBarLeaf
+        function AdwTabBar(args...; kwargs...)
+            AdwTabBarLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwTabPage <: GObject end
+        mutable struct AdwTabPageLeaf <: AdwTabPage
+            handle::Ptr{GObject}
+            function AdwTabPageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwTabPageLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwTabPageLeaf(args...; kwargs...)
+            w = AdwTabPage(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwTabPage] = AdwTabPageLeaf
+        function AdwTabPage(args...; kwargs...)
+            AdwTabPageLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwTabView <: GtkWidget end
+        mutable struct AdwTabViewLeaf <: AdwTabView
+            handle::Ptr{GObject}
+            function AdwTabViewLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwTabViewLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwTabViewLeaf(args...; kwargs...)
+            w = AdwTabView(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwTabView] = AdwTabViewLeaf
+        function AdwTabView(args...; kwargs...)
+            AdwTabViewLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwTimedAnimation <: AdwAnimation end
+        mutable struct AdwTimedAnimationLeaf <: AdwTimedAnimation
+            handle::Ptr{GObject}
+            function AdwTimedAnimationLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwTimedAnimationLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwTimedAnimationLeaf(args...; kwargs...)
+            w = AdwTimedAnimation(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwTimedAnimation] = AdwTimedAnimationLeaf
+        function AdwTimedAnimation(args...; kwargs...)
+            AdwTimedAnimationLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwToast <: GObject end
+        mutable struct AdwToastLeaf <: AdwToast
+            handle::Ptr{GObject}
+            function AdwToastLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwToastLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwToastLeaf(args...; kwargs...)
+            w = AdwToast(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwToast] = AdwToastLeaf
+        function AdwToast(args...; kwargs...)
+            AdwToastLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwToastOverlay <: GtkWidget end
+        mutable struct AdwToastOverlayLeaf <: AdwToastOverlay
+            handle::Ptr{GObject}
+            function AdwToastOverlayLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwToastOverlayLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwToastOverlayLeaf(args...; kwargs...)
+            w = AdwToastOverlay(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwToastOverlay] = AdwToastOverlayLeaf
+        function AdwToastOverlay(args...; kwargs...)
+            AdwToastOverlayLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwViewStack <: GtkWidget end
+        mutable struct AdwViewStackLeaf <: AdwViewStack
+            handle::Ptr{GObject}
+            function AdwViewStackLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwViewStackLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwViewStackLeaf(args...; kwargs...)
+            w = AdwViewStack(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwViewStack] = AdwViewStackLeaf
+        function AdwViewStack(args...; kwargs...)
+            AdwViewStackLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwViewStackPage <: GObject end
+        mutable struct AdwViewStackPageLeaf <: AdwViewStackPage
+            handle::Ptr{GObject}
+            function AdwViewStackPageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwViewStackPageLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwViewStackPageLeaf(args...; kwargs...)
+            w = AdwViewStackPage(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwViewStackPage] = AdwViewStackPageLeaf
+        function AdwViewStackPage(args...; kwargs...)
+            AdwViewStackPageLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwViewSwitcher <: GtkWidget end
+        mutable struct AdwViewSwitcherLeaf <: AdwViewSwitcher
+            handle::Ptr{GObject}
+            function AdwViewSwitcherLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwViewSwitcherLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwViewSwitcherLeaf(args...; kwargs...)
+            w = AdwViewSwitcher(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwViewSwitcher] = AdwViewSwitcherLeaf
+        function AdwViewSwitcher(args...; kwargs...)
+            AdwViewSwitcherLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwViewSwitcherBar <: GtkWidget end
+        mutable struct AdwViewSwitcherBarLeaf <: AdwViewSwitcherBar
+            handle::Ptr{GObject}
+            function AdwViewSwitcherBarLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwViewSwitcherBarLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwViewSwitcherBarLeaf(args...; kwargs...)
+            w = AdwViewSwitcherBar(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwViewSwitcherBar] = AdwViewSwitcherBarLeaf
+        function AdwViewSwitcherBar(args...; kwargs...)
+            AdwViewSwitcherBarLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwViewSwitcherTitle <: GtkWidget end
+        mutable struct AdwViewSwitcherTitleLeaf <: AdwViewSwitcherTitle
+            handle::Ptr{GObject}
+            function AdwViewSwitcherTitleLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwViewSwitcherTitleLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwViewSwitcherTitleLeaf(args...; kwargs...)
+            w = AdwViewSwitcherTitle(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwViewSwitcherTitle] = AdwViewSwitcherTitleLeaf
+        function AdwViewSwitcherTitle(args...; kwargs...)
+            AdwViewSwitcherTitleLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type AdwWindowTitle <: GtkWidget end
+        mutable struct AdwWindowTitleLeaf <: AdwWindowTitle
+            handle::Ptr{GObject}
+            function AdwWindowTitleLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwWindowTitleLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function AdwWindowTitleLeaf(args...; kwargs...)
+            w = AdwWindowTitle(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:AdwWindowTitle] = AdwWindowTitleLeaf
+        function AdwWindowTitle(args...; kwargs...)
+            AdwWindowTitleLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        gtype_wrapper_cache_init() = begin
+                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+            end
+    end
+    begin
+        struct AdwSwipeable <: GInterface
+            handle::Ptr{GObject}
+            gc::Any
+            AdwSwipeable(x::GObject) = begin
+                    new(unsafe_convert(Ptr{GObject}, x), x)
+                end
+        end
+    end
+    export AdwSpringParams, AdwAboutWindow, AdwActionRow, AdwAnimation, AdwAnimationTarget, AdwApplication, AdwApplicationWindow, AdwAvatar, AdwBin, AdwButtonContent, AdwCallbackAnimationTarget, AdwCarousel, AdwCarouselIndicatorDots, AdwCarouselIndicatorLines, AdwClamp, AdwClampLayout, AdwClampScrollable, AdwComboRow, AdwEntryRow, AdwEnumListItem, AdwEnumListModel, AdwExpanderRow, AdwFlap, AdwHeaderBar, AdwLeaflet, AdwLeafletPage, AdwMessageDialog, AdwPasswordEntryRow, AdwPreferencesGroup, AdwPreferencesPage, AdwPreferencesRow, AdwPreferencesWindow, AdwPropertyAnimationTarget, AdwSplitButton, AdwSpringAnimation, AdwSqueezer, AdwSqueezerPage, AdwStatusPage, AdwStyleManager, AdwSwipeTracker, AdwTabBar, AdwTabPage, AdwTabView, AdwTimedAnimation, AdwToast, AdwToastOverlay, AdwViewStack, AdwViewStackPage, AdwViewSwitcher, AdwViewSwitcherBar, AdwViewSwitcherTitle, AdwWindow, AdwWindowTitle, AdwSwipeable
+end))
+end
