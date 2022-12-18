@@ -92,6 +92,22 @@ end
     destroy(w)
 end
 
+@testset "Window with HeaderBar" begin
+    w = GtkWindow("Header bar", -1, -1, true, false) # need to add HeaderBar before showing the window
+    hb = GtkHeaderBar()
+    Gtk4.titlebar(w,hb)
+    hb.show_title_buttons=false
+    push!(hb,GtkLabel("end"))
+    end2 = GtkLabel("end2")
+    push!(hb,end2)
+    delete!(hb,end2)
+    pushfirst!(hb,GtkLabel("start"))
+    Gtk4.title_widget(hb,GtkLabel("title widget"))
+    show(w)
+    present(w) # no need for this, just covers present()
+    destroy(w)
+end
+
 @testset "Initially Hidden Canvas" begin
 nb = GtkNotebook()
 @test hasparent(nb)==false
@@ -174,6 +190,10 @@ counter = 0
 id = signal_connect(b, "activate") do widget
     counter::Int += 1
 end
+function incr(widget, user_data)  # incrementing counter in this crashes julia
+    nothing
+end
+Gtk4.on_signal_clicked(incr, b)
 @test GLib.signal_handler_is_connected(b, id)
 
 @test counter == 0
@@ -413,6 +433,12 @@ pulse(pb)
 destroy(w)
 end
 
+@testset "levelbar" begin
+lb = GtkLevelBar(0,10)
+Gtk4.value(lb,5)
+@test Gtk4.value(lb)==5
+end
+
 @testset "spinner" begin
 s = GtkSpinner()
 w = GtkWindow(s, "Spinner")
@@ -573,6 +599,10 @@ end
     @test mtrx.yy == 280
     @test mtrx.xy == mtrx.yx == mtrx.x0 == mtrx.y0 == 0
     surf = Gtk4.cairo_surface(cnvs)
+end
+
+@testset "GLArea" begin
+    glarea = GtkGLArea()
 end
 
 @testset "Menus" begin

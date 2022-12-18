@@ -88,7 +88,6 @@ Related GTK function: [`gtk_window_present_with_time`()]($(gtkdoc_method_url("gt
 """
 present(win::GtkWindow) = G_.present(win)
 present(win::GtkWindow, timestamp) = G_.present_with_time(win, timestamp)
-titlebar(win::GtkWindow, w::GtkWidget) = G_.set_titlebar(win, w)
 
 push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
 setindex!(w::GtkWindow, widget::Union{Nothing,GtkWidget}) = G_.set_child(w, widget)
@@ -105,8 +104,12 @@ GtkScrolledWindow() = G_.ScrolledWindow_new()
 setindex!(w::GtkScrolledWindow, widg::Union{Nothing,GtkWidget}) = G_.set_child(w,widg)
 getindex(w::GtkScrolledWindow) = G_.get_child(w)
 
-GtkHeaderBar() = G_.HeaderBar_new()
+## GtkHeaderBar
 
+GtkHeaderBar() = G_.HeaderBar_new()
+push!(hb::GtkHeaderBar, w::GtkWidget) = G_.pack_end(hb, w)
+pushfirst!(hb::GtkHeaderBar, w::GtkWidget) = G_.pack_start(hb, w)
+delete!(hb::GtkHeaderBar, w::GtkWidget) = G_.remove(hb, w)
 
 ## GtkDialog
 

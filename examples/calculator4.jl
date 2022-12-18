@@ -1,5 +1,5 @@
 # Simple calculator application that utilises Gtk.jl
-# created by Nand Vinchhi for GCI 2019
+# created by Nand Vinchhi for GCI 2019, later ported to Gtk4.jl
 
 # only works if you use include() in the REPL
 
