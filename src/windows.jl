@@ -334,39 +334,45 @@ hide(d::GtkNativeDialog) = G_.hide(d)
 destroy(d::GtkNativeDialog) = G_.destroy(d)
 
 function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false)
+    res = Ref{String}("")
+    c = Condition()  
+
+    open_dialog(title, parent, filters; timeout, multiple) do filename
+        res[] = filename
+        notify(c)
+    end
+    wait(c)
+
+    return res[]
+end
+
+function open_dialog(callback::Function, title::AbstractString, parent = nothing, 
+                    filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false)
     dlg = GtkFileChooserNative(title, parent, FileChooserAction_OPEN, "Open", "Cancel")
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)
     end
-    res = Ref{Int32}(Int32(ResponseType_CANCEL))
 
-    c = Condition()
-
-    function on_response(dlg,response_id)
-        res[] = response_id
-        notify(c)
+    function on_response(dlg, response_id)
+        if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
+            file = G_.get_file(dlgp)
+            sel = GLib.G_.get_path(GFile(file))
+        else 
+            sel = ""
+        end
+        callback(sel)
+        destroy(dlg)
     end
 
     signal_connect(on_response, dlg, "response")
     show(dlg)
 
     if timeout > 0
-        emit(timer) = (G_.destroy(dlg); notify(c))
+        emit(timer) = on_response(dlg, Int32(Gtk4.ResponseType_CANCEL))
         Timer(emit, timeout)
     end
-
-    wait(c)
-
-    if ResponseType(unsafe_trunc(UInt16, res[])) == ResponseType_ACCEPT
-        file = G_.get_file(dlgp)
-        sel = GLib.G_.get_path(GFile(file))
-    else
-        sel = ""
-    end
-
-    destroy(dlg)
-    sel
+    return dlg
 end
 
 function save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout=-1)
