@@ -158,14 +158,24 @@ ask_dialog(question::AbstractString, parent = nothing; timeout = -1) =
         ask_dialog(question, "No", "Yes", parent; timeout = timeout)
 
 function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
+    res = Ref{Bool}(false)
+    c = Condition()  
+
+    ask_dialog(message, no_text, yes_text, parent; timeout) do res_
+        res[] = res_
+        notify(c)
+    end
+    wait(c)
+    return res[]
+end
+
+function ask_dialog(callback::Function, message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
     dlg = GtkMessageDialog(message, ((no_text, ResponseType_NO), (yes_text, ResponseType_YES)),
             DialogFlags_DESTROY_WITH_PARENT, MessageType_QUESTION, parent)
-    res = Ref{Int32}()
-    c = Condition()
 
     function on_response(dlg, response_id)
-        res[] = response_id
-        notify(c)
+        callback(response_id == Int32(ResponseType_YES))
+        destroy(dlg)
     end
 
     signal_connect(on_response, dlg, "response")
@@ -175,10 +185,7 @@ function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing
         emit(timer) = response(dlg, Gtk4.ResponseType_NO)
         Timer(emit, timeout)
     end
-
-    wait(c)
-    destroy(dlg)
-    res[] == Int32(ResponseType_YES)
+    return dlg
 end
 
 """
@@ -195,12 +202,22 @@ for (func, flag) in (
         (:warn_dialog, :(MessageType_WARNING)),
         (:error_dialog, :(MessageType_ERROR)))
     @eval function $func(message::AbstractString, parent = nothing; timeout = -1)
-        parent = (parent === nothing ? C_NULL : parent)
+        res = Ref{String}("")
+        c = Condition()  
+    
+        $func(message, parent; timeout) do
+            notify(c)
+        end
+        wait(c)
+        return
+    end
+
+    @eval function $func(callback::Function, message::AbstractString, parent = nothing; timeout = -1)
         dlg = GtkMessageDialog(message, (("Close",0),), DialogFlags_DESTROY_WITH_PARENT, $flag, parent)
-        c = Condition()
 
         function destroy_dialog(dlg, response_id)
-            notify(c)
+            callback()
+            destroy(dlg)
         end
 
         signal_connect(destroy_dialog, dlg, "response")
@@ -210,9 +227,8 @@ for (func, flag) in (
             emit(timer) = response(dlg, Gtk4.ResponseType_CANCEL)
             Timer(emit, timeout)
         end
-
-        wait(c)
-        destroy(dlg)
+      
+        return dlg
     end
 end
 
@@ -226,20 +242,34 @@ can be used to set a time in seconds after which the dialog will close and `entr
 will be returned.
 """
 function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
+    res = Ref{String}("")
+    c = Condition()  
+
+    input_dialog(title, entry_default, buttons, parent; timeout) do res_
+        res[] = res_
+        notify(c)
+    end
+    wait(c)
+    return res[]
+end
+
+function input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString, 
+                      buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
     #parent = (parent === nothing ? C_NULL : parent)
     dlg = GtkMessageDialog(message, buttons, DialogFlags_DESTROY_WITH_PARENT, MessageType_INFO, parent)
     box = content_area(dlg)
     entry = GtkEntry()
     entry.text = entry_default
     push!(box, entry)
-    c = Condition()
-    res = Ref{String}("")
 
-    function on_response(dlg,response_id)
+    function on_response(dlg, response_id)
         if response_id == 1
-            res[] = text(GtkEditable(entry))
+            res = text(GtkEditable(entry))
+        else
+            res = ""
         end
-        notify(c)
+        callback(res)
+        destroy(dlg)
     end
 
     signal_connect(on_response, dlg, "response")
@@ -249,10 +279,7 @@ function input_dialog(message::AbstractString, entry_default::AbstractString, bu
         emit(timer) = response(dlg, 0)
         Timer(emit, timeout)
     end
-
-    wait(c)
-    destroy(dlg)
-    res[]
+    return dlg
 end
 
 ## FileChoosers
@@ -324,7 +351,7 @@ function file_chooser_get_selection(dlg::Union{GtkFileChooserDialog,GtkFileChoos
         end
     end
     destroy(dlg)
-    selection
+    return selection
 end
 
 ## Native file dialogs
@@ -342,7 +369,6 @@ function open_dialog(title::AbstractString, parent = nothing, filters::Union{Abs
         notify(c)
     end
     wait(c)
-
     return res[]
 end
 
@@ -376,40 +402,43 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
 end
 
 function save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout=-1)
-    dlg = GtkFileChooserNative(title, parent, FileChooserAction_SAVE, "Save", "Cancel")
-    dlgp = GtkFileChooser(dlg)
-    if !isempty(filters)
-        makefilters!(dlgp, filters)
-    end
+    res = Ref{String}("")
+    c = Condition()  
 
-    res = Ref{Int32}(Int32(ResponseType_CANCEL))
-
-    c = Condition()
-
-    function on_response(dlg, response_id)
-        res[] = response_id
+    save_dialog(title, parent, filters; timeout) do filename
+        res[] = filename
         notify(c)
     end
-
-    signal_connect(on_response, dlg, "response")
-    show(dlg)
-
-    if timeout > 0
-        emit(timer) = (G_.destroy(dlg); notify(c))
-        Timer(emit, timeout)
-    end
-
     wait(c)
+    return res[]
+end
 
-    if ResponseType(unsafe_trunc(UInt16, res[])) == ResponseType_ACCEPT
-        file = G_.get_file(dlgp)
-        sel = GLib.G_.get_path(GFile(file))
-    else
-        sel = ""
-    end
+function save_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout=-1)
+  dlg = GtkFileChooserNative(title, parent, FileChooserAction_SAVE, "Save", "Cancel")
+  dlgp = GtkFileChooser(dlg)
+  if !isempty(filters)
+      makefilters!(dlgp, filters)
+  end
 
-    destroy(dlg)
-    sel
+  function on_response(dlg, response_id)
+      if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
+          file = G_.get_file(dlgp)
+          sel = GLib.G_.get_path(GFile(file))
+      else 
+          sel = ""
+      end
+      callback(sel)
+      destroy(dlg)
+  end
+
+  signal_connect(on_response, dlg, "response")
+  show(dlg)
+
+  if timeout > 0
+      emit(timer) = on_response(dlg, Int32(Gtk4.ResponseType_CANCEL))
+      Timer(emit, timeout)
+  end
+  return dlg
 end
 
 ## Other chooser dialogs
@@ -418,21 +447,31 @@ function GtkColorChooserDialog(title::AbstractString, parent)
     return G_.ColorChooserDialog_new(title, parent)
 end
 
+
 function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
+    color = Ref{Union{Nothing,_GdkRGBA}}()
+    c = Condition()  
+
+    color_dialog(title, parent; timeout) do col
+        color[] = col
+        notify(c)
+    end
+    wait(c)
+    return color[]
+end
+
+function color_dialog(callback::Function, title::AbstractString, parent = nothing; timeout=-1)
     dlg = GtkColorChooserDialog(title, parent)
-
-    res = Ref{Union{Nothing,_GdkRGBA}}()
-
-    c = Condition()
 
     function on_response(dlg, response_id)
         dlgp = GtkColorChooser(dlg)
         if unsafe_trunc(UInt16, response_id) == ResponseType_OK
-            res[] = G_.get_rgba(dlgp)
+            res = G_.get_rgba(dlgp)
         else
-            res[] = nothing
+            res = nothing
         end
-        notify(c)
+        callback(res)
+        destroy(dlg)
     end
 
     signal_connect(on_response, dlg, "response")
@@ -442,8 +481,5 @@ function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
         emit(timer) = response(dlg, Gtk4.ResponseType_CANCEL)
         Timer(emit, timeout)
     end
-
-    wait(c)
-    destroy(dlg)
-    res[]
+    return dlg
 end
