@@ -205,7 +205,7 @@ for (func, flag) in (
         res = Ref{String}("")
         c = Condition()  
     
-        $func(message, parent; timeout) do res_
+        $func(message, parent; timeout) do
             notify(c)
         end
         wait(c)
