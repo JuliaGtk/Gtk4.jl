@@ -16,4 +16,11 @@ save_dialog("Pick a filename", main_window; timeout = 0.25)
 
 color_dialog("What is your favorite color?", main_window; timeout = 0.25)
 
+dlg = GtkDialog("General dialog",  
+                Dict("Cancel" => Gtk4.ResponseType_CANCEL,
+                     "OK"=> Gtk4.ResponseType_ACCEPT), 
+                      Gtk4.DialogFlags_MODAL )
+show(dlg)
+destroy(dlg)
+
 end
