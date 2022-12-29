@@ -159,7 +159,7 @@ ask_dialog(question::AbstractString, parent = nothing; timeout = -1) =
 
 function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
     res = Ref{Bool}(false)
-    c = Condition()  
+    c = Condition()
 
     ask_dialog(message, no_text, yes_text, parent; timeout) do res_
         res[] = res_
@@ -203,8 +203,8 @@ for (func, flag) in (
         (:error_dialog, :(MessageType_ERROR)))
     @eval function $func(message::AbstractString, parent = nothing; timeout = -1)
         res = Ref{String}("")
-        c = Condition()  
-    
+        c = Condition()
+
         $func(message, parent; timeout) do
             notify(c)
         end
@@ -227,7 +227,7 @@ for (func, flag) in (
             emit(timer) = response(dlg, Gtk4.ResponseType_CANCEL)
             Timer(emit, timeout)
         end
-      
+
         return dlg
     end
 end
@@ -243,9 +243,9 @@ will be returned.
 """
 function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
     res = Ref{String}("")
-    c = Condition()  
+    c = Condition()
 
-    input_dialog(title, entry_default, buttons, parent; timeout) do res_
+    input_dialog(message, entry_default, buttons, parent; timeout) do res_
         res[] = res_
         notify(c)
     end
@@ -253,9 +253,8 @@ function input_dialog(message::AbstractString, entry_default::AbstractString, bu
     return res[]
 end
 
-function input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString, 
+function input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString,
                       buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
-    #parent = (parent === nothing ? C_NULL : parent)
     dlg = GtkMessageDialog(message, buttons, DialogFlags_DESTROY_WITH_PARENT, MessageType_INFO, parent)
     box = content_area(dlg)
     entry = GtkEntry()
@@ -403,7 +402,7 @@ end
 
 function save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout=-1)
     res = Ref{String}("")
-    c = Condition()  
+    c = Condition()
 
     save_dialog(title, parent, filters; timeout) do filename
         res[] = filename
@@ -424,7 +423,7 @@ function save_dialog(callback::Function, title::AbstractString, parent = nothing
       if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
           file = G_.get_file(dlgp)
           sel = GLib.G_.get_path(GFile(file))
-      else 
+      else
           sel = ""
       end
       callback(sel)
@@ -450,7 +449,7 @@ end
 
 function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
     color = Ref{Union{Nothing,_GdkRGBA}}()
-    c = Condition()  
+    c = Condition()
 
     color_dialog(title, parent; timeout) do col
         color[] = col
