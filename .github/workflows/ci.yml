@@ -8,6 +8,51 @@ on:
   release:
 
 jobs:
+  GItest:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.julia-arch }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        julia-version:
+          - "1"
+        os:
+          - ubuntu-latest
+        julia-arch:
+          - x64
+        include:
+          - os: ubuntu-latest
+            prefix: xvfb-run
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.julia-version }}
+          arch: ${{ matrix.julia-arch }}
+      - name: Cache artifacts
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-artifacts
+        with:
+          path: ~/.julia/artifacts
+          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-test-
+            ${{ runner.os }}-
+      - name: GObjectIntrospection tests
+        shell: julia --project=@. --color=yes {0}
+        run: |
+          using Pkg
+          Pkg.develop(path="GI"); Pkg.test("GI"; coverage=true)
+
+        with:
+          prefix: ${{ matrix.prefix }}
+      - uses: julia-actions/julia-uploadcodecov@v0.1
+        continue-on-error: true
+
   test:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     name: Julia ${{ matrix.julia-version }} - ${{ matrix.os }} - ${{ matrix.julia-arch }}
@@ -51,12 +96,6 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
-      - name: GObjectIntrospection tests
-        shell: julia --project=@. --color=yes {0}
-        run: |
-          using Pkg
-          Pkg.develop(path="GI"); Pkg.test("GI"; coverage=true)
-
       - uses: julia-actions/julia-buildpkg@latest
       - uses: julia-actions/julia-runtest@v1
         with:
