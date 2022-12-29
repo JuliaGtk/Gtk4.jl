@@ -362,7 +362,7 @@ destroy(d::GtkNativeDialog) = G_.destroy(d)
 
 function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false)
     res = Ref{String}("")
-    c = Condition()  
+    c = Condition()
 
     open_dialog(title, parent, filters; timeout, multiple) do filename
         res[] = filename
@@ -372,7 +372,7 @@ function open_dialog(title::AbstractString, parent = nothing, filters::Union{Abs
     return res[]
 end
 
-function open_dialog(callback::Function, title::AbstractString, parent = nothing, 
+function open_dialog(callback::Function, title::AbstractString, parent = nothing,
                     filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false)
     dlg = GtkFileChooserNative(title, parent, FileChooserAction_OPEN, "Open", "Cancel")
     dlgp = GtkFileChooser(dlg)
@@ -384,7 +384,7 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
         if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
             file = G_.get_file(dlgp)
             sel = GLib.G_.get_path(GFile(file))
-        else 
+        else
             sel = ""
         end
         callback(sel)

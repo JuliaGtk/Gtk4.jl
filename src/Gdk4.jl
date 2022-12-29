@@ -31,6 +31,11 @@ function GdkCursor(texture::GdkTexture, hotspot_x::Integer, hotspot_y::Integer, 
    G_.Cursor_new_from_texture(texture, hotspot_x, hotspot_y, fallback)
 end
 
+## GdkDisplay
+
+GdkDisplay() = G_.get_default() # returns default display
+GdkDisplay(name) = G_.open(name)
+
 ## GdkMonitor
 
 function size(m::GdkMonitor)

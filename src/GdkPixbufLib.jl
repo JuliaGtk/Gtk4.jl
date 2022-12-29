@@ -262,35 +262,29 @@ function GdkPixbuf(; stream = nothing, resource_path = nothing, filename = nothi
             data, 0, alpha, 8, width, height, bstride(data, 2),
             deref_data, ref_data)
     else
-        @assert(width != -1 && height != -1, "GdkPixbuf requires a width, height, and has_alpha to create an uninitialized pixbuf")
-        alpha = convert(Bool, has_alpha)
-        pixbuf = ccall((:gdk_pixbuf_new, libgdkpixbuf), Ptr{GObject},
-            (Cint, Cint, Cint, Cint, Cint), 0, alpha, 8, width, height)
+        @assert(width != -1 && height != -1 && has_alpha !== nothing, "GdkPixbuf requires a width, height, and has_alpha to create an uninitialized pixbuf")
+        return G_.Pixbuf_new(Colorspace_RGB, has_alpha, 8, width, height)
     end
     return GdkPixbuf(pixbuf)
 end
 #GdkPixbufLoader for new with type/mimetype
 #GdkPixbuf(callback, stream, width = -1, height = -1, preserve_aspect_ratio = true)
 
-slice(img::GdkPixbuf, x, y) = GdkPixbuf(ccall((:gdk_pixbuf_new_subpixbuf, libgdkpixbuf), Ptr{GObject},
-    (Ptr{GObject}, Cint, Cint, Cint, Cint), img, first(x)-1, first(y)-1, length(x), length(y)))
+slice(img::GdkPixbuf, x, y) = G_.new_subpixbuf(img, first(x)-1, first(y)-1, length(x), length(y))
 size(a::GdkPixbuf, i::Integer) = (i == 1 ? width(a) : (i == 2 ? height(a) : 1))
 size(a::GdkPixbuf) = (width(a), height(a))
 Base.ndims(::GdkPixbuf) = 2
 function bstride(img::GdkPixbuf, i)
     if i == 1
-        convert(Cint, div(ccall((:gdk_pixbuf_get_bits_per_sample, libgdkpixbuf), Cint, (Ptr{GObject},), img) *
-            ccall((:gdk_pixbuf_get_n_channels, libgdkpixbuf), Cint, (Ptr{GObject},), img) + 7, 8))
+        div(G_.get_bits_per_sample(img) * G_.get_n_channels(img) + 7, 8)
     elseif i == 2
-        ccall((:gdk_pixbuf_get_rowstride, libgdkpixbuf), Cint, (Ptr{GObject},), img)
+        G_.get_rowstride(img)
     else
-        convert(Cint, 0)
+        return 0
     end
 end
 function eltype(img::GdkPixbuf)
-    #nbytes = stride(img, 1)
-    nbytes = convert(Cint, div(ccall((:gdk_pixbuf_get_bits_per_sample, libgdkpixbuf), Cint, (Ptr{GObject},), img) *
-        ccall((:gdk_pixbuf_get_n_channels, libgdkpixbuf), Cint, (Ptr{GObject},), img) + 7, 8))
+    nbytes = div(G_.get_bits_per_sample(img) * G_.get_n_channels(img) + 7, 8)
     if nbytes == 3
         RGB
     elseif nbytes == 4
@@ -303,13 +297,13 @@ function convert(::Type{MatrixStrided}, img::GdkPixbuf)
     MatrixStrided(
         convert(Ptr{eltype(img)}, ccall((:gdk_pixbuf_get_pixels, libgdkpixbuf), Ptr{Nothing}, (Ptr{GObject},), img)),
         width = width(img), height = height(img),
-        rowstride = ccall((:gdk_pixbuf_get_rowstride, libgdkpixbuf), Cint, (Ptr{GObject},), img))
+        rowstride = G_.get_rowstride(img))
 end
 getindex(img::GdkPixbuf, x::Index, y::Index) = convert(MatrixStrided, img)[x, y]
 setindex!(img::GdkPixbuf, pix, x::Index, y::Index) = setindex!(convert(MatrixStrided, img), pix, x, y)
 Base.fill!(img::GdkPixbuf, pix) = fill!(convert(MatrixStrided, img), pix)
-
 #TODO: image transformations, rotations, compositing
+# G_.flip -> Base.reverse
 
 function __init__()
     gtype_wrapper_cache_init()

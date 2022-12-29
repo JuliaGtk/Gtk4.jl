@@ -89,6 +89,8 @@ end
     unmaximize(w)
     sleep(1)
     @test !G_.is_maximized(w)
+    Gtk4.default_size(w, 200, 500)
+    @test Gtk4.default_size(w) == (200, 500)
     destroy(w)
 end
 
