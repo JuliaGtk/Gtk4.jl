@@ -50,17 +50,23 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
+      - uses: julia-actions/julia-buildpkg@latest
       - name: GObjectIntrospection tests
         shell: julia --project=@. --color=yes {0}
         run: |
           using Pkg
           Pkg.develop(path="GI"); Pkg.test("GI"; coverage=true)
-      - uses: julia-actions/julia-buildpkg@latest
-      - uses: julia-actions/julia-runtest@v1
+      - uses: julia-actions/julia-runtest@latest
         with:
           prefix: ${{ matrix.prefix }}
-      - uses: julia-actions/julia-uploadcodecov@v0.1
-        continue-on-error: true
+      - uses: julia-actions/julia-processcoverage@latest
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          directories: GI/src,src
+      - uses: codecov/codecov-action@v3
+        if: startsWith(matrix.os, 'ubuntu')
+        with:
+          file: lcov.info
 
   Documentation:
     runs-on: ubuntu-latest
