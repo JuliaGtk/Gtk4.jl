@@ -12,6 +12,7 @@ warn_dialog("Here's some alarming information", main_window; timeout = 0.25)
 error_dialog("Here's an error", main_window; timeout = 0.25)
 
 open_dialog("Pick a file to open", main_window; timeout = 0.25)
+open_dialog("Pick a file to open", main_window, ["*.png"]; timeout = 0.25)
 save_dialog("Pick a filename", main_window; timeout = 0.25)
 
 color_dialog("What is your favorite color?", main_window; timeout = 0.25)

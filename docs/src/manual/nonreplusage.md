@@ -1,6 +1,6 @@
 # Using Gtk4 outside the REPL
 
-If you're using Gtk4 from command-line scripts, Julia quits before you have a chance to see or interact with your windows. The following design prevents that:
+If you're using Gtk4 from command-line scripts, the following design prevents Julia from quitting before you have a chance to see or interact with your windows:
 
 ```julia
 using Gtk4

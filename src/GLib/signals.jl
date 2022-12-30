@@ -377,11 +377,12 @@ function __init__gmainloop__()
 end
 
 """
-    waitforsignal(obj, signal)
+    waitforsignal(obj::GObject, signal)
 
-Returns when a GObject's signal is emitted.
+Returns when a GObject's signal is emitted. Can be used to wait for a window to
+be closed.
 """
-function waitforsignal(obj,signal)
+function waitforsignal(obj::GObject,signal)
   c = Condition()
   signal_connect(obj, signal) do w
       notify(c)

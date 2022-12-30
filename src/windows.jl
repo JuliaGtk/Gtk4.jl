@@ -372,8 +372,9 @@ function open_dialog(title::AbstractString, parent = nothing, filters::Union{Abs
 end
 
 function open_dialog(callback::Function, title::AbstractString, parent = nothing,
-                    filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false)
-    dlg = GtkFileChooserNative(title, parent, FileChooserAction_OPEN, "Open", "Cancel")
+                    filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, select_folder = false)
+    action = select_folder ? FileChooserAction_SELECT_FOLDER : FileChooserAction_OPEN
+    dlg = GtkFileChooserNative(title, parent, action, "Open", "Cancel")
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)

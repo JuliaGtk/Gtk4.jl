@@ -1,6 +1,9 @@
 # Drawing on Canvas
 
-Generic (Cairo) drawing is done on a `Canvas`. You control what appears on this canvas by defining a `draw` function:
+!!! note "Example"
+    The code on this page can be found in "canvas.jl" in the "example" subdirectory.
+
+Cairo based drawing is done on a `Canvas`. You control what appears on this canvas by defining a `draw` function:
 
 ```julia
 using Gtk4, Graphics
@@ -20,7 +23,7 @@ win = GtkWindow(c, "Canvas")
     fill(ctx)
 end
 ```
-This `draw` function will get called each time the window gets resized or otherwise needs to refresh its display.
+This `draw` function will be called each time the window is resized or otherwise needs to refresh its display.
 
 ![canvas](figures/canvas.png)
 
@@ -33,7 +36,7 @@ avoid this problem, the `@guarded` macro wraps your code in a
 when initially writing and debugging code.
 
 Mouse events can be handled using event controllers. The event controller for
-mouse clicks is GtkGestureClick. We first create this event controller, then
+mouse clicks is `GtkGestureClick`. We first create this event controller, then
 add it to the widget using `push!`.
 
 ```julia
@@ -54,5 +57,6 @@ signal_connect(on_pressed, g, "pressed")
 ```
 
 This will draw a green circle on the canvas at every mouse click.
-Resizing the window will make them go away; they were drawn on the
-canvas, but they weren't added to the `draw` function.
+Resizing the window will make them go away; they were drawn on top of the
+canvas one by one, but they weren't added to the `draw` function, which is what
+is called when the widget is refreshed.

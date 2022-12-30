@@ -118,7 +118,7 @@ push!(s, GtkLabel("Second label"), "id2", "Label 2") # widget can be retrieved u
 
 ## Iterating over child widgets
 
-For any of the widgets described above (or any `GtkWidget`), you can iterate over all child widgets using
+For any of the widgets described above (or any `GtkWidget` that has children), you can iterate over all child widgets using
 ```julia
 for w in widget
     myfunc(w)

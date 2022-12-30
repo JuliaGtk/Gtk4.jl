@@ -18,6 +18,7 @@ makedocs(
                      "manual/textwidgets.md",
                      "manual/combobox.md",
                      "manual/listtreeview.md",
+                     "manual/dialogs.md",
                      "manual/canvas.md",
                      "manual/nonreplusage.md"
                     ],
