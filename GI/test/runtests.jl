@@ -12,5 +12,7 @@ e=ns[:Application]
 
 @test GI.is_gobject(e)
 
+include("../../gen/gen_all.jl")
+
 end
 end
