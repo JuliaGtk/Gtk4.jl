@@ -232,51 +232,42 @@ function setindex!(store::GtkTreeStore, value, iter::_GtkTreeIter, column::Integ
     ret = ccall(("gtk_tree_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, Ref(iter), column - 1, GLib.gvalue(value))
 end
 
+function setindex!(store::GtkListStore, value, iter::TRI, column::Integer)
+    ret = ccall(("gtk_list_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, iter, column - 1, GLib.gvalue(value))
+end
+
+function setindex!(store::GtkTreeStore, value, iter::TRI, column::Integer)
+    ret = ccall(("gtk_tree_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, iter, column - 1, GLib.gvalue(value))
+end
+
+
 function setindex!(store::GtkTreeStore, value, index::Vector{Int}, column::Integer)
      setindex!(store, value, iter_from_index(store, index), column)
 end
 
 
 
-### GtkTreeModelFilter
+### GtkTreeModelFilter and GtkTreeModelSort
 
-GtkTreeModelFilterLeaf(child_model::GObject) = G_.filter_new(child_model, nothing)
+GtkTreeModelFilter(child_model::GObject) = G_.filter_new(GtkTreeModel(child_model), nothing)
 
-function convert_iter_to_child_iter(model::GtkTreeModelFilter, filter_iter::TRI)
-    child_iter = Ref{GtkTreeIter}()
-    ccall((:gtk_tree_model_filter_convert_iter_to_child_iter, libgtk4), Nothing,
-          (Ptr{GObject}, Ptr{GtkTreeIter}, Ptr{GtkTreeIter}),
-          model, child_iter, Ref(filter_iter))
-    child_iter[]
+function convert_iter_to_child_iter(model::Union{GtkTreeModelFilter,GtkTreeModelSort}, filter_iter::TRI)
+	if isa(filter_iter,_GtkTreeIter)
+		filter_iter = Ref(filter_iter)
+	end
+	child_iter = G_.convert_iter_to_child_iter(model, filter_iter)
 end
 
-function convert_child_iter_to_iter(model::GtkTreeModelFilter, child_iter::TRI)
-    filter_iter = Ref{GtkTreeIter}()
-    ccall((:gtk_tree_model_filter_convert_child_iter_to_iter, libgtk4), Nothing,
-          (Ptr{GObject}, Ptr{GtkTreeIter}, Ref{GtkTreeIter}),
-          model,  filter_iter, child_iter)
-    filter_iter[]
+function convert_child_iter_to_iter(model::Union{GtkTreeModelFilter,GtkTreeModelSort}, child_iter::TRI)
+	if isa(child_iter,_GtkTreeIter)
+		child_iter = Ref(child_iter)
+	end
+	b, filter_iter = G_.convert_child_iter_to_iter(model, child_iter)
+	b ? filter_iter : nothing
 end
 
-### GtkTreeModelSort
+GtkTreeModelSort(child_model::GObject) = G_.TreeModelSort_new_with_model(GtkTreeModel(child_model))
 
-GtkTreeModelSortLeaf(child_model::GObject) = G_.TreeModelSort_new_with_model(GtkTreeModel(child_model))
-
-function convert_iter_to_child_iter(model::GtkTreeModelSort, sort_iter::TRI)
-    child_iter = Ref{GtkTreeIter}()
-    ccall((:gtk_tree_model_sort_convert_iter_to_child_iter, libgtk4), Nothing,
-          (Ptr{GObject}, Ptr{GtkTreeIter}, Ref{GtkTreeIter}),
-          model, child_iter, sort_iter)
-    child_iter[]
-end
-
-function convert_child_iter_to_iter(model::GtkTreeModelSort, child_iter::TRI)
-    sort_iter = Ref{_GtkTreeIter}()
-    ccall((:gtk_tree_model_sort_convert_child_iter_to_iter, libgtk4), Nothing,
-          (Ptr{GObject}, Ptr{_GtkTreeIter}, Ref{_GtkTreeIter}),
-          model, sort_iter, child_iter)
-    sort_iter[]
-end
 ### GtkTreeModel
 
 function getindex(treeModel::GtkTreeModel, iter::TRI, column::Integer)
@@ -511,7 +502,7 @@ add_attribute(treeColumn::GtkTreeViewColumn, renderer::GtkCellRenderer,
 
 ### GtkTreeSelection
 function selected(selection::GtkTreeSelection)
-    hasselection(selection) || error("No selection for GtkTreeSelection")
+    hasselection(selection) || return nothing
 
     iter = Ref{_GtkTreeIter}()
 

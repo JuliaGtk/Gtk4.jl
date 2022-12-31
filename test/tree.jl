@@ -94,7 +94,22 @@ expand_to_path(tv, path)
 iter = insert!(store, [3], (4, "Barcelona"); how = :sibling, where=:after)
 @test store[[4],2] == "Barcelona"
 store[[4],2] = "Madrid"
-splice!(store, [4])
+
+## TreeModelFilter
+
+filter = GtkTreeModelFilter(store)
+tv2 = GtkTreeView(GtkTreeModel(filter))
+fiter = Gtk4.convert_child_iter_to_iter(filter,iter)
+iter2 = Gtk4.convert_iter_to_child_iter(filter, fiter)
+
+@test string(Gtk4.path(treeModel,iter)) == string(Gtk4.path(treeModel,iter2))
+
+## TreeModelSort
+
+sorted = GtkTreeModelSort(store)
+tv2 = GtkTreeView(GtkTreeModel(filter))
+fiter = Gtk4.convert_child_iter_to_iter(sorted,iter)
+iter2 = Gtk4.convert_iter_to_child_iter(sorted, fiter)
 
 ## selection
 
@@ -112,6 +127,8 @@ iters = Gtk4.selected_rows(selection)
 
 unselect!(selection, iter)
 @test length(selection) == 0
+
+splice!(store, [4])
 
 empty!(store)
 empty!(cols[1])
