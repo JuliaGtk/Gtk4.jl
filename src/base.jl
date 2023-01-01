@@ -182,9 +182,17 @@ end
 
 function push!(context::GtkStyleContext, provider, priority::Integer)
     G_.add_provider(context, GtkStyleProvider(provider), priority)
+    context
 end
 
 ## GtkApplication
 
 GtkApplication(id = nothing, flags = GLib.ApplicationFlags_NONE) = G_.Application_new(id,flags)
-push!(app::GtkApplication, win::GtkWindow) = G_.add_window(app, win)
+function push!(app::GtkApplication, win::GtkWindow)
+    G_.add_window(app, win)
+    app
+end
+function delete!(app::GtkApplication, win::GtkWindow)
+    G_.remote_window(app, win)
+    app
+end

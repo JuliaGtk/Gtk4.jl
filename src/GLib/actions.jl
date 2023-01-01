@@ -6,11 +6,11 @@ function GSimpleAction(name::AbstractString, param_type = nothing, state = nothi
     end
 end
 
-push!(m::GActionMap, a::GAction) = G_.add_action(m,a)
-delete!(m::GActionMap, a::AbstractString) = G_.remove_action(m, a)
+push!(m::GActionMap, a::GAction) = (G_.add_action(m,a); m)
+delete!(m::GActionMap, a::AbstractString) = (G_.remove_action(m, a); m)
 
-push!(g::GSimpleActionGroup, a) = push!(GActionMap(g), GAction(a))
-delete!(g::GSimpleActionGroup, a::AbstractString) = delete!(GActionMap(g), a)
+push!(g::GSimpleActionGroup, a) = (push!(GActionMap(g), GAction(a)); g)
+delete!(g::GSimpleActionGroup, a::AbstractString) = (delete!(GActionMap(g), a); g)
 
 function add_action(m::GActionMap, name::AbstractString, handler::Function)
     action = GSimpleAction(name)
@@ -34,8 +34,8 @@ function GMenu(i::GMenuItem)
 end
 GMenuItem(label,detailed_action = nothing) = G_.MenuItem_new(label, detailed_action)
 
-push!(m::GMenu, i::GMenuItem) = G_.append_item(m,i)
-pushfirst!(m::GMenu, i::GMenuItem) = G_.prepend_item(m,i)
+push!(m::GMenu, i::GMenuItem) = (G_.append_item(m,i); m)
+pushfirst!(m::GMenu, i::GMenuItem) = (G_.prepend_item(m,i); m)
 length(m::GMenu) = G_.get_n_items(m)
 
 section(m::GMenu, label::AbstractString, section) = G_.append_section(m, label, section)

@@ -7,10 +7,24 @@ using GI, EzXML
 
 @testset "GObject" begin
 
+ns0=GI.GINamespace(:GLib,"2.0")
+kf=ns0[:KeyFile]
+
+@test GI.isopaque(kf)
+show(ns0[:ucs4_to_utf16])
+
 ns=GI.GINamespace(:Gio,"2.0")
 e=ns[:Application]
 
 @test GI.is_gobject(e)
+
+show(e)
+
+deps = GI.get_dependencies(ns)
+@test deps == ["GObject-2.0","GLib-2.0"]
+
+deps = GI.get_immediate_dependencies(ns)
+@test deps == ["GObject-2.0"]
 
 include("../../gen/gen_all.jl")
 

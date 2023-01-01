@@ -378,25 +378,6 @@ function ginterface_decl(interfaceinfo)
     exprs
 end
 
-## Output GObject and GInterface declarations using macros in Gtk.GLib
-
-function gen_macro(info, m)
-    body = Expr(:macrocall)
-    push!(body.args, Symbol(m))
-    push!(body.args, Symbol("nothing"))
-    push!(body.args, get_full_name(info))
-    libs=get_shlibs(GINamespace(get_namespace(info)))
-    type_init = String(get_type_init(info))
-    lib=libs[findfirst(l->(nothing!=dlsym(dlopen(l),type_init)),libs)]
-    push!(body.args, symbol_from_lib(lib))
-    push!(body.args, Symbol(chop(type_init,tail=9))) # remove "_get_type"
-    body
-end
-
-# For an ObjectInfo, output a macro declaration
-obj_macro(o) = gen_macro(o,"@Gtype")
-interface_macro(i) = gen_macro(i,"@Giface")
-
 ## Handling argument types, creating methods
 
 mutable struct NotImplementedError <: Exception

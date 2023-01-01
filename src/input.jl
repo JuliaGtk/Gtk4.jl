@@ -31,7 +31,10 @@ function push!(scale::GtkScale, value, position)
     G_.add_mark(scale, value, convert(Gtk4.PositionType,position), nothing)
     scale
 end
-empty!(scale::GtkScale) = G_.clear_marks(scale)
+function empty!(scale::GtkScale)
+    G_.clear_marks(scale)
+    scale
+end
 
 ## GtkAdjustment
 

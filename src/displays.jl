@@ -41,7 +41,7 @@ function GtkImage(; resource_path = nothing, filename = nothing, icon_name = not
     end
     return img
 end
-empty!(img::GtkImage) = G_.clear(img)
+empty!(img::GtkImage) = (G_.clear(img); img)
 
 # GtkPicture (for displaying an image at its natural size)
 
@@ -90,6 +90,6 @@ push!(status::GtkStatusbar, context, text) =
 pop!(status::GtkStatusbar, context) = G_.pop(status, context_id(status, context))
 #splice!(status::GtkStatusbar, context, message_id) =
 #    G_.remove(status, context_id(status, context), message_id)
-empty!(status::GtkStatusbar, context) = G_.remove_all(status, context_id(status, context))
+empty!(status::GtkStatusbar, context) = (G_.remove_all(status, context_id(status, context)); status)
 
 GtkInfoBar() = G_.InfoBar_new()

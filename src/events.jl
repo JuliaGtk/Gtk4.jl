@@ -1,4 +1,5 @@
-push!(w::GtkWidget, c::GtkEventController) = G_.add_controller(w,c)
+push!(w::GtkWidget, c::GtkEventController) = (G_.add_controller(w,c); w)
+delete!(w::GtkWidget, c::GtkEventController) = (G_.remove_controller(w,c); w)
 
 @doc """
     widget(c::GtkEventController)

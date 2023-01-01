@@ -141,7 +141,8 @@ function tree_store_set_values(treeStore::GtkTreeStoreLeaf, iter, values)
     iter
 end
 
-
+# FIXME: push! and pushfirst! return iters, not the collection, which is inconsistent
+# getting the iters is pretty useful, the question is what should these methods be renamed to?
 function push!(treeStore::GtkTreeStore, values::Tuple, parent = nothing)
 	if isa(parent,_GtkTreeIter)
 		parent=Ref(parent)
