@@ -237,8 +237,12 @@ $(Expr(:toplevel, quote
     function native_get_for_surface(_surface::GdkSurface)
         ret = ccall(("gtk_native_get_for_surface", libgtk4), Ptr{GtkWidget}, (Ptr{GObject},), _surface)
         ret2 = begin
-                leaftype = GLib.find_leaf_type(ret)
-                convert(leaftype, ret, false)
+                if ret == C_NULL
+                    nothing
+                else
+                    leaftype = GLib.find_leaf_type(ret)
+                    convert(leaftype, ret, false)
+                end
             end
         ret2
     end

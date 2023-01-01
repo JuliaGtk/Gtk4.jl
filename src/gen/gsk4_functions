@@ -12,5 +12,18 @@ $(Expr(:toplevel, quote
         _out_transform = convert(GskTransform, _out_transform, true)
         (ret2, _out_transform)
     end
+    function value_set_render_node(_value::Union{GValue, Ref{_GValue}}, _node::GskRenderNode)
+        ret = ccall(("gsk_value_set_render_node", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GskRenderNode}), _value, _node)
+        nothing
+    end
+    function value_take_render_node(_value::Union{GValue, Ref{_GValue}}, _node::Maybe(GskRenderNode))
+        _node = if _node == nothing
+                C_NULL
+            else
+                _node
+            end
+        ret = ccall(("gsk_value_take_render_node", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GskRenderNode}), _value, _node)
+        nothing
+    end
 end))
 end

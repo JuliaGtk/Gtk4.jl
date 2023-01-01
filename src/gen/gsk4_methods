@@ -147,27 +147,56 @@ $(Expr(:toplevel, quote
     end
     function ref(instance::GskTransform)
         ret = ccall(("gsk_transform_ref", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform},), instance)
-        ret2 = convert(GskTransform, ret, false)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, false)
+            end
         ret2
     end
     function rotate(instance::GskTransform, _angle::Real)
         ret = ccall(("gsk_transform_rotate", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32), instance, _angle)
-        ret2 = convert(GskTransform, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, true)
+            end
         ret2
     end
     function rotate_3d(instance::GskTransform, _angle::Real, _axis::Union{GrapheneVec3, Ref{_GrapheneVec3}})
         ret = ccall(("gsk_transform_rotate_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Ptr{_GrapheneVec3}), instance, _angle, _axis)
-        ret2 = convert(GskTransform, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, true)
+            end
         ret2
     end
     function scale(instance::GskTransform, _factor_x::Real, _factor_y::Real)
         ret = ccall(("gsk_transform_scale", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32), instance, _factor_x, _factor_y)
-        ret2 = convert(GskTransform, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, true)
+            end
         ret2
     end
     function scale_3d(instance::GskTransform, _factor_x::Real, _factor_y::Real, _factor_z::Real)
         ret = ccall(("gsk_transform_scale_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32, Float32), instance, _factor_x, _factor_y, _factor_z)
-        ret2 = convert(GskTransform, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, true)
+            end
+        ret2
+    end
+    function skew(instance::GskTransform, _skew_x::Real, _skew_y::Real)
+        ret = ccall(("gsk_transform_skew", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32), instance, _skew_x, _skew_y)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, true)
+            end
         ret2
     end
     function to_2d(instance::GskTransform)
@@ -185,6 +214,24 @@ $(Expr(:toplevel, quote
         _out_dx = m_out_dx[]
         _out_dy = m_out_dy[]
         (_out_xx, _out_yx, _out_xy, _out_yy, _out_dx, _out_dy)
+    end
+    function to_2d_components(instance::GskTransform)
+        m_out_skew_x = Ref{Float32}()
+        m_out_skew_y = Ref{Float32}()
+        m_out_scale_x = Ref{Float32}()
+        m_out_scale_y = Ref{Float32}()
+        m_out_angle = Ref{Float32}()
+        m_out_dx = Ref{Float32}()
+        m_out_dy = Ref{Float32}()
+        ret = ccall(("gsk_transform_to_2d_components", libgtk4), Nothing, (Ptr{GskTransform}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), instance, m_out_skew_x, m_out_skew_y, m_out_scale_x, m_out_scale_y, m_out_angle, m_out_dx, m_out_dy)
+        _out_skew_x = m_out_skew_x[]
+        _out_skew_y = m_out_skew_y[]
+        _out_scale_x = m_out_scale_x[]
+        _out_scale_y = m_out_scale_y[]
+        _out_angle = m_out_angle[]
+        _out_dx = m_out_dx[]
+        _out_dy = m_out_dy[]
+        (_out_skew_x, _out_skew_y, _out_scale_x, _out_scale_y, _out_angle, _out_dx, _out_dy)
     end
     function to_affine(instance::GskTransform)
         m_out_scale_x = Ref{Float32}()
@@ -228,7 +275,11 @@ $(Expr(:toplevel, quote
                 _other
             end
         ret = ccall(("gsk_transform_transform", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{GskTransform}), instance, _other)
-        ret2 = convert(GskTransform, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, true)
+            end
         ret2
     end
     function transform_bounds(instance::GskTransform, _rect::Union{GrapheneRect, Ref{_GrapheneRect}})
@@ -245,12 +296,20 @@ $(Expr(:toplevel, quote
     end
     function translate(instance::GskTransform, _point::Union{GraphenePoint, Ref{_GraphenePoint}})
         ret = ccall(("gsk_transform_translate", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GraphenePoint}), instance, _point)
-        ret2 = convert(GskTransform, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, true)
+            end
         ret2
     end
     function translate_3d(instance::GskTransform, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
         ret = ccall(("gsk_transform_translate_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GraphenePoint3D}), instance, _point)
-        ret2 = convert(GskTransform, ret, true)
+        ret2 = if ret == C_NULL
+                nothing
+            else
+                convert(GskTransform, ret, true)
+            end
         ret2
     end
     function unref(instance::GskTransform)
@@ -649,11 +708,6 @@ $(Expr(:toplevel, quote
         ret2 = convert(Union{GraphenePoint, Ref{_GraphenePoint}}, ret, false)
         ret2
     end
-    function NglRenderer_new()
-        ret = ccall(("gsk_ngl_renderer_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GskRenderer, ret, true)
-        ret2
-    end
     function OpacityNode_new(_child::GskRenderNode, _opacity::Real)
         ret = ccall(("gsk_opacity_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Float32), _child, _opacity)
         ret2 = convert(GskRenderNode, ret)
@@ -811,7 +865,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function realize(instance::GskRenderer, _surface::GdkSurface)
+    function realize(instance::GskRenderer, _surface::Maybe(GdkSurface))
+        _surface = if _surface == nothing
+                C_NULL
+            else
+                _surface
+            end
         err = err_buf()
         ret = ccall(("gsk_renderer_realize", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _surface, err)
         check_err(err)

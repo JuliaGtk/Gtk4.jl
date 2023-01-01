@@ -1,9 +1,5 @@
 quote
 $(Expr(:toplevel, quote
-    function cairo_draw_from_gl(_cr::cairoContext, _surface::GdkSurface, _source::Integer, _source_type::Integer, _buffer_scale::Integer, _x::Integer, _y::Integer, _width::Integer, _height::Integer)
-        ret = ccall(("gdk_cairo_draw_from_gl", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{GObject}, Int32, Int32, Int32, Int32, Int32, Int32, Int32), _cr, _surface, _source, _source_type, _buffer_scale, _x, _y, _width, _height)
-        nothing
-    end
     function cairo_rectangle(_cr::cairoContext, _rectangle::Union{GdkRectangle, Ref{_GdkRectangle}})
         ret = ccall(("gdk_cairo_rectangle", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRectangle}), _cr, _rectangle)
         nothing
@@ -44,12 +40,14 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_content_deserialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt64, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _stream, _mime_type, _type, _io_priority, _cancellable, _callback, _user_data)
         nothing
     end
-    function content_deserialize_finish(_result::GAsyncResult, _value::Union{GValue, Ref{_GValue}})
+    function content_deserialize_finish(_result::GAsyncResult)
+        m_value = Ref{_GValue}()
         err = err_buf()
-        ret = ccall(("gdk_content_deserialize_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{_GValue}, Ptr{Ptr{GError}}), _result, _value, err)
+        ret = ccall(("gdk_content_deserialize_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{_GValue}, Ptr{Ptr{GError}}), _result, m_value, err)
         check_err(err)
         ret2 = convert(Bool, ret)
-        ret2
+        _value = m_value[]
+        (ret2, _value)
     end
     function content_formats_parse(_string::Union{AbstractString, Symbol})
         ret = ccall(("gdk_content_formats_parse", libgtk4), Ptr{GdkContentFormats}, (Cstring,), _string)
@@ -176,6 +174,10 @@ $(Expr(:toplevel, quote
     function set_allowed_backends(_backends::Union{AbstractString, Symbol})
         ret = ccall(("gdk_set_allowed_backends", libgtk4), Nothing, (Cstring,), _backends)
         nothing
+    end
+    function texture_error_quark()
+        ret = ccall(("gdk_texture_error_quark", libgtk4), UInt32, ())
+        ret
     end
     function toplevel_size_get_type()
         ret = ccall(("gdk_toplevel_size_get_type", libgtk4), UInt64, ())

@@ -57,6 +57,24 @@ $(Expr(:toplevel, quote
             push!(gboxed_types, GdkEventSequence)
         end
     end
+    mutable struct GdkFileList <: GBoxed
+        handle::Ptr{GdkFileList}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GdkFileList) = begin
+                    ccall(("gdk_file_list_get_type", libgtk4), GType, ())
+                end
+            function GdkFileList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GdkFileList)
+        end
+    end
     mutable struct GdkFrameTimings <: GBoxed
         handle::Ptr{GdkFrameTimings}
         begin
@@ -196,6 +214,7 @@ $(Expr(:toplevel, quote
     @doc "The `GdkContentFormats` structure is used to advertise and negotiate the\nformat of content.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/struct.ContentFormats.html)." GdkContentFormats
     @doc "A `GdkContentFormatsBuilder` is an auxiliary struct used to create\nnew `GdkContentFormats`, and should not be kept around.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/struct.ContentFormatsBuilder.html)." GdkContentFormatsBuilder
     @doc "`GdkEventSequence` is an opaque type representing a sequence\nof related touch events.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/struct.EventSequence.html)." GdkEventSequence
+    @doc "An opaque type representing a list of files.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/struct.FileList.html)." GdkFileList
     @doc "A `GdkFrameTimings` object holds timing information for a single frame\nof the application’s displays.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/struct.FrameTimings.html)." GdkFrameTimings
     @doc "A `GdkKeymapKey` is a hardware key that can be mapped to a keyval.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/struct.KeymapKey.html)." GdkKeymapKey
     @doc "The `GdkPopupLayout` struct contains information that is\nnecessary position a [iface@Gdk.Popup] relative to its parent.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/struct.PopupLayout.html)." GdkPopupLayout
@@ -1012,6 +1031,6 @@ $(Expr(:toplevel, quote
                 end
         end
     end
-    export GdkContentFormats, GdkContentFormatsBuilder, GdkEventSequence, GdkFrameTimings, GdkKeymapKey, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, _GdkRGBA, GdkRectangle, _GdkRectangle, GdkTimeCoord, _GdkTimeCoord, GdkToplevelLayout, GdkAppLaunchContext, GdkButtonEvent, GdkCairoContext, GdkClipboard, GdkContentDeserializer, GdkContentProvider, GdkContentSerializer, GdkCrossingEvent, GdkCursor, GdkDNDEvent, GdkDeleteEvent, GdkDevice, GdkDeviceTool, GdkDisplay, GdkDisplayManager, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGrabBrokenEvent, GdkKeyEvent, GdkMemoryTexture, GdkMonitor, GdkMotionEvent, GdkPadEvent, GdkProximityEvent, GdkScrollEvent, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchpadEvent, GdkVulkanContext, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel
+    export GdkContentFormats, GdkContentFormatsBuilder, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, _GdkRGBA, GdkRectangle, _GdkRectangle, GdkTimeCoord, _GdkTimeCoord, GdkToplevelLayout, GdkAppLaunchContext, GdkButtonEvent, GdkCairoContext, GdkClipboard, GdkContentDeserializer, GdkContentProvider, GdkContentSerializer, GdkCrossingEvent, GdkCursor, GdkDNDEvent, GdkDeleteEvent, GdkDevice, GdkDeviceTool, GdkDisplay, GdkDisplayManager, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGrabBrokenEvent, GdkKeyEvent, GdkMemoryTexture, GdkMonitor, GdkMotionEvent, GdkPadEvent, GdkProximityEvent, GdkScrollEvent, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchpadEvent, GdkVulkanContext, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel
 end))
 end

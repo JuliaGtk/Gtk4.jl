@@ -233,6 +233,7 @@ GIInfoTypes[:base] = GIInfo
 GIInfoTypes[:enum] = GIEnumOrFlags
 
 Maybe(T) = Union{T,Nothing}
+const MaybeGIInfo = Maybe(GIInfo)
 
 # used on outputs of libgirepository functions
 rconvert(t,v) = rconvert(t,v,false)
@@ -258,11 +259,11 @@ for (owner, property) in [
         GIInfo[ GIInfo( ccall(($("g_$(owner)_info_get_$property"), libgi), Ptr{GIBaseInfo},
                       (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
     end
-    if property == :method
+    if property === :method
         @eval function $(Symbol("find_$(property)"))(info::$(GIInfoTypes[owner]), name)
             ptr = ccall(($("g_$(owner)_info_find_$(property)"), libgi), Ptr{GIBaseInfo},
                             (Ptr{GIBaseInfo}, Ptr{UInt8}), info, name)
-            rconvert(Maybe(GIInfo), ptr, true)
+            rconvert(MaybeGIInfo, ptr, true)
         end
     end
 end
@@ -281,7 +282,6 @@ end
 
 getindex(info::GIRegisteredTypeInfo, name::Symbol) = find_method(info, name)
 
-const MaybeGIInfo = Maybe(GIInfo)
 # one->one
 # FIXME: memory management of GIInfo:s
 ctypes = Dict(GIInfo=>Ptr{GIBaseInfo},

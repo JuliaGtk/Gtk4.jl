@@ -216,9 +216,14 @@ function struct_decl(structinfo;force_opaque=false)
     unblock(e)
 end
 
-## GObject/GTypeInstance output (simpler in some ways than type declaration macros in Gtk.GLib)
+## GObject/GTypeInstance output
 
 # extract properties for a particular GObject type
+# Most property info is available in real time from libgobject, so it turns out there is no
+# point in using this beyond gaining type stability for properties, and it's not clear that
+# is worth the trouble. There has been discussion of connecting properties to getter/setter
+# functions in the introspection data. So it might be worth revisiting this someday.
+
 function prop_dict(info)
     properties=get_properties(info)
     d=Dict{Symbol,Tuple{Any,Int32,Int32}}()
