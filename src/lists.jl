@@ -1,3 +1,5 @@
+## GtkComboBox
+
 GtkComboBox() = G_.ComboBox_new()
 
 setindex!(f::GtkComboBox, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
@@ -17,7 +19,7 @@ push!(cb::GtkComboBoxText, id::Union{AbstractString, Symbol}, text::AbstractStri
 pushfirst!(cb::GtkComboBoxText, id::Union{AbstractString, Symbol}, text::AbstractString) = (G_.prepend(cb, id, text); cb)
 insert!(cb::GtkComboBoxText, i::Integer, id::Union{AbstractString, Symbol}, text::AbstractString) = (G_.insert(cb, i - 1, id, text); cb)
 
-empty!(cb::GtkComboBoxText) = G_.remove_all(cb)
+empty!(cb::GtkComboBoxText) = (G_.remove_all(cb); cb)
 
 delete!(cb::GtkComboBoxText, i::Integer) = (G_.remove(cb, i-1); cb)
 
@@ -28,6 +30,13 @@ push!(sl::GtkStringList, str) = (G_.append(sl, str); sl)
 length(sl::GtkStringList) = length(GListModel(sl))
 getindex(sl::GtkStringList, i::Integer) = G_.get_string(sl, i - 1)
 eltype(::Type{GtkStringList}) = String
+
+## GtkDropdown
+
+GtkDropDown(model=nothing) = G_.DropDown_new(model, nothing)
+GtkDropDown(a::Vector{String}) = G_.DropDown_new_from_strings(a)
+GtkDropDown(a::AbstractArray) = GtkDropDown(string.(collect(a)))
+selected_string(d::GtkDropDown) = G_.get_selected_item(d).string
 
 ## GtkListView and GtkGridView
 

@@ -1,14 +1,47 @@
-# Combobox
+# Dropdown widgets
 
-The combobox widget allows for selecting an item from a dropdown menu.
-There are two different flavors of comboboxes. A simple `GtkComboBoxText`
-widget and a more powerful and generic `GtkComboBox` widget. The former is
-a subtype of the latter.
+One often needs a widget to allow a user to select something from a few options. There are
+two easy ways to do this in Gtk4.jl.
 
-## GtkComboBoxText
+## GtkDropDown
+
+A simple option that was introduced in GTK version 4 is `GtkDropDown`. An example is shown below.
+
+```julia
+using Gtk4
+
+choices = ["one", "two", "three", "four"]
+dd = GtkDropDown(choices)
+# Let's set the active element to be "two", keeping in mind that the "selected" property uses 0 based indexing
+dd.selected = 1
+
+signal_connect(dd, "notify::selected") do widget, others...
+  # get the active index
+  idx = dd.selected
+  # get the active string
+  str = Gtk4.selected_string(dd)
+  println("Active element is \"$str\" at index $idx")
+end
+
+win = GtkWindow("DropDown Example",400,200)
+push!(win, dd)
+```
+
+A search entry can be added using `Gtk4.enable_search(dd, true)`.
+
+More complex uses of `GtkDropDown` are possible and may be supported in future versions
+of Gtk4.jl.
+
+## GtkComboBox
+
+The older API for dropdown menu functionality is `GtkComboBox`.
+The full, generic `GtkComboBox` widget is powerful but harder to use and won't be covered
+here. The simpler `GtkComboBoxText` subtype allows the user to select from text options.
+
+### GtkComboBoxText
 
 The following example shows how to fill a `GtkComboBoxText` with elements and
-listen on the `changed` event:
+listen on the `changed` event (this example is functionally equivalent to the example above for `GtkDropDown`):
 ```julia
 using Gtk4
 

@@ -185,6 +185,16 @@ function push!(context::GtkStyleContext, provider, priority::Integer)
     context
 end
 
+# because of a name collision this is annoying to generate using GI
+function GtkIconTheme(d::GdkDisplay)
+    ret = ccall(("gtk_icon_theme_get_for_display",libgtk4), Ptr{GObject}, (Ptr{GObject},), d)
+    convert(GtkIconTheme, ret, true)
+end
+
+function icon_theme_add_search_path(icon_theme::GtkIconTheme, path::AbstractString)
+    G_.add_search_path(icon_theme, path)
+end
+
 ## GtkApplication
 
 GtkApplication(id = nothing, flags = GLib.ApplicationFlags_NONE) = G_.Application_new(id,flags)

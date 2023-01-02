@@ -126,6 +126,10 @@ function __init__()
     success = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
     success || error("gtk_init_check() failed.")
 
+    if Sys.islinux()
+        G_.set_default_icon_name("julia")
+    end
+
     if isinteractive()
         GLib.start_main_loop()
     end

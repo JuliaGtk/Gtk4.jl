@@ -23,8 +23,9 @@ makedocs(
                      "manual/nonreplusage.md"
                     ],
         "Gtk.jl to Gtk4.jl" => "diff3to4.md",
-        "Gtk4 Reference" => "doc/reference.md",
-        "GLib Reference" => "doc/GLib_reference.md",
+        "Reference" => ["doc/reference.md",
+                        "doc/GLib_reference.md"
+                    ],
         #"GI Reference" => "doc/GI_reference.md"
     ],
 )

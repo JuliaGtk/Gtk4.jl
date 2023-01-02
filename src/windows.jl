@@ -93,6 +93,16 @@ push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
 setindex!(w::GtkWindow, widget::Union{Nothing,GtkWidget}) = G_.set_child(w, widget)
 getindex(w::GtkWindow) = G_.get_child(w)
 
+GtkWindowGroup() = G_.WindowGroup_new()
+function push!(wg::GtkWindowGroup, w::GtkWindow)
+    G_.add_window(wg,w)
+    wg
+end
+function delete!(wg::GtkWindowGroup, w::GtkWindow)
+    G_.remove_window(wg,w)
+    wg
+end
+
 GtkApplicationWindow(app::GtkApplication) = G_.ApplicationWindow_new(app)
 function GtkApplicationWindow(app::GtkApplication, title::AbstractString)
     win = GtkApplicationWindow(app)

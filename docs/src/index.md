@@ -11,7 +11,8 @@ Complete Gtk documentation is available at [https://www.gtk.org/docs/](https://w
 ## Usage
 
   * See [Getting Started](@ref) for an introduction to using the package, adapted from the [Gtk.jl manual](https://juliagraphics.github.io/Gtk.jl/latest/).
-  * See [Differences between Gtk.jl and Gtk4.jl](@ref) for a summary of the differences between this package and Gtk.jl
+  * See [Gtk4 Reference](@ref) for an API reference automatically generated from docstrings.
+  * See [Differences between Gtk.jl and Gtk4.jl](@ref) for a summary of the differences between this package and Gtk.jl.
 
 ## History
 

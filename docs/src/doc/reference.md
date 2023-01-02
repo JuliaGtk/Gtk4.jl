@@ -1,4 +1,4 @@
-## API Reference
+# Gtk4 Reference
 
 ### Public interface
 

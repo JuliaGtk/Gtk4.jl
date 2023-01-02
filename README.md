@@ -10,7 +10,7 @@ This package builds on Gtk.jl but uses GObject introspection to support more of 
 
 Most of the code for GLib support (`GType`, `GValue`, `GObject`, etc.) was copied with minor changes from [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl). This includes integration of the GLib main loop with Julia's event loop.
 
-Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
+Documentation for this package can be found [here](https://juliagtk.github.io/Gtk4.jl/dev/). Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
 
 ## CURRENT STATUS
-Gtk4.jl seems to work well on Linux (64 bit), but is not recommended on Mac or Windows at this time. It might work for you but be prepared for trouble. It is definitely not working on 32 bit systems because of a deficiency with how GObject introspection is done.
+With a recent update of GTK4_jll to 4.6.9, Gtk4.jl is less buggy on Mac and Windows than before. It is not recommended on 32 bit systems because of a deficiency with how GObject introspection is done here.

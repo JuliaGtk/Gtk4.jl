@@ -1,4 +1,4 @@
-## GLib Reference
+# GLib Reference
 
 ### Public interface
 

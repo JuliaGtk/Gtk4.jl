@@ -479,6 +479,18 @@ signal_emit(e, :activate, Nothing)
 destroy(w)
 end
 
+@testset "DropDown" begin
+
+choices = ["one", "two", "three", "four"]
+dd = GtkDropDown(choices)
+dd.selected = 1
+
+win = GtkWindow("DropDown Example",400,200)
+push!(win, dd)
+destroy(win)
+
+end
+
 @testset "Statusbar" begin
 vbox = GtkBox(:v)
 w = GtkWindow(vbox, "Statusbar")
