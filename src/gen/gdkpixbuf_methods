@@ -96,16 +96,8 @@ $(Expr(:toplevel, quote
     end
     function Pixbuf_new_from_data(_data, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer, _destroy_fn::Maybe(Function), _destroy_fn_data::Maybe(Nothing))
         _data = convert(Vector{UInt8}, _data)
-        _destroy_fn = if _destroy_fn == nothing
-                C_NULL
-            else
-                _destroy_fn
-            end
-        _destroy_fn_data = if _destroy_fn_data == nothing
-                C_NULL
-            else
-                _destroy_fn_data
-            end
+        _destroy_fn = nothing_to_null(_destroy_fn)
+        _destroy_fn_data = nothing_to_null(_destroy_fn_data)
         ret = ccall(("gdk_pixbuf_new_from_data", libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, UInt32, Cint, Int32, Int32, Int32, Int32, Ptr{Nothing}, Ptr{Nothing}), _data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn, _destroy_fn_data)
         ret2 = convert(GdkPixbuf, ret, true)
         ret2
@@ -166,11 +158,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Pixbuf_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable, err)
         check_err(err)
@@ -182,11 +170,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Pixbuf_new_from_stream_at_scale(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_stream_at_scale", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _width, _height, _preserve_aspect_ratio, _cancellable, err)
         check_err(err)
@@ -231,21 +215,9 @@ $(Expr(:toplevel, quote
         (ret2, _width, _height)
     end
     function get_file_info_async(_filename::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("gdk_pixbuf_get_file_info_async", libgdkpixbuf), Nothing, (Cstring, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _filename, _cancellable, _callback, _user_data)
         nothing
     end
@@ -262,21 +234,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function new_from_stream_at_scale_async(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("gdk_pixbuf_new_from_stream_at_scale_async", libgdkpixbuf), Nothing, (Ptr{GObject}, Int32, Int32, Cint, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _stream, _width, _height, _preserve_aspect_ratio, _cancellable, _callback, _user_data)
         nothing
     end
@@ -438,16 +398,8 @@ $(Expr(:toplevel, quote
     function save_to_bufferv(instance::GdkPixbuf, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
         m_buffer = Ref{Ptr{UInt8}}()
         m_buffer_size = Ref{UInt64}()
-        _option_keys = if _option_keys == nothing
-                C_NULL
-            else
-                _option_keys
-            end
-        _option_values = if _option_values == nothing
-                C_NULL
-            else
-                _option_values
-            end
+        _option_keys = nothing_to_null(_option_keys)
+        _option_values = nothing_to_null(_option_values)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_save_to_bufferv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, m_buffer, m_buffer_size, _type, _option_keys, _option_values, err)
         check_err(err)
@@ -457,21 +409,9 @@ $(Expr(:toplevel, quote
         (ret2, _buffer)
     end
     function save_to_streamv(instance::GdkPixbuf, _stream::GOutputStream, _type::Union{AbstractString, Symbol}, _option_keys, _option_values, _cancellable::Maybe(GCancellable))
-        _option_keys = if _option_keys == nothing
-                C_NULL
-            else
-                _option_keys
-            end
-        _option_values = if _option_values == nothing
-                C_NULL
-            else
-                _option_values
-            end
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _option_keys = nothing_to_null(_option_keys)
+        _option_values = nothing_to_null(_option_values)
+        _cancellable = nothing_to_null(_cancellable)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_save_to_streamv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _stream, _type, _option_keys, _option_values, _cancellable, err)
         check_err(err)
@@ -479,45 +419,17 @@ $(Expr(:toplevel, quote
         ret2
     end
     function save_to_streamv_async(instance::GdkPixbuf, _stream::GOutputStream, _type::Union{AbstractString, Symbol}, _option_keys, _option_values, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _option_keys = if _option_keys == nothing
-                C_NULL
-            else
-                _option_keys
-            end
-        _option_values = if _option_values == nothing
-                C_NULL
-            else
-                _option_values
-            end
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _option_keys = nothing_to_null(_option_keys)
+        _option_values = nothing_to_null(_option_values)
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("gdk_pixbuf_save_to_streamv_async", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _stream, _type, _option_keys, _option_values, _cancellable, _callback, _user_data)
         nothing
     end
     function savev(instance::GdkPixbuf, _filename::Union{AbstractString, Symbol}, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
-        _option_keys = if _option_keys == nothing
-                C_NULL
-            else
-                _option_keys
-            end
-        _option_values = if _option_values == nothing
-                C_NULL
-            else
-                _option_values
-            end
+        _option_keys = nothing_to_null(_option_keys)
+        _option_values = nothing_to_null(_option_values)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_savev", libgdkpixbuf), Cint, (Ptr{GObject}, Cstring, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _filename, _type, _option_keys, _option_values, err)
         check_err(err)
@@ -565,11 +477,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function PixbufAnimation_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_animation_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable, err)
         check_err(err)

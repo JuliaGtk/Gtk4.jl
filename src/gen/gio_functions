@@ -23,11 +23,7 @@ $(Expr(:toplevel, quote
         (ret2, _action_name, _target_value)
     end
     function action_print_detailed_name(_action_name::Union{AbstractString, Symbol}, _target_value::Maybe(GVariant))
-        _target_value = if _target_value == nothing
-                C_NULL
-            else
-                _target_value
-            end
+        _target_value = nothing_to_null(_target_value)
         ret = ccall(("g_action_print_detailed_name", libgio), Cstring, (Cstring, Ptr{GVariant}), _action_name, _target_value)
         ret2 = if ret == C_NULL
                 nothing
@@ -37,11 +33,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function app_info_create_from_commandline(_commandline::Union{AbstractString, Symbol}, _application_name::Maybe(Union{AbstractString, Symbol}), _flags)
-        _application_name = if _application_name == nothing
-                C_NULL
-            else
-                _application_name
-            end
+        _application_name = nothing_to_null(_application_name)
         err = err_buf()
         ret = ccall(("g_app_info_create_from_commandline", libgio), Ptr{GObject}, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _commandline, _application_name, _flags, err)
         check_err(err)
@@ -74,21 +66,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function app_info_get_default_for_type_async(_content_type::Union{AbstractString, Symbol}, _must_support_uris::Bool, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("g_app_info_get_default_for_type_async", libgio), Nothing, (Cstring, Cint, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _content_type, _must_support_uris, _cancellable, _callback, _user_data)
         nothing
     end
@@ -115,21 +95,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function app_info_get_default_for_uri_scheme_async(_uri_scheme::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("g_app_info_get_default_for_uri_scheme_async", libgio), Nothing, (Cstring, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _uri_scheme, _cancellable, _callback, _user_data)
         nothing
     end
@@ -154,11 +122,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function app_info_launch_default_for_uri(_uri::Union{AbstractString, Symbol}, _context::Maybe(GAppLaunchContext))
-        _context = if _context == nothing
-                C_NULL
-            else
-                _context
-            end
+        _context = nothing_to_null(_context)
         err = err_buf()
         ret = ccall(("g_app_info_launch_default_for_uri", libgio), Cint, (Cstring, Ptr{GObject}, Ptr{Ptr{GError}}), _uri, _context, err)
         check_err(err)
@@ -166,26 +130,10 @@ $(Expr(:toplevel, quote
         ret2
     end
     function app_info_launch_default_for_uri_async(_uri::Union{AbstractString, Symbol}, _context::Maybe(GAppLaunchContext), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _context = if _context == nothing
-                C_NULL
-            else
-                _context
-            end
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _context = nothing_to_null(_context)
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("g_app_info_launch_default_for_uri_async", libgio), Nothing, (Cstring, Ptr{GObject}, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _uri, _context, _cancellable, _callback, _user_data)
         nothing
     end
@@ -201,21 +149,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function bus_get(_bus_type, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("g_bus_get", libgio), Nothing, (UInt32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _bus_type, _cancellable, _callback, _user_data)
         nothing
     end
@@ -227,11 +163,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function bus_get_sync(_bus_type, _cancellable::Maybe(GCancellable))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         err = err_buf()
         ret = ccall(("g_bus_get_sync", libgio), Ptr{GObject}, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
         check_err(err)
@@ -313,11 +245,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function content_type_guess(_filename::Maybe(Union{AbstractString, Symbol}), _data)
-        _filename = if _filename == nothing
-                C_NULL
-            else
-                _filename
-            end
+        _filename = nothing_to_null(_filename)
         _data = convert(Vector{UInt8}, _data)
         m_result_uncertain = Ref{Cint}()
         _data_size = length(_data)
@@ -357,11 +285,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function content_type_set_mime_dirs(_dirs)
-        _dirs = if _dirs == nothing
-                C_NULL
-            else
-                _dirs
-            end
+        _dirs = nothing_to_null(_dirs)
         ret = ccall(("g_content_type_set_mime_dirs", libgio), Nothing, (Ptr{Cstring},), _dirs)
         nothing
     end
@@ -380,11 +304,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function dbus_address_get_for_bus_sync(_bus_type, _cancellable::Maybe(GCancellable))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         err = err_buf()
         ret = ccall(("g_dbus_address_get_for_bus_sync", libgio), Cstring, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
         check_err(err)
@@ -396,21 +316,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function dbus_address_get_stream(_address::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("g_dbus_address_get_stream", libgio), Nothing, (Cstring, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _address, _cancellable, _callback, _user_data)
         nothing
     end
@@ -426,11 +334,7 @@ $(Expr(:toplevel, quote
     end
     function dbus_address_get_stream_sync(_address::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable))
         m_out_guid = Ref{Cstring}()
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         err = err_buf()
         ret = ccall(("g_dbus_address_get_stream_sync", libgio), Ptr{GObject}, (Cstring, Ptr{Cstring}, Ptr{GObject}, Ptr{Ptr{GError}}), _address, m_out_guid, _cancellable, err)
         check_err(err)
@@ -528,11 +432,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function dtls_client_connection_new(_base_socket::GDatagramBased, _server_identity::Maybe(GSocketConnectable))
-        _server_identity = if _server_identity == nothing
-                C_NULL
-            else
-                _server_identity
-            end
+        _server_identity = nothing_to_null(_server_identity)
         err = err_buf()
         ret = ccall(("g_dtls_client_connection_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_socket, _server_identity, err)
         check_err(err)
@@ -543,11 +443,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function dtls_server_connection_new(_base_socket::GDatagramBased, _certificate::Maybe(GTlsCertificate))
-        _certificate = if _certificate == nothing
-                C_NULL
-            else
-                _certificate
-            end
+        _certificate = nothing_to_null(_certificate)
         err = err_buf()
         ret = ccall(("g_dtls_server_connection_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_socket, _certificate, err)
         check_err(err)
@@ -590,11 +486,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function file_new_tmp(_tmpl::Maybe(Union{AbstractString, Symbol}))
-        _tmpl = if _tmpl == nothing
-                C_NULL
-            else
-                _tmpl
-            end
+        _tmpl = nothing_to_null(_tmpl)
         m_iostream = Ref{Ptr{GObject}}()
         err = err_buf()
         ret = ccall(("g_file_new_tmp", libgio), Ptr{GObject}, (Cstring, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), _tmpl, m_iostream, err)
@@ -608,50 +500,18 @@ $(Expr(:toplevel, quote
         (ret2, _iostream)
     end
     function file_new_tmp_async(_tmpl::Maybe(Union{AbstractString, Symbol}), _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _tmpl = if _tmpl == nothing
-                C_NULL
-            else
-                _tmpl
-            end
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _tmpl = nothing_to_null(_tmpl)
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("g_file_new_tmp_async", libgio), Nothing, (Cstring, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _tmpl, _io_priority, _cancellable, _callback, _user_data)
         nothing
     end
     function file_new_tmp_dir_async(_tmpl::Maybe(Union{AbstractString, Symbol}), _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _tmpl = if _tmpl == nothing
-                C_NULL
-            else
-                _tmpl
-            end
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _tmpl = nothing_to_null(_tmpl)
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("g_file_new_tmp_dir_async", libgio), Nothing, (Cstring, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _tmpl, _io_priority, _cancellable, _callback, _user_data)
         nothing
     end
@@ -736,11 +596,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function keyfile_settings_backend_new(_filename::Union{AbstractString, Symbol}, _root_path::Union{AbstractString, Symbol}, _root_group::Maybe(Union{AbstractString, Symbol}))
-        _root_group = if _root_group == nothing
-                C_NULL
-            else
-                _root_group
-            end
+        _root_group = nothing_to_null(_root_group)
         ret = ccall(("g_keyfile_settings_backend_new", libgio), Ptr{GObject}, (Cstring, Cstring, Cstring), _filename, _root_path, _root_group)
         ret2 = convert(GSettingsBackend, ret, true)
         ret2
@@ -781,27 +637,15 @@ $(Expr(:toplevel, quote
         ret2
     end
     function pollable_source_new_full(_pollable_stream::GObject, _child_source::Maybe(Union{GSource, Ref{_GSource}}), _cancellable::Maybe(GCancellable))
-        _child_source = if _child_source == nothing
-                C_NULL
-            else
-                _child_source
-            end
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _child_source = nothing_to_null(_child_source)
+        _cancellable = nothing_to_null(_cancellable)
         ret = ccall(("g_pollable_source_new_full", libgio), Ptr{_GSource}, (Ptr{GObject}, Ptr{_GSource}, Ptr{GObject}), _pollable_stream, _child_source, _cancellable)
         ret2 = convert(Union{GSource, Ref{_GSource}}, ret, true)
         ret2
     end
     function pollable_stream_read(_stream::GInputStream, _buffer, _blocking::Bool, _cancellable::Maybe(GCancellable))
         _buffer = convert(Vector{UInt8}, _buffer)
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         _count = length(_buffer)
         err = err_buf()
         ret = ccall(("g_pollable_stream_read", libgio), Int64, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer, _count, _blocking, _cancellable, err)
@@ -810,11 +654,7 @@ $(Expr(:toplevel, quote
     end
     function pollable_stream_write(_stream::GOutputStream, _buffer, _blocking::Bool, _cancellable::Maybe(GCancellable))
         _buffer = convert(Vector{UInt8}, _buffer)
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         _count = length(_buffer)
         err = err_buf()
         ret = ccall(("g_pollable_stream_write", libgio), Int64, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer, _count, _blocking, _cancellable, err)
@@ -824,11 +664,7 @@ $(Expr(:toplevel, quote
     function pollable_stream_write_all(_stream::GOutputStream, _buffer, _blocking::Bool, _cancellable::Maybe(GCancellable))
         _buffer = convert(Vector{UInt8}, _buffer)
         m_bytes_written = Ref{UInt64}()
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
+        _cancellable = nothing_to_null(_cancellable)
         _count = length(_buffer)
         err = err_buf()
         ret = ccall(("g_pollable_stream_write_all", libgio), Cint, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{UInt64}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer, _count, _blocking, m_bytes_written, _cancellable, err)
@@ -947,11 +783,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function tls_client_connection_new(_base_io_stream::GIOStream, _server_identity::Maybe(GSocketConnectable))
-        _server_identity = if _server_identity == nothing
-                C_NULL
-            else
-                _server_identity
-            end
+        _server_identity = nothing_to_null(_server_identity)
         err = err_buf()
         ret = ccall(("g_tls_client_connection_new", libgio), Ptr{GTlsConnection}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_io_stream, _server_identity, err)
         check_err(err)
@@ -976,11 +808,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function tls_server_connection_new(_base_io_stream::GIOStream, _certificate::Maybe(GTlsCertificate))
-        _certificate = if _certificate == nothing
-                C_NULL
-            else
-                _certificate
-            end
+        _certificate = nothing_to_null(_certificate)
         err = err_buf()
         ret = ccall(("g_tls_server_connection_new", libgio), Ptr{GTlsConnection}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_io_stream, _certificate, err)
         check_err(err)

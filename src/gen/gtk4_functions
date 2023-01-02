@@ -15,11 +15,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function accelerator_get_label_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods)
-        _display = if _display == nothing
-                C_NULL
-            else
-                _display
-            end
+        _display = nothing_to_null(_display)
         ret = ccall(("gtk_accelerator_get_label_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display, _accelerator_key, _keycode, _accelerator_mods)
         ret2 = if ret == C_NULL
                 nothing
@@ -38,11 +34,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function accelerator_name_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods)
-        _display = if _display == nothing
-                C_NULL
-            else
-                _display
-            end
+        _display = nothing_to_null(_display)
         ret = ccall(("gtk_accelerator_name_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display, _accelerator_key, _keycode, _accelerator_mods)
         ret2 = if ret == C_NULL
                 nothing
@@ -62,11 +54,7 @@ $(Expr(:toplevel, quote
         (ret2, _accelerator_key, _accelerator_mods)
     end
     function accelerator_parse_with_keycode(_accelerator::Union{AbstractString, Symbol}, _display::Maybe(GdkDisplay))
-        _display = if _display == nothing
-                C_NULL
-            else
-                _display
-            end
+        _display = nothing_to_null(_display)
         m_accelerator_key = Ref{UInt32}()
         m_accelerator_codes = Ref{Ptr{UInt32}}()
         m_accelerator_mods = Ref{UInt32}()
@@ -265,16 +253,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function print_run_page_setup_dialog(_parent::Maybe(GtkWindow), _page_setup::Maybe(GtkPageSetup), _settings::GtkPrintSettings)
-        _parent = if _parent == nothing
-                C_NULL
-            else
-                _parent
-            end
-        _page_setup = if _page_setup == nothing
-                C_NULL
-            else
-                _page_setup
-            end
+        _parent = nothing_to_null(_parent)
+        _page_setup = nothing_to_null(_page_setup)
         ret = ccall(("gtk_print_run_page_setup_dialog", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), _parent, _page_setup, _settings)
         ret2 = convert(GtkPageSetup, ret, true)
         ret2
@@ -346,35 +326,15 @@ $(Expr(:toplevel, quote
         nothing
     end
     function show_uri(_parent::Maybe(GtkWindow), _uri::Union{AbstractString, Symbol}, _timestamp::Integer)
-        _parent = if _parent == nothing
-                C_NULL
-            else
-                _parent
-            end
+        _parent = nothing_to_null(_parent)
         ret = ccall(("gtk_show_uri", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32), _parent, _uri, _timestamp)
         nothing
     end
     function show_uri_full(_parent::Maybe(GtkWindow), _uri::Union{AbstractString, Symbol}, _timestamp::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _parent = if _parent == nothing
-                C_NULL
-            else
-                _parent
-            end
-        _cancellable = if _cancellable == nothing
-                C_NULL
-            else
-                _cancellable
-            end
-        _callback = if _callback == nothing
-                C_NULL
-            else
-                _callback
-            end
-        _user_data = if _user_data == nothing
-                C_NULL
-            else
-                _user_data
-            end
+        _parent = nothing_to_null(_parent)
+        _cancellable = nothing_to_null(_cancellable)
+        _callback = nothing_to_null(_callback)
+        _user_data = nothing_to_null(_user_data)
         ret = ccall(("gtk_show_uri_full", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _parent, _uri, _timestamp, _cancellable, _callback, _user_data)
         nothing
     end

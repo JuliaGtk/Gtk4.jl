@@ -1,0 +1,304 @@
+quote
+$(Expr(:toplevel, quote
+    begin
+        gboxed_types = Any[]
+    end
+    begin
+        struct _GskColorStop
+            offset::Float32
+            color::_GdkRGBA
+        end
+        mutable struct GskColorStop
+            handle::Ptr{_GskColorStop}
+        end
+        unsafe_convert(::Type{Ptr{_GskColorStop}}, box::GskColorStop) = begin
+                convert(Ptr{_GskColorStop}, box.handle)
+            end
+    end
+    begin
+        struct _GskParseLocation
+            bytes::UInt64
+            chars::UInt64
+            lines::UInt64
+            line_bytes::UInt64
+            line_chars::UInt64
+        end
+        mutable struct GskParseLocation
+            handle::Ptr{_GskParseLocation}
+        end
+        unsafe_convert(::Type{Ptr{_GskParseLocation}}, box::GskParseLocation) = begin
+                convert(Ptr{_GskParseLocation}, box.handle)
+            end
+    end
+    begin
+        mutable struct GskRoundedRect
+            handle::Ptr{GskRoundedRect}
+        end
+        const _GskRoundedRect = GskRoundedRect
+    end
+    mutable struct GskShaderArgsBuilder <: GBoxed
+        handle::Ptr{GskShaderArgsBuilder}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = begin
+                    ccall(("gsk_shader_args_builder_get_type", libgtk4), GType, ())
+                end
+            function GskShaderArgsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskShaderArgsBuilder)
+        end
+    end
+    begin
+        struct _GskShadow
+            color::_GdkRGBA
+            dx::Float32
+            dy::Float32
+            radius::Float32
+        end
+        mutable struct GskShadow
+            handle::Ptr{_GskShadow}
+        end
+        unsafe_convert(::Type{Ptr{_GskShadow}}, box::GskShadow) = begin
+                convert(Ptr{_GskShadow}, box.handle)
+            end
+    end
+    mutable struct GskTransform <: GBoxed
+        handle::Ptr{GskTransform}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskTransform) = begin
+                    ccall(("gsk_transform_get_type", libgtk4), GType, ())
+                end
+            function GskTransform(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskTransform)
+        end
+    end
+    begin
+        gboxed_cache_init() = begin
+                append!(GLib.gboxed_types, gboxed_types)
+            end
+    end
+    begin
+        gtype_wrapper_cache = Dict{Symbol, Type}()
+    end
+    begin
+        abstract type GskRenderer <: GObject end
+        mutable struct GskRendererLeaf <: GskRenderer
+            handle::Ptr{GObject}
+            function GskRendererLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GskRendererLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GskRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskRendererLeaf, args))
+            end
+            w = GskRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskRenderer] = GskRendererLeaf
+        function GskRenderer(args...; kwargs...)
+            GskRendererLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GskBroadwayRenderer <: GskRenderer end
+        mutable struct GskBroadwayRendererLeaf <: GskBroadwayRenderer
+            handle::Ptr{GObject}
+            function GskBroadwayRendererLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GskBroadwayRendererLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GskBroadwayRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskBroadwayRendererLeaf, args))
+            end
+            w = GskBroadwayRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
+        function GskBroadwayRenderer(args...; kwargs...)
+            GskBroadwayRendererLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GskCairoRenderer <: GskRenderer end
+        mutable struct GskCairoRendererLeaf <: GskCairoRenderer
+            handle::Ptr{GObject}
+            function GskCairoRendererLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GskCairoRendererLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GskCairoRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskCairoRendererLeaf, args))
+            end
+            w = GskCairoRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
+        function GskCairoRenderer(args...; kwargs...)
+            GskCairoRendererLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GskGLRenderer <: GskRenderer end
+        mutable struct GskGLRendererLeaf <: GskGLRenderer
+            handle::Ptr{GObject}
+            function GskGLRendererLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GskGLRendererLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GskGLRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskGLRendererLeaf, args))
+            end
+            w = GskGLRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskGLRenderer] = GskGLRendererLeaf
+        function GskGLRenderer(args...; kwargs...)
+            GskGLRendererLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GskGLShader <: GObject end
+        mutable struct GskGLShaderLeaf <: GskGLShader
+            handle::Ptr{GObject}
+            function GskGLShaderLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GskGLShaderLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GskGLShaderLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskGLShaderLeaf, args))
+            end
+            w = GskGLShaderLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
+        function GskGLShader(args...; kwargs...)
+            GskGLShaderLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GskNglRenderer <: GskRenderer end
+        mutable struct GskNglRendererLeaf <: GskNglRenderer
+            handle::Ptr{GObject}
+            function GskNglRendererLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GskNglRendererLeaf with a NULL pointer")
+                end
+                is_floating = ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle) != 0
+                if !owns || is_floating
+                    GLib.gc_ref_sink(handle)
+                end
+                return gobject_ref(new(handle))
+            end
+        end
+        local kwargs
+        function GskNglRendererLeaf(args...; kwargs...)
+            if isempty(kwargs)
+                error(MethodError(GskNglRendererLeaf, args))
+            end
+            w = GskNglRendererLeaf(args...)
+            for (kw, val) = kwargs
+                set_gtk_property!(w, kw, val)
+            end
+            w
+        end
+        gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
+        function GskNglRenderer(args...; kwargs...)
+            GskNglRendererLeaf(args...; kwargs...)
+        end
+    end
+    begin
+        abstract type GskRenderNode end
+        Base.convert(GskRenderNode, ptr::Ptr{GskRenderNode}) = begin
+                GskRenderNodeLeaf(ptr)
+            end
+        Base.unsafe_convert(::Type{Ptr{GskRenderNode}}, o::GskRenderNode) = begin
+                o.handle
+            end
+    end
+    begin
+        mutable struct GskRenderNodeLeaf <: GskRenderNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        gtype_wrapper_cache_init() = begin
+                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+            end
+    end
+    export GskColorStop, _GskColorStop, GskParseLocation, _GskParseLocation, GskRoundedRect, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, _GskShadow, GskTransform, GskBroadwayRenderer, GskCairoRenderer, GskGLRenderer, GskGLShader, GskNglRenderer, GskRenderNode, GskRenderer
+end))
+end

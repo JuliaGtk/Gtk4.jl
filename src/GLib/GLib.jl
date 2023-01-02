@@ -27,7 +27,7 @@ export signal_handler_block, signal_handler_unblock
 export add_action, add_stateful_action
 
 export get_gtk_property, set_gtk_property!, gtk_propertynames, bind_property, unbind_property
-export bytestring
+export bytestring, nothing_to_null
 export length_zt, err_buf, check_err
 export gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
        gtkdoc_func_url, gtkdoc_struc_url
@@ -80,6 +80,10 @@ function length_zt(arr::Ptr)
         i+=1
     end
     i-1
+end
+
+function nothing_to_null(x)
+    x = x === nothing ? C_NULL : x
 end
 
 function check_undefref(p::Ptr)

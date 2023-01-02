@@ -168,11 +168,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function type_class_adjust_private_offset(_g_class::Maybe(Nothing), _private_size_or_offset::Int32)
-        _g_class = if _g_class == nothing
-                C_NULL
-            else
-                _g_class
-            end
+        _g_class = nothing_to_null(_g_class)
         ret = ccall(("g_type_class_adjust_private_offset", libgobject), Nothing, (Ptr{Nothing}, Ptr{Int32}), _g_class, _private_size_or_offset)
         nothing
     end
@@ -269,11 +265,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function type_set_qdata(_type::Integer, _quark::Integer, _data::Maybe(Nothing))
-        _data = if _data == nothing
-                C_NULL
-            else
-                _data
-            end
+        _data = nothing_to_null(_data)
         ret = ccall(("g_type_set_qdata", libgobject), Nothing, (UInt64, UInt32, Ptr{Nothing}), _type, _quark, _data)
         nothing
     end

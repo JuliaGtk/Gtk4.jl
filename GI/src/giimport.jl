@@ -852,7 +852,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
             if expr !== nothing
                 push!(prologue, :($aname = $expr))
             elseif may_be_null(arg)
-                push!(prologue, :($aname = (($aname == nothing) ? C_NULL : $aname)))
+                push!(prologue, :($aname = nothing_to_null($aname)))
             end
         end
 

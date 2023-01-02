@@ -91,16 +91,8 @@ $(Expr(:toplevel, quote
         ret
     end
     function init(instance::GrapheneBox, _min::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _max::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
-        _min = if _min == nothing
-                C_NULL
-            else
-                _min
-            end
-        _max = if _max == nothing
-                C_NULL
-            else
-                _max
-            end
+        _min = nothing_to_null(_min)
+        _max = nothing_to_null(_max)
         ret = ccall(("graphene_box_init", libgraphene), Ptr{_GrapheneBox}, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _min, _max)
         ret2 = convert(Union{GrapheneBox, Ref{_GrapheneBox}}, ret, false)
         ret2
@@ -118,16 +110,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function init_from_vec3(instance::GrapheneBox, _min::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _max::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}))
-        _min = if _min == nothing
-                C_NULL
-            else
-                _min
-            end
-        _max = if _max == nothing
-                C_NULL
-            else
-                _max
-            end
+        _min = nothing_to_null(_min)
+        _max = nothing_to_null(_max)
         ret = ccall(("graphene_box_init_from_vec3", libgraphene), Ptr{_GrapheneBox}, (Ptr{_GrapheneBox}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _min, _max)
         ret2 = convert(Union{GrapheneBox, Ref{_GrapheneBox}}, ret, false)
         ret2
@@ -201,31 +185,19 @@ $(Expr(:toplevel, quote
         ret2
     end
     function init_from_euler(instance::GrapheneEuler, _src::Maybe(Union{GrapheneEuler, Ref{_GrapheneEuler}}))
-        _src = if _src == nothing
-                C_NULL
-            else
-                _src
-            end
+        _src = nothing_to_null(_src)
         ret = ccall(("graphene_euler_init_from_euler", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneEuler}), instance, _src)
         ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
         ret2
     end
     function init_from_matrix(instance::GrapheneEuler, _m::Maybe(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}), _order)
-        _m = if _m == nothing
-                C_NULL
-            else
-                _m
-            end
+        _m = nothing_to_null(_m)
         ret = ccall(("graphene_euler_init_from_matrix", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneMatrix}, UInt32), instance, _m, _order)
         ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
         ret2
     end
     function init_from_quaternion(instance::GrapheneEuler, _q::Maybe(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}), _order)
-        _q = if _q == nothing
-                C_NULL
-            else
-                _q
-            end
+        _q = nothing_to_null(_q)
         ret = ccall(("graphene_euler_init_from_quaternion", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneQuaternion}, UInt32), instance, _q, _order)
         ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
         ret2
@@ -236,11 +208,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function init_from_vec3(instance::GrapheneEuler, _v::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _order)
-        _v = if _v == nothing
-                C_NULL
-            else
-                _v
-            end
+        _v = nothing_to_null(_v)
         ret = ccall(("graphene_euler_init_from_vec3", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneVec3}, UInt32), instance, _v, _order)
         ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
         ret2
@@ -715,11 +683,7 @@ $(Expr(:toplevel, quote
         _normal
     end
     function init(instance::GraphenePlane, _normal::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _constant::Real)
-        _normal = if _normal == nothing
-                C_NULL
-            else
-                _normal
-            end
+        _normal = nothing_to_null(_normal)
         ret = ccall(("graphene_plane_init", libgraphene), Ptr{_GraphenePlane}, (Ptr{_GraphenePlane}, Ptr{_GrapheneVec3}, Float32), instance, _normal, _constant)
         ret2 = convert(Union{GraphenePlane, Ref{_GraphenePlane}}, ret, false)
         ret2
@@ -757,11 +721,7 @@ $(Expr(:toplevel, quote
         _res
     end
     function transform(instance::GraphenePlane, _matrix::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _normal_matrix::Maybe(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}))
-        _normal_matrix = if _normal_matrix == nothing
-                C_NULL
-            else
-                _normal_matrix
-            end
+        _normal_matrix = nothing_to_null(_normal_matrix)
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_plane_transform", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Ptr{_GraphenePlane}), instance, _matrix, _normal_matrix, m_res)
         _res = m_res[]
@@ -1132,16 +1092,8 @@ $(Expr(:toplevel, quote
         _position
     end
     function init(instance::GrapheneRay, _origin::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _direction::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}))
-        _origin = if _origin == nothing
-                C_NULL
-            else
-                _origin
-            end
-        _direction = if _direction == nothing
-                C_NULL
-            else
-                _direction
-            end
+        _origin = nothing_to_null(_origin)
+        _direction = nothing_to_null(_direction)
         ret = ccall(("graphene_ray_init", libgraphene), Ptr{_GrapheneRay}, (Ptr{_GrapheneRay}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec3}), instance, _origin, _direction)
         ret2 = convert(Union{GrapheneRay, Ref{_GrapheneRay}}, ret, false)
         ret2
@@ -1152,16 +1104,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function init_from_vec3(instance::GrapheneRay, _origin::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _direction::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}))
-        _origin = if _origin == nothing
-                C_NULL
-            else
-                _origin
-            end
-        _direction = if _direction == nothing
-                C_NULL
-            else
-                _direction
-            end
+        _origin = nothing_to_null(_origin)
+        _direction = nothing_to_null(_direction)
         ret = ccall(("graphene_ray_init_from_vec3", libgraphene), Ptr{_GrapheneRay}, (Ptr{_GrapheneRay}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _origin, _direction)
         ret2 = convert(Union{GrapheneRay, Ref{_GrapheneRay}}, ret, false)
         ret2
@@ -1397,22 +1341,14 @@ $(Expr(:toplevel, quote
         ret
     end
     function init(instance::GrapheneSphere, _center::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _radius::Real)
-        _center = if _center == nothing
-                C_NULL
-            else
-                _center
-            end
+        _center = nothing_to_null(_center)
         ret = ccall(("graphene_sphere_init", libgraphene), Ptr{_GrapheneSphere}, (Ptr{_GrapheneSphere}, Ptr{_GraphenePoint3D}, Float32), instance, _center, _radius)
         ret2 = convert(Union{GrapheneSphere, Ref{_GrapheneSphere}}, ret, false)
         ret2
     end
     function init_from_points(instance::GrapheneSphere, _points, _center::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
         _points = convert(Vector{_GraphenePoint3D}, _points)
-        _center = if _center == nothing
-                C_NULL
-            else
-                _center
-            end
+        _center = nothing_to_null(_center)
         _n_points = length(_points)
         ret = ccall(("graphene_sphere_init_from_points", libgraphene), Ptr{_GrapheneSphere}, (Ptr{_GrapheneSphere}, UInt32, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _n_points, _points, _center)
         ret2 = convert(Union{GrapheneSphere, Ref{_GrapheneSphere}}, ret, false)
@@ -1420,11 +1356,7 @@ $(Expr(:toplevel, quote
     end
     function init_from_vectors(instance::GrapheneSphere, _vectors, _center::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
         _vectors = convert(Vector{_GrapheneVec3}, _vectors)
-        _center = if _center == nothing
-                C_NULL
-            else
-                _center
-            end
+        _center = nothing_to_null(_center)
         _n_vectors = length(_vectors)
         ret = ccall(("graphene_sphere_init_from_vectors", libgraphene), Ptr{_GrapheneSphere}, (Ptr{_GrapheneSphere}, UInt32, Ptr{_GrapheneVec3}, Ptr{_GraphenePoint3D}), instance, _n_vectors, _vectors, _center)
         ret2 = convert(Union{GrapheneSphere, Ref{_GrapheneSphere}}, ret, false)
@@ -1465,11 +1397,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_barycoords(instance::GrapheneTriangle, _p::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
-        _p = if _p == nothing
-                C_NULL
-            else
-                _p
-            end
+        _p = nothing_to_null(_p)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_triangle_get_barycoords", libgraphene), Cint, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec2}), instance, _p, m_res)
         ret2 = convert(Bool, ret)
@@ -1511,11 +1439,7 @@ $(Expr(:toplevel, quote
         (_a, _b, _c)
     end
     function get_uv(instance::GrapheneTriangle, _p::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _uv_a::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _uv_b::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _uv_c::Union{GrapheneVec2, Ref{_GrapheneVec2}})
-        _p = if _p == nothing
-                C_NULL
-            else
-                _p
-            end
+        _p = nothing_to_null(_p)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_triangle_get_uv", libgraphene), Cint, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _p, _uv_a, _uv_b, _uv_c, m_res)
         ret2 = convert(Bool, ret)
@@ -1541,41 +1465,17 @@ $(Expr(:toplevel, quote
         ret2
     end
     function init_from_point3d(instance::GrapheneTriangle, _a::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _b::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _c::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
-        _a = if _a == nothing
-                C_NULL
-            else
-                _a
-            end
-        _b = if _b == nothing
-                C_NULL
-            else
-                _b
-            end
-        _c = if _c == nothing
-                C_NULL
-            else
-                _c
-            end
+        _a = nothing_to_null(_a)
+        _b = nothing_to_null(_b)
+        _c = nothing_to_null(_c)
         ret = ccall(("graphene_triangle_init_from_point3d", libgraphene), Ptr{_GrapheneTriangle}, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _a, _b, _c)
         ret2 = convert(Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, ret, false)
         ret2
     end
     function init_from_vec3(instance::GrapheneTriangle, _a::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _b::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _c::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}))
-        _a = if _a == nothing
-                C_NULL
-            else
-                _a
-            end
-        _b = if _b == nothing
-                C_NULL
-            else
-                _b
-            end
-        _c = if _c == nothing
-                C_NULL
-            else
-                _c
-            end
+        _a = nothing_to_null(_a)
+        _b = nothing_to_null(_b)
+        _c = nothing_to_null(_c)
         ret = ccall(("graphene_triangle_init_from_vec3", libgraphene), Ptr{_GrapheneTriangle}, (Ptr{_GrapheneTriangle}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _a, _b, _c)
         ret2 = convert(Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, ret, false)
         ret2
