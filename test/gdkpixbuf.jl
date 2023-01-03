@@ -13,6 +13,6 @@ end
 icon = Matrix{GdkPixbufLib.RGBA}(undef, 40, 20)
 fill!(icon, GdkPixbufLib.RGBA(0,0xff,0, 0xff))
 icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGBA(0,0,0xff,0x80))
-pb=GdkPixbuf(data=icon, has_alpha=true)
+pb=GdkPixbuf(icon, true)
 @test eltype(pb) == GdkPixbufLib.RGBA
 end

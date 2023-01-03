@@ -1,3 +1,9 @@
+function setproperties!(obj::GObject; kwargs...)
+    for (kw, val) = kwargs
+        set_gtk_property!(obj, kw, val)
+    end
+end
+
 # converts the string output by `g_value_get_string` to Julia equivalent
 function gvalue_string_convert(str)
     value = (str == C_NULL ? "nothing" : GLib.bytestring(str))

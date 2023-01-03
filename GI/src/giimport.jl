@@ -310,9 +310,7 @@ function gobject_decl(objectinfo)
         local kwargs
         function $leafname(args...; kwargs...)
             w = $oname(args...)
-            for (kw, val) in kwargs
-                set_gtk_property!(w, kw, val)
-            end
+            setproperties!(w; kwargs...)
             w
         end
         gtype_wrapper_cache[$(QuoteNode(oname))] = $leafname

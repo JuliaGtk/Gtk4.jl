@@ -201,58 +201,21 @@ convert(::Type{P}, a::MatrixStrided) where {P <: Ptr} = convert(P, a.p)
 bstride(a::MatrixStrided, i) = (i == 1 ? sizeof(eltype(a)) : (i == 2 ? a.rowstride : 0))
 bstride(a, i) = stride(a, i) * sizeof(eltype(a))
 
-# Example constructors:
-#GdkPixbuf(filename = "", width = -1, height = -1, preserve_aspect_ratio = true)
-#GdkPixbuf(resource_path = "", width = -1, height = -1, preserve_aspect_ratio = true)
-#GdkPixbuf(stream = "", width = -1, height = -1, preserve_aspect_ratio = true)
-#GdkPixbuf(xpm_data = [...])
-#GdkPixbuf(data = [...], has_alpha = true)
-#GdkPixbuf(width = 1, height = 1, has_alpha = true)
-function GdkPixbuf(; stream = nothing, resource_path = nothing, filename = nothing, xpm_data = nothing, inline_data = nothing, data = nothing,
-        width = -1, height = -1, preserve_aspect_ratio = true, has_alpha = nothing)
-    source_count = (stream !== nothing) + (resource_path !== nothing) + (filename !== nothing) +
-        (xpm_data !== nothing) + (inline_data !== nothing) + (data !== nothing)
-    @assert(source_count <= 1,
-        "GdkPixbuf must have at most one stream, resource_path, filename, xpm_data, inline_data, or data argument")
-    @assert(source_count == 0 || data !== nothing || has_alpha === nothing,
-        "GdkPixbuf can only set the has-alpha property for new buffers")
+function GdkPixbuf(width::Integer, height::Integer, has_alpha = true)
+    G_.Pixbuf_new(Colorspace_RGB, has_alpha, 8, width, height)
+end
+
+function GdkPixbuf(filename::AbstractString, width = -1, height = -1, preserve_aspect_ratio = true)
+    if width == -1 && height == -1
+        G_.Pixbuf_new_from_file(filename)
+    else
+        G_.Pixbuf_new_from_file_at_scale(filename, width, height, preserve_aspect_ratio)
+    end
+end
+
+function GdkPixbuf(data::AbstractArray, has_alpha = nothing)
     local pixbuf::Ptr{GObject}
-    if stream !== nothing
-        @assert(false, "not implemented yet")
-    elseif resource_path !== nothing
-        GError() do error_check
-            if width == -1 && height == -1
-                pixbuf = ccall((:gdk_pixbuf_new_from_resource, libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, Ptr{Ptr{GError}}), bytestring(resource_path), error_check)
-            else
-                pixbuf = ccall((:gdk_pixbuf_new_from_resource_at_scale, libgdkpixbuf), Ptr{GObject},
-                    (Ptr{UInt8}, Cint, Cint, Cint, Ptr{Ptr{GError}}), bytestring(resource_path), width, height, preserve_aspect_ratio, error_check)
-            end
-            return pixbuf !== C_NULL
-        end
-    elseif filename !== nothing
-        GError() do error_check
-            if width == -1 && height == -1
-                pixbuf = ccall((:gdk_pixbuf_new_from_file, libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, Ptr{Ptr{GError}}), bytestring(filename), error_check)
-            else
-                pixbuf = ccall((:gdk_pixbuf_new_from_file_at_scale, libgdkpixbuf), Ptr{GObject},
-                    (Ptr{UInt8}, Cint, Cint, Cint, Ptr{Ptr{GError}}), bytestring(filename), width, height, preserve_aspect_ratio, error_check)
-            end
-            return pixbuf !== C_NULL
-        end
-    elseif xpm_data !== nothing
-        @assert(width == -1 && height == -1, "GdkPixbuf cannot set the width/height of a image from xpm_data")
-        GError() do error_check
-            pixbuf = ccall((:gdk_pixbuf_new_from_xpm_data, libgdkpixbuf), Ptr{GObject}, (Ptr{Ptr{Nothing}},), xpm_data)
-            return pixbuf !== C_NULL
-        end
-    elseif inline_data !== nothing
-        @assert(width == -1 && height == -1, "GdkPixbuf cannot set the width/height of a image from inline_data")
-        GError() do error_check
-            pixbuf = ccall((:gdk_pixbuf_new_from_inline, libgdkpixbuf), Ptr{GObject}, (Cint, Ptr{Nothing}, Cint, Ptr{Ptr{GError}}), sizeof(inline_data), inline_data, true, error_check)
-            return pixbuf !== C_NULL
-        end
-    elseif data !== nothing # RGB or RGBA array, packed however you wish
-        @assert(width == -1 && height == -1, "GdkPixbuf cannot set the width/height of a image from data")
+    if data !== nothing # RGB or RGBA array, packed however you wish
         alpha = convert(Bool, has_alpha)
         width = size(data, 1) * bstride(data, 1)/(3 + Int(alpha))
         height = size(data, 2)
@@ -261,14 +224,9 @@ function GdkPixbuf(; stream = nothing, resource_path = nothing, filename = nothi
             (Ptr{Nothing}, Cint, Cint, Cint, Cint, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}),
             data, 0, alpha, 8, width, height, bstride(data, 2),
             deref_data, ref_data)
-    else
-        @assert(width != -1 && height != -1 && has_alpha !== nothing, "GdkPixbuf requires a width, height, and has_alpha to create an uninitialized pixbuf")
-        return G_.Pixbuf_new(Colorspace_RGB, has_alpha, 8, width, height)
     end
-    return GdkPixbuf(pixbuf)
+    return convert(GdkPixbuf, pixbuf, true)
 end
-#GdkPixbufLoader for new with type/mimetype
-#GdkPixbuf(callback, stream, width = -1, height = -1, preserve_aspect_ratio = true)
 
 slice(img::GdkPixbuf, x, y) = G_.new_subpixbuf(img, first(x)-1, first(y)-1, length(x), length(y))
 size(a::GdkPixbuf, i::Integer) = (i == 1 ? width(a) : (i == 2 ? height(a) : 1))

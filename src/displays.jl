@@ -26,13 +26,11 @@ end
 GtkImage(pixbuf::GdkPixbuf) = G_.Image_new_from_pixbuf(pixbuf)
 GtkImage(filename::AbstractString) = G_.Image_new_from_file(filename)
 
-function GtkImage(; resource_path = nothing, filename = nothing, icon_name = nothing)
-    source_count = (resource_path !== nothing) + (filename !== nothing) + (icon_name !== nothing)
+function GtkImage(; filename = nothing, icon_name = nothing)
+    source_count = (filename !== nothing) + (icon_name !== nothing)
     @assert(source_count <= 1,
-        "GdkPixbuf must have at most one resource_path, filename, or icon_name argument")
-    if resource_path !== nothing
-        img = G_.Image_new_from_resource(resource_path)
-    elseif filename !== nothing
+        "GdkPixbuf must have at most one filename or icon_name argument")
+    if filename !== nothing
         img = G_.Image_new_from_file(filename)
     elseif icon_name !== nothing
         img = G_.Image_new_from_icon_name(icon_name)
@@ -49,18 +47,12 @@ GtkPicture(pixbuf::GdkPixbuf) = G_.Picture_new_for_pixbuf(pixbuf)
 GtkPicture(p::GdkPaintable) = G_.Picture_new_for_paintable(p)
 GtkPicture(gfile::GFile) = G_.Picture_new_for_file(gfile)
 
-function GtkPicture(; resource_path = nothing, filename = nothing)
-    source_count = (resource_path !== nothing) + (filename !== nothing)
-    @assert(source_count <= 1,
-        "GdkPixbuf must have at most one resource_path or filename argument")
-    if resource_path !== nothing
-        img = G_.Picture_new_for_resource(resource_path)
-    elseif filename !== nothing
-        img = G_.Picture_new_for_filename(filename)
+function GtkPicture(filename = nothing)
+    if filename !== nothing
+        G_.Picture_new_for_filename(filename)
     else
-        img = G_.Picture_new()
+        G_.Picture_new()
     end
-    return img
 end
 
 ## GtkLevelBar

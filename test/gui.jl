@@ -217,7 +217,7 @@ end
 icon = Matrix{GdkPixbufLib.RGB}(undef, 40, 20)
 fill!(icon, GdkPixbufLib.RGB(0,0xff,0))
 icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGB(0,0,0xff))
-pb=GdkPixbuf(data=icon, has_alpha=false)
+pb=GdkPixbuf(icon, false)
 @test eltype(pb) == GdkPixbufLib.RGB
 @test size(pb) == (40, 20)
 @test pb[1,1].g==0xff
@@ -255,7 +255,7 @@ pic = GtkPicture()
 icon = Matrix{GdkPixbufLib.RGB}(undef, 40, 20)
 fill!(icon, GdkPixbufLib.RGB(0,0xff,0))
 icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGB(0,0,0xff))
-pb=GdkPixbuf(width=100, height=100, has_alpha=false)
+pb=GdkPixbuf(100, 100, false)
 Gtk4.pixbuf(pic, pb)
 pic2 = GtkPicture(pb)
 
