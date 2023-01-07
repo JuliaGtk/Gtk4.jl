@@ -89,7 +89,7 @@ end
 deleteat!(listStore::GtkListStore, iter::TRI) = delete!(listStore, iter)
 
 
-empty!(listStore::GtkListStore) = G_.clear(listStore)
+empty!(listStore::GtkListStore) = (G_.clear(listStore); listStore)
 
 ## by index
 
@@ -202,7 +202,7 @@ function splice!(treeStore::GtkTreeStoreLeaf, index::Vector{Int})
     delete!(treeStore, iter)
 end
 
-empty!(treeStore::GtkTreeStore) = G_.clear(treeStore)
+empty!(treeStore::GtkTreeStore) = (G_.clear(treeStore); treeStore)
 
 isvalid(treeStore::GtkTreeStore, iter) =
     ccall((:gtk_tree_store_iter_is_valid, libgtk4), Cint,
@@ -485,7 +485,7 @@ function GtkTreeViewColumnLeaf(title::AbstractString, renderer::GtkCellRenderer,
     set_gtk_property!(GtkTreeViewColumnLeaf(renderer, mapping), :title, title)
 end
 
-empty!(treeColumn::GtkTreeViewColumn) = G_.clear(treeColumn)
+empty!(treeColumn::GtkTreeViewColumn) = (G_.clear(treeColumn); treeColumn)
 
 function pushfirst!(treeColumn::GtkTreeViewColumn, renderer::GtkCellRenderer, expand::Bool = false)
     G_.pack_start(treeColumn, renderer, expand)

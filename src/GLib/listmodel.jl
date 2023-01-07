@@ -5,7 +5,7 @@ function GListStore(t)
 end
 
 push!(ls::GListStore, item) = (G_.append(ls, item); ls)
-empty!(ls::GListStore) = G_.remove_all(ls)
+empty!(ls::GListStore) = (G_.remove_all(ls); ls)
 deleteat!(ls::GListStore, i::Integer) = (G_.remove(ls, i-1);ls)
 
 length(ls::GListStore) = length(GListModel(ls))

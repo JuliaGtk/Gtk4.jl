@@ -117,9 +117,9 @@ getindex(w::GtkScrolledWindow) = G_.get_child(w)
 ## GtkHeaderBar
 
 GtkHeaderBar() = G_.HeaderBar_new()
-push!(hb::GtkHeaderBar, w::GtkWidget) = G_.pack_end(hb, w)
-pushfirst!(hb::GtkHeaderBar, w::GtkWidget) = G_.pack_start(hb, w)
-delete!(hb::GtkHeaderBar, w::GtkWidget) = G_.remove(hb, w)
+push!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_end(hb, w); hb)
+pushfirst!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_start(hb, w); hb)
+delete!(hb::GtkHeaderBar, w::GtkWidget) = (G_.remove(hb, w); hb)
 
 ## GtkDialog
 
