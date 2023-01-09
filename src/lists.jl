@@ -43,6 +43,9 @@ selected_string(d::GtkDropDown) = G_.get_selected_item(d).string
 GtkListView(model=nothing, factory=nothing) = G_.ListView_new(model, factory)
 GtkGridView(model=nothing, factory=nothing) = G_.GridView_new(model, factory)
 
+GtkColumnView(model=nothing) = G_.ColumnView_new(model)
+GtkColumnViewColumn(title="", factory=nothing) = G_.ColumnViewColumn_new(title, factory)
+
 GtkSignalListItemFactory() = G_.SignalListItemFactory_new()
 GtkSingleSelection(model) = G_.SingleSelection_new(model)
 GtkMultiSelection(model) = G_.MultiSelection_new(model)
@@ -50,3 +53,16 @@ GtkMultiSelection(model) = G_.MultiSelection_new(model)
 getindex(li::GtkListItem) = G_.get_item(li)
 set_child(li::GtkListItem, w) = G_.set_child(li, w)
 get_child(li::GtkListItem) = G_.get_child(li)
+
+GtkTreeExpander() = G_.TreeExpander_new()
+set_list_row(te::GtkTreeExpander, w) = G_.set_list_row(te, w)
+set_child(te::GtkTreeExpander, w) = G_.set_child(te, w)
+get_child(te::GtkTreeExpander) = G_.get_child(te)
+
+get_item(trl::GtkTreeListRow) = G_.get_item(trl)
+
+function GtkTreeListModel(root::GListModel, passthrough, autoexpand, create_func)
+    create_cfunc = @cfunction($create_func, Ptr{GObject}, (Ptr{GObject}, Ptr{Nothing}))
+    ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), root, passthrough, autoexpand, create_cfunc, C_NULL, C_NULL)
+    convert(GtkTreeListModel, ret, true)
+end

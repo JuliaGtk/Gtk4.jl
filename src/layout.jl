@@ -97,9 +97,9 @@ function getindex(pane::GtkPaned, i::Integer)
     elseif i == 2
         x = G_.get_end_child(pane)
     else
-        error("tried to get pane $i of GtkPane")
+        error("tried to get pane $i of GtkPaned")
     end
-    x === nothing && error("tried to get non-existent child at $i of GtkPane")
+    x === nothing && error("tried to get non-existent child at $i of GtkPaned")
     return x
 end
 
@@ -109,7 +109,7 @@ function setindex!(pane::GtkPaned, child::Union{Nothing,GtkWidget}, i::Integer)
     elseif i == 2
         G_.set_end_child(pane, child)
     else
-        error("tried to set pane $i of GtkPane")
+        error("tried to set pane $i of GtkPaned")
     end
 end
 
@@ -142,13 +142,13 @@ function insert!(grid::GtkGrid, i::Integer, side)
     elseif side == Gtk4.PositionType_BOTTOM
         G_.insert_row(grid, i)
     end
-    nothing
+    grid
 end
 
 function insert!(grid::GtkGrid, sibling, side)
     side = convert(Gtk4.PositionType, side)
     G_.insert_next_to(grid, sibling, side)
-    sibling
+    grid
 end
 
 function delete!(grid::GtkGrid, w::GtkWidget)
@@ -164,6 +164,7 @@ function deleteat!(grid::GtkGrid, i::Integer, rowcol::Symbol)
     else
         error(string("rowcol must be row or col, got ", rowcol))
     end
+    grid
 end
 
 function empty!(grid::GtkGrid)

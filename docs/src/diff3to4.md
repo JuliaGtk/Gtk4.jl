@@ -28,7 +28,7 @@ In GTK 4, widgets are shown by default, so `showall` does not exist, and calling
 
 ## No GtkContainer
 
-In GTK 4, `GtkContainer` has been removed and most widgets derive directly from `GtkWidget`. Each class that can contain child widgets has its own functions for adding and/or removing them. In Gtk4.jl, collection interface methods like `push!` have been defined for relatively simple containers, such as `GtkBox` and `GtkWindow`. For widgets that have one child, such as `GtkWindow`, `getindex` and `setindex!` have also been defined, so that one can set a child widget using `window[] = child`.
+In GTK 4, `GtkContainer` has been removed and most widgets derive directly from `GtkWidget`. Each class that can contain child widgets has its own functions for adding and/or removing them. In Gtk4.jl, collection interface methods like `push!` have been defined for containers that hold many widgets, such as `GtkBox`. For widgets that have one child, such as `GtkWindow`, `getindex` and `setindex!` have been defined, so that one can set a child widget using `window[] = child`.
 
 ## Events
 
