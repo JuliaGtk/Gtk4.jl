@@ -19,8 +19,10 @@ makedocs(
                      "manual/combobox.md",
                      "manual/listtreeview.md",
                      "manual/dialogs.md",
-                     "manual/canvas.md",
-                     "manual/nonreplusage.md"
+                     "manual/canvas.md"
+                    ],
+        "Howto" => ["howto/nonreplusage.md",
+                    "howto/async.md"
                     ],
         "Gtk.jl to Gtk4.jl" => "diff3to4.md",
         "Reference" => ["doc/reference.md",

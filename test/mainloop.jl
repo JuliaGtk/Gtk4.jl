@@ -47,6 +47,17 @@ end
 sleep(0.5)
 @test x[] == 2
 
+# removing a source
+
+x[] = 1 #reset
+id = g_timeout_add(1) do
+  x[] = 2
+  return false # only call once
+end
+g_source_remove(id)
+sleep(0.5)
+@test x[] == 1
+
 end
 
 @testset "misc" begin

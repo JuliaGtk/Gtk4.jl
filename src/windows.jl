@@ -24,13 +24,22 @@ default_size(win::GtkWindow, w, h) = G_.set_default_size(win, w, h)
 """
     destroy(win::GtkWindow)
 
-Destroy `win` and unreference all widgets in its hierarchy.
+Drop GTK's reference to `win`.
 
 Related GTK function: [`gtk_window_destroy`()]($(gtkdoc_method_url("gtk4","Window","destroy")))
 """
 function destroy(w::GtkWindow)
     G_.destroy(w)
 end
+
+"""
+    close(win::GtkWindow)
+
+Request that `win` is closed.
+
+Related GTK function: [`gtk_window_close`()]($(gtkdoc_method_url("gtk4","Window","close")))
+"""
+close(w::GtkWindow) = G_.close(w)
 
 """
     fullscreen(win::GtkWindow)
