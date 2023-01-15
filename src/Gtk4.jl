@@ -57,26 +57,27 @@ import .GLib: set_gtk_property!, get_gtk_property, run,
               signal_handler_is_connected
 
 # define accessor methods in Gtk4
-skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten methods from Gtk.jl are probably better
+
+let skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten methods from Gtk.jl are probably better
             :filter, :string, :first, :error] # conflicts with Base exports
-
-for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
-    ms=methods(getfield(Gtk4.G_,func))
-    v=Symbol(string(func)[5:end])
-    v in skiplist && continue
-    for m in ms
-        GLib.isgetter(m) || continue
-        eval(GLib.gen_getter(func,v,m))
+    for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
+        ms=methods(getfield(Gtk4.G_,func))
+        v=Symbol(string(func)[5:end])
+        v in skiplist && continue
+        for m in ms
+            GLib.isgetter(m) || continue
+            eval(GLib.gen_getter(func,v,m))
+        end
     end
-end
 
-for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
-    ms=methods(getfield(Gtk4.G_,func))
-    v=Symbol(string(func)[5:end])
-    v in skiplist && continue
-    for m in ms
-        GLib.issetter(m) || continue
-        eval(GLib.gen_setter(func,v,m))
+    for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
+        ms=methods(getfield(Gtk4.G_,func))
+        v=Symbol(string(func)[5:end])
+        v in skiplist && continue
+        for m in ms
+            GLib.issetter(m) || continue
+            eval(GLib.gen_setter(func,v,m))
+        end
     end
 end
 
@@ -112,8 +113,8 @@ function __init__()
          Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
      ]), Sys.iswindows() ? ";" : ":")
 
-     gtype_wrapper_cache_init()
-     gboxed_cache_init()
+    gtype_wrapper_cache_init()
+    gboxed_cache_init()
 
     if Sys.islinux() || Sys.isfreebsd()
         # Needed by xkbcommon:

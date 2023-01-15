@@ -4,7 +4,7 @@ using ..GLib
 using Glib_jll
 using Pango_jll
 
-import Base: convert, copy
+import Base: convert, copy, length, getindex, iterate
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag
 
@@ -56,9 +56,26 @@ function __init__()
    gboxed_cache_init()
 end
 
-default_font_map() = Pango.G_.font_map_get_default()
-PangoLayout(cr::cairoContext) = Pango.G_.create_layout(cr)
-PangoLayout(c::PangoContext) = Pango.G_.Layout_new(c)
-PangoContext(fm::PangoFontMap) = Pango.G_.create_context(fm)
+default_font_map() = G_.font_map_get_default()
+length(fm::PangoFontMap) = length(GListModel(fm))
+getindex(fm::PangoFontMap, i::Integer) = getindex(GListModel(fm),i)
+iterate(fm::PangoFontMap, i=0) = iterate(GListModel(fm), i)
+eltype(::Type{PangoFontMap}) = PangoFontFamily
+Base.keys(fm::PangoFontMap) = 1:length(fm)
+
+length(ff::PangoFontFamily) = length(GListModel(ff))
+getindex(ff::PangoFontFamily, i::Integer) = getindex(GListModel(ff),i)
+iterate(ff::PangoFontFamily, i=0) = iterate(GListModel(ff), i)
+eltype(::Type{PangoFontFamily}) = PangoFontFace
+Base.keys(ff::PangoFontFamily) = 1:length(ff)
+
+PangoFontDescription() = G_.FontDescription_new()
+PangoFontDescription(s::AbstractString) = G_.font_description_from_string(s)
+
+PangoLayout(cr::cairoContext) = G_.create_layout(cr)
+PangoLayout(c::PangoContext) = G_.Layout_new(c)
+
+PangoContext(fm::PangoFontMap) = G_.create_context(fm)
+getindex(pc::PangoContext, fd::PangoFontDescription) = G_.load_font(pc, fd)
 
 end

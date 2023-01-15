@@ -35,25 +35,25 @@ eval(include("gen/gdkpixbuf_functions"))
 end
 
 # define accessor methods
-skiplist = [ :file_info ]
-
-for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
-    ms=methods(getfield(GdkPixbufLib.G_,func))
-    v=Symbol(string(func)[5:end])
-    v in skiplist && continue
-    for m in ms
-        GLib.isgetter(m) || continue
-        eval(GLib.gen_getter(func,v,m))
+let skiplist = [ :file_info ]
+    for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
+        ms=methods(getfield(GdkPixbufLib.G_,func))
+        v=Symbol(string(func)[5:end])
+        v in skiplist && continue
+        for m in ms
+            GLib.isgetter(m) || continue
+            eval(GLib.gen_getter(func,v,m))
+        end
     end
-end
 
-for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
-    ms=methods(getfield(GdkPixbufLib.G_,func))
-    v=Symbol(string(func)[5:end])
-    v in skiplist && continue
-    for m in ms
-        GLib.issetter(m) || continue
-        eval(GLib.gen_setter(func,v,m))
+    for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
+        ms=methods(getfield(GdkPixbufLib.G_,func))
+        v=Symbol(string(func)[5:end])
+        v in skiplist && continue
+        for m in ms
+            GLib.issetter(m) || continue
+            eval(GLib.gen_setter(func,v,m))
+        end
     end
 end
 

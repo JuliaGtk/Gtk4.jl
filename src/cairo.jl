@@ -21,7 +21,6 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     function GtkCanvas(w = -1, h = -1)
         da = G_.DrawingArea_new()
         G_.set_size_request(da, w, h)
-        ids = Vector{Culong}(undef, 0)
         widget = new(da.handle, false, nothing, nothing)
 
         function on_realize(da::GtkWidget)
@@ -56,9 +55,6 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     end
 end
 const GtkCanvasLeaf = GtkCanvas
-macro GtkCanvas(args...)
-    :( GtkCanvas($(map(esc, args)...)) )
-end
 
 function resize(config::Function, widget::GtkCanvas)
     widget.resize = config

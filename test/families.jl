@@ -3,17 +3,26 @@ using Test
 
 @testset "families" begin
 
-fm=Pango.default_font_map()
-fams=Pango.G_.list_families(fm)
-for fam in fams
-    @test isa(fam,PangoFontFamily)
-end
-
-if length(fams)>0
-    faces=Pango.G_.list_faces(fams[1])
-    for face in faces
-        @test isa(face,PangoFontFace)
+    fm=Pango.default_font_map()
+    l=length(fm)
+    i=0
+    for fam in fm
+        @test isa(fam, PangoFontFamily)
+        i=i+1
     end
-end
+    @test l == i
+
+    if length(fm)>0
+        l=length(fm[1])
+        i=0
+        for face in fm[1]
+            @test isa(face,PangoFontFace)
+            i=i+1
+        end
+        @test l == i
+        if length(fm[1])>0
+            @test isa(fm[1][1],PangoFontFace)
+        end
+    end
 
 end

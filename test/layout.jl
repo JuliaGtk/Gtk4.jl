@@ -20,7 +20,7 @@ width,height=Pango.size(l)
 @test logical.width == width
 @test logical.height == height
 
-#fd=Pango.get_font_description(l)
+fd=Pango.font_description(l)
 
 
 end
