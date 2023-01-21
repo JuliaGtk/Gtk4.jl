@@ -185,7 +185,7 @@ function make_gvalue_from_fundamental_type(i,cm)
               $(if juliatype == AbstractString
                   :(return x)
               elseif juliatype !== Union{}
-                  :(return Base.convert($juliatype, x))
+                  :(return x == C_NULL ? nothing : Base.convert($juliatype, x))
               else
                   :(return x)
               end)

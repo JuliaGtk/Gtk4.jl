@@ -70,7 +70,19 @@ end
     @test w2.title != w.title
 
     w.title = nothing
-    @test w.title == nothing
+    @test w.title === nothing
+
+    @test w.cursor === nothing
+    cursor(w,"crosshair")
+    @test w.cursor != nothing
+    cursor(w,nothing)
+    @test w.cursor === nothing
+
+    c = GdkCursor("crosshair")
+    w.cursor = c
+    @test w.cursor == c
+    w.cursor = nothing
+    @test w.cursor === nothing
 
     destroy(w)
 end
