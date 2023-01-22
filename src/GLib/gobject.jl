@@ -36,7 +36,7 @@ function show(io::IO, w::GObject)
         end
         print(io, GLib.bytestring(param.name))
         if (ParamFlags(param.flags) & ParamFlags_READABLE) != 0 &&
-           (UInt32(param.flags) & DEPRECATED) == 0 &&
+           (param.flags & DEPRECATED) == 0 &&
            (ccall((:g_value_type_transformable, libgobject), Cint,
                 (Int, Int), param.value_type, g_type(AbstractString)) != 0)
             ccall((:g_object_get_property, libgobject), Nothing,
@@ -73,13 +73,16 @@ function propertyinfo(w::GObject, name::AbstractString)
     println(g_type_name(param.value_type))
     printstyled("Flags: "; bold = true)
     if (ParamFlags(param.flags) & ParamFlags_READABLE) != 0
-        print("Readable ")
+        print("Readable  ")
     end
     if (ParamFlags(param.flags) & ParamFlags_WRITABLE) != 0
-        print("Writable ")
+        print("Writable  ")
     end
     if (ParamFlags(param.flags) & ParamFlags_CONSTRUCT_ONLY) != 0
-        print("Construct only ")
+        print("Construct only  ")
+    end
+    if (ParamFlags(param.flags) & ParamFlags_EXPLICIT_NOTIFY) != 0
+        print("Explicit notify  ")
     end
     print("\n")
     blurb = ccall((:g_param_spec_get_blurb, libgobject), Ptr{UInt8}, (Ptr{GParamSpec},), p)

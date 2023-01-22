@@ -77,8 +77,6 @@ end
 
 @testset "GListStore" begin
 
-
-
 l = GListStore(:GSimpleAction)
 @test length(l)==0
 push!(l, a)

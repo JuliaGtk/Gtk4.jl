@@ -11,7 +11,7 @@ abstract type GParam end
 struct GParamSpec
   g_type_instance::Ptr{Nothing}
   name::Ptr{UInt8}
-  flags::GEnum
+  flags::UInt32 # matches the type of the Enum from introspection
   value_type::GType
   owner_type::GType
 end

@@ -69,7 +69,6 @@ iterate(ff::PangoFontFamily, i=0) = iterate(GListModel(ff), i)
 eltype(::Type{PangoFontFamily}) = PangoFontFace
 Base.keys(ff::PangoFontFamily) = 1:length(ff)
 
-PangoFontDescription() = G_.FontDescription_new()
 PangoFontDescription(s::AbstractString) = G_.font_description_from_string(s)
 
 PangoLayout(cr::cairoContext) = G_.create_layout(cr)

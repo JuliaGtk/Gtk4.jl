@@ -68,15 +68,4 @@ function on_signal_destroy(@nospecialize(destroy_cb::Function), widget::GtkWidge
     signal_connect(destroy_cb, widget, "destroy", Cvoid, (), vargs...)
 end
 
-function on_signal_button_press(@nospecialize(press_cb::Function), widget::GtkWidget, vargs...)
-    g = GtkGestureClick(widget)
-    signal_connect(press_cb, g, "pressed", Cvoid, (Cint, Cdouble, Cdouble), vargs...)
-end
-
-function on_signal_button_release(@nospecialize(release_cb::Function), widget::GtkWidget, vargs...)
-    g = GtkGestureClick(widget)
-    signal_connect(release_cb, widget, "released", Cvoid, (Cint, Cdouble, Cdouble), vargs...)
-end
-
-
 reveal(w::GtkWidget) = G_.queue_draw(w)

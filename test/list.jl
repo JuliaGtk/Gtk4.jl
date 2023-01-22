@@ -1,6 +1,6 @@
 using Gtk4.GLib
 
-@testset "list" begin
+@testset "glist" begin
 
 # pointers
 

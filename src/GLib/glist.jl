@@ -256,7 +256,7 @@ empty!(li::Ptr{_LList{N}}) where {N <: Number} = nothing
 ### Handle storing pointers to numbers
 eltype(::Type{_LList{Ptr{N}}}) where {N <: Number} = N
 deref_to(::Type{Ptr{N}}, p::Ptr) where {N <: Number} = unsafe_load(p)
-ref_to(::Type{Ptr{N}}, x) where {N <: Number} = unsafe_store!(convert(Ptr{N}, g_malloc(N.size)), x)
+ref_to(::Type{Ptr{N}}, x) where {N <: Number} = unsafe_store!(convert(Ptr{N}, g_malloc(sizeof(N))), x)
 empty!(li::Ptr{_GSList{Ptr{N}}}) where {N <: Number} = g_free(unsafe_load(li).data)
 empty!(li::Ptr{_GList{Ptr{N}}}) where {N <: Number} = g_free(unsafe_load(li).data)
 

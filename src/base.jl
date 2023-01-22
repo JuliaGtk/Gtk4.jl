@@ -188,7 +188,7 @@ end
 # because of a name collision this is annoying to generate using GI
 function GtkIconTheme(d::GdkDisplay)
     ret = ccall(("gtk_icon_theme_get_for_display",libgtk4), Ptr{GObject}, (Ptr{GObject},), d)
-    convert(GtkIconTheme, ret, true)
+    convert(GtkIconTheme, ret, false)
 end
 
 function icon_theme_add_search_path(icon_theme::GtkIconTheme, path::AbstractString)
@@ -203,6 +203,6 @@ function push!(app::GtkApplication, win::GtkWindow)
     app
 end
 function delete!(app::GtkApplication, win::GtkWindow)
-    G_.remote_window(app, win)
+    G_.remove_window(app, win)
     app
 end
