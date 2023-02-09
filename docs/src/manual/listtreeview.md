@@ -109,13 +109,22 @@ selection = Gtk4.selection(tv)
 ```
 One either have single selection or multiple selections. We toggle this by calling
 ```julia
-selection = Gtk4.mode(selection,Gtk4.SelectionMode_MULTIPLE)
+Gtk4.mode(selection,Gtk4.SelectionMode_MULTIPLE)
 ```
-We will stick with single selection for now and want to know the index of the
-selected item
+
+For single selection, if we want to know the index of the selected item we can use
 ```julia
 julia> ls[selected(selection),1]
 "Pete"
+```
+For multiple selection, we can get a list of selected rows using `selected_rows`,
+which can be used to index the GtkListStore
+```julia
+julia> [ls[x,1] for x in selected_rows(selection)]
+3-element Vector{String}:
+ "Susanne"
+ "Pete"
+ "Paul"
 ```
 Since it can happen that no item has been selected at all, it is a good idea to
 put this into an if statement
