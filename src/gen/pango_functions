@@ -98,11 +98,7 @@ $(Expr(:toplevel, quote
     end
     function attr_list_from_string(_text::Union{AbstractString, Symbol})
         ret = ccall(("pango_attr_list_from_string", libpango), Ptr{PangoAttrList}, (Cstring,), _text)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoAttrList, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoAttrList, ret, true)
         ret2
     end
     function attr_overline_color_new(_red::Integer, _green::Integer, _blue::Integer)
@@ -185,11 +181,7 @@ $(Expr(:toplevel, quote
     end
     function attr_type_get_name(_type)
         ret = ccall(("pango_attr_type_get_name", libpango), Cstring, (UInt32,), _type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function attr_type_register(_name::Union{AbstractString, Symbol})
@@ -302,11 +294,7 @@ $(Expr(:toplevel, quote
     function language_from_string(_language::Maybe(Union{AbstractString, Symbol}))
         _language = nothing_to_null(_language)
         ret = ccall(("pango_language_from_string", libpango), Ptr{PangoLanguage}, (Cstring,), _language)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoLanguage, ret, false)
-            end
+        ret2 = convert_if_not_null(PangoLanguage, ret, false)
         ret2
     end
     function language_get_default()
@@ -315,13 +303,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function language_get_preferred()
-        ret = ccall(("pango_language_get_preferred", libpango), Ptr{PangoLanguage}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoLanguage, ret, false)
-            end
-        ret2
+        ret = ccall(("pango_language_get_preferred", libpango), Ptr{Ptr{PangoLanguage}}, ())
+        ret
     end
     function layout_deserialize_error_quark()
         ret = ccall(("pango_layout_deserialize_error_quark", libpango), UInt32, ())
@@ -343,11 +326,7 @@ $(Expr(:toplevel, quote
         _attr_list = m_attr_list[]
         _attr_list = convert(PangoAttrList, _attr_list, true)
         _text = m_text[]
-        _text = if _text == C_NULL
-                nothing
-            else
-                bytestring(_text, true)
-            end
+        _text = string_or_nothing(_text, true)
         _accel_char = m_accel_char[]
         (ret2, _attr_list, _text, _accel_char)
     end
@@ -367,11 +346,7 @@ $(Expr(:toplevel, quote
         _attr_list = m_attr_list[]
         _attr_list = convert(PangoAttrList, _attr_list, true)
         _text = m_text[]
-        _text = if _text == C_NULL
-                nothing
-            else
-                bytestring(_text, true)
-            end
+        _text = string_or_nothing(_text, true)
         _accel_char = m_accel_char[]
         (ret2, _attr_list, _text, _accel_char)
     end
@@ -424,11 +399,7 @@ $(Expr(:toplevel, quote
     end
     function script_get_sample_language(_script)
         ret = ccall(("pango_script_get_sample_language", libpango), Ptr{PangoLanguage}, (UInt32,), _script)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoLanguage, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoLanguage, ret, true)
         ret2
     end
     function shape(_text::Union{AbstractString, Symbol}, _length::Integer, _analysis::_PangoAnalysis, _glyphs::Union{PangoGlyphString, Ref{_PangoGlyphString}})
@@ -453,11 +424,7 @@ $(Expr(:toplevel, quote
     end
     function tab_array_from_string(_text::Union{AbstractString, Symbol})
         ret = ccall(("pango_tab_array_from_string", libpango), Ptr{PangoTabArray}, (Cstring,), _text)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoTabArray, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoTabArray, ret, true)
         ret2
     end
     function tailor_break(_text::Union{AbstractString, Symbol}, _length::Integer, _analysis::_PangoAnalysis, _offset::Integer, _attrs)
@@ -485,20 +452,12 @@ $(Expr(:toplevel, quote
     end
     function version_check(_required_major::Integer, _required_minor::Integer, _required_micro::Integer)
         ret = ccall(("pango_version_check", libpango), Cstring, (Int32, Int32, Int32), _required_major, _required_minor, _required_micro)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function version_string()
         ret = ccall(("pango_version_string", libpango), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
 end))

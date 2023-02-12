@@ -2,10 +2,10 @@ quote
 $(Expr(:toplevel, quote
     begin
         ACCESSIBLE_VALUE_UNDEFINED = -1
-        BINARY_AGE = 608
+        BINARY_AGE = 803
         IM_MODULE_EXTENSION_POINT_NAME = "gtk-im-module"
         INPUT_ERROR = -1
-        INTERFACE_AGE = 8
+        INTERFACE_AGE = 3
         INVALID_LIST_POSITION = 0xffffffff
         LEVEL_BAR_OFFSET_FULL = "full"
         LEVEL_BAR_OFFSET_HIGH = "high"
@@ -13,8 +13,8 @@ $(Expr(:toplevel, quote
         MAJOR_VERSION = 4
         MAX_COMPOSE_LEN = 7
         MEDIA_FILE_EXTENSION_POINT_NAME = "gtk-media-file"
-        MICRO_VERSION = 8
-        MINOR_VERSION = 6
+        MICRO_VERSION = 3
+        MINOR_VERSION = 8
         PAPER_NAME_A3 = "iso_a3"
         PAPER_NAME_A4 = "iso_a4"
         PAPER_NAME_A5 = "iso_a5"
@@ -190,6 +190,12 @@ $(Expr(:toplevel, quote
                 end
         end
         begin
+            @cenum ContentFit::Int32 ContentFit_FILL = 0 ContentFit_CONTAIN = 1 ContentFit_COVER = 2 ContentFit_SCALE_DOWN = 3
+            (GLib.g_type(::Type{T}) where T <: ContentFit) = begin
+                    ccall(("gtk_content_fit_get_type", libgtk4), GType, ())
+                end
+        end
+        begin
             @cenum CornerType::Int32 CornerType_TOP_LEFT = 0 CornerType_BOTTOM_LEFT = 1 CornerType_TOP_RIGHT = 2 CornerType_BOTTOM_RIGHT = 3
             (GLib.g_type(::Type{T}) where T <: CornerType) = begin
                     ccall(("gtk_corner_type_get_type", libgtk4), GType, ())
@@ -279,6 +285,12 @@ $(Expr(:toplevel, quote
             @cenum InputPurpose::Int32 InputPurpose_FREE_FORM = 0 InputPurpose_ALPHA = 1 InputPurpose_DIGITS = 2 InputPurpose_NUMBER = 3 InputPurpose_PHONE = 4 InputPurpose_URL = 5 InputPurpose_EMAIL = 6 InputPurpose_NAME = 7 InputPurpose_PASSWORD = 8 InputPurpose_PIN = 9 InputPurpose_TERMINAL = 10
             (GLib.g_type(::Type{T}) where T <: InputPurpose) = begin
                     ccall(("gtk_input_purpose_get_type", libgtk4), GType, ())
+                end
+        end
+        begin
+            @cenum InscriptionOverflow::Int32 InscriptionOverflow_CLIP = 0 InscriptionOverflow_ELLIPSIZE_START = 1 InscriptionOverflow_ELLIPSIZE_MIDDLE = 2 InscriptionOverflow_ELLIPSIZE_END = 3
+            (GLib.g_type(::Type{T}) where T <: InscriptionOverflow) = begin
+                    ccall(("gtk_inscription_overflow_get_type", libgtk4), GType, ())
                 end
         end
         begin
@@ -642,7 +654,7 @@ $(Expr(:toplevel, quote
                 end
         end
         begin
-            @bitflag DebugFlags::UInt32 DebugFlags_TEXT = 1 DebugFlags_TREE = 2 DebugFlags_KEYBINDINGS = 4 DebugFlags_MODULES = 8 DebugFlags_GEOMETRY = 16 DebugFlags_ICONTHEME = 32 DebugFlags_PRINTING = 64 DebugFlags_BUILDER = 128 DebugFlags_SIZE_REQUEST = 256 DebugFlags_NO_CSS_CACHE = 512 DebugFlags_INTERACTIVE = 1024 DebugFlags_TOUCHSCREEN = 2048 DebugFlags_ACTIONS = 4096 DebugFlags_LAYOUT = 8192 DebugFlags_SNAPSHOT = 16384 DebugFlags_CONSTRAINTS = 32768 DebugFlags_BUILDER_OBJECTS = 65536 DebugFlags_A11Y = 131072 DebugFlags_ICONFALLBACK = 262144 DebugFlags_NONE = 0
+            @bitflag DebugFlags::UInt32 DebugFlags_TEXT = 1 DebugFlags_TREE = 2 DebugFlags_KEYBINDINGS = 4 DebugFlags_MODULES = 8 DebugFlags_GEOMETRY = 16 DebugFlags_ICONTHEME = 32 DebugFlags_PRINTING = 64 DebugFlags_BUILDER = 128 DebugFlags_SIZE_REQUEST = 256 DebugFlags_NO_CSS_CACHE = 512 DebugFlags_INTERACTIVE = 1024 DebugFlags_TOUCHSCREEN = 2048 DebugFlags_ACTIONS = 4096 DebugFlags_LAYOUT = 8192 DebugFlags_SNAPSHOT = 16384 DebugFlags_CONSTRAINTS = 32768 DebugFlags_BUILDER_OBJECTS = 65536 DebugFlags_A11Y = 131072 DebugFlags_ICONFALLBACK = 262144 DebugFlags_INVERT_TEXT_DIR = 524288 DebugFlags_NONE = 0
             (GLib.g_type(::Type{T}) where T <: DebugFlags) = begin
                     ccall(("gtk_debug_flags_get_type", libgtk4), GType, ())
                 end
@@ -777,6 +789,7 @@ $(Expr(:toplevel, quote
         @doc "The relation between two terms of a constraint.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.ConstraintRelation.html)." ConstraintRelation
         @doc "The strength of a constraint, expressed as a symbolic constant.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.ConstraintStrength.html)." ConstraintStrength
         @doc "Domain for VFL parsing errors.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.ConstraintVflParserError.html)." ConstraintVflParserError
+        @doc "Controls how a content should be made to fit inside an allocation.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.ContentFit.html)." ContentFit
         @doc "Specifies which corner a child widget should be placed in when packed into\na `GtkScrolledWindow.`\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.CornerType.html)." CornerType
         @doc "Errors that can occur while parsing CSS.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.CssParserError.html)." CssParserError
         @doc "Warnings that can occur while parsing CSS.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.CssParserWarning.html)." CssParserWarning
@@ -794,6 +807,7 @@ $(Expr(:toplevel, quote
         @doc "An enum for determining where a dropped item goes.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.IconViewDropPosition.html)." IconViewDropPosition
         @doc "Describes the image data representation used by a [class@Gtk.Image].\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.ImageType.html)." ImageType
         @doc "Describes primary purpose of the input widget.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.InputPurpose.html)." InputPurpose
+        @doc "The different methods to handle text in #GtkInscription when it doesn't\nfit the available space.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.InscriptionOverflow.html)." InscriptionOverflow
         @doc "Used for justifying the text inside a [class@Label] widget.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.Justification.html)." Justification
         @doc "Describes how [class@LevelBar] contents should be rendered.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.LevelBarMode.html)." LevelBarMode
         @doc "The type of license for an application.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/enum.License.html)." License
@@ -868,7 +882,7 @@ $(Expr(:toplevel, quote
         @doc "Flags that modify the behavior of gtk_style_context_to_string().\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/flags.StyleContextPrintFlags.html)." StyleContextPrintFlags
         @doc "Flags affecting how a search is done.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/flags.TextSearchFlags.html)." TextSearchFlags
         @doc "These flags indicate various properties of a `GtkTreeModel`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/flags.TreeModelFlags.html)." TreeModelFlags
-        export AccessibleAutocomplete, AccessibleInvalidState, AccessibleProperty, AccessibleRelation, AccessibleRole, AccessibleSort, AccessibleState, AccessibleTristate, Align, ArrowType, AssistantPageType, BaselinePosition, BorderStyle, BuilderError, ButtonsType, CellRendererAccelMode, CellRendererMode, ConstraintAttribute, ConstraintRelation, ConstraintStrength, ConstraintVflParserError, CornerType, CssParserError, CssParserWarning, DeleteType, DirectionType, EditableProperties, EntryIconPosition, EventSequenceState, FileChooserAction, FileChooserError, FilterChange, FilterMatch, IconSize, IconThemeError, IconViewDropPosition, ImageType, InputPurpose, Justification, LevelBarMode, License, MessageType, MovementStep, NaturalWrapMode, NotebookTab, NumberUpLayout, Ordering, Orientation, Overflow, PackType, PadActionType, PageOrientation, PageSet, PanDirection, PolicyType, PositionType, PrintDuplex, PrintError, PrintOperationAction, PrintOperationResult, PrintPages, PrintQuality, PrintStatus, PropagationLimit, PropagationPhase, RecentManagerError, ResponseType, RevealerTransitionType, ScrollStep, ScrollType, ScrollablePolicy, SelectionMode, SensitivityType, ShortcutScope, ShortcutType, SizeGroupMode, SizeRequestMode, SortType, SorterChange, SorterOrder, SpinButtonUpdatePolicy, SpinType, StackTransitionType, StringFilterMatchMode, SymbolicColor, SystemSetting, TextDirection, TextExtendSelection, TextViewLayer, TextWindowType, TreeViewColumnSizing, TreeViewDropPosition, TreeViewGridLines, Unit, WrapMode, ApplicationInhibitFlags, BuilderClosureFlags, CellRendererState, DebugFlags, DialogFlags, EventControllerScrollFlags, FontChooserLevel, IconLookupFlags, InputHints, PickFlags, PopoverMenuFlags, PrintCapabilities, ShortcutActionFlags, StateFlags, StyleContextPrintFlags, TextSearchFlags, TreeModelFlags
+        export AccessibleAutocomplete, AccessibleInvalidState, AccessibleProperty, AccessibleRelation, AccessibleRole, AccessibleSort, AccessibleState, AccessibleTristate, Align, ArrowType, AssistantPageType, BaselinePosition, BorderStyle, BuilderError, ButtonsType, CellRendererAccelMode, CellRendererMode, ConstraintAttribute, ConstraintRelation, ConstraintStrength, ConstraintVflParserError, ContentFit, CornerType, CssParserError, CssParserWarning, DeleteType, DirectionType, EditableProperties, EntryIconPosition, EventSequenceState, FileChooserAction, FileChooserError, FilterChange, FilterMatch, IconSize, IconThemeError, IconViewDropPosition, ImageType, InputPurpose, InscriptionOverflow, Justification, LevelBarMode, License, MessageType, MovementStep, NaturalWrapMode, NotebookTab, NumberUpLayout, Ordering, Orientation, Overflow, PackType, PadActionType, PageOrientation, PageSet, PanDirection, PolicyType, PositionType, PrintDuplex, PrintError, PrintOperationAction, PrintOperationResult, PrintPages, PrintQuality, PrintStatus, PropagationLimit, PropagationPhase, RecentManagerError, ResponseType, RevealerTransitionType, ScrollStep, ScrollType, ScrollablePolicy, SelectionMode, SensitivityType, ShortcutScope, ShortcutType, SizeGroupMode, SizeRequestMode, SortType, SorterChange, SorterOrder, SpinButtonUpdatePolicy, SpinType, StackTransitionType, StringFilterMatchMode, SymbolicColor, SystemSetting, TextDirection, TextExtendSelection, TextViewLayer, TextWindowType, TreeViewColumnSizing, TreeViewDropPosition, TreeViewGridLines, Unit, WrapMode, ApplicationInhibitFlags, BuilderClosureFlags, CellRendererState, DebugFlags, DialogFlags, EventControllerScrollFlags, FontChooserLevel, IconLookupFlags, InputHints, PickFlags, PopoverMenuFlags, PrintCapabilities, ShortcutActionFlags, StateFlags, StyleContextPrintFlags, TextSearchFlags, TreeModelFlags
     end
 end))
 end

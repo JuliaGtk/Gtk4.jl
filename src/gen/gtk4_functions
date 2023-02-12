@@ -7,40 +7,24 @@ $(Expr(:toplevel, quote
     end
     function accelerator_get_label(_accelerator_key::Integer, _accelerator_mods)
         ret = ccall(("gtk_accelerator_get_label", libgtk4), Cstring, (UInt32, UInt32), _accelerator_key, _accelerator_mods)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function accelerator_get_label_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods)
         _display = nothing_to_null(_display)
         ret = ccall(("gtk_accelerator_get_label_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display, _accelerator_key, _keycode, _accelerator_mods)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function accelerator_name(_accelerator_key::Integer, _accelerator_mods)
         ret = ccall(("gtk_accelerator_name", libgtk4), Cstring, (UInt32, UInt32), _accelerator_key, _accelerator_mods)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function accelerator_name_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods)
         _display = nothing_to_null(_display)
         ret = ccall(("gtk_accelerator_name_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display, _accelerator_key, _keycode, _accelerator_mods)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function accelerator_parse(_accelerator::Union{AbstractString, Symbol})
@@ -116,11 +100,7 @@ $(Expr(:toplevel, quote
     end
     function check_version(_required_major::Integer, _required_minor::Integer, _required_micro::Integer)
         ret = ccall(("gtk_check_version", libgtk4), Cstring, (UInt32, UInt32, UInt32), _required_major, _required_minor, _required_micro)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function constraint_vfl_parser_error_quark()
@@ -236,11 +216,7 @@ $(Expr(:toplevel, quote
     end
     function paper_size_get_default()
         ret = ccall(("gtk_paper_size_get_default", libgtk4), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function paper_size_get_paper_sizes(_include_custom::Bool)

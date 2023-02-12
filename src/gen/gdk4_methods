@@ -31,6 +31,18 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_content_formats_builder_unref", libgtk4), Nothing, (Ptr{GdkContentFormatsBuilder},), instance)
         nothing
     end
+    function FileList_new_from_array(_files)
+        _files = convert(Vector{Ptr{GObject}}, _files)
+        _n_files = length(_files)
+        ret = ccall(("gdk_file_list_new_from_array", libgtk4), Ptr{GdkFileList}, (Ptr{Ptr{GObject}}, UInt64), _files, _n_files)
+        ret2 = convert(GdkFileList, ret, true)
+        ret2
+    end
+    function FileList_new_from_list(_files::GLib.LList{GLib._GSList{Ptr{GObject}}})
+        ret = ccall(("gdk_file_list_new_from_list", libgtk4), Ptr{GdkFileList}, (Ptr{GLib._GSList{Ptr{GObject}}},), _files)
+        ret2 = convert(GdkFileList, ret, true)
+        ret2
+    end
     function get_files(instance::GdkFileList)
         ret = ccall(("gdk_file_list_get_files", libgtk4), Ptr{GLib._GSList{Ptr{GObject}}}, (Ptr{GdkFileList},), instance)
         ret2 = GLib.GList(ret, false)
@@ -193,11 +205,7 @@ $(Expr(:toplevel, quote
     end
     function to_string(instance::GdkRGBA)
         ret = ccall(("gdk_rgba_to_string", libgtk4), Cstring, (Ptr{_GdkRGBA},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function contains_point(instance::GdkRectangle, _x::Integer, _y::Integer)
@@ -248,11 +256,7 @@ $(Expr(:toplevel, quote
     end
     function get_fullscreen_monitor(instance::GdkToplevelLayout)
         ret = ccall(("gdk_toplevel_layout_get_fullscreen_monitor", libgtk4), Ptr{GObject}, (Ptr{GdkToplevelLayout},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkMonitor, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkMonitor, ret, false)
         ret2
     end
     function get_maximized(instance::GdkToplevelLayout)
@@ -319,20 +323,12 @@ $(Expr(:toplevel, quote
     end
     function cairo_create(instance::GdkCairoContext)
         ret = ccall(("gdk_cairo_context_cairo_create", libgtk4), Ptr{cairoContext}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(cairoContext, ret, true)
-            end
+        ret2 = convert_if_not_null(cairoContext, ret, true)
         ret2
     end
     function get_content(instance::GdkClipboard)
         ret = ccall(("gdk_clipboard_get_content", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkContentProvider, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkContentProvider, ret, false)
         ret2
     end
     function get_display(instance::GdkClipboard)
@@ -362,17 +358,9 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_clipboard_read_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _result, m_out_mime_type, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GInputStream, ret, true)
-            end
+        ret2 = convert_if_not_null(GInputStream, ret, true)
         _out_mime_type = m_out_mime_type[]
-        _out_mime_type = if _out_mime_type == C_NULL
-                nothing
-            else
-                bytestring(_out_mime_type, false)
-            end
+        _out_mime_type = string_or_nothing(_out_mime_type, false)
         (ret2, _out_mime_type)
     end
     function read_text_async(instance::GdkClipboard, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -386,11 +374,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_clipboard_read_text_finish", libgtk4), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function read_texture_async(instance::GdkClipboard, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -404,11 +388,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_clipboard_read_texture_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkTexture, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkTexture, ret, true)
         ret2
     end
     function read_value_async(instance::GdkClipboard, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -451,11 +431,7 @@ $(Expr(:toplevel, quote
     end
     function get_cancellable(instance::GdkContentDeserializer)
         ret = ccall(("gdk_content_deserializer_get_cancellable", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GCancellable, ret, false)
-            end
+        ret2 = convert_if_not_null(GCancellable, ret, false)
         ret2
     end
     function get_gtype(instance::GdkContentDeserializer)
@@ -469,11 +445,7 @@ $(Expr(:toplevel, quote
     end
     function get_mime_type(instance::GdkContentDeserializer)
         ret = ccall(("gdk_content_deserializer_get_mime_type", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_priority(instance::GdkContentDeserializer)
@@ -559,11 +531,7 @@ $(Expr(:toplevel, quote
     end
     function get_cancellable(instance::GdkContentSerializer)
         ret = ccall(("gdk_content_serializer_get_cancellable", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GCancellable, ret, false)
-            end
+        ret2 = convert_if_not_null(GCancellable, ret, false)
         ret2
     end
     function get_gtype(instance::GdkContentSerializer)
@@ -572,11 +540,7 @@ $(Expr(:toplevel, quote
     end
     function get_mime_type(instance::GdkContentSerializer)
         ret = ccall(("gdk_content_serializer_get_mime_type", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_output_stream(instance::GdkContentSerializer)
@@ -629,11 +593,7 @@ $(Expr(:toplevel, quote
     function Cursor_new_from_name(_name::Union{AbstractString, Symbol}, _fallback::Maybe(GdkCursor))
         _fallback = nothing_to_null(_fallback)
         ret = ccall(("gdk_cursor_new_from_name", libgtk4), Ptr{GObject}, (Cstring, Ptr{GObject}), _name, _fallback)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkCursor, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkCursor, ret, true)
         ret2
     end
     function Cursor_new_from_texture(_texture::GdkTexture, _hotspot_x::Integer, _hotspot_y::Integer, _fallback::Maybe(GdkCursor))
@@ -644,11 +604,7 @@ $(Expr(:toplevel, quote
     end
     function get_fallback(instance::GdkCursor)
         ret = ccall(("gdk_cursor_get_fallback", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkCursor, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkCursor, ret, false)
         ret2
     end
     function get_hotspot_x(instance::GdkCursor)
@@ -661,29 +617,17 @@ $(Expr(:toplevel, quote
     end
     function get_name(instance::GdkCursor)
         ret = ccall(("gdk_cursor_get_name", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_texture(instance::GdkCursor)
         ret = ccall(("gdk_cursor_get_texture", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkTexture, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkTexture, ret, false)
         ret2
     end
     function get_drop(instance::GdkDNDEvent)
         ret = ccall(("gdk_dnd_event_get_drop", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDrop, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDrop, ret, false)
         ret2
     end
     function get_caps_lock_state(instance::GdkDevice)
@@ -693,11 +637,7 @@ $(Expr(:toplevel, quote
     end
     function get_device_tool(instance::GdkDevice)
         ret = ccall(("gdk_device_get_device_tool", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDeviceTool, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDeviceTool, ret, false)
         ret2
     end
     function get_direction(instance::GdkDevice)
@@ -722,11 +662,7 @@ $(Expr(:toplevel, quote
     end
     function get_name(instance::GdkDevice)
         ret = ccall(("gdk_device_get_name", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_num_lock_state(instance::GdkDevice)
@@ -740,11 +676,7 @@ $(Expr(:toplevel, quote
     end
     function get_product_id(instance::GdkDevice)
         ret = ccall(("gdk_device_get_product_id", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_scroll_lock_state(instance::GdkDevice)
@@ -766,11 +698,7 @@ $(Expr(:toplevel, quote
         m_win_x = Ref{Float64}()
         m_win_y = Ref{Float64}()
         ret = ccall(("gdk_device_get_surface_at_position", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_win_x, m_win_y)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSurface, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSurface, ret, false)
         _win_x = m_win_x[]
         _win_y = m_win_y[]
         (ret2, _win_x, _win_y)
@@ -781,11 +709,7 @@ $(Expr(:toplevel, quote
     end
     function get_vendor_id(instance::GdkDevice)
         ret = ccall(("gdk_device_get_vendor_id", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function has_bidi_layouts(instance::GdkDevice)
@@ -813,20 +737,12 @@ $(Expr(:toplevel, quote
     end
     function get_default()
         ret = ccall(("gdk_display_get_default", libgtk4), Ptr{GObject}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDisplay, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
     function open(_display_name::Union{AbstractString, Symbol})
         ret = ccall(("gdk_display_open", libgtk4), Ptr{GObject}, (Cstring,), _display_name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDisplay, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
     function beep(instance::GdkDisplay)
@@ -865,11 +781,7 @@ $(Expr(:toplevel, quote
     end
     function get_default_seat(instance::GdkDisplay)
         ret = ccall(("gdk_display_get_default_seat", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSeat, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSeat, ret, false)
         ret2
     end
     function get_monitor_at_surface(instance::GdkDisplay, _surface::GdkSurface)
@@ -887,11 +799,7 @@ $(Expr(:toplevel, quote
     end
     function get_name(instance::GdkDisplay)
         ret = ccall(("gdk_display_get_name", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_primary_clipboard(instance::GdkDisplay)
@@ -906,11 +814,7 @@ $(Expr(:toplevel, quote
     end
     function get_startup_notification_id(instance::GdkDisplay)
         ret = ccall(("gdk_display_get_startup_notification_id", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function is_closed(instance::GdkDisplay)
@@ -994,11 +898,7 @@ $(Expr(:toplevel, quote
     end
     function get_default_display(instance::GdkDisplayManager)
         ret = ccall(("gdk_display_manager_get_default_display", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDisplay, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
     function list_displays(instance::GdkDisplayManager)
@@ -1008,11 +908,7 @@ $(Expr(:toplevel, quote
     end
     function open_display(instance::GdkDisplayManager, _name::Union{AbstractString, Symbol})
         ret = ccall(("gdk_display_manager_open_display", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDisplay, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
     function set_default_display(instance::GdkDisplayManager, _display::GdkDisplay)
@@ -1045,11 +941,7 @@ $(Expr(:toplevel, quote
     end
     function get_drag_surface(instance::GdkDrag)
         ret = ccall(("gdk_drag_get_drag_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSurface, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSurface, ret, false)
         ret2
     end
     function get_formats(instance::GdkDrag)
@@ -1081,29 +973,17 @@ $(Expr(:toplevel, quote
     end
     function get_display(instance::GdkDrawContext)
         ret = ccall(("gdk_draw_context_get_display", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDisplay, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
     function get_frame_region(instance::GdkDrawContext)
         ret = ccall(("gdk_draw_context_get_frame_region", libgtk4), Ptr{cairoRegion}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(cairoRegion, ret, false)
-            end
+        ret2 = convert_if_not_null(cairoRegion, ret, false)
         ret2
     end
     function get_surface(instance::GdkDrawContext)
         ret = ccall(("gdk_draw_context_get_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSurface, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSurface, ret, false)
         ret2
     end
     function is_in_frame(instance::GdkDrawContext)
@@ -1132,11 +1012,7 @@ $(Expr(:toplevel, quote
     end
     function get_drag(instance::GdkDrop)
         ret = ccall(("gdk_drop_get_drag", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDrag, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDrag, ret, false)
         ret2
     end
     function get_formats(instance::GdkDrop)
@@ -1161,17 +1037,9 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_drop_read_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _result, m_out_mime_type, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GInputStream, ret, true)
-            end
+        ret2 = convert_if_not_null(GInputStream, ret, true)
         _out_mime_type = m_out_mime_type[]
-        _out_mime_type = if _out_mime_type == C_NULL
-                nothing
-            else
-                bytestring(_out_mime_type, true)
-            end
+        _out_mime_type = string_or_nothing(_out_mime_type, true)
         (ret2, _out_mime_type)
     end
     function read_value_async(instance::GdkDrop, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -1233,29 +1101,17 @@ $(Expr(:toplevel, quote
     end
     function get_device(instance::GdkEvent)
         ret = ccall(("gdk_event_get_device", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDevice, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDevice, ret, false)
         ret2
     end
     function get_device_tool(instance::GdkEvent)
         ret = ccall(("gdk_event_get_device_tool", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDeviceTool, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDeviceTool, ret, false)
         ret2
     end
     function get_display(instance::GdkEvent)
         ret = ccall(("gdk_event_get_display", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDisplay, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
     function get_event_sequence(instance::GdkEvent)
@@ -1300,20 +1156,12 @@ $(Expr(:toplevel, quote
     end
     function get_seat(instance::GdkEvent)
         ret = ccall(("gdk_event_get_seat", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSeat, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSeat, ret, false)
         ret2
     end
     function get_surface(instance::GdkEvent)
         ret = ccall(("gdk_event_get_surface", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSurface, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSurface, ret, false)
         ret2
     end
     function get_time(instance::GdkEvent)
@@ -1349,11 +1197,7 @@ $(Expr(:toplevel, quote
     end
     function get_current_timings(instance::GdkFrameClock)
         ret = ccall(("gdk_frame_clock_get_current_timings", libgtk4), Ptr{GdkFrameTimings}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkFrameTimings, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkFrameTimings, ret, false)
         ret2
     end
     function get_fps(instance::GdkFrameClock)
@@ -1382,11 +1226,7 @@ $(Expr(:toplevel, quote
     end
     function get_timings(instance::GdkFrameClock, _frame_counter::Integer)
         ret = ccall(("gdk_frame_clock_get_timings", libgtk4), Ptr{GdkFrameTimings}, (Ptr{GObject}, Int64), instance, _frame_counter)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkFrameTimings, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkFrameTimings, ret, false)
         ret2
     end
     function request_phase(instance::GdkFrameClock, _phase)
@@ -1399,11 +1239,7 @@ $(Expr(:toplevel, quote
     end
     function get_current()
         ret = ccall(("gdk_gl_context_get_current", libgtk4), Ptr{GObject}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkGLContext, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkGLContext, ret, false)
         ret2
     end
     function get_allowed_apis(instance::GdkGLContext)
@@ -1423,11 +1259,7 @@ $(Expr(:toplevel, quote
     end
     function get_display(instance::GdkGLContext)
         ret = ccall(("gdk_gl_context_get_display", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDisplay, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
     function get_forward_compatible(instance::GdkGLContext)
@@ -1447,11 +1279,7 @@ $(Expr(:toplevel, quote
     end
     function get_surface(instance::GdkGLContext)
         ret = ccall(("gdk_gl_context_get_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSurface, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSurface, ret, false)
         ret2
     end
     function get_use_es(instance::GdkGLContext)
@@ -1570,11 +1398,7 @@ $(Expr(:toplevel, quote
     end
     function get_connector(instance::GdkMonitor)
         ret = ccall(("gdk_monitor_get_connector", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_display(instance::GdkMonitor)
@@ -1594,20 +1418,12 @@ $(Expr(:toplevel, quote
     end
     function get_manufacturer(instance::GdkMonitor)
         ret = ccall(("gdk_monitor_get_manufacturer", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_model(instance::GdkMonitor)
         ret = ccall(("gdk_monitor_get_model", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_refresh_rate(instance::GdkMonitor)
@@ -1665,6 +1481,11 @@ $(Expr(:toplevel, quote
         ret2 = ScrollDirection(ret)
         ret2
     end
+    function get_unit(instance::GdkScrollEvent)
+        ret = ccall(("gdk_scroll_event_get_unit", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret2 = ScrollUnit(ret)
+        ret2
+    end
     function is_stop(instance::GdkScrollEvent)
         ret = ccall(("gdk_scroll_event_is_stop", libgtk4), Cint, (Ptr{GdkEvent},), instance)
         ret2 = convert(Bool, ret)
@@ -1687,20 +1508,12 @@ $(Expr(:toplevel, quote
     end
     function get_keyboard(instance::GdkSeat)
         ret = ccall(("gdk_seat_get_keyboard", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDevice, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDevice, ret, false)
         ret2
     end
     function get_pointer(instance::GdkSeat)
         ret = ccall(("gdk_seat_get_pointer", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkDevice, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkDevice, ret, false)
         ret2
     end
     function get_tools(instance::GdkSeat)
@@ -1752,20 +1565,12 @@ $(Expr(:toplevel, quote
     end
     function get_cursor(instance::GdkSurface)
         ret = ccall(("gdk_surface_get_cursor", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkCursor, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkCursor, ret, false)
         ret2
     end
     function get_device_cursor(instance::GdkSurface, _device::GdkDevice)
         ret = ccall(("gdk_surface_get_device_cursor", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), instance, _device)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkCursor, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkCursor, ret, false)
         ret2
     end
     function get_device_position(instance::GdkSurface, _device::GdkDevice)
@@ -2028,11 +1833,7 @@ $(Expr(:toplevel, quote
     end
     function get_parent(instance::GdkPopup)
         ret = ccall(("gdk_popup_get_parent", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSurface, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSurface, ret, false)
         ret2
     end
     function get_position_x(instance::GdkPopup)

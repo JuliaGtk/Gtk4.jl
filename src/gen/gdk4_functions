@@ -39,11 +39,7 @@ $(Expr(:toplevel, quote
     end
     function content_formats_parse(_string::Union{AbstractString, Symbol})
         ret = ccall(("gdk_content_formats_parse", libgtk4), Ptr{GdkContentFormats}, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkContentFormats, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkContentFormats, ret, true)
         ret2
     end
     function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -71,11 +67,7 @@ $(Expr(:toplevel, quote
     end
     function intern_mime_type(_string::Union{AbstractString, Symbol})
         ret = ccall(("gdk_intern_mime_type", libgtk4), Cstring, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function keyval_convert_case(_symbol::Integer)
@@ -102,11 +94,7 @@ $(Expr(:toplevel, quote
     end
     function keyval_name(_keyval::Integer)
         ret = ccall(("gdk_keyval_name", libgtk4), Cstring, (UInt32,), _keyval)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function keyval_to_lower(_keyval::Integer)
@@ -131,20 +119,12 @@ $(Expr(:toplevel, quote
     end
     function pixbuf_get_from_surface(_surface::cairoSurface, _src_x::Integer, _src_y::Integer, _width::Integer, _height::Integer)
         ret = ccall(("gdk_pixbuf_get_from_surface", libgtk4), Ptr{GObject}, (Ptr{cairoSurface}, Int32, Int32, Int32, Int32), _surface, _src_x, _src_y, _width, _height)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function pixbuf_get_from_texture(_texture::GdkTexture)
         ret = ccall(("gdk_pixbuf_get_from_texture", libgtk4), Ptr{GObject}, (Ptr{GObject},), _texture)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function set_allowed_backends(_backends::Union{AbstractString, Symbol})

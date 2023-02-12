@@ -2,11 +2,7 @@ quote
 $(Expr(:toplevel, quote
     function context_get_font_options(_context::PangoContext)
         ret = ccall(("pango_cairo_context_get_font_options", libpangocairo), Ptr{cairoFontOptions}, (Ptr{GObject},), _context)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(cairoFontOptions, ret, false)
-            end
+        ret2 = convert_if_not_null(cairoFontOptions, ret, false)
         ret2
     end
     function context_get_resolution(_context::PangoContext)
@@ -55,11 +51,7 @@ $(Expr(:toplevel, quote
     end
     function font_map_new_for_font_type(_fonttype)
         ret = ccall(("pango_cairo_font_map_new_for_font_type", libpangocairo), Ptr{GObject}, (UInt32,), _fonttype)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFontMap, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoFontMap, ret, true)
         ret2
     end
     function layout_path(_cr::cairoContext, _layout::PangoLayout)

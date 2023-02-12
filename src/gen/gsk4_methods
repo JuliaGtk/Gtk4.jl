@@ -116,11 +116,7 @@ $(Expr(:toplevel, quote
     end
     function invert(instance::GskTransform)
         ret = ccall(("gsk_transform_invert", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function matrix(instance::GskTransform, _matrix::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
@@ -139,56 +135,32 @@ $(Expr(:toplevel, quote
     end
     function ref(instance::GskTransform)
         ret = ccall(("gsk_transform_ref", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, false)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, false)
         ret2
     end
     function rotate(instance::GskTransform, _angle::Real)
         ret = ccall(("gsk_transform_rotate", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32), instance, _angle)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function rotate_3d(instance::GskTransform, _angle::Real, _axis::Union{GrapheneVec3, Ref{_GrapheneVec3}})
         ret = ccall(("gsk_transform_rotate_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Ptr{_GrapheneVec3}), instance, _angle, _axis)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function scale(instance::GskTransform, _factor_x::Real, _factor_y::Real)
         ret = ccall(("gsk_transform_scale", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32), instance, _factor_x, _factor_y)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function scale_3d(instance::GskTransform, _factor_x::Real, _factor_y::Real, _factor_z::Real)
         ret = ccall(("gsk_transform_scale_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32, Float32), instance, _factor_x, _factor_y, _factor_z)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function skew(instance::GskTransform, _skew_x::Real, _skew_y::Real)
         ret = ccall(("gsk_transform_skew", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32), instance, _skew_x, _skew_y)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function to_2d(instance::GskTransform)
@@ -245,11 +217,7 @@ $(Expr(:toplevel, quote
     end
     function to_string(instance::GskTransform)
         ret = ccall(("gsk_transform_to_string", libgtk4), Cstring, (Ptr{GskTransform},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function to_translate(instance::GskTransform)
@@ -263,11 +231,7 @@ $(Expr(:toplevel, quote
     function transform(instance::GskTransform, _other::Maybe(GskTransform))
         _other = nothing_to_null(_other)
         ret = ccall(("gsk_transform_transform", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{GskTransform}), instance, _other)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function transform_bounds(instance::GskTransform, _rect::Union{GrapheneRect, Ref{_GrapheneRect}})
@@ -284,20 +248,12 @@ $(Expr(:toplevel, quote
     end
     function translate(instance::GskTransform, _point::Union{GraphenePoint, Ref{_GraphenePoint}})
         ret = ccall(("gsk_transform_translate", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GraphenePoint}), instance, _point)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function translate_3d(instance::GskTransform, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
         ret = ccall(("gsk_transform_translate_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GraphenePoint3D}), instance, _point)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskTransform, ret, true)
-            end
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function unref(instance::GskTransform)
@@ -506,11 +462,7 @@ $(Expr(:toplevel, quote
     end
     function get_message(instance::GskDebugNode)
         ret = ccall(("gsk_debug_node_get_message", libgtk4), Cstring, (Ptr{GskRenderNode},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function GLRenderer_new()
@@ -582,11 +534,7 @@ $(Expr(:toplevel, quote
     end
     function get_resource(instance::GskGLShader)
         ret = ccall(("gsk_gl_shader_get_resource", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_source(instance::GskGLShader)
@@ -596,11 +544,7 @@ $(Expr(:toplevel, quote
     end
     function get_uniform_name(instance::GskGLShader, _idx::Integer)
         ret = ccall(("gsk_gl_shader_get_uniform_name", libgtk4), Cstring, (Ptr{GObject}, Int32), instance, _idx)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_uniform_offset(instance::GskGLShader, _idx::Integer)
@@ -824,20 +768,12 @@ $(Expr(:toplevel, quote
     end
     function Renderer_new_for_surface(_surface::GdkSurface)
         ret = ccall(("gsk_renderer_new_for_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), _surface)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GskRenderer, ret, true)
-            end
+        ret2 = convert_if_not_null(GskRenderer, ret, true)
         ret2
     end
     function get_surface(instance::GskRenderer)
         ret = ccall(("gsk_renderer_get_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkSurface, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkSurface, ret, false)
         ret2
     end
     function is_realized(instance::GskRenderer)

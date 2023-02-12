@@ -11,11 +11,7 @@ $(Expr(:toplevel, quote
     end
     function get(instance::PangoAttrIterator, _type)
         ret = ccall(("pango_attr_iterator_get", libpango), Ptr{_PangoAttribute}, (Ptr{PangoAttrIterator}, UInt32), instance, _type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoAttribute, Ref{_PangoAttribute}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoAttribute, Ref{_PangoAttribute}}, ret, false)
         ret2
     end
     function get_attrs(instance::PangoAttrIterator)
@@ -57,11 +53,7 @@ $(Expr(:toplevel, quote
     end
     function copy(instance::PangoAttrList)
         ret = ccall(("pango_attr_list_copy", libpango), Ptr{PangoAttrList}, (Ptr{PangoAttrList},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoAttrList, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoAttrList, ret, true)
         ret2
     end
     function equal(instance::PangoAttrList, _other_list::PangoAttrList)
@@ -98,11 +90,7 @@ $(Expr(:toplevel, quote
     end
     function to_string(instance::PangoAttrList)
         ret = ccall(("pango_attr_list_to_string", libpango), Cstring, (Ptr{PangoAttrList},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function unref(instance::PangoAttrList)
@@ -151,11 +139,7 @@ $(Expr(:toplevel, quote
     end
     function ref(instance::PangoFontMetrics)
         ret = ccall(("pango_font_metrics_ref", libpango), Ptr{_PangoFontMetrics}, (Ptr{_PangoFontMetrics},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoFontMetrics, Ref{_PangoFontMetrics}}, ret, true)
-            end
+        ret2 = convert_if_not_null(Union{PangoFontMetrics, Ref{_PangoFontMetrics}}, ret, true)
         ret2
     end
     function unref(instance::PangoFontMetrics)
@@ -164,11 +148,7 @@ $(Expr(:toplevel, quote
     end
     function copy(instance::PangoGlyphItemIter)
         ret = ccall(("pango_glyph_item_iter_copy", libpango), Ptr{_PangoGlyphItemIter}, (Ptr{_PangoGlyphItemIter},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoGlyphItemIter, Ref{_PangoGlyphItemIter}}, ret, true)
-            end
+        ret2 = convert_if_not_null(Union{PangoGlyphItemIter, Ref{_PangoGlyphItemIter}}, ret, true)
         ret2
     end
     function free(instance::PangoGlyphItemIter)
@@ -202,11 +182,7 @@ $(Expr(:toplevel, quote
     end
     function copy(instance::PangoLayoutIter)
         ret = ccall(("pango_layout_iter_copy", libpango), Ptr{PangoLayoutIter}, (Ptr{PangoLayoutIter},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoLayoutIter, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoLayoutIter, ret, true)
         ret2
     end
     function free(instance::PangoLayoutIter)
@@ -237,7 +213,7 @@ $(Expr(:toplevel, quote
     end
     function get_layout(instance::PangoLayoutIter)
         ret = ccall(("pango_layout_iter_get_layout", libpango), Ptr{GObject}, (Ptr{PangoLayoutIter},), instance)
-        ret2 = convert(PangoLayout, ret, false)
+        ret2 = convert_if_not_null(PangoLayout, ret, false)
         ret2
     end
     function get_layout_extents(instance::PangoLayoutIter)
@@ -250,7 +226,7 @@ $(Expr(:toplevel, quote
     end
     function get_line(instance::PangoLayoutIter)
         ret = ccall(("pango_layout_iter_get_line", libpango), Ptr{_PangoLayoutLine}, (Ptr{PangoLayoutIter},), instance)
-        ret2 = convert(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
+        ret2 = convert_if_not_null(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
         ret2
     end
     function get_line_extents(instance::PangoLayoutIter)
@@ -263,7 +239,7 @@ $(Expr(:toplevel, quote
     end
     function get_line_readonly(instance::PangoLayoutIter)
         ret = ccall(("pango_layout_iter_get_line_readonly", libpango), Ptr{_PangoLayoutLine}, (Ptr{PangoLayoutIter},), instance)
-        ret2 = convert(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
+        ret2 = convert_if_not_null(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
         ret2
     end
     function get_line_yrange(instance::PangoLayoutIter)
@@ -276,11 +252,7 @@ $(Expr(:toplevel, quote
     end
     function get_run(instance::PangoLayoutIter)
         ret = ccall(("pango_layout_iter_get_run", libpango), Ptr{_PangoGlyphItem}, (Ptr{PangoLayoutIter},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, ret, false)
         ret2
     end
     function get_run_baseline(instance::PangoLayoutIter)
@@ -297,11 +269,7 @@ $(Expr(:toplevel, quote
     end
     function get_run_readonly(instance::PangoLayoutIter)
         ret = ccall(("pango_layout_iter_get_run_readonly", libpango), Ptr{_PangoGlyphItem}, (Ptr{PangoLayoutIter},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, ret, false)
         ret2
     end
     function next_char(instance::PangoLayoutIter)
@@ -380,7 +348,7 @@ $(Expr(:toplevel, quote
     end
     function ref(instance::PangoLayoutLine)
         ret = ccall(("pango_layout_line_ref", libpango), Ptr{_PangoLayoutLine}, (Ptr{_PangoLayoutLine},), instance)
-        ret2 = convert(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, true)
+        ret2 = convert_if_not_null(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, true)
         ret2
     end
     function unref(instance::PangoLayoutLine)
@@ -402,11 +370,7 @@ $(Expr(:toplevel, quote
     end
     function copy(instance::PangoMatrix)
         ret = ccall(("pango_matrix_copy", libpango), Ptr{_PangoMatrix}, (Ptr{_PangoMatrix},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoMatrix, Ref{_PangoMatrix}}, ret, true)
-            end
+        ret2 = convert_if_not_null(Union{PangoMatrix, Ref{_PangoMatrix}}, ret, true)
         ret2
     end
     function free(instance::PangoMatrix)
@@ -490,17 +454,9 @@ $(Expr(:toplevel, quote
         m_script = Ref{UInt32}()
         ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{UInt32}), instance, m_start, m_end, m_script)
         _start = m_start[]
-        _start = if _start == C_NULL
-                nothing
-            else
-                bytestring(_start, true)
-            end
+        _start = string_or_nothing(_start, true)
         _end = m_end[]
-        _end = if _end == C_NULL
-                nothing
-            else
-                bytestring(_end, true)
-            end
+        _end = string_or_nothing(_end, true)
         _script = m_script[]
         _script = Script(_script)
         (_start, _end, _script)
@@ -577,11 +533,7 @@ $(Expr(:toplevel, quote
     end
     function to_string(instance::PangoTabArray)
         ret = ccall(("pango_tab_array_to_string", libpango), Cstring, (Ptr{PangoTabArray},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function Context_new()
@@ -605,12 +557,12 @@ $(Expr(:toplevel, quote
     end
     function get_font_description(instance::PangoContext)
         ret = ccall(("pango_context_get_font_description", libpango), Ptr{PangoFontDescription}, (Ptr{GObject},), instance)
-        ret2 = convert(PangoFontDescription, ret, false)
+        ret2 = convert_if_not_null(PangoFontDescription, ret, false)
         ret2
     end
     function get_font_map(instance::PangoContext)
         ret = ccall(("pango_context_get_font_map", libpango), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(PangoFontMap, ret, false)
+        ret2 = convert_if_not_null(PangoFontMap, ret, false)
         ret2
     end
     function get_gravity(instance::PangoContext)
@@ -625,16 +577,12 @@ $(Expr(:toplevel, quote
     end
     function get_language(instance::PangoContext)
         ret = ccall(("pango_context_get_language", libpango), Ptr{PangoLanguage}, (Ptr{GObject},), instance)
-        ret2 = convert(PangoLanguage, ret, true)
+        ret2 = convert(PangoLanguage, ret, false)
         ret2
     end
     function get_matrix(instance::PangoContext)
         ret = ccall(("pango_context_get_matrix", libpango), Ptr{_PangoMatrix}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoMatrix, Ref{_PangoMatrix}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoMatrix, Ref{_PangoMatrix}}, ret, false)
         ret2
     end
     function get_metrics(instance::PangoContext, _desc::Maybe(PangoFontDescription), _language::Maybe(PangoLanguage))
@@ -668,20 +616,12 @@ $(Expr(:toplevel, quote
     end
     function load_font(instance::PangoContext, _desc::PangoFontDescription)
         ret = ccall(("pango_context_load_font", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _desc)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFont, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoFont, ret, true)
         ret2
     end
     function load_fontset(instance::PangoContext, _desc::PangoFontDescription, _language::PangoLanguage)
         ret = ccall(("pango_context_load_fontset", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{PangoLanguage}), instance, _desc, _language)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFontset, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoFontset, ret, true)
         ret2
     end
     function set_base_dir(instance::PangoContext, _direction)
@@ -692,11 +632,13 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_context_set_base_gravity", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _gravity)
         nothing
     end
-    function set_font_description(instance::PangoContext, _desc::PangoFontDescription)
+    function set_font_description(instance::PangoContext, _desc::Maybe(PangoFontDescription))
+        _desc = nothing_to_null(_desc)
         ret = ccall(("pango_context_set_font_description", libpango), Nothing, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _desc)
         nothing
     end
-    function set_font_map(instance::PangoContext, _font_map::PangoFontMap)
+    function set_font_map(instance::PangoContext, _font_map::Maybe(PangoFontMap))
+        _font_map = nothing_to_null(_font_map)
         ret = ccall(("pango_context_set_font_map", libpango), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _font_map)
         nothing
     end
@@ -704,7 +646,8 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_context_set_gravity_hint", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _hint)
         nothing
     end
-    function set_language(instance::PangoContext, _language::PangoLanguage)
+    function set_language(instance::PangoContext, _language::Maybe(PangoLanguage))
+        _language = nothing_to_null(_language)
         ret = ccall(("pango_context_set_language", libpango), Nothing, (Ptr{GObject}, Ptr{PangoLanguage}), instance, _language)
         nothing
     end
@@ -746,11 +689,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("pango_font_deserialize", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GBytes}, Ptr{Ptr{GError}}), _context, _bytes, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFont, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoFont, ret, true)
         ret2
     end
     function describe(instance::PangoFont)
@@ -775,11 +714,7 @@ $(Expr(:toplevel, quote
     end
     function get_font_map(instance::PangoFont)
         ret = ccall(("pango_font_get_font_map", libpango), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFontMap, ret, false)
-            end
+        ret2 = convert_if_not_null(PangoFontMap, ret, false)
         ret2
     end
     function get_glyph_extents(instance::PangoFont, _glyph::Integer)
@@ -817,11 +752,7 @@ $(Expr(:toplevel, quote
     end
     function get_face_name(instance::PangoFontFace)
         ret = ccall(("pango_font_face_get_face_name", libpango), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_family(instance::PangoFontFace)
@@ -845,20 +776,12 @@ $(Expr(:toplevel, quote
     function get_face(instance::PangoFontFamily, _name::Maybe(Union{AbstractString, Symbol}))
         _name = nothing_to_null(_name)
         ret = ccall(("pango_font_family_get_face", libpango), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFontFace, ret, false)
-            end
+        ret2 = convert_if_not_null(PangoFontFace, ret, false)
         ret2
     end
     function get_name(instance::PangoFontFamily)
         ret = ccall(("pango_font_family_get_name", libpango), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function is_monospace(instance::PangoFontFamily)
@@ -917,20 +840,12 @@ $(Expr(:toplevel, quote
     end
     function load_font(instance::PangoFontMap, _context::PangoContext, _desc::PangoFontDescription)
         ret = ccall(("pango_font_map_load_font", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{PangoFontDescription}), instance, _context, _desc)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFont, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoFont, ret, true)
         ret2
     end
     function load_fontset(instance::PangoFontMap, _context::PangoContext, _desc::PangoFontDescription, _language::PangoLanguage)
         ret = ccall(("pango_font_map_load_fontset", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{PangoLanguage}), instance, _context, _desc, _language)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFontset, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoFontset, ret, true)
         ret2
     end
     function get_font(instance::PangoFontset, _wc::Integer)
@@ -965,11 +880,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("pango_layout_deserialize", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GBytes}, UInt32, Ptr{Ptr{GError}}), _context, _bytes, _flags, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoLayout, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoLayout, ret, true)
         ret2
     end
     function context_changed(instance::PangoLayout)
@@ -988,11 +899,7 @@ $(Expr(:toplevel, quote
     end
     function get_attributes(instance::PangoLayout)
         ret = ccall(("pango_layout_get_attributes", libpango), Ptr{PangoAttrList}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoAttrList, ret, false)
-            end
+        ret2 = convert_if_not_null(PangoAttrList, ret, false)
         ret2
     end
     function get_auto_dir(instance::PangoLayout)
@@ -1049,11 +956,7 @@ $(Expr(:toplevel, quote
     end
     function get_font_description(instance::PangoLayout)
         ret = ccall(("pango_layout_get_font_description", libpango), Ptr{PangoFontDescription}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoFontDescription, ret, false)
-            end
+        ret2 = convert_if_not_null(PangoFontDescription, ret, false)
         ret2
     end
     function get_height(instance::PangoLayout)
@@ -1081,11 +984,7 @@ $(Expr(:toplevel, quote
     end
     function get_line(instance::PangoLayout, _line::Integer)
         ret = ccall(("pango_layout_get_line", libpango), Ptr{_PangoLayoutLine}, (Ptr{GObject}, Int32), instance, _line)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
         ret2
     end
     function get_line_count(instance::PangoLayout)
@@ -1094,11 +993,7 @@ $(Expr(:toplevel, quote
     end
     function get_line_readonly(instance::PangoLayout, _line::Integer)
         ret = ccall(("pango_layout_get_line_readonly", libpango), Ptr{_PangoLayoutLine}, (Ptr{GObject}, Int32), instance, _line)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
         ret2
     end
     function get_line_spacing(instance::PangoLayout)
@@ -1171,20 +1066,12 @@ $(Expr(:toplevel, quote
     end
     function get_tabs(instance::PangoLayout)
         ret = ccall(("pango_layout_get_tabs", libpango), Ptr{PangoTabArray}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoTabArray, ret, true)
-            end
+        ret2 = convert_if_not_null(PangoTabArray, ret, true)
         ret2
     end
     function get_text(instance::PangoLayout)
         ret = ccall(("pango_layout_get_text", libpango), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_unknown_glyphs_count(instance::PangoLayout)
@@ -1377,38 +1264,22 @@ $(Expr(:toplevel, quote
     end
     function get_color(instance::PangoRenderer, _part)
         ret = ccall(("pango_renderer_get_color", libpango), Ptr{_PangoColor}, (Ptr{GObject}, UInt32), instance, _part)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoColor, Ref{_PangoColor}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoColor, Ref{_PangoColor}}, ret, false)
         ret2
     end
     function get_layout(instance::PangoRenderer)
         ret = ccall(("pango_renderer_get_layout", libpango), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(PangoLayout, ret, false)
-            end
+        ret2 = convert_if_not_null(PangoLayout, ret, false)
         ret2
     end
     function get_layout_line(instance::PangoRenderer)
         ret = ccall(("pango_renderer_get_layout_line", libpango), Ptr{_PangoLayoutLine}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoLayoutLine, Ref{_PangoLayoutLine}}, ret, false)
         ret2
     end
     function get_matrix(instance::PangoRenderer)
         ret = ccall(("pango_renderer_get_matrix", libpango), Ptr{_PangoMatrix}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{PangoMatrix, Ref{_PangoMatrix}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{PangoMatrix, Ref{_PangoMatrix}}, ret, false)
         ret2
     end
     function part_changed(instance::PangoRenderer, _part)

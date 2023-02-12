@@ -2373,6 +2373,12 @@ $(Expr(:toplevel, quote
                 end
         end
         begin
+            @cenum ScrollUnit::Int32 ScrollUnit_WHEEL = 0 ScrollUnit_SURFACE = 1
+            (GLib.g_type(::Type{T}) where T <: ScrollUnit) = begin
+                    ccall(("gdk_scroll_unit_get_type", libgtk4), GType, ())
+                end
+        end
+        begin
             @cenum SubpixelLayout::Int32 SubpixelLayout_UNKNOWN = 0 SubpixelLayout_NONE = 1 SubpixelLayout_HORIZONTAL_RGB = 2 SubpixelLayout_HORIZONTAL_BGR = 3 SubpixelLayout_VERTICAL_RGB = 4 SubpixelLayout_VERTICAL_BGR = 5
             (GLib.g_type(::Type{T}) where T <: SubpixelLayout) = begin
                     ccall(("gdk_subpixel_layout_get_type", libgtk4), GType, ())
@@ -2485,6 +2491,7 @@ $(Expr(:toplevel, quote
         @doc "`GdkMemoryFormat` describes formats that image data can have in memory.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/enum.MemoryFormat.html)." MemoryFormat
         @doc "Specifies the kind of crossing for enter and leave events.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/enum.NotifyType.html)." NotifyType
         @doc "Specifies the direction for scroll events.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/enum.ScrollDirection.html)." ScrollDirection
+        @doc "Specifies the unit of scroll deltas.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/enum.ScrollUnit.html)." ScrollUnit
         @doc "This enumeration describes how the red, green and blue components\nof physical pixels on an output device are laid out.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/enum.SubpixelLayout.html)." SubpixelLayout
         @doc "Determines a surface edge or corner.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/enum.SurfaceEdge.html)." SurfaceEdge
         @doc "Possible errors that can be returned by `GdkTexture` constructors.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/enum.TextureError.html)." TextureError
@@ -2499,7 +2506,7 @@ $(Expr(:toplevel, quote
         @doc "Flags about a paintable object.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/flags.PaintableFlags.html)." PaintableFlags
         @doc "Flags describing the seat capabilities.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/flags.SeatCapabilities.html)." SeatCapabilities
         @doc "Specifies the state of a toplevel surface.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk4/flags.ToplevelState.html)." ToplevelState
-        export AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState
+        export AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, ScrollUnit, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState
     end
 end))
 end
