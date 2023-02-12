@@ -11,11 +11,7 @@ $(Expr(:toplevel, quote
     end
     function dup_string(instance::GValue)
         ret = ccall(("g_value_dup_string", libgobject), Cstring, (Ptr{_GValue},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function dup_variant(instance::GValue)
@@ -86,11 +82,7 @@ $(Expr(:toplevel, quote
     end
     function get_string(instance::GValue)
         ret = ccall(("g_value_get_string", libgobject), Cstring, (Ptr{_GValue},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_uchar(instance::GValue)
@@ -256,20 +248,12 @@ $(Expr(:toplevel, quote
     end
     function dup_source(instance::GBinding)
         ret = ccall(("g_binding_dup_source", libgobject), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GObject, ret, true)
-            end
+        ret2 = convert_if_not_null(GObject, ret, true)
         ret2
     end
     function dup_target(instance::GBinding)
         ret = ccall(("g_binding_dup_target", libgobject), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GObject, ret, true)
-            end
+        ret2 = convert_if_not_null(GObject, ret, true)
         ret2
     end
     function get_flags(instance::GBinding)
@@ -279,20 +263,12 @@ $(Expr(:toplevel, quote
     end
     function get_source_property(instance::GBinding)
         ret = ccall(("g_binding_get_source_property", libgobject), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_target_property(instance::GBinding)
         ret = ccall(("g_binding_get_target_property", libgobject), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function unbind(instance::GBinding)

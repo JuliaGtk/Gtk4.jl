@@ -11,11 +11,7 @@ $(Expr(:toplevel, quote
     end
     function get_description(instance::GdkPixbufFormat)
         ret = ccall(("gdk_pixbuf_format_get_description", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_extensions(instance::GdkPixbufFormat)
@@ -30,11 +26,7 @@ $(Expr(:toplevel, quote
     end
     function get_license(instance::GdkPixbufFormat)
         ret = ccall(("gdk_pixbuf_format_get_license", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_mime_types(instance::GdkPixbufFormat)
@@ -49,11 +41,7 @@ $(Expr(:toplevel, quote
     end
     function get_name(instance::GdkPixbufFormat)
         ret = ccall(("gdk_pixbuf_format_get_name", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function is_disabled(instance::GdkPixbufFormat)
@@ -82,11 +70,7 @@ $(Expr(:toplevel, quote
     end
     function Pixbuf_new(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
         ret = ccall(("gdk_pixbuf_new", libgdkpixbuf), Ptr{GObject}, (UInt32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_bytes(_data::GBytes, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer)
@@ -106,55 +90,35 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_file", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _filename, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_file_at_scale(_filename::Union{AbstractString, Symbol}, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_file_at_scale", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Cint, Ptr{Ptr{GError}}), _filename, _width, _height, _preserve_aspect_ratio, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_file_at_size(_filename::Union{AbstractString, Symbol}, _width::Integer, _height::Integer)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_file_at_size", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Ptr{Ptr{GError}}), _filename, _width, _height, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_resource(_resource_path::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_resource", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _resource_path, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_resource_at_scale(_resource_path::Union{AbstractString, Symbol}, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_resource_at_scale", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Cint, Ptr{Ptr{GError}}), _resource_path, _width, _height, _preserve_aspect_ratio, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
@@ -162,11 +126,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_stream_at_scale(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable))
@@ -174,22 +134,14 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_stream_at_scale", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _width, _height, _preserve_aspect_ratio, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_stream_finish(_async_result::GAsyncResult)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_stream_finish", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function Pixbuf_new_from_xpm_data(_data)
@@ -205,11 +157,7 @@ $(Expr(:toplevel, quote
         m_width = Ref{Int32}()
         m_height = Ref{Int32}()
         ret = ccall(("gdk_pixbuf_get_file_info", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Cstring, Ptr{Int32}, Ptr{Int32}), _filename, m_width, m_height)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, false)
         _width = m_width[]
         _height = m_height[]
         (ret2, _width, _height)
@@ -254,11 +202,7 @@ $(Expr(:toplevel, quote
     end
     function apply_embedded_orientation(instance::GdkPixbuf)
         ret = ccall(("gdk_pixbuf_apply_embedded_orientation", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function composite(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type, _overall_alpha::Integer)
@@ -271,20 +215,12 @@ $(Expr(:toplevel, quote
     end
     function composite_color_simple(instance::GdkPixbuf, _dest_width::Integer, _dest_height::Integer, _interp_type, _overall_alpha::Integer, _check_size::Integer, _color1::Integer, _color2::Integer)
         ret = ccall(("gdk_pixbuf_composite_color_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, UInt32, Int32, Int32, UInt32, UInt32), instance, _dest_width, _dest_height, _interp_type, _overall_alpha, _check_size, _color1, _color2)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function copy(instance::GdkPixbuf)
         ret = ccall(("gdk_pixbuf_copy", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function copy_area(instance::GdkPixbuf, _src_x::Integer, _src_y::Integer, _width::Integer, _height::Integer, _dest_pixbuf::GdkPixbuf, _dest_x::Integer, _dest_y::Integer)
@@ -302,11 +238,7 @@ $(Expr(:toplevel, quote
     end
     function flip(instance::GdkPixbuf, _horizontal::Bool)
         ret = ccall(("gdk_pixbuf_flip", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Cint), instance, _horizontal)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function get_bits_per_sample(instance::GdkPixbuf)
@@ -337,11 +269,7 @@ $(Expr(:toplevel, quote
     end
     function get_option(instance::GdkPixbuf, _key::Union{AbstractString, Symbol})
         ret = ccall(("gdk_pixbuf_get_option", libgdkpixbuf), Cstring, (Ptr{GObject}, Cstring), instance, _key)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_options(instance::GdkPixbuf)
@@ -384,11 +312,7 @@ $(Expr(:toplevel, quote
     end
     function rotate_simple(instance::GdkPixbuf, _angle)
         ret = ccall(("gdk_pixbuf_rotate_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, UInt32), instance, _angle)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function saturate_and_pixelate(instance::GdkPixbuf, _dest::GdkPixbuf, _saturation::Real, _pixelate::Bool)
@@ -442,11 +366,7 @@ $(Expr(:toplevel, quote
     end
     function scale_simple(instance::GdkPixbuf, _dest_width::Integer, _dest_height::Integer, _interp_type)
         ret = ccall(("gdk_pixbuf_scale_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, UInt32), instance, _dest_width, _dest_height, _interp_type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function set_option(instance::GdkPixbuf, _key::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol})
@@ -458,22 +378,14 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_pixbuf_animation_new_from_file", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _filename, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbufAnimation, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
         ret2
     end
     function PixbufAnimation_new_from_resource(_resource_path::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("gdk_pixbuf_animation_new_from_resource", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _resource_path, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbufAnimation, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
         ret2
     end
     function PixbufAnimation_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
@@ -481,22 +393,14 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gdk_pixbuf_animation_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbufAnimation, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
         ret2
     end
     function PixbufAnimation_new_from_stream_finish(_async_result::GAsyncResult)
         err = err_buf()
         ret = ccall(("gdk_pixbuf_animation_new_from_stream_finish", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbufAnimation, ret, true)
-            end
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
         ret2
     end
     function get_height(instance::GdkPixbufAnimation)
@@ -559,29 +463,17 @@ $(Expr(:toplevel, quote
     end
     function get_animation(instance::GdkPixbufLoader)
         ret = ccall(("gdk_pixbuf_loader_get_animation", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbufAnimation, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, false)
         ret2
     end
     function get_format(instance::GdkPixbufLoader)
         ret = ccall(("gdk_pixbuf_loader_get_format", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, false)
-            end
+        ret2 = convert_if_not_null(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, false)
         ret2
     end
     function get_pixbuf(instance::GdkPixbufLoader)
         ret = ccall(("gdk_pixbuf_loader_get_pixbuf", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GdkPixbuf, ret, false)
-            end
+        ret2 = convert_if_not_null(GdkPixbuf, ret, false)
         ret2
     end
     function set_size(instance::GdkPixbufLoader, _width::Integer, _height::Integer)

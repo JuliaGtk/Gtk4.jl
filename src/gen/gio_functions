@@ -13,11 +13,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _action_name = m_action_name[]
-        _action_name = if _action_name == C_NULL
-                nothing
-            else
-                bytestring(_action_name, true)
-            end
+        _action_name = string_or_nothing(_action_name, true)
         _target_value = m_target_value[]
         _target_value = convert(GVariant, _target_value)
         (ret2, _action_name, _target_value)
@@ -25,11 +21,7 @@ $(Expr(:toplevel, quote
     function action_print_detailed_name(_action_name::Union{AbstractString, Symbol}, _target_value::Maybe(GVariant))
         _target_value = nothing_to_null(_target_value)
         ret = ccall(("g_action_print_detailed_name", libgio), Cstring, (Cstring, Ptr{GVariant}), _action_name, _target_value)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function app_info_create_from_commandline(_commandline::Union{AbstractString, Symbol}, _application_name::Maybe(Union{AbstractString, Symbol}), _flags)
@@ -190,29 +182,17 @@ $(Expr(:toplevel, quote
     end
     function content_type_from_mime_type(_mime_type::Union{AbstractString, Symbol})
         ret = ccall(("g_content_type_from_mime_type", libgio), Cstring, (Cstring,), _mime_type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function content_type_get_description(_type::Union{AbstractString, Symbol})
         ret = ccall(("g_content_type_get_description", libgio), Cstring, (Cstring,), _type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function content_type_get_generic_icon_name(_type::Union{AbstractString, Symbol})
         ret = ccall(("g_content_type_get_generic_icon_name", libgio), Cstring, (Cstring,), _type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function content_type_get_icon(_type::Union{AbstractString, Symbol})
@@ -229,11 +209,7 @@ $(Expr(:toplevel, quote
     end
     function content_type_get_mime_type(_type::Union{AbstractString, Symbol})
         ret = ccall(("g_content_type_get_mime_type", libgio), Cstring, (Cstring,), _type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function content_type_get_symbolic_icon(_type::Union{AbstractString, Symbol})
@@ -250,11 +226,7 @@ $(Expr(:toplevel, quote
         m_result_uncertain = Ref{Cint}()
         _data_size = length(_data)
         ret = ccall(("g_content_type_guess", libgio), Cstring, (Cstring, Ptr{UInt8}, UInt64, Ptr{Cint}), _filename, _data, _data_size, m_result_uncertain)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _result_uncertain = m_result_uncertain[]
         _result_uncertain = convert(Bool, _result_uncertain)
         (ret2, _result_uncertain)
@@ -296,11 +268,7 @@ $(Expr(:toplevel, quote
     end
     function dbus_address_escape_value(_string::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_address_escape_value", libgio), Cstring, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function dbus_address_get_for_bus_sync(_bus_type, _cancellable::Maybe(GCancellable))
@@ -308,11 +276,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_dbus_address_get_for_bus_sync", libgio), Cstring, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function dbus_address_get_stream(_address::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -359,30 +323,18 @@ $(Expr(:toplevel, quote
     end
     function dbus_escape_object_path(_s::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_escape_object_path", libgio), Cstring, (Cstring,), _s)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function dbus_escape_object_path_bytestring(_bytes)
         _bytes = convert(Vector{UInt8}, _bytes)
         ret = ccall(("g_dbus_escape_object_path_bytestring", libgio), Cstring, (Ptr{UInt8},), _bytes)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function dbus_generate_guid()
         ret = ccall(("g_dbus_generate_guid", libgio), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function dbus_is_address(_string::Union{AbstractString, Symbol})
@@ -763,11 +715,7 @@ $(Expr(:toplevel, quote
     end
     function settings_schema_source_get_default()
         ret = ccall(("g_settings_schema_source_get_default", libgio), Ptr{GSettingsSchemaSource}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GSettingsSchemaSource, ret, false)
-            end
+        ret2 = convert_if_not_null(GSettingsSchemaSource, ret, false)
         ret2
     end
     function tls_backend_get_default()

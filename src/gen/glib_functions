@@ -25,20 +25,12 @@ $(Expr(:toplevel, quote
     end
     function ascii_dtostr(_buffer::Union{AbstractString, Symbol}, _buf_len::Integer, _d::Real)
         ret = ccall(("g_ascii_dtostr", libglib), Cstring, (Cstring, Int32, Float64), _buffer, _buf_len, _d)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ascii_formatd(_buffer::Union{AbstractString, Symbol}, _buf_len::Integer, _format::Union{AbstractString, Symbol}, _d::Real)
         ret = ccall(("g_ascii_formatd", libglib), Cstring, (Cstring, Int32, Cstring, Float64), _buffer, _buf_len, _format, _d)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ascii_strcasecmp(_s1::Union{AbstractString, Symbol}, _s2::Union{AbstractString, Symbol})
@@ -47,11 +39,7 @@ $(Expr(:toplevel, quote
     end
     function ascii_strdown(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_ascii_strdown", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ascii_string_to_signed(_str::Union{AbstractString, Symbol}, _base::Integer, _min::Integer, _max::Integer)
@@ -80,42 +68,26 @@ $(Expr(:toplevel, quote
         m_endptr = Ref{Cstring}()
         ret = ccall(("g_ascii_strtod", libglib), Float64, (Cstring, Ptr{Cstring}), _nptr, m_endptr)
         _endptr = m_endptr[]
-        _endptr = if _endptr == C_NULL
-                nothing
-            else
-                bytestring(_endptr, false)
-            end
+        _endptr = string_or_nothing(_endptr, false)
         (ret, _endptr)
     end
     function ascii_strtoll(_nptr::Union{AbstractString, Symbol}, _base::Integer)
         m_endptr = Ref{Cstring}()
         ret = ccall(("g_ascii_strtoll", libglib), Int64, (Cstring, Ptr{Cstring}, UInt32), _nptr, m_endptr, _base)
         _endptr = m_endptr[]
-        _endptr = if _endptr == C_NULL
-                nothing
-            else
-                bytestring(_endptr, false)
-            end
+        _endptr = string_or_nothing(_endptr, false)
         (ret, _endptr)
     end
     function ascii_strtoull(_nptr::Union{AbstractString, Symbol}, _base::Integer)
         m_endptr = Ref{Cstring}()
         ret = ccall(("g_ascii_strtoull", libglib), UInt64, (Cstring, Ptr{Cstring}, UInt32), _nptr, m_endptr, _base)
         _endptr = m_endptr[]
-        _endptr = if _endptr == C_NULL
-                nothing
-            else
-                bytestring(_endptr, false)
-            end
+        _endptr = string_or_nothing(_endptr, false)
         (ret, _endptr)
     end
     function ascii_strup(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_ascii_strup", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ascii_tolower(_c::Integer)
@@ -314,11 +286,7 @@ $(Expr(:toplevel, quote
         _data = convert(Vector{UInt8}, _data)
         _len = length(_data)
         ret = ccall(("g_base64_encode", libglib), Cstring, (Ptr{UInt8}, UInt64), _data, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function base64_encode_close(_break_lines::Bool, _state::Integer, _save::Integer)
@@ -378,20 +346,12 @@ $(Expr(:toplevel, quote
     end
     function build_filenamev(_args)
         ret = ccall(("g_build_filenamev", libglib), Cstring, (Ptr{Cstring},), _args)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function build_pathv(_separator::Union{AbstractString, Symbol}, _args)
         ret = ccall(("g_build_pathv", libglib), Cstring, (Cstring, Ptr{Cstring}), _separator, _args)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function byte_array_free(_array, _free_segment::Bool)
@@ -430,11 +390,7 @@ $(Expr(:toplevel, quote
     function canonicalize_filename(_filename::Union{AbstractString, Symbol}, _relative_to::Maybe(Union{AbstractString, Symbol}))
         _relative_to = nothing_to_null(_relative_to)
         ret = ccall(("g_canonicalize_filename", libglib), Cstring, (Cstring, Cstring), _filename, _relative_to)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function chdir(_path::Union{AbstractString, Symbol})
@@ -443,11 +399,7 @@ $(Expr(:toplevel, quote
     end
     function check_version(_required_major::Integer, _required_minor::Integer, _required_micro::Integer)
         ret = ccall(("glib_check_version", libglib), Cstring, (UInt32, UInt32, UInt32), _required_major, _required_minor, _required_micro)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function checksum_type_get_length(_checksum_type)
@@ -469,40 +421,24 @@ $(Expr(:toplevel, quote
     end
     function compute_checksum_for_bytes(_checksum_type, _data::GBytes)
         ret = ccall(("g_compute_checksum_for_bytes", libglib), Cstring, (UInt32, Ptr{GBytes}), _checksum_type, _data)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function compute_checksum_for_data(_checksum_type, _data)
         _data = convert(Vector{UInt8}, _data)
         _length = length(_data)
         ret = ccall(("g_compute_checksum_for_data", libglib), Cstring, (UInt32, Ptr{UInt8}, UInt64), _checksum_type, _data, _length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function compute_checksum_for_string(_checksum_type, _str::Union{AbstractString, Symbol}, _length::Integer)
         ret = ccall(("g_compute_checksum_for_string", libglib), Cstring, (UInt32, Cstring, Int64), _checksum_type, _str, _length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function compute_hmac_for_bytes(_digest_type, _key::GBytes, _data::GBytes)
         ret = ccall(("g_compute_hmac_for_bytes", libglib), Cstring, (UInt32, Ptr{GBytes}, Ptr{GBytes}), _digest_type, _key, _data)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function compute_hmac_for_data(_digest_type, _key, _data)
@@ -511,22 +447,14 @@ $(Expr(:toplevel, quote
         _key_len = length(_key)
         _length = length(_data)
         ret = ccall(("g_compute_hmac_for_data", libglib), Cstring, (UInt32, Ptr{UInt8}, UInt64, Ptr{UInt8}, UInt64), _digest_type, _key, _key_len, _data, _length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function compute_hmac_for_string(_digest_type, _key, _str::Union{AbstractString, Symbol}, _length::Integer)
         _key = convert(Vector{UInt8}, _key)
         _key_len = length(_key)
         ret = ccall(("g_compute_hmac_for_string", libglib), Cstring, (UInt32, Ptr{UInt8}, UInt64, Cstring, Int64), _digest_type, _key, _key_len, _str, _length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function convert_error_quark()
@@ -604,21 +532,13 @@ $(Expr(:toplevel, quote
     function dcgettext(_domain::Maybe(Union{AbstractString, Symbol}), _msgid::Union{AbstractString, Symbol}, _category::Integer)
         _domain = nothing_to_null(_domain)
         ret = ccall(("g_dcgettext", libglib), Cstring, (Cstring, Cstring, Int32), _domain, _msgid, _category)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function dgettext(_domain::Maybe(Union{AbstractString, Symbol}), _msgid::Union{AbstractString, Symbol})
         _domain = nothing_to_null(_domain)
         ret = ccall(("g_dgettext", libglib), Cstring, (Cstring, Cstring), _domain, _msgid)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function dir_make_tmp(_tmpl::Maybe(Union{AbstractString, Symbol}))
@@ -626,11 +546,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_dir_make_tmp", libglib), Cstring, (Cstring, Ptr{Ptr{GError}}), _tmpl, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function direct_equal(_v1::Maybe(Nothing), _v2::Maybe(Nothing))
@@ -648,11 +564,7 @@ $(Expr(:toplevel, quote
     function dngettext(_domain::Maybe(Union{AbstractString, Symbol}), _msgid::Union{AbstractString, Symbol}, _msgid_plural::Union{AbstractString, Symbol}, _n::Integer)
         _domain = nothing_to_null(_domain)
         ret = ccall(("g_dngettext", libglib), Cstring, (Cstring, Cstring, Cstring, UInt64), _domain, _msgid, _msgid_plural, _n)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function double_equal(_v1::Nothing, _v2::Nothing)
@@ -667,31 +579,19 @@ $(Expr(:toplevel, quote
     function dpgettext(_domain::Maybe(Union{AbstractString, Symbol}), _msgctxtid::Union{AbstractString, Symbol}, _msgidoffset::Integer)
         _domain = nothing_to_null(_domain)
         ret = ccall(("g_dpgettext", libglib), Cstring, (Cstring, Cstring, UInt64), _domain, _msgctxtid, _msgidoffset)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function dpgettext2(_domain::Maybe(Union{AbstractString, Symbol}), _context::Union{AbstractString, Symbol}, _msgid::Union{AbstractString, Symbol})
         _domain = nothing_to_null(_domain)
         ret = ccall(("g_dpgettext2", libglib), Cstring, (Cstring, Cstring, Cstring), _domain, _context, _msgid)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function environ_getenv(_envp, _variable::Union{AbstractString, Symbol})
         _envp = nothing_to_null(_envp)
         ret = ccall(("g_environ_getenv", libglib), Cstring, (Ptr{Cstring}, Cstring), _envp, _variable)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function environ_setenv(_envp, _variable::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol}, _overwrite::Bool)
@@ -744,22 +644,14 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_file_open_tmp", libglib), Int32, (Cstring, Ptr{Cstring}, Ptr{Ptr{GError}}), _tmpl, m_name_used, err)
         check_err(err)
         _name_used = m_name_used[]
-        _name_used = if _name_used == C_NULL
-                nothing
-            else
-                bytestring(_name_used, true)
-            end
+        _name_used = string_or_nothing(_name_used, true)
         (ret, _name_used)
     end
     function file_read_link(_filename::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("g_file_read_link", libglib), Cstring, (Cstring, Ptr{Ptr{GError}}), _filename, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function file_set_contents(_filename::Union{AbstractString, Symbol}, _contents)
@@ -787,20 +679,12 @@ $(Expr(:toplevel, quote
     end
     function filename_display_basename(_filename::Union{AbstractString, Symbol})
         ret = ccall(("g_filename_display_basename", libglib), Cstring, (Cstring,), _filename)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function filename_display_name(_filename::Union{AbstractString, Symbol})
         ret = ccall(("g_filename_display_name", libglib), Cstring, (Cstring,), _filename)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function filename_from_uri(_uri::Union{AbstractString, Symbol})
@@ -808,11 +692,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_filename_from_uri", libglib), Cstring, (Cstring, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri, m_hostname, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _hostname = m_hostname[]
         _hostname = convert(Maybe(Union{AbstractString, Symbol}), _hostname)
         (ret2, _hostname)
@@ -823,11 +703,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_filename_from_utf8", libglib), Cstring, (Cstring, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _utf8string, _len, m_bytes_read, m_bytes_written, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _bytes_read = m_bytes_read[]
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_read, _bytes_written)
@@ -837,11 +713,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_filename_to_uri", libglib), Cstring, (Cstring, Cstring, Ptr{Ptr{GError}}), _filename, _hostname, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function filename_to_utf8(_opsysstring::Union{AbstractString, Symbol}, _len::Integer)
@@ -850,40 +722,24 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_filename_to_utf8", libglib), Cstring, (Cstring, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _opsysstring, _len, m_bytes_read, m_bytes_written, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _bytes_read = m_bytes_read[]
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_read, _bytes_written)
     end
     function find_program_in_path(_program::Union{AbstractString, Symbol})
         ret = ccall(("g_find_program_in_path", libglib), Cstring, (Cstring,), _program)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function format_size(_size::Integer)
         ret = ccall(("g_format_size", libglib), Cstring, (UInt64,), _size)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function format_size_full(_size::Integer, _flags)
         ret = ccall(("g_format_size_full", libglib), Cstring, (UInt64, UInt32), _size, _flags)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function free(_mem::Maybe(Nothing))
@@ -893,11 +749,7 @@ $(Expr(:toplevel, quote
     end
     function get_application_name()
         ret = ccall(("g_get_application_name", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_charset()
@@ -905,20 +757,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_get_charset", libglib), Cint, (Ptr{Cstring},), m_charset)
         ret2 = convert(Bool, ret)
         _charset = m_charset[]
-        _charset = if _charset == C_NULL
-                nothing
-            else
-                bytestring(_charset, false)
-            end
+        _charset = string_or_nothing(_charset, false)
         (ret2, _charset)
     end
     function get_codeset()
         ret = ccall(("g_get_codeset", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_console_charset()
@@ -926,20 +770,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_get_console_charset", libglib), Cint, (Ptr{Cstring},), m_charset)
         ret2 = convert(Bool, ret)
         _charset = m_charset[]
-        _charset = if _charset == C_NULL
-                nothing
-            else
-                bytestring(_charset, false)
-            end
+        _charset = string_or_nothing(_charset, false)
         (ret2, _charset)
     end
     function get_current_dir()
         ret = ccall(("g_get_current_dir", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_environ()
@@ -961,20 +797,12 @@ $(Expr(:toplevel, quote
     end
     function get_home_dir()
         ret = ccall(("g_get_home_dir", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_host_name()
         ret = ccall(("g_get_host_name", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_language_names()
@@ -1005,29 +833,17 @@ $(Expr(:toplevel, quote
     end
     function get_os_info(_key_name::Union{AbstractString, Symbol})
         ret = ccall(("g_get_os_info", libglib), Cstring, (Cstring,), _key_name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_prgname()
         ret = ccall(("g_get_prgname", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_real_name()
         ret = ccall(("g_get_real_name", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_real_time()
@@ -1044,83 +860,47 @@ $(Expr(:toplevel, quote
     end
     function get_tmp_dir()
         ret = ccall(("g_get_tmp_dir", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_user_cache_dir()
         ret = ccall(("g_get_user_cache_dir", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_user_config_dir()
         ret = ccall(("g_get_user_config_dir", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_user_data_dir()
         ret = ccall(("g_get_user_data_dir", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_user_name()
         ret = ccall(("g_get_user_name", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_user_runtime_dir()
         ret = ccall(("g_get_user_runtime_dir", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_user_special_dir(_directory)
         ret = ccall(("g_get_user_special_dir", libglib), Cstring, (UInt32,), _directory)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_user_state_dir()
         ret = ccall(("g_get_user_state_dir", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function getenv(_variable::Union{AbstractString, Symbol})
         ret = ccall(("g_getenv", libglib), Cstring, (Cstring,), _variable)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function hash_table_add(_hash_table, _key::Maybe(Nothing))
@@ -1232,20 +1012,12 @@ $(Expr(:toplevel, quote
     end
     function hostname_to_ascii(_hostname::Union{AbstractString, Symbol})
         ret = ccall(("g_hostname_to_ascii", libglib), Cstring, (Cstring,), _hostname)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function hostname_to_unicode(_hostname::Union{AbstractString, Symbol})
         ret = ccall(("g_hostname_to_unicode", libglib), Cstring, (Cstring,), _hostname)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function idle_remove_by_data(_data::Maybe(Nothing))
@@ -1275,21 +1047,13 @@ $(Expr(:toplevel, quote
     function intern_static_string(_string::Maybe(Union{AbstractString, Symbol}))
         _string = nothing_to_null(_string)
         ret = ccall(("g_intern_static_string", libglib), Cstring, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function intern_string(_string::Maybe(Union{AbstractString, Symbol}))
         _string = nothing_to_null(_string)
         ret = ccall(("g_intern_string", libglib), Cstring, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function io_channel_error_from_errno(_en::Integer)
@@ -1333,11 +1097,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_locale_to_utf8", libglib), Cstring, (Ptr{UInt8}, Int64, Ptr{UInt64}, Ptr{UInt64}, Ptr{Ptr{GError}}), _opsysstring, _len, m_bytes_read, m_bytes_written, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _bytes_read = m_bytes_read[]
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_read, _bytes_written)
@@ -1404,11 +1164,7 @@ $(Expr(:toplevel, quote
     end
     function main_context_get_thread_default()
         ret = ccall(("g_main_context_get_thread_default", libglib), Ptr{GMainContext}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GMainContext, ret, false)
-            end
+        ret2 = convert_if_not_null(GMainContext, ret, false)
         ret2
     end
     function main_context_ref_thread_default()
@@ -1446,11 +1202,7 @@ $(Expr(:toplevel, quote
     end
     function markup_escape_text(_text::Union{AbstractString, Symbol}, _length::Integer)
         ret = ccall(("g_markup_escape_text", libglib), Cstring, (Cstring, Int64), _text, _length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function memdup2(_mem::Maybe(Nothing), _byte_size::Integer)
@@ -1494,20 +1246,12 @@ $(Expr(:toplevel, quote
     end
     function path_get_basename(_file_name::Union{AbstractString, Symbol})
         ret = ccall(("g_path_get_basename", libglib), Cstring, (Cstring,), _file_name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function path_get_dirname(_file_name::Union{AbstractString, Symbol})
         ret = ccall(("g_path_get_dirname", libglib), Cstring, (Cstring,), _file_name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function path_is_absolute(_file_name::Union{AbstractString, Symbol})
@@ -1517,11 +1261,7 @@ $(Expr(:toplevel, quote
     end
     function path_skip_root(_file_name::Union{AbstractString, Symbol})
         ret = ccall(("g_path_skip_root", libglib), Cstring, (Cstring,), _file_name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function pattern_match_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol})
@@ -1565,11 +1305,7 @@ $(Expr(:toplevel, quote
     end
     function quark_to_string(_quark::Integer)
         ret = ccall(("g_quark_to_string", libglib), Cstring, (UInt32,), _quark)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function quark_try_string(_string::Maybe(Union{AbstractString, Symbol}))
@@ -1657,11 +1393,7 @@ $(Expr(:toplevel, quote
     end
     function ref_string_acquire(_str::Union{AbstractString, Symbol})
         ret = ccall(("g_ref_string_acquire", libglib), Cstring, (Cstring,), _str)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ref_string_length(_str::Union{AbstractString, Symbol})
@@ -1670,29 +1402,17 @@ $(Expr(:toplevel, quote
     end
     function ref_string_new(_str::Union{AbstractString, Symbol})
         ret = ccall(("g_ref_string_new", libglib), Cstring, (Cstring,), _str)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ref_string_new_intern(_str::Union{AbstractString, Symbol})
         ret = ccall(("g_ref_string_new_intern", libglib), Cstring, (Cstring,), _str)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ref_string_new_len(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_ref_string_new_len", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ref_string_release(_str::Union{AbstractString, Symbol})
@@ -1715,21 +1435,13 @@ $(Expr(:toplevel, quote
     end
     function regex_escape_nul(_string::Union{AbstractString, Symbol}, _length::Integer)
         ret = ccall(("g_regex_escape_nul", libglib), Cstring, (Cstring, Int32), _string, _length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function regex_escape_string(_string)
         _length = length(_string)
         ret = ccall(("g_regex_escape_string", libglib), Cstring, (Ptr{Cstring}, Int32), _string, _length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function regex_match_simple(_pattern::Union{AbstractString, Symbol}, _string::Union{AbstractString, Symbol}, _compile_options, _match_options)
@@ -1780,22 +1492,14 @@ $(Expr(:toplevel, quote
     end
     function shell_quote(_unquoted_string::Union{AbstractString, Symbol})
         ret = ccall(("g_shell_quote", libglib), Cstring, (Cstring,), _unquoted_string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function shell_unquote(_quoted_string::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("g_shell_unquote", libglib), Cstring, (Cstring, Ptr{Ptr{GError}}), _quoted_string, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function slice_alloc(_block_size::Integer)
@@ -1897,11 +1601,7 @@ $(Expr(:toplevel, quote
     end
     function stpcpy(_dest::Union{AbstractString, Symbol}, _src::Union{AbstractString, Symbol})
         ret = ccall(("g_stpcpy", libglib), Cstring, (Cstring, Cstring), _dest, _src)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function str_equal(_v1::Nothing, _v2::Nothing)
@@ -1936,11 +1636,7 @@ $(Expr(:toplevel, quote
     function str_to_ascii(_str::Union{AbstractString, Symbol}, _from_locale::Maybe(Union{AbstractString, Symbol}))
         _from_locale = nothing_to_null(_from_locale)
         ret = ccall(("g_str_to_ascii", libglib), Cstring, (Cstring, Cstring), _str, _from_locale)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function str_tokenize_and_fold(_string::Union{AbstractString, Symbol}, _translit_locale::Maybe(Union{AbstractString, Symbol}))
@@ -1964,29 +1660,17 @@ $(Expr(:toplevel, quote
     end
     function strcanon(_string::Union{AbstractString, Symbol}, _valid_chars::Union{AbstractString, Symbol}, _substitutor::Integer)
         ret = ccall(("g_strcanon", libglib), Cstring, (Cstring, Cstring, Int8), _string, _valid_chars, _substitutor)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strchomp(_string::Union{AbstractString, Symbol})
         ret = ccall(("g_strchomp", libglib), Cstring, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strchug(_string::Union{AbstractString, Symbol})
         ret = ccall(("g_strchug", libglib), Cstring, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strcmp0(_str1::Maybe(Union{AbstractString, Symbol}), _str2::Maybe(Union{AbstractString, Symbol}))
@@ -1997,50 +1681,30 @@ $(Expr(:toplevel, quote
     end
     function strcompress(_source::Union{AbstractString, Symbol})
         ret = ccall(("g_strcompress", libglib), Cstring, (Cstring,), _source)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strdelimit(_string::Union{AbstractString, Symbol}, _delimiters::Maybe(Union{AbstractString, Symbol}), _new_delimiter::Integer)
         _delimiters = nothing_to_null(_delimiters)
         ret = ccall(("g_strdelimit", libglib), Cstring, (Cstring, Cstring, Int8), _string, _delimiters, _new_delimiter)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strdup(_str::Maybe(Union{AbstractString, Symbol}))
         _str = nothing_to_null(_str)
         ret = ccall(("g_strdup", libglib), Cstring, (Cstring,), _str)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strerror(_errnum::Integer)
         ret = ccall(("g_strerror", libglib), Cstring, (Int32,), _errnum)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strescape(_source::Union{AbstractString, Symbol}, _exceptions::Maybe(Union{AbstractString, Symbol}))
         _exceptions = nothing_to_null(_exceptions)
         ret = ccall(("g_strescape", libglib), Cstring, (Cstring, Cstring), _source, _exceptions)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strfreev(_str_array::Maybe(Union{AbstractString, Symbol}))
@@ -2050,21 +1714,13 @@ $(Expr(:toplevel, quote
     end
     function strip_context(_msgid::Union{AbstractString, Symbol}, _msgval::Union{AbstractString, Symbol})
         ret = ccall(("g_strip_context", libglib), Cstring, (Cstring, Cstring), _msgid, _msgval)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strjoinv(_separator::Maybe(Union{AbstractString, Symbol}), _str_array::Union{AbstractString, Symbol})
         _separator = nothing_to_null(_separator)
         ret = ccall(("g_strjoinv", libglib), Cstring, (Cstring, Cstring), _separator, _str_array)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strlcat(_dest::Union{AbstractString, Symbol}, _src::Union{AbstractString, Symbol}, _dest_size::Integer)
@@ -2077,76 +1733,44 @@ $(Expr(:toplevel, quote
     end
     function strndup(_str::Union{AbstractString, Symbol}, _n::Integer)
         ret = ccall(("g_strndup", libglib), Cstring, (Cstring, UInt64), _str, _n)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strnfill(_length::Integer, _fill_char::Integer)
         ret = ccall(("g_strnfill", libglib), Cstring, (UInt64, Int8), _length, _fill_char)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strreverse(_string::Union{AbstractString, Symbol})
         ret = ccall(("g_strreverse", libglib), Cstring, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strrstr(_haystack::Union{AbstractString, Symbol}, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strrstr", libglib), Cstring, (Cstring, Cstring), _haystack, _needle)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strrstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strrstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strsignal(_signum::Integer)
         ret = ccall(("g_strsignal", libglib), Cstring, (Int32,), _signum)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function strtod(_nptr::Union{AbstractString, Symbol})
         m_endptr = Ref{Cstring}()
         ret = ccall(("g_strtod", libglib), Float64, (Cstring, Ptr{Cstring}), _nptr, m_endptr)
         _endptr = m_endptr[]
-        _endptr = if _endptr == C_NULL
-                nothing
-            else
-                bytestring(_endptr, false)
-            end
+        _endptr = string_or_nothing(_endptr, false)
         (ret, _endptr)
     end
     function strv_contains(_strv::Union{AbstractString, Symbol}, _str::Union{AbstractString, Symbol})
@@ -2195,20 +1819,12 @@ $(Expr(:toplevel, quote
     end
     function test_get_dir(_file_type)
         ret = ccall(("g_test_get_dir", libglib), Cstring, (UInt32,), _file_type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function test_get_path()
         ret = ccall(("g_test_get_path", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function test_incomplete(_msg::Maybe(Union{AbstractString, Symbol}))
@@ -2218,11 +1834,7 @@ $(Expr(:toplevel, quote
     end
     function test_log_type_name(_log_type)
         ret = ccall(("g_test_log_type_name", libglib), Cstring, (UInt32,), _log_type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function test_queue_free(_gfree_pointer::Maybe(Nothing))
@@ -2385,11 +1997,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_ucs4_to_utf8", libglib), Cstring, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _items_read = m_items_read[]
         _items_written = m_items_written[]
         (ret2, _items_read, _items_written)
@@ -2528,11 +2136,7 @@ $(Expr(:toplevel, quote
         m_outbuf = Ref{Cstring}()
         ret = ccall(("g_unichar_to_utf8", libglib), Int32, (Nothing, Ptr{Cstring}), _c, m_outbuf)
         _outbuf = m_outbuf[]
-        _outbuf = if _outbuf == C_NULL
-                nothing
-            else
-                bytestring(_outbuf, false)
-            end
+        _outbuf = string_or_nothing(_outbuf, false)
         (ret, _outbuf)
     end
     function unichar_tolower(_c)
@@ -2637,21 +2241,13 @@ $(Expr(:toplevel, quote
         _reserved_chars_allowed = nothing_to_null(_reserved_chars_allowed)
         _length = length(_unescaped)
         ret = ccall(("g_uri_escape_bytes", libglib), Cstring, (Ptr{UInt8}, UInt64, Cstring), _unescaped, _length, _reserved_chars_allowed)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function uri_escape_string(_unescaped::Union{AbstractString, Symbol}, _reserved_chars_allowed::Maybe(Union{AbstractString, Symbol}), _allow_utf8::Bool)
         _reserved_chars_allowed = nothing_to_null(_reserved_chars_allowed)
         ret = ccall(("g_uri_escape_string", libglib), Cstring, (Cstring, Cstring, Cint), _unescaped, _reserved_chars_allowed, _allow_utf8)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function uri_is_valid(_uri_string::Union{AbstractString, Symbol}, _flags)
@@ -2668,11 +2264,7 @@ $(Expr(:toplevel, quote
         _query = nothing_to_null(_query)
         _fragment = nothing_to_null(_fragment)
         ret = ccall(("g_uri_join", libglib), Cstring, (UInt32, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _userinfo, _host, _port, _path, _query, _fragment)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function uri_join_with_user(_flags, _scheme::Maybe(Union{AbstractString, Symbol}), _user::Maybe(Union{AbstractString, Symbol}), _password::Maybe(Union{AbstractString, Symbol}), _auth_params::Maybe(Union{AbstractString, Symbol}), _host::Maybe(Union{AbstractString, Symbol}), _port::Integer, _path::Union{AbstractString, Symbol}, _query::Maybe(Union{AbstractString, Symbol}), _fragment::Maybe(Union{AbstractString, Symbol}))
@@ -2684,11 +2276,7 @@ $(Expr(:toplevel, quote
         _query = nothing_to_null(_query)
         _fragment = nothing_to_null(_fragment)
         ret = ccall(("g_uri_join_with_user", libglib), Cstring, (UInt32, Cstring, Cstring, Cstring, Cstring, Cstring, Int32, Cstring, Cstring, Cstring), _flags, _scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function uri_list_extract_uris(_uri_list::Union{AbstractString, Symbol})
@@ -2710,20 +2298,12 @@ $(Expr(:toplevel, quote
     end
     function uri_parse_scheme(_uri::Union{AbstractString, Symbol})
         ret = ccall(("g_uri_parse_scheme", libglib), Cstring, (Cstring,), _uri)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function uri_peek_scheme(_uri::Union{AbstractString, Symbol})
         ret = ccall(("g_uri_peek_scheme", libglib), Cstring, (Cstring,), _uri)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function uri_resolve_relative(_base_uri_string::Maybe(Union{AbstractString, Symbol}), _uri_ref::Union{AbstractString, Symbol}, _flags)
@@ -2731,11 +2311,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_uri_resolve_relative", libglib), Cstring, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _base_uri_string, _uri_ref, _flags, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function uri_split(_uri_ref::Union{AbstractString, Symbol}, _flags)
@@ -2757,11 +2333,7 @@ $(Expr(:toplevel, quote
         _host = convert(Maybe(Union{AbstractString, Symbol}), _host)
         _port = m_port[]
         _path = m_path[]
-        _path = if _path == C_NULL
-                nothing
-            else
-                bytestring(_path, true)
-            end
+        _path = string_or_nothing(_path, true)
         _query = m_query[]
         _query = convert(Maybe(Union{AbstractString, Symbol}), _query)
         _fragment = m_fragment[]
@@ -2807,11 +2379,7 @@ $(Expr(:toplevel, quote
         _host = convert(Maybe(Union{AbstractString, Symbol}), _host)
         _port = m_port[]
         _path = m_path[]
-        _path = if _path == C_NULL
-                nothing
-            else
-                bytestring(_path, true)
-            end
+        _path = string_or_nothing(_path, true)
         _query = m_query[]
         _query = convert(Maybe(Union{AbstractString, Symbol}), _query)
         _fragment = m_fragment[]
@@ -2831,21 +2399,13 @@ $(Expr(:toplevel, quote
         _escaped_string_end = nothing_to_null(_escaped_string_end)
         _illegal_characters = nothing_to_null(_illegal_characters)
         ret = ccall(("g_uri_unescape_segment", libglib), Cstring, (Cstring, Cstring, Cstring), _escaped_string, _escaped_string_end, _illegal_characters)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function uri_unescape_string(_escaped_string::Union{AbstractString, Symbol}, _illegal_characters::Maybe(Union{AbstractString, Symbol}))
         _illegal_characters = nothing_to_null(_illegal_characters)
         ret = ccall(("g_uri_unescape_string", libglib), Cstring, (Cstring, Cstring), _escaped_string, _illegal_characters)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function usleep(_microseconds::Integer)
@@ -2869,22 +2429,14 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_utf16_to_utf8", libglib), Cstring, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _items_read = m_items_read[]
         _items_written = m_items_written[]
         (ret2, _items_read, _items_written)
     end
     function utf8_casefold(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_utf8_casefold", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_collate(_str1::Union{AbstractString, Symbol}, _str2::Union{AbstractString, Symbol})
@@ -2893,39 +2445,23 @@ $(Expr(:toplevel, quote
     end
     function utf8_collate_key(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_utf8_collate_key", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_collate_key_for_filename(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_utf8_collate_key_for_filename", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_find_next_char(_p::Union{AbstractString, Symbol}, _end::Maybe(Union{AbstractString, Symbol}))
         _end = nothing_to_null(_end)
         ret = ccall(("g_utf8_find_next_char", libglib), Cstring, (Cstring, Cstring), _p, _end)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function utf8_find_prev_char(_str::Union{AbstractString, Symbol}, _p::Union{AbstractString, Symbol})
         ret = ccall(("g_utf8_find_prev_char", libglib), Cstring, (Cstring, Cstring), _str, _p)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function utf8_get_char(_p::Union{AbstractString, Symbol})
@@ -2938,29 +2474,17 @@ $(Expr(:toplevel, quote
     end
     function utf8_make_valid(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_utf8_make_valid", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_normalize(_str::Union{AbstractString, Symbol}, _len::Integer, _mode)
         ret = ccall(("g_utf8_normalize", libglib), Cstring, (Cstring, Int64, UInt32), _str, _len, _mode)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_offset_to_pointer(_str::Union{AbstractString, Symbol}, _offset::Integer)
         ret = ccall(("g_utf8_offset_to_pointer", libglib), Cstring, (Cstring, Int64), _str, _offset)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function utf8_pointer_to_offset(_str::Union{AbstractString, Symbol}, _pos::Union{AbstractString, Symbol})
@@ -2969,29 +2493,17 @@ $(Expr(:toplevel, quote
     end
     function utf8_prev_char(_p::Union{AbstractString, Symbol})
         ret = ccall(("g_utf8_prev_char", libglib), Cstring, (Cstring,), _p)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function utf8_strchr(_p::Union{AbstractString, Symbol}, _len::Integer, _c)
         ret = ccall(("g_utf8_strchr", libglib), Cstring, (Cstring, Int64, Nothing), _p, _len, _c)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function utf8_strdown(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_utf8_strdown", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_strlen(_p::Union{AbstractString, Symbol}, _max::Integer)
@@ -3000,47 +2512,27 @@ $(Expr(:toplevel, quote
     end
     function utf8_strncpy(_dest::Union{AbstractString, Symbol}, _src::Union{AbstractString, Symbol}, _n::Integer)
         ret = ccall(("g_utf8_strncpy", libglib), Cstring, (Cstring, Cstring, UInt64), _dest, _src, _n)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function utf8_strrchr(_p::Union{AbstractString, Symbol}, _len::Integer, _c)
         ret = ccall(("g_utf8_strrchr", libglib), Cstring, (Cstring, Int64, Nothing), _p, _len, _c)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function utf8_strreverse(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_utf8_strreverse", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_strup(_str::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("g_utf8_strup", libglib), Cstring, (Cstring, Int64), _str, _len)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_substring(_str::Union{AbstractString, Symbol}, _start_pos::Integer, _end_pos::Integer)
         ret = ccall(("g_utf8_substring", libglib), Cstring, (Cstring, Int64, Int64), _str, _start_pos, _end_pos)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function utf8_to_ucs4(_str::Union{AbstractString, Symbol}, _len::Integer)
@@ -3079,11 +2571,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_utf8_validate", libglib), Cint, (Ptr{UInt8}, Int64, Ptr{Cstring}), _str, _max_len, m_end)
         ret2 = convert(Bool, ret)
         _end = m_end[]
-        _end = if _end == C_NULL
-                nothing
-            else
-                bytestring(_end, false)
-            end
+        _end = string_or_nothing(_end, false)
         (ret2, _end)
     end
     function utf8_validate_len(_str)
@@ -3093,11 +2581,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_utf8_validate_len", libglib), Cint, (Ptr{UInt8}, UInt64, Ptr{Cstring}), _str, _max_len, m_end)
         ret2 = convert(Bool, ret)
         _end = m_end[]
-        _end = if _end == C_NULL
-                nothing
-            else
-                bytestring(_end, false)
-            end
+        _end = string_or_nothing(_end, false)
         (ret2, _end)
     end
     function uuid_string_is_valid(_str::Union{AbstractString, Symbol})
@@ -3107,11 +2591,7 @@ $(Expr(:toplevel, quote
     end
     function uuid_string_random()
         ret = ccall(("g_uuid_string_random", libglib), Cstring, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function variant_get_gtype()
@@ -3130,11 +2610,7 @@ $(Expr(:toplevel, quote
     end
     function variant_parse_error_print_context(_error, _source_str::Union{AbstractString, Symbol})
         ret = ccall(("g_variant_parse_error_print_context", libglib), Cstring, (Ptr{GError}, Cstring), _error, _source_str)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function variant_parse_error_quark()
@@ -3161,11 +2637,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_variant_type_string_scan", libglib), Cint, (Cstring, Cstring, Ptr{Cstring}), _string, _limit, m_endptr)
         ret2 = convert(Bool, ret)
         _endptr = m_endptr[]
-        _endptr = if _endptr == C_NULL
-                nothing
-            else
-                bytestring(_endptr, true)
-            end
+        _endptr = string_or_nothing(_endptr, true)
         (ret2, _endptr)
     end
 end))

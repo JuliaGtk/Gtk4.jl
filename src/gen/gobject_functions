@@ -15,20 +15,12 @@ $(Expr(:toplevel, quote
     end
     function enum_to_string(_g_enum_type::Integer, _value::Integer)
         ret = ccall(("g_enum_to_string", libgobject), Cstring, (UInt64, Int32), _g_enum_type, _value)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function flags_to_string(_flags_type::Integer, _value::Integer)
         ret = ccall(("g_flags_to_string", libgobject), Cstring, (UInt64, UInt32), _flags_type, _value)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function gtype_get_type()
@@ -92,11 +84,7 @@ $(Expr(:toplevel, quote
     end
     function signal_name(_signal_id::Integer)
         ret = ccall(("g_signal_name", libgobject), Cstring, (UInt32,), _signal_id)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function signal_parse_name(_detailed_signal::Union{AbstractString, Symbol}, _itype::Integer, _force_detail_quark::Bool)
@@ -122,11 +110,7 @@ $(Expr(:toplevel, quote
     end
     function strdup_value_contents(_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("g_strdup_value_contents", libgobject), Cstring, (Ptr{_GValue},), _value)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function type_add_class_private(_class_type::Integer, _private_size::Integer)
@@ -239,11 +223,7 @@ $(Expr(:toplevel, quote
     end
     function type_name_from_class(_g_class::_GTypeClass)
         ret = ccall(("g_type_name_from_class", libgobject), Cstring, (Ptr{_GTypeClass},), _g_class)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function type_next_base(_leaf_type::Integer, _root_type::Integer)

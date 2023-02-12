@@ -27,7 +27,7 @@ export signal_handler_block, signal_handler_unblock
 export add_action, add_stateful_action
 
 export get_gtk_property, set_gtk_property!, gtk_propertynames, bind_property, unbind_property
-export bytestring, nothing_to_null, setproperties!
+export bytestring, nothing_to_null, setproperties!, string_or_nothing, convert_if_not_null
 export length_zt, err_buf, check_err
 export gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
        gtkdoc_func_url, gtkdoc_struc_url
@@ -55,6 +55,17 @@ function bytestring(s::Union{Cstring,Ptr{UInt8}}, own::Bool=false)
         g_free(s)
     end
     str
+end
+function string_or_nothing(s,owns)
+    (s == C_NULL) ? nothing : bytestring(s, owns)
+end
+
+function convert_if_not_null(t,o,owns)
+    if o == C_NULL
+        nothing
+    else
+        convert(t, o, owns)
+    end
 end
 
 g_malloc(s::Integer) = ccall((:g_malloc, libglib), Ptr{Nothing}, (Csize_t,), s)

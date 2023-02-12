@@ -64,11 +64,7 @@ $(Expr(:toplevel, quote
     end
     function Checksum_new(_checksum_type)
         ret = ccall(("g_checksum_new", libglib), Ptr{GChecksum}, (UInt32,), _checksum_type)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GChecksum, ret, true)
-            end
+        ret2 = convert_if_not_null(GChecksum, ret, true)
         ret2
     end
     function copy(instance::GChecksum)
@@ -82,11 +78,7 @@ $(Expr(:toplevel, quote
     end
     function get_string(instance::GChecksum)
         ret = ccall(("g_checksum_get_string", libglib), Cstring, (Ptr{GChecksum},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function reset(instance::GChecksum)
@@ -254,165 +246,93 @@ $(Expr(:toplevel, quote
     end
     function DateTime_new(_tz::GTimeZone, _year::Integer, _month::Integer, _day::Integer, _hour::Integer, _minute::Integer, _seconds::Real)
         ret = ccall(("g_date_time_new", libglib), Ptr{GDateTime}, (Ptr{GTimeZone}, Int32, Int32, Int32, Int32, Int32, Float64), _tz, _year, _month, _day, _hour, _minute, _seconds)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function DateTime_new_from_iso8601(_text::Union{AbstractString, Symbol}, _default_tz::Maybe(GTimeZone))
         _default_tz = nothing_to_null(_default_tz)
         ret = ccall(("g_date_time_new_from_iso8601", libglib), Ptr{GDateTime}, (Cstring, Ptr{GTimeZone}), _text, _default_tz)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function DateTime_new_from_unix_local(_t::Integer)
         ret = ccall(("g_date_time_new_from_unix_local", libglib), Ptr{GDateTime}, (Int64,), _t)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function DateTime_new_from_unix_utc(_t::Integer)
         ret = ccall(("g_date_time_new_from_unix_utc", libglib), Ptr{GDateTime}, (Int64,), _t)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function DateTime_new_local(_year::Integer, _month::Integer, _day::Integer, _hour::Integer, _minute::Integer, _seconds::Real)
         ret = ccall(("g_date_time_new_local", libglib), Ptr{GDateTime}, (Int32, Int32, Int32, Int32, Int32, Float64), _year, _month, _day, _hour, _minute, _seconds)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function DateTime_new_now(_tz::GTimeZone)
         ret = ccall(("g_date_time_new_now", libglib), Ptr{GDateTime}, (Ptr{GTimeZone},), _tz)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function DateTime_new_now_local()
         ret = ccall(("g_date_time_new_now_local", libglib), Ptr{GDateTime}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function DateTime_new_now_utc()
         ret = ccall(("g_date_time_new_now_utc", libglib), Ptr{GDateTime}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function DateTime_new_utc(_year::Integer, _month::Integer, _day::Integer, _hour::Integer, _minute::Integer, _seconds::Real)
         ret = ccall(("g_date_time_new_utc", libglib), Ptr{GDateTime}, (Int32, Int32, Int32, Int32, Int32, Float64), _year, _month, _day, _hour, _minute, _seconds)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add(instance::GDateTime, _timespan::Integer)
         ret = ccall(("g_date_time_add", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int64), instance, _timespan)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add_days(instance::GDateTime, _days::Integer)
         ret = ccall(("g_date_time_add_days", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _days)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add_full(instance::GDateTime, _years::Integer, _months::Integer, _days::Integer, _hours::Integer, _minutes::Integer, _seconds::Real)
         ret = ccall(("g_date_time_add_full", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32, Int32, Int32, Int32, Int32, Float64), instance, _years, _months, _days, _hours, _minutes, _seconds)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add_hours(instance::GDateTime, _hours::Integer)
         ret = ccall(("g_date_time_add_hours", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _hours)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add_minutes(instance::GDateTime, _minutes::Integer)
         ret = ccall(("g_date_time_add_minutes", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _minutes)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add_months(instance::GDateTime, _months::Integer)
         ret = ccall(("g_date_time_add_months", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _months)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add_seconds(instance::GDateTime, _seconds::Real)
         ret = ccall(("g_date_time_add_seconds", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Float64), instance, _seconds)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add_weeks(instance::GDateTime, _weeks::Integer)
         ret = ccall(("g_date_time_add_weeks", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _weeks)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function add_years(instance::GDateTime, _years::Integer)
         ret = ccall(("g_date_time_add_years", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Int32), instance, _years)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function compare(instance::GDateTime, _dt2::GDateTime)
@@ -430,20 +350,12 @@ $(Expr(:toplevel, quote
     end
     function format(instance::GDateTime, _format::Union{AbstractString, Symbol})
         ret = ccall(("g_date_time_format", libglib), Cstring, (Ptr{GDateTime}, Cstring), instance, _format)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function format_iso8601(instance::GDateTime)
         ret = ccall(("g_date_time_format_iso8601", libglib), Cstring, (Ptr{GDateTime},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_day_of_month(instance::GDateTime)
@@ -489,11 +401,7 @@ $(Expr(:toplevel, quote
     end
     function get_timezone_abbreviation(instance::GDateTime)
         ret = ccall(("g_date_time_get_timezone_abbreviation", libglib), Cstring, (Ptr{GDateTime},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_utc_offset(instance::GDateTime)
@@ -538,20 +446,12 @@ $(Expr(:toplevel, quote
     end
     function to_local(instance::GDateTime)
         ret = ccall(("g_date_time_to_local", libglib), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function to_timezone(instance::GDateTime, _tz::GTimeZone)
         ret = ccall(("g_date_time_to_timezone", libglib), Ptr{GDateTime}, (Ptr{GDateTime}, Ptr{GTimeZone}), instance, _tz)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function to_unix(instance::GDateTime)
@@ -560,11 +460,7 @@ $(Expr(:toplevel, quote
     end
     function to_utc(instance::GDateTime)
         ret = ccall(("g_date_time_to_utc", libglib), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function unref(instance::GDateTime)
@@ -602,11 +498,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_key_file_get_comment", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_double(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
@@ -682,11 +574,7 @@ $(Expr(:toplevel, quote
     function get_locale_for_key(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _locale::Maybe(Union{AbstractString, Symbol}))
         _locale = nothing_to_null(_locale)
         ret = ccall(("g_key_file_get_locale_for_key", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _locale)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_locale_string(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _locale::Maybe(Union{AbstractString, Symbol}))
@@ -694,11 +582,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_key_file_get_locale_string", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_locale_string_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _locale::Maybe(Union{AbstractString, Symbol}))
@@ -718,22 +602,14 @@ $(Expr(:toplevel, quote
     end
     function get_start_group(instance::GKeyFile)
         ret = ccall(("g_key_file_get_start_group", libglib), Cstring, (Ptr{GKeyFile},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_string(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("g_key_file_get_string", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_string_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol})
@@ -760,11 +636,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_key_file_get_value", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function has_group(instance::GKeyFile, _group_name::Union{AbstractString, Symbol})
@@ -793,11 +665,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _full_path = m_full_path[]
-        _full_path = if _full_path == C_NULL
-                nothing
-            else
-                bytestring(_full_path, true)
-            end
+        _full_path = string_or_nothing(_full_path, true)
         (ret2, _full_path)
     end
     function load_from_dirs(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _search_dirs, _flags)
@@ -807,11 +675,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _full_path = m_full_path[]
-        _full_path = if _full_path == C_NULL
-                nothing
-            else
-                bytestring(_full_path, true)
-            end
+        _full_path = string_or_nothing(_full_path, true)
         (ret2, _full_path)
     end
     function load_from_file(instance::GKeyFile, _file::Union{AbstractString, Symbol}, _flags)
@@ -929,11 +793,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_key_file_to_data", libglib), Cstring, (Ptr{GKeyFile}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, m_length, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _length = m_length[]
         (ret2, _length)
     end
@@ -1061,11 +921,7 @@ $(Expr(:toplevel, quote
     end
     function get_contents(instance::GMappedFile)
         ret = ccall(("g_mapped_file_get_contents", libglib), Cstring, (Ptr{GMappedFile},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_length(instance::GMappedFile)
@@ -1085,20 +941,12 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_match_info_expand_references", libglib), Cstring, (Ptr{GMatchInfo}, Cstring, Ptr{Ptr{GError}}), instance, _string_to_expand, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function fetch(instance::GMatchInfo, _match_num::Integer)
         ret = ccall(("g_match_info_fetch", libglib), Cstring, (Ptr{GMatchInfo}, Int32), instance, _match_num)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function fetch_all(instance::GMatchInfo)
@@ -1113,11 +961,7 @@ $(Expr(:toplevel, quote
     end
     function fetch_named(instance::GMatchInfo, _name::Union{AbstractString, Symbol})
         ret = ccall(("g_match_info_fetch_named", libglib), Cstring, (Ptr{GMatchInfo}, Cstring), instance, _name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function fetch_named_pos(instance::GMatchInfo, _name::Union{AbstractString, Symbol})
@@ -1153,11 +997,7 @@ $(Expr(:toplevel, quote
     end
     function get_string(instance::GMatchInfo)
         ret = ccall(("g_match_info_get_string", libglib), Cstring, (Ptr{GMatchInfo},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function is_partial_match(instance::GMatchInfo)
@@ -1220,11 +1060,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_regex_new", libglib), Ptr{GRegex}, (Cstring, UInt32, UInt32, Ptr{Ptr{GError}}), _pattern, _compile_options, _match_options, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GRegex, ret, true)
-            end
+        ret2 = convert_if_not_null(GRegex, ret, true)
         ret2
     end
     function get_capture_count(instance::GRegex)
@@ -1256,11 +1092,7 @@ $(Expr(:toplevel, quote
     end
     function get_pattern(instance::GRegex)
         ret = ccall(("g_regex_get_pattern", libglib), Cstring, (Ptr{GRegex},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_string_number(instance::GRegex, _name::Union{AbstractString, Symbol})
@@ -1315,11 +1147,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_regex_replace", libglib), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function replace_literal(instance::GRegex, _string, _start_position::Integer, _replacement::Union{AbstractString, Symbol}, _match_options)
@@ -1327,11 +1155,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_regex_replace_literal", libglib), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function split(instance::GRegex, _string::Union{AbstractString, Symbol}, _match_options)
@@ -1429,11 +1253,7 @@ $(Expr(:toplevel, quote
     end
     function free(instance::GString, _free_segment::Bool)
         ret = ccall(("g_string_free", libglib), Cstring, (Ptr{_GString}, Cint), instance, _free_segment)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function free_to_bytes(instance::GString)
@@ -1512,11 +1332,7 @@ $(Expr(:toplevel, quote
     function TimeZone_new_identifier(_identifier::Maybe(Union{AbstractString, Symbol}))
         _identifier = nothing_to_null(_identifier)
         ret = ccall(("g_time_zone_new_identifier", libglib), Ptr{GTimeZone}, (Cstring,), _identifier)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTimeZone, ret, true)
-            end
+        ret2 = convert_if_not_null(GTimeZone, ret, true)
         ret2
     end
     function TimeZone_new_local()
@@ -1544,20 +1360,12 @@ $(Expr(:toplevel, quote
     end
     function get_abbreviation(instance::GTimeZone, _interval::Integer)
         ret = ccall(("g_time_zone_get_abbreviation", libglib), Cstring, (Ptr{GTimeZone}, Int32), instance, _interval)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_identifier(instance::GTimeZone)
         ret = ccall(("g_time_zone_get_identifier", libglib), Cstring, (Ptr{GTimeZone},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_offset(instance::GTimeZone, _interval::Integer)
@@ -1580,11 +1388,7 @@ $(Expr(:toplevel, quote
     end
     function get_auth_params(instance::GUri)
         ret = ccall(("g_uri_get_auth_params", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_flags(instance::GUri)
@@ -1594,38 +1398,22 @@ $(Expr(:toplevel, quote
     end
     function get_fragment(instance::GUri)
         ret = ccall(("g_uri_get_fragment", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_host(instance::GUri)
         ret = ccall(("g_uri_get_host", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_password(instance::GUri)
         ret = ccall(("g_uri_get_password", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_path(instance::GUri)
         ret = ccall(("g_uri_get_path", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_port(instance::GUri)
@@ -1634,38 +1422,22 @@ $(Expr(:toplevel, quote
     end
     function get_query(instance::GUri)
         ret = ccall(("g_uri_get_query", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_scheme(instance::GUri)
         ret = ccall(("g_uri_get_scheme", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_user(instance::GUri)
         ret = ccall(("g_uri_get_user", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_userinfo(instance::GUri)
         ret = ccall(("g_uri_get_userinfo", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function parse_relative(instance::GUri, _uri_ref::Union{AbstractString, Symbol}, _flags)
@@ -1677,20 +1449,12 @@ $(Expr(:toplevel, quote
     end
     function to_string(instance::GUri)
         ret = ccall(("g_uri_to_string", libglib), Cstring, (Ptr{GUri},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function to_string_partial(instance::GUri, _flags)
         ret = ccall(("g_uri_to_string_partial", libglib), Cstring, (Ptr{GUri}, UInt32), instance, _flags)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function Variant_new_array(_child_type::Maybe(GVariantType), _children)
@@ -1871,11 +1635,7 @@ $(Expr(:toplevel, quote
     function dup_string(instance::GVariant)
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_dup_string", libglib), Cstring, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _length = m_length[]
         (ret2, _length)
     end
@@ -1983,11 +1743,7 @@ $(Expr(:toplevel, quote
     function get_string(instance::GVariant)
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_get_string", libglib), Cstring, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         _length = m_length[]
         (ret2, _length)
     end
@@ -2009,11 +1765,7 @@ $(Expr(:toplevel, quote
     end
     function get_type_string(instance::GVariant)
         ret = ccall(("g_variant_get_type_string", libglib), Cstring, (Ptr{GVariant},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_uint16(instance::GVariant)
@@ -2069,11 +1821,7 @@ $(Expr(:toplevel, quote
     end
     function print(instance::GVariant, _type_annotate::Bool)
         ret = ccall(("g_variant_print", libglib), Cstring, (Ptr{GVariant}, Cint), instance, _type_annotate)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function ref(instance::GVariant)
@@ -2198,11 +1946,7 @@ $(Expr(:toplevel, quote
     end
     function dup_string(instance::GVariantType)
         ret = ccall(("g_variant_type_dup_string", libglib), Cstring, (Ptr{GVariantType},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function element(instance::GVariantType)

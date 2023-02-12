@@ -276,8 +276,6 @@ end
 # * a key word constructor for the abstract type that calls the constructor just
 #   mentioned
 # * an expression adding this object to the GObject wrapper cache
-# * if there are properties, we construct a dictionary of the properties of this
-#   type and its interfaces with information
 
 function gobject_decl(objectinfo)
     g_type = get_g_type(objectinfo)
@@ -458,7 +456,7 @@ function extract_type(info::GITypeInfo, basetype::Type{String})
 end
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{Type{String}})
     owns = get_ownership_transfer(arginfo) != GITransfer.NOTHING
-    expr = :( ($name == C_NULL) ? nothing : bytestring($name, $owns))
+    expr = :( string_or_nothing($name, $owns))
 end
 
 function typename(info::GIStructInfo)
@@ -667,7 +665,7 @@ end
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) where {T <: Type{GObject}}
     owns = get_ownership_transfer(arginfo) != GITransfer.NOTHING
     if may_be_null(arginfo)
-        :(($name == C_NULL ? nothing : convert($(typeinfo.jtype), $name, $owns)))
+        :(convert_if_not_null($(typeinfo.jtype), $name, $owns))
     else
         :(convert($(typeinfo.jtype), $name, $owns))
     end
@@ -694,7 +692,7 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
     typ = isa(arginfo, GIFunctionInfo) ? 0 : get_type(arginfo)
 
     if may_be_null(arginfo)
-        :(($name == C_NULL ? nothing : convert($(typeinfo.jtype), $name, $owns)))
+        :(convert_if_not_null($(typeinfo.jtype), $name, $owns))
     elseif typ == 0 || (typ != 0 && is_pointer(typ))
         :(convert($(typeinfo.jtype), $name, $owns))
     end

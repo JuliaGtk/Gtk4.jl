@@ -40,11 +40,7 @@ $(Expr(:toplevel, quote
     end
     function enumerate_next(instance::GFileAttributeMatcher)
         ret = ccall(("g_file_attribute_matcher_enumerate_next", libgio), Cstring, (Ptr{GFileAttributeMatcher},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function matches(instance::GFileAttributeMatcher, _attribute::Union{AbstractString, Symbol})
@@ -65,20 +61,12 @@ $(Expr(:toplevel, quote
     function subtract(instance::GFileAttributeMatcher, _subtract::Maybe(GFileAttributeMatcher))
         _subtract = nothing_to_null(_subtract)
         ret = ccall(("g_file_attribute_matcher_subtract", libgio), Ptr{GFileAttributeMatcher}, (Ptr{GFileAttributeMatcher}, Ptr{GFileAttributeMatcher}), instance, _subtract)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GFileAttributeMatcher, ret, true)
-            end
+        ret2 = convert_if_not_null(GFileAttributeMatcher, ret, true)
         ret2
     end
     function to_string(instance::GFileAttributeMatcher)
         ret = ccall(("g_file_attribute_matcher_to_string", libgio), Cstring, (Ptr{GFileAttributeMatcher},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function unref(instance::GFileAttributeMatcher)
@@ -148,11 +136,7 @@ $(Expr(:toplevel, quote
     end
     function get_id(instance::GSettingsSchema)
         ret = ccall(("g_settings_schema_get_id", libgio), Cstring, (Ptr{GSettingsSchema},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_key(instance::GSettingsSchema, _name::Union{AbstractString, Symbol})
@@ -162,11 +146,7 @@ $(Expr(:toplevel, quote
     end
     function get_path(instance::GSettingsSchema)
         ret = ccall(("g_settings_schema_get_path", libgio), Cstring, (Ptr{GSettingsSchema},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function has_key(instance::GSettingsSchema, _name::Union{AbstractString, Symbol})
@@ -210,20 +190,12 @@ $(Expr(:toplevel, quote
     end
     function get_description(instance::GSettingsSchemaKey)
         ret = ccall(("g_settings_schema_key_get_description", libgio), Cstring, (Ptr{GSettingsSchemaKey},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_name(instance::GSettingsSchemaKey)
         ret = ccall(("g_settings_schema_key_get_name", libgio), Cstring, (Ptr{GSettingsSchemaKey},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_range(instance::GSettingsSchemaKey)
@@ -233,11 +205,7 @@ $(Expr(:toplevel, quote
     end
     function get_summary(instance::GSettingsSchemaKey)
         ret = ccall(("g_settings_schema_key_get_summary", libgio), Cstring, (Ptr{GSettingsSchemaKey},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_value_type(instance::GSettingsSchemaKey)
@@ -289,11 +257,7 @@ $(Expr(:toplevel, quote
     end
     function lookup(instance::GSettingsSchemaSource, _schema_id::Union{AbstractString, Symbol}, _recursive::Bool)
         ret = ccall(("g_settings_schema_source_lookup", libgio), Ptr{GSettingsSchema}, (Ptr{GSettingsSchemaSource}, Cstring, Cint), instance, _schema_id, _recursive)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GSettingsSchema, ret, true)
-            end
+        ret2 = convert_if_not_null(GSettingsSchema, ret, true)
         ret2
     end
     function ref(instance::GSettingsSchemaSource)
@@ -321,11 +285,7 @@ $(Expr(:toplevel, quote
     end
     function get_hostname(instance::GSrvTarget)
         ret = ccall(("g_srv_target_get_hostname", libgio), Cstring, (Ptr{GSrvTarget},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_port(instance::GSrvTarget)
@@ -347,11 +307,7 @@ $(Expr(:toplevel, quote
     end
     function get_display(instance::GAppLaunchContext, _info::GAppInfo, _files::GLib.LList{GLib._GList{Ptr{GObject}}})
         ret = ccall(("g_app_launch_context_get_display", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{GLib._GList{Ptr{GObject}}}), instance, _info, _files)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_environment(instance::GAppLaunchContext)
@@ -366,11 +322,7 @@ $(Expr(:toplevel, quote
     end
     function get_startup_notify_id(instance::GAppLaunchContext, _info::GAppInfo, _files::GLib.LList{GLib._GList{Ptr{GObject}}})
         ret = ccall(("g_app_launch_context_get_startup_notify_id", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{GLib._GList{Ptr{GObject}}}), instance, _info, _files)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function launch_failed(instance::GAppLaunchContext, _startup_notify_id::Union{AbstractString, Symbol})
@@ -416,29 +368,17 @@ $(Expr(:toplevel, quote
     end
     function get_application_id(instance::GApplication)
         ret = ccall(("g_application_get_application_id", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_dbus_connection(instance::GApplication)
         ret = ccall(("g_application_get_dbus_connection", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDBusConnection, ret, false)
-            end
+        ret2 = convert_if_not_null(GDBusConnection, ret, false)
         ret2
     end
     function get_dbus_object_path(instance::GApplication)
         ret = ccall(("g_application_get_dbus_object_path", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_flags(instance::GApplication)
@@ -467,11 +407,7 @@ $(Expr(:toplevel, quote
     end
     function get_resource_base_path(instance::GApplication)
         ret = ccall(("g_application_get_resource_base_path", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function hold(instance::GApplication)
@@ -580,11 +516,7 @@ $(Expr(:toplevel, quote
     end
     function get_cwd(instance::GApplicationCommandLine)
         ret = ccall(("g_application_command_line_get_cwd", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_environ(instance::GApplicationCommandLine)
@@ -612,20 +544,12 @@ $(Expr(:toplevel, quote
     end
     function get_stdin(instance::GApplicationCommandLine)
         ret = ccall(("g_application_command_line_get_stdin", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GInputStream, ret, true)
-            end
+        ret2 = convert_if_not_null(GInputStream, ret, true)
         ret2
     end
     function getenv(instance::GApplicationCommandLine, _name::Union{AbstractString, Symbol})
         ret = ccall(("g_application_command_line_getenv", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function set_exit_status(instance::GApplicationCommandLine, _exit_status::Integer)
@@ -737,11 +661,7 @@ $(Expr(:toplevel, quote
     end
     function get_current()
         ret = ccall(("g_cancellable_get_current", libgio), Ptr{GObject}, ())
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GCancellable, ret, false)
-            end
+        ret2 = convert_if_not_null(GCancellable, ret, false)
         ret2
     end
     function cancel(instance::GCancellable)
@@ -872,11 +792,7 @@ $(Expr(:toplevel, quote
     end
     function to_string(instance::GCredentials)
         ret = ccall(("g_credentials_to_string", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get(_connection::GDBusConnection, _bus_name::Maybe(Union{AbstractString, Symbol}), _object_path::Union{AbstractString, Symbol})
@@ -907,11 +823,7 @@ $(Expr(:toplevel, quote
     end
     function get_connection(instance::GDBusInterfaceSkeleton)
         ret = ccall(("g_dbus_interface_skeleton_get_connection", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDBusConnection, ret, false)
-            end
+        ret2 = convert_if_not_null(GDBusConnection, ret, false)
         ret2
     end
     function get_connections(instance::GDBusInterfaceSkeleton)
@@ -926,11 +838,7 @@ $(Expr(:toplevel, quote
     end
     function get_object_path(instance::GDBusInterfaceSkeleton)
         ret = ccall(("g_dbus_interface_skeleton_get_object_path", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_properties(instance::GDBusInterfaceSkeleton)
@@ -998,11 +906,7 @@ $(Expr(:toplevel, quote
     end
     function get_arg0(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_arg0", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_body(instance::GDBusMessage)
@@ -1017,20 +921,12 @@ $(Expr(:toplevel, quote
     end
     function get_destination(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_destination", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_error_name(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_error_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_flags(instance::GDBusMessage)
@@ -1049,11 +945,7 @@ $(Expr(:toplevel, quote
     end
     function get_interface(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_interface", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_locked(instance::GDBusMessage)
@@ -1063,11 +955,7 @@ $(Expr(:toplevel, quote
     end
     function get_member(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_member", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_message_type(instance::GDBusMessage)
@@ -1081,11 +969,7 @@ $(Expr(:toplevel, quote
     end
     function get_path(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_path", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_reply_serial(instance::GDBusMessage)
@@ -1094,11 +978,7 @@ $(Expr(:toplevel, quote
     end
     function get_sender(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_sender", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_serial(instance::GDBusMessage)
@@ -1107,11 +987,7 @@ $(Expr(:toplevel, quote
     end
     function get_signature(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_signature", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function lock(instance::GDBusMessage)
@@ -1130,11 +1006,7 @@ $(Expr(:toplevel, quote
     end
     function print(instance::GDBusMessage, _indent::Integer)
         ret = ccall(("g_dbus_message_print", libgio), Cstring, (Ptr{GObject}, UInt32), instance, _indent)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function set_body(instance::GDBusMessage, _body::GVariant)
@@ -1255,20 +1127,12 @@ $(Expr(:toplevel, quote
     end
     function get_name(instance::GDBusObjectManagerClient)
         ret = ccall(("g_dbus_object_manager_client_get_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_name_owner(instance::GDBusObjectManagerClient)
         ret = ccall(("g_dbus_object_manager_client_get_name_owner", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function DBusObjectManagerServer_new(_object_path::Union{AbstractString, Symbol})
@@ -1282,11 +1146,7 @@ $(Expr(:toplevel, quote
     end
     function get_connection(instance::GDBusObjectManagerServer)
         ret = ccall(("g_dbus_object_manager_server_get_connection", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDBusConnection, ret, true)
-            end
+        ret2 = convert_if_not_null(GDBusConnection, ret, true)
         ret2
     end
     function is_exported(instance::GDBusObjectManagerServer, _object::GDBusObjectSkeleton)
@@ -1341,11 +1201,7 @@ $(Expr(:toplevel, quote
     end
     function get_client_address(instance::GDBusServer)
         ret = ccall(("g_dbus_server_get_client_address", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_flags(instance::GDBusServer)
@@ -1355,11 +1211,7 @@ $(Expr(:toplevel, quote
     end
     function get_guid(instance::GDBusServer)
         ret = ccall(("g_dbus_server_get_guid", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function is_active(instance::GDBusServer)
@@ -1447,11 +1299,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_data_input_stream_read_line_finish_utf8", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_length, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _length = m_length[]
         (ret2, _length)
     end
@@ -1461,11 +1309,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_data_input_stream_read_line_utf8", libgio), Cstring, (Ptr{GObject}, Ptr{UInt64}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, m_length, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _length = m_length[]
         (ret2, _length)
     end
@@ -1496,11 +1340,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_data_input_stream_read_upto", libgio), Cstring, (Ptr{GObject}, Cstring, Int64, Ptr{UInt64}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _stop_chars, _stop_chars_len, m_length, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _length = m_length[]
         (ret2, _length)
     end
@@ -1516,11 +1356,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_data_input_stream_read_upto_finish", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_length, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         _length = m_length[]
         (ret2, _length)
     end
@@ -1612,29 +1448,17 @@ $(Expr(:toplevel, quote
     end
     function DesktopAppInfo_new(_desktop_id::Union{AbstractString, Symbol})
         ret = ccall(("g_desktop_app_info_new", libgio), Ptr{GObject}, (Cstring,), _desktop_id)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDesktopAppInfo, ret, true)
-            end
+        ret2 = convert_if_not_null(GDesktopAppInfo, ret, true)
         ret2
     end
     function DesktopAppInfo_new_from_filename(_filename::Union{AbstractString, Symbol})
         ret = ccall(("g_desktop_app_info_new_from_filename", libgio), Ptr{GObject}, (Cstring,), _filename)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDesktopAppInfo, ret, true)
-            end
+        ret2 = convert_if_not_null(GDesktopAppInfo, ret, true)
         ret2
     end
     function DesktopAppInfo_new_from_keyfile(_key_file::GKeyFile)
         ret = ccall(("g_desktop_app_info_new_from_keyfile", libgio), Ptr{GObject}, (Ptr{GKeyFile},), _key_file)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDesktopAppInfo, ret, true)
-            end
+        ret2 = convert_if_not_null(GDesktopAppInfo, ret, true)
         ret2
     end
     function get_implementations(_interface::Union{AbstractString, Symbol})
@@ -1648,11 +1472,7 @@ $(Expr(:toplevel, quote
     end
     function get_action_name(instance::GDesktopAppInfo, _action_name::Union{AbstractString, Symbol})
         ret = ccall(("g_desktop_app_info_get_action_name", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _action_name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_boolean(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
@@ -1662,29 +1482,17 @@ $(Expr(:toplevel, quote
     end
     function get_categories(instance::GDesktopAppInfo)
         ret = ccall(("g_desktop_app_info_get_categories", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_filename(instance::GDesktopAppInfo)
         ret = ccall(("g_desktop_app_info_get_filename", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_generic_name(instance::GDesktopAppInfo)
         ret = ccall(("g_desktop_app_info_get_generic_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_is_hidden(instance::GDesktopAppInfo)
@@ -1698,11 +1506,7 @@ $(Expr(:toplevel, quote
     end
     function get_locale_string(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
         ret = ccall(("g_desktop_app_info_get_locale_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _key)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_nodisplay(instance::GDesktopAppInfo)
@@ -1718,20 +1522,12 @@ $(Expr(:toplevel, quote
     end
     function get_startup_wm_class(instance::GDesktopAppInfo)
         ret = ccall(("g_desktop_app_info_get_startup_wm_class", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_string(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
         ret = ccall(("g_desktop_app_info_get_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _key)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_string_list(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
@@ -1903,11 +1699,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_file_enumerator_next_file", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GFileInfo, ret, true)
-            end
+        ret2 = convert_if_not_null(GFileInfo, ret, true)
         ret2
     end
     function next_files_async(instance::GFileEnumerator, _num_files::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -1930,11 +1722,7 @@ $(Expr(:toplevel, quote
     end
     function get_etag(instance::GFileIOStream)
         ret = ccall(("g_file_io_stream_get_etag", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function query_info(instance::GFileIOStream, _attributes::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable))
@@ -1992,20 +1780,12 @@ $(Expr(:toplevel, quote
     end
     function get_access_date_time(instance::GFileInfo)
         ret = ccall(("g_file_info_get_access_date_time", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function get_attribute_as_string(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
         ret = ccall(("g_file_info_get_attribute_as_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _attribute)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_attribute_boolean(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
@@ -2015,11 +1795,7 @@ $(Expr(:toplevel, quote
     end
     function get_attribute_byte_string(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
         ret = ccall(("g_file_info_get_attribute_byte_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _attribute)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_attribute_data(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
@@ -2046,11 +1822,7 @@ $(Expr(:toplevel, quote
     end
     function get_attribute_object(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
         ret = ccall(("g_file_info_get_attribute_object", libgio), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _attribute)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GObject, ret, false)
-            end
+        ret2 = convert_if_not_null(GObject, ret, false)
         ret2
     end
     function get_attribute_status(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
@@ -2060,11 +1832,7 @@ $(Expr(:toplevel, quote
     end
     function get_attribute_string(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
         ret = ccall(("g_file_info_get_attribute_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _attribute)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_attribute_stringv(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
@@ -2086,56 +1854,32 @@ $(Expr(:toplevel, quote
     end
     function get_content_type(instance::GFileInfo)
         ret = ccall(("g_file_info_get_content_type", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_creation_date_time(instance::GFileInfo)
         ret = ccall(("g_file_info_get_creation_date_time", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function get_deletion_date(instance::GFileInfo)
         ret = ccall(("g_file_info_get_deletion_date", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function get_display_name(instance::GFileInfo)
         ret = ccall(("g_file_info_get_display_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_edit_name(instance::GFileInfo)
         ret = ccall(("g_file_info_get_edit_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_etag(instance::GFileInfo)
         ret = ccall(("g_file_info_get_etag", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_file_type(instance::GFileInfo)
@@ -2172,20 +1916,12 @@ $(Expr(:toplevel, quote
     end
     function get_modification_date_time(instance::GFileInfo)
         ret = ccall(("g_file_info_get_modification_date_time", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function get_name(instance::GFileInfo)
         ret = ccall(("g_file_info_get_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_size(instance::GFileInfo)
@@ -2210,11 +1946,7 @@ $(Expr(:toplevel, quote
     end
     function get_symlink_target(instance::GFileInfo)
         ret = ccall(("g_file_info_get_symlink_target", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function has_attribute(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
@@ -2397,11 +2129,7 @@ $(Expr(:toplevel, quote
     end
     function get_etag(instance::GFileOutputStream)
         ret = ccall(("g_file_output_stream_get_etag", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function query_info(instance::GFileOutputStream, _attributes::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable))
@@ -2433,11 +2161,7 @@ $(Expr(:toplevel, quote
     end
     function get_completion_suffix(instance::GFilenameCompleter, _initial_text::Union{AbstractString, Symbol})
         ret = ccall(("g_filename_completer_get_completion_suffix", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _initial_text)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_completions(instance::GFilenameCompleter, _initial_text::Union{AbstractString, Symbol})
@@ -2562,11 +2286,7 @@ $(Expr(:toplevel, quote
     end
     function InetAddress_new_from_string(_string::Union{AbstractString, Symbol})
         ret = ccall(("g_inet_address_new_from_string", libgio), Ptr{GObject}, (Cstring,), _string)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GInetAddress, ret, true)
-            end
+        ret2 = convert_if_not_null(GInetAddress, ret, true)
         ret2
     end
     function InetAddress_new_loopback(_family)
@@ -2640,11 +2360,7 @@ $(Expr(:toplevel, quote
     end
     function to_string(instance::GInetAddress)
         ret = ccall(("g_inet_address_to_string", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function InetAddressMask_new(_addr::GInetAddress, _length::Integer)
@@ -2687,11 +2403,7 @@ $(Expr(:toplevel, quote
     end
     function to_string(instance::GInetAddressMask)
         ret = ccall(("g_inet_address_mask_to_string", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function InetSocketAddress_new(_address::GInetAddress, _port::Integer)
@@ -2701,11 +2413,7 @@ $(Expr(:toplevel, quote
     end
     function InetSocketAddress_new_from_string(_address::Union{AbstractString, Symbol}, _port::Integer)
         ret = ccall(("g_inet_socket_address_new_from_string", libgio), Ptr{GObject}, (Cstring, UInt32), _address, _port)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GSocketAddress, ret, true)
-            end
+        ret2 = convert_if_not_null(GSocketAddress, ret, true)
         ret2
     end
     function get_address(instance::GInetSocketAddress)
@@ -3038,11 +2746,7 @@ $(Expr(:toplevel, quote
     end
     function get_name(instance::GMenuAttributeIter)
         ret = ccall(("g_menu_attribute_iter_get_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_next(instance::GMenuAttributeIter)
@@ -3051,11 +2755,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_menu_attribute_iter_get_next", libgio), Cint, (Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GVariant}}), instance, m_out_name, m_value)
         ret2 = convert(Bool, ret)
         _out_name = m_out_name[]
-        _out_name = if _out_name == C_NULL
-                nothing
-            else
-                bytestring(_out_name, false)
-            end
+        _out_name = string_or_nothing(_out_name, false)
         _value = m_value[]
         _value = convert(GVariant, _value)
         (ret2, _out_name, _value)
@@ -3102,11 +2802,7 @@ $(Expr(:toplevel, quote
     end
     function get_link(instance::GMenuItem, _link::Union{AbstractString, Symbol})
         ret = ccall(("g_menu_item_get_link", libgio), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _link)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GMenuModel, ret, true)
-            end
+        ret2 = convert_if_not_null(GMenuModel, ret, true)
         ret2
     end
     function set_action_and_target_value(instance::GMenuItem, _action::Maybe(Union{AbstractString, Symbol}), _target_value::Maybe(GVariant))
@@ -3150,11 +2846,7 @@ $(Expr(:toplevel, quote
     end
     function get_name(instance::GMenuLinkIter)
         ret = ccall(("g_menu_link_iter_get_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_next(instance::GMenuLinkIter)
@@ -3163,11 +2855,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_menu_link_iter_get_next", libgio), Cint, (Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GObject}}), instance, m_out_link, m_value)
         ret2 = convert(Bool, ret)
         _out_link = m_out_link[]
-        _out_link = if _out_link == C_NULL
-                nothing
-            else
-                bytestring(_out_link, false)
-            end
+        _out_link = string_or_nothing(_out_link, false)
         _value = m_value[]
         _value = convert(GMenuModel, _value, true)
         (ret2, _out_link, _value)
@@ -3190,11 +2878,7 @@ $(Expr(:toplevel, quote
     end
     function get_item_link(instance::GMenuModel, _item_index::Integer, _link::Union{AbstractString, Symbol})
         ret = ccall(("g_menu_model_get_item_link", libgio), Ptr{GObject}, (Ptr{GObject}, Int32, Cstring), instance, _item_index, _link)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GMenuModel, ret, true)
-            end
+        ret2 = convert_if_not_null(GMenuModel, ret, true)
         ret2
     end
     function get_n_items(instance::GMenuModel)
@@ -3236,11 +2920,7 @@ $(Expr(:toplevel, quote
     end
     function get_domain(instance::GMountOperation)
         ret = ccall(("g_mount_operation_get_domain", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_is_tcrypt_hidden_volume(instance::GMountOperation)
@@ -3255,11 +2935,7 @@ $(Expr(:toplevel, quote
     end
     function get_password(instance::GMountOperation)
         ret = ccall(("g_mount_operation_get_password", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_password_save(instance::GMountOperation)
@@ -3273,11 +2949,7 @@ $(Expr(:toplevel, quote
     end
     function get_username(instance::GMountOperation)
         ret = ccall(("g_mount_operation_get_username", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function reply(instance::GMountOperation, _result)
@@ -3355,11 +3027,7 @@ $(Expr(:toplevel, quote
     end
     function get_hostname(instance::GNetworkAddress)
         ret = ccall(("g_network_address_get_hostname", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_port(instance::GNetworkAddress)
@@ -3368,11 +3036,7 @@ $(Expr(:toplevel, quote
     end
     function get_scheme(instance::GNetworkAddress)
         ret = ccall(("g_network_address_get_scheme", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function NetworkService_new(_service::Union{AbstractString, Symbol}, _protocol::Union{AbstractString, Symbol}, _domain::Union{AbstractString, Symbol})
@@ -3382,38 +3046,22 @@ $(Expr(:toplevel, quote
     end
     function get_domain(instance::GNetworkService)
         ret = ccall(("g_network_service_get_domain", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_protocol(instance::GNetworkService)
         ret = ccall(("g_network_service_get_protocol", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_scheme(instance::GNetworkService)
         ret = ccall(("g_network_service_get_scheme", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_service(instance::GNetworkService)
         ret = ccall(("g_network_service_get_service", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function set_scheme(instance::GNetworkService, _scheme::Union{AbstractString, Symbol})
@@ -3742,11 +3390,7 @@ $(Expr(:toplevel, quote
     end
     function get_destination_hostname(instance::GProxyAddress)
         ret = ccall(("g_proxy_address_get_destination_hostname", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_destination_port(instance::GProxyAddress)
@@ -3755,47 +3399,27 @@ $(Expr(:toplevel, quote
     end
     function get_destination_protocol(instance::GProxyAddress)
         ret = ccall(("g_proxy_address_get_destination_protocol", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_password(instance::GProxyAddress)
         ret = ccall(("g_proxy_address_get_password", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_protocol(instance::GProxyAddress)
         ret = ccall(("g_proxy_address_get_protocol", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_uri(instance::GProxyAddress)
         ret = ccall(("g_proxy_address_get_uri", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_username(instance::GProxyAddress)
         ret = ccall(("g_proxy_address_get_username", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function lookup_by_address(instance::GResolver, _address::GInetAddress, _cancellable::Maybe(GCancellable))
@@ -3803,11 +3427,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_resolver_lookup_by_address", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _address, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function lookup_by_address_async(instance::GResolver, _address::GInetAddress, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -3821,11 +3441,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_resolver_lookup_by_address_finish", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function lookup_by_name(instance::GResolver, _hostname::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable))
@@ -4021,11 +3637,7 @@ $(Expr(:toplevel, quote
     end
     function get_string(instance::GSettings, _key::Union{AbstractString, Symbol})
         ret = ccall(("g_settings_get_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _key)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_strv(instance::GSettings, _key::Union{AbstractString, Symbol})
@@ -4576,11 +4188,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_socket_address_enumerator_next", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GSocketAddress, ret, true)
-            end
+        ret2 = convert_if_not_null(GSocketAddress, ret, true)
         ret2
     end
     function next_async(instance::GSocketAddressEnumerator, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -4594,11 +4202,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_socket_address_enumerator_next_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GSocketAddress, ret, true)
-            end
+        ret2 = convert_if_not_null(GSocketAddress, ret, true)
         ret2
     end
     function SocketClient_new()
@@ -4710,11 +4314,7 @@ $(Expr(:toplevel, quote
     end
     function get_local_address(instance::GSocketClient)
         ret = ccall(("g_socket_client_get_local_address", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GSocketAddress, ret, false)
-            end
+        ret2 = convert_if_not_null(GSocketAddress, ret, false)
         ret2
     end
     function get_protocol(instance::GSocketClient)
@@ -5065,11 +4665,7 @@ $(Expr(:toplevel, quote
     end
     function get_identifier(instance::GSubprocess)
         ret = ccall(("g_subprocess_get_identifier", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_if_exited(instance::GSubprocess)
@@ -5088,29 +4684,17 @@ $(Expr(:toplevel, quote
     end
     function get_stderr_pipe(instance::GSubprocess)
         ret = ccall(("g_subprocess_get_stderr_pipe", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GInputStream, ret, false)
-            end
+        ret2 = convert_if_not_null(GInputStream, ret, false)
         ret2
     end
     function get_stdin_pipe(instance::GSubprocess)
         ret = ccall(("g_subprocess_get_stdin_pipe", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GOutputStream, ret, false)
-            end
+        ret2 = convert_if_not_null(GOutputStream, ret, false)
         ret2
     end
     function get_stdout_pipe(instance::GSubprocess)
         ret = ccall(("g_subprocess_get_stdout_pipe", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GInputStream, ret, false)
-            end
+        ret2 = convert_if_not_null(GInputStream, ret, false)
         ret2
     end
     function get_successful(instance::GSubprocess)
@@ -5181,11 +4765,7 @@ $(Expr(:toplevel, quote
     end
     function getenv(instance::GSubprocessLauncher, _variable::Union{AbstractString, Symbol})
         ret = ccall(("g_subprocess_launcher_getenv", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _variable)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function set_cwd(instance::GSubprocessLauncher, _cwd::Union{AbstractString, Symbol})
@@ -5283,11 +4863,7 @@ $(Expr(:toplevel, quote
     end
     function get_bus_address(instance::GTestDBus)
         ret = ccall(("g_test_dbus_get_bus_address", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_flags(instance::GTestDBus)
@@ -5399,47 +4975,27 @@ $(Expr(:toplevel, quote
     end
     function get_issuer(instance::GTlsCertificate)
         ret = ccall(("g_tls_certificate_get_issuer", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsCertificate, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsCertificate, ret, false)
         ret2
     end
     function get_issuer_name(instance::GTlsCertificate)
         ret = ccall(("g_tls_certificate_get_issuer_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_not_valid_after(instance::GTlsCertificate)
         ret = ccall(("g_tls_certificate_get_not_valid_after", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function get_not_valid_before(instance::GTlsCertificate)
         ret = ccall(("g_tls_certificate_get_not_valid_before", libgio), Ptr{GDateTime}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GDateTime, ret, true)
-            end
+        ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
     function get_subject_name(instance::GTlsCertificate)
         ret = ccall(("g_tls_certificate_get_subject_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function is_same(instance::GTlsCertificate, _cert_two::GTlsCertificate)
@@ -5461,56 +5017,32 @@ $(Expr(:toplevel, quote
     end
     function get_certificate(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_certificate", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsCertificate, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsCertificate, ret, false)
         ret2
     end
     function get_ciphersuite_name(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_ciphersuite_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_database(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_database", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsDatabase, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsDatabase, ret, false)
         ret2
     end
     function get_interaction(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_interaction", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsInteraction, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsInteraction, ret, false)
         ret2
     end
     function get_negotiated_protocol(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_negotiated_protocol", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_peer_certificate(instance::GTlsConnection)
         ret = ccall(("g_tls_connection_get_peer_certificate", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsCertificate, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsCertificate, ret, false)
         ret2
     end
     function get_peer_certificate_errors(instance::GTlsConnection)
@@ -5575,11 +5107,7 @@ $(Expr(:toplevel, quote
     end
     function create_certificate_handle(instance::GTlsDatabase, _certificate::GTlsCertificate)
         ret = ccall(("g_tls_database_create_certificate_handle", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}), instance, _certificate)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function lookup_certificate_for_handle(instance::GTlsDatabase, _handle::Union{AbstractString, Symbol}, _interaction::Maybe(GTlsInteraction), _flags, _cancellable::Maybe(GCancellable))
@@ -5588,11 +5116,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_tls_database_lookup_certificate_for_handle", libgio), Ptr{GObject}, (Ptr{GObject}, Cstring, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _handle, _interaction, _flags, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsCertificate, ret, true)
-            end
+        ret2 = convert_if_not_null(GTlsCertificate, ret, true)
         ret2
     end
     function lookup_certificate_for_handle_async(instance::GTlsDatabase, _handle::Union{AbstractString, Symbol}, _interaction::Maybe(GTlsInteraction), _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -5742,11 +5266,7 @@ $(Expr(:toplevel, quote
     end
     function get_description(instance::GTlsPassword)
         ret = ccall(("g_tls_password_get_description", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_flags(instance::GTlsPassword)
@@ -5762,11 +5282,7 @@ $(Expr(:toplevel, quote
     end
     function get_warning(instance::GTlsPassword)
         ret = ccall(("g_tls_password_get_warning", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function set_description(instance::GTlsPassword, _description::Union{AbstractString, Symbol})
@@ -5978,11 +5494,7 @@ $(Expr(:toplevel, quote
     end
     function get_file_info(instance::GZlibCompressor)
         ret = ccall(("g_zlib_compressor_get_file_info", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GFileInfo, ret, false)
-            end
+        ret2 = convert_if_not_null(GFileInfo, ret, false)
         ret2
     end
     function set_file_info(instance::GZlibCompressor, _file_info::Maybe(GFileInfo))
@@ -5997,11 +5509,7 @@ $(Expr(:toplevel, quote
     end
     function get_file_info(instance::GZlibDecompressor)
         ret = ccall(("g_zlib_decompressor_get_file_info", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GFileInfo, ret, false)
-            end
+        ret2 = convert_if_not_null(GFileInfo, ret, false)
         ret2
     end
     function name_is_valid(_action_name::Union{AbstractString, Symbol})
@@ -6017,11 +5525,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _action_name = m_action_name[]
-        _action_name = if _action_name == C_NULL
-                nothing
-            else
-                bytestring(_action_name, true)
-            end
+        _action_name = string_or_nothing(_action_name, true)
         _target_value = m_target_value[]
         _target_value = convert(GVariant, _target_value)
         (ret2, _action_name, _target_value)
@@ -6029,11 +5533,7 @@ $(Expr(:toplevel, quote
     function print_detailed_name(_action_name::Union{AbstractString, Symbol}, _target_value::Maybe(GVariant))
         _target_value = nothing_to_null(_target_value)
         ret = ccall(("g_action_print_detailed_name", libgio), Cstring, (Cstring, Ptr{GVariant}), _action_name, _target_value)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function activate(instance::GAction, _parameter::Maybe(GVariant))
@@ -6052,20 +5552,12 @@ $(Expr(:toplevel, quote
     end
     function get_name(instance::GAction)
         ret = ccall(("g_action_get_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_parameter_type(instance::GAction)
         ret = ccall(("g_action_get_parameter_type", libgio), Ptr{GVariantType}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GVariantType, ret, false)
-            end
+        ret2 = convert_if_not_null(GVariantType, ret, false)
         ret2
     end
     function get_state(instance::GAction)
@@ -6080,11 +5572,7 @@ $(Expr(:toplevel, quote
     end
     function get_state_type(instance::GAction)
         ret = ccall(("g_action_get_state_type", libgio), Ptr{GVariantType}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GVariantType, ret, false)
-            end
+        ret2 = convert_if_not_null(GVariantType, ret, false)
         ret2
     end
     function action_added(instance::GActionGroup, _action_name::Union{AbstractString, Symbol})
@@ -6119,11 +5607,7 @@ $(Expr(:toplevel, quote
     end
     function get_action_parameter_type(instance::GActionGroup, _action_name::Union{AbstractString, Symbol})
         ret = ccall(("g_action_group_get_action_parameter_type", libgio), Ptr{GVariantType}, (Ptr{GObject}, Cstring), instance, _action_name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GVariantType, ret, false)
-            end
+        ret2 = convert_if_not_null(GVariantType, ret, false)
         ret2
     end
     function get_action_state(instance::GActionGroup, _action_name::Union{AbstractString, Symbol})
@@ -6138,11 +5622,7 @@ $(Expr(:toplevel, quote
     end
     function get_action_state_type(instance::GActionGroup, _action_name::Union{AbstractString, Symbol})
         ret = ccall(("g_action_group_get_action_state_type", libgio), Ptr{GVariantType}, (Ptr{GObject}, Cstring), instance, _action_name)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GVariantType, ret, false)
-            end
+        ret2 = convert_if_not_null(GVariantType, ret, false)
         ret2
     end
     function has_action(instance::GActionGroup, _action_name::Union{AbstractString, Symbol})
@@ -6223,11 +5703,7 @@ $(Expr(:toplevel, quote
     end
     function get_source_object(instance::GAsyncResult)
         ret = ccall(("g_async_result_get_source_object", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GObject, ret, true)
-            end
+        ret2 = convert_if_not_null(GObject, ret, true)
         ret2
     end
     function get_user_data(instance::GAsyncResult)
@@ -6303,11 +5779,7 @@ $(Expr(:toplevel, quote
     end
     function get_object_path(instance::GDBusObject)
         ret = ccall(("g_dbus_object_get_object_path", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function condition_check(instance::GDatagramBased, _condition)
@@ -6395,11 +5867,7 @@ $(Expr(:toplevel, quote
     end
     function get_certificate(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_certificate", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsCertificate, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsCertificate, ret, false)
         ret2
     end
     function get_channel_binding_data(instance::GDtlsConnection, _type)
@@ -6414,47 +5882,27 @@ $(Expr(:toplevel, quote
     end
     function get_ciphersuite_name(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_ciphersuite_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_database(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_database", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsDatabase, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsDatabase, ret, false)
         ret2
     end
     function get_interaction(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_interaction", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsInteraction, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsInteraction, ret, false)
         ret2
     end
     function get_negotiated_protocol(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_negotiated_protocol", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_peer_certificate(instance::GDtlsConnection)
         ret = ccall(("g_dtls_connection_get_peer_certificate", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GTlsCertificate, ret, false)
-            end
+        ret2 = convert_if_not_null(GTlsCertificate, ret, false)
         ret2
     end
     function get_peer_certificate_errors(instance::GDtlsConnection)
@@ -6670,11 +6118,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_file_build_attribute_list_for_copy", libgio), Cstring, (Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _flags, _cancellable, err)
         check_err(err)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function copy(instance::GFile, _destination::GFile, _flags, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _progress_callback_data::Maybe(Nothing))
@@ -6857,11 +6301,7 @@ $(Expr(:toplevel, quote
     end
     function get_basename(instance::GFile)
         ret = ccall(("g_file_get_basename", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_child(instance::GFile, _name::Union{AbstractString, Symbol})
@@ -6896,47 +6336,27 @@ $(Expr(:toplevel, quote
     end
     function get_parse_name(instance::GFile)
         ret = ccall(("g_file_get_parse_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_path(instance::GFile)
         ret = ccall(("g_file_get_path", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_relative_path(instance::GFile, _descendant::GFile)
         ret = ccall(("g_file_get_relative_path", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}), instance, _descendant)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_uri(instance::GFile)
         ret = ccall(("g_file_get_uri", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_uri_scheme(instance::GFile)
         ret = ccall(("g_file_get_uri_scheme", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, true)
-            end
+        ret2 = string_or_nothing(ret, true)
         ret2
     end
     function has_parent(instance::GFile, _parent::Maybe(GFile))
@@ -7214,11 +6634,7 @@ $(Expr(:toplevel, quote
     end
     function peek_path(instance::GFile)
         ret = ccall(("g_file_peek_path", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                bytestring(ret, false)
-            end
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function poll_mountable(instance::GFile, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -7659,11 +7075,7 @@ $(Expr(:toplevel, quote
     end
     function get_item(instance::GListModel, _position::Integer)
         ret = ccall(("g_list_model_get_object", libgio), Ptr{GObject}, (Ptr{GObject}, UInt32), instance, _position)
-        ret2 = if ret == C_NULL
-                nothing
-            else
-                convert(GObject, ret, true)
-            end
+        ret2 = convert_if_not_null(GObject, ret, true)
         ret2
     end
     function items_changed(instance::GListModel, _position::Integer, _removed::Integer, _added::Integer)
@@ -7678,11 +7090,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GInputStream, ret, true)
         _type = m_type[]
-        _type = if _type == C_NULL
-                nothing
-            else
-                bytestring(_type, true)
-            end
+        _type = string_or_nothing(_type, true)
         (ret2, _type)
     end
     function load_async(instance::GLoadableIcon, _size::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -7699,11 +7107,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GInputStream, ret, true)
         _type = m_type[]
-        _type = if _type == C_NULL
-                nothing
-            else
-                bytestring(_type, true)
-            end
+        _type = string_or_nothing(_type, true)
         (ret2, _type)
     end
     function can_poll(instance::GPollableInputStream)
