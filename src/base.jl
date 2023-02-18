@@ -167,7 +167,7 @@ GtkWidgetPaintable(w::GtkWidget) = G_.WidgetPaintable_new(w)
 
 ## CSS, style
 
-function GtkCssProviderLeaf(; data = nothing, filename = nothing)
+function GtkCssProvider(; data = nothing, filename = nothing)
     source_count = (data !== nothing) + (filename !== nothing)
     @assert(source_count <= 1,
         "GtkCssProvider must have at most one data or filename argument")
@@ -180,9 +180,24 @@ function GtkCssProviderLeaf(; data = nothing, filename = nothing)
     return provider
 end
 
-function push!(context::GtkStyleContext, provider, priority::Integer)
+function push!(context::GtkStyleContext, provider, priority=STYLE_PROVIDER_PRIORITY_USER)
     G_.add_provider(context, GtkStyleProvider(provider), priority)
     context
+end
+
+function push!(display::GdkDisplay, provider, priority=STYLE_PROVIDER_PRIORITY_USER)
+    G_.add_provider_for_display(display, GtkStyleProvider(provider), priority)
+    display
+end
+
+function delete!(context::GtkStyleContext, provider)
+    G_.remove_provider(context, GtkStyleProvider(provider))
+    context
+end
+
+function delete!(display::GdkDisplay, provider)
+    G_.remove_provider_for_display(display, GtkStyleProvider(provider))
+    display
 end
 
 # because of a name collision this is annoying to generate using GI

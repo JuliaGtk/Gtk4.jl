@@ -32,6 +32,7 @@ include("tree.jl")
 include("text.jl")
 include("gui/dialogs.jl")
 include("gui/layout.jl")
+include("gui/examples.jl")
 include("gui/application.jl")
 end
 
