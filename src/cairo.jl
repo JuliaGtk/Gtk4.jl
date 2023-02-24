@@ -30,6 +30,7 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
             nothing
         end
 
+        on_resize(da::GtkDrawingArea, width, height) = on_resize(da, Cint(width), Cint(height))
         function on_resize(da::GtkDrawingArea, width::Cint, height::Cint)
             widget.is_sized = true
             if G_.get_realized(widget)
