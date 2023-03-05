@@ -7,7 +7,7 @@ end
 import Base: convert, copy, show, size, length, getindex, setindex!, get,
              iterate, eltype, isempty, ndims, stride, strides, popfirst!,
              empty!, append!, reverse!, pushfirst!, pop!, push!, splice!, insert!, deleteat!, delete!,
-             sigatomic_begin, sigatomic_end, Sys.WORD_SIZE, unsafe_convert,
+             sigatomic_begin, sigatomic_end, unsafe_convert,
              getproperty, setproperty!, propertynames, getindex, setindex!, print, replace
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag

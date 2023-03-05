@@ -8,7 +8,7 @@ using Glib_jll
 import Base: convert, size, length, getindex, setindex!, get,
              iterate, eltype, isempty, ndims, stride, strides, popfirst!,
              empty!, append!, reverse!, pushfirst!, pop!, push!, splice!,
-             sigatomic_begin, sigatomic_end, Sys.WORD_SIZE, unsafe_convert, getproperty,
+             sigatomic_begin, sigatomic_end, unsafe_convert, getproperty,
              getindex, setindex!
 
 export GInterface, GType, GObject, GBoxed

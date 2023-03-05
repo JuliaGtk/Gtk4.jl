@@ -28,7 +28,7 @@ function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractSt
 end
 function _signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike, after::Bool, gtk_call_conv::Bool, param_types, user_data)
     @assert sizeof_gclosure > 0
-    closuref = ccall((:g_closure_new_object, libgobject), Ptr{Nothing}, (Cuint, Ptr{GObject}), sizeof_gclosure::Int + GLib.WORD_SIZE * 2, w)
+    closuref = ccall((:g_closure_new_object, libgobject), Ptr{Nothing}, (Cuint, Ptr{GObject}), sizeof_gclosure::Int + Sys.WORD_SIZE * 2, w)
     closure_env = convert(Ptr{Ptr{Nothing}}, closuref + sizeof_gclosure)
     unsafe_store!(convert(Ptr{Int}, closure_env), 0, 2)
     ref_cb, deref_cb = invoke(gc_ref_closure, Tuple{Function}, cb)
@@ -274,10 +274,10 @@ mutable struct _GSourceFuncs
     closure_marshal::Ptr{Nothing}
 end
 function new_gsource(source_funcs::_GSourceFuncs)
-    sizeof_gsource = GLib.WORD_SIZE
+    sizeof_gsource = Sys.WORD_SIZE
     gsource = C_NULL
     while gsource == C_NULL
-        sizeof_gsource += GLib.WORD_SIZE
+        sizeof_gsource += Sys.WORD_SIZE
         gsource = ccall((:g_source_new, GLib.libglib), Ptr{Nothing}, (Ptr{_GSourceFuncs}, Int), Ref(source_funcs), sizeof_gsource)
     end
     gsource
@@ -339,10 +339,10 @@ end
 sizeof_gclosure = 0
 function __init__gtype__()
     global jlref_quark = quark"julia_ref"
-    global sizeof_gclosure = GLib.WORD_SIZE
+    global sizeof_gclosure = Sys.WORD_SIZE
     closure = C_NULL
     while closure == C_NULL
-        sizeof_gclosure += GLib.WORD_SIZE
+        sizeof_gclosure += Sys.WORD_SIZE
         closure = ccall((:g_closure_new_simple, libgobject), Ptr{Nothing}, (Int, Ptr{Nothing}), sizeof_gclosure, C_NULL)
     end
     ccall((:g_closure_sink, libgobject), Nothing, (Ptr{Nothing},), closure)
