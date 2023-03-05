@@ -68,6 +68,15 @@ function convert_if_not_null(t,o,owns)
     end
 end
 
+function find_leaf_type_if_not_null(o,owns)
+    if o == C_NULL
+        nothing
+    else
+        leaftype = GLib.find_leaf_type(o)
+        convert(leaftype, o, owns)
+    end
+end
+
 g_malloc(s::Integer) = ccall((:g_malloc, libglib), Ptr{Nothing}, (Csize_t,), s)
 g_free(p::Ptr) = ccall((:g_free, libglib), Nothing, (Ptr{Nothing},), p)
 g_free(p::Cstring) = ccall((:g_free, libglib), Nothing, (Cstring,), p)

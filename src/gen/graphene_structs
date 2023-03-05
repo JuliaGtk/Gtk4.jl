@@ -1,8 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    begin
-        gboxed_types = Any[]
-    end
+    gboxed_types = Any[]
     begin
         struct _GrapheneSimd4F
             x::Float32
@@ -478,14 +476,10 @@ $(Expr(:toplevel, quote
                 convert(Ptr{_GrapheneVec4}, box.handle)
             end
     end
-    begin
-        gboxed_cache_init() = begin
-                append!(GLib.gboxed_types, gboxed_types)
-            end
-    end
-    begin
-        gtype_wrapper_cache = Dict{Symbol, Type}()
-    end
+    gboxed_cache_init() = begin
+            append!(GLib.gboxed_types, gboxed_types)
+        end
+    gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         gtype_wrapper_cache_init() = begin
                 merge!(GLib.gtype_wrappers, gtype_wrapper_cache)

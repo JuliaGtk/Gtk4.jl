@@ -1,8 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    begin
-        gboxed_types = Any[]
-    end
+    gboxed_types = Any[]
     mutable struct PangoLanguage <: GBoxed
         handle::Ptr{PangoLanguage}
         begin
@@ -627,14 +625,10 @@ $(Expr(:toplevel, quote
             push!(gboxed_types, PangoTabArray)
         end
     end
-    begin
-        gboxed_cache_init() = begin
-                append!(GLib.gboxed_types, gboxed_types)
-            end
-    end
-    begin
-        gtype_wrapper_cache = Dict{Symbol, Type}()
-    end
+    gboxed_cache_init() = begin
+            append!(GLib.gboxed_types, gboxed_types)
+        end
+    gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type PangoContext <: GObject end
         mutable struct PangoContextLeaf <: PangoContext

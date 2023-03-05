@@ -204,14 +204,7 @@ $(Expr(:toplevel, quote
     end
     function native_get_for_surface(_surface::GdkSurface)
         ret = ccall(("gtk_native_get_for_surface", libgtk4), Ptr{GtkWidget}, (Ptr{GObject},), _surface)
-        ret2 = begin
-                if ret == C_NULL
-                    nothing
-                else
-                    leaftype = GLib.find_leaf_type(ret)
-                    convert(leaftype, ret, false)
-                end
-            end
+        ret2 = GLib.find_leaf_type_if_not_null(ret, false)
         ret2
     end
     function paper_size_get_default()

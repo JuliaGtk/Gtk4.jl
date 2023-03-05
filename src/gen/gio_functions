@@ -47,14 +47,7 @@ $(Expr(:toplevel, quote
     end
     function app_info_get_default_for_type(_content_type::Union{AbstractString, Symbol}, _must_support_uris::Bool)
         ret = ccall(("g_app_info_get_default_for_type", libgio), Ptr{GObject}, (Cstring, Cint), _content_type, _must_support_uris)
-        ret2 = begin
-                if ret == C_NULL
-                    nothing
-                else
-                    leaftype = GLib.find_leaf_type(ret)
-                    convert(leaftype, ret, true)
-                end
-            end
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
         ret2
     end
     function app_info_get_default_for_type_async(_content_type::Union{AbstractString, Symbol}, _must_support_uris::Bool, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -76,14 +69,7 @@ $(Expr(:toplevel, quote
     end
     function app_info_get_default_for_uri_scheme(_uri_scheme::Union{AbstractString, Symbol})
         ret = ccall(("g_app_info_get_default_for_uri_scheme", libgio), Ptr{GObject}, (Cstring,), _uri_scheme)
-        ret2 = begin
-                if ret == C_NULL
-                    nothing
-                else
-                    leaftype = GLib.find_leaf_type(ret)
-                    convert(leaftype, ret, true)
-                end
-            end
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
         ret2
     end
     function app_info_get_default_for_uri_scheme_async(_uri_scheme::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
@@ -500,14 +486,7 @@ $(Expr(:toplevel, quote
     end
     function icon_deserialize(_value::GVariant)
         ret = ccall(("g_icon_deserialize", libgio), Ptr{GObject}, (Ptr{GVariant},), _value)
-        ret2 = begin
-                if ret == C_NULL
-                    nothing
-                else
-                    leaftype = GLib.find_leaf_type(ret)
-                    convert(leaftype, ret, true)
-                end
-            end
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
         ret2
     end
     function icon_hash(_icon::Nothing)
@@ -635,14 +614,7 @@ $(Expr(:toplevel, quote
     end
     function proxy_get_default_for_protocol(_protocol::Union{AbstractString, Symbol})
         ret = ccall(("g_proxy_get_default_for_protocol", libgio), Ptr{GObject}, (Cstring,), _protocol)
-        ret2 = begin
-                if ret == C_NULL
-                    nothing
-                else
-                    leaftype = GLib.find_leaf_type(ret)
-                    convert(leaftype, ret, true)
-                end
-            end
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
         ret2
     end
     function proxy_resolver_get_default()

@@ -55,7 +55,7 @@ function struct_cache_expr!(exprs)
     gboxed_types_list = quote
         gboxed_types = Any[]
     end
-    push!(exprs,gboxed_types_list)
+    push!(exprs,unblock(gboxed_types_list))
 end
 
 function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,excludelist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false)
@@ -147,7 +147,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
         gboxed_types_init = quote
             gboxed_cache_init() = append!(GLib.gboxed_types,gboxed_types)
         end
-        push!(exprs,gboxed_types_init)
+        push!(exprs,unblock(gboxed_types_init))
     end
 
     if print_summary
@@ -219,7 +219,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
         gtype_cache = quote
             gtype_wrapper_cache = Dict{Symbol, Type}()
         end
-        push!(exprs,gtype_cache)
+        push!(exprs,unblock(gtype_cache))
     end
     for o in objects
         name=get_name(o)

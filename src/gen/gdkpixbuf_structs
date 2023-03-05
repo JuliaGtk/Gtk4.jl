@@ -1,8 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    begin
-        gboxed_types = Any[]
-    end
+    gboxed_types = Any[]
     begin
         struct _GdkPixbufModulePattern
             prefix::Cstring
@@ -50,15 +48,11 @@ $(Expr(:toplevel, quote
                 convert(Ptr{_GdkPixbufFormat}, box.handle)
             end
     end
-    begin
-        gboxed_cache_init() = begin
-                append!(GLib.gboxed_types, gboxed_types)
-            end
-    end
+    gboxed_cache_init() = begin
+            append!(GLib.gboxed_types, gboxed_types)
+        end
     @doc "A `GdkPixbufFormat` contains information about the image format accepted\nby a module.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk-pixbuf/struct.PixbufFormat.html)." GdkPixbufFormat
-    begin
-        gtype_wrapper_cache = Dict{Symbol, Type}()
-    end
+    gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type GdkPixbuf <: GObject end
         mutable struct GdkPixbufLeaf <: GdkPixbuf

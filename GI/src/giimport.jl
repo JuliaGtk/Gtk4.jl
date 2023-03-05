@@ -1,7 +1,6 @@
 # use libgirepository to produce Julia declarations and methods
 
-const_decls(ns) = const_decls(ns,x->x)
-function const_decls(ns,fmt)
+function const_decls(ns,fmt = identity)
     consts = get_consts(ns)
     decs = Expr[]
     for (name,val) in consts
@@ -25,10 +24,24 @@ function enum_decl(enum)
         end
         push!(body.args, :(const $(uppercase(name)) = $val) )
     end
-    Expr(:toplevel,Expr(:module, false, Symbol(enumname), body))
+    Expr(:toplevel, Expr(:module, false, Symbol(enumname), body))
 end
 
 enum_fullname(enumname,name) = Symbol(enumname,"_",uppercase(name))
+
+function enum_decls(ns)
+    enums = get_all(ns, GIEnumOrFlags)
+    typedefs = Expr[]
+    aliases = Expr[]
+    for enum in enums
+        name = get_name(enum)
+        longname = enum_name(enum)
+        push!(typedefs,enum_decl(enum,name))
+        push!(aliases, :( const $name = _AllTypes.$longname))
+    end
+    (typedefs,aliases)
+end
+enum_name(enum) = Symbol(string(get_namespace(enum),get_name(enum)))
 
 function find_symbol(l,id)
     lo = dlopen(l)
@@ -37,15 +50,17 @@ function find_symbol(l,id)
     return sym!==nothing
 end
 
+find_symbol(id) = Base.Fix2(find_symbol, id)
+
 function typeinit_def(info)
     name=get_name(info)
     ti = get_type_init(info)
-    if ti == :nothing
+    if ti === :nothing
         return nothing
     end
     type_init = String(ti)
     libs=get_shlibs(GINamespace(get_namespace(info)))
-    lib=libs[findfirst(l->find_symbol(l,type_init),libs)]
+    lib=libs[findfirst(find_symbol(type_init),libs)]
     slib=symbol_from_lib(lib)
     gtypeinit = quote
         GLib.g_type(::Type{T}) where {T <: $name} =
@@ -108,20 +123,6 @@ function flags_decl(enum, incl_typeinit=true)
     unblock(bloc)
 end
 
-function enum_decls(ns)
-    enums = get_all(ns, GIEnumOrFlags)
-    typedefs = Expr[]
-    aliases = Expr[]
-    for enum in enums
-        name = get_name(enum)
-        longname = enum_name(enum)
-        push!(typedefs,enum_decl(enum,name))
-        push!(aliases, :( const $name = _AllTypes.$longname))
-    end
-    (typedefs,aliases)
-end
-enum_name(enum) = Symbol(string(get_namespace(enum),get_name(enum)))
-
 ## Struct output
 
 # Opaque structs (where the contents are not part of the public API) are
@@ -131,24 +132,20 @@ enum_name(enum) = Symbol(string(get_namespace(enum),get_name(enum)))
 
 # get the thing that should go inside the curly brackets in Ptr{}
 function get_struct_name(structinfo,force_opaque=false)
-    fields=get_fields(structinfo)
+    opaque = force_opaque || isopaque(structinfo)
     gstructname = get_full_name(structinfo)
-    (length(fields)>0 && !force_opaque) ? Symbol("_",gstructname) : gstructname
+    opaque ? gstructname : Symbol("_",gstructname)
 end
 
 function struct_decl(structinfo;force_opaque=false)
-    fields=get_fields(structinfo)
     gstructname = get_full_name(structinfo)
-    ustructname=get_struct_name(structinfo,force_opaque)
     gtype=get_g_type(structinfo)
-    isboxed = GLib.g_isa(gtype,GLib.g_type_from_name(:GBoxed))
-    opaque = length(fields)==0 || force_opaque
-    decl = isboxed ? :($gstructname <: GBoxed) : gstructname
+    isboxed = GLib.g_isa(gtype,GLib.g_type(GBoxed))
     exprs=Expr[]
     if isboxed
         type_init = String(get_type_init(structinfo))
         libs=get_shlibs(GINamespace(get_namespace(structinfo)))
-        lib=libs[findfirst(l->find_symbol(l,type_init),libs)]
+        lib=libs[findfirst(find_symbol(type_init),libs)]
         slib=symbol_from_lib(lib)
         fin = quote
             GLib.g_type(::Type{T}) where {T <: $gstructname} =
@@ -168,14 +165,15 @@ function struct_decl(structinfo;force_opaque=false)
         end
     end
     conv=nothing
+    opaque = force_opaque || isopaque(structinfo)
+    ustructname=get_struct_name(structinfo,force_opaque)
     if !opaque
         fieldsexpr=Expr[]
-        for field in fields
+        for field in get_fields(structinfo)
             field1=get_name(field)
             type1=extract_type(field).ctype
             push!(fieldsexpr,:($field1::$type1))
         end
-        ustructname=Symbol("_",gstructname)
         ustruc=quote
             struct $ustructname
                 $(fieldsexpr...)
@@ -187,6 +185,7 @@ function struct_decl(structinfo;force_opaque=false)
             unsafe_convert(::Type{Ptr{$ustructname}}, box::$gstructname) = convert(Ptr{$ustructname}, box.handle)
         end
     end
+    decl = isboxed ? :($gstructname <: GBoxed) : gstructname
     if isboxed
         struc=quote
             mutable struct $decl
@@ -201,8 +200,7 @@ function struct_decl(structinfo;force_opaque=false)
             end
         end
     end
-    struc=unblock(struc)
-    push!(exprs,struc)
+    push!(exprs,unblock(struc))
     if conv!==nothing
         push!(exprs,unblock(conv))
     end
@@ -254,10 +252,8 @@ function prop_dict_incl_parents(objectinfo::GIObjectInfo)
     end
 end
 
+get_toplevel(o::GIInterfaceInfo) = :GObject
 function get_toplevel(o)
-    if isa(o,GIInterfaceInfo)
-        return :GObject
-    end
     p = o
     o2 = o
     while p !== nothing
@@ -330,7 +326,7 @@ function obj_decl!(exprs,o,ns,handled)
         obj_decl!(exprs,p,ns,handled)
     end
     if is_gobject(o)
-        append!(exprs,gobject_decl(o))
+        append!(exprs,unblock(gobject_decl(o)))
     else # for GTypeInstances
         oname = Symbol(GI.get_type_name(o))
         tname = get_toplevel(o)
@@ -375,7 +371,7 @@ function ginterface_decl(interfaceinfo)
         end
     end
     exprs=Expr[]
-    push!(exprs,decl)
+    push!(exprs,unblock(decl))
     exprs
 end
 
@@ -674,14 +670,7 @@ end
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) where {T <: Type{GInterface}}
     owns = get_ownership_transfer(arginfo) != GITransfer.NOTHING
     if may_be_null(arginfo)
-        quote
-            if $name == C_NULL
-                nothing
-            else
-                leaftype = GLib.find_leaf_type($name)
-                convert(leaftype, $name, $owns)
-            end
-        end
+        :(GLib.find_leaf_type_if_not_null($name, $owns))
     else
         :(leaftype = GLib.find_leaf_type($name);convert(leaftype, $name, $owns))
     end
@@ -793,7 +782,7 @@ end
 
 function make_ccall(libs::AbstractArray, id, rtype, args)
     # look up symbol in our possible libraries
-    lib=libs[findfirst(l->find_symbol(l,id),libs)]
+    lib=libs[findfirst(find_symbol(id),libs)]
     slib=symbol_from_lib(lib)
     make_ccall(slib, id, rtype, args)
 end
@@ -835,7 +824,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
             push!(retvals,:ret)
         end
     end
-    for arg in get_args(info)
+    for arg in args
         if is_skip(arg)
             continue
         end
@@ -874,13 +863,11 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
 
     # go through args again, remove length jargs for array inputs, add call
     # to length() to prologue
-    args=get_args(info)
     for arg in args
         if is_skip(arg)
             continue
         end
         typ = extract_type(arg)
-        dir = get_direction(arg)
         aname = Symbol("_$(get_name(arg))")
         typeinfo=get_type(arg)
         arrlen=get_array_length(typeinfo)
@@ -891,7 +878,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
                 deleteat!(jargs,len_i)
                 push!(prologue, :($len_name = length($aname)))
             end
-            len_i=findfirst(a->(a===len_name),retvals)
+            len_i=findfirst(==(len_name),retvals)
             if len_i !== nothing
                 deleteat!(retvals,len_i)
             end
@@ -901,7 +888,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         arrlen=get_array_length(rettypeinfo)
         if arrlen >=0
             len_name=Symbol("_",get_name(args[arrlen+1]))
-            len_i=findfirst(a->(a===len_name),retvals)
+            len_i=findfirst(==(len_name),retvals)
             if len_i !==nothing
                 deleteat!(retvals,len_i)
             end
