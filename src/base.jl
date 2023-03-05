@@ -157,7 +157,7 @@ function iterate(w::GtkWidget, state=nothing)
 end
 
 eltype(::Type{T}) where T <: GtkWidget = GtkWidget
-IteratorSize(::Type{T}) where T <: GtkWidget = Base.SizeUnknown()
+IteratorSize(::GtkWidget) = Base.SizeUnknown()
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
 

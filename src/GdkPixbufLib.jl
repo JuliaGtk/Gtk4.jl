@@ -197,7 +197,8 @@ size(a::MatrixStrided, i::Integer) = (i == 1 ? width(a) : (i == 2 ? height(a) : 
 size(a::MatrixStrided) = (width(a), height(a))
 eltype(a::MatrixStrided{T}) where {T} = T
 Base.ndims(::MatrixStrided) = 2
-convert(::Type{P}, a::MatrixStrided) where {P <: Ptr} = convert(P, a.p)
+# next line was causing invalidations
+# convert(::Type{P}, a::MatrixStrided) where {P <: Ptr} = convert(P, a.p)
 bstride(a::MatrixStrided, i) = (i == 1 ? sizeof(eltype(a)) : (i == 2 ? a.rowstride : 0))
 bstride(a, i) = stride(a, i) * sizeof(eltype(a))
 
