@@ -114,6 +114,31 @@ function stop_main_loop()
     ccall((:g_main_context_wakeup, libglib), Cvoid, (Ptr{Cvoid},), C_NULL)
 end
 
+"""
+    set_uv_loop_integration(s = "auto")
+
+Change Gtk4.jl's libuv loop integration setting. The argument `s` should be "auto" to use Gtk4.jl's default
+setting or "enabled" or "disabled" to override this. This setting will take effect after restarting Julia.
+
+Enabling libuv loop integration may improve REPL response on some platforms (Mac) but negatively impacts multithreaded
+performance. This function has no effect when running on Windows.
+"""
+function set_uv_loop_integration(s = "auto")
+    s in ["auto", "enabled", "disabled"] || error("""valid arguments are "auto", "enabled", and "disabled".""")
+    @set_preferences!("uv_loop_integration" => s)
+    @info("Setting will take effect after restarting Julia.")
+end
+
+"""
+    get_uv_loop_integration()
+
+Get Gtk4.jl's libuv loop integration setting.
+
+See also [`set_uv_loop_integration`](@ref).
+"""
+get_uv_loop_integration() = @load_preference("uv_loop_integration", "auto")
+is_uv_loop_integration_enabled() = uv_int_enabled[]
+
 GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
 
 function run(app::GApplication)

@@ -13,7 +13,7 @@ import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag
 
 using Glib_jll
-using Libdl
+using Libdl, Preferences
 
 export Maybe
 

@@ -278,7 +278,7 @@ function new_gsource(source_funcs::_GSourceFuncs)
     gsource = C_NULL
     while gsource == C_NULL
         sizeof_gsource += Sys.WORD_SIZE
-        gsource = ccall((:g_source_new, GLib.libglib), Ptr{Nothing}, (Ptr{_GSourceFuncs}, Int), Ref(source_funcs), sizeof_gsource)
+        gsource = ccall((:g_source_new, libglib), Ptr{Nothing}, (Ptr{_GSourceFuncs}, Int), Ref(source_funcs), sizeof_gsource)
     end
     gsource
 end
@@ -309,7 +309,7 @@ function uv_prepare(src::Ptr{Nothing}, timeout::Ptr{Cint})
     if tmout_ms < 0
         expiration = typemax(UInt64)
     elseif tmout_ms > 0
-        now = ccall((:g_source_get_time, GLib.libglib), UInt64, (Ptr{Nothing},), src)
+        now = ccall((:g_source_get_time, libglib), UInt64, (Ptr{Nothing},), src)
         expiration = convert(UInt64, now + tmout_ms * 1000)
     else #tmout_ms == 0
         expiration = UInt64(0)
@@ -328,7 +328,7 @@ function uv_check(src::Ptr{Nothing})
     elseif uv_pollfd.revents != 0
         return Int32(1)
     else
-        now = ccall((:g_source_get_time, GLib.libglib), UInt64, (Ptr{Nothing},), src)
+        now = ccall((:g_source_get_time, libglib), UInt64, (Ptr{Nothing},), src)
         return Int32(ex <= now)
     end
 end
@@ -350,6 +350,7 @@ function __init__gtype__()
 end
 
 const main_loop_initialized=Ref(false)
+const uv_int_enabled=Ref(false)
 
 function __init__gmainloop__()
     global uv_sourcefuncs = _GSourceFuncs(
@@ -358,21 +359,28 @@ function __init__gmainloop__()
         @cfunction(uv_dispatch, Cint, (Ptr{Nothing}, Ptr{Nothing}, Int)),
         C_NULL, C_NULL, C_NULL)
     src = new_gsource(uv_sourcefuncs)
-    ccall((:g_source_set_can_recurse, GLib.libglib), Nothing, (Ptr{Nothing}, Cint), src, true)
-    ccall((:g_source_set_name, GLib.libglib), Nothing, (Ptr{Nothing}, Ptr{UInt8}), src, "uv loop")
-    ccall((:g_source_set_callback, GLib.libglib), Nothing, (Ptr{Nothing}, Ptr{Nothing}, UInt, Ptr{Nothing}),
+    ccall((:g_source_set_can_recurse, libglib), Nothing, (Ptr{Nothing}, Cint), src, true)
+    ccall((:g_source_set_name, libglib), Nothing, (Ptr{Nothing}, Ptr{UInt8}), src, "uv loop")
+    ccall((:g_source_set_callback, libglib), Nothing, (Ptr{Nothing}, Ptr{Nothing}, UInt, Ptr{Nothing}),
         src, @cfunction(g_yield, Cint, (UInt,)), 1, C_NULL)
 
-    uv_fd = -1
-    # TODO: renable this after fixing integration with the default scheduler backend
-    # uv_fd = Sys.iswindows() ? -1 : ccall(:uv_backend_fd, Cint, (Ptr{Nothing},), Base.eventloop())
+    uv_int_setting = @load_preference("uv_loop_integration", "auto")
+    if uv_int_setting == "enabled"
+        uv_int_enabled[] = true
+    elseif uv_int_setting == "disabled"
+        uv_int_enabled[] = false
+    elseif uv_int_setting == "auto"
+        # enabled by default only on Macs in an interactive session, where it prevents REPL lag
+        uv_int_enabled[] = Sys.isapple() && isinteractive()
+    end
+    uv_fd = !uv_int_enabled[] || Sys.iswindows() ? -1 : ccall(:uv_backend_fd, Cint, (Ptr{Nothing},), Base.eventloop())
     global uv_pollfd = _GPollFD(uv_fd, 0x1)
     if (uv_pollfd::_GPollFD).fd != -1
-        ccall((:g_source_add_poll, GLib.libglib), Nothing, (Ptr{Nothing}, Ptr{_GPollFD}), src, Ref(uv_pollfd::_GPollFD))
+        ccall((:g_source_add_poll, libglib), Nothing, (Ptr{Nothing}, Ptr{_GPollFD}), src, Ref(uv_pollfd::_GPollFD))
     end
 
-    ccall((:g_source_attach, GLib.libglib), Cuint, (Ptr{Nothing}, Ptr{Nothing}), src, C_NULL)
-    ccall((:g_source_unref, GLib.libglib), Nothing, (Ptr{Nothing},), src)
+    ccall((:g_source_attach, libglib), Cuint, (Ptr{Nothing}, Ptr{Nothing}), src, C_NULL)
+    ccall((:g_source_unref, libglib), Nothing, (Ptr{Nothing},), src)
     nothing
 end
 
