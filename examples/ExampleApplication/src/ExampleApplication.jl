@@ -52,8 +52,7 @@ function activate(app)
 end
 
 function julia_main()::Cint
-    app = GtkApplication("julia.gtk4.example",
-        Gtk4.GLib.ApplicationFlags_FLAGS_NONE)
+    app = GtkApplication("julia.gtk4.example")
 
     rapp[] = app
 

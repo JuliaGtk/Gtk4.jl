@@ -36,11 +36,17 @@ function empty!(scale::GtkScale)
     scale
 end
 
+## GtkScaleButton and GtkVolumeButton
+
+GtkScaleButton(min, max, step, icons = nothing) = G_.ScaleButton_new(min, max, step, icons)
+GtkAdjustment(scale::GtkScaleButton) = G_.get_adjustment(scale)
+
 ## GtkAdjustment
 
 GtkAdjustment(value, lower, upper, step_increment, page_increment, page_size) = G_.Adjustment_new(value, lower, upper, step_increment, page_increment, page_size)
 
-GtkAdjustment(scale::GtkScale) = G_.get_adjustment(scale)
+# GtkScale is a subclass of GtkRange
+GtkAdjustment(range::GtkRange) = G_.get_adjustment(range)
 
 """
     configure!(adj::GtkAdjustment; value = nothing, lower = nothing, upper = nothing, step_increment = nothing, page_increment = nothing, page_size = nothing)

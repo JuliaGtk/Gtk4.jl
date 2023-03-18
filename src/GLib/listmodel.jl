@@ -14,7 +14,7 @@ length(ls::GListStore) = length(GListModel(ls))
 getindex(ls::GListStore, i::Integer) = getindex(GListModel(ls),i)
 iterate(ls::GListStore, i=0) = (i==length(ls) ? nothing : (getindex(ls, i+1),i+1))
 eltype(::Type{GListStore}) = GObject
-Base.keys(lm::GListStore) = 1:length(lm)
+Base.keys(lm::GListStore) = Base.OneTo(length(lm))
 
 length(lm::GListModel) = G_.get_n_items(lm)
 getindex(lm::GListModel, i::Integer) = G_.get_item(lm,i - 1)

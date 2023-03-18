@@ -71,6 +71,7 @@ GtkColorButton() = G_.ColorButton_new()
 GtkColorButton(color::GdkRGBA) = G_.ColorButton_new_with_rgba(color)
 
 GtkMenuButton() = G_.MenuButton_new()
+popup(b::GtkMenuButton) = G_.popup(b)
 
 function GtkPopoverMenu(model::GMenu, nested = false)
     if nested

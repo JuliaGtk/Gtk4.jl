@@ -146,3 +146,4 @@ function run(app::GApplication)
 end
 register(app::GApplication) = G_.register(app, nothing)
 activate(app::GApplication) = G_.activate(app)
+quit(app::GApplication) = G_.quit(app)

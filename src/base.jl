@@ -212,7 +212,7 @@ end
 
 ## GtkApplication
 
-GtkApplication(id = nothing, flags = GLib.ApplicationFlags_NONE) = G_.Application_new(id,flags)
+GtkApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
 function push!(app::GtkApplication, win::GtkWindow)
     G_.add_window(app, win)
     app

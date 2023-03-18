@@ -30,6 +30,8 @@ push!(sl::GtkStringList, str) = (G_.append(sl, str); sl)
 deleteat!(sl::GtkStringList, i::Integer) = (G_.remove(sl, i-1); sl)
 empty!(sl::GtkStringList) = (G_.splice(sl, 0, length(sl), nothing); sl)
 length(sl::GtkStringList) = length(GListModel(sl))
+Base.keys(sl::GtkStringList) = Base.OneTo(length(sl))
+iterate(ls::GtkStringList, i=0) = (i==length(ls) ? nothing : (getindex(ls, i+1),i+1))
 getindex(sl::GtkStringList, i::Integer) = G_.get_string(sl, i - 1)
 eltype(::Type{GtkStringList}) = String
 
@@ -39,6 +41,13 @@ GtkDropDown(model=nothing) = G_.DropDown_new(model, nothing)
 GtkDropDown(a::Vector{String}) = G_.DropDown_new_from_strings(a)
 GtkDropDown(a::AbstractArray) = GtkDropDown(string.(collect(a)))
 selected_string(d::GtkDropDown) = G_.get_selected_item(d).string
+function selected_string!(d::GtkDropDown, s::AbstractString)
+    sl = G_.get_model(d)
+    isa(sl, GtkStringList) || error("This method only works if the model is a GtkStringList")
+    i = findfirst(==(s), sl)
+    isnothing(i) && error("String not found in model")
+    G_.set_selected(d, i-1)
+end
 
 ## GtkListView and GtkGridView
 

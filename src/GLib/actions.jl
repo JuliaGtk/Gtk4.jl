@@ -16,12 +16,14 @@ function add_action(m::GActionMap, name::AbstractString, handler::Function)
     action = GSimpleAction(name)
     push!(m,GAction(action))
     signal_connect(handler, action, :activate)
+    action
 end
 
 function add_stateful_action(m::GActionMap, name::AbstractString, initial_state, handler::Function)
     action = GSimpleAction(name, nothing, GVariant(initial_state))
     push!(m,GAction(action))
     signal_connect(handler, action, :change_state)
+    action
 end
 
 set_state(m::GSimpleAction, v::GVariant) = G_.set_state(m,v)
