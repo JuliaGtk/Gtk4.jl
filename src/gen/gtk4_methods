@@ -10120,7 +10120,7 @@ $(Expr(:toplevel, quote
         m_out_len = Ref{UInt32}()
         ret = ccall(("gtk_text_child_anchor_get_widgets", libgtk4), Ptr{Ptr{GObject}}, (Ptr{GObject}, Ptr{UInt32}), instance, m_out_len)
         ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_out_len[]))
+                ret2 = collect(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_out_len[]))
                 GLib.g_free(ret)
                 ret2 = convert.(GtkWidget, ret2, false)
             end

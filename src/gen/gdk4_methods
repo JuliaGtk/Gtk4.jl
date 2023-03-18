@@ -1128,7 +1128,7 @@ $(Expr(:toplevel, quote
         m_out_n_coords = Ref{UInt32}()
         ret = ccall(("gdk_event_get_history", libgtk4), Ptr{_GdkTimeCoord}, (Ptr{GdkEvent}, Ptr{UInt32}), instance, m_out_n_coords)
         ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{_GdkTimeCoord}, ret, m_out_n_coords[]))
+                ret2 = collect(unsafe_wrap(Vector{_GdkTimeCoord}, ret, m_out_n_coords[]))
                 GLib.g_free(ret)
                 ret2
             end

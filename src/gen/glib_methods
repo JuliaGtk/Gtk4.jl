@@ -485,7 +485,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_key_file_get_boolean_list", libglib), Ptr{Cint}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{Cint}, ret, m_length[]))
+                ret2 = collect(unsafe_wrap(Vector{Cint}, ret, m_length[]))
                 GLib.g_free(ret)
                 ret2
             end
@@ -513,7 +513,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_key_file_get_double_list", libglib), Ptr{Float64}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{Float64}, ret, m_length[]))
+                ret2 = collect(unsafe_wrap(Vector{Float64}, ret, m_length[]))
                 GLib.g_free(ret)
                 ret2
             end
@@ -550,7 +550,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_key_file_get_integer_list", libglib), Ptr{Int32}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{Int32}, ret, m_length[]))
+                ret2 = collect(unsafe_wrap(Vector{Int32}, ret, m_length[]))
                 GLib.g_free(ret)
                 ret2
             end
@@ -1673,7 +1673,7 @@ $(Expr(:toplevel, quote
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_get_bytestring_array", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
+                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
                 GLib.g_free(ret)
                 ret2
             end
@@ -1729,7 +1729,7 @@ $(Expr(:toplevel, quote
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_get_objv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
+                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
                 GLib.g_free(ret)
                 ret2
             end
@@ -1751,7 +1751,7 @@ $(Expr(:toplevel, quote
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_get_strv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
-                ret2 = copy(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
+                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
                 GLib.g_free(ret)
                 ret2
             end

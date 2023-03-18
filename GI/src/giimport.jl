@@ -539,11 +539,13 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
             return nothing
             #:(_len=length_zt($name);ret2=copy(unsafe_wrap(Vector{$elmctype}, $name,i-1));GLib.g_free($name);ret2)
         end
-    elseif owns==GITransfer.CONTAINER && lensymb != nothing
+    elseif owns==GITransfer.CONTAINER && lensymb !== nothing
         if elmtype.gitype == GObject
-            :(ret2=copy(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);ret2=convert.($(elmtype.jtype), ret2, false))
+            :(ret2=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);ret2=convert.($(elmtype.jtype), ret2, false))
+        elseif elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
+            :(ret2=bytestring.(unsafe_wrap(Vector{$elmctype}, $name, $lensymb[]));GLib.g_free($name);ret2)
         else
-            :(ret2=copy(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);ret2)
+            :(ret2=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);ret2)
         end
     else
         #throw(NotImplementedError)
@@ -769,6 +771,8 @@ function symbol_from_lib(libname)
         return :libgraphene
     elseif occursin("libgtk-4",libname)
         return :libgtk4
+    elseif occursin("libaravis",libname)
+        return :libaravis
     end
     libname
 end
