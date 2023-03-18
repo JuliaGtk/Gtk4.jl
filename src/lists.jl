@@ -27,6 +27,8 @@ delete!(cb::GtkComboBoxText, i::Integer) = (G_.remove(cb, i-1); cb)
 
 GtkStringList(list = nothing) = G_.StringList_new(list)
 push!(sl::GtkStringList, str) = (G_.append(sl, str); sl)
+deleteat!(sl::GtkStringList, i::Integer) = (G_.remove(sl, i-1); sl)
+empty!(sl::GtkStringList) = (G_.splice(sl, 0, length(sl), nothing); sl)
 length(sl::GtkStringList) = length(GListModel(sl))
 getindex(sl::GtkStringList, i::Integer) = G_.get_string(sl, i - 1)
 eltype(::Type{GtkStringList}) = String

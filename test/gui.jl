@@ -787,6 +787,12 @@ signal_connect(bind_cb, factory, "bind")
 sw[]=list
 @test sw[] == list
 
+deleteat!(model, 1)
+@test model[1] == "Orange"
+@test length(model) == 3
+empty!(model)
+@test length(model) == 0
+
 destroy(win)
 
 end

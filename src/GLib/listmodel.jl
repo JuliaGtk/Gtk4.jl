@@ -5,6 +5,8 @@ function GListStore(t)
 end
 
 push!(ls::GListStore, item) = (G_.append(ls, item); ls)
+pushfirst!(ls::GListStore, item) = (G_.insert(ls, 0, item); ls)
+insert!(ls::GListStore, i::Integer, item) = (G_.insert(ls, i-1, item); ls)
 empty!(ls::GListStore) = (G_.remove_all(ls); ls)
 deleteat!(ls::GListStore, i::Integer) = (G_.remove(ls, i-1);ls)
 

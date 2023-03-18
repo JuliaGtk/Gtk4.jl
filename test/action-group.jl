@@ -95,6 +95,13 @@ deleteat!(l,1)
 empty!(l)
 @test length(l)==0
 
+push!(l, GLib.GSimpleAction("do-something-else"))
+    pushfirst!(l, GLib.GSimpleAction("do-something"))
+    @test l[1].name == "do-something"
+    @test length(l)==2
+    insert!(l, 2, GLib.GSimpleAction("do-yet-another-thing"))
+    @test l[2].name == "do-yet-another-thing"
+    @test length(l)==3
 end
 
 @testset "gvariant" begin
