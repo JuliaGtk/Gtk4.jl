@@ -39,6 +39,7 @@ end
 ## GtkScaleButton and GtkVolumeButton
 
 GtkScaleButton(min, max, step, icons = nothing) = G_.ScaleButton_new(min, max, step, icons)
+GtkScaleButton(scale::AbstractRange) = GtkScaleButton(minimum(scale), maximum(scale), step(scale))
 GtkAdjustment(scale::GtkScaleButton) = G_.get_adjustment(scale)
 
 ## GtkAdjustment

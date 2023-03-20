@@ -508,10 +508,26 @@ choices = ["one", "two", "three", "four"]
 dd = GtkDropDown(choices)
 dd.selected = 1
 
+sl = Gtk4.model(dd)
+for (i,s) in enumerate(sl)
+    @test s == choices[i]
+end
+Gtk4.selected_string!(dd, "two")
+@test Gtk4.selected_string(dd) == "two"
+
 win = GtkWindow("DropDown Example",400,200)
 push!(win, dd)
 destroy(win)
 
+dd2 = GtkDropDown()
+dd3 = GtkDropDown(1:5)
+
+end
+
+@testset "ScaleButton" begin
+sb = GtkScaleButton(0.0:1.0:10.0)
+adj = GtkAdjustment(sb)
+    
 end
 
 @testset "Statusbar" begin
@@ -685,6 +701,8 @@ push!(ls,(33,true))
 pushfirst!(ls,(22,false))
 popfirst!(ls)
 @test size(ls)==(2,2)
+@test eachindex(ls) == CartesianIndices(size(ls))
+@test axes(ls, 1) == axes(ls, 2) == 1:2
 insert!(ls, 2, (35, false))
 tv=GtkTreeView(GtkTreeModel(ls))
 r1=GtkCellRendererText()

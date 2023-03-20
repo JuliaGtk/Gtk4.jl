@@ -29,6 +29,12 @@ push!(win, dd)
 
 A search entry can be added using `Gtk4.enable_search(dd, true)`.
 
+To change the list of options after the dropdown widget is created, you can use
+```julia
+new_options_list = Gtk4.GtkStringList(["one","two","three","four","five"])
+Gtk4.model(dd,GListModel(new_options_list))
+```
+
 More complex uses of `GtkDropDown` are possible and may be supported in future versions
 of Gtk4.jl.
 
