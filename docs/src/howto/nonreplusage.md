@@ -23,6 +23,7 @@ By waiting on a `Condition`, Julia will keep running until a signal handler call
 In the common case that we simply wish to wait for a single window to be closed, this can be shortened by using `waitforsignal`:
 
 ```julia
+using Gtk4
 win = GtkWindow("gtkwait")
 
 # Put your GUI code here
@@ -32,3 +33,24 @@ if !isinteractive()
     Gtk4.GLib.waitforsignal(win,:close_request)
 end
 ```
+
+## GtkApplication
+
+For larger projects, you may want to use `GtkApplication`, which enables useful functionality based around `GtkApplicationWindow`, `GAction`, `GActionMap`, etc.
+For that you can use the following pattern:
+```julia
+using Gtk4
+
+function activate(app)
+    win = GtkApplicationWindow(app, "my title")
+    show(win)
+end
+
+app = GtkApplication()
+
+Gtk4.signal_connect(activate, app, :activate)
+
+run(app)
+```
+
+In the `activate` function, you can create your windows, widgets, etc. and connect them to signals. When all `GtkApplicationWindows` have been closed, the script will exit.
