@@ -14,4 +14,16 @@ The following table lists a few examples that should give you an idea of how the
 | `void gtk_builder_add_from_file (GtkBuilder* builder, const gchar* filename, GError** error)` | `add_from_file (builder::GtkBuilder, filename::AbstractString)` | if `ccall` fills GError argument, a Julia exception is thrown
 | `guint gtk_get_major_version ()` | `get_major_version ()` | Julia method returns a UInt32
 | `void gtk_rgb_to_hsv (float r, float g, float b, float* h, float* s, float* v)` | `rgb_to_hsv (r::Real, g::Real, b::Real)` | The arguments `h`, `s`, and `v` are outputs. Julia method returns `(h, s, v)`
-| `gboolean gtk_tree_view_get_path_at_pos (GtkTreeView* tree_view, int x, int y, GtkTreePath** path, GtkTreeViewColumn** column, int* cell_x, int* cell_y)` | `get_path_at_pos (instance::GtkTreeView, _x::Integer, _y::Integer)` | C function has a return value and output arguments. Julia method returns `(ret, _path, _column, _cell_x, _cell_y)`
+| `gboolean gtk_tree_view_get_path_at_pos (GtkTreeView* tree_view, int x, int y, GtkTreePath** path, GtkTreeViewColumn** column, int* cell_x, int* cell_y)` | `get_path_at_pos (instance::GtkTreeView, _x::Integer, _y::Integer)` | C function has a return value `ret` in addition to output arguments `_path`, `_column`, `_cell_x`, and `_cell_y`. The Julia method returns `(ret, _path, _column, _cell_x, _cell_y)`
+
+If you are confused about what one of these automatically generated methods does, you can examine the code, which is defined in the `src/gen` [directory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/src/gen).
+They are separated into "methods" (in an object-oriented sense, these are functions associated with a particular class) and "functions" (general C functions that aren't associated with a particular class).
+Constants and struct definitions are also generated using GObject introspection.
+
+## Constructors
+
+Constructor methods are treated a little differently. They are named according to GObject_constructor_name, as in the following table:
+
+| C function | Gtk4.G_ Julia method | Comments |
+| `GtkWidget* gtk_window_new()` | Window_new() | Returns a newly constructed `GtkWindow`
+| `GtkWidget* gtk_scale_new_with_range(GtkOrientation orientation, double min, double max, double step)` | Scale_new_with_range(orientation, min, max, step)` | Example with arguments

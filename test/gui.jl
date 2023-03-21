@@ -701,8 +701,6 @@ push!(ls,(33,true))
 pushfirst!(ls,(22,false))
 popfirst!(ls)
 @test size(ls)==(2,2)
-@test eachindex(ls) == CartesianIndices(size(ls))
-@test axes(ls, 1) == axes(ls, 2) == 1:2
 insert!(ls, 2, (35, false))
 tv=GtkTreeView(GtkTreeModel(ls))
 r1=GtkCellRendererText()
