@@ -51,6 +51,12 @@ eval(include("gen/gdk4_functions"))
 eval(include("gen/gtk4_methods"))
 eval(include("gen/gtk4_functions"))
 
+function get_current_event_state(instance::GtkEventController)
+    ret = ccall(("gtk_event_controller_get_current_event_state", libgtk4), UInt32, (Ptr{GObject},), instance)
+    ret2 = ModifierType(ret & Gtk4.MODIFIER_MASK) # there are private values and according to the docs, we are supposed to mask them out
+    ret2
+end
+
 end
 
 import .GLib: set_gtk_property!, get_gtk_property, run,
