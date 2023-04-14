@@ -272,7 +272,7 @@ function __init__()
     treehash_cache_path = joinpath(cache_dir, "gdk_pixbuf_treehash.cache")
     loaders_cache_path = joinpath(cache_dir, "loaders.cache")
     gdk_pixbuf_treehash = basename(gdk_pixbuf_jll.artifact_dir)
-    if !isfile(treehash_cache_path) || read(treehash_cache_path) != gdk_pixbuf_treehash
+    if !isfile(treehash_cache_path) || read(treehash_cache_path, String) != gdk_pixbuf_treehash
         function query_pixbuf_loaders(dir::String;
                                       extra_env::Vector{Pair{String,String}} = Pair{String,String}[])
             gpql = gdk_pixbuf_query_loaders()
