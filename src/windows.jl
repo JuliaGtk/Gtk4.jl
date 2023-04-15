@@ -322,13 +322,13 @@ const SingleComma = r"(?<!,), (?!,)"
 function GtkFileFilter(; name::Union{AbstractString, Nothing} = nothing, pattern::AbstractString = "", mimetype::AbstractString = "")
     filt = G_.FileFilter_new()
     if !isempty(pattern)
-        name == nothing && (name = pattern)
+        name === nothing && (name = pattern)
         for p in split(pattern, SingleComma)
             p = replace(p, ", , " => ", ")   # escape sequence for , is , ,
             G_.add_pattern(filt,p)
         end
     elseif !isempty(mimetype)
-        name == nothing && (name = mimetype)
+        name === nothing && (name = mimetype)
         for m in split(mimetype, SingleComma)
             m = replace(m, ", , " => ", ")
             G_.add_mime_type(filt, m)
@@ -378,11 +378,21 @@ show(d::GtkNativeDialog) = G_.show(d)
 hide(d::GtkNativeDialog) = G_.hide(d)
 destroy(d::GtkNativeDialog) = G_.destroy(d)
 
-function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false)
+"""
+    open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, start_folder = "")
+
+Create a dialog for choosing a file or folder to be opened. Returns the path chosen by the user, or "" if "Cancel" is pressed or the dialog or its parent window `parent` is closed. The dialog title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
+
+Keyword arguments:
+`timeout`: The optional input `timeout` (disabled by default) can be used to set a time in seconds after which the dialog will close and "" will be returned.
+`multiple`: if `true`, multiple files can be selected, and a list of file paths is returned rather than a single path.
+`start_folder`: if set, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
+"""
+function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, select_folder = false, start_folder = "")
     res = Ref{String}("")
     c = Condition()
 
-    open_dialog(title, parent, filters; timeout, multiple) do filename
+    open_dialog(title, parent, filters; timeout, multiple, select_folder, start_folder) do filename
         res[] = filename
         notify(c)
     end
@@ -391,12 +401,16 @@ function open_dialog(title::AbstractString, parent = nothing, filters::Union{Abs
 end
 
 function open_dialog(callback::Function, title::AbstractString, parent = nothing,
-                    filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, select_folder = false)
+                    filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, select_folder = false, start_folder = "")
     action = select_folder ? FileChooserAction_SELECT_FOLDER : FileChooserAction_OPEN
     dlg = GtkFileChooserNative(title, parent, action, "Open", "Cancel")
     dlgp = GtkFileChooser(dlg)
     if !isempty(filters)
         makefilters!(dlgp, filters)
+    end
+    if start_folder != ""
+        curr = Gtk4.GLib.G_.file_new_for_path(start_folder)
+        Gtk4.G_.set_current_folder(dlgp, GFile(curr))
     end
 
     function on_response(dlg, response_id)
@@ -420,11 +434,20 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
     return dlg
 end
 
-function save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout=-1)
+"""
+    save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, start_folder = "")
+
+Create a dialog for choosing a file to be saved to. Returns the path chosen by the user, or "" if "Cancel" is pressed or the dialog or its parent window `parent` is closed. The window title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
+
+Keyword arguments:
+`timeout`: The optional input `timeout` (disabled by default) can be used to set a time in seconds after which the dialog will close and "" will be returned.
+`start_folder`: if set, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
+"""
+function save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, start_folder = "")
     res = Ref{String}("")
     c = Condition()
 
-    save_dialog(title, parent, filters; timeout) do filename
+    save_dialog(title, parent, filters; timeout, start_folder) do filename
         res[] = filename
         notify(c)
     end
@@ -432,11 +455,15 @@ function save_dialog(title::AbstractString, parent = nothing, filters::Union{Abs
     return res[]
 end
 
-function save_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout=-1)
+function save_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; start_folder = "", timeout=-1)
   dlg = GtkFileChooserNative(title, parent, FileChooserAction_SAVE, "Save", "Cancel")
   dlgp = GtkFileChooser(dlg)
   if !isempty(filters)
       makefilters!(dlgp, filters)
+  end
+  if start_folder != ""
+      curr = Gtk4.GLib.G_.file_new_for_path(start_folder)
+      Gtk4.G_.set_current_folder(dlgp, GFile(curr))
   end
 
   function on_response(dlg, response_id)
@@ -465,7 +492,6 @@ end
 function GtkColorChooserDialog(title::AbstractString, parent)
     return G_.ColorChooserDialog_new(title, parent)
 end
-
 
 function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
     color = Ref{Union{Nothing,_GdkRGBA}}()

@@ -79,11 +79,11 @@ end
 end
 
 @test foo1(3,5) == 8
-@test @test_logs (:warn, "Error in @guarded callback") bar1(3,5) == nothing
+@test @test_logs (:warn, "Error in @guarded callback") bar1(3,5) === nothing
 @test foo2(3,5) == 8
-@test @test_logs (:warn, "Error in @guarded callback") bar2(3,5) == nothing
+@test @test_logs (:warn, "Error in @guarded callback") bar2(3,5) === nothing
 @test foo3(3,5) == 8
-@test @test_logs (:warn, "Error in @guarded callback") bar3(3,5) == nothing
+@test @test_logs (:warn, "Error in @guarded callback") bar3(3,5) === nothing
 @test @test_logs (:warn, "Error in @guarded callback") bar4(3,5) == unhandled
 
 end

@@ -7,7 +7,7 @@ Dialogs are transient windows that show information or ask the user for informat
 
 ## Message dialogs
 
-Gtk4.jl supports `GtkMessageDialog` and provides several convenience functions:  `info_dialog`, `ask_dialog`, `warn_dialog`, and `error_dialog`.  Each takes a string for a message to show and an optional parent container, and returns nothing, except for `ask_dialog` which returns `true` if the user clicks the button corresponding to `yes`.
+Gtk4.jl supports `GtkMessageDialog` and provides several convenience functions:  `info_dialog`, `ask_dialog`, `warn_dialog`, and `error_dialog`.  Each takes a string for a message to show and an optional parent container, and returns nothing, except for `ask_dialog` which returns `true` if the user clicks the button corresponding to yes.
 
 For all dialog convenience functions, there are two ways of using them. For use in the REPL or an interactive script, the following forms can be used:
 
@@ -40,9 +40,9 @@ end
 ## File Dialogs
 
 A common reason to use a dialog is to allow the user to pick a file to be opened or saved to.
-For this Gtk4.jl provides the functions `open_dialog` and `save_dialog`.
+For this Gtk4.jl provides the functions `open_dialog` for choosing an existing file or directory to be opened and `save_dialog` for choosing a filename to be saved to.
 These use `GtkFileChooserNative`, which uses the operating system's native dialogs where possible.
-The syntax of these functions are similar to the message dialogs.
+The syntax of these functions is similar to the message dialogs.
 For a callback in a GUI (for an "Open File" button, for example), you can use
 ```julia
 function f(filename)
@@ -58,6 +58,10 @@ Julia's `do` syntax can be used to construct the function `f` in a convenient wa
 open_dialog("Pick a file to open", parent) do filename
    # call a function here to do something with the file
 end
+```
+The dialog can be preset to a particular directory using the optional argument `start_folder`:
+```julia
+open_dialog(f, "Pick a file to open", parent; start_folder = "/data")
 ```
 The same syntax works for `save_dialog`.
 
