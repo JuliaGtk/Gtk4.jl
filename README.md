@@ -15,10 +15,10 @@ Documentation for this package can be found [here](https://juliagtk.github.io/Gt
 ## Current status
 Gtk4.jl is not recommended on 32 bit systems because of a deficiency with how GObject introspection is done here.
 
-## Enabling GTK4's EGL backend
+## Enabling GTK4's EGL backend (Linux)
 On Wayland, a Cairo-based fallback backend will be used unless you tell `libglvnd_jll` where to find libEGL. This can be done by setting the environment variable __EGL_VENDOR_LIBRARY_DIRS. See [here](https://gitlab.freedesktop.org/glvnd/libglvnd/-/blob/master/src/EGL/icd_enumeration.md) for details.
 
-For convenience, in Gtk4.jl this can be set as a preference using Preferences.jl (for a particular Julia environment):
+For convenience, in Gtk4.jl this can be set as a preference for a particular Julia environment using Preferences.jl:
 ```julia
 using Gtk4
 Gtk4.set_EGL_vendorlib_dirs("/usr/share/glvnd/egl_vendor.d")

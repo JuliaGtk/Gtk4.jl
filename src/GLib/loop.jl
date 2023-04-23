@@ -132,11 +132,19 @@ end
 """
     get_uv_loop_integration()
 
-Get Gtk4.jl's libuv loop integration setting.
+Get Gtk4.jl's libuv loop integration setting: "auto", "enabled", or "disabled".
 
 See also [`set_uv_loop_integration`](@ref).
 """
 get_uv_loop_integration() = @load_preference("uv_loop_integration", "auto")
+
+"""
+    is_uv_loop_integration_enabled()
+
+Get whether Gtk4.jl's libuv loop integration is enabled.
+
+See also [`set_uv_loop_integration`](@ref).
+"""
 is_uv_loop_integration_enabled() = uv_int_enabled[]
 
 GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)

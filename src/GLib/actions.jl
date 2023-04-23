@@ -11,6 +11,7 @@ delete!(m::GActionMap, a::AbstractString) = (G_.remove_action(m, a); m)
 
 push!(g::GSimpleActionGroup, a) = (push!(GActionMap(g), GAction(a)); g)
 delete!(g::GSimpleActionGroup, a::AbstractString) = (delete!(GActionMap(g), a); g)
+list_actions(g) = G_.list_actions(GActionGroup(g))
 
 function add_action(m::GActionMap, name::AbstractString, handler::Function)
     action = GSimpleAction(name)
@@ -27,6 +28,11 @@ function add_stateful_action(m::GActionMap, name::AbstractString, initial_state,
 end
 
 set_state(m::GSimpleAction, v::GVariant) = G_.set_state(m,v)
+
+function GDBusActionGroup(app::GApplication, bus_name, object_path)
+    conn = G_.get_dbus_connection(app)
+    G_.get(conn, bus_name, object_path)
+end
 
 GMenu() = G_.Menu_new()
 function GMenu(i::GMenuItem)
