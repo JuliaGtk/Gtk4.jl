@@ -23,6 +23,8 @@ using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor
 
 using ..GdkPixbufLib
 
+using Preferences
+
 using Reexport
 @reexport using Graphics
 import .Graphics: width, height, getgc, scale
@@ -104,9 +106,14 @@ include("tree.jl")
 include("basic_exports.jl")
 
 global const lib_version = VersionNumber(
-      G_.get_major_version(),
-      G_.get_minor_version(),
-      G_.get_micro_version())
+    G_.get_major_version(),
+    G_.get_minor_version(),
+    G_.get_micro_version())
+
+function set_EGL_vendorlib_dirs(dirs)
+    @set_preferences!("EGL_vendorlib_dirs" => dirs)
+    @info("Setting will take effect after restarting Julia.")
+end
 
 function __init__()
     in(:Gtk, names(Main, imported=true)) && error("Gtk4 is incompatible with Gtk.")
@@ -128,12 +135,18 @@ function __init__()
         # to issue https://github.com/JuliaGraphics/Gtk.jl/issues/469
         ENV["XKB_CONFIG_ROOT"] = joinpath(Xorg_xkeyboard_config_jll.artifact_dir::String,
                                           "share", "X11", "xkb")
+
+        # Tell libglvnd where to find libEGL
+        d = @load_preference("EGL_vendorlib_dirs", "")
+        if d != ""
+            ENV["__EGL_VENDOR_LIBRARY_DIRS"] = d
+        end
     end
 
     success = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
     success || error("gtk_init_check() failed.")
 
-    if Sys.islinux()
+    if Sys.islinux() || Sys.isfreebsd()
         G_.set_default_icon_name("julia")
     end
 

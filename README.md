@@ -12,5 +12,16 @@ Most of the code for GLib support (`GType`, `GValue`, `GObject`, etc.) was copie
 
 Documentation for this package can be found [here](https://juliagtk.github.io/Gtk4.jl/dev/). Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
 
-## CURRENT STATUS
-With a recent update of GTK4_jll to 4.6.9, Gtk4.jl is less buggy on Mac and Windows than before. It is not recommended on 32 bit systems because of a deficiency with how GObject introspection is done here.
+## Current status
+Gtk4.jl is not recommended on 32 bit systems because of a deficiency with how GObject introspection is done here.
+
+## Enabling GTK4's EGL backend
+On Wayland, a Cairo-based fallback backend will be used unless you tell `libglvnd_jll` where to find libEGL. This can be done by setting the environment variable __EGL_VENDOR_LIBRARY_DIRS. See [here](https://gitlab.freedesktop.org/glvnd/libglvnd/-/blob/master/src/EGL/icd_enumeration.md) for details.
+
+For convenience, in Gtk4.jl this can be set as a preference using Preferences.jl (for a particular Julia environment):
+```julia
+using Gtk4
+Gtk4.set_EGL_vendorlib_dirs("/usr/share/glvnd/egl_vendor.d")
+[ Info: Setting will take effect after restarting Julia.
+```
+where "/usr/share/glvnd/egl_vendor.d" is a typical location for Mesa's libEGL (this should be modified if it's somewhere else on your distribution). Other vendor-provided libraries may be in other locations, and a colon-separated list of directories can be used for that situation. **Note that this has only been tested for the Mesa-provided libEGL on Fedora and Ubuntu.**
