@@ -124,7 +124,13 @@ function monitor(w::GtkWidget)
     tl = toplevel(w)
     tl === nothing && return nothing
     s = G_.get_surface(GtkNative(tl))
-    G_.get_monitor_at_surface(d,s)
+    # sometimes `get_monitor_at_surface` returns NULL when it shouldn't
+    # should be unnecessary in a future version of GTK4_jll: https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4917
+    try
+        G_.get_monitor_at_surface(d,s)
+    catch e
+        nothing
+    end
 end
 
 """
