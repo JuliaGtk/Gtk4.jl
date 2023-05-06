@@ -133,7 +133,7 @@ end
 function make_gvalue_from_fundamental_type(i,cm)
   (name, ctype, juliatype, g_value_fn, g_variant_fn) = fundamental_types[i]
   fundamental_ids[i] === :error && return
-  if juliatype !== Union{}
+  if juliatype !== Union{} && g_value_fn != :error
       if juliatype !==GBoxed
           Core.eval(cm, quote
             function settype!(v::Base.Ref{GValue}, ::Type{T}) where T <: $juliatype
@@ -162,7 +162,7 @@ function make_gvalue_from_fundamental_type(i,cm)
   if g_value_fn == :static_string
       g_value_fn = :string
   end
-  if juliatype !== Union{}
+  if juliatype !== Union{} && g_value_fn !== :error
       Core.eval(cm, quote
           function Base.getindex(v::Ref{GValue}, ::Type{T}) where T <: $juliatype
               x = ccall(($(string("g_value_get_", g_value_fn)), GLib.libgobject), $ctype, (Ptr{GValue},), v)
