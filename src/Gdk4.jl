@@ -18,17 +18,11 @@ function GdkRGBA(rgba::AbstractString)
    r
 end
 
-## GdkTexture
-
-GdkTexture(p::GdkPixbuf) = G_.Texture_new_for_pixbuf(p)
-
 ## GdkCursor
 
-function GdkCursor(name::AbstractString, fallback = nothing)
-   G_.Cursor_new_from_name(name, fallback)
-end
-function GdkCursor(texture::GdkTexture, hotspot_x::Integer, hotspot_y::Integer, fallback = nothing)
-   G_.Cursor_new_from_texture(texture, hotspot_x, hotspot_y, fallback)
+GdkCursor(name::AbstractString) = G_.Cursor_new_from_name(name, nothing)
+function GdkCursor(texture::GdkTexture, hotspot_x::Integer, hotspot_y::Integer)
+   G_.Cursor_new_from_texture(texture, hotspot_x, hotspot_y, nothing)
 end
 
 ## GdkDisplay

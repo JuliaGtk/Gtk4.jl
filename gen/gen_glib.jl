@@ -60,7 +60,9 @@ struct_skiplist=vcat(disguised, special, [:Cond,:HashTableIter,:Hook,
     :RecMutex,:Scanner,
     :TestLogBuffer,:TestLogMsg,:Thread,:ThreadPool,:Tree,:UriParamsIter])
 
-_, c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=import_as_opaque)
+constructor_skiplist=[:new,:new_from_unix_utc,:new_now_utc,:new_utc,:new_maybe]
+
+_, c = GI.all_struct_exprs!(exprs,exports,ns;constructor_skiplist=constructor_skiplist,excludelist=struct_skiplist,import_as_opaque=import_as_opaque)
 GI.append_struc_docs!(exprs, "glib", dglib, c, ns)
 push!(exprs,exports)
 

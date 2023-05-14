@@ -58,7 +58,7 @@ function struct_cache_expr!(exprs)
     push!(exprs,unblock(gboxed_types_list))
 end
 
-function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,excludelist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false)
+function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false)
     struct_skiplist=excludelist
 
     if structs === nothing
@@ -103,6 +103,14 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         end
     end
 
+    for ss in structs
+        ssi=gi_find_by_name(ns,ss)
+        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist)
+        if !isempty(constructors)
+            append!(exprs,constructors)
+        end
+    end
+
     if print_summary
         printstyled("Generated ",imported," structs out of ",length(structs),"\n";color=:green)
     end
@@ -110,7 +118,7 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
     struct_skiplist
 end
 
-function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false)
+function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false)
     struct_skiplist=excludelist
     loaded=Symbol[]
 
@@ -148,6 +156,14 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
             gboxed_cache_init() = append!(GLib.gboxed_types,gboxed_types)
         end
         push!(exprs,unblock(gboxed_types_init))
+    end
+
+    
+    for ssi in ss
+        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist)
+        if !isempty(constructors)
+            append!(exprs,constructors)
+        end
     end
 
     if print_summary
@@ -208,7 +224,7 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
     handled_symbols
 end
 
-function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skiplist=Symbol[],output_cache_define=true,output_cache_init=true)
+function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skiplist=Symbol[],constructor_skiplist=[],output_cache_define=true,output_cache_init=true)
     objects=get_all(ns,GIObjectInfo)
 
     imported=length(objects)
@@ -244,6 +260,15 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
             gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers,gtype_wrapper_cache)
         end
         push!(exprs,gtype_cache_init)
+    end
+    for o in objects
+        if in(get_name(o), skiplist)
+            continue
+        end
+        constructors = get_constructors(o;skiplist=constructor_skiplist, struct_skiplist=skiplist)
+        if !isempty(constructors)
+            append!(exprs,constructors)
+        end
     end
     if print_summary
         printstyled("Created ",imported," objects out of ",length(objects),"\n";color=:green)

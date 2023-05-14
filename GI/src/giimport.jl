@@ -301,16 +301,7 @@ function gobject_decl(objectinfo)
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function $leafname(args...; kwargs...)
-            w = $oname(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[$(QuoteNode(oname))] = $leafname
-        function $oname(args...; kwargs...)
-            $leafname(args...; kwargs...)
-        end
     end
     push!(exprs, decl)
     exprs
@@ -633,9 +624,7 @@ end
 
 const ObjectLike = Union{GIObjectInfo, GIInterfaceInfo}
 
-function typename(info::ObjectLike)
-    get_type_name(info)
-end
+typename(info::ObjectLike) = get_type_name(info)
 
 function extract_type(typeinfo::GITypeInfo, basetype::Type{T}) where {T<:GObject}
     interf_info = get_interface(typeinfo)
@@ -791,6 +780,98 @@ function make_ccall(libs::AbstractArray, id, rtype, args)
     make_ccall(slib, id, rtype, args)
 end
 
+function get_constructors(info::Union{GIStructInfo,GIObjectInfo};skiplist=Symbol[],struct_skiplist=Symbol[])
+    methods=get_methods(info)
+    name=get_name(info)
+    nsstring=get_namespace(info)
+    sname=Symbol("G_.",name)
+    tname=get_type_name(info)
+    outs=Expr[]
+    gskiplist=[Symbol(nsstring,i) for i in struct_skiplist]
+    ugskiplist=[Symbol("_",nsstring,i) for i in struct_skiplist]
+    for minfo in methods
+        if is_deprecated(minfo) || get_name(minfo) in skiplist
+            continue
+        end
+        if get_flags(minfo) & GIFunction.IS_CONSTRUCTOR != 0
+            jargs = get_jargs(minfo)
+            bad = false
+            for argtyp in types(jargs)
+                if (argtyp in gskiplist) || (argtyp in ugskiplist)
+                    bad=true
+                end
+            end
+            if bad
+                continue
+            end
+            mname = constructor_name(minfo, get_name(minfo))
+            fun = if isa(info, GIObjectInfo) && length(get_properties(info))>0
+                quote
+                    function $tname($(jparams(jargs)...); kwargs...)
+                        obj = G_.$mname($(names(jargs)...))
+                        GLib.setproperties!(obj; kwargs...)
+                        obj
+                    end
+                end
+            else
+                quote
+                    function $tname($(jparams(jargs)...))
+                        G_.$mname($(names(jargs)...))
+                    end
+                end
+            end
+
+            push!(outs,unblock(fun))
+        end
+    end
+    outs
+end
+
+function get_jargs(info::GIFunctionInfo)
+    flags = get_flags(info)
+    args = get_args(info)
+    jargs = Arg[]
+    if flags & GIFunction.IS_METHOD != 0
+        object = get_container(info)
+        if object !== nothing
+            typeinfo = extract_type(InstanceType,object)
+            push!(jargs, Arg(:instance, typeinfo.jtype))
+        end
+    end
+    for arg in args
+        is_skip(arg) && continue
+        aname = Symbol("_$(get_name(arg))")
+        typ = extract_type(arg)
+        dir = get_direction(arg)
+        if dir != GIDirection.OUT
+            push!(jargs, Arg( aname, typ.jtype))
+        end
+    end
+
+    # go through args again, remove length jargs for array inputs
+    for arg in args
+        is_skip(arg) && continue
+        typ = extract_type(arg)
+        typeinfo=get_type(arg)
+        arrlen=get_array_length(typeinfo)
+        if typ.gitype == GICArray && arrlen >= 0
+            len_name=Symbol("_",get_name(args[arrlen+1]))
+            len_i=findfirst(a->(a.name === len_name),jargs)
+            len_i !== nothing && deleteat!(jargs,len_i)
+        end
+    end
+    jargs
+end
+
+function constructor_name(info, mname)
+    object = get_container(info)
+    if object !== nothing
+        return Symbol("$(get_name(object))_$mname")
+    else
+        return mname
+    end
+end
+
 # with some partial-evaluation half-magic
 # (or maybe just jit-compile-time macros)
 # this could be simplified significantly
@@ -812,10 +893,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         end
     end
     if flags & GIFunction.IS_CONSTRUCTOR != 0
-        object = get_container(info)
-        if object !== nothing
-            name = Symbol("$(get_name(object))_$name")
-        end
+        name = constructor_name(info, name)
     end
     rettypeinfo=get_return_type(info)
     rettype = extract_type(rettypeinfo)
@@ -829,9 +907,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         end
     end
     for arg in args
-        if is_skip(arg)
-            continue
-        end
+        is_skip(arg) && continue
         aname = Symbol("_$(get_name(arg))")
         typ = extract_type(arg)
         dir = get_direction(arg)
@@ -868,9 +944,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
     # go through args again, remove length jargs for array inputs, add call
     # to length() to prologue
     for arg in args
-        if is_skip(arg)
-            continue
-        end
+        is_skip(arg) && continue
         typ = extract_type(arg)
         aname = Symbol("_$(get_name(arg))")
         typeinfo=get_type(arg)
@@ -883,9 +957,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
                 push!(prologue, :($len_name = length($aname)))
             end
             len_i=findfirst(==(len_name),retvals)
-            if len_i !== nothing
-                deleteat!(retvals,len_i)
-            end
+            len_i !== nothing && deleteat!(retvals,len_i)
         end
     end
     if rettype.gitype == GICArray
@@ -893,9 +965,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         if arrlen >=0
             len_name=Symbol("_",get_name(args[arrlen+1]))
             len_i=findfirst(==(len_name),retvals)
-            if len_i !==nothing
-                deleteat!(retvals,len_i)
-            end
+            len_i !== nothing && deleteat!(retvals,len_i)
         end
     end
 

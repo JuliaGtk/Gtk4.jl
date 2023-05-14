@@ -469,6 +469,60 @@ $(Expr(:toplevel, quote
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
+    function GBytes(_data)
+        G_.Bytes_new_take(_data)
+    end
+    function GDate(_day::Integer, _month, _year::Integer)
+        G_.Date_new_dmy(_day, _month, _year)
+    end
+    function GDate(_julian_day::Integer)
+        G_.Date_new_julian(_julian_day)
+    end
+    function GDateTime(_text::Union{AbstractString, Symbol}, _default_tz::Maybe(GTimeZone))
+        G_.DateTime_new_from_iso8601(_text, _default_tz)
+    end
+    function GDateTime(_t::Integer)
+        G_.DateTime_new_from_unix_local(_t)
+    end
+    function GDateTime(_year::Integer, _month::Integer, _day::Integer, _hour::Integer, _minute::Integer, _seconds::Real)
+        G_.DateTime_new_local(_year, _month, _day, _hour, _minute, _seconds)
+    end
+    function GDateTime(_tz::GTimeZone)
+        G_.DateTime_new_now(_tz)
+    end
+    function GDateTime()
+        G_.DateTime_new_now_local()
+    end
+    function GMainContext(_flags)
+        G_.MainContext_new_with_flags(_flags)
+    end
+    function GMappedFile(_fd::Integer, _writable::Bool)
+        G_.MappedFile_new_from_fd(_fd, _writable)
+    end
+    function GString(_init::Union{AbstractString, Symbol}, _len::Integer)
+        G_.String_new_len(_init, _len)
+    end
+    function GString(_dfl_size::Integer)
+        G_.String_sized_new(_dfl_size)
+    end
+    function GTimeZone(_identifier::Maybe(Union{AbstractString, Symbol}))
+        G_.TimeZone_new_identifier(_identifier)
+    end
+    function GTimeZone()
+        G_.TimeZone_new_local()
+    end
+    function GTimeZone(_seconds::Integer)
+        G_.TimeZone_new_offset(_seconds)
+    end
+    function GVariantType(_element::GVariantType)
+        G_.VariantType_new_array(_element)
+    end
+    function GVariantType(_key::GVariantType, _value::GVariantType)
+        G_.VariantType_new_dict_entry(_key, _value)
+    end
+    function GVariantType(_items)
+        G_.VariantType_new_tuple(_items)
+    end
     @doc "A simple refcounted data type representing an immutable sequence of zero or\nmore bytes from an unspecified origin.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Bytes.html)." GBytes
     @doc "An opaque structure representing a checksumming operation.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Checksum.html)." GChecksum
     @doc "Represents a day between January 1, Year 1 and a few thousand years in\nthe future. None of its members should be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Date.html)." GDate

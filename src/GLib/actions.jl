@@ -1,10 +1,4 @@
-function GSimpleAction(name::AbstractString, param_type = nothing, state = nothing)
-    if state === nothing
-        G_.SimpleAction_new(name, param_type)
-    else
-        G_.SimpleAction_new_stateful(name, param_type, state)
-    end
-end
+GSimpleAction(name::AbstractString; kwargs...) = GSimpleAction(name, nothing; kwargs...)
 
 push!(m::GActionMap, a::GAction) = (G_.add_action(m,a); m)
 delete!(m::GActionMap, a::AbstractString) = (G_.remove_action(m, a); m)
@@ -34,7 +28,6 @@ function GDBusActionGroup(app::GApplication, bus_name, object_path)
     G_.get(conn, bus_name, object_path)
 end
 
-GMenu() = G_.Menu_new()
 function GMenu(i::GMenuItem)
     m = GMenu()
     G_.set_submenu(i,m)

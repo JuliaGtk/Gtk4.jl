@@ -27,7 +27,7 @@ toplevel, exprs, exports = GI.output_exprs()
 
 # These are marked as "disguised" and what this means is not documentated AFAICT.
 disguised = Symbol[]
-struct_skiplist=vcat(disguised, Symbol[])
+struct_skiplist=vcat(disguised, Symbol[:ShaderArgsBuilder])
 
 GI.struct_cache_expr!(exprs)
 struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:RoundedRect],output_cache_init=false)

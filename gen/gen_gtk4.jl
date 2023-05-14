@@ -28,19 +28,20 @@ toplevel, exprs, exports = GI.output_exprs()
 
 # These are marked as "disguised" and what this means is not documentated AFAICT.
 disguised = Symbol[]
-struct_skiplist=vcat(disguised, [:PageRange])
+struct_skiplist=vcat(disguised, [:PageRange,:TreeRowReference])
+constructor_skiplist=[:new_first]
 
 GI.struct_cache_expr!(exprs)
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:BitsetIter,:BuildableParser],output_cache_init=false)
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,constructor_skiplist=constructor_skiplist,import_as_opaque=[:BitsetIter,:BuildableParser],output_cache_init=false)
 GI.append_struc_docs!(exprs, "gtk4", d, c, ns)
 
 ## objects
 
 object_skiplist=[:CClosureExpression,:ClosureExpression,:ConstantExpression,:ObjectExpression,:PropertyExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
 
-c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist,output_cache_define=false,output_cache_init=false)
-GI.append_object_docs!(exprs, "gtk4", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns)
+c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource],output_cache_define=false,output_cache_init=false)
+GI.append_object_docs!(exprs, "gtk4", d, c, ns)
 
 push!(exprs,exports)
 

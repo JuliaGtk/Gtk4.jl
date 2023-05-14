@@ -1,14 +1,8 @@
-GtkLabel(title) = G_.Label_new(title)
-
 GtkTextBuffer() = G_.TextBuffer_new(nothing)
-
-GtkTextView() = G_.TextView_new()
-GtkTextView(buffer::GtkTextBuffer) = G_.TextView_new_with_buffer(buffer)
 
 GtkTextMark(left_gravity::Bool = false) = G_.TextMark_new(nothing, left_gravity)
 
 GtkTextTag() = G_.TextTag_new(nothing)
-GtkTextTag(name::AbstractString) = G_.TextTag_new(name)
 
 const TI = Union{Ref{_GtkTextIter}, _GtkTextIter}
 zero(::Type{_GtkTextIter}) = _GtkTextIter()
@@ -524,9 +518,10 @@ function user_action(f::Function, buffer::GtkTextBuffer)
 end
 
 function create_tag(buffer::GtkTextBuffer, tag_name::AbstractString; properties...)
-    tag = GtkTextTag(ccall((:gtk_text_buffer_create_tag, libgtk4), Ptr{GObject},
+    tag = ccall((:gtk_text_buffer_create_tag, libgtk4), Ptr{GObject},
                 (Ptr{GObject}, Ptr{UInt8}, Ptr{Nothing}),
-                buffer, bytestring(tag_name), C_NULL))
+                           buffer, bytestring(tag_name), C_NULL)
+    tag = convert(GtkTextTag, tag)
     for (k, v) in properties
         set_gtk_property!(tag, k, v)
     end

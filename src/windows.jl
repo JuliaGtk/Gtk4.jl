@@ -1,4 +1,4 @@
-function GtkWindow(title::Union{Nothing, AbstractString} = nothing, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
+function GtkWindow(title::Union{Nothing, AbstractString}, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
     win = G_.Window_new()
     if title !== nothing
         G_.set_title(win, title)
@@ -102,7 +102,6 @@ push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
 setindex!(w::GtkWindow, widget::Union{Nothing,GtkWidget}) = G_.set_child(w, widget)
 getindex(w::GtkWindow) = G_.get_child(w)
 
-GtkWindowGroup() = G_.WindowGroup_new()
 function push!(wg::GtkWindowGroup, w::GtkWindow)
     G_.add_window(wg,w)
     wg
@@ -112,20 +111,17 @@ function delete!(wg::GtkWindowGroup, w::GtkWindow)
     wg
 end
 
-GtkApplicationWindow(app::GtkApplication) = G_.ApplicationWindow_new(app)
 function GtkApplicationWindow(app::GtkApplication, title::AbstractString)
     win = GtkApplicationWindow(app)
     G_.set_title(win, title)
     win
 end
 
-GtkScrolledWindow() = G_.ScrolledWindow_new()
 setindex!(w::GtkScrolledWindow, widg::Union{Nothing,GtkWidget}) = G_.set_child(w,widg)
 getindex(w::GtkScrolledWindow) = G_.get_child(w)
 
 ## GtkHeaderBar
 
-GtkHeaderBar() = G_.HeaderBar_new()
 push!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_end(hb, w); hb)
 pushfirst!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_start(hb, w); hb)
 delete!(hb::GtkHeaderBar, w::GtkWidget) = (G_.remove(hb, w); hb)
@@ -304,9 +300,11 @@ end
 
 function GtkFileChooserDialog(title::AbstractString, parent::Union{Nothing,GtkWindow}, action, button_text_response; kwargs...)
     parent = (parent === nothing ? C_NULL : parent)
-    w = GtkFileChooserDialog(ccall((:gtk_file_chooser_dialog_new, libgtk4), Ptr{GObject},
+    d = ccall((:gtk_file_chooser_dialog_new, libgtk4), Ptr{GObject},
                 (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
-                title, parent, action, C_NULL); kwargs...)
+                                   title, parent, action, C_NULL)
+    w = convert(GtkFileChooserDialog, d)
+    # apply properties
     for (k, v) in button_text_response
         push!(w, k, Integer(v))
     end
@@ -319,16 +317,16 @@ function GtkFileChooserNative(title::AbstractString, parent::Union{Nothing,GtkWi
 end
 
 const SingleComma = r"(?<!,), (?!,)"
-function GtkFileFilter(; name::Union{AbstractString, Nothing} = nothing, pattern::AbstractString = "", mimetype::AbstractString = "")
+function GtkFileFilter(pattern::AbstractString, mimetype::AbstractString = ""; kwargs...)
     filt = G_.FileFilter_new()
     if !isempty(pattern)
-        name === nothing && (name = pattern)
+        filt.name = pattern
         for p in split(pattern, SingleComma)
             p = replace(p, ", , " => ", ")   # escape sequence for , is , ,
             G_.add_pattern(filt,p)
         end
     elseif !isempty(mimetype)
-        name === nothing && (name = mimetype)
+        filt.name = mimetype
         for m in split(mimetype, SingleComma)
             m = replace(m, ", , " => ", ")
             G_.add_mime_type(filt, m)
@@ -336,10 +334,9 @@ function GtkFileFilter(; name::Union{AbstractString, Nothing} = nothing, pattern
     else
         G_.add_pixbuf_formats(filt)
     end
-    G_.set_name(filt, name === nothing || isempty(name) ? nothing : name)
+    GLib.setproperties!(filt; kwargs...)
     return filt
 end
-GtkFileFilter(pattern::AbstractString; name::Union{AbstractString, Nothing} = nothing) = GtkFileFilter(; name = name, pattern = pattern)
 
 GtkFileFilter(filter::GtkFileFilter) = filter
 
@@ -488,10 +485,6 @@ function save_dialog(callback::Function, title::AbstractString, parent = nothing
 end
 
 ## Other chooser dialogs
-
-function GtkColorChooserDialog(title::AbstractString, parent)
-    return G_.ColorChooserDialog_new(title, parent)
-end
 
 function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
     color = Ref{Union{Nothing,_GdkRGBA}}()

@@ -1,5 +1,5 @@
-# Note: Packages that depend on Gtk4 should do precompilation with SnoopPrecompile if possible.
-# However, SnoopPrecompile does not run a package's __init__(), which is pretty essential
+# Note: Packages that depend on Gtk4 should do precompilation with PrecompileTools if possible.
+# However, PrecompileTools does not run a package's __init__(), which is pretty essential
 # for almost anything in Gtk4.jl to work, so we don't use it here.
 
 function _precompile_()

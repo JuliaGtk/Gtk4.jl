@@ -1,16 +1,14 @@
 ## GtkComboBox
 
-GtkComboBox() = G_.ComboBox_new()
-
 setindex!(f::GtkComboBox, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkComboBox) = G_.get_child(f)
 
-GtkComboBoxText(with_entry::Bool = false) =
-        if with_entry
-            G_.ComboBoxText_new_with_entry()
-        else
-            G_.ComboBoxText_new()
-        end
+GtkComboBoxText(with_entry::Bool) =
+    if with_entry
+        G_.ComboBoxText_new_with_entry()
+    else
+        G_.ComboBoxText_new()
+    end
 push!(cb::GtkComboBoxText, text::AbstractString) = (G_.append_text(cb, text); cb)
 pushfirst!(cb::GtkComboBoxText, text::AbstractString) = (G_.prepend_text(cb, text); cb)
 insert!(cb::GtkComboBoxText, i::Integer, text::AbstractString) = (G_.insert_text(cb, i - 1, text); cb)
@@ -25,7 +23,7 @@ delete!(cb::GtkComboBoxText, i::Integer) = (G_.remove(cb, i-1); cb)
 
 ## GtkStringList
 
-GtkStringList(list = nothing) = G_.StringList_new(list)
+GtkStringList() = G_.StringList_new(nothing)
 push!(sl::GtkStringList, str) = (G_.append(sl, str); sl)
 deleteat!(sl::GtkStringList, i::Integer) = (G_.remove(sl, i-1); sl)
 empty!(sl::GtkStringList) = (G_.splice(sl, 0, length(sl), nothing); sl)
@@ -37,7 +35,7 @@ eltype(::Type{GtkStringList}) = String
 
 ## GtkDropdown
 
-GtkDropDown(model=nothing) = G_.DropDown_new(model, nothing)
+GtkDropDown() = G_.DropDown_new(nothing, nothing)
 GtkDropDown(a::Vector{String}) = G_.DropDown_new_from_strings(a)
 GtkDropDown(a::AbstractArray) = GtkDropDown(string.(collect(a)))
 selected_string(d::GtkDropDown) = G_.get_selected_item(d).string
@@ -57,7 +55,6 @@ GtkGridView(model=nothing, factory=nothing) = G_.GridView_new(model, factory)
 GtkColumnView(model=nothing) = G_.ColumnView_new(model)
 GtkColumnViewColumn(title="", factory=nothing) = G_.ColumnViewColumn_new(title, factory)
 
-GtkSignalListItemFactory() = G_.SignalListItemFactory_new()
 GtkSingleSelection(model) = G_.SingleSelection_new(model)
 GtkMultiSelection(model) = G_.MultiSelection_new(model)
 
@@ -65,7 +62,6 @@ getindex(li::GtkListItem) = G_.get_item(li)
 set_child(li::GtkListItem, w) = G_.set_child(li, w)
 get_child(li::GtkListItem) = G_.get_child(li)
 
-GtkTreeExpander() = G_.TreeExpander_new()
 set_list_row(te::GtkTreeExpander, w) = G_.set_list_row(te, w)
 set_child(te::GtkTreeExpander, w) = G_.set_child(te, w)
 get_child(te::GtkTreeExpander) = G_.get_child(te)

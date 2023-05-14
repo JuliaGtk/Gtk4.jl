@@ -34,24 +34,6 @@ $(Expr(:toplevel, quote
         end
         const _GskRoundedRect = GskRoundedRect
     end
-    mutable struct GskShaderArgsBuilder <: GBoxed
-        handle::Ptr{GskShaderArgsBuilder}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = begin
-                    ccall(("gsk_shader_args_builder_get_type", libgtk4), GType, ())
-                end
-            function GskShaderArgsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
-                    end
-                end
-                x
-            end
-            push!(gboxed_types, GskShaderArgsBuilder)
-        end
-    end
     begin
         struct _GskShadow
             color::_GdkRGBA
@@ -84,10 +66,12 @@ $(Expr(:toplevel, quote
             push!(gboxed_types, GskTransform)
         end
     end
+    function GskTransform()
+        G_.Transform_new()
+    end
     @doc "A color stop in a gradient node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.ColorStop.html)." GskColorStop
     @doc "A location in a parse buffer.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.ParseLocation.html)." GskParseLocation
     @doc "A rectangular region with rounded corners.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.RoundedRect.html)." GskRoundedRect
-    @doc "An object to build the uniforms data for a `GskGLShader`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.ShaderArgsBuilder.html)." GskShaderArgsBuilder
     @doc "The shadow parameters in a shadow node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.Shadow.html)." GskShadow
     @doc "`GskTransform` is an object to describe transform matrices.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.Transform.html)." GskTransform
     begin
@@ -102,16 +86,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GskRendererLeaf(args...; kwargs...)
-            w = GskRenderer(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GskRenderer] = GskRendererLeaf
-        function GskRenderer(args...; kwargs...)
-            GskRendererLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GskBroadwayRenderer <: GskRenderer end
@@ -125,16 +100,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GskBroadwayRendererLeaf(args...; kwargs...)
-            w = GskBroadwayRenderer(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
-        function GskBroadwayRenderer(args...; kwargs...)
-            GskBroadwayRendererLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GskCairoRenderer <: GskRenderer end
@@ -148,16 +114,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GskCairoRendererLeaf(args...; kwargs...)
-            w = GskCairoRenderer(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
-        function GskCairoRenderer(args...; kwargs...)
-            GskCairoRendererLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GskGLRenderer <: GskRenderer end
@@ -171,16 +128,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GskGLRendererLeaf(args...; kwargs...)
-            w = GskGLRenderer(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GskGLRenderer] = GskGLRendererLeaf
-        function GskGLRenderer(args...; kwargs...)
-            GskGLRendererLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GskGLShader <: GObject end
@@ -194,16 +142,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GskGLShaderLeaf(args...; kwargs...)
-            w = GskGLShader(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
-        function GskGLShader(args...; kwargs...)
-            GskGLShaderLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GskNglRenderer <: GskRenderer end
@@ -217,16 +156,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GskNglRendererLeaf(args...; kwargs...)
-            w = GskNglRenderer(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
-        function GskNglRenderer(args...; kwargs...)
-            GskNglRendererLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GskRenderNode end
@@ -242,10 +172,34 @@ $(Expr(:toplevel, quote
             handle::Ptr{GskRenderNode}
         end
     end
+    function GskBroadwayRenderer()
+        G_.BroadwayRenderer_new()
+    end
+    function GskCairoRenderer()
+        G_.CairoRenderer_new()
+    end
+    function GskGLRenderer()
+        G_.GLRenderer_new()
+    end
+    function GskGLShader(_sourcecode::GBytes; kwargs...)
+        obj = G_.GLShader_new_from_bytes(_sourcecode)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GskGLShader(_resource_path::Union{AbstractString, Symbol}; kwargs...)
+        obj = G_.GLShader_new_from_resource(_resource_path)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GskRenderer(_surface::GdkSurface; kwargs...)
+        obj = G_.Renderer_new_for_surface(_surface)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     @doc "A GSK renderer that is using cairo.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.CairoRenderer.html)." GskCairoRenderer
     @doc "A `GskGLShader` is a snippet of GLSL that is meant to run in the\nfragment shader of the rendering pipeline.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.GLShader.html)." GskGLShader
     @doc "`GskRenderNode` is the basic block in a scene graph to be\nrendered using [class@Gsk.Renderer].\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.RenderNode.html)." GskRenderNode
     @doc "`GskRenderer` is a class that renders a scene graph defined via a\ntree of [class@Gsk.RenderNode] instances.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.Renderer.html)." GskRenderer
-    export GskColorStop, _GskColorStop, GskParseLocation, _GskParseLocation, GskRoundedRect, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, _GskShadow, GskTransform, GskBroadwayRenderer, GskCairoRenderer, GskGLRenderer, GskGLShader, GskNglRenderer, GskRenderNode, GskRenderer
+    export GskColorStop, _GskColorStop, GskParseLocation, _GskParseLocation, GskRoundedRect, _GskRoundedRect, GskShadow, _GskShadow, GskTransform, GskBroadwayRenderer, GskCairoRenderer, GskGLRenderer, GskGLShader, GskNglRenderer, GskRenderNode, GskRenderer
 end))
 end

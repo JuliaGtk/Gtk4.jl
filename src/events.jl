@@ -23,44 +23,44 @@ function find_controller(w::GtkWidget, ::Type{T}) where T<: GtkEventController
     i!==nothing ? list[i] : nothing
 end
 
-function GtkEventControllerMotion(widget=nothing)
+function GtkEventControllerMotion(widget::GtkWidget)
     g = G_.EventControllerMotion_new()
-    widget !== nothing && push!(widget, g)
+    push!(widget, g)
     g
 end
-function GtkEventControllerScroll(flags,widget=nothing)
+function GtkEventControllerScroll(flags,widget::GtkWidget)
     g = G_.EventControllerScroll_new(flags)
-    widget !== nothing && push!(widget, g)
+    push!(widget, g)
     g
 end
-function GtkEventControllerKey(widget=nothing)
+function GtkEventControllerKey(widget::GtkWidget)
     g = G_.EventControllerKey_new()
-    widget !== nothing && push!(widget, g)
+    push!(widget, g)
     g
 end
 
-function GtkGestureClick(widget=nothing,button=1)
+function GtkGestureClick(widget::GtkWidget,button=1)
     g = G_.GestureClick_new()
     button != 1 && G_.set_button(g, button)
-    widget !== nothing && push!(widget, g)
+    push!(widget, g)
     g
 end
 
-function GtkGestureDrag(widget=nothing)
+function GtkGestureDrag(widget::GtkWidget)
     g = G_.GestureDrag_new()
-    widget !== nothing && push!(widget, g)
+    push!(widget, g)
     g
 end
 
-function GtkGestureZoom(widget=nothing)
+function GtkGestureZoom(widget::GtkWidget)
     g = G_.GestureZoom_new()
-    widget !== nothing && push!(widget, g)
+    push!(widget, g)
     g
 end
 
-function GtkEventControllerFocus(widget=nothing)
+function GtkEventControllerFocus(widget::GtkWidget)
     g = G_.EventControllerFocus_new()
-    widget !== nothing && push!(widget, g)
+    push!(widget, g)
     g
 end
 

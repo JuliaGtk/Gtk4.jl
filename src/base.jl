@@ -173,7 +173,7 @@ GtkWidgetPaintable(w::GtkWidget) = G_.WidgetPaintable_new(w)
 
 ## CSS, style
 
-function GtkCssProvider(; data = nothing, filename = nothing)
+function GtkCssProvider(data, filename = nothing)
     source_count = (data !== nothing) + (filename !== nothing)
     @assert(source_count <= 1,
         "GtkCssProvider must have at most one data or filename argument")

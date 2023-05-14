@@ -1,6 +1,5 @@
 ## GtkEntry
 
-GtkEntry() = G_.Entry_new()
 fraction(progress::GtkEntry) = G_.get_progress_fraction(progress)
 fraction(progress::GtkEntry, frac) = G_.set_progress_fraction(progress, frac)
 pulse(progress::GtkEntry) = G_.progress_pulse(progress)
@@ -11,17 +10,13 @@ function GtkEntryBuffer(initial_text = nothing)
     G_.EntryBuffer_new(initial_text, -1)
 end
 
-GtkEntryCompletionLeaf() = G_.EntryCompletion_new()
-
 complete(completion::GtkEntryCompletion) = G_.complete(completion)
-
-GtkSearchEntry() = G_.SearchEntry_new()
 
 ## GtkScale
 
-GtkScale(orientation) = G_.Scale_new(convert(Gtk4.Orientation,orientation), nothing)
-GtkScale(orientation, adj::GtkAdjustment) = G_.Scale_new(convert(Gtk4.Orientation,orientation), adj)
-GtkScale(orientation, min, max, step) = G_.Scale_new_with_range(convert(Gtk4.Orientation,orientation), min, max, step)
+GtkScale(orientation::Symbol) = G_.Scale_new(convert(Gtk4.Orientation,orientation), nothing)
+GtkScale(orientation::Symbol, adj::GtkAdjustment) = G_.Scale_new(convert(Gtk4.Orientation,orientation), adj)
+GtkScale(orientation::Symbol, min::Real, max::Real, step::Real) = G_.Scale_new_with_range(convert(Gtk4.Orientation,orientation), min, max, step)
 GtkScale(orientation, scale::AbstractRange) = GtkScale(orientation, minimum(scale), maximum(scale), step(scale))
 function push!(scale::GtkScale, value, position, markup::AbstractString)
     G_.add_mark(scale, value, convert(Gtk4.PositionType,position), markup)
@@ -38,13 +33,11 @@ end
 
 ## GtkScaleButton and GtkVolumeButton
 
-GtkScaleButton(min, max, step, icons = nothing) = G_.ScaleButton_new(min, max, step, icons)
-GtkScaleButton(scale::AbstractRange) = GtkScaleButton(minimum(scale), maximum(scale), step(scale))
+GtkScaleButton(min::Real, max::Real, step::Real; kwargs...) = G_.ScaleButton_new(min, max, step, nothing; kwargs...)
+GtkScaleButton(scale::AbstractRange; kwargs...) = GtkScaleButton(minimum(scale), maximum(scale), step(scale); kwargs...)
 GtkAdjustment(scale::GtkScaleButton) = G_.get_adjustment(scale)
 
 ## GtkAdjustment
-
-GtkAdjustment(value, lower, upper, step_increment, page_increment, page_size) = G_.Adjustment_new(value, lower, upper, step_increment, page_increment, page_size)
 
 # GtkScale is a subclass of GtkRange
 GtkAdjustment(range::GtkRange) = G_.get_adjustment(range)
@@ -81,9 +74,7 @@ end
 
 ## GtkSpinButton
 
-GtkSpinButton(adj::GtkAdjustment, climb_rate::Real, digits::Integer) = G_.SpinButton_new(adj,climb_rate,digits)
-GtkSpinButton(min::Real, max::Real, step::Real) = G_.SpinButton_new_with_range(min, max, step)
-GtkSpinButton(scale::AbstractRange) = GtkSpinButton(minimum(scale), maximum(scale), step(scale))
+GtkSpinButton(scale::AbstractRange; kwargs...) = GtkSpinButton(minimum(scale), maximum(scale), step(scale); kwargs...)
 
 GtkAdjustment(spinButton::GtkSpinButton) = G_.get_adjustment(spinButton)
 

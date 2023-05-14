@@ -349,7 +349,6 @@ function __init__gtype__()
     gtype_wrapper_cache_init()
 end
 
-const main_loop_initialized=Ref(false)
 const uv_int_enabled=Ref(false)
 
 function __init__gmainloop__()
