@@ -39,6 +39,11 @@ which is equivalent to setting them to `NULL` in C (or `None` in Python). A list
 of all possible property names for a GObject instance is returned by
 `gtk_propertynames`.
 
+Properties can be set using keyword arguments in most constructors:
+```julia
+julia> win = GtkWindow(; title="My title", visible=true)
+```
+
 Information about a property, including a description, its GLib type and default
 value, can be found using `propertyinfo`:
 ```julia
