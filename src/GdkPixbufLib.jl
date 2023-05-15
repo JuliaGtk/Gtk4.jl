@@ -206,14 +206,6 @@ function GdkPixbuf(width::Integer, height::Integer, has_alpha = true)
     G_.Pixbuf_new(Colorspace_RGB, has_alpha, 8, width, height)
 end
 
-function GdkPixbuf(filename::AbstractString, width = -1, height = -1, preserve_aspect_ratio = true)
-    if width == -1 && height == -1
-        G_.Pixbuf_new_from_file(filename)
-    else
-        G_.Pixbuf_new_from_file_at_scale(filename, width, height, preserve_aspect_ratio)
-    end
-end
-
 function GdkPixbuf(data::AbstractArray, has_alpha = nothing)
     local pixbuf::Ptr{GObject}
     if data !== nothing # RGB or RGBA array, packed however you wish

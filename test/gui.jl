@@ -644,7 +644,6 @@ end
         set_coordinates(getgc(c), BoundingBox(0, 1, 0, 1))
     end
     win = GtkWindow(cnvs)
-    show(win)
     sleep(1.0)
     s = size(cnvs)
     @test s[1] == 300

@@ -16,6 +16,9 @@ end
 function GtkWindow(widget::GtkWidget, args...)
     w=GtkWindow(args...)
     G_.set_child(w,widget)
+    if isempty(args) # to avoid breaking too much code downstream, show by default
+        show(w)
+    end
     w
 end
 
