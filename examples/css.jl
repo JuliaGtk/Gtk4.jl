@@ -19,7 +19,7 @@ button:hover {
 
 win=GtkWindow("My tacky app")
 
-cssprov=GtkCssProvider(data=css)
+cssprov=GtkCssProvider(css)
 
 b=GtkButton("Use default GTK style")
 b2=GtkButton("Apply tacky style")

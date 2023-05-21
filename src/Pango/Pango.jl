@@ -72,7 +72,6 @@ Base.keys(ff::PangoFontFamily) = 1:length(ff)
 PangoFontDescription(s::AbstractString) = G_.font_description_from_string(s)
 
 PangoLayout(cr::cairoContext) = G_.create_layout(cr)
-PangoLayout(c::PangoContext) = G_.Layout_new(c)
 
 PangoContext(fm::PangoFontMap) = G_.create_context(fm)
 getindex(pc::PangoContext, fd::PangoFontDescription) = G_.load_font(pc, fd)

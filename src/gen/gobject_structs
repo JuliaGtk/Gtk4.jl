@@ -185,16 +185,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GBindingLeaf(args...; kwargs...)
-            w = GBinding(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GBinding] = GBindingLeaf
-        function GBinding(args...; kwargs...)
-            GBindingLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GBindingGroup <: GObject end
@@ -208,16 +199,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GBindingGroupLeaf(args...; kwargs...)
-            w = GBindingGroup(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GBindingGroup] = GBindingGroupLeaf
-        function GBindingGroup(args...; kwargs...)
-            GBindingGroupLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GInitiallyUnowned <: GObject end
@@ -231,16 +213,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GInitiallyUnownedLeaf(args...; kwargs...)
-            w = GInitiallyUnowned(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GInitiallyUnowned] = GInitiallyUnownedLeaf
-        function GInitiallyUnowned(args...; kwargs...)
-            GInitiallyUnownedLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GTypeModule <: GObject end
@@ -254,21 +227,17 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GTypeModuleLeaf(args...; kwargs...)
-            w = GTypeModule(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GTypeModule] = GTypeModuleLeaf
-        function GTypeModule(args...; kwargs...)
-            GTypeModuleLeaf(args...; kwargs...)
-        end
     end
     begin
         gtype_wrapper_cache_init() = begin
                 merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
             end
+    end
+    function GBindingGroup(; kwargs...)
+        obj = G_.BindingGroup_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
     end
     @doc "#GBinding is the representation of a binding between a property on a\n#GObject instance (or source) and another property on another #GObject\ninstance (or target).\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.Binding.html)." GBinding
     @doc "The #GBindingGroup can be used to bind multiple properties\nfrom an object collectively.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.BindingGroup.html)." GBindingGroup

@@ -1,5 +1,3 @@
-GtkGLArea() = G_.GLArea_new()
-
 """
     queue_render(w::GtkGLArea)
 

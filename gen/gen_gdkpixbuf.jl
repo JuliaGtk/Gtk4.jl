@@ -39,7 +39,7 @@ GI.append_struc_docs!(exprs, "gdk-pixbuf", d, c, ns)
 
 ## objects
 
-c = GI.all_objects!(exprs,exports,ns)
+c = GI.all_objects!(exprs,exports,ns;constructor_skiplist=[:new_from_resource,:new_with_mime_type,:new_from_resource_at_scale])
 GI.append_object_docs!(exprs, "gdk-pixbuf", d, c, ns)
 push!(exprs,exports)
 

@@ -2,7 +2,9 @@
 
 [![CI](https://github.com/JuliaGtk/Gtk4.jl/workflows/CI/badge.svg)](https://github.com/JuliaGtk/Gtk4.jl/actions?query=workflow%3ACI)
 [![codecov.io](https://codecov.io/github/JuliaGtk/Gtk4.jl/coverage.svg?branch=main)](https://app.codecov.io/gh/JuliaGtk/Gtk4.jl)
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliagtk.github.io/Gtk4.jl/dev/)
+[![](https://img.shields.io/badge/docs-main-blue.svg)](https://juliagtk.github.io/Gtk4.jl/dev/)
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliahub.com/docs/Gtk4/rFcBQ/0.3.5)
+
 
 GUI building using the [GTK](https://www.gtk.org) library, version 4. For a mature Julia package that supports GTK version 3, see [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl). **Note that Gtk.jl and Gtk4.jl cannot be imported in the same Julia session.**
 
@@ -10,7 +12,7 @@ This package builds on Gtk.jl but uses GObject introspection to support more of 
 
 Most of the code for GLib support (`GType`, `GValue`, `GObject`, etc.) was copied with minor changes from [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl). This includes integration of the GLib main loop with Julia's event loop.
 
-Documentation for this package can be found [here](https://juliagtk.github.io/Gtk4.jl/dev/). Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
+Documentation for the master branch version of this package can be found [here](https://juliagtk.github.io/Gtk4.jl/dev/). Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
 
 ## Current status
 Gtk4.jl is not recommended on 32 bit systems because of a deficiency with how GObject introspection is done here.

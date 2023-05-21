@@ -34,12 +34,12 @@ the extension `.ui`. Let's assume we have created a file `myapp.ui` that looks l
 In order to access the widgets from Julia we first create a `GtkBuilder` object that will serve as a
 connector between the XML definition and our Julia code.
 ```julia
-b = GtkBuilder(filename="path/to/myapp.ui")
+b = GtkBuilder("path/to/myapp.ui")
 ```
 Alternatively, if we store the above XML definition in a Julia string `myapp` we can initialize
 the builder by
 ```julia
-b = GtkBuilder(buffer=myapp)
+b = GtkBuilder(myapp, -1)
 ```
 Now we want to access a widget from the XML file in order to actually display it on the screen. To do so
 we can call

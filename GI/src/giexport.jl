@@ -1,5 +1,15 @@
 # functions that output expressions for a library in bulk
 
+function _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
+    for e in es
+        name = Symbol(get_name(e))
+        typeinit = in(name, skiplist) ? false : incl_typeinit
+        push!(const_mod.args, unblock(decl(e,typeinit)))
+        push!(const_exports.args, name)
+        push!(loaded,name)
+    end
+end
+
 function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[])
     loaded=Symbol[]
     c = get_consts(ns)
@@ -14,26 +24,14 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
     end
 
     es=get_all(ns,GIEnumInfo)
-    for e in es
-        name = Symbol(get_name(e))
-        typeinit = in(name, skiplist) ? false : incl_typeinit
-        push!(const_mod.args, unblock(enum_decl2(e,typeinit)))
-        push!(const_exports.args, name)
-        push!(loaded,name)
-    end
+    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," enums\n";color=:green)
     end
 
     es=get_all(ns,GIFlagsInfo)
-    for e in es
-        name = Symbol(get_name(e))
-        typeinit = in(name, skiplist) ? false : incl_typeinit
-        push!(const_mod.args, flags_decl(e,typeinit))
-        push!(const_exports.args, name)
-        push!(loaded,name)
-    end
+    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," flags\n";color=:green)
@@ -58,7 +56,7 @@ function struct_cache_expr!(exprs)
     push!(exprs,unblock(gboxed_types_list))
 end
 
-function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,excludelist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false)
+function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false)
     struct_skiplist=excludelist
 
     if structs === nothing
@@ -88,7 +86,7 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         name = Symbol("$name")
         try
             test = coalesce(in(name,import_as_opaque),false)
-            push!(exprs, struct_decl(ssi;force_opaque=test))
+            push!(exprs, decl(ssi,test))
         catch NotImplementedError
             if print_summary
                 printstyled(name," not implemented\n";color=:red)
@@ -103,6 +101,14 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         end
     end
 
+    for ss in structs
+        ssi=gi_find_by_name(ns,ss)
+        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist)
+        if !isempty(constructors)
+            append!(exprs,constructors)
+        end
+    end
+
     if print_summary
         printstyled("Generated ",imported," structs out of ",length(structs),"\n";color=:green)
     end
@@ -110,7 +116,7 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
     struct_skiplist
 end
 
-function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false)
+function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false)
     struct_skiplist=excludelist
     loaded=Symbol[]
 
@@ -135,7 +141,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
             continue
         end
 
-        push!(exprs, struct_decl(ssi;force_opaque=in(name,import_as_opaque)))
+        push!(exprs, decl(ssi,in(name,import_as_opaque)))
         push!(exports.args, get_full_name(ssi))
         push!(loaded, name)
         if length(fields)>0
@@ -148,6 +154,14 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],im
             gboxed_cache_init() = append!(GLib.gboxed_types,gboxed_types)
         end
         push!(exprs,unblock(gboxed_types_init))
+    end
+
+    
+    for ssi in ss
+        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist)
+        if !isempty(constructors)
+            append!(exprs,constructors)
+        end
     end
 
     if print_summary
@@ -208,7 +222,7 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
     handled_symbols
 end
 
-function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skiplist=Symbol[],output_cache_define=true,output_cache_init=true)
+function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skiplist=Symbol[],constructor_skiplist=[],output_cache_define=true,output_cache_init=true)
     objects=get_all(ns,GIObjectInfo)
 
     imported=length(objects)
@@ -244,6 +258,15 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
             gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers,gtype_wrapper_cache)
         end
         push!(exprs,gtype_cache_init)
+    end
+    for o in objects
+        if in(get_name(o), skiplist)
+            continue
+        end
+        constructors = get_constructors(o;skiplist=constructor_skiplist, struct_skiplist=skiplist)
+        if !isempty(constructors)
+            append!(exprs,constructors)
+        end
     end
     if print_summary
         printstyled("Created ",imported," objects out of ",length(objects),"\n";color=:green)
@@ -291,12 +314,12 @@ function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=Symbol[])
         name=get_name(i)
         # could use the following to narrow the type
         #p=get_prerequisites(i)
-        type_init = get_type_init(i)
+        #type_init = get_type_init(i)
         if in(name,skiplist)
             imported-=1
             continue
         end
-        append!(exprs,ginterface_decl(i))
+        push!(exprs,decl(i))
         push!(exports.args, get_full_name(i))
     end
 

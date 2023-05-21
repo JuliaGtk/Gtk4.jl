@@ -72,8 +72,9 @@ You can specify multiple match types for a single filter by separating the patte
 You can alternatively specify MIME types, or if no specification is provided it defaults to types supported by `GdkPixbuf`.
 The generic specification of a filter is
 ```julia
-GtkFileFilter(; name = nothing, pattern = "", mimetype = "")
+GtkFileFilter(pattern = "", mimetype = "")
 ```
+A human-readable name can optionally be provided using a keyword argument.
 
 If on the other hand you want to choose a folder instead of a file, use `select_folder = true` in `open_dialog`:
 ```julia

@@ -10,10 +10,7 @@ Base.cconvert(::Type{Ref{_GtkTreeIter}},x::_GtkTreeIter) = Ref(x)
 
 ### GtkTreePath
 
-GtkTreePath() = G_.TreePath_new()
 copy(path::GtkTreePath) = G_.copy(path)
-
-GtkTreePath(path::AbstractString) = G_.TreePath_new_from_string(path)
 
 next(path::GtkTreePath) = G_.next(path)
 prev(path::GtkTreePath) = G_.prev(path)
@@ -40,7 +37,10 @@ function GtkListStore(types::Type...)
     GtkListStoreLeaf(handle)
 end
 
-GtkListStore(combo::GtkComboBoxText) = GtkListStore(ccall((:gtk_combo_box_get_model, libgtk4), Ptr{GObject}, (Ptr{GObject},), combo))
+function GtkListStore(combo::GtkComboBoxText)
+    store = ccall((:gtk_combo_box_get_model, libgtk4), Ptr{GObject}, (Ptr{GObject},), combo)
+    convert(GtkListStore, store)
+end
 
 ## index is integer for a liststore, vector of ints for tree
 iter_from_index(store::GtkListStore, index::Int) = iter_from_string_index(store, string(index - 1))
@@ -460,20 +460,10 @@ end
 
 ### GtkCellRenderer
 
-GtkCellRendererAccelLeaf() = G_.CellRendererAccel_new()
-GtkCellRendererComboLeaf() = G_.CellRendererCombo_new()
-GtkCellRendererPixbufLeaf() = G_.CellRendererPixbuf_new()
-GtkCellRendererProgressLeaf() = G_.CellRendererProgress_new()
-GtkCellRendererSpinLeaf() = G_.CellRendererSpin_new()
-GtkCellRendererTextLeaf() = G_.CellRendererText_new()
-GtkCellRendererToggleLeaf() = G_.CellRendererToggle_new()
-GtkCellRendererSpinnerLeaf() = G_.CellRendererSpinner_new()
-
 ### GtkTreeViewColumn
 
-GtkTreeViewColumnLeaf() = G_.TreeViewColumn_new()
-function GtkTreeViewColumnLeaf(renderer::GtkCellRenderer, mapping)
-    treeColumn = GtkTreeViewColumnLeaf()
+function GtkTreeViewColumn(renderer::GtkCellRenderer, mapping)
+    treeColumn = GtkTreeViewColumn()
     pushfirst!(treeColumn, renderer)
     for (k, v) in mapping
         add_attribute(treeColumn, renderer, string(k), v)
@@ -481,8 +471,8 @@ function GtkTreeViewColumnLeaf(renderer::GtkCellRenderer, mapping)
     treeColumn
 end
 
-function GtkTreeViewColumnLeaf(title::AbstractString, renderer::GtkCellRenderer, mapping)
-    set_gtk_property!(GtkTreeViewColumnLeaf(renderer, mapping), :title, title)
+function GtkTreeViewColumn(title::AbstractString, renderer::GtkCellRenderer, mapping)
+    set_gtk_property!(GtkTreeViewColumn(renderer, mapping), :title, title)
 end
 
 empty!(treeColumn::GtkTreeViewColumn) = (G_.clear(treeColumn); treeColumn)
@@ -553,9 +543,6 @@ selectall!(selection::GtkTreeSelection) = G_.select_all(selection)
 unselectall!(selection::GtkTreeSelection) = G_.unselect_all(selection)
 
 ### GtkTreeView
-
-GtkTreeViewLeaf() = G_.TreeView_new()
-GtkTreeViewLeaf(treeStore::GtkTreeModel) = G_.TreeView_new_with_model(treeStore)
 
 function push!(treeView::GtkTreeView, treeColumns::GtkTreeViewColumn...)
     for col in treeColumns

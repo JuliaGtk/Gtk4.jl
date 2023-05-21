@@ -93,6 +93,7 @@ that runs it.
 See also [`stop_main_loop`](@ref).
 """
 function start_main_loop()
+    @debug("Starting GLib main loop using g_main_context_iteration()")
     # if g_main_depth > 0, a glib main-loop is already running,
     # so we don't need to start a new one
     if ccall((:g_main_depth, libglib), Cint, ()) == 0

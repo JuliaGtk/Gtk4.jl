@@ -24,7 +24,7 @@ end
 
 ## GtkBox
 
-GtkBox(orientation, spacing=0) = G_.Box_new(convert(Gtk4.Orientation, orientation), spacing)
+GtkBox(orientation::Symbol, spacing::Integer=0) = G_.Box_new(convert(Gtk4.Orientation, orientation), spacing)
 
 function push!(b::GtkBox,w::GtkWidget)
     hasparent(w) && error("Widget already has a parent")
@@ -53,12 +53,11 @@ end
 
 ## GtkSeparator
 
-GtkSeparator(orientation) = G_.Separator_new(convert(Gtk4.Orientation, orientation))
+GtkSeparator(orientation::Symbol) = G_.Separator_new(convert(Gtk4.Orientation, orientation))
 
 ## GtkCenterBox
 
-GtkCenterBox() = G_.CenterBox_new()
-function GtkCenterBox(orientation)
+function GtkCenterBox(orientation::Symbol)
     b = GtkCenterBox()
     G_.set_orientation(GtkOrientable(b), convert(Gtk4.Orientation, orientation))
     b
@@ -89,7 +88,7 @@ function getindex(b::GtkCenterBox, pos::Symbol)
 end
 
 ## GtkPaned
-GtkPaned(orientation) = G_.Paned_new(convert(Gtk4.Orientation, orientation))
+GtkPaned(orientation::Symbol) = G_.Paned_new(convert(Gtk4.Orientation, orientation))
 
 function getindex(pane::GtkPaned, i::Integer)
     if i == 1
@@ -117,8 +116,6 @@ end
 
 rangestep(r::AbstractRange) = step(r)
 rangestep(::Integer) = 1
-
-GtkGrid() = G_.Grid_new()
 
 function getindex(grid::GtkGrid, i::Integer, j::Integer)
     x = G_.get_child_at(grid, i-1, j-1)
@@ -195,21 +192,15 @@ getindex(f::GtkFrame) = G_.get_child(f)
 
 ## GtkAspectFrame - A widget that preserves the aspect ratio of its child
 
-GtkAspectFrame(xalign, yalign, ratio, obey_child) = G_.AspectFrame_new(xalign, yalign, ratio, obey_child)
-
 setindex!(f::GtkAspectFrame, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkAspectFrame) = G_.get_child(f)
 
 ## GtkExpander
 
-GtkExpander(title::AbstractString) = G_.Expander_new(title)
-
 setindex!(f::GtkExpander, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
 getindex(f::GtkExpander) = G_.get_child(f)
 
 ## GtkNotebook
-
-GtkNotebook() = G_.Notebook_new()
 
 function insert!(w::GtkNotebook, position::Integer, x::GtkWidget, label::Union{GtkWidget, AbstractString})
     if isa(label, AbstractString)
@@ -250,7 +241,6 @@ function empty!(w::GtkNotebook)
 end
 
 ## GtkOverlay
-GtkOverlay() = G_.Overlay_new()
 function GtkOverlay(w::GtkWidget)
     o = GtkOverlay()
     o[] = w
@@ -271,12 +261,10 @@ set_measure_overlay(f::GtkOverlay, x::GtkWidget, b::Bool) = G_.set_measure_overl
 
 ## GtkStack
 
-GtkStack() = G_.Stack_new()
 push!(s::GtkStack, x::GtkWidget) = (G_.add_child(s,x); s)
 push!(s::GtkStack, x::GtkWidget, name::AbstractString) = (G_.add_named(s,x,name); s)
 push!(s::GtkStack, x::GtkWidget, name::AbstractString, title::AbstractString) = (G_.add_titled(s,x,name,title); s)
 getindex(s::GtkStack, name::AbstractString) = G_.get_child_by_name(s,name)
 setindex!(s::GtkStack, x::GtkWidget, name::AbstractString) = G_.add_named(s,x,name)
 
-GtkStackSwitcher() = G_.StackSwitcher_new()
 stack(w::GtkStackSwitcher, s::GtkStack) = G_.set_stack(w,s)

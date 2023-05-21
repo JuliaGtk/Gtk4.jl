@@ -270,7 +270,7 @@ img = GtkImage()
 p = Gtk4.paintable(img)
 @test p === nothing
 # named icon
-img = GtkImage(; icon_name = "document-open")
+img = Gtk4.G_.Image_new_from_icon_name("document-open")
 p = Gtk4.paintable(img)
 @test p === nothing
 empty!(img)
@@ -567,7 +567,7 @@ end
 
     l = GtkLabel("I am some large blue text!")
 
-    provider = GtkCssProvider(filename=style_file)
+    provider = GtkCssProvider(nothing,style_file)
 
     sc = Gtk4.style_context(l)
     push!(sc, provider, 600)
@@ -581,7 +581,7 @@ end
 end
 
 @testset "Builder" begin
-b=GtkBuilder(filename="test.ui")
+b=GtkBuilder("test.ui")
 widgets = [w for w in b]
 @test length(widgets)==length(b)
 @test length(b)==6
@@ -596,7 +596,7 @@ button = b["a_button"]
 s = open("test.ui","r") do f
     read(f,String)
 end
-b3 = GtkBuilder(buffer = s)
+b3 = GtkBuilder(s,-1)
 
 
 end
@@ -826,13 +826,13 @@ fmime = "text/csv"
 csvfilter1 = GtkFileFilter("*.csv")
 @test csvfilter1.name == "*.csv"
 
-csvfilter2 = GtkFileFilter("*.csv"; name="Comma Separated Format")
+csvfilter2 = GtkFileFilter("*.csv"; name = "Comma Separated Format")
 @test csvfilter2.name == "Comma Separated Format"
 
-csvfilter3 = GtkFileFilter(; mimetype="text/csv")
+csvfilter3 = GtkFileFilter("", "text/csv")
 @test csvfilter3.name == "text/csv"
 
-csvfilter4 = GtkFileFilter(; pattern="*.csv", mimetype="text/csv")
+csvfilter4 = GtkFileFilter("*.csv", "text/csv")
 # Pattern takes precedence over mime-type, causing mime-type to be ignored
 @test csvfilter4.name == "*.csv"
 end

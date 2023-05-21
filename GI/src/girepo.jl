@@ -497,7 +497,7 @@ end
 function get_constant_value(typ,info)
     eval(quote
         x = Ref{$typ}(0)
-        size = ccall((:g_constant_info_get_value,libgi),Cint,(Ptr{GIBaseInfo}, Ref{$typ}), $info, x)
+        siz = ccall((:g_constant_info_get_value,libgi),Cint,(Ptr{GIBaseInfo}, Ref{$typ}), $info, x)
         x[]
     end)
 end

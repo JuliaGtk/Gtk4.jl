@@ -1,14 +1,5 @@
 
-function GtkBuilder(; buffer = nothing, filename = nothing)
-    builder = G_.Builder_new()
-    push!(builder, buffer = buffer, filename = filename)
-    builder
-end
-
 function push!(builder::GtkBuilder; buffer = nothing, filename = nothing)
-    source_count = (buffer !== nothing) + (filename !== nothing)
-    @assert(source_count == 1,
-        "push!(GtkBuilder) must have exactly one buffer or filename argument")
     if buffer !== nothing
         G_.add_from_string(builder, buffer, -1)
     elseif filename !== nothing

@@ -65,16 +65,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GdkPixbufLeaf(args...; kwargs...)
-            w = GdkPixbuf(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GdkPixbuf] = GdkPixbufLeaf
-        function GdkPixbuf(args...; kwargs...)
-            GdkPixbufLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GdkPixbufAnimation <: GObject end
@@ -88,16 +79,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GdkPixbufAnimationLeaf(args...; kwargs...)
-            w = GdkPixbufAnimation(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GdkPixbufAnimation] = GdkPixbufAnimationLeaf
-        function GdkPixbufAnimation(args...; kwargs...)
-            GdkPixbufAnimationLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GdkPixbufAnimationIter <: GObject end
@@ -111,16 +93,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GdkPixbufAnimationIterLeaf(args...; kwargs...)
-            w = GdkPixbufAnimationIter(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GdkPixbufAnimationIter] = GdkPixbufAnimationIterLeaf
-        function GdkPixbufAnimationIter(args...; kwargs...)
-            GdkPixbufAnimationIterLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GdkPixbufLoader <: GObject end
@@ -134,16 +107,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GdkPixbufLoaderLeaf(args...; kwargs...)
-            w = GdkPixbufLoader(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GdkPixbufLoader] = GdkPixbufLoaderLeaf
-        function GdkPixbufLoader(args...; kwargs...)
-            GdkPixbufLoaderLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GdkPixbufNonAnim <: GdkPixbufAnimation end
@@ -157,16 +121,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GdkPixbufNonAnimLeaf(args...; kwargs...)
-            w = GdkPixbufNonAnim(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GdkPixbufNonAnim] = GdkPixbufNonAnimLeaf
-        function GdkPixbufNonAnim(args...; kwargs...)
-            GdkPixbufNonAnimLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GdkPixbufSimpleAnim <: GdkPixbufAnimation end
@@ -180,16 +135,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GdkPixbufSimpleAnimLeaf(args...; kwargs...)
-            w = GdkPixbufSimpleAnim(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GdkPixbufSimpleAnim] = GdkPixbufSimpleAnimLeaf
-        function GdkPixbufSimpleAnim(args...; kwargs...)
-            GdkPixbufSimpleAnimLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type GdkPixbufSimpleAnimIter <: GdkPixbufAnimationIter end
@@ -203,21 +149,85 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function GdkPixbufSimpleAnimIterLeaf(args...; kwargs...)
-            w = GdkPixbufSimpleAnimIter(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:GdkPixbufSimpleAnimIter] = GdkPixbufSimpleAnimIterLeaf
-        function GdkPixbufSimpleAnimIter(args...; kwargs...)
-            GdkPixbufSimpleAnimIterLeaf(args...; kwargs...)
-        end
     end
     begin
         gtype_wrapper_cache_init() = begin
                 merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
             end
+    end
+    function GdkPixbuf(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer; kwargs...)
+        obj = G_.Pixbuf_new(_colorspace, _has_alpha, _bits_per_sample, _width, _height)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_data::GBytes, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer; kwargs...)
+        obj = G_.Pixbuf_new_from_bytes(_data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_data, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer, _destroy_fn::Maybe(Function), _destroy_fn_data::Maybe(Nothing); kwargs...)
+        obj = G_.Pixbuf_new_from_data(_data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn, _destroy_fn_data)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_filename::Union{AbstractString, Symbol}; kwargs...)
+        obj = G_.Pixbuf_new_from_file(_filename)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_filename::Union{AbstractString, Symbol}, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool; kwargs...)
+        obj = G_.Pixbuf_new_from_file_at_scale(_filename, _width, _height, _preserve_aspect_ratio)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_filename::Union{AbstractString, Symbol}, _width::Integer, _height::Integer; kwargs...)
+        obj = G_.Pixbuf_new_from_file_at_size(_filename, _width, _height)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_stream::GInputStream, _cancellable::Maybe(GCancellable); kwargs...)
+        obj = G_.Pixbuf_new_from_stream(_stream, _cancellable)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable); kwargs...)
+        obj = G_.Pixbuf_new_from_stream_at_scale(_stream, _width, _height, _preserve_aspect_ratio, _cancellable)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_async_result::GAsyncResult; kwargs...)
+        obj = G_.Pixbuf_new_from_stream_finish(_async_result)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbuf(_data; kwargs...)
+        obj = G_.Pixbuf_new_from_xpm_data(_data)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkPixbufAnimation(_filename::Union{AbstractString, Symbol})
+        G_.PixbufAnimation_new_from_file(_filename)
+    end
+    function GdkPixbufAnimation(_stream::GInputStream, _cancellable::Maybe(GCancellable))
+        G_.PixbufAnimation_new_from_stream(_stream, _cancellable)
+    end
+    function GdkPixbufAnimation(_async_result::GAsyncResult)
+        G_.PixbufAnimation_new_from_stream_finish(_async_result)
+    end
+    function GdkPixbufLoader()
+        G_.PixbufLoader_new()
+    end
+    function GdkPixbufLoader(_image_type::Union{AbstractString, Symbol})
+        G_.PixbufLoader_new_with_type(_image_type)
+    end
+    function GdkPixbufNonAnim(_pixbuf::GdkPixbuf)
+        G_.PixbufNonAnim_new(_pixbuf)
+    end
+    function GdkPixbufSimpleAnim(_width::Integer, _height::Integer, _rate::Real; kwargs...)
+        obj = G_.PixbufSimpleAnim_new(_width, _height, _rate)
+        GLib.setproperties!(obj; kwargs...)
+        obj
     end
     @doc "A pixel buffer.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.Pixbuf.html)." GdkPixbuf
     @doc "An opaque object representing an animation.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.PixbufAnimation.html)." GdkPixbufAnimation

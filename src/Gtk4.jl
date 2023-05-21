@@ -22,6 +22,8 @@ using GTK4_jll, Glib_jll
 using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
 
 using ..GdkPixbufLib
+using ..Graphene
+using ..Pango
 
 using Preferences
 
@@ -153,6 +155,8 @@ function __init__()
     if isinteractive()
         GLib.start_main_loop()
     end
+
+    #@debug("Gtk4 initialized.")
 end
 
 include("precompile.jl")

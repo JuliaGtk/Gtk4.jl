@@ -22,9 +22,9 @@ GI.append_struc_docs!(exprs, "gio", d, c, ns)
 ## objects
 
 obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus]
-c = GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,output_cache_define=false,output_cache_init=false)
-GI.append_object_docs!(exprs, "gio", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns;skiplist=[])
+c = GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,constructor_skiplist=[:new_for_bus_sync,:new_sync,:new_with_fd_list,:new_for_address_finish,:new_for_bus_finish,:new_for_bus_finish,:new_from_filename,:new_loopback,:new_section,:new_with_default_fallbacks,:new_from_file_with_password],output_cache_define=false,output_cache_init=false)
+GI.append_object_docs!(exprs, "gio", d, c, ns)
 
 push!(exprs,exports)
 
@@ -48,7 +48,7 @@ GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=vcat(obj_skipl
 skiplist=[:add_action_entries,:get_info,:receive_messages,:send_messages,
 :writev_nonblocking,:dup_default]
 # skips are to avoid method name collisions
-GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[:App,:AppInfo,:DBusObjectManager,:Drive,:Icon,:Mount,:NetworkMonitor,:PollableOutputStream,:ProxyResolver,:SocketConnectable,:TlsBackend,:TlsClientConnection,:Volume])
+GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[:App,:AppInfo,:DBusObjectManager,:Drive,:Icon,:Mount,:NetworkMonitor,:PollableOutputStream,:ProxyResolver,:SocketConnectable,:TlsBackend,:TlsClientConnection,:Volume,:DtlsServerConnection])
 
 GI.write_to_file(path,"gio_methods",toplevel)
 

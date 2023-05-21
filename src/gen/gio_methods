@@ -5938,17 +5938,6 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function new(_base_socket::GDatagramBased, _certificate::Maybe(GTlsCertificate))
-        _certificate = nothing_to_null(_certificate)
-        err = err_buf()
-        ret = ccall(("g_dtls_server_connection_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_socket, _certificate, err)
-        check_err(err)
-        ret2 = begin
-                leaftype = GLib.find_leaf_type(ret)
-                convert(leaftype, ret, true)
-            end
-        ret2
-    end
     function new_for_commandline_arg(_arg::Union{AbstractString, Symbol})
         ret = ccall(("g_file_new_for_commandline_arg", libgio), Ptr{GObject}, (Cstring,), _arg)
         ret2 = begin

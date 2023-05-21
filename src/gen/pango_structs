@@ -266,6 +266,15 @@ $(Expr(:toplevel, quote
                 convert(Ptr{_PangoGlyphItem}, box.handle)
             end
     end
+    function PangoFontDescription()
+        G_.FontDescription_new()
+    end
+    function PangoItem()
+        G_.Item_new()
+    end
+    function PangoGlyphString()
+        G_.GlyphString_new()
+    end
     begin
         struct _PangoAttrColor
             attr::_PangoAttribute
@@ -628,6 +637,15 @@ $(Expr(:toplevel, quote
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
+    function PangoAttrList()
+        G_.AttrList_new()
+    end
+    function PangoScriptIter(_text::Union{AbstractString, Symbol}, _length::Integer)
+        G_.ScriptIter_new(_text, _length)
+    end
+    function PangoTabArray(_initial_size::Integer, _positions_in_pixels::Bool)
+        G_.TabArray_new(_initial_size, _positions_in_pixels)
+    end
     gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type PangoContext <: GObject end
@@ -641,16 +659,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoContextLeaf(args...; kwargs...)
-            w = PangoContext(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoContext] = PangoContextLeaf
-        function PangoContext(args...; kwargs...)
-            PangoContextLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoCoverage <: GObject end
@@ -664,16 +673,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoCoverageLeaf(args...; kwargs...)
-            w = PangoCoverage(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoCoverage] = PangoCoverageLeaf
-        function PangoCoverage(args...; kwargs...)
-            PangoCoverageLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoFont <: GObject end
@@ -687,16 +687,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoFontLeaf(args...; kwargs...)
-            w = PangoFont(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoFont] = PangoFontLeaf
-        function PangoFont(args...; kwargs...)
-            PangoFontLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoFontFace <: GObject end
@@ -710,16 +701,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoFontFaceLeaf(args...; kwargs...)
-            w = PangoFontFace(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoFontFace] = PangoFontFaceLeaf
-        function PangoFontFace(args...; kwargs...)
-            PangoFontFaceLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoFontFamily <: GObject end
@@ -733,16 +715,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoFontFamilyLeaf(args...; kwargs...)
-            w = PangoFontFamily(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoFontFamily] = PangoFontFamilyLeaf
-        function PangoFontFamily(args...; kwargs...)
-            PangoFontFamilyLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoFontMap <: GObject end
@@ -756,16 +729,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoFontMapLeaf(args...; kwargs...)
-            w = PangoFontMap(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoFontMap] = PangoFontMapLeaf
-        function PangoFontMap(args...; kwargs...)
-            PangoFontMapLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoFontset <: GObject end
@@ -779,16 +743,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoFontsetLeaf(args...; kwargs...)
-            w = PangoFontset(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoFontset] = PangoFontsetLeaf
-        function PangoFontset(args...; kwargs...)
-            PangoFontsetLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoFontsetSimple <: PangoFontset end
@@ -802,16 +757,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoFontsetSimpleLeaf(args...; kwargs...)
-            w = PangoFontsetSimple(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoFontsetSimple] = PangoFontsetSimpleLeaf
-        function PangoFontsetSimple(args...; kwargs...)
-            PangoFontsetSimpleLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoLayout <: GObject end
@@ -825,16 +771,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoLayoutLeaf(args...; kwargs...)
-            w = PangoLayout(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoLayout] = PangoLayoutLeaf
-        function PangoLayout(args...; kwargs...)
-            PangoLayoutLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type PangoRenderer <: GObject end
@@ -848,21 +785,24 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function PangoRendererLeaf(args...; kwargs...)
-            w = PangoRenderer(args...)
-            setproperties!(w; kwargs...)
-            w
-        end
         gtype_wrapper_cache[:PangoRenderer] = PangoRendererLeaf
-        function PangoRenderer(args...; kwargs...)
-            PangoRendererLeaf(args...; kwargs...)
-        end
     end
     begin
         gtype_wrapper_cache_init() = begin
                 merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
             end
+    end
+    function PangoContext()
+        G_.Context_new()
+    end
+    function PangoCoverage()
+        G_.Coverage_new()
+    end
+    function PangoFontsetSimple(_language::PangoLanguage)
+        G_.FontsetSimple_new(_language)
+    end
+    function PangoLayout(_context::PangoContext)
+        G_.Layout_new(_context)
     end
     export PangoLanguage, PangoColor, _PangoColor, PangoAttrClass, _PangoAttrClass, PangoRectangle, _PangoRectangle, PangoFontDescription, PangoAttribute, _PangoAttribute, PangoAnalysis, _PangoAnalysis, PangoItem, _PangoItem, PangoGlyphVisAttr, _PangoGlyphVisAttr, PangoGlyphGeometry, _PangoGlyphGeometry, PangoGlyphInfo, _PangoGlyphInfo, PangoGlyphString, _PangoGlyphString, PangoGlyphItem, _PangoGlyphItem, PangoAttrColor, _PangoAttrColor, PangoAttrFloat, _PangoAttrFloat, PangoAttrFontDesc, _PangoAttrFontDesc, PangoAttrFontFeatures, _PangoAttrFontFeatures, PangoAttrInt, _PangoAttrInt, PangoAttrIterator, PangoAttrLanguage, _PangoAttrLanguage, PangoAttrList, PangoAttrShape, _PangoAttrShape, PangoAttrSize, _PangoAttrSize, PangoAttrString, _PangoAttrString, PangoFontMetrics, _PangoFontMetrics, PangoGlyphItemIter, _PangoGlyphItemIter, PangoLayoutIter, PangoLayoutLine, _PangoLayoutLine, PangoLogAttr, _PangoLogAttr, PangoMatrix, _PangoMatrix, PangoScriptIter, PangoTabArray, PangoContext, PangoCoverage, PangoFont, PangoFontFace, PangoFontFamily, PangoFontMap, PangoFontset, PangoFontsetSimple, PangoLayout, PangoRenderer
 end))
