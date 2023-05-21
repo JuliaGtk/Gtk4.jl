@@ -48,7 +48,7 @@ GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=vcat(obj_skipl
 skiplist=[:add_action_entries,:get_info,:receive_messages,:send_messages,
 :writev_nonblocking,:dup_default]
 # skips are to avoid method name collisions
-GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[:App,:AppInfo,:DBusObjectManager,:Drive,:Icon,:Mount,:NetworkMonitor,:PollableOutputStream,:ProxyResolver,:SocketConnectable,:TlsBackend,:TlsClientConnection,:Volume])
+GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[:App,:AppInfo,:DBusObjectManager,:Drive,:Icon,:Mount,:NetworkMonitor,:PollableOutputStream,:ProxyResolver,:SocketConnectable,:TlsBackend,:TlsClientConnection,:Volume,:DtlsServerConnection])
 
 GI.write_to_file(path,"gio_methods",toplevel)
 

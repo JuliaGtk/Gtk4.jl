@@ -1,16 +1,5 @@
 # use libgirepository to produce Julia declarations and methods
 
-function const_decls(ns,fmt = identity)
-    consts = get_consts(ns)
-    decs = Expr[]
-    for (name,val) in consts
-        name = fmt(name)
-        if name !== nothing
-            push!(decs, :(const $(Symbol(name)) = $(val)) )
-        end
-    end
-    decs
-end
 const_expr(name,val) =  :($(Symbol(name)) = $(val))
 
 # export enum using a baremodule, as is done in Gtk.jl
@@ -28,19 +17,6 @@ function enum_decl(enum)
 end
 
 enum_fullname(enumname,name) = Symbol(enumname,"_",uppercase(name))
-
-function enum_decls(ns)
-    enums = get_all(ns, GIEnumOrFlags)
-    typedefs = Expr[]
-    aliases = Expr[]
-    for enum in enums
-        name = get_name(enum)
-        longname = enum_name(enum)
-        push!(typedefs,enum_decl(enum,name))
-        push!(aliases, :( const $name = _AllTypes.$longname))
-    end
-    (typedefs,aliases)
-end
 enum_name(enum) = Symbol(string(get_namespace(enum),get_name(enum)))
 
 function find_symbol(l,id)
@@ -69,7 +45,7 @@ function typeinit_def(info)
 end
 
 # export as a Julia enum type
-function enum_decl2(enum, incl_typeinit=true)
+function decl(enum::GIEnumInfo, incl_typeinit=true)
     enumname=get_name(enum)
     vals = get_enum_values(enum)
     typ = typetag_primitive[get_storage_type(enum)]
@@ -93,7 +69,7 @@ function enum_decl2(enum, incl_typeinit=true)
 end
 
 # use BitFlags.jl
-function flags_decl(enum, incl_typeinit=true)
+function decl(enum::GIFlagsInfo, incl_typeinit=true)
     enumname=get_name(enum)
     vals = get_enum_values(enum)
     typ = typetag_primitive[get_storage_type(enum)]
@@ -137,7 +113,7 @@ function get_struct_name(structinfo,force_opaque=false)
     opaque ? gstructname : Symbol("_",gstructname)
 end
 
-function struct_decl(structinfo;force_opaque=false)
+function decl(structinfo::GIStructInfo,force_opaque=false)
     gstructname = get_full_name(structinfo)
     gtype=get_g_type(structinfo)
     isboxed = GLib.g_isa(gtype,GLib.g_type(GBoxed))
@@ -347,7 +323,7 @@ function obj_decl!(exprs,o,ns,handled)
     push!(handled,get_name(o))
 end
 
-function ginterface_decl(interfaceinfo)
+function decl(interfaceinfo::GIInterfaceInfo)
     g_type = get_g_type(interfaceinfo)
     iname = Symbol(GLib.g_type_name(g_type))
 
@@ -361,9 +337,7 @@ function ginterface_decl(interfaceinfo)
             $iname(x::GObject) = new(unsafe_convert(Ptr{GObject}, x), x)
         end
     end
-    exprs=Expr[]
-    push!(exprs,unblock(decl))
-    exprs
+    unblock(decl)
 end
 
 ## Handling argument types, creating methods

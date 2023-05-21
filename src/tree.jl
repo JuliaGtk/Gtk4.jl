@@ -462,7 +462,7 @@ end
 
 ### GtkTreeViewColumn
 
-function GtkTreeViewColumnLeaf(renderer::GtkCellRenderer, mapping)
+function GtkTreeViewColumn(renderer::GtkCellRenderer, mapping)
     treeColumn = GtkTreeViewColumn()
     pushfirst!(treeColumn, renderer)
     for (k, v) in mapping
@@ -472,7 +472,7 @@ function GtkTreeViewColumnLeaf(renderer::GtkCellRenderer, mapping)
 end
 
 function GtkTreeViewColumn(title::AbstractString, renderer::GtkCellRenderer, mapping)
-    set_gtk_property!(GtkTreeViewColumnLeaf(renderer, mapping), :title, title)
+    set_gtk_property!(GtkTreeViewColumn(renderer, mapping), :title, title)
 end
 
 empty!(treeColumn::GtkTreeViewColumn) = (G_.clear(treeColumn); treeColumn)
@@ -543,8 +543,6 @@ selectall!(selection::GtkTreeSelection) = G_.select_all(selection)
 unselectall!(selection::GtkTreeSelection) = G_.unselect_all(selection)
 
 ### GtkTreeView
-
-GtkTreeViewLeaf(treeStore::GtkTreeModel) = G_.TreeView_new_with_model(treeStore)
 
 function push!(treeView::GtkTreeView, treeColumns::GtkTreeViewColumn...)
     for col in treeColumns

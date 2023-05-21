@@ -23,12 +23,14 @@ end
 
 # GtkImage (for fixed-size images, such as icons)
 
-GtkImage(::Nothing) = error("Ambiguous argument for constructor, please directly call one of the constructors in G_.")
+GtkImage(::Nothing; kwargs...) = error("Ambiguous argument for constructor, please directly call one of the constructors in G_.")
 empty!(img::GtkImage) = (G_.clear(img); img)
 
 # GtkPicture (for displaying an image at its natural size)
 
-GtkPicture(::Nothing) = error("Ambiguous argument for constructor, please directly call one of the constructors in G_.")
+GtkPicture(::Nothing; kwargs...) = error("Ambiguous argument for constructor, please directly call one of the constructors in G_.")
+
+GtkVideo(::Nothing; kwargs...) = error("Ambiguous argument for constructor, please directly call one of the constructors in G_.")
 
 ## GtkLevelBar
 

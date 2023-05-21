@@ -151,8 +151,6 @@ function GtkDialog(title::AbstractString, buttons, flags, parent = nothing; kwar
     w
 end
 
-GtkAboutDialogLeaf() = G_.AboutDialog_new()
-
 function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent = nothing; kwargs...)
     parent = (parent === nothing ? C_NULL : parent)
     w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
@@ -311,11 +309,6 @@ function GtkFileChooserDialog(title::AbstractString, parent::Union{Nothing,GtkWi
     for (k, v) in button_text_response
         push!(w, k, Integer(v))
     end
-    return w
-end
-
-function GtkFileChooserNative(title::AbstractString, parent::Union{Nothing,GtkWindow}, action, accept::AbstractString, cancel::AbstractString; kwargs...)
-    w = G_.FileChooserNative_new(title, parent, action, accept, cancel)
     return w
 end
 
