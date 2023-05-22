@@ -1,8 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    begin
-        gboxed_types = Any[]
-    end
+    gboxed_types = Any[]
     mutable struct AdwSpringParams <: GBoxed
         handle::Ptr{AdwSpringParams}
         begin
@@ -21,14 +19,20 @@ $(Expr(:toplevel, quote
             push!(gboxed_types, AdwSpringParams)
         end
     end
-    begin
-        gboxed_cache_init() = begin
-                append!(GLib.gboxed_types, gboxed_types)
+    gboxed_cache_init() = begin
+            append!(GLib.gboxed_types, gboxed_types)
+        end
+    function AdwSpringParams(_damping_ratio::Real, _mass::Real, _stiffness::Real)
+        G_.SpringParams_new(_damping_ratio, _mass, _stiffness)
+    end
+    struct AdwSwipeable <: GInterface
+        handle::Ptr{GObject}
+        gc::Any
+        AdwSwipeable(x::GObject) = begin
+                new(unsafe_convert(Ptr{GObject}, x), x)
             end
     end
-    begin
-        gtype_wrapper_cache = Dict{Symbol, Type}()
-    end
+    gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type AdwWindow <: GtkWindow end
         mutable struct AdwWindowLeaf <: AdwWindow
@@ -41,18 +45,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwWindowLeaf(args...; kwargs...)
-            w = AdwWindow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwWindow] = AdwWindowLeaf
-        function AdwWindow(args...; kwargs...)
-            AdwWindowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwAboutWindow <: AdwWindow end
@@ -66,18 +59,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwAboutWindowLeaf(args...; kwargs...)
-            w = AdwAboutWindow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwAboutWindow] = AdwAboutWindowLeaf
-        function AdwAboutWindow(args...; kwargs...)
-            AdwAboutWindowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwPreferencesRow <: GtkListBoxRow end
@@ -91,18 +73,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwPreferencesRowLeaf(args...; kwargs...)
-            w = AdwPreferencesRow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwPreferencesRow] = AdwPreferencesRowLeaf
-        function AdwPreferencesRow(args...; kwargs...)
-            AdwPreferencesRowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwActionRow <: AdwPreferencesRow end
@@ -116,18 +87,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwActionRowLeaf(args...; kwargs...)
-            w = AdwActionRow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwActionRow] = AdwActionRowLeaf
-        function AdwActionRow(args...; kwargs...)
-            AdwActionRowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwAnimation <: GObject end
@@ -141,18 +101,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwAnimationLeaf(args...; kwargs...)
-            w = AdwAnimation(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwAnimation] = AdwAnimationLeaf
-        function AdwAnimation(args...; kwargs...)
-            AdwAnimationLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwAnimationTarget <: GObject end
@@ -166,18 +115,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwAnimationTargetLeaf(args...; kwargs...)
-            w = AdwAnimationTarget(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwAnimationTarget] = AdwAnimationTargetLeaf
-        function AdwAnimationTarget(args...; kwargs...)
-            AdwAnimationTargetLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwApplication <: GtkApplication end
@@ -191,18 +129,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwApplicationLeaf(args...; kwargs...)
-            w = AdwApplication(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwApplication] = AdwApplicationLeaf
-        function AdwApplication(args...; kwargs...)
-            AdwApplicationLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwApplicationWindow <: GtkApplicationWindow end
@@ -216,18 +143,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwApplicationWindowLeaf(args...; kwargs...)
-            w = AdwApplicationWindow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwApplicationWindow] = AdwApplicationWindowLeaf
-        function AdwApplicationWindow(args...; kwargs...)
-            AdwApplicationWindowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwAvatar <: GtkWidget end
@@ -241,18 +157,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwAvatarLeaf(args...; kwargs...)
-            w = AdwAvatar(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwAvatar] = AdwAvatarLeaf
-        function AdwAvatar(args...; kwargs...)
-            AdwAvatarLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwBin <: GtkWidget end
@@ -266,18 +171,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwBinLeaf(args...; kwargs...)
-            w = AdwBin(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwBin] = AdwBinLeaf
-        function AdwBin(args...; kwargs...)
-            AdwBinLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwButtonContent <: GtkWidget end
@@ -291,18 +185,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwButtonContentLeaf(args...; kwargs...)
-            w = AdwButtonContent(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwButtonContent] = AdwButtonContentLeaf
-        function AdwButtonContent(args...; kwargs...)
-            AdwButtonContentLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwCallbackAnimationTarget <: AdwAnimationTarget end
@@ -316,18 +199,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwCallbackAnimationTargetLeaf(args...; kwargs...)
-            w = AdwCallbackAnimationTarget(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwCallbackAnimationTarget] = AdwCallbackAnimationTargetLeaf
-        function AdwCallbackAnimationTarget(args...; kwargs...)
-            AdwCallbackAnimationTargetLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwCarousel <: GtkWidget end
@@ -341,18 +213,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwCarouselLeaf(args...; kwargs...)
-            w = AdwCarousel(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwCarousel] = AdwCarouselLeaf
-        function AdwCarousel(args...; kwargs...)
-            AdwCarouselLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwCarouselIndicatorDots <: GtkWidget end
@@ -366,18 +227,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwCarouselIndicatorDotsLeaf(args...; kwargs...)
-            w = AdwCarouselIndicatorDots(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwCarouselIndicatorDots] = AdwCarouselIndicatorDotsLeaf
-        function AdwCarouselIndicatorDots(args...; kwargs...)
-            AdwCarouselIndicatorDotsLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwCarouselIndicatorLines <: GtkWidget end
@@ -391,18 +241,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwCarouselIndicatorLinesLeaf(args...; kwargs...)
-            w = AdwCarouselIndicatorLines(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwCarouselIndicatorLines] = AdwCarouselIndicatorLinesLeaf
-        function AdwCarouselIndicatorLines(args...; kwargs...)
-            AdwCarouselIndicatorLinesLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwClamp <: GtkWidget end
@@ -416,18 +255,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwClampLeaf(args...; kwargs...)
-            w = AdwClamp(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwClamp] = AdwClampLeaf
-        function AdwClamp(args...; kwargs...)
-            AdwClampLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwClampLayout <: GtkLayoutManager end
@@ -441,18 +269,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwClampLayoutLeaf(args...; kwargs...)
-            w = AdwClampLayout(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwClampLayout] = AdwClampLayoutLeaf
-        function AdwClampLayout(args...; kwargs...)
-            AdwClampLayoutLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwClampScrollable <: GtkWidget end
@@ -466,18 +283,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwClampScrollableLeaf(args...; kwargs...)
-            w = AdwClampScrollable(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwClampScrollable] = AdwClampScrollableLeaf
-        function AdwClampScrollable(args...; kwargs...)
-            AdwClampScrollableLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwComboRow <: AdwActionRow end
@@ -491,18 +297,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwComboRowLeaf(args...; kwargs...)
-            w = AdwComboRow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwComboRow] = AdwComboRowLeaf
-        function AdwComboRow(args...; kwargs...)
-            AdwComboRowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwEntryRow <: AdwPreferencesRow end
@@ -516,18 +311,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwEntryRowLeaf(args...; kwargs...)
-            w = AdwEntryRow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwEntryRow] = AdwEntryRowLeaf
-        function AdwEntryRow(args...; kwargs...)
-            AdwEntryRowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwEnumListItem <: GObject end
@@ -541,18 +325,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwEnumListItemLeaf(args...; kwargs...)
-            w = AdwEnumListItem(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwEnumListItem] = AdwEnumListItemLeaf
-        function AdwEnumListItem(args...; kwargs...)
-            AdwEnumListItemLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwEnumListModel <: GObject end
@@ -566,18 +339,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwEnumListModelLeaf(args...; kwargs...)
-            w = AdwEnumListModel(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwEnumListModel] = AdwEnumListModelLeaf
-        function AdwEnumListModel(args...; kwargs...)
-            AdwEnumListModelLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwExpanderRow <: AdwPreferencesRow end
@@ -591,18 +353,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwExpanderRowLeaf(args...; kwargs...)
-            w = AdwExpanderRow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwExpanderRow] = AdwExpanderRowLeaf
-        function AdwExpanderRow(args...; kwargs...)
-            AdwExpanderRowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwFlap <: GtkWidget end
@@ -616,18 +367,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwFlapLeaf(args...; kwargs...)
-            w = AdwFlap(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwFlap] = AdwFlapLeaf
-        function AdwFlap(args...; kwargs...)
-            AdwFlapLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwHeaderBar <: GtkWidget end
@@ -641,18 +381,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwHeaderBarLeaf(args...; kwargs...)
-            w = AdwHeaderBar(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwHeaderBar] = AdwHeaderBarLeaf
-        function AdwHeaderBar(args...; kwargs...)
-            AdwHeaderBarLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwLeaflet <: GtkWidget end
@@ -666,18 +395,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwLeafletLeaf(args...; kwargs...)
-            w = AdwLeaflet(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwLeaflet] = AdwLeafletLeaf
-        function AdwLeaflet(args...; kwargs...)
-            AdwLeafletLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwLeafletPage <: GObject end
@@ -691,18 +409,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwLeafletPageLeaf(args...; kwargs...)
-            w = AdwLeafletPage(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwLeafletPage] = AdwLeafletPageLeaf
-        function AdwLeafletPage(args...; kwargs...)
-            AdwLeafletPageLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwMessageDialog <: GtkWindow end
@@ -716,18 +423,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwMessageDialogLeaf(args...; kwargs...)
-            w = AdwMessageDialog(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwMessageDialog] = AdwMessageDialogLeaf
-        function AdwMessageDialog(args...; kwargs...)
-            AdwMessageDialogLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwPasswordEntryRow <: AdwEntryRow end
@@ -741,18 +437,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwPasswordEntryRowLeaf(args...; kwargs...)
-            w = AdwPasswordEntryRow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwPasswordEntryRow] = AdwPasswordEntryRowLeaf
-        function AdwPasswordEntryRow(args...; kwargs...)
-            AdwPasswordEntryRowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwPreferencesGroup <: GtkWidget end
@@ -766,18 +451,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwPreferencesGroupLeaf(args...; kwargs...)
-            w = AdwPreferencesGroup(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwPreferencesGroup] = AdwPreferencesGroupLeaf
-        function AdwPreferencesGroup(args...; kwargs...)
-            AdwPreferencesGroupLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwPreferencesPage <: GtkWidget end
@@ -791,18 +465,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwPreferencesPageLeaf(args...; kwargs...)
-            w = AdwPreferencesPage(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwPreferencesPage] = AdwPreferencesPageLeaf
-        function AdwPreferencesPage(args...; kwargs...)
-            AdwPreferencesPageLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwPreferencesWindow <: AdwWindow end
@@ -816,18 +479,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwPreferencesWindowLeaf(args...; kwargs...)
-            w = AdwPreferencesWindow(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwPreferencesWindow] = AdwPreferencesWindowLeaf
-        function AdwPreferencesWindow(args...; kwargs...)
-            AdwPreferencesWindowLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwPropertyAnimationTarget <: AdwAnimationTarget end
@@ -841,18 +493,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwPropertyAnimationTargetLeaf(args...; kwargs...)
-            w = AdwPropertyAnimationTarget(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwPropertyAnimationTarget] = AdwPropertyAnimationTargetLeaf
-        function AdwPropertyAnimationTarget(args...; kwargs...)
-            AdwPropertyAnimationTargetLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwSplitButton <: GtkWidget end
@@ -866,18 +507,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwSplitButtonLeaf(args...; kwargs...)
-            w = AdwSplitButton(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwSplitButton] = AdwSplitButtonLeaf
-        function AdwSplitButton(args...; kwargs...)
-            AdwSplitButtonLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwSpringAnimation <: AdwAnimation end
@@ -891,18 +521,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwSpringAnimationLeaf(args...; kwargs...)
-            w = AdwSpringAnimation(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwSpringAnimation] = AdwSpringAnimationLeaf
-        function AdwSpringAnimation(args...; kwargs...)
-            AdwSpringAnimationLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwSqueezer <: GtkWidget end
@@ -916,18 +535,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwSqueezerLeaf(args...; kwargs...)
-            w = AdwSqueezer(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwSqueezer] = AdwSqueezerLeaf
-        function AdwSqueezer(args...; kwargs...)
-            AdwSqueezerLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwSqueezerPage <: GObject end
@@ -941,18 +549,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwSqueezerPageLeaf(args...; kwargs...)
-            w = AdwSqueezerPage(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwSqueezerPage] = AdwSqueezerPageLeaf
-        function AdwSqueezerPage(args...; kwargs...)
-            AdwSqueezerPageLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwStatusPage <: GtkWidget end
@@ -966,18 +563,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwStatusPageLeaf(args...; kwargs...)
-            w = AdwStatusPage(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwStatusPage] = AdwStatusPageLeaf
-        function AdwStatusPage(args...; kwargs...)
-            AdwStatusPageLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwStyleManager <: GObject end
@@ -991,18 +577,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwStyleManagerLeaf(args...; kwargs...)
-            w = AdwStyleManager(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwStyleManager] = AdwStyleManagerLeaf
-        function AdwStyleManager(args...; kwargs...)
-            AdwStyleManagerLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwSwipeTracker <: GObject end
@@ -1016,18 +591,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwSwipeTrackerLeaf(args...; kwargs...)
-            w = AdwSwipeTracker(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwSwipeTracker] = AdwSwipeTrackerLeaf
-        function AdwSwipeTracker(args...; kwargs...)
-            AdwSwipeTrackerLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwTabBar <: GtkWidget end
@@ -1041,18 +605,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwTabBarLeaf(args...; kwargs...)
-            w = AdwTabBar(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwTabBar] = AdwTabBarLeaf
-        function AdwTabBar(args...; kwargs...)
-            AdwTabBarLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwTabPage <: GObject end
@@ -1066,18 +619,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwTabPageLeaf(args...; kwargs...)
-            w = AdwTabPage(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwTabPage] = AdwTabPageLeaf
-        function AdwTabPage(args...; kwargs...)
-            AdwTabPageLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwTabView <: GtkWidget end
@@ -1091,18 +633,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwTabViewLeaf(args...; kwargs...)
-            w = AdwTabView(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwTabView] = AdwTabViewLeaf
-        function AdwTabView(args...; kwargs...)
-            AdwTabViewLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwTimedAnimation <: AdwAnimation end
@@ -1116,18 +647,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwTimedAnimationLeaf(args...; kwargs...)
-            w = AdwTimedAnimation(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwTimedAnimation] = AdwTimedAnimationLeaf
-        function AdwTimedAnimation(args...; kwargs...)
-            AdwTimedAnimationLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwToast <: GObject end
@@ -1141,18 +661,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwToastLeaf(args...; kwargs...)
-            w = AdwToast(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwToast] = AdwToastLeaf
-        function AdwToast(args...; kwargs...)
-            AdwToastLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwToastOverlay <: GtkWidget end
@@ -1166,18 +675,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwToastOverlayLeaf(args...; kwargs...)
-            w = AdwToastOverlay(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwToastOverlay] = AdwToastOverlayLeaf
-        function AdwToastOverlay(args...; kwargs...)
-            AdwToastOverlayLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwViewStack <: GtkWidget end
@@ -1191,18 +689,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwViewStackLeaf(args...; kwargs...)
-            w = AdwViewStack(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwViewStack] = AdwViewStackLeaf
-        function AdwViewStack(args...; kwargs...)
-            AdwViewStackLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwViewStackPage <: GObject end
@@ -1216,18 +703,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwViewStackPageLeaf(args...; kwargs...)
-            w = AdwViewStackPage(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwViewStackPage] = AdwViewStackPageLeaf
-        function AdwViewStackPage(args...; kwargs...)
-            AdwViewStackPageLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwViewSwitcher <: GtkWidget end
@@ -1241,18 +717,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwViewSwitcherLeaf(args...; kwargs...)
-            w = AdwViewSwitcher(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwViewSwitcher] = AdwViewSwitcherLeaf
-        function AdwViewSwitcher(args...; kwargs...)
-            AdwViewSwitcherLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwViewSwitcherBar <: GtkWidget end
@@ -1266,18 +731,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwViewSwitcherBarLeaf(args...; kwargs...)
-            w = AdwViewSwitcherBar(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwViewSwitcherBar] = AdwViewSwitcherBarLeaf
-        function AdwViewSwitcherBar(args...; kwargs...)
-            AdwViewSwitcherBarLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwViewSwitcherTitle <: GtkWidget end
@@ -1291,18 +745,7 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwViewSwitcherTitleLeaf(args...; kwargs...)
-            w = AdwViewSwitcherTitle(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwViewSwitcherTitle] = AdwViewSwitcherTitleLeaf
-        function AdwViewSwitcherTitle(args...; kwargs...)
-            AdwViewSwitcherTitleLeaf(args...; kwargs...)
-        end
     end
     begin
         abstract type AdwWindowTitle <: GtkWidget end
@@ -1316,33 +759,234 @@ $(Expr(:toplevel, quote
                 return gobject_ref(new(handle))
             end
         end
-        local kwargs
-        function AdwWindowTitleLeaf(args...; kwargs...)
-            w = AdwWindowTitle(args...)
-            for (kw, val) = kwargs
-                set_gtk_property!(w, kw, val)
-            end
-            w
-        end
         gtype_wrapper_cache[:AdwWindowTitle] = AdwWindowTitleLeaf
-        function AdwWindowTitle(args...; kwargs...)
-            AdwWindowTitleLeaf(args...; kwargs...)
-        end
     end
     begin
         gtype_wrapper_cache_init() = begin
                 merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
             end
     end
-    begin
-        struct AdwSwipeable <: GInterface
-            handle::Ptr{GObject}
-            gc::Any
-            AdwSwipeable(x::GObject) = begin
-                    new(unsafe_convert(Ptr{GObject}, x), x)
-                end
-        end
+    function AdwAboutWindow(; kwargs...)
+        obj = G_.AboutWindow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
     end
-    export AdwSpringParams, AdwAboutWindow, AdwActionRow, AdwAnimation, AdwAnimationTarget, AdwApplication, AdwApplicationWindow, AdwAvatar, AdwBin, AdwButtonContent, AdwCallbackAnimationTarget, AdwCarousel, AdwCarouselIndicatorDots, AdwCarouselIndicatorLines, AdwClamp, AdwClampLayout, AdwClampScrollable, AdwComboRow, AdwEntryRow, AdwEnumListItem, AdwEnumListModel, AdwExpanderRow, AdwFlap, AdwHeaderBar, AdwLeaflet, AdwLeafletPage, AdwMessageDialog, AdwPasswordEntryRow, AdwPreferencesGroup, AdwPreferencesPage, AdwPreferencesRow, AdwPreferencesWindow, AdwPropertyAnimationTarget, AdwSplitButton, AdwSpringAnimation, AdwSqueezer, AdwSqueezerPage, AdwStatusPage, AdwStyleManager, AdwSwipeTracker, AdwTabBar, AdwTabPage, AdwTabView, AdwTimedAnimation, AdwToast, AdwToastOverlay, AdwViewStack, AdwViewStackPage, AdwViewSwitcher, AdwViewSwitcherBar, AdwViewSwitcherTitle, AdwWindow, AdwWindowTitle, AdwSwipeable
+    function AdwActionRow(; kwargs...)
+        obj = G_.ActionRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwApplication(_application_id::Maybe(Union{AbstractString, Symbol}), _flags; kwargs...)
+        obj = G_.Application_new(_application_id, _flags)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwApplicationWindow(_app::GtkApplication; kwargs...)
+        obj = G_.ApplicationWindow_new(_app)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwAvatar(_size::Integer, _text::Maybe(Union{AbstractString, Symbol}), _show_initials::Bool; kwargs...)
+        obj = G_.Avatar_new(_size, _text, _show_initials)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwBin(; kwargs...)
+        obj = G_.Bin_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwButtonContent(; kwargs...)
+        obj = G_.ButtonContent_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwCallbackAnimationTarget(_callback::Function, _user_data::Maybe(Nothing), _destroy::Function)
+        G_.CallbackAnimationTarget_new(_callback, _user_data, _destroy)
+    end
+    function AdwCarousel(; kwargs...)
+        obj = G_.Carousel_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwCarouselIndicatorDots(; kwargs...)
+        obj = G_.CarouselIndicatorDots_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwCarouselIndicatorLines(; kwargs...)
+        obj = G_.CarouselIndicatorLines_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwClamp(; kwargs...)
+        obj = G_.Clamp_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwClampLayout(; kwargs...)
+        obj = G_.ClampLayout_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwClampScrollable(; kwargs...)
+        obj = G_.ClampScrollable_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwComboRow(; kwargs...)
+        obj = G_.ComboRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwEntryRow(; kwargs...)
+        obj = G_.EntryRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwEnumListModel(_enum_type::Integer; kwargs...)
+        obj = G_.EnumListModel_new(_enum_type)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwExpanderRow(; kwargs...)
+        obj = G_.ExpanderRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwFlap(; kwargs...)
+        obj = G_.Flap_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwHeaderBar(; kwargs...)
+        obj = G_.HeaderBar_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwLeaflet(; kwargs...)
+        obj = G_.Leaflet_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwMessageDialog(_parent::Maybe(GtkWindow), _heading::Maybe(Union{AbstractString, Symbol}), _body::Maybe(Union{AbstractString, Symbol}); kwargs...)
+        obj = G_.MessageDialog_new(_parent, _heading, _body)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwPasswordEntryRow()
+        G_.PasswordEntryRow_new()
+    end
+    function AdwPreferencesGroup(; kwargs...)
+        obj = G_.PreferencesGroup_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwPreferencesPage(; kwargs...)
+        obj = G_.PreferencesPage_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwPreferencesRow(; kwargs...)
+        obj = G_.PreferencesRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwPreferencesWindow(; kwargs...)
+        obj = G_.PreferencesWindow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwPropertyAnimationTarget(_object::GObject, _property_name::Union{AbstractString, Symbol}; kwargs...)
+        obj = G_.PropertyAnimationTarget_new(_object, _property_name)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwPropertyAnimationTarget(_object::GObject, _pspec::GParam; kwargs...)
+        obj = G_.PropertyAnimationTarget_new_for_pspec(_object, _pspec)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwSplitButton(; kwargs...)
+        obj = G_.SplitButton_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwSpringAnimation(_widget::GtkWidget, _from::Real, _to::Real, _spring_params::AdwSpringParams, _target::AdwAnimationTarget; kwargs...)
+        obj = G_.SpringAnimation_new(_widget, _from, _to, _spring_params, _target)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwSqueezer(; kwargs...)
+        obj = G_.Squeezer_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwStatusPage(; kwargs...)
+        obj = G_.StatusPage_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwSwipeTracker(_swipeable::AdwSwipeable; kwargs...)
+        obj = G_.SwipeTracker_new(_swipeable)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwTabBar(; kwargs...)
+        obj = G_.TabBar_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwTabView(; kwargs...)
+        obj = G_.TabView_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwTimedAnimation(_widget::GtkWidget, _from::Real, _to::Real, _duration::Integer, _target::AdwAnimationTarget; kwargs...)
+        obj = G_.TimedAnimation_new(_widget, _from, _to, _duration, _target)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwToast(_title::Union{AbstractString, Symbol}; kwargs...)
+        obj = G_.Toast_new(_title)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwToastOverlay(; kwargs...)
+        obj = G_.ToastOverlay_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwViewStack(; kwargs...)
+        obj = G_.ViewStack_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwViewSwitcher(; kwargs...)
+        obj = G_.ViewSwitcher_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwViewSwitcherBar(; kwargs...)
+        obj = G_.ViewSwitcherBar_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwViewSwitcherTitle(; kwargs...)
+        obj = G_.ViewSwitcherTitle_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwWindow(; kwargs...)
+        obj = G_.Window_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwWindowTitle(_title::Union{AbstractString, Symbol}, _subtitle::Union{AbstractString, Symbol}; kwargs...)
+        obj = G_.WindowTitle_new(_title, _subtitle)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    export AdwSpringParams, AdwSwipeable, AdwAboutWindow, AdwActionRow, AdwAnimation, AdwAnimationTarget, AdwApplication, AdwApplicationWindow, AdwAvatar, AdwBin, AdwButtonContent, AdwCallbackAnimationTarget, AdwCarousel, AdwCarouselIndicatorDots, AdwCarouselIndicatorLines, AdwClamp, AdwClampLayout, AdwClampScrollable, AdwComboRow, AdwEntryRow, AdwEnumListItem, AdwEnumListModel, AdwExpanderRow, AdwFlap, AdwHeaderBar, AdwLeaflet, AdwLeafletPage, AdwMessageDialog, AdwPasswordEntryRow, AdwPreferencesGroup, AdwPreferencesPage, AdwPreferencesRow, AdwPreferencesWindow, AdwPropertyAnimationTarget, AdwSplitButton, AdwSpringAnimation, AdwSqueezer, AdwSqueezerPage, AdwStatusPage, AdwStyleManager, AdwSwipeTracker, AdwTabBar, AdwTabPage, AdwTabView, AdwTimedAnimation, AdwToast, AdwToastOverlay, AdwViewStack, AdwViewStackPage, AdwViewSwitcher, AdwViewSwitcherBar, AdwViewSwitcherTitle, AdwWindow, AdwWindowTitle
 end))
 end
