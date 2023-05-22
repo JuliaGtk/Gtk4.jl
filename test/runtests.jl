@@ -2,10 +2,12 @@ module Gtk4TestModule
 using Test
 
 @testset "GLib" begin
-include("keyfile.jl")
+if Sys.WORD_SIZE == 64
+    include("keyfile.jl")
+    include("bytes.jl")
+end
 #include("date.jl")
 include("datetime.jl")
-include("bytes.jl")
 #include("gstring.jl")
 include("mainloop.jl")
 include("list.jl")
