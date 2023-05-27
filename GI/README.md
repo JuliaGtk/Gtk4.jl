@@ -10,7 +10,7 @@ outside of Gtk4.jl. The goal is to output code that simplifies the creation of
 Julia packages that wrap GObject-based libraries.
 
 This package currently only works on Linux because it uses gobject_introspection_jll,
-which is currently only available for Linux. However, the generated code works on
+which is currently only available for Linux. However, most generated code works on
 other platforms.
 
 ## Status
@@ -53,7 +53,11 @@ from python bindings.
 
 Properties are exported as Julia properties and can be accessed and set using
 `my_object.property_name`. Alternatively the functions `get_gtk_property` or
-`set_gtk_property!` can be used.
+`set_gtk_property!` can be used just like in Gtk.jl.
+
+### Constructors
+
+Constructors for GObjects and structs are defined with a type name prefix.
 
 ### Methods
 
