@@ -48,6 +48,16 @@ Related GTK function: [`gtk_widget_get_allocated_height`()]($(gtkdoc_method_url(
 size(w::GtkWidget) = (width(w), height(w))
 
 """
+    size_request(w::GtkWidget, s)
+
+Set the minimum size `w` to `s`, which should be a tuple (width, height).
+
+Related GTK function: [`gtk_widget_set_size_request`()]($(gtkdoc_method_url("gtk4","Widget","set_size_request")))
+"""
+size_request(w::GtkWidget, s) = G_.set_size_request(w,s[1],s[2])
+size_request(w::GtkWidget, width, height) = G_.set_size_request(w, width, height)
+
+"""
     isvisible(w::GtkWidget) -> Bool
 
 Returns whether `w` and all of its parents are marked as visible.

@@ -7,6 +7,8 @@ delete!(w::GtkWidget, c::GtkEventController) = (G_.remove_controller(w,c); w)
 Returns the widget associated with an event controller.
 """ widget
 
+observe_controllers(w::GtkWidget) = GListModel(G_.observe_controllers(w))
+
 """
     find_controller(w::GtkWidget, ::Type{T}) where T <: GtkEventController
 

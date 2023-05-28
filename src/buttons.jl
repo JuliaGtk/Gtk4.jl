@@ -1,10 +1,21 @@
 ## GtkButton
 
-GtkButton(title::AbstractString) = G_.Button_new_with_mnemonic(title)
+GtkButton(title::AbstractString) = G_.Button_new_with_label(title)
 function GtkButton(w::GtkWidget)
     b = G_.Button_new()
     G_.set_child(b,w)
     b
+end
+function GtkButton(s::Symbol,str::AbstractString)
+    if s === :mnemonic
+        G_.Button_new_with_mnemonic(str)
+    elseif s === :icon_name
+        G_.Button_new_from_icon_name(str)
+    elseif s === :label
+        G_.Button_new_with_label(str)
+    else
+        error("Symbol must be :mnemonic, :icon_name, or :label")
+    end
 end
 
 setindex!(f::GtkButton, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
@@ -66,6 +77,8 @@ function GtkPopoverMenu(model::GMenu, nested = false)
         G_.PopoverMenu_new_from_model(model)
     end
 end
+
+popup(m::GtkPopover) = G_.popup(m)
 
 GtkPopoverMenuBar(model::GMenu) = G_.PopoverMenuBar_new_from_model(model)
 

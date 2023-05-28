@@ -84,6 +84,8 @@ glib_main() = GLib.g_sigatom() do
     end
 end
 
+is_loop_running() = (G_.main_depth() != 0)
+
 """
     start_main_loop()
 
@@ -94,9 +96,9 @@ See also [`stop_main_loop`](@ref).
 """
 function start_main_loop()
     @debug("Starting GLib main loop using g_main_context_iteration()")
-    # if g_main_depth > 0, a glib main-loop is already running,
-    # so we don't need to start a new one
-    if ccall((:g_main_depth, libglib), Cint, ()) == 0
+    # if a glib main-loop is already running, we don't need to start a new one
+    if !is_loop_running()
+        g_main_running[] = true
         global glib_main_task = schedule(Task(glib_main))
     end
 end

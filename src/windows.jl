@@ -67,6 +67,17 @@ Related GTK function: [`gtk_window_unfullscreen`()]($(gtkdoc_method_url("gtk4","
 unfullscreen(win::GtkWindow) = G_.unfullscreen(win)
 
 """
+    isfullscreen(win::GtkWindow)
+
+Get whether `win` is in fullscreen mode.
+
+See also [`fullscreen`](@ref).
+
+Related GTK function: [`gtk_window_is_fullscreen`()]($(gtkdoc_method_url("gtk4","Window","is_fullscreen")))
+"""
+isfullscreen(win::GtkWindow) = G_.is_fullscreen(win)
+
+"""
     maximize(win::GtkWindow)
 
 Request that the window `win` be maximized.

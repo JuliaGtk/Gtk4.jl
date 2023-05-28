@@ -40,7 +40,7 @@ GI.append_struc_docs!(exprs, "gtk4", d, c, ns)
 object_skiplist=[:CClosureExpression,:ClosureExpression,:ConstantExpression,:ObjectExpression,:PropertyExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
 
 GI.all_interfaces!(exprs,exports,ns)
-c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource],output_cache_define=false,output_cache_init=false)
+c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name],output_cache_define=false,output_cache_init=false)
 GI.append_object_docs!(exprs, "gtk4", d, c, ns)
 
 push!(exprs,exports)
