@@ -54,6 +54,19 @@ end
 
 signal_connect(open_file_open_dialog,file_open_dialog_button,"clicked")
 
+## File open dialog (multiple)
+
+files_open_dialog_button = GtkButton("Multiple file open dialog")
+push!(box,files_open_dialog_button)
+
+function open_files_open_dialog(b)
+    open_dialog("Select file(s) to open",main_window; multiple = true) do filenames
+        @async println("selection was ", filenames)
+    end
+end
+
+signal_connect(open_files_open_dialog,files_open_dialog_button,"clicked")
+
 ## File open dialog (with a *.png filter)
 
 png_open_dialog_button = GtkButton("PNG open dialog")

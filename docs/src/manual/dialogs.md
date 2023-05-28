@@ -59,6 +59,14 @@ open_dialog("Pick a file to open", parent) do filename
    # call a function here to do something with the file
 end
 ```
+Multiple files can be opened by setting the `multiple` keyword argument:
+```julia
+open_dialog("Pick files to open", parent; multiple = true) do filenames
+   # call a function here to do something with files
+end
+```
+In this case `filenames` is a list of paths.
+
 The dialog can be preset to a particular directory using the optional argument `start_folder`:
 ```julia
 open_dialog(f, "Pick a file to open", parent; start_folder = "/data")

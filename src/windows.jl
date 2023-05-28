@@ -342,27 +342,27 @@ function makefilters!(dlgp::GtkFileChooser, filters::Union{AbstractVector, Tuple
     end
 end
 
-function file_chooser_get_selection(dlg::Union{GtkFileChooserDialog,GtkFileChooserNative}, response_id)
+
+function selection(dlg::Union{GtkFileChooserDialog,GtkFileChooserNative}, response_id)
     dlgp = GtkFileChooser(dlg)
-    multiple = get_gtk_property(dlg, :select_multiple, Bool)
-    local selection
-    if response_id == ResponseType_ACCEPT
+    multiple = G_.get_select_multiple(dlgp)
+    local sel
+    if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
         if multiple
             filename_list = G_.get_files(dlgp)
-            selection = String[GLib.G_.get_path(GFile(f)) for f in GListModel(filename_list)]
+            sel = String[GLib.G_.get_path(GFile(f)) for f in GListModel(filename_list)]
         else
             gfile = G_.get_file(dlgp)
-            selection = GLib.G_.get_path(GFile(gfile))
+            sel = GLib.G_.get_path(GFile(gfile))
         end
     else
         if multiple
-            selection = String[]
+            sel = String[]
         else
-            selection = ""
+            sel = ""
         end
     end
-    destroy(dlg)
-    return selection
+    return sel
 end
 
 ## Native file dialogs
@@ -398,6 +398,7 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
     action = select_folder ? FileChooserAction_SELECT_FOLDER : FileChooserAction_OPEN
     dlg = GtkFileChooserNative(title, parent, action, "Open", "Cancel")
     dlgp = GtkFileChooser(dlg)
+    multiple && G_.set_select_multiple(dlgp, true)
     if !isempty(filters)
         makefilters!(dlgp, filters)
     end
@@ -407,12 +408,7 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
     end
 
     function on_response(dlg, response_id)
-        if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
-            file = G_.get_file(dlgp)
-            sel = GLib.G_.get_path(GFile(file))
-        else
-            sel = ""
-        end
+        sel = selection(dlg, response_id)
         callback(sel)
         destroy(dlg)
     end
