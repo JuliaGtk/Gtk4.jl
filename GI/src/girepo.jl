@@ -421,7 +421,7 @@ function get_base_type(info::GITypeInfo)
         else
             name=get_name(interf_info)
             #println("$name, Unhandled type: ", typ," ",get_type(interf_info))
-            throw(NotImplementedError)
+            throw(NotImplementedError())
         end
     elseif tag == TAG_ARRAY
         atype=Integer(get_array_type(info))
@@ -445,7 +445,7 @@ function get_base_type(info::GITypeInfo)
         String #FIXME: on funky platforms this may not be utf8/ascii
     else
         #print("base type not implemented: ",tag)
-        #throw(NotImplementedError)
+        #throw(NotImplementedError())
         return Nothing
     end
 end

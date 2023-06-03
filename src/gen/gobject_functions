@@ -75,8 +75,13 @@ $(Expr(:toplevel, quote
     function signal_list_ids(_itype::Integer)
         m_n_ids = Ref{UInt32}()
         ret = ccall(("g_signal_list_ids", libgobject), Ptr{UInt32}, (UInt64, Ptr{UInt32}), _itype, m_n_ids)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt32}, ret, m_n_ids[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
         _n_ids = m_n_ids[]
-        ret
+        ret2
     end
     function signal_lookup(_name::Union{AbstractString, Symbol}, _itype::Integer)
         ret = ccall(("g_signal_lookup", libgobject), UInt32, (Cstring, UInt64), _name, _itype)
@@ -148,8 +153,13 @@ $(Expr(:toplevel, quote
     function type_children(_type::Integer)
         m_n_children = Ref{UInt32}()
         ret = ccall(("g_type_children", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _type, m_n_children)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_children[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
         _n_children = m_n_children[]
-        ret
+        ret2
     end
     function type_class_adjust_private_offset(_g_class::Maybe(Nothing), _private_size_or_offset::Int32)
         _g_class = nothing_to_null(_g_class)
@@ -212,14 +222,24 @@ $(Expr(:toplevel, quote
     function type_interface_prerequisites(_interface_type::Integer)
         m_n_prerequisites = Ref{UInt32}()
         ret = ccall(("g_type_interface_prerequisites", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _interface_type, m_n_prerequisites)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_prerequisites[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
         _n_prerequisites = m_n_prerequisites[]
-        ret
+        ret2
     end
     function type_interfaces(_type::Integer)
         m_n_interfaces = Ref{UInt32}()
         ret = ccall(("g_type_interfaces", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _type, m_n_interfaces)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_interfaces[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
         _n_interfaces = m_n_interfaces[]
-        ret
+        ret2
     end
     function type_name_from_class(_g_class::_GTypeClass)
         ret = ccall(("g_type_name_from_class", libgobject), Cstring, (Ptr{_GTypeClass},), _g_class)

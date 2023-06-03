@@ -50,6 +50,8 @@ signal_connect(on_action_added, g, "action_added")
 push!(g,a)
 @test action_added[] == true
 
+@test ["do-something"] == GLib.G_.list_actions(GActionGroup(g))
+
 extra_arg_ref=Ref(0)
 
 function on_action_added2(action_group, action_name, extra_arg)

@@ -45,7 +45,7 @@ GI.write_to_file(path,"pango_structs",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-skiplist=[:filter]
+skiplist=[:filter,:get_tabs]
 
 GI.all_struct_methods!(exprs,ns,print_detailed=true,skiplist=skiplist,struct_skiplist=struct_skiplist)
 

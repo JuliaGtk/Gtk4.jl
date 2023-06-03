@@ -26,8 +26,9 @@ $(Expr(:toplevel, quote
     function get_data(instance::GBytes)
         m_size = Ref{UInt64}()
         ret = ccall(("g_bytes_get_data", libglib), Ptr{UInt8}, (Ptr{GBytes}, Ptr{UInt64}), instance, m_size)
+        ret2 = collect(unsafe_wrap(Vector{UInt8}, ret, m_size[]))
         _size = m_size[]
-        ret
+        ret2
     end
     function get_size(instance::GBytes)
         ret = ccall(("g_bytes_get_size", libglib), UInt64, (Ptr{GBytes},), instance)
@@ -59,8 +60,13 @@ $(Expr(:toplevel, quote
     function unref_to_data(instance::GBytes)
         m_size = Ref{UInt64}()
         ret = ccall(("g_bytes_unref_to_data", libglib), Ptr{UInt8}, (Ptr{GBytes}, Ptr{UInt64}), instance, m_size)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt8}, ret, m_size[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
         _size = m_size[]
-        ret
+        ret2
     end
     function Checksum_new(_checksum_type)
         ret = ccall(("g_checksum_new", libglib), Ptr{GChecksum}, (UInt32,), _checksum_type)
@@ -485,9 +491,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_key_file_get_boolean_list", libglib), Ptr{Cint}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
-                ret2 = collect(unsafe_wrap(Vector{Cint}, ret, m_length[]))
+                arrtemp = collect(unsafe_wrap(Vector{Cint}, ret, m_length[]))
                 GLib.g_free(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -513,9 +519,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_key_file_get_double_list", libglib), Ptr{Float64}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
-                ret2 = collect(unsafe_wrap(Vector{Float64}, ret, m_length[]))
+                arrtemp = collect(unsafe_wrap(Vector{Float64}, ret, m_length[]))
                 GLib.g_free(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -525,9 +531,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_key_file_get_groups", libglib), Ptr{Cstring}, (Ptr{GKeyFile}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         (ret2, _length)
@@ -550,9 +556,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_key_file_get_integer_list", libglib), Ptr{Int32}, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, m_length, err)
         check_err(err)
         ret2 = begin
-                ret2 = collect(unsafe_wrap(Vector{Int32}, ret, m_length[]))
+                arrtemp = collect(unsafe_wrap(Vector{Int32}, ret, m_length[]))
                 GLib.g_free(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -564,9 +570,9 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         (ret2, _length)
@@ -593,9 +599,9 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -619,9 +625,9 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -953,9 +959,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_match_info_fetch_all", libglib), Ptr{Cstring}, (Ptr{GMatchInfo},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -1162,9 +1168,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_regex_split", libglib), Ptr{Cstring}, (Ptr{GRegex}, Cstring, UInt32), instance, _string, _match_options)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -1175,9 +1181,9 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -1608,26 +1614,25 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_variant_compare", libglib), Int32, (Ptr{GVariant}, Ptr{GVariant}), instance, _two)
         ret
     end
-    function dup_bytestring(instance::GVariant)
-        m_length = Ref{UInt64}()
-        ret = ccall(("g_variant_dup_bytestring", libglib), Ptr{UInt8}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
-        _length = m_length[]
-        ret
-    end
     function dup_bytestring_array(instance::GVariant)
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_dup_bytestring_array", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
+        ret2 = begin
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
         _length = m_length[]
-        ret
+        ret2
     end
     function dup_objv(instance::GVariant)
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_dup_objv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -1644,9 +1649,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_variant_dup_strv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -1665,18 +1670,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_variant_get_byte", libglib), UInt8, (Ptr{GVariant},), instance)
         ret
     end
-    function get_bytestring(instance::GVariant)
-        ret = ccall(("g_variant_get_bytestring", libglib), Ptr{UInt8}, (Ptr{GVariant},), instance)
-        ret
-    end
     function get_bytestring_array(instance::GVariant)
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_get_bytestring_array", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
-        ret2 = begin
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
-                GLib.g_free(ret)
-                ret2
-            end
+        ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]), true)
         _length = m_length[]
         ret2
     end
@@ -1728,11 +1725,7 @@ $(Expr(:toplevel, quote
     function get_objv(instance::GVariant)
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_get_objv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
-        ret2 = begin
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
-                GLib.g_free(ret)
-                ret2
-            end
+        ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]), true)
         _length = m_length[]
         ret2
     end
@@ -1750,11 +1743,7 @@ $(Expr(:toplevel, quote
     function get_strv(instance::GVariant)
         m_length = Ref{UInt64}()
         ret = ccall(("g_variant_get_strv", libglib), Ptr{Cstring}, (Ptr{GVariant}, Ptr{UInt64}), instance, m_length)
-        ret2 = begin
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
-                GLib.g_free(ret)
-                ret2
-            end
+        ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]), true)
         _length = m_length[]
         ret2
     end

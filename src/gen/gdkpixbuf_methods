@@ -18,9 +18,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_pixbuf_format_get_extensions", libgdkpixbuf), Ptr{Cstring}, (Ptr{_GdkPixbufFormat},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -33,9 +33,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_pixbuf_format_get_mime_types", libgdkpixbuf), Ptr{Cstring}, (Ptr{_GdkPixbufFormat},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -279,8 +279,9 @@ $(Expr(:toplevel, quote
     function get_pixels(instance::GdkPixbuf)
         m_length = Ref{UInt32}()
         ret = ccall(("gdk_pixbuf_get_pixels_with_length", libgdkpixbuf), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt32}), instance, m_length)
+        ret2 = collect(unsafe_wrap(Vector{UInt8}, ret, m_length[]))
         _length = m_length[]
-        ret
+        ret2
     end
     function get_rowstride(instance::GdkPixbuf)
         ret = ccall(("gdk_pixbuf_get_rowstride", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
@@ -329,6 +330,11 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _buffer = m_buffer[]
+        _buffer = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt8}, _buffer, m_buffer_size[]))
+                GLib.g_free(_buffer)
+                arrtemp
+            end
         _buffer_size = m_buffer_size[]
         (ret2, _buffer)
     end

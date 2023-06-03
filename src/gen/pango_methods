@@ -332,6 +332,11 @@ $(Expr(:toplevel, quote
         m_n_ranges = Ref{Int32}()
         ret = ccall(("pango_layout_line_get_x_ranges", libpango), Nothing, (Ptr{_PangoLayoutLine}, Int32, Int32, Ptr{Ptr{Int32}}, Ptr{Int32}), instance, _start_index, _end_index, m_ranges, m_n_ranges)
         _ranges = m_ranges[]
+        _ranges = begin
+                arrtemp = copy(unsafe_wrap(Vector{Int32}, _ranges, m_n_ranges[]))
+                GLib.g_free(_ranges)
+                arrtemp
+            end
         _n_ranges = m_n_ranges[]
         _ranges
     end
@@ -502,15 +507,6 @@ $(Expr(:toplevel, quote
         _location = m_location[]
         (_alignment, _location)
     end
-    function get_tabs(instance::PangoTabArray)
-        m_alignments = Ref{UInt32}()
-        m_locations = Ref{Ptr{Int32}}()
-        ret = ccall(("pango_tab_array_get_tabs", libpango), Nothing, (Ptr{PangoTabArray}, Ptr{UInt32}, Ptr{Ptr{Int32}}), instance, m_alignments, m_locations)
-        _alignments = m_alignments[]
-        _alignments = TabAlign(_alignments)
-        _locations = m_locations[]
-        (_alignments, _locations)
-    end
     function resize(instance::PangoTabArray, _new_size::Integer)
         ret = ccall(("pango_tab_array_resize", libpango), Nothing, (Ptr{PangoTabArray}, Int32), instance, _new_size)
         nothing
@@ -607,9 +603,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_context_list_families", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{Ptr{GObject}}}, Ptr{Int32}), instance, m_families, m_n_families)
         _families = m_families[]
         _families = begin
-                ret2 = collect(unsafe_wrap(Vector{Ptr{GObject}}, _families, m_n_families[]))
+                arrtemp = collect(unsafe_wrap(Vector{Ptr{GObject}}, _families, m_n_families[]))
                 GLib.g_free(_families)
-                ret2 = convert.(PangoFontFamily, ret2, false)
+                arrtemp = convert.(PangoFontFamily, arrtemp, false)
             end
         _n_families = m_n_families[]
         _families
@@ -725,10 +721,6 @@ $(Expr(:toplevel, quote
         _logical_rect = m_logical_rect[]
         (_ink_rect, _logical_rect)
     end
-    function get_languages(instance::PangoFont)
-        ret = ccall(("pango_font_get_languages", libpango), Ptr{PangoLanguage}, (Ptr{GObject},), instance)
-        ret
-    end
     function get_metrics(instance::PangoFont, _language::Maybe(PangoLanguage))
         _language = nothing_to_null(_language)
         ret = ccall(("pango_font_get_metrics", libpango), Ptr{_PangoFontMetrics}, (Ptr{GObject}, Ptr{PangoLanguage}), instance, _language)
@@ -770,6 +762,11 @@ $(Expr(:toplevel, quote
         m_n_sizes = Ref{Int32}()
         ret = ccall(("pango_font_face_list_sizes", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{Int32}}, Ptr{Int32}), instance, m_sizes, m_n_sizes)
         _sizes = m_sizes[]
+        _sizes = begin
+                arrtemp = copy(unsafe_wrap(Vector{Int32}, _sizes, m_n_sizes[]))
+                GLib.g_free(_sizes)
+                arrtemp
+            end
         _n_sizes = m_n_sizes[]
         _sizes
     end
@@ -800,9 +797,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_font_family_list_faces", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{Ptr{GObject}}}, Ptr{Int32}), instance, m_faces, m_n_faces)
         _faces = m_faces[]
         _faces = begin
-                ret2 = collect(unsafe_wrap(Vector{Ptr{GObject}}, _faces, m_n_faces[]))
+                arrtemp = collect(unsafe_wrap(Vector{Ptr{GObject}}, _faces, m_n_faces[]))
                 GLib.g_free(_faces)
-                ret2 = convert.(PangoFontFace, ret2, false)
+                arrtemp = convert.(PangoFontFace, arrtemp, false)
             end
         _n_faces = m_n_faces[]
         _faces
@@ -831,9 +828,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_font_map_list_families", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{Ptr{GObject}}}, Ptr{Int32}), instance, m_families, m_n_families)
         _families = m_families[]
         _families = begin
-                ret2 = collect(unsafe_wrap(Vector{Ptr{GObject}}, _families, m_n_families[]))
+                arrtemp = collect(unsafe_wrap(Vector{Ptr{GObject}}, _families, m_n_families[]))
                 GLib.g_free(_families)
-                ret2 = convert.(PangoFontFamily, ret2, false)
+                arrtemp = convert.(PangoFontFamily, arrtemp, false)
             end
         _n_families = m_n_families[]
         _families
@@ -1014,9 +1011,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_layout_get_log_attrs", libpango), Nothing, (Ptr{GObject}, Ptr{Ptr{_PangoLogAttr}}, Ptr{Int32}), instance, m_attrs, m_n_attrs)
         _attrs = m_attrs[]
         _attrs = begin
-                ret2 = collect(unsafe_wrap(Vector{_PangoLogAttr}, _attrs, m_n_attrs[]))
+                arrtemp = collect(unsafe_wrap(Vector{_PangoLogAttr}, _attrs, m_n_attrs[]))
                 GLib.g_free(_attrs)
-                ret2
+                arrtemp
             end
         _n_attrs = m_n_attrs[]
         _attrs
@@ -1024,8 +1021,9 @@ $(Expr(:toplevel, quote
     function get_log_attrs_readonly(instance::PangoLayout)
         m_n_attrs = Ref{Int32}()
         ret = ccall(("pango_layout_get_log_attrs_readonly", libpango), Ptr{_PangoLogAttr}, (Ptr{GObject}, Ptr{Int32}), instance, m_n_attrs)
+        ret2 = collect(unsafe_wrap(Vector{_PangoLogAttr}, ret, m_n_attrs[]))
         _n_attrs = m_n_attrs[]
-        ret
+        ret2
     end
     function get_pixel_extents(instance::PangoLayout)
         m_ink_rect = Ref{_PangoRectangle}()

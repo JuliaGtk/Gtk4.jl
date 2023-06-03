@@ -87,13 +87,17 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         try
             test = coalesce(in(name,import_as_opaque),false)
             push!(exprs, decl(ssi,test))
-        catch NotImplementedError
-            if print_summary
-                printstyled(name," not implemented\n";color=:red)
+        catch e
+            if isa(e, NotImplementedError)
+                if print_summary
+                    printstyled(name," not implemented\n";color=:red)
+                end
+                push!(struct_skiplist,name)
+                imported-=1
+                continue
+            else
+                rethrow(e)
             end
-            push!(struct_skiplist,name)
-            imported-=1
-            continue
         end
         push!(exports.args, get_full_name(ssi))
         if length(fields)>0
@@ -203,10 +207,19 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
             if print_detailed
                 println(get_name(m))
             end
-            fun=create_method(m, liboverride)
-            push!(exprs, fun)
-            push!(handled_symbols,get_symbol(m))
-            created+=1
+            try
+                fun=create_method(m, liboverride)
+                push!(exprs, fun)
+                push!(handled_symbols,get_symbol(m))
+                created+=1
+            catch e
+                if isa(e, NotImplementedError)
+                    continue
+                else
+                    error("Error: $name.$(get_name(m))")
+                    rethrow(e)
+                end
+            end
         end
     end
 
@@ -298,9 +311,14 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
                 fun=create_method(m, liboverride)
                 push!(exprs, fun)
                 created+=1
-            catch NotImplementedError
-                println("$name method not implemented: ",get_name(m))
-                not_implemented+=1
+            catch e
+                if isa(e, NotImplementedError)
+                    println("$name method not implemented: ",get_name(m))
+                    not_implemented+=1
+                else
+                    error("Error: $name, $(get_name(m))")
+                    rethrow(e)
+                end
             end
         end
     end
@@ -353,9 +371,13 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
                 fun=create_method(m, liboverride)
                 push!(exprs, fun)
                 created+=1
-            catch NotImplementedError
-                println("$name method not implemented: ",get_name(m))
-                not_implemented+=1
+            catch e
+                if isa(e, NotImplementedError)
+                    println("$name method not implemented: ",get_name(m))
+                    not_implemented+=1
+                else
+                    rethrow(e)
+                end
             end
         end
     end
@@ -383,8 +405,12 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
                 if (isa(get_base_type(get_type(arg)), Nothing))
                     unsupported = true; break
                 end
-            catch NotImplementedError
-                continue
+            catch e
+                if isa(e, NotImplementedError)
+                    continue
+                else
+                    rethrow(e)
+                end
             end
         end
         try
@@ -396,8 +422,12 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
                 skipped+=1
                 continue
             end
-        catch NotImplementedError
-            continue
+        catch e
+            if isa(e, NotImplementedError)
+                continue
+            else
+                rethrow(e)
+            end
         end
         name = get_name(i)
         name = Symbol("$name")
@@ -405,10 +435,15 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
             fun=create_method(i, liboverride)
             push!(exprs, fun)
             j+=1
-        catch NotImplementedError
-            println("Function not implemented: ",name)
-            not_implemented+=1
-            continue
+        catch e
+            if isa(e, NotImplementedError)
+                println("Function not implemented: ",name)
+                not_implemented+=1
+                continue
+            else
+                println("Error: $name")
+                rethrow(e)
+            end
         end
         #push!(exports.args, name)
     end

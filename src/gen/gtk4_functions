@@ -37,19 +37,6 @@ $(Expr(:toplevel, quote
         _accelerator_mods = ModifierType(_accelerator_mods)
         (ret2, _accelerator_key, _accelerator_mods)
     end
-    function accelerator_parse_with_keycode(_accelerator::Union{AbstractString, Symbol}, _display::Maybe(GdkDisplay))
-        _display = nothing_to_null(_display)
-        m_accelerator_key = Ref{UInt32}()
-        m_accelerator_codes = Ref{Ptr{UInt32}}()
-        m_accelerator_mods = Ref{UInt32}()
-        ret = ccall(("gtk_accelerator_parse_with_keycode", libgtk4), Cint, (Cstring, Ptr{GObject}, Ptr{UInt32}, Ptr{Ptr{UInt32}}, Ptr{UInt32}), _accelerator, _display, m_accelerator_key, m_accelerator_codes, m_accelerator_mods)
-        ret2 = convert(Bool, ret)
-        _accelerator_key = m_accelerator_key[]
-        _accelerator_codes = m_accelerator_codes[]
-        _accelerator_mods = m_accelerator_mods[]
-        _accelerator_mods = ModifierType(_accelerator_mods)
-        (ret2, _accelerator_key, _accelerator_codes, _accelerator_mods)
-    end
     function accelerator_valid(_keyval::Integer, _modifiers)
         ret = ccall(("gtk_accelerator_valid", libgtk4), Cint, (UInt32, UInt32), _keyval, _modifiers)
         ret2 = convert(Bool, ret)
@@ -341,8 +328,9 @@ $(Expr(:toplevel, quote
     function test_list_all_types()
         m_n_types = Ref{UInt32}()
         ret = ccall(("gtk_test_list_all_types", libgtk4), Ptr{UInt64}, (Ptr{UInt32},), m_n_types)
+        ret2 = collect(unsafe_wrap(Vector{UInt64}, ret, m_n_types[]))
         _n_types = m_n_types[]
-        ret
+        ret2
     end
     function test_register_all_types()
         ret = ccall(("gtk_test_register_all_types", libgtk4), Nothing, ())

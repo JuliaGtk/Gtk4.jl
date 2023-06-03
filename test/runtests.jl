@@ -4,7 +4,7 @@ using Test
 @testset "GLib" begin
 if Sys.WORD_SIZE == 64
     include("keyfile.jl")
-    include("bytes.jl")
+    include("misc.jl")
 end
 #include("date.jl")
 include("datetime.jl")

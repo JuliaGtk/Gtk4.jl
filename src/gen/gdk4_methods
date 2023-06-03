@@ -844,7 +844,17 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_display_map_keycode", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{Ptr{_GdkKeymapKey}}, Ptr{Ptr{UInt32}}, Ptr{Int32}), instance, _keycode, m_keys, m_keyvals, m_n_entries)
         ret2 = convert(Bool, ret)
         _keys = m_keys[]
+        _keys = begin
+                arrtemp = copy(unsafe_wrap(Vector{_GdkKeymapKey}, _keys, m_n_entries[]))
+                GLib.g_free(_keys)
+                arrtemp
+            end
         _keyvals = m_keyvals[]
+        _keyvals = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt32}, _keyvals, m_n_entries[]))
+                GLib.g_free(_keyvals)
+                arrtemp
+            end
         _n_entries = m_n_entries[]
         (ret2, _keys, _keyvals)
     end
@@ -854,6 +864,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_display_map_keyval", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{Ptr{_GdkKeymapKey}}, Ptr{Int32}), instance, _keyval, m_keys, m_n_keys)
         ret2 = convert(Bool, ret)
         _keys = m_keys[]
+        _keys = begin
+                arrtemp = copy(unsafe_wrap(Vector{_GdkKeymapKey}, _keys, m_n_keys[]))
+                GLib.g_free(_keys)
+                arrtemp
+            end
         _n_keys = m_n_keys[]
         (ret2, _keys)
     end
@@ -1089,6 +1104,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_event_get_axes", libgtk4), Cint, (Ptr{GdkEvent}, Ptr{Ptr{Float64}}, Ptr{UInt32}), instance, m_axes, m_n_axes)
         ret2 = convert(Bool, ret)
         _axes = m_axes[]
+        _axes = collect(unsafe_wrap(Vector{Float64}, _axes, m_n_axes[]))
         _n_axes = m_n_axes[]
         (ret2, _axes)
     end
@@ -1128,9 +1144,9 @@ $(Expr(:toplevel, quote
         m_out_n_coords = Ref{UInt32}()
         ret = ccall(("gdk_event_get_history", libgtk4), Ptr{_GdkTimeCoord}, (Ptr{GdkEvent}, Ptr{UInt32}), instance, m_out_n_coords)
         ret2 = begin
-                ret2 = collect(unsafe_wrap(Vector{_GdkTimeCoord}, ret, m_out_n_coords[]))
+                arrtemp = collect(unsafe_wrap(Vector{_GdkTimeCoord}, ret, m_out_n_coords[]))
                 GLib.g_free(ret)
-                ret2
+                arrtemp
             end
         _out_n_coords = m_out_n_coords[]
         ret2

@@ -182,9 +182,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_recent_info_get_applications", libgtk4), Ptr{Cstring}, (Ptr{GtkRecentInfo}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -209,9 +209,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_recent_info_get_groups", libgtk4), Ptr{Cstring}, (Ptr{GtkRecentInfo}, Ptr{UInt64}), instance, m_length)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -358,8 +358,9 @@ $(Expr(:toplevel, quote
     function get_indices(instance::GtkTreePath)
         m_depth = Ref{Int32}()
         ret = ccall(("gtk_tree_path_get_indices_with_depth", libgtk4), Ptr{Int32}, (Ptr{GtkTreePath}, Ptr{Int32}), instance, m_depth)
+        ret2 = collect(unsafe_wrap(Vector{Int32}, ret, m_depth[]))
         _depth = m_depth[]
-        ret
+        ret2
     end
     function is_ancestor(instance::GtkTreePath, _descendant::GtkTreePath)
         ret = ccall(("gtk_tree_path_is_ancestor", libgtk4), Cint, (Ptr{GtkTreePath}, Ptr{GtkTreePath}), instance, _descendant)
@@ -423,11 +424,21 @@ $(Expr(:toplevel, quote
     end
     function get_artists(instance::GtkAboutDialog)
         ret = ccall(("gtk_about_dialog_get_artists", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function get_authors(instance::GtkAboutDialog)
         ret = ccall(("gtk_about_dialog_get_authors", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function get_comments(instance::GtkAboutDialog)
         ret = ccall(("gtk_about_dialog_get_comments", libgtk4), Cstring, (Ptr{GObject},), instance)
@@ -441,7 +452,12 @@ $(Expr(:toplevel, quote
     end
     function get_documenters(instance::GtkAboutDialog)
         ret = ccall(("gtk_about_dialog_get_documenters", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function get_license(instance::GtkAboutDialog)
         ret = ccall(("gtk_about_dialog_get_license", libgtk4), Cstring, (Ptr{GObject},), instance)
@@ -845,9 +861,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_application_get_accels_for_action", libgtk4), Ptr{Cstring}, (Ptr{GObject}, Cstring), instance, _detailed_action_name)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -855,9 +871,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_application_get_actions_for_accel", libgtk4), Ptr{Cstring}, (Ptr{GObject}, Cstring), instance, _accel)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -895,9 +911,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_application_list_action_descriptions", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -3002,8 +3018,9 @@ $(Expr(:toplevel, quote
     function get_gtypes(instance::GtkDropTarget)
         m_n_types = Ref{UInt64}()
         ret = ccall(("gtk_drop_target_get_gtypes", libgtk4), Ptr{UInt64}, (Ptr{GObject}, Ptr{UInt64}), instance, m_n_types)
+        ret2 = collect(unsafe_wrap(Vector{UInt64}, ret, m_n_types[]))
         _n_types = m_n_types[]
-        ret
+        ret2
     end
     function get_preload(instance::GtkDropTarget)
         ret = ccall(("gtk_drop_target_get_preload", libgtk4), Cint, (Ptr{GObject},), instance)
@@ -3815,7 +3832,12 @@ $(Expr(:toplevel, quote
     end
     function get_attributes(instance::GtkFileFilter)
         ret = ccall(("gtk_file_filter_get_attributes", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function get_name(instance::GtkFileFilter)
         ret = ccall(("gtk_file_filter_get_name", libgtk4), Cstring, (Ptr{GObject},), instance)
@@ -4496,14 +4518,6 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkGesture, ret, true)
         ret2
     end
-    function get_axes(instance::GtkGestureStylus, _axes)
-        _axes = convert(Vector{UInt32}, _axes)
-        m_values = Ref{Ptr{Float64}}()
-        ret = ccall(("gtk_gesture_stylus_get_axes", libgtk4), Cint, (Ptr{GObject}, Ptr{UInt32}, Ptr{Ptr{Float64}}), instance, _axes, m_values)
-        ret2 = convert(Bool, ret)
-        _values = m_values[]
-        (ret2, _values)
-    end
     function get_axis(instance::GtkGestureStylus, _axis)
         m_value = Ref{Float64}()
         ret = ccall(("gtk_gesture_stylus_get_axis", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{Float64}), instance, _axis, m_value)
@@ -4969,23 +4983,19 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_icon_theme_get_icon_names", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
-    end
-    function get_icon_sizes(instance::GtkIconTheme, _icon_name::Union{AbstractString, Symbol})
-        ret = ccall(("gtk_icon_theme_get_icon_sizes", libgtk4), Ptr{Int32}, (Ptr{GObject}, Cstring), instance, _icon_name)
-        ret
     end
     function get_resource_path(instance::GtkIconTheme)
         ret = ccall(("gtk_icon_theme_get_resource_path", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -4993,9 +5003,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_icon_theme_get_search_path", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -10078,9 +10088,9 @@ $(Expr(:toplevel, quote
         m_out_len = Ref{UInt32}()
         ret = ccall(("gtk_text_child_anchor_get_widgets", libgtk4), Ptr{Ptr{GObject}}, (Ptr{GObject}, Ptr{UInt32}), instance, m_out_len)
         ret2 = begin
-                ret2 = collect(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_out_len[]))
+                arrtemp = collect(unsafe_wrap(Vector{Ptr{GObject}}, ret, m_out_len[]))
                 GLib.g_free(ret)
-                ret2 = convert.(GtkWidget, ret2, false)
+                arrtemp = convert.(GtkWidget, arrtemp, false)
             end
         _out_len = m_out_len[]
         ret2
@@ -11956,9 +11966,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_widget_get_css_classes", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end

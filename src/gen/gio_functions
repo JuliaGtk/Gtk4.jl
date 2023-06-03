@@ -191,7 +191,12 @@ $(Expr(:toplevel, quote
     end
     function content_type_get_mime_dirs()
         ret = ccall(("g_content_type_get_mime_dirs", libgio), Ptr{Cstring}, ())
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function content_type_get_mime_type(_type::Union{AbstractString, Symbol})
         ret = ccall(("g_content_type_get_mime_type", libgio), Cstring, (Cstring,), _type)
@@ -221,9 +226,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_content_type_guess_for_tree", libgio), Ptr{Cstring}, (Ptr{GObject},), _root)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -364,10 +369,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_dbus_is_unique_name", libgio), Cint, (Cstring,), _string)
         ret2 = convert(Bool, ret)
         ret2
-    end
-    function dbus_unescape_object_path(_s::Union{AbstractString, Symbol})
-        ret = ccall(("g_dbus_unescape_object_path", libgio), Ptr{UInt8}, (Cstring,), _s)
-        ret
     end
     function dtls_client_connection_new(_base_socket::GDatagramBased, _server_identity::Maybe(GSocketConnectable))
         _server_identity = nothing_to_null(_server_identity)
@@ -646,9 +647,9 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end

@@ -94,9 +94,9 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -158,9 +158,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_settings_schema_list_children", libgio), Ptr{Cstring}, (Ptr{GSettingsSchema},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -168,9 +168,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_settings_schema_list_keys", libgio), Ptr{Cstring}, (Ptr{GSettingsSchema},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -242,16 +242,16 @@ $(Expr(:toplevel, quote
         _non_relocatable = m_non_relocatable[]
         _non_relocatable = begin
                 _len = length_zt(_non_relocatable)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, _non_relocatable, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, _non_relocatable, _len))
                 GLib.g_strfreev(_non_relocatable)
-                ret2
+                arrtemp
             end
         _relocatable = m_relocatable[]
         _relocatable = begin
                 _len = length_zt(_relocatable)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, _relocatable, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, _relocatable, _len))
                 GLib.g_strfreev(_relocatable)
-                ret2
+                arrtemp
             end
         (_non_relocatable, _relocatable)
     end
@@ -314,9 +314,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_app_launch_context_get_environment", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -511,8 +511,13 @@ $(Expr(:toplevel, quote
     function get_arguments(instance::GApplicationCommandLine)
         m_argc = Ref{Int32}()
         ret = ccall(("g_application_command_line_get_arguments", libgio), Ptr{Cstring}, (Ptr{GObject}, Ptr{Int32}), instance, m_argc)
+        ret2 = begin
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_argc[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
         _argc = m_argc[]
-        ret
+        ret2
     end
     function get_cwd(instance::GApplicationCommandLine)
         ret = ccall(("g_application_command_line_get_cwd", libgio), Cstring, (Ptr{GObject},), instance)
@@ -521,7 +526,12 @@ $(Expr(:toplevel, quote
     end
     function get_environ(instance::GApplicationCommandLine)
         ret = ccall(("g_application_command_line_get_environ", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function get_exit_status(instance::GApplicationCommandLine)
         ret = ccall(("g_application_command_line_get_exit_status", libgio), Int32, (Ptr{GObject},), instance)
@@ -603,8 +613,9 @@ $(Expr(:toplevel, quote
     function peek_buffer(instance::GBufferedInputStream)
         m_count = Ref{UInt64}()
         ret = ccall(("g_buffered_input_stream_peek_buffer", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt64}), instance, m_count)
+        ret2 = collect(unsafe_wrap(Vector{UInt8}, ret, m_count[]))
         _count = m_count[]
-        ret
+        ret2
     end
     function read_byte(instance::GBufferedInputStream, _cancellable::Maybe(GCancellable))
         _cancellable = nothing_to_null(_cancellable)
@@ -939,10 +950,6 @@ $(Expr(:toplevel, quote
         ret2 = convert(GVariant, ret)
         ret2
     end
-    function get_header_fields(instance::GDBusMessage)
-        ret = ccall(("g_dbus_message_get_header_fields", libgio), Ptr{UInt8}, (Ptr{GObject},), instance)
-        ret
-    end
     function get_interface(instance::GDBusMessage)
         ret = ccall(("g_dbus_message_get_interface", libgio), Cstring, (Ptr{GObject},), instance)
         ret2 = string_or_nothing(ret, false)
@@ -1081,8 +1088,13 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_dbus_message_to_blob", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt64}, UInt32, Ptr{Ptr{GError}}), instance, m_out_size, _capabilities, err)
         check_err(err)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt8}, ret, m_out_size[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
         _out_size = m_out_size[]
-        ret
+        ret2
     end
     function to_gerror(instance::GDBusMessage)
         err = err_buf()
@@ -1270,29 +1282,12 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret
     end
-    function read_line(instance::GDataInputStream, _cancellable::Maybe(GCancellable))
-        m_length = Ref{UInt64}()
-        _cancellable = nothing_to_null(_cancellable)
-        err = err_buf()
-        ret = ccall(("g_data_input_stream_read_line", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt64}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, m_length, _cancellable, err)
-        check_err(err)
-        _length = m_length[]
-        (ret, _length)
-    end
     function read_line_async(instance::GDataInputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
         _cancellable = nothing_to_null(_cancellable)
         _callback = nothing_to_null(_callback)
         _user_data = nothing_to_null(_user_data)
         ret = ccall(("g_data_input_stream_read_line_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _io_priority, _cancellable, _callback, _user_data)
         nothing
-    end
-    function read_line_finish(instance::GDataInputStream, _result::GAsyncResult)
-        m_length = Ref{UInt64}()
-        err = err_buf()
-        ret = ccall(("g_data_input_stream_read_line_finish", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{GObject}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _result, m_length, err)
-        check_err(err)
-        _length = m_length[]
-        (ret, _length)
     end
     function read_line_finish_utf8(instance::GDataInputStream, _result::GAsyncResult)
         m_length = Ref{UInt64}()
@@ -1466,10 +1461,6 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, true)
         ret2
     end
-    function search(_search_string::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_search", libgio), Ptr{Ptr{Cstring}}, (Cstring,), _search_string)
-        ret
-    end
     function get_action_name(instance::GDesktopAppInfo, _action_name::Union{AbstractString, Symbol})
         ret = ccall(("g_desktop_app_info_get_action_name", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _action_name)
         ret2 = string_or_nothing(ret, true)
@@ -1502,7 +1493,12 @@ $(Expr(:toplevel, quote
     end
     function get_keywords(instance::GDesktopAppInfo)
         ret = ccall(("g_desktop_app_info_get_keywords", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function get_locale_string(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
         ret = ccall(("g_desktop_app_info_get_locale_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _key)
@@ -1535,9 +1531,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_desktop_app_info_get_string_list", libgio), Ptr{Cstring}, (Ptr{GObject}, Cstring, Ptr{UInt64}), instance, _key, m_length)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         _length = m_length[]
         ret2
@@ -1578,7 +1574,12 @@ $(Expr(:toplevel, quote
     end
     function list_actions(instance::GDesktopAppInfo)
         ret = ccall(("g_desktop_app_info_list_actions", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function Emblem_new(_icon::GIcon)
         ret = ccall(("g_emblem_new", libgio), Ptr{GObject}, (Ptr{GObject},), _icon)
@@ -1837,7 +1838,12 @@ $(Expr(:toplevel, quote
     end
     function get_attribute_stringv(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
         ret = ccall(("g_file_info_get_attribute_stringv", libgio), Ptr{Cstring}, (Ptr{GObject}, Cstring), instance, _attribute)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function get_attribute_type(instance::GFileInfo, _attribute::Union{AbstractString, Symbol})
         ret = ccall(("g_file_info_get_attribute_type", libgio), UInt32, (Ptr{GObject}, Cstring), instance, _attribute)
@@ -1950,9 +1956,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_file_info_list_attributes", libgio), Ptr{Cstring}, (Ptr{GObject}, Cstring), instance, _name_space)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -2154,9 +2160,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_filename_completer_get_completions", libgio), Ptr{Cstring}, (Ptr{GObject}, Cstring), instance, _initial_text)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -2463,6 +2469,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_input_stream_read", libgio), Int64, (Ptr{GObject}, Ptr{Ptr{UInt8}}, UInt64, Ptr{GObject}, Ptr{Ptr{GError}}), instance, m_buffer, _count, _cancellable, err)
         check_err(err)
         _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_count[]))
         (ret, _buffer)
     end
     function read_all(instance::GInputStream, _cancellable::Maybe(GCancellable))
@@ -2475,6 +2482,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_count[]))
         _bytes_read = m_bytes_read[]
         (ret2, _buffer, _bytes_read)
     end
@@ -2486,6 +2494,7 @@ $(Expr(:toplevel, quote
         _count = length(_buffer)
         ret = ccall(("g_input_stream_read_all_async", libgio), Nothing, (Ptr{GObject}, Ptr{Ptr{UInt8}}, UInt64, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, m_buffer, _count, _io_priority, _cancellable, _callback, _user_data)
         _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_count[]))
         _buffer
     end
     function read_all_finish(instance::GInputStream, _result::GAsyncResult)
@@ -2505,6 +2514,7 @@ $(Expr(:toplevel, quote
         _count = length(_buffer)
         ret = ccall(("g_input_stream_read_async", libgio), Nothing, (Ptr{GObject}, Ptr{Ptr{UInt8}}, UInt64, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, m_buffer, _count, _io_priority, _cancellable, _callback, _user_data)
         _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_count[]))
         _buffer
     end
     function read_bytes(instance::GInputStream, _count::Integer, _cancellable::Maybe(GCancellable))
@@ -3630,9 +3640,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_settings_get_strv", libgio), Ptr{Cstring}, (Ptr{GObject}, Cstring), instance, _key)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -3663,9 +3673,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_settings_list_children", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -4021,6 +4031,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_socket_receive", libgio), Int64, (Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, m_buffer, m_size, _cancellable, err)
         check_err(err)
         _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_size[]))
         _size = m_size[]
         (ret, _buffer)
     end
@@ -4035,6 +4046,7 @@ $(Expr(:toplevel, quote
         _address = m_address[]
         _address = convert(GSocketAddress, _address, true)
         _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_size[]))
         _size = m_size[]
         (ret, _address, _buffer)
     end
@@ -4053,6 +4065,11 @@ $(Expr(:toplevel, quote
         _address = m_address[]
         _address = convert(GSocketAddress, _address, true)
         _messages = m_messages[]
+        _messages = begin
+                arrtemp = copy(unsafe_wrap(Vector{Ptr{GObject}}, _messages, m_num_messages[]))
+                GLib.g_free(_messages)
+                arrtemp
+            end
         _num_messages = m_num_messages[]
         _flags = m_flags[]
         (ret, _address, _messages, _flags)
@@ -4065,6 +4082,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_socket_receive_with_blocking", libgio), Int64, (Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), instance, m_buffer, m_size, _blocking, _cancellable, err)
         check_err(err)
         _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_size[]))
         _size = m_size[]
         (ret, _buffer)
     end
@@ -4887,7 +4905,12 @@ $(Expr(:toplevel, quote
     end
     function get_names(instance::GThemedIcon)
         ret = ccall(("g_themed_icon_get_names", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function prepend_name(instance::GThemedIcon, _iconname::Union{AbstractString, Symbol})
         ret = ccall(("g_themed_icon_prepend_name", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _iconname)
@@ -5263,8 +5286,9 @@ $(Expr(:toplevel, quote
     function get_value(instance::GTlsPassword)
         m_length = Ref{UInt64}()
         ret = ccall(("g_tls_password_get_value", libgio), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt64}), instance, m_length)
+        ret2 = collect(unsafe_wrap(Vector{UInt8}, ret, m_length[]))
         _length = m_length[]
-        ret
+        ret2
     end
     function get_warning(instance::GTlsPassword)
         ret = ccall(("g_tls_password_get_warning", libgio), Cstring, (Ptr{GObject},), instance)
@@ -5398,7 +5422,12 @@ $(Expr(:toplevel, quote
     end
     function get_supported_uri_schemes(instance::GVfs)
         ret = ccall(("g_vfs_get_supported_uri_schemes", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
     end
     function is_active(instance::GVfs)
         ret = ccall(("g_vfs_is_active", libgio), Cint, (Ptr{GObject},), instance)
@@ -5606,9 +5635,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_action_group_list_actions", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
                 _len = length_zt(ret)
-                ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
                 GLib.g_strfreev(ret)
-                ret2
+                arrtemp
             end
         ret2
     end
@@ -6355,6 +6384,11 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _contents = m_contents[]
+        _contents = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt8}, _contents, m_length[]))
+                GLib.g_free(_contents)
+                arrtemp
+            end
         _length = m_length[]
         _etag_out = m_etag_out[]
         _etag_out = convert(Maybe(Union{AbstractString, Symbol}), _etag_out)
@@ -6376,6 +6410,11 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _contents = m_contents[]
+        _contents = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt8}, _contents, m_length[]))
+                GLib.g_free(_contents)
+                arrtemp
+            end
         _length = m_length[]
         _etag_out = m_etag_out[]
         _etag_out = convert(Maybe(Union{AbstractString, Symbol}), _etag_out)
@@ -6390,6 +6429,11 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         _contents = m_contents[]
+        _contents = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt8}, _contents, m_length[]))
+                GLib.g_free(_contents)
+                arrtemp
+            end
         _length = m_length[]
         _etag_out = m_etag_out[]
         _etag_out = convert(Maybe(Union{AbstractString, Symbol}), _etag_out)
@@ -7067,6 +7111,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_pollable_input_stream_read_nonblocking", libgio), Int64, (Ptr{GObject}, Ptr{Ptr{UInt8}}, UInt64, Ptr{GObject}, Ptr{Ptr{GError}}), instance, m_buffer, _count, _cancellable, err)
         check_err(err)
         _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_count[]))
         (ret, _buffer)
     end
     function get_power_saver_enabled(instance::GPowerProfileMonitor)

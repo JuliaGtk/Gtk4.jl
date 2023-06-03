@@ -469,9 +469,6 @@ function extract_type(typeinfo::GITypeInfo,info::Type{GICArray})
     elm = get_param_type(typeinfo,0)
     elmtype = extract_type(elm)
     elmctype=elmtype.ctype
-    elmgitype=elmtype.gitype
-    elmjtype=elmtype.jtype
-    #TypeDesc{Type{GICArray}}(GICArray,:(Vector{$elmgitype}), :(Ptr{$elmctype}))
     TypeDesc{Type{GICArray}}(GICArray,:Any, :(Array{$elmtype}), :(Ptr{$elmctype}))
 end
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) where {T<:Type{GICArray}}
@@ -483,7 +480,7 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
     elm = get_param_type(argtypeinfo,0)
     elmtype = extract_type(elm)
     elmctype=elmtype.ctype
-    arrlen=get_array_length(argtypeinfo)
+    arrlen=get_array_length(argtypeinfo) # position of array length argument
     lensymb=nothing
     if arrlen != -1
         if typeof(arginfo)==GIFunctionInfo
@@ -497,25 +494,50 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
     end
 
     owns = typeof(arginfo)==GIFunctionInfo ? get_caller_owns(arginfo) : get_ownership_transfer(arginfo)
-    if is_zero_terminated(argtypeinfo) && owns==GITransfer.EVERYTHING
-        if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
-            :(_len=length_zt($name);ret2=bytestring.(unsafe_wrap(Vector{$elmctype}, $name,_len));GLib.g_strfreev($name);ret2)
+    if owns==GITransfer.EVERYTHING  # means it's our responsibility to free both the array and its contents
+        if is_zero_terminated(argtypeinfo)
+            if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
+                return :(_len=length_zt($name);arrtemp=bytestring.(unsafe_wrap(Vector{$elmctype}, $name,_len));GLib.g_strfreev($name);arrtemp)
+            else
+                throw(NotImplementedError())  # TODO
+                #:(_len=length_zt($name);arrtemp=copy(unsafe_wrap(Vector{$elmctype}, $name,i-1));GLib.g_free($name);arrtemp)
+            end
         else
-            return nothing
-            #:(_len=length_zt($name);ret2=copy(unsafe_wrap(Vector{$elmctype}, $name,i-1));GLib.g_free($name);ret2)
+            if lensymb !== nothing
+                if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
+                    return :(arrtemp=bytestring.(unsafe_wrap(Vector{$elmctype}, $name, $lensymb[]));GLib.g_free($name);arrtemp)
+                else
+                    return :(arrtemp=copy(unsafe_wrap(Vector{$elmctype}, $name, $lensymb[]));GLib.g_free($name);arrtemp)
+                end
+            else
+                error("No way to find the length of the output array")
+            end
         end
-    elseif owns==GITransfer.CONTAINER && lensymb !== nothing
+    elseif owns==GITransfer.CONTAINER && lensymb !== nothing  # we need to free the array but not the contents
         if elmtype.gitype == GObject
-            :(ret2=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);ret2=convert.($(elmtype.jtype), ret2, false))
+            return :(arrtemp=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);arrtemp=convert.($(elmtype.jtype), arrtemp, false))
         elseif elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
-            :(ret2=bytestring.(unsafe_wrap(Vector{$elmctype}, $name, $lensymb[]));GLib.g_free($name);ret2)
+            return :(bytestring.(unsafe_wrap(Vector{$elmctype}, $name, $lensymb[]),true))
         else
-            :(ret2=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);ret2)
+            return :(arrtemp=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);arrtemp)
         end
-    else
-        #throw(NotImplementedError)
-        return nothing
+    elseif owns == GITransfer.NOTHING
+        if lensymb !== nothing # we don't need to free anything (but should we make a copy?)
+            if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
+                return :(bytestring.(unsafe_wrap(Vector{$elmctype}, $name, $lensymb[])))
+            elseif elmtype.gitype == GObject
+                return :(arrtemp=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));arrtemp=convert.($(elmtype.jtype), arrtemp, false))
+            else
+                return :(collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[])))
+            end
+        elseif is_zero_terminated(argtypeinfo)
+            if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
+                return :(_len=length_zt($name);arrtemp=bytestring.(unsafe_wrap(Vector{$elmctype}, $name,_len));arrtemp)
+            end
+            throw(NotImplementedError())
+        end
     end
+    throw(NotImplementedError())
 end
 
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{GICArray}}
@@ -574,7 +596,7 @@ function extract_type(typeinfo::GITypeInfo,basetype::Type{Function})
 end
 
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{Function}}
-    throw(NotImplementedError)
+    throw(NotImplementedError())
     typeinfo=get_type(info)
     callbackinfo=get_interface(typeinfo)
     #println(get_name(callbackinfo))
@@ -655,7 +677,8 @@ end
 function extract_type(typeinfo::TypeInfo, info::ObjectLike)
     if is_pointer(typeinfo)
         if typename(info)===:GParam  # these are not really GObjects
-            return TypeDesc(info,:GParamSpec,:(Ptr{GParamSpec}))
+            throw(NotImplementedError())
+            #return TypeDesc(info,:GParamSpec,:(Ptr{GParamSpec}))
         end
         t = get_toplevel(info)
         TypeDesc(info,typename(info),typename(info),:(Ptr{$t}))
@@ -749,7 +772,9 @@ end
 
 function make_ccall(libs::AbstractArray, id, rtype, args)
     # look up symbol in our possible libraries
-    lib=libs[findfirst(find_symbol(id),libs)]
+    s=findfirst(find_symbol(id),libs)
+    s === nothing && error("can't find $id in libs")
+    lib=libs[s]
     slib=symbol_from_lib(lib)
     make_ccall(slib, id, rtype, args)
 end

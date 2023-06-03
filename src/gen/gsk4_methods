@@ -263,10 +263,6 @@ $(Expr(:toplevel, quote
         ret2 = convert(_GskRoundedRect, ret)
         ret2
     end
-    function get_widths(instance::GskBorderNode)
-        ret = ccall(("gsk_border_node_get_widths", libgtk4), Ptr{Float32}, (Ptr{GskRenderNode},), instance)
-        ret
-    end
     function BroadwayRenderer_new()
         ret = ccall(("gsk_broadway_renderer_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GskRenderer, ret, true)
@@ -356,8 +352,9 @@ $(Expr(:toplevel, quote
     function get_color_stops(instance::GskConicGradientNode)
         m_n_stops = Ref{UInt64}()
         ret = ccall(("gsk_conic_gradient_node_get_color_stops", libgtk4), Ptr{_GskColorStop}, (Ptr{GskRenderNode}, Ptr{UInt64}), instance, m_n_stops)
+        ret2 = collect(unsafe_wrap(Vector{_GskColorStop}, ret, m_n_stops[]))
         _n_stops = m_n_stops[]
-        ret
+        ret2
     end
     function get_n_color_stops(instance::GskConicGradientNode)
         ret = ccall(("gsk_conic_gradient_node_get_n_color_stops", libgtk4), UInt64, (Ptr{GskRenderNode},), instance)
@@ -575,8 +572,9 @@ $(Expr(:toplevel, quote
     function get_color_stops(instance::GskLinearGradientNode)
         m_n_stops = Ref{UInt64}()
         ret = ccall(("gsk_linear_gradient_node_get_color_stops", libgtk4), Ptr{_GskColorStop}, (Ptr{GskRenderNode}, Ptr{UInt64}), instance, m_n_stops)
+        ret2 = collect(unsafe_wrap(Vector{_GskColorStop}, ret, m_n_stops[]))
         _n_stops = m_n_stops[]
-        ret
+        ret2
     end
     function get_end(instance::GskLinearGradientNode)
         ret = ccall(("gsk_linear_gradient_node_get_end", libgtk4), Ptr{_GraphenePoint}, (Ptr{GskRenderNode},), instance)
@@ -652,8 +650,9 @@ $(Expr(:toplevel, quote
     function get_color_stops(instance::GskRadialGradientNode)
         m_n_stops = Ref{UInt64}()
         ret = ccall(("gsk_radial_gradient_node_get_color_stops", libgtk4), Ptr{_GskColorStop}, (Ptr{GskRenderNode}, Ptr{UInt64}), instance, m_n_stops)
+        ret2 = collect(unsafe_wrap(Vector{_GskColorStop}, ret, m_n_stops[]))
         _n_stops = m_n_stops[]
-        ret
+        ret2
     end
     function get_end(instance::GskRadialGradientNode)
         ret = ccall(("gsk_radial_gradient_node_get_end", libgtk4), Float32, (Ptr{GskRenderNode},), instance)
@@ -840,8 +839,9 @@ $(Expr(:toplevel, quote
     function get_glyphs(instance::GskTextNode)
         m_n_glyphs = Ref{UInt32}()
         ret = ccall(("gsk_text_node_get_glyphs", libgtk4), Ptr{_PangoGlyphInfo}, (Ptr{GskRenderNode}, Ptr{UInt32}), instance, m_n_glyphs)
+        ret2 = collect(unsafe_wrap(Vector{_PangoGlyphInfo}, ret, m_n_glyphs[]))
         _n_glyphs = m_n_glyphs[]
-        ret
+        ret2
     end
     function get_num_glyphs(instance::GskTextNode)
         ret = ccall(("gsk_text_node_get_num_glyphs", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
