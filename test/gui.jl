@@ -171,10 +171,10 @@ push!(f,g2)
 
 b11 = GtkButton("first")
 push!(g1, b11)
-b12 = GtkButton("second")
+b12 = GtkButton(:mnemonic,"_second")
 push!(g1, b12)
-b21 = GtkButton("first")
-b22 = GtkButton("second")
+b21 = GtkButton(:label,"first")
+b22 = GtkButton(:icon_name,"document-open-symbolic")
 push!(g2, b22)
 pushfirst!(g2, b21)
 push!(g2, GtkSeparator(:h))
@@ -191,7 +191,7 @@ end
 empty!(g2)
 @test n_children(g2) == 0
 
-strs = ["first", "second"]
+strs = ["first", "_second"]
 i = 1
 for child in g1
     @test get_gtk_property(child,:label,AbstractString) == strs[i]

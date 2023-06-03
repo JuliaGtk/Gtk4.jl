@@ -10,7 +10,7 @@ a=GLib.G_.SimpleAction_new("do-something",nothing)
 g=GLib.G_.SimpleActionGroup_new()
 
 @test isa(g,GSimpleActionGroup)
-@test [] == GLib.G_.list_actions(GActionGroup(g))
+@test [] == GLib.list_actions(GActionGroup(g))
 
 @test "do-something" == GLib.G_.get_name(GAction(a))
 @test a.name == "do-something"
@@ -50,7 +50,7 @@ signal_connect(on_action_added, g, "action_added")
 push!(g,a)
 @test action_added[] == true
 
-@test ["do-something"] == GLib.G_.list_actions(GActionGroup(g))
+@test ["do-something"] == GLib.list_actions(GActionGroup(g))
 
 extra_arg_ref=Ref(0)
 
@@ -108,7 +108,7 @@ end
 
 @testset "gvariant" begin
 
-types=[UInt8,Int32,UInt32,Int64,UInt64,Float64,Bool]
+types=[UInt8,Int16,UInt16,Int32,UInt32,Int64,UInt64,Float64,Bool]
 
 for t=types
     r=rand(t)
