@@ -24,7 +24,7 @@ end
 
 ## GtkBox
 
-GtkBox(orientation::Symbol, spacing::Integer=0) = G_.Box_new(convert(Gtk4.Orientation, orientation), spacing)
+GtkBox(orientation::Symbol, spacing::Integer=0; kwargs...) = GtkBox(convert(Gtk4.Orientation, orientation), spacing; kwargs...)
 
 function push!(b::GtkBox,w::GtkWidget)
     hasparent(w) && error("Widget already has a parent")
@@ -53,12 +53,12 @@ end
 
 ## GtkSeparator
 
-GtkSeparator(orientation::Symbol) = G_.Separator_new(convert(Gtk4.Orientation, orientation))
+GtkSeparator(orientation::Symbol; kwargs...) = GtkSeparator(convert(Gtk4.Orientation, orientation); kwargs...)
 
 ## GtkCenterBox
 
-function GtkCenterBox(orientation::Symbol)
-    b = GtkCenterBox()
+function GtkCenterBox(orientation::Symbol; kwargs...)
+    b = GtkCenterBox(;kwargs...)
     G_.set_orientation(GtkOrientable(b), convert(Gtk4.Orientation, orientation))
     b
 end
@@ -88,7 +88,7 @@ function getindex(b::GtkCenterBox, pos::Symbol)
 end
 
 ## GtkPaned
-GtkPaned(orientation::Symbol) = G_.Paned_new(convert(Gtk4.Orientation, orientation))
+GtkPaned(orientation::Symbol; kwargs...) = GtkPaned(convert(Gtk4.Orientation, orientation); kwargs...)
 
 function getindex(pane::GtkPaned, i::Integer)
     if i == 1
@@ -179,10 +179,9 @@ end
 
 ## GtkFrame — A decorative frame and optional label
 
-GtkFrame(label::AbstractString) = G_.Frame_new(label)
-GtkFrame() = G_.Frame_new(nothing)
-function GtkFrame(w::GtkWidget)
-    f = GtkFrame()
+GtkFrame(;kwargs...) = GtkFrame(nothing; kwargs...)
+function GtkFrame(w::GtkWidget; kwargs...)
+    f = GtkFrame(; kwargs...)
     f[] = w
     f
 end
@@ -241,8 +240,8 @@ function empty!(w::GtkNotebook)
 end
 
 ## GtkOverlay
-function GtkOverlay(w::GtkWidget)
-    o = GtkOverlay()
+function GtkOverlay(w::GtkWidget; kwargs...)
+    o = GtkOverlay(; kwargs...)
     o[] = w
     o
 end

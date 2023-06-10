@@ -155,7 +155,8 @@ function GtkDialog(title::AbstractString, buttons, flags, parent = nothing; kwar
     parent = (parent === nothing ? C_NULL : parent)
     w = GtkDialogLeaf(ccall((:gtk_dialog_new_with_buttons, libgtk4), Ptr{GObject},
                 (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
-                title, parent, flags, C_NULL); kwargs...)
+                            title, parent, flags, C_NULL))
+    GLib.setproperties!(w; kwargs...)
     for (k, v) in buttons
         push!(w, k, v)
     end
@@ -166,7 +167,8 @@ function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent =
     parent = (parent === nothing ? C_NULL : parent)
     w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
         (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
-        parent, flags, typ, ButtonsType_NONE, message); kwargs...)
+                                   parent, flags, typ, ButtonsType_NONE, message))
+    GLib.setproperties!(w; kwargs...)
     for (k, v) in buttons
         push!(w, k, v)
     end
@@ -316,7 +318,7 @@ function GtkFileChooserDialog(title::AbstractString, parent::Union{Nothing,GtkWi
                 (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
                                    title, parent, action, C_NULL)
     w = convert(GtkFileChooserDialog, d)
-    # apply properties
+    GLib.setproperties!(w; kwargs...)
     for (k, v) in button_text_response
         push!(w, k, Integer(v))
     end

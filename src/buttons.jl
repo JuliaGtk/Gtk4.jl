@@ -1,6 +1,5 @@
 ## GtkButton
 
-GtkButton(title::AbstractString) = G_.Button_new_with_label(title)
 function GtkButton(w::GtkWidget)
     b = G_.Button_new()
     G_.set_child(b,w)
@@ -27,12 +26,7 @@ end
 
 ## GtkCheckButton, GtkToggleButton
 
-GtkCheckButton(title::AbstractString) = G_.CheckButton_new_with_mnemonic(title)
-
 group(cb::GtkCheckButton, cb2::Union{Nothing,GtkCheckButton}) = G_.set_group(cb, cb2)
-
-GtkToggleButton(title::AbstractString) = G_.ToggleButton_new_with_mnemonic(title)
-
 group(tb::GtkToggleButton, tb2::Union{Nothing,GtkToggleButton}) = G_.set_group(tb, tb2)
 
 # GtkToggleButton is a subclass of GtkButton so "clicked" signal is also available for it
@@ -43,8 +37,8 @@ end
 
 ## GtkSwitch
 
-function GtkSwitch(active::Bool)
-    b = GtkSwitch()
+function GtkSwitch(active::Bool; kwargs...)
+    b = GtkSwitch(; kwargs...)
     G_.set_active(b, active)
     b
 end

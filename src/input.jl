@@ -17,10 +17,10 @@ complete(completion::GtkEntryCompletion) = G_.complete(completion)
 
 ## GtkScale
 
-GtkScale(orientation::Symbol) = G_.Scale_new(convert(Gtk4.Orientation,orientation), nothing)
-GtkScale(orientation::Symbol, adj::GtkAdjustment) = G_.Scale_new(convert(Gtk4.Orientation,orientation), adj)
-GtkScale(orientation::Symbol, min::Real, max::Real, step::Real) = G_.Scale_new_with_range(convert(Gtk4.Orientation,orientation), min, max, step)
-GtkScale(orientation, scale::AbstractRange) = GtkScale(orientation, minimum(scale), maximum(scale), step(scale))
+GtkScale(orientation::Symbol; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), nothing; kwargs...)
+GtkScale(orientation::Symbol, adj::GtkAdjustment; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), adj; kwargs...)
+GtkScale(orientation::Symbol, min::Real, max::Real, step::Real; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), min, max, step; kwargs...)
+GtkScale(orientation, scale::AbstractRange; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), minimum(scale), maximum(scale), step(scale); kwargs...)
 function push!(scale::GtkScale, value, position, markup::AbstractString)
     G_.add_mark(scale, value, convert(Gtk4.PositionType,position), markup)
     scale
@@ -36,7 +36,7 @@ end
 
 ## GtkScaleButton and GtkVolumeButton
 
-GtkScaleButton(min::Real, max::Real, step::Real; kwargs...) = G_.ScaleButton_new(min, max, step, nothing; kwargs...)
+GtkScaleButton(min::Real, max::Real, step::Real; kwargs...) = GtkScaleButton(min, max, step, nothing; kwargs...)
 GtkScaleButton(scale::AbstractRange; kwargs...) = GtkScaleButton(minimum(scale), maximum(scale), step(scale); kwargs...)
 GtkAdjustment(scale::GtkScaleButton) = G_.get_adjustment(scale)
 

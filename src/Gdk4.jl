@@ -20,9 +20,9 @@ end
 
 ## GdkCursor
 
-GdkCursor(name::AbstractString) = G_.Cursor_new_from_name(name, nothing)
-function GdkCursor(texture::GdkTexture, hotspot_x::Integer, hotspot_y::Integer)
-   G_.Cursor_new_from_texture(texture, hotspot_x, hotspot_y, nothing)
+GdkCursor(name::AbstractString; kwargs...) = GdkCursor(name, nothing; kwargs...)
+function GdkCursor(texture::GdkTexture, hotspot_x::Integer, hotspot_y::Integer; kwargs...)
+   GdkCursor(texture, hotspot_x, hotspot_y, nothing; kwargs...)
 end
 
 ## GdkDisplay

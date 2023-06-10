@@ -35,9 +35,12 @@ eltype(::Type{GtkStringList}) = String
 
 ## GtkDropdown
 
-GtkDropDown() = G_.DropDown_new(nothing, nothing)
-GtkDropDown(a::Vector{String}) = G_.DropDown_new_from_strings(a)
-GtkDropDown(a::AbstractArray) = GtkDropDown(string.(collect(a)))
+GtkDropDown(; kwargs...) = GtkDropDown(nothing, nothing; kwargs...)
+function GtkDropDown(a::AbstractArray; kwargs...)
+    dd = Gtk4.G_.DropDown_new_from_strings(string.(collect(a)))
+    GLib.setproperties!(dd; kwargs...)
+    dd
+end
 selected_string(d::GtkDropDown) = G_.get_selected_item(d).string
 function selected_string!(d::GtkDropDown, s::AbstractString)
     sl = G_.get_model(d)
@@ -49,14 +52,11 @@ end
 
 ## GtkListView and GtkGridView
 
-GtkListView(model=nothing, factory=nothing) = G_.ListView_new(model, factory)
-GtkGridView(model=nothing, factory=nothing) = G_.GridView_new(model, factory)
+GtkListView(model=nothing; kwargs...) = GtkListView(model, nothing; kwargs...)
+GtkGridView(model=nothing; kwargs...) = GtkGridView(model, nothing; kwargs...)
 
-GtkColumnView(model=nothing) = G_.ColumnView_new(model)
-GtkColumnViewColumn(title="", factory=nothing) = G_.ColumnViewColumn_new(title, factory)
-
-GtkSingleSelection(model) = G_.SingleSelection_new(model)
-GtkMultiSelection(model) = G_.MultiSelection_new(model)
+GtkColumnView(; kwargs...) = GtkColumnView(nothing; kwargs...)
+GtkColumnViewColumn(title=""; kwargs...) = GtkColumnViewColumn(title, nothing; kwargs...)
 
 getindex(li::GtkListItem) = G_.get_item(li)
 set_child(li::GtkListItem, w) = G_.set_child(li, w)
