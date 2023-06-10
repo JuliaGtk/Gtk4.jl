@@ -21,7 +21,7 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     function GtkCanvas(w = -1, h = -1)
         da = G_.DrawingArea_new()
         G_.set_size_request(da, w, h)
-        widget = new(da.handle, false, nothing, nothing)
+        widget = new(getfield(da,:handle), false, nothing, nothing)
 
         function on_realize(da::GtkWidget)
             if widget.is_sized
@@ -42,7 +42,7 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
                 end
 
                 draw_back = @cfunction(canvas_draw_backing_store, Nothing, (Ptr{GObject}, Ptr{Nothing}, Cint, Cint, Ptr{Nothing}))
-                ccall((:gtk_drawing_area_set_draw_func, libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), da.handle, draw_back, widget.back.ptr, C_NULL)
+                ccall((:gtk_drawing_area_set_draw_func, libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), getfield(da,:handle), draw_back, widget.back.ptr, C_NULL)
 
                 draw(widget)
             end

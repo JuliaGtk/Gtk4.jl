@@ -73,7 +73,7 @@ let jtypes = Expr(:block, :( g_type(::Type{Nothing}) = $(g_type_from_name(:void)
 end
 
 G_TYPE_FROM_CLASS(w::Ptr{Nothing}) = unsafe_load(convert(Ptr{GType}, w))
-G_OBJECT_GET_CLASS(w::T) where T <: GObject = G_OBJECT_GET_CLASS(w.handle)
+G_OBJECT_GET_CLASS(w::T) where T <: GObject = G_OBJECT_GET_CLASS(getfield(w,:handle))
 function G_OBJECT_GET_CLASS(hnd::Ptr{T}) where T <: GObject
     hnd = check_undefref(hnd)
     unsafe_load(convert(Ptr{Ptr{Nothing}}, hnd))
@@ -292,7 +292,7 @@ function gobject_ref(x::T) where T <: GObject
         end
     elseif strong
         # oops, we previously deleted the link, but now it's back
-        gc_ref(x.handle)
+        gc_ref(getfield(x,:handle))
         addref(Ref{GObject}(x)[])
     else
         # already gc-protected, nothing to do
@@ -318,7 +318,7 @@ function gc_unref_weak(x::GObject)
     # this strongly destroys and invalidates the object
     # it is intended to be called by GLib, not in user code function
     # note: this may be called multiple times by GLib
-    x.handle = Ptr{GObject}(C_NULL)
+    setfield!(x,:handle, Ptr{GObject}(C_NULL))
     gc_preserve_glib_lock[] = true
     delete!(gc_preserve_glib, x)
     gc_preserve_glib_lock[] = false
