@@ -66,6 +66,14 @@ function GtkEventControllerFocus(widget::GtkWidget)
     g
 end
 
+function GtkDropTarget(t::Type, action = DragAction_COPY, widget = nothing)
+    g = G_.DropTarget_new(GLib.g_type(t), action)
+    if widget !== nothing
+        push!(widget,g)
+    end
+    g
+end
+
 function on_signal_destroy(@nospecialize(destroy_cb::Function), widget::GtkWidget, vargs...)
     signal_connect(destroy_cb, widget, "destroy", Cvoid, (), vargs...)
 end

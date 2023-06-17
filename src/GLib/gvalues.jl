@@ -4,6 +4,7 @@ struct GValue
     field3::UInt64
     GValue() = new(0, 0, 0)
 end
+# This should be a subtype of GBoxed and the above struct should be renamed to _GValue to be consistent with other boxed types
 const _GValue = GValue
 Base.zero(::Type{GValue}) = GValue()
 function gvalue(::Type{T}) where T
@@ -201,6 +202,16 @@ const fundamental_fns = tuple(Function[ make_gvalue_from_fundamental_type(i, @__
 @make_gvalue(Symbol, Ptr{UInt8}, :static_string, :(g_type(AbstractString)))
 #@make_gvalue(Type, GType, :gtype, (:g_gtype, :libgobject))
 
+g_type(::Type{GValue}) = ccall(("g_value_get_type", libgobject), GType, ())
+push!(gboxed_types, GValue)
+function getindex(v::Base.RefValue{GValue}, ::Type{GValue})
+    x = ccall(("g_value_get_boxed", GLib.libgobject), Ptr{GValue}, (Ptr{GValue},), v)
+    if x == C_NULL
+        return nothing
+    end
+    x
+end
+
 function getindex(gv::Base.Ref{GValue}, ::Type{Any})
     gtyp = gv[].g_type
     if gtyp == 0
@@ -208,6 +219,9 @@ function getindex(gv::Base.Ref{GValue}, ::Type{Any})
     end
     if gtyp == g_type(Nothing)
         return nothing
+    end
+    if gtyp == g_type(GBoxed)
+        error("GType of $gv is GBoxed, but we need the actual type.")
     end
     # first pass: fast loop for fundamental types
     for (i, id) in enumerate(fundamental_ids)
