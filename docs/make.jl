@@ -19,6 +19,7 @@ makedocs(
                      "manual/combobox.md",
                      "manual/listtreeview.md",
                      "manual/dialogs.md",
+                     "manual/keyevents.md",
                      "manual/canvas.md"
                     ],
         "Howto" => ["howto/nonreplusage.md",

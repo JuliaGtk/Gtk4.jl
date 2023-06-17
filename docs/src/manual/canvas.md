@@ -1,9 +1,9 @@
-# Drawing on Canvas
+# Drawing with Cairo
 
 !!! note "Example"
     The code on this page can be found in "canvas.jl" in the "example" subdirectory.
 
-Cairo based drawing is done on a `Canvas`. You control what appears on this canvas by defining a `draw` function:
+Cairo based drawing can be done on Gtk4.jl's `Canvas` widget, which is based on GTK's `GtkDrawingArea`. The canvas widget comes with a backing store Cairo image surface. You control what is drawn on this backing store by defining a `draw` function:
 
 ```julia
 using Gtk4, Graphics
@@ -24,16 +24,17 @@ win = GtkWindow(c, "Canvas")
 end
 ```
 This `draw` function will be called each time the window is resized or otherwise needs to refresh its display.
+If you need to force a redraw of the canvas, you can call `reveal` on the canvas widget.
 
 ![canvas](figures/canvas.png)
-
-See Graphics.jl's or Cairo.jl's documentation for more information on graphics.
 
 Errors in the `draw` function can corrupt Gtk4's internal state; if
 this happens, you have to quit julia and start a fresh session. To
 avoid this problem, the `@guarded` macro wraps your code in a
 `try/catch` block and prevents the corruption. It is especially useful
 when initially writing and debugging code.
+
+## Mouse events
 
 Mouse events can be handled using event controllers. The event controller for
 mouse clicks is `GtkGestureClick`. We first create this event controller, then
@@ -60,3 +61,10 @@ This will draw a green circle on the canvas at every mouse click.
 Resizing the window will make them go away; they were drawn on top of the
 canvas one by one, but they weren't added to the `draw` function, which is what
 is called when the widget is refreshed.
+
+## Controlling the widget's size
+
+In the example above, the canvas was the direct child of the window, and its size is determined by the window size.
+If you instead make the canvas a child of one of GTK's layout widgets, like `GtkBox` or `GtkGrid`, it doesn't appear because by default, the drawing area widget does not expand to fill the space available.
+You can override this by setting the canvas's properties `vexpand` and `hexpand` to true.
+Alternatively, if you want to set the canvas to have a minimum width and height in pixels, you can set its properties `content_width` and `content_height`.
