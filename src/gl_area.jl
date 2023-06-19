@@ -8,6 +8,15 @@ Related GTK function: [`gtk_gl_area_queue_render`()]($(gtkdoc_method_url("gtk4",
 queue_render(w::GtkGLArea) = G_.queue_render(w)
 
 """
+    reveal(w::GtkGLArea)
+
+Triggers a redraw of a widget by calling GTK's `gtk_glarea_queue_render`.
+
+Related GTK function: [`gtk_gl_area_queue_render`()]($(gtkdoc_method_url("gtk4","GtkGLArea","queue_render")))
+"""
+reveal(w::GtkGLArea) = G_.queue_render(w)
+
+"""
     make_current(w::GtkGLArea)
 
 Ensures that the `GdkGLContext` used by area is associated with the `GtkGLArea`.

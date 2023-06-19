@@ -78,4 +78,11 @@ function on_signal_destroy(@nospecialize(destroy_cb::Function), widget::GtkWidge
     signal_connect(destroy_cb, widget, "destroy", Cvoid, (), vargs...)
 end
 
+"""
+    reveal(w::GtkWidget)
+
+Triggers a redraw of a widget by calling GTK's `gtk_widget_queue_draw`.
+
+Related GTK function: [`gtk_widget_queue_draw`()](https://docs.gtk.org/gtk4/method.Widget.queue_draw.html))
+"""
 reveal(w::GtkWidget) = G_.queue_draw(w)

@@ -52,8 +52,7 @@ eck = GtkEventControllerKey(w)
 
 id1 = signal_connect(eck, "key-pressed") do controller, keyval, keycode, state
     if keyval ∉ keys(start_times)
-        event = Gtk4.current_event(controller)
-        start_times[keyval] = Gtk4.time(event) # save the initial key press time
+        start_times[keyval] = Gtk4.current_event_time(controller) # save the initial key press time
         println("You pressed key ", keyval, " which is '", Char(keyval), "'.")
     else
         println("repeating key ", keyval)

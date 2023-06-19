@@ -18,8 +18,8 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     back::CairoSurface   # backing store
     backcc::CairoContext
 
-    function GtkCanvas(w = -1, h = -1)
-        da = G_.DrawingArea_new()
+    function GtkCanvas(w = -1, h = -1; kwargs...)
+        da = GtkDrawingArea(; kwargs...)
         G_.set_size_request(da, w, h)
         widget = new(getfield(da,:handle), false, nothing, nothing)
 

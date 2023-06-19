@@ -112,6 +112,13 @@ Related GTK function: [`gtk_widget_grab_focus`()]($(gtkdoc_method_url("gtk4","Wi
 """
 grab_focus(w::GtkWidget) = G_.grab_focus(w)
 
+"""
+    activate(w::GtkWidget)
+
+Activates widgets like buttons, menu items, etc. that support being activated. Returns `false` if the widget is not activatable.
+
+Related GTK function: [`gtk_widget_activate`()]($(gtkdoc_method_url("gtk4","Widget","activate")))
+"""
 activate(w::GtkWidget) = G_.activate(w)
 
 @doc """
@@ -146,10 +153,9 @@ end
 """
     cursor(w::GtkWidget, c)
 
-Sets a cursor `c` when the mouse is over a widget `w`. If `c` is `nothing`, use
-the default cursor for `w`.
+Sets a cursor `c` when the mouse pointer is over a widget `w`, where `c` can be a `GdkCursor` or a string to specify a name. If `c` is `nothing`, use the default cursor for `w`.
 
-Related GTK function: [`gtk_widget_set_cursor`()]($(gtkdoc_method_url("gtk4","Widget","set_cursor")))
+Related GTK functions: [`gtk_widget_set_cursor`()]($(gtkdoc_method_url("gtk4","Widget","set_cursor"))), [`gtk_widget_set_cursor_from_name`()]($(gtkdoc_method_url("gtk4","Widget","set_cursor_from_name")))
 """
 function cursor(w::GtkWidget, c::Union{Nothing,GdkCursor})
     G_.set_cursor(w, c)
@@ -176,10 +182,6 @@ eltype(::Type{T}) where T <: GtkWidget = GtkWidget
 IteratorSize(::GtkWidget) = Base.SizeUnknown()
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
-
-## GtkWidgetPaintable
-
-GtkWidgetPaintable(w::GtkWidget) = G_.WidgetPaintable_new(w)
 
 ## CSS, style
 
