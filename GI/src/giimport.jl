@@ -342,8 +342,7 @@ end
 
 ## Handling argument types, creating methods
 
-mutable struct NotImplementedError <: Exception
-end
+struct NotImplementedError <: Exception end
 
 abstract type InstanceType end
 is_pointer(::Type{InstanceType}) = true
@@ -689,9 +688,7 @@ function extract_type(typeinfo::TypeInfo, info::ObjectLike)
 end
 
 #this should only be used for stuff that's hard to implement as cconvert
-function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc)
-    nothing
-end
+convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc) = nothing
 
 function convert_from_c(name::Symbol, arginfo::ArgInfo, ti::TypeDesc{T}) where {T}
     # check transfer
@@ -721,46 +718,21 @@ end
 types(args::Array{Arg}) = [a.typ for a in args]
 names(args::Array{Arg}) = [a.name for a in args]
 function jparams(args::Array{Arg})
-    arr = Union{Expr,Symbol}[]
-    for a in args
-        push!(arr, a.typ !== :Any ? :($(a.name)::$(a.typ)) : a.name)
-    end
-    arr
+    [a.typ !== :Any ? :($(a.name)::$(a.typ)) : a.name for a in args]
 end
 
 # Map library names onto exports of *_jll
-# TODO: make this more elegant
+libnames = Dict("libglib"=>:libglib, "libgobject"=>:libgobject,
+                "libgio"=>:libgio, "libcairo-gobject"=>:libcairo_gobject,
+                "libpangocairo"=>:libpangocairo, "libpangoft"=>:libpangoft,
+                "libpango"=>:libpango, "libatk"=>:libatk,
+                "libgdk_pixbuf"=>:libgdkpixbuf, "libgdk-3"=>:libgdk3,
+                "libgtk-3"=>:libgtk3, "libgraphene"=>:libgraphene,
+                 "libgtk-4"=>:libgtk4, "libaravis"=>:libaravis)
 function symbol_from_lib(libname)
-    if occursin("libglib",libname)
-        return :libglib
-    elseif occursin("libgobject",libname)
-        return :libgobject
-    elseif occursin("libgio",libname)
-        return :libgio
-    elseif occursin("libcairo-gobject",libname)
-        return :libcairo_gobject
-    elseif occursin("libpangocairo",libname)
-        return :libpangocairo
-    elseif occursin("libpangoft",libname)
-        return :libpangoft
-    elseif occursin("libpango",libname)
-        return :libpango
-    elseif occursin("libatk",libname)
-        return :libatk
-    elseif occursin("libgdk_pixbuf",libname)
-        return :libgdkpixbuf
-    elseif occursin("libgdk-3",libname)
-        return :libgdk3
-    elseif occursin("libgtk-3",libname)
-        return :libgtk3
-    elseif occursin("libgraphene",libname)
-        return :libgraphene
-    elseif occursin("libgtk-4",libname)
-        return :libgtk4
-    elseif occursin("libaravis",libname)
-        return :libaravis
-    end
-    libname
+    ks = collect(keys(libnames))
+    k=findfirst(n->occursin(n, libname), ks)
+    isnothing(k) ? libname : libnames[ks[k]]
 end
 
 function make_ccall(slib::Union{String,Symbol}, id, rtype, args)
@@ -864,11 +836,7 @@ end
 
 function constructor_name(info, mname)
     object = get_container(info)
-    if object !== nothing
-        return Symbol("$(get_name(object))_$mname")
-    else
-        return mname
-    end
+    object !== nothing ? Symbol("$(get_name(object))_$mname") : mname
 end
 
 # with some partial-evaluation half-magic

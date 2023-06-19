@@ -100,9 +100,7 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
             end
         end
         push!(exports.args, get_full_name(ssi))
-        if length(fields)>0
-            push!(exports.args,get_struct_name(ssi,false))
-        end
+        length(fields)>0 && push!(exports.args,get_struct_name(ssi,false))
     end
 
     for ss in structs
@@ -148,9 +146,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
         push!(exprs, decl(ssi,in(name,import_as_opaque)))
         push!(exports.args, get_full_name(ssi))
         push!(loaded, name)
-        if length(fields)>0
-            push!(exports.args,get_struct_name(ssi,false))
-        end
+        length(fields)>0 && push!(exports.args,get_struct_name(ssi,false))
     end
 
     if output_cache_init
@@ -163,9 +159,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
     
     for ssi in ss
         constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist)
-        if !isempty(constructors)
-            append!(exprs,constructors)
-        end
+        isempty(constructors) || append!(exprs,constructors)
     end
 
     if print_summary
@@ -189,24 +183,17 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
             skipped+=length(methods)
             continue
         end
-        if print_detailed
-            printstyled(name,"\n";bold=true)
-        end
+        print_detailed && printstyled(name,"\n";bold=true)
         for m in methods
             if in(get_name(m),skiplist)
                 skipped+=1
                 continue
             end
-            flags = get_flags(m)
-            if flags & (GIFunction.IS_CONSTRUCTOR | GIFunction.IS_METHOD) == 0
+            if get_flags(m) & (GIFunction.IS_CONSTRUCTOR | GIFunction.IS_METHOD) == 0
                 continue
             end
-            if is_deprecated(m)
-                continue
-            end
-            if print_detailed
-                println(get_name(m))
-            end
+            is_deprecated(m) && continue
+            print_detailed && println(get_name(m))
             try
                 fun=create_method(m, liboverride)
                 push!(exprs, fun)
@@ -258,8 +245,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
             imported -= 1
             continue
         end
-        type_init = get_type_init(o)
-        if type_init==:intern  # GParamSpec and children output this
+        if get_type_init(o)==:intern  # GParamSpec and children output this
             continue
         end
         obj_decl!(exprs,o,ns,handled)
@@ -273,13 +259,9 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
         push!(exprs,gtype_cache_init)
     end
     for o in objects
-        if in(get_name(o), skiplist)
-            continue
-        end
+        in(get_name(o), skiplist) && continue
         constructors = get_constructors(o;skiplist=constructor_skiplist, struct_skiplist=skiplist)
-        if !isempty(constructors)
-            append!(exprs,constructors)
-        end
+        isempty(constructors) || append!(exprs,constructors)
     end
     if print_summary
         printstyled("Created ",imported," objects out of ",length(objects),"\n";color=:green)
@@ -304,9 +286,7 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
                 skipped+=1
                 continue
             end
-            if is_deprecated(m)
-                continue
-            end
+            is_deprecated(m) && continue
             try
                 fun=create_method(m, liboverride)
                 push!(exprs, fun)
@@ -364,9 +344,7 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
                 skipped+=1
                 continue
             end
-            if is_deprecated(m)
-                continue
-            end
+            is_deprecated(m) && continue
             try
                 fun=create_method(m, liboverride)
                 push!(exprs, fun)
