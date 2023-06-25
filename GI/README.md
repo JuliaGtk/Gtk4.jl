@@ -5,27 +5,27 @@ Julia bindings using libgobject-introspection.
 
 This builds on https://github.com/bfredl/GI.jl
 
-It is under active development and is currently not ready to be used for anything
-outside of Gtk4.jl. The goal is to output code that simplifies the creation of
-Julia packages that wrap GObject-based libraries.
+The goal is to output code that simplifies the creation of Julia packages that wrap GObject-based libraries.
+It outputs constants (including enums and flags types), struct definitions, and function definitions that wrap `ccall`'s of GObject based libraries.
+In function definitions, it uses [annotations](https://gi.readthedocs.io/en/latest/annotations/giannotations.html) to determine whether return values
+should be freed, whether pointer arguments can be optionally NULL, whether list
+outputs are NULL-terminated, which argument corresponds to the length of array
+inputs, which arguments are outputs and which are inputs, and more.
+The primary advantage over writing `ccall`'s (as is done in Gtk.jl) is that it can rapidly cover an entire library, saving a lot of tedious work.
+As new functionality is added to libraries, you just have to run GI.jl again and new code is generated.
+Disadvantages include: the current implementation only extracts GI information on Linux, leading to potential bugs on other platforms, and annotations are inaccurate in some libraries.
 
-This package currently only works on Linux because it uses gobject_introspection_jll,
-which is currently only available for Linux. However, most generated code works on
-other platforms.
+This package is currently unregistered, and it only works on Linux because it uses gobject_introspection_jll, which is currently only available for Linux. However, most generated code works on other platforms.
 
 ## Status
 
 Most of libgirepository is wrapped.
-Information like lists of structs, methods, and functions can be extracted, as
-well as argument types, struct fields, etc.
-GObject introspection includes annotations that indicate whether return values
-should be freed, whether pointer arguments can be optionally NULL, whether list
-outputs are NULL-terminated, which argument corresponds to the length of array
-inputs, etc.
+This allows information like lists of structs, methods, and functions to be extracted, as well as argument types, struct fields, etc.
+Using this information, GI.jl produces Julia code.
 
 Parts that are still very rough:
 
-* Anything to do with callbacks and signals
+* Anything to do with callbacks and signals - there is probably a smart way to use the information from introspection for these, but it hasn't been a priority yet.
 
 ## Generated code
 
@@ -45,7 +45,9 @@ and [BitFlags](https://github.com/jmert/BitFlags.jl), respectively. The name is
 of the form EnumName_INSTANCE_NAME. So for example `G_SIGNAL_FLAGS_RUN_LAST`
 becomes `SignalFlags_RUN_LAST`.
 
-### GObjects and GInterfaces
+Constants, enums, and flags code is typically exported in a file "lib_consts" in a "src/gen" directory for a package to include.
+
+### GObjects, GInterfaces, and GBoxed types
 
 GObject and GInterface types are named as in Gtk.jl, with the namespace
 included in the type name (for example `PangoLayout` or `GtkWindow`). This differs
@@ -54,6 +56,10 @@ from python bindings.
 Properties are exported as Julia properties and can be accessed and set using
 `my_object.property_name`. Alternatively the functions `get_gtk_property` or
 `set_gtk_property!` can be used just like in Gtk.jl.
+
+GBoxed types are named the same way as objects and interfaces. For non-opaque structs, a struct is defined with the same name, but preceded by an underscore. So for example, the pointer type is `GtkTreeIter`, and the struct is `_GtkTreeIter`.
+
+Struct definitions are typically exported in a file "lib_structs" in a "src/gen" directory for a package to include.
 
 ### Constructors
 
@@ -73,3 +79,6 @@ Julia methods. Similarly, for array outputs, a length parameter output is
 omitted in the Julia output. GError outputs are converted to throws. When pointer
 inputs can optionally be NULL, the Julia methods accept nothing as the argument.
 When outputs are NULL, the Julia methods output nothing.
+
+Object and struct methods are typically exported in a file "lib_methods" in a "src/gen" directory and packages typically include them in a "G_" submodule.
+Functions not associated with objects or structs are typically exported in a file "lib_functions".

@@ -8,7 +8,7 @@ There is an alternative way to design user interfaces that strictly separates th
 from the code. This is done by an XML based file format that allows for describing any arrangement of widgets.
 In order to use the interface in your Julia Gtk4 application you will need `GtkBuilder`.
 
-For GTK version 3 and earlier, [Glade](https://glade.gnome.org) is often used as a GUI tool for creating GtkBuilder XML files in a WYSIWYG (what you see is what you get) manner, but Glade wasn't ported to GTK version 4. Instead [Cambalache](https://flathub.org/apps/details/ar.xjuan.Cambalache) can be used (or the XML can be created by hand).
+For GTK version 3 and earlier, Glade is often used as a GUI tool for creating GtkBuilder XML files in a WYSIWYG (what you see is what you get) manner, but Glade wasn't ported to GTK version 4. Instead [Cambalache](https://flathub.org/apps/details/ar.xjuan.Cambalache) can be used (or the XML can be created by hand).
 
 Once we have created the XML interface the result can be stored in an XML file that usually has
 the extension `.ui`. Let's assume we have created a file `myapp.ui` that looks like
