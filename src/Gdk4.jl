@@ -36,3 +36,14 @@ function size(m::GdkMonitor)
    r=G_.get_geometry(m)
    (r.width,r.height)
 end
+
+"""
+    monitors()
+
+Returns a list of `GdkMonitor`s for the default `GdkDisplay`, or `nothing` if none
+are found.
+"""
+function monitors()
+    d=GdkDisplay()
+    G_.get_monitors(d)
+end

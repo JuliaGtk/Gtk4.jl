@@ -56,6 +56,17 @@ Related GTK function: [`gtk_window_fullscreen`()]($(gtkdoc_method_url("gtk4","Wi
 fullscreen(win::GtkWindow) = G_.fullscreen(win)
 
 """
+    fullscreen(win::GtkWindow, mon::GdkMonitor)
+
+Set `win` to fullscreen mode on a particular monitor `mon.` The windowing system (outside GTK's control) may not allow this, so it may not work on some platforms.
+
+See also [`unfullscreen`](@ref).
+
+Related GTK function: [`gtk_window_fullscreen_on_monitor`()]($(gtkdoc_method_url("gtk4","Window","fullscreen_on_monitor")))
+"""
+fullscreen(win::GtkWindow, mon::GdkMonitor) = G_.fullscreen_on_monitor(win, mon)
+
+"""
     unfullscreen(win::GtkWindow)
 
 If `win` is in fullscreen mode, return it to normal mode.
