@@ -152,11 +152,6 @@ function convert_(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject
     else
         # create a wrapper
         ret = wrap_gobject(hnd)::T
-        is_floating = (ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), hnd)!=0)
-        # TODO: there are some potential complications with floating references that should be looked into.
-        if !owns || is_floating # if owns is true then we already have a reference, but if it's floating we should sink it
-            gc_ref_sink(hnd)
-        end
     end
     ret
 end
@@ -262,7 +257,6 @@ end
 function addref(@nospecialize(x::GObject))
     # internal helper function
     finalizer(delref, x)
-    delete!(gc_preserve_glib, x) # in v0.2, the WeakRef assignment below wouldn't update the key
     gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
     nothing
 end
