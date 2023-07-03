@@ -267,3 +267,10 @@ getindex(s::GtkStack, name::AbstractString) = G_.get_child_by_name(s,name)
 setindex!(s::GtkStack, x::GtkWidget, name::AbstractString) = G_.add_named(s,x,name)
 
 stack(w::GtkStackSwitcher, s::GtkStack) = G_.set_stack(w,s)
+
+## GtkPopover
+
+getindex(w::GtkPopover) = G_.get_child(w)
+setindex!(w::GtkPopover, c::GtkWidget) = G_.set_child(w,c)
+popup(m::GtkPopover) = G_.popup(m)
+

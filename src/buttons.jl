@@ -72,8 +72,6 @@ function GtkPopoverMenu(model::GMenu, nested = false)
     end
 end
 
-popup(m::GtkPopover) = G_.popup(m)
-
 GtkPopoverMenuBar(model::GMenu) = G_.PopoverMenuBar_new_from_model(model)
 
 menu_model(b::Union{GtkMenuButton,GtkPopoverMenu, GtkPopoverMenuBar}, model) = G_.set_menu_model(b, GMenuModel(model))
