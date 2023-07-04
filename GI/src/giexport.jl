@@ -250,6 +250,9 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
         end
         obj_decl!(exprs,o,ns,handled)
         push!(exports.args, get_full_name(o))
+        if !get_abstract(o)
+            push!(exports.args, Symbol(get_full_name(o),"Leaf"))
+        end
         push!(loaded, name)
     end
     if output_cache_init

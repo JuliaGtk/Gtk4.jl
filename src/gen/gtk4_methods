@@ -415,7 +415,7 @@ $(Expr(:toplevel, quote
     end
     function AboutDialog_new()
         ret = ccall(("gtk_about_dialog_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkAboutDialogLeaf(ret, false)
         ret2
     end
     function add_credit_section(instance::GtkAboutDialog, _section_name::Union{AbstractString, Symbol}, _people)
@@ -590,7 +590,7 @@ $(Expr(:toplevel, quote
     end
     function ActionBar_new()
         ret = ccall(("gtk_action_bar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkActionBarLeaf(ret, false)
         ret2
     end
     function get_center_widget(instance::GtkActionBar)
@@ -626,7 +626,7 @@ $(Expr(:toplevel, quote
     end
     function Adjustment_new(_value::Real, _lower::Real, _upper::Real, _step_increment::Real, _page_increment::Real, _page_size::Real)
         ret = ccall(("gtk_adjustment_new", libgtk4), Ptr{GObject}, (Float64, Float64, Float64, Float64, Float64, Float64), _value, _lower, _upper, _step_increment, _page_increment, _page_size)
-        ret2 = convert(GtkAdjustment, ret, false)
+        ret2 = GtkAdjustmentLeaf(ret, false)
         ret2
     end
     function clamp_page(instance::GtkAdjustment, _lower::Real, _upper::Real)
@@ -711,7 +711,7 @@ $(Expr(:toplevel, quote
     end
     function AppChooserButton_new(_content_type::Union{AbstractString, Symbol})
         ret = ccall(("gtk_app_chooser_button_new", libgtk4), Ptr{GObject}, (Cstring,), _content_type)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkAppChooserButtonLeaf(ret, false)
         ret2
     end
     function append_custom_item(instance::GtkAppChooserButton, _name::Union{AbstractString, Symbol}, _label::Union{AbstractString, Symbol}, _icon::GIcon)
@@ -765,13 +765,13 @@ $(Expr(:toplevel, quote
     function AppChooserDialog_new(_parent::Maybe(GtkWindow), _flags, _file::GFile)
         _parent = nothing_to_null(_parent)
         ret = ccall(("gtk_app_chooser_dialog_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, UInt32, Ptr{GObject}), _parent, _flags, _file)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkAppChooserDialogLeaf(ret, false)
         ret2
     end
     function AppChooserDialog_new_for_content_type(_parent::Maybe(GtkWindow), _flags, _content_type::Union{AbstractString, Symbol})
         _parent = nothing_to_null(_parent)
         ret = ccall(("gtk_app_chooser_dialog_new_for_content_type", libgtk4), Ptr{GObject}, (Ptr{GObject}, UInt32, Cstring), _parent, _flags, _content_type)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkAppChooserDialogLeaf(ret, false)
         ret2
     end
     function get_heading(instance::GtkAppChooserDialog)
@@ -790,7 +790,7 @@ $(Expr(:toplevel, quote
     end
     function AppChooserWidget_new(_content_type::Union{AbstractString, Symbol})
         ret = ccall(("gtk_app_chooser_widget_new", libgtk4), Ptr{GObject}, (Cstring,), _content_type)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkAppChooserWidgetLeaf(ret, false)
         ret2
     end
     function get_default_text(instance::GtkAppChooserWidget)
@@ -936,7 +936,7 @@ $(Expr(:toplevel, quote
     end
     function ApplicationWindow_new(_application::GtkApplication)
         ret = ccall(("gtk_application_window_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _application)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkApplicationWindowLeaf(ret, false)
         ret2
     end
     function get_help_overlay(instance::GtkApplicationWindow)
@@ -964,7 +964,7 @@ $(Expr(:toplevel, quote
     end
     function AspectFrame_new(_xalign::Real, _yalign::Real, _ratio::Real, _obey_child::Bool)
         ret = ccall(("gtk_aspect_frame_new", libgtk4), Ptr{GObject}, (Float32, Float32, Float32, Cint), _xalign, _yalign, _ratio, _obey_child)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkAspectFrameLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkAspectFrame)
@@ -1012,7 +1012,7 @@ $(Expr(:toplevel, quote
     end
     function Assistant_new()
         ret = ccall(("gtk_assistant_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkAssistantLeaf(ret, false)
         ret2
     end
     function add_action_widget(instance::GtkAssistant, _child::GtkWidget)
@@ -1159,7 +1159,7 @@ $(Expr(:toplevel, quote
     end
     function Box_new(_orientation, _spacing::Integer)
         ret = ccall(("gtk_box_new", libgtk4), Ptr{GObject}, (UInt32, Int32), _orientation, _spacing)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkBoxLeaf(ret, false)
         ret2
     end
     function append(instance::GtkBox, _child::GtkWidget)
@@ -1413,23 +1413,23 @@ $(Expr(:toplevel, quote
     end
     function Button_new()
         ret = ccall(("gtk_button_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkButtonLeaf(ret, false)
         ret2
     end
     function Button_new_from_icon_name(_icon_name::Maybe(Union{AbstractString, Symbol}))
         _icon_name = nothing_to_null(_icon_name)
         ret = ccall(("gtk_button_new_from_icon_name", libgtk4), Ptr{GObject}, (Cstring,), _icon_name)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkButtonLeaf(ret, false)
         ret2
     end
     function Button_new_with_label(_label::Union{AbstractString, Symbol})
         ret = ccall(("gtk_button_new_with_label", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkButtonLeaf(ret, false)
         ret2
     end
     function Button_new_with_mnemonic(_label::Union{AbstractString, Symbol})
         ret = ccall(("gtk_button_new_with_mnemonic", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkButtonLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkButton)
@@ -1480,7 +1480,7 @@ $(Expr(:toplevel, quote
     end
     function Calendar_new()
         ret = ccall(("gtk_calendar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCalendarLeaf(ret, false)
         ret2
     end
     function clear_marks(instance::GtkCalendar)
@@ -1719,7 +1719,7 @@ $(Expr(:toplevel, quote
     end
     function CellAreaBox_new()
         ret = ccall(("gtk_cell_area_box_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellArea, ret, false)
+        ret2 = GtkCellAreaBoxLeaf(ret, false)
         ret2
     end
     function get_spacing(instance::GtkCellAreaBox)
@@ -1801,37 +1801,37 @@ $(Expr(:toplevel, quote
     end
     function CellRendererAccel_new()
         ret = ccall(("gtk_cell_renderer_accel_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellRenderer, ret, false)
+        ret2 = GtkCellRendererAccelLeaf(ret, false)
         ret2
     end
     function CellRendererCombo_new()
         ret = ccall(("gtk_cell_renderer_combo_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellRenderer, ret, false)
+        ret2 = GtkCellRendererComboLeaf(ret, false)
         ret2
     end
     function CellRendererPixbuf_new()
         ret = ccall(("gtk_cell_renderer_pixbuf_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellRenderer, ret, false)
+        ret2 = GtkCellRendererPixbufLeaf(ret, false)
         ret2
     end
     function CellRendererProgress_new()
         ret = ccall(("gtk_cell_renderer_progress_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellRenderer, ret, false)
+        ret2 = GtkCellRendererProgressLeaf(ret, false)
         ret2
     end
     function CellRendererSpin_new()
         ret = ccall(("gtk_cell_renderer_spin_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellRenderer, ret, false)
+        ret2 = GtkCellRendererSpinLeaf(ret, false)
         ret2
     end
     function CellRendererSpinner_new()
         ret = ccall(("gtk_cell_renderer_spinner_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellRenderer, ret, false)
+        ret2 = GtkCellRendererSpinnerLeaf(ret, false)
         ret2
     end
     function CellRendererText_new()
         ret = ccall(("gtk_cell_renderer_text_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellRenderer, ret, false)
+        ret2 = GtkCellRendererTextLeaf(ret, false)
         ret2
     end
     function set_fixed_height_from_font(instance::GtkCellRendererText, _number_of_rows::Integer)
@@ -1840,7 +1840,7 @@ $(Expr(:toplevel, quote
     end
     function CellRendererToggle_new()
         ret = ccall(("gtk_cell_renderer_toggle_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkCellRenderer, ret, false)
+        ret2 = GtkCellRendererToggleLeaf(ret, false)
         ret2
     end
     function get_activatable(instance::GtkCellRendererToggle)
@@ -1872,27 +1872,27 @@ $(Expr(:toplevel, quote
     end
     function CellView_new()
         ret = ccall(("gtk_cell_view_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCellViewLeaf(ret, false)
         ret2
     end
     function CellView_new_with_context(_area::GtkCellArea, _context::GtkCellAreaContext)
         ret = ccall(("gtk_cell_view_new_with_context", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _area, _context)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCellViewLeaf(ret, false)
         ret2
     end
     function CellView_new_with_markup(_markup::Union{AbstractString, Symbol})
         ret = ccall(("gtk_cell_view_new_with_markup", libgtk4), Ptr{GObject}, (Cstring,), _markup)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCellViewLeaf(ret, false)
         ret2
     end
     function CellView_new_with_text(_text::Union{AbstractString, Symbol})
         ret = ccall(("gtk_cell_view_new_with_text", libgtk4), Ptr{GObject}, (Cstring,), _text)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCellViewLeaf(ret, false)
         ret2
     end
     function CellView_new_with_texture(_texture::GdkTexture)
         ret = ccall(("gtk_cell_view_new_with_texture", libgtk4), Ptr{GObject}, (Ptr{GObject},), _texture)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCellViewLeaf(ret, false)
         ret2
     end
     function get_displayed_row(instance::GtkCellView)
@@ -1935,7 +1935,7 @@ $(Expr(:toplevel, quote
     end
     function CenterBox_new()
         ret = ccall(("gtk_center_box_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCenterBoxLeaf(ret, false)
         ret2
     end
     function get_baseline_position(instance::GtkCenterBox)
@@ -2032,19 +2032,19 @@ $(Expr(:toplevel, quote
     end
     function CheckButton_new()
         ret = ccall(("gtk_check_button_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCheckButtonLeaf(ret, false)
         ret2
     end
     function CheckButton_new_with_label(_label::Maybe(Union{AbstractString, Symbol}))
         _label = nothing_to_null(_label)
         ret = ccall(("gtk_check_button_new_with_label", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCheckButtonLeaf(ret, false)
         ret2
     end
     function CheckButton_new_with_mnemonic(_label::Maybe(Union{AbstractString, Symbol}))
         _label = nothing_to_null(_label)
         ret = ccall(("gtk_check_button_new_with_mnemonic", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkCheckButtonLeaf(ret, false)
         ret2
     end
     function get_active(instance::GtkCheckButton)
@@ -2101,12 +2101,12 @@ $(Expr(:toplevel, quote
     end
     function ColorButton_new()
         ret = ccall(("gtk_color_button_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkColorButtonLeaf(ret, false)
         ret2
     end
     function ColorButton_new_with_rgba(_rgba::Union{GdkRGBA, Ref{_GdkRGBA}})
         ret = ccall(("gtk_color_button_new_with_rgba", libgtk4), Ptr{GObject}, (Ptr{_GdkRGBA},), _rgba)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkColorButtonLeaf(ret, false)
         ret2
     end
     function get_modal(instance::GtkColorButton)
@@ -2131,18 +2131,18 @@ $(Expr(:toplevel, quote
         _title = nothing_to_null(_title)
         _parent = nothing_to_null(_parent)
         ret = ccall(("gtk_color_chooser_dialog_new", libgtk4), Ptr{GObject}, (Cstring, Ptr{GObject}), _title, _parent)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkColorChooserDialogLeaf(ret, false)
         ret2
     end
     function ColorChooserWidget_new()
         ret = ccall(("gtk_color_chooser_widget_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkColorChooserWidgetLeaf(ret, false)
         ret2
     end
     function ColumnView_new(_model::Maybe(GtkSelectionModel))
         _model = nothing_to_null(_model)
         ret = ccall(("gtk_column_view_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkColumnViewLeaf(ret, false)
         ret2
     end
     function append_column(instance::GtkColumnView, _column::GtkColumnViewColumn)
@@ -2319,22 +2319,22 @@ $(Expr(:toplevel, quote
     end
     function ComboBox_new()
         ret = ccall(("gtk_combo_box_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkComboBoxLeaf(ret, false)
         ret2
     end
     function ComboBox_new_with_entry()
         ret = ccall(("gtk_combo_box_new_with_entry", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkComboBoxLeaf(ret, false)
         ret2
     end
     function ComboBox_new_with_model(_model::GtkTreeModel)
         ret = ccall(("gtk_combo_box_new_with_model", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkComboBoxLeaf(ret, false)
         ret2
     end
     function ComboBox_new_with_model_and_entry(_model::GtkTreeModel)
         ret = ccall(("gtk_combo_box_new_with_model_and_entry", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkComboBoxLeaf(ret, false)
         ret2
     end
     function get_active(instance::GtkComboBox)
@@ -2448,12 +2448,12 @@ $(Expr(:toplevel, quote
     end
     function ComboBoxText_new()
         ret = ccall(("gtk_combo_box_text_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkComboBoxTextLeaf(ret, false)
         ret2
     end
     function ComboBoxText_new_with_entry()
         ret = ccall(("gtk_combo_box_text_new_with_entry", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkComboBoxTextLeaf(ret, false)
         ret2
     end
     function append(instance::GtkComboBoxText, _id::Maybe(Union{AbstractString, Symbol}), _text::Union{AbstractString, Symbol})
@@ -2713,7 +2713,7 @@ $(Expr(:toplevel, quote
     end
     function Dialog_new()
         ret = ccall(("gtk_dialog_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkDialogLeaf(ret, false)
         ret2
     end
     function add_action_widget(instance::GtkDialog, _child::GtkWidget, _response_id::Integer)
@@ -2873,7 +2873,7 @@ $(Expr(:toplevel, quote
     end
     function DrawingArea_new()
         ret = ccall(("gtk_drawing_area_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkDrawingAreaLeaf(ret, false)
         ret2
     end
     function get_content_height(instance::GtkDrawingArea)
@@ -2916,12 +2916,12 @@ $(Expr(:toplevel, quote
         _model = nothing_to_null(_model)
         _expression = nothing_to_null(_expression)
         ret = ccall(("gtk_drop_down_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GtkExpression}), _model, _expression)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkDropDownLeaf(ret, false)
         ret2
     end
     function DropDown_new_from_strings(_strings)
         ret = ccall(("gtk_drop_down_new_from_strings", libgtk4), Ptr{GObject}, (Ptr{Cstring},), _strings)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkDropDownLeaf(ret, false)
         ret2
     end
     function get_enable_search(instance::GtkDropDown)
@@ -3081,7 +3081,7 @@ $(Expr(:toplevel, quote
     end
     function EditableLabel_new(_str::Union{AbstractString, Symbol})
         ret = ccall(("gtk_editable_label_new", libgtk4), Ptr{GObject}, (Cstring,), _str)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkEditableLabelLeaf(ret, false)
         ret2
     end
     function get_editing(instance::GtkEditableLabel)
@@ -3095,17 +3095,17 @@ $(Expr(:toplevel, quote
     end
     function EmojiChooser_new()
         ret = ccall(("gtk_emoji_chooser_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkEmojiChooserLeaf(ret, false)
         ret2
     end
     function Entry_new()
         ret = ccall(("gtk_entry_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkEntryLeaf(ret, false)
         ret2
     end
     function Entry_new_with_buffer(_buffer::GtkEntryBuffer)
         ret = ccall(("gtk_entry_new_with_buffer", libgtk4), Ptr{GObject}, (Ptr{GObject},), _buffer)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkEntryLeaf(ret, false)
         ret2
     end
     function get_activates_default(instance::GtkEntry)
@@ -3665,13 +3665,13 @@ $(Expr(:toplevel, quote
     function Expander_new(_label::Maybe(Union{AbstractString, Symbol}))
         _label = nothing_to_null(_label)
         ret = ccall(("gtk_expander_new", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkExpanderLeaf(ret, false)
         ret2
     end
     function Expander_new_with_mnemonic(_label::Maybe(Union{AbstractString, Symbol}))
         _label = nothing_to_null(_label)
         ret = ccall(("gtk_expander_new_with_mnemonic", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkExpanderLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkExpander)
@@ -3801,7 +3801,7 @@ $(Expr(:toplevel, quote
     end
     function FileChooserWidget_new(_action)
         ret = ccall(("gtk_file_chooser_widget_new", libgtk4), Ptr{GObject}, (UInt32,), _action)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFileChooserWidgetLeaf(ret, false)
         ret2
     end
     function FileFilter_new()
@@ -3910,7 +3910,7 @@ $(Expr(:toplevel, quote
     end
     function Fixed_new()
         ret = ccall(("gtk_fixed_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFixedLeaf(ret, false)
         ret2
     end
     function get_child_position(instance::GtkFixed, _widget::GtkWidget)
@@ -3980,7 +3980,7 @@ $(Expr(:toplevel, quote
     end
     function FlowBox_new()
         ret = ccall(("gtk_flow_box_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFlowBoxLeaf(ret, false)
         ret2
     end
     function append(instance::GtkFlowBox, _child::GtkWidget)
@@ -4107,7 +4107,7 @@ $(Expr(:toplevel, quote
     end
     function FlowBoxChild_new()
         ret = ccall(("gtk_flow_box_child_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFlowBoxChildLeaf(ret, false)
         ret2
     end
     function changed(instance::GtkFlowBoxChild)
@@ -4135,12 +4135,12 @@ $(Expr(:toplevel, quote
     end
     function FontButton_new()
         ret = ccall(("gtk_font_button_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFontButtonLeaf(ret, false)
         ret2
     end
     function FontButton_new_with_font(_fontname::Union{AbstractString, Symbol})
         ret = ccall(("gtk_font_button_new_with_font", libgtk4), Ptr{GObject}, (Cstring,), _fontname)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFontButtonLeaf(ret, false)
         ret2
     end
     function get_modal(instance::GtkFontButton)
@@ -4183,18 +4183,18 @@ $(Expr(:toplevel, quote
         _title = nothing_to_null(_title)
         _parent = nothing_to_null(_parent)
         ret = ccall(("gtk_font_chooser_dialog_new", libgtk4), Ptr{GObject}, (Cstring, Ptr{GObject}), _title, _parent)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFontChooserDialogLeaf(ret, false)
         ret2
     end
     function FontChooserWidget_new()
         ret = ccall(("gtk_font_chooser_widget_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFontChooserWidgetLeaf(ret, false)
         ret2
     end
     function Frame_new(_label::Maybe(Union{AbstractString, Symbol}))
         _label = nothing_to_null(_label)
         ret = ccall(("gtk_frame_new", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkFrameLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkFrame)
@@ -4237,7 +4237,7 @@ $(Expr(:toplevel, quote
     end
     function GLArea_new()
         ret = ccall(("gtk_gl_area_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkGLAreaLeaf(ret, false)
         ret2
     end
     function attach_buffers(instance::GtkGLArea)
@@ -4555,7 +4555,7 @@ $(Expr(:toplevel, quote
     end
     function Grid_new()
         ret = ccall(("gtk_grid_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkGridLeaf(ret, false)
         ret2
     end
     function attach(instance::GtkGrid, _child::GtkWidget, _column::Integer, _row::Integer, _width::Integer, _height::Integer)
@@ -4751,7 +4751,7 @@ $(Expr(:toplevel, quote
         _model = nothing_to_null(_model)
         _factory = nothing_to_null(_factory)
         ret = ccall(("gtk_grid_view_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _model, _factory)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkGridViewLeaf(ret, false)
         ret2
     end
     function get_enable_rubberband(instance::GtkGridView)
@@ -4810,7 +4810,7 @@ $(Expr(:toplevel, quote
     end
     function HeaderBar_new()
         ret = ccall(("gtk_header_bar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkHeaderBarLeaf(ret, false)
         ret2
     end
     function get_decoration_layout(instance::GtkHeaderBar)
@@ -5052,17 +5052,17 @@ $(Expr(:toplevel, quote
     end
     function IconView_new()
         ret = ccall(("gtk_icon_view_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkIconViewLeaf(ret, false)
         ret2
     end
     function IconView_new_with_area(_area::GtkCellArea)
         ret = ccall(("gtk_icon_view_new_with_area", libgtk4), Ptr{GObject}, (Ptr{GObject},), _area)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkIconViewLeaf(ret, false)
         ret2
     end
     function IconView_new_with_model(_model::GtkTreeModel)
         ret = ccall(("gtk_icon_view_new_with_model", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkIconViewLeaf(ret, false)
         ret2
     end
     function create_drag_icon(instance::GtkIconView, _path::GtkTreePath)
@@ -5366,40 +5366,40 @@ $(Expr(:toplevel, quote
     end
     function Image_new()
         ret = ccall(("gtk_image_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkImageLeaf(ret, false)
         ret2
     end
     function Image_new_from_file(_filename::Union{AbstractString, Symbol})
         ret = ccall(("gtk_image_new_from_file", libgtk4), Ptr{GObject}, (Cstring,), _filename)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkImageLeaf(ret, false)
         ret2
     end
     function Image_new_from_gicon(_icon::GIcon)
         ret = ccall(("gtk_image_new_from_gicon", libgtk4), Ptr{GObject}, (Ptr{GObject},), _icon)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkImageLeaf(ret, false)
         ret2
     end
     function Image_new_from_icon_name(_icon_name::Maybe(Union{AbstractString, Symbol}))
         _icon_name = nothing_to_null(_icon_name)
         ret = ccall(("gtk_image_new_from_icon_name", libgtk4), Ptr{GObject}, (Cstring,), _icon_name)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkImageLeaf(ret, false)
         ret2
     end
     function Image_new_from_paintable(_paintable::Maybe(GdkPaintable))
         _paintable = nothing_to_null(_paintable)
         ret = ccall(("gtk_image_new_from_paintable", libgtk4), Ptr{GObject}, (Ptr{GObject},), _paintable)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkImageLeaf(ret, false)
         ret2
     end
     function Image_new_from_pixbuf(_pixbuf::Maybe(GdkPixbuf))
         _pixbuf = nothing_to_null(_pixbuf)
         ret = ccall(("gtk_image_new_from_pixbuf", libgtk4), Ptr{GObject}, (Ptr{GObject},), _pixbuf)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkImageLeaf(ret, false)
         ret2
     end
     function Image_new_from_resource(_resource_path::Union{AbstractString, Symbol})
         ret = ccall(("gtk_image_new_from_resource", libgtk4), Ptr{GObject}, (Cstring,), _resource_path)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkImageLeaf(ret, false)
         ret2
     end
     function clear(instance::GtkImage)
@@ -5474,7 +5474,7 @@ $(Expr(:toplevel, quote
     end
     function InfoBar_new()
         ret = ccall(("gtk_info_bar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkInfoBarLeaf(ret, false)
         ret2
     end
     function add_action_widget(instance::GtkInfoBar, _child::GtkWidget, _response_id::Integer)
@@ -5540,7 +5540,7 @@ $(Expr(:toplevel, quote
     function Inscription_new(_text::Maybe(Union{AbstractString, Symbol}))
         _text = nothing_to_null(_text)
         ret = ccall(("gtk_inscription_new", libgtk4), Ptr{GObject}, (Cstring,), _text)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkInscriptionLeaf(ret, false)
         ret2
     end
     function get_attributes(instance::GtkInscription)
@@ -5651,13 +5651,13 @@ $(Expr(:toplevel, quote
     function Label_new(_str::Maybe(Union{AbstractString, Symbol}))
         _str = nothing_to_null(_str)
         ret = ccall(("gtk_label_new", libgtk4), Ptr{GObject}, (Cstring,), _str)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkLabelLeaf(ret, false)
         ret2
     end
     function Label_new_with_mnemonic(_str::Maybe(Union{AbstractString, Symbol}))
         _str = nothing_to_null(_str)
         ret = ccall(("gtk_label_new_with_mnemonic", libgtk4), Ptr{GObject}, (Cstring,), _str)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkLabelLeaf(ret, false)
         ret2
     end
     function get_attributes(instance::GtkLabel)
@@ -5933,12 +5933,12 @@ $(Expr(:toplevel, quote
     end
     function LevelBar_new()
         ret = ccall(("gtk_level_bar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkLevelBarLeaf(ret, false)
         ret2
     end
     function LevelBar_new_for_interval(_min_value::Real, _max_value::Real)
         ret = ccall(("gtk_level_bar_new_for_interval", libgtk4), Ptr{GObject}, (Float64, Float64), _min_value, _max_value)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkLevelBarLeaf(ret, false)
         ret2
     end
     function add_offset_value(instance::GtkLevelBar, _name::Union{AbstractString, Symbol}, _value::Real)
@@ -6002,13 +6002,13 @@ $(Expr(:toplevel, quote
     end
     function LinkButton_new(_uri::Union{AbstractString, Symbol})
         ret = ccall(("gtk_link_button_new", libgtk4), Ptr{GObject}, (Cstring,), _uri)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkLinkButtonLeaf(ret, false)
         ret2
     end
     function LinkButton_new_with_label(_uri::Union{AbstractString, Symbol}, _label::Maybe(Union{AbstractString, Symbol}))
         _label = nothing_to_null(_label)
         ret = ccall(("gtk_link_button_new_with_label", libgtk4), Ptr{GObject}, (Cstring, Cstring), _uri, _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkLinkButtonLeaf(ret, false)
         ret2
     end
     function get_uri(instance::GtkLinkButton)
@@ -6031,7 +6031,7 @@ $(Expr(:toplevel, quote
     end
     function ListBox_new()
         ret = ccall(("gtk_list_box_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkListBoxLeaf(ret, false)
         ret2
     end
     function append(instance::GtkListBox, _child::GtkWidget)
@@ -6151,7 +6151,7 @@ $(Expr(:toplevel, quote
     end
     function ListBoxRow_new()
         ret = ccall(("gtk_list_box_row_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkListBoxRowLeaf(ret, false)
         ret2
     end
     function changed(instance::GtkListBoxRow)
@@ -6349,7 +6349,7 @@ $(Expr(:toplevel, quote
         _model = nothing_to_null(_model)
         _factory = nothing_to_null(_factory)
         ret = ccall(("gtk_list_view_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _model, _factory)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkListViewLeaf(ret, false)
         ret2
     end
     function get_enable_rubberband(instance::GtkListView)
@@ -6402,7 +6402,7 @@ $(Expr(:toplevel, quote
     function LockButton_new(_permission::Maybe(GPermission))
         _permission = nothing_to_null(_permission)
         ret = ccall(("gtk_lock_button_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _permission)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkLockButtonLeaf(ret, false)
         ret2
     end
     function get_permission(instance::GtkLockButton)
@@ -6433,7 +6433,7 @@ $(Expr(:toplevel, quote
     function MediaControls_new(_stream::Maybe(GtkMediaStream))
         _stream = nothing_to_null(_stream)
         ret = ccall(("gtk_media_controls_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _stream)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkMediaControlsLeaf(ret, false)
         ret2
     end
     function get_media_stream(instance::GtkMediaControls)
@@ -6632,7 +6632,7 @@ $(Expr(:toplevel, quote
     end
     function MenuButton_new()
         ret = ccall(("gtk_menu_button_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkMenuButtonLeaf(ret, false)
         ret2
     end
     function get_always_show_arrow(instance::GtkMenuButton)
@@ -6901,7 +6901,7 @@ $(Expr(:toplevel, quote
     end
     function Notebook_new()
         ret = ccall(("gtk_notebook_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkNotebookLeaf(ret, false)
         ret2
     end
     function append_page(instance::GtkNotebook, _child::GtkWidget, _tab_label::Maybe(GtkWidget))
@@ -7117,7 +7117,7 @@ $(Expr(:toplevel, quote
     end
     function Overlay_new()
         ret = ccall(("gtk_overlay_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkOverlayLeaf(ret, false)
         ret2
     end
     function add_overlay(instance::GtkOverlay, _widget::GtkWidget)
@@ -7329,7 +7329,7 @@ $(Expr(:toplevel, quote
     end
     function Paned_new(_orientation)
         ret = ccall(("gtk_paned_new", libgtk4), Ptr{GObject}, (UInt32,), _orientation)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPanedLeaf(ret, false)
         ret2
     end
     function get_end_child(instance::GtkPaned)
@@ -7407,7 +7407,7 @@ $(Expr(:toplevel, quote
     end
     function PasswordEntry_new()
         ret = ccall(("gtk_password_entry_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPasswordEntryLeaf(ret, false)
         ret2
     end
     function get_extra_menu(instance::GtkPasswordEntry)
@@ -7436,37 +7436,37 @@ $(Expr(:toplevel, quote
     end
     function Picture_new()
         ret = ccall(("gtk_picture_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPictureLeaf(ret, false)
         ret2
     end
     function Picture_new_for_file(_file::Maybe(GFile))
         _file = nothing_to_null(_file)
         ret = ccall(("gtk_picture_new_for_file", libgtk4), Ptr{GObject}, (Ptr{GObject},), _file)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPictureLeaf(ret, false)
         ret2
     end
     function Picture_new_for_filename(_filename::Maybe(Union{AbstractString, Symbol}))
         _filename = nothing_to_null(_filename)
         ret = ccall(("gtk_picture_new_for_filename", libgtk4), Ptr{GObject}, (Cstring,), _filename)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPictureLeaf(ret, false)
         ret2
     end
     function Picture_new_for_paintable(_paintable::Maybe(GdkPaintable))
         _paintable = nothing_to_null(_paintable)
         ret = ccall(("gtk_picture_new_for_paintable", libgtk4), Ptr{GObject}, (Ptr{GObject},), _paintable)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPictureLeaf(ret, false)
         ret2
     end
     function Picture_new_for_pixbuf(_pixbuf::Maybe(GdkPixbuf))
         _pixbuf = nothing_to_null(_pixbuf)
         ret = ccall(("gtk_picture_new_for_pixbuf", libgtk4), Ptr{GObject}, (Ptr{GObject},), _pixbuf)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPictureLeaf(ret, false)
         ret2
     end
     function Picture_new_for_resource(_resource_path::Maybe(Union{AbstractString, Symbol}))
         _resource_path = nothing_to_null(_resource_path)
         ret = ccall(("gtk_picture_new_for_resource", libgtk4), Ptr{GObject}, (Cstring,), _resource_path)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPictureLeaf(ret, false)
         ret2
     end
     function get_alternative_text(instance::GtkPicture)
@@ -7534,7 +7534,7 @@ $(Expr(:toplevel, quote
     end
     function Popover_new()
         ret = ccall(("gtk_popover_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPopoverLeaf(ret, false)
         ret2
     end
     function get_autohide(instance::GtkPopover)
@@ -7638,12 +7638,12 @@ $(Expr(:toplevel, quote
     function PopoverMenu_new_from_model(_model::Maybe(GMenuModel))
         _model = nothing_to_null(_model)
         ret = ccall(("gtk_popover_menu_new_from_model", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPopoverMenuLeaf(ret, false)
         ret2
     end
     function PopoverMenu_new_from_model_full(_model::GMenuModel, _flags)
         ret = ccall(("gtk_popover_menu_new_from_model_full", libgtk4), Ptr{GObject}, (Ptr{GObject}, UInt32), _model, _flags)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPopoverMenuLeaf(ret, false)
         ret2
     end
     function add_child(instance::GtkPopoverMenu, _child::GtkWidget, _id::Union{AbstractString, Symbol})
@@ -7669,7 +7669,7 @@ $(Expr(:toplevel, quote
     function PopoverMenuBar_new_from_model(_model::Maybe(GMenuModel))
         _model = nothing_to_null(_model)
         ret = ccall(("gtk_popover_menu_bar_new_from_model", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkPopoverMenuBarLeaf(ret, false)
         ret2
     end
     function add_child(instance::GtkPopoverMenuBar, _child::GtkWidget, _id::Union{AbstractString, Symbol})
@@ -8018,7 +8018,7 @@ $(Expr(:toplevel, quote
     end
     function ProgressBar_new()
         ret = ccall(("gtk_progress_bar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkProgressBarLeaf(ret, false)
         ret2
     end
     function get_ellipsize(instance::GtkProgressBar)
@@ -8180,7 +8180,7 @@ $(Expr(:toplevel, quote
     end
     function Revealer_new()
         ret = ccall(("gtk_revealer_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkRevealerLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkRevealer)
@@ -8227,12 +8227,12 @@ $(Expr(:toplevel, quote
     function Scale_new(_orientation, _adjustment::Maybe(GtkAdjustment))
         _adjustment = nothing_to_null(_adjustment)
         ret = ccall(("gtk_scale_new", libgtk4), Ptr{GObject}, (UInt32, Ptr{GObject}), _orientation, _adjustment)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkScaleLeaf(ret, false)
         ret2
     end
     function Scale_new_with_range(_orientation, _min::Real, _max::Real, _step::Real)
         ret = ccall(("gtk_scale_new_with_range", libgtk4), Ptr{GObject}, (UInt32, Float64, Float64, Float64), _orientation, _min, _max, _step)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkScaleLeaf(ret, false)
         ret2
     end
     function add_mark(instance::GtkScale, _value::Real, _position, _markup::Maybe(Union{AbstractString, Symbol}))
@@ -8302,7 +8302,7 @@ $(Expr(:toplevel, quote
     function ScaleButton_new(_min::Real, _max::Real, _step::Real, _icons)
         _icons = nothing_to_null(_icons)
         ret = ccall(("gtk_scale_button_new", libgtk4), Ptr{GObject}, (Float64, Float64, Float64, Ptr{Cstring}), _min, _max, _step, _icons)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkScaleButtonLeaf(ret, false)
         ret2
     end
     function get_adjustment(instance::GtkScaleButton)
@@ -8344,7 +8344,7 @@ $(Expr(:toplevel, quote
     function Scrollbar_new(_orientation, _adjustment::Maybe(GtkAdjustment))
         _adjustment = nothing_to_null(_adjustment)
         ret = ccall(("gtk_scrollbar_new", libgtk4), Ptr{GObject}, (UInt32, Ptr{GObject}), _orientation, _adjustment)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkScrollbarLeaf(ret, false)
         ret2
     end
     function get_adjustment(instance::GtkScrollbar)
@@ -8359,7 +8359,7 @@ $(Expr(:toplevel, quote
     end
     function ScrolledWindow_new()
         ret = ccall(("gtk_scrolled_window_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkScrolledWindowLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkScrolledWindow)
@@ -8508,7 +8508,7 @@ $(Expr(:toplevel, quote
     end
     function SearchBar_new()
         ret = ccall(("gtk_search_bar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkSearchBarLeaf(ret, false)
         ret2
     end
     function connect_entry(instance::GtkSearchBar, _entry::GtkEditable)
@@ -8555,7 +8555,7 @@ $(Expr(:toplevel, quote
     end
     function SearchEntry_new()
         ret = ccall(("gtk_search_entry_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkSearchEntryLeaf(ret, false)
         ret2
     end
     function get_key_capture_widget(instance::GtkSearchEntry)
@@ -8594,7 +8594,7 @@ $(Expr(:toplevel, quote
     end
     function Separator_new(_orientation)
         ret = ccall(("gtk_separator_new", libgtk4), Ptr{GObject}, (UInt32,), _orientation)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkSeparatorLeaf(ret, false)
         ret2
     end
     function reset_property(instance::GtkSettings, _name::Union{AbstractString, Symbol})
@@ -8676,7 +8676,7 @@ $(Expr(:toplevel, quote
     end
     function ShortcutLabel_new(_accelerator::Union{AbstractString, Symbol})
         ret = ccall(("gtk_shortcut_label_new", libgtk4), Ptr{GObject}, (Cstring,), _accelerator)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkShortcutLabelLeaf(ret, false)
         ret2
     end
     function get_accelerator(instance::GtkShortcutLabel)
@@ -9049,12 +9049,12 @@ $(Expr(:toplevel, quote
     function SpinButton_new(_adjustment::Maybe(GtkAdjustment), _climb_rate::Real, _digits::Integer)
         _adjustment = nothing_to_null(_adjustment)
         ret = ccall(("gtk_spin_button_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Float64, UInt32), _adjustment, _climb_rate, _digits)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkSpinButtonLeaf(ret, false)
         ret2
     end
     function SpinButton_new_with_range(_min::Real, _max::Real, _step::Real)
         ret = ccall(("gtk_spin_button_new_with_range", libgtk4), Ptr{GObject}, (Float64, Float64, Float64), _min, _max, _step)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkSpinButtonLeaf(ret, false)
         ret2
     end
     function configure(instance::GtkSpinButton, _adjustment::Maybe(GtkAdjustment), _climb_rate::Real, _digits::Integer)
@@ -9169,7 +9169,7 @@ $(Expr(:toplevel, quote
     end
     function Spinner_new()
         ret = ccall(("gtk_spinner_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkSpinnerLeaf(ret, false)
         ret2
     end
     function get_spinning(instance::GtkSpinner)
@@ -9191,7 +9191,7 @@ $(Expr(:toplevel, quote
     end
     function Stack_new()
         ret = ccall(("gtk_stack_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkStackLeaf(ret, false)
         ret2
     end
     function add_child(instance::GtkStack, _child::GtkWidget)
@@ -9365,7 +9365,7 @@ $(Expr(:toplevel, quote
     end
     function StackSidebar_new()
         ret = ccall(("gtk_stack_sidebar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkStackSidebarLeaf(ret, false)
         ret2
     end
     function get_stack(instance::GtkStackSidebar)
@@ -9379,7 +9379,7 @@ $(Expr(:toplevel, quote
     end
     function StackSwitcher_new()
         ret = ccall(("gtk_stack_switcher_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkStackSwitcherLeaf(ret, false)
         ret2
     end
     function get_stack(instance::GtkStackSwitcher)
@@ -9394,7 +9394,7 @@ $(Expr(:toplevel, quote
     end
     function Statusbar_new()
         ret = ccall(("gtk_statusbar_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkStatusbarLeaf(ret, false)
         ret2
     end
     function get_context_id(instance::GtkStatusbar, _context_description::Union{AbstractString, Symbol})
@@ -9556,7 +9556,7 @@ $(Expr(:toplevel, quote
     end
     function Switch_new()
         ret = ccall(("gtk_switch_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkSwitchLeaf(ret, false)
         ret2
     end
     function get_active(instance::GtkSwitch)
@@ -9579,12 +9579,12 @@ $(Expr(:toplevel, quote
     end
     function Text_new()
         ret = ccall(("gtk_text_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkTextLeaf(ret, false)
         ret2
     end
     function Text_new_with_buffer(_buffer::GtkEntryBuffer)
         ret = ccall(("gtk_text_new_with_buffer", libgtk4), Ptr{GObject}, (Ptr{GObject},), _buffer)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkTextLeaf(ret, false)
         ret2
     end
     function compute_cursor_extents(instance::GtkText, _position::Integer)
@@ -10173,12 +10173,12 @@ $(Expr(:toplevel, quote
     end
     function TextView_new()
         ret = ccall(("gtk_text_view_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkTextViewLeaf(ret, false)
         ret2
     end
     function TextView_new_with_buffer(_buffer::GtkTextBuffer)
         ret = ccall(("gtk_text_view_new_with_buffer", libgtk4), Ptr{GObject}, (Ptr{GObject},), _buffer)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkTextViewLeaf(ret, false)
         ret2
     end
     function add_child_at_anchor(instance::GtkTextView, _child::GtkWidget, _anchor::GtkTextChildAnchor)
@@ -10523,17 +10523,17 @@ $(Expr(:toplevel, quote
     end
     function ToggleButton_new()
         ret = ccall(("gtk_toggle_button_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkToggleButtonLeaf(ret, false)
         ret2
     end
     function ToggleButton_new_with_label(_label::Union{AbstractString, Symbol})
         ret = ccall(("gtk_toggle_button_new_with_label", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkToggleButtonLeaf(ret, false)
         ret2
     end
     function ToggleButton_new_with_mnemonic(_label::Union{AbstractString, Symbol})
         ret = ccall(("gtk_toggle_button_new_with_mnemonic", libgtk4), Ptr{GObject}, (Cstring,), _label)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkToggleButtonLeaf(ret, false)
         ret2
     end
     function get_active(instance::GtkToggleButton)
@@ -10590,7 +10590,7 @@ $(Expr(:toplevel, quote
     end
     function TreeExpander_new()
         ret = ccall(("gtk_tree_expander_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkTreeExpanderLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkTreeExpander)
@@ -11003,12 +11003,12 @@ $(Expr(:toplevel, quote
     end
     function TreeView_new()
         ret = ccall(("gtk_tree_view_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkTreeViewLeaf(ret, false)
         ret2
     end
     function TreeView_new_with_model(_model::GtkTreeModel)
         ret = ccall(("gtk_tree_view_new_with_model", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkTreeViewLeaf(ret, false)
         ret2
     end
     function append_column(instance::GtkTreeView, _column::GtkTreeViewColumn)
@@ -11479,12 +11479,12 @@ $(Expr(:toplevel, quote
     end
     function TreeViewColumn_new()
         ret = ccall(("gtk_tree_view_column_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkTreeViewColumn, ret, false)
+        ret2 = GtkTreeViewColumnLeaf(ret, false)
         ret2
     end
     function TreeViewColumn_new_with_area(_area::GtkCellArea)
         ret = ccall(("gtk_tree_view_column_new_with_area", libgtk4), Ptr{GObject}, (Ptr{GObject},), _area)
-        ret2 = convert(GtkTreeViewColumn, ret, false)
+        ret2 = GtkTreeViewColumnLeaf(ret, false)
         ret2
     end
     function add_attribute(instance::GtkTreeViewColumn, _cell_renderer::GtkCellRenderer, _attribute::Union{AbstractString, Symbol}, _column::Integer)
@@ -11708,31 +11708,31 @@ $(Expr(:toplevel, quote
     end
     function Video_new()
         ret = ccall(("gtk_video_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkVideoLeaf(ret, false)
         ret2
     end
     function Video_new_for_file(_file::Maybe(GFile))
         _file = nothing_to_null(_file)
         ret = ccall(("gtk_video_new_for_file", libgtk4), Ptr{GObject}, (Ptr{GObject},), _file)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkVideoLeaf(ret, false)
         ret2
     end
     function Video_new_for_filename(_filename::Maybe(Union{AbstractString, Symbol}))
         _filename = nothing_to_null(_filename)
         ret = ccall(("gtk_video_new_for_filename", libgtk4), Ptr{GObject}, (Cstring,), _filename)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkVideoLeaf(ret, false)
         ret2
     end
     function Video_new_for_media_stream(_stream::Maybe(GtkMediaStream))
         _stream = nothing_to_null(_stream)
         ret = ccall(("gtk_video_new_for_media_stream", libgtk4), Ptr{GObject}, (Ptr{GObject},), _stream)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkVideoLeaf(ret, false)
         ret2
     end
     function Video_new_for_resource(_resource_path::Maybe(Union{AbstractString, Symbol}))
         _resource_path = nothing_to_null(_resource_path)
         ret = ccall(("gtk_video_new_for_resource", libgtk4), Ptr{GObject}, (Cstring,), _resource_path)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkVideoLeaf(ret, false)
         ret2
     end
     function get_autoplay(instance::GtkVideo)
@@ -11787,7 +11787,7 @@ $(Expr(:toplevel, quote
         _hadjustment = nothing_to_null(_hadjustment)
         _vadjustment = nothing_to_null(_vadjustment)
         ret = ccall(("gtk_viewport_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _hadjustment, _vadjustment)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkViewportLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkViewport)
@@ -11811,7 +11811,7 @@ $(Expr(:toplevel, quote
     end
     function VolumeButton_new()
         ret = ccall(("gtk_volume_button_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkVolumeButtonLeaf(ret, false)
         ret2
     end
     function get_default_direction()
@@ -12603,7 +12603,7 @@ $(Expr(:toplevel, quote
     end
     function Window_new()
         ret = ccall(("gtk_window_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkWindowLeaf(ret, false)
         ret2
     end
     function get_default_icon_name()
@@ -12888,7 +12888,7 @@ $(Expr(:toplevel, quote
     end
     function WindowControls_new(_side)
         ret = ccall(("gtk_window_controls_new", libgtk4), Ptr{GObject}, (UInt32,), _side)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkWindowControlsLeaf(ret, false)
         ret2
     end
     function get_decoration_layout(instance::GtkWindowControls)
@@ -12935,7 +12935,7 @@ $(Expr(:toplevel, quote
     end
     function WindowHandle_new()
         ret = ccall(("gtk_window_handle_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = GtkWindowHandleLeaf(ret, false)
         ret2
     end
     function get_child(instance::GtkWindowHandle)

@@ -644,10 +644,18 @@ function extract_type(typeinfo::GITypeInfo, basetype::Type{T}) where {T<:GBoxed}
     TypeDesc{Type{GBoxed}}(GBoxed, jarg, name, ctype)
 end
 
-function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) where {T <: Type{GObject}}
+function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}, isconstructor=false) where {T <: Type{GObject}}
     owns = get_ownership_transfer(arginfo) != GITransfer.NOTHING
+    object = get_container(arginfo)
     if may_be_null(arginfo)
         :(convert_if_not_null($(typeinfo.jtype), $name, $owns))
+    elseif isconstructor && !get_abstract(object) && !owns
+        # For a constructor, we know this is a never-before-seen object, so use the known concrete type to allow type inference
+        # Many of these have an abstract type as the return type in GI, but we need the
+        # concrete one. Since this is a constructor we can look up the name.
+        objname = get_full_name(object)
+        leaftype = Symbol("$(objname)Leaf")
+        :($leaftype($name, $owns))
     else
         :(convert($(typeinfo.jtype), $name, $owns))
     end
@@ -865,7 +873,11 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
     rettypeinfo=get_return_type(info)
     rettype = extract_type(rettypeinfo)
     if rettype.ctype !== :Nothing && !skip_return(info)
-        expr = convert_from_c(:ret,info,rettype)
+        expr = if flags & GIFunction.IS_CONSTRUCTOR != 0 && rettype.gitype == GObject
+            convert_from_c(:ret,info,rettype,true)
+        else
+            convert_from_c(:ret,info,rettype)
+        end
         if expr !== nothing
             push!(epilogue, :(ret2 = $expr))
             push!(retvals,:ret2)

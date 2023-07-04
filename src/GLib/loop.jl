@@ -84,6 +84,13 @@ glib_main() = GLib.g_sigatom() do
     end
 end
 
+"""
+    is_loop_running()
+
+Return true if the default GLib main event loop is running.
+
+Related GTK function: [`g_main_depth`()]($(gtkdoc_func_url("glib","main_depth")))
+"""
 is_loop_running() = (G_.main_depth() != 0)
 
 """
