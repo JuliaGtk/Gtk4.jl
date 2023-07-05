@@ -206,19 +206,22 @@ function GdkPixbuf(width::Integer, height::Integer, has_alpha = true)
     G_.Pixbuf_new(Colorspace_RGB, has_alpha, 8, width, height)
 end
 
-function GdkPixbuf(data::AbstractArray, has_alpha = nothing)
+gc_unref_gdkpixbufdata(::Ptr{Nothing},x) = GLib.gc_unref(x)
+gc_ref_closure_gdkpixbufdata(x::T) where {T} = (GLib.gc_ref(x), @cfunction(gc_unref_gdkpixbufdata, Nothing, (Ptr{Nothing},Any)))
+
+function GdkPixbuf(data::AbstractArray, has_alpha = false)
     local pixbuf::Ptr{GObject}
     if data !== nothing # RGB or RGBA array, packed however you wish
         alpha = convert(Bool, has_alpha)
         width = size(data, 1) * bstride(data, 1)/(3 + Int(alpha))
         height = size(data, 2)
-        ref_data, deref_data = GLib.gc_ref_closure(data)
+        ref_data, deref_data = gc_ref_closure_gdkpixbufdata(data)
         pixbuf = ccall((:gdk_pixbuf_new_from_data, libgdkpixbuf), Ptr{GObject},
-            (Ptr{Nothing}, Cint, Cint, Cint, Cint, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}),
+            (Ptr{Nothing}, Cint, Cint, Cint, Cint, Cint, Cint, Ptr{Cvoid}, Ptr{Nothing}),
             data, 0, alpha, 8, width, height, bstride(data, 2),
             deref_data, ref_data)
     end
-    return convert(GdkPixbuf, pixbuf, true)
+    return GdkPixbufLeaf(pixbuf, true)
 end
 
 slice(img::GdkPixbuf, x, y) = G_.new_subpixbuf(img, first(x)-1, first(y)-1, length(x), length(y))
