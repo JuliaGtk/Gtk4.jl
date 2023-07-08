@@ -25,5 +25,6 @@ dlg = GtkDialog("General dialog",
                       Gtk4.DialogFlags_MODAL )
 show(dlg)
 destroy(dlg)
+destroy(main_window)
 
 end

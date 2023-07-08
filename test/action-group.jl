@@ -3,10 +3,9 @@ using Test
 
 # GSimpleAction is an object with properties
 
-a=GLib.G_.SimpleAction_new("do-something",nothing)
-
 @testset "gaction" begin
 
+a=GLib.G_.SimpleAction_new("do-something",nothing)
 g=GLib.G_.SimpleActionGroup_new()
 
 @test isa(g,GSimpleActionGroup)
@@ -79,6 +78,7 @@ end
 
 @testset "GListStore" begin
 
+a=GLib.G_.SimpleAction_new("do-something",nothing)
 l = GListStore(:GSimpleAction)
 @test length(l)==0
 push!(l, a)

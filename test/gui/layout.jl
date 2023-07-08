@@ -114,6 +114,7 @@ end
     l4 = GtkLabel("Named #2")
     s["named2"] = l4
     @test s["named2"] == l4
+    destroy(w)
 end
 
 @testset "overlay" begin

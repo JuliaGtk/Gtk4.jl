@@ -34,6 +34,7 @@ hide(w)
 show(w)
 grab_focus(w)
 close(w)
+destroy(w)
 
 end
 
@@ -86,6 +87,7 @@ end
     @test w.cursor === nothing
 
     destroy(w)
+    destroy(w2)
 end
 
 @testset "change Window size" begin
@@ -131,6 +133,8 @@ end
     push!(wg,w2)
     delete!(wg,w1)
     delete!(wg,w2)
+    destroy(w1)
+    destroy(w2)
 end
 
 @testset "Initially Hidden Canvas" begin
@@ -316,6 +320,8 @@ cb1.active = true
 cb2.active = true
 @test cb1.active == true
 
+destroy(w)
+
 end
 
 @testset "togglebuttons in group" begin
@@ -340,6 +346,8 @@ group(tb1,nothing)
 tb1.active = true
 tb2.active = true
 @test tb1.active == true
+
+destroy(w)
 
 end
 
@@ -533,7 +541,7 @@ end
 @testset "Statusbar" begin
 vbox = GtkBox(:v)
 w = GtkWindow(vbox, "Statusbar")
-global sb = GtkStatusbar()
+sb = GtkStatusbar()
 push!(vbox, sb)
 ctxid = Gtk4.context_id(sb, "Statusbar example")
 bpush = GtkButton("push item")
@@ -591,13 +599,16 @@ button = b["a_button"]
 
 @load_builder(b)
 
+destroy(a_window)
+
 @test button == b["a_button"]
 
 s = open("test.ui","r") do f
     read(f,String)
 end
 b3 = GtkBuilder(s,-1)
-
+win = b3["a_window"]
+destroy(win)
 
 end
 
@@ -653,6 +664,7 @@ end
     @test mtrx.yy == 280
     @test mtrx.xy == mtrx.yx == mtrx.x0 == mtrx.y0 == 0
     surf = Gtk4.cairo_surface(cnvs)
+    destroy(win)
 end
 
 @testset "GLArea" begin

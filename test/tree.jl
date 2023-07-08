@@ -133,4 +133,6 @@ splice!(store, [4])
 empty!(store)
 empty!(cols[1])
 
+destroy(window)
+
 end
