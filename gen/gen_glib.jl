@@ -64,8 +64,9 @@ constructor_skiplist=[:new,:new_from_unix_utc,:new_now_utc,:new_utc,:new_maybe]
 
 _, c = GI.all_struct_exprs!(exprs,exports,ns;constructor_skiplist=constructor_skiplist,excludelist=struct_skiplist,import_as_opaque=import_as_opaque)
 GI.append_struc_docs!(exprs, "glib", dglib, c, ns)
-push!(exprs,exports)
+GI.all_callbacks!(exprs, exports, ns)
 
+push!(exprs,exports)
 GI.write_to_file(path,"glib_structs",toplevel)
 
 ## struct methods

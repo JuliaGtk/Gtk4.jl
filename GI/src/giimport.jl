@@ -340,6 +340,45 @@ function decl(interfaceinfo::GIInterfaceInfo)
     unblock(decl)
 end
 
+function get_closure(callbackinfo::GICallbackInfo)
+    closure = -1
+    for arg in get_args(callbackinfo)
+        if get_closure(arg) > -1
+            closure = get_closure(arg)
+        end
+    end
+    return closure
+end
+
+## Callback output
+function decl(callbackinfo::GICallbackInfo)
+    name = get_full_name(callbackinfo)
+    fargs = Symbol[]
+    args=get_args(callbackinfo)
+    rettypeinfo=get_return_type(callbackinfo)
+    rettype = extract_type(rettypeinfo)
+    retexpr = (rettype.ctype == :Nothing) ? :(nothing) : :(convert($(rettype.ctype), ret))
+    
+    closure = get_closure(callbackinfo)
+    for arg in args
+        push!(fargs, get_name(arg))
+    end
+    if closure == -1
+        println("Not implementing $name, didn't find a closure")
+        throw(NotImplementedError())
+    else
+        closure_name = get_name(args[closure+1])
+    end
+    d = quote
+        function $name($(fargs...))
+            f = $closure_name
+            ret = f($(fargs[1:end-1]...))
+            $retexpr
+        end
+    end
+    unblock(d)
+end
+
 ## Handling argument types, creating methods
 
 struct NotImplementedError <: Exception end
@@ -348,7 +387,7 @@ abstract type InstanceType end
 is_pointer(::Type{InstanceType}) = true
 const TypeInfo = Union{GITypeInfo,Type{InstanceType}}
 
-struct TypeDesc{T}
+mutable struct TypeDesc{T}
     gitype::T
     jtype::Union{Expr,Symbol}    # used in Julia for arguments
     jstype::Union{Expr,Symbol}   # most specific relevant Julia type (for properties)
@@ -370,7 +409,7 @@ function extract_type(info::GIArgInfo)
     typdesc = extract_type(get_type(info))
     if may_be_null(info) && typdesc.jtype !== :Any
         jtype=typdesc.jtype
-        typdesc = TypeDesc(typdesc.gitype, :(Maybe($jtype)), typdesc.jstype, typdesc.ctype)
+        typdesc.jtype = :(Maybe($jtype))
     end
     typdesc
 end
@@ -591,7 +630,7 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{Type{
 end
 
 function extract_type(typeinfo::GITypeInfo,basetype::Type{Function})
-    TypeDesc{Type{Function}}(Function,:Function, :Function, :(Ptr{Nothing}))
+    TypeDesc{Type{Function}}(Function,:Function, :Function, :(Ptr{Cvoid}))
 end
 
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{Function}}

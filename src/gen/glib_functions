@@ -688,7 +688,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = string_or_nothing(ret, true)
         _hostname = m_hostname[]
-        _hostname = convert(Maybe(Union{AbstractString, Symbol}), _hostname)
+        _hostname = string_or_nothing(_hostname, true)
         (ret2, _hostname)
     end
     function filename_from_utf8(_utf8string::Union{AbstractString, Symbol}, _len::Integer)
@@ -2337,18 +2337,18 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_uri_split", libglib), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_userinfo, m_host, m_port, m_path, m_query, m_fragment, err)
         check_err(err)
         _scheme = m_scheme[]
-        _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
+        _scheme = string_or_nothing(_scheme, true)
         _userinfo = m_userinfo[]
-        _userinfo = convert(Maybe(Union{AbstractString, Symbol}), _userinfo)
+        _userinfo = string_or_nothing(_userinfo, true)
         _host = m_host[]
-        _host = convert(Maybe(Union{AbstractString, Symbol}), _host)
+        _host = string_or_nothing(_host, true)
         _port = m_port[]
         _path = m_path[]
         _path = string_or_nothing(_path, true)
         _query = m_query[]
-        _query = convert(Maybe(Union{AbstractString, Symbol}), _query)
+        _query = string_or_nothing(_query, true)
         _fragment = m_fragment[]
-        _fragment = convert(Maybe(Union{AbstractString, Symbol}), _fragment)
+        _fragment = string_or_nothing(_fragment, true)
         (_scheme, _userinfo, _host, _port, _path, _query, _fragment)
     end
     function uri_split_network(_uri_string::Union{AbstractString, Symbol}, _flags)
@@ -2359,9 +2359,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_uri_split_network", libglib), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Ptr{GError}}), _uri_string, _flags, m_scheme, m_host, m_port, err)
         check_err(err)
         _scheme = m_scheme[]
-        _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
+        _scheme = string_or_nothing(_scheme, true)
         _host = m_host[]
-        _host = convert(Maybe(Union{AbstractString, Symbol}), _host)
+        _host = string_or_nothing(_host, true)
         _port = m_port[]
         (_scheme, _host, _port)
     end
@@ -2379,22 +2379,22 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_uri_split_with_user", libglib), Cint, (Cstring, UInt32, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), _uri_ref, _flags, m_scheme, m_user, m_password, m_auth_params, m_host, m_port, m_path, m_query, m_fragment, err)
         check_err(err)
         _scheme = m_scheme[]
-        _scheme = convert(Maybe(Union{AbstractString, Symbol}), _scheme)
+        _scheme = string_or_nothing(_scheme, true)
         _user = m_user[]
-        _user = convert(Maybe(Union{AbstractString, Symbol}), _user)
+        _user = string_or_nothing(_user, true)
         _password = m_password[]
-        _password = convert(Maybe(Union{AbstractString, Symbol}), _password)
+        _password = string_or_nothing(_password, true)
         _auth_params = m_auth_params[]
-        _auth_params = convert(Maybe(Union{AbstractString, Symbol}), _auth_params)
+        _auth_params = string_or_nothing(_auth_params, true)
         _host = m_host[]
-        _host = convert(Maybe(Union{AbstractString, Symbol}), _host)
+        _host = string_or_nothing(_host, true)
         _port = m_port[]
         _path = m_path[]
         _path = string_or_nothing(_path, true)
         _query = m_query[]
-        _query = convert(Maybe(Union{AbstractString, Symbol}), _query)
+        _query = string_or_nothing(_query, true)
         _fragment = m_fragment[]
-        _fragment = convert(Maybe(Union{AbstractString, Symbol}), _fragment)
+        _fragment = string_or_nothing(_fragment, true)
         (_scheme, _user, _password, _auth_params, _host, _port, _path, _query, _fragment)
     end
     function uri_unescape_bytes(_escaped_string::Union{AbstractString, Symbol}, _length::Integer, _illegal_characters::Maybe(Union{AbstractString, Symbol}))

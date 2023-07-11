@@ -22,7 +22,6 @@ end
 
 # don't call directly, called by gc
 function info_unref(info::GIInfo)
-    #core dumps on reload("GTK.jl"),
     ccall((:g_base_info_unref, libgi), Nothing, (Ptr{GIBaseInfo},), info.handle)
     info.handle = C_NULL
 end
@@ -293,6 +292,7 @@ for (owner,property,typ) in [
     (:callable, :return_type, GIInfo), (:callable, :caller_owns, EnumGI), (:registered_type, :type_init, Symbol),
     (:function, :flags, EnumGI), (:function, :symbol, Symbol), (:property, :type, GIInfo), (:property, :ownership_transfer, EnumGI), (:property, :flags, EnumGI),
     (:arg, :type, GIInfo), (:arg, :direction, EnumGI), (:arg, :ownership_transfer, EnumGI), #(:function, :property, MaybeGIInfo),
+    (:arg, :closure, Cint), (:arg, :destroy, Cint), (:arg, :scope, EnumGI),
     (:type, :tag, EnumGI), (:type, :interface, MaybeGIInfo), (:type, :array_type, EnumGI),
     (:type, :array_length, Cint), (:type, :array_fixed_size, Cint), (:constant, :type, GIInfo),
     (:value, :value, Int64), (:field, :type, GIInfo), (:enum, :storage_type, EnumGI) ]
@@ -555,13 +555,21 @@ baremodule GIFunction
 end
 
 baremodule GIDirection
-    const IN = 0
-    const OUT =1
-    const INOUT =2
+    const IN    = 0
+    const OUT   = 1
+    const INOUT = 2
 end
 
 baremodule GITransfer
-    const NOTHING =0
-    const CONTAINER =1
-    const EVERYTHING =2
+    const NOTHING    = 0
+    const CONTAINER  = 1
+    const EVERYTHING = 2
+end
+
+baremodule GIScopeType
+    const INVALID  = 0
+    const CALL     = 1
+    const ASYNC    = 2
+    const NOTIFIED = 3
+    const FOREVER  = 4
 end

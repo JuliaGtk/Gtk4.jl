@@ -110,10 +110,10 @@ $(Expr(:toplevel, quote
     begin
         struct _GTypePluginClass
             base_iface::_GTypeInterface
-            use_plugin::Ptr{Nothing}
-            unuse_plugin::Ptr{Nothing}
-            complete_type_info::Ptr{Nothing}
-            complete_interface_info::Ptr{Nothing}
+            use_plugin::Ptr{Cvoid}
+            unuse_plugin::Ptr{Cvoid}
+            complete_type_info::Ptr{Cvoid}
+            complete_interface_info::Ptr{Cvoid}
         end
         mutable struct GTypePluginClass
             handle::Ptr{_GTypePluginClass}
@@ -251,6 +251,26 @@ $(Expr(:toplevel, quote
                 new(unsafe_convert(Ptr{GObject}, x), x)
             end
     end
-    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin
+    function GBindingTransformFunc(binding, from_value, to_value, user_data)
+        f = user_data
+        ret = f(binding, from_value, to_value)
+        convert(Cint, ret)
+    end
+    function GClosureMarshal(closure, return_value, n_param_values, param_values, invocation_hint, user_data)
+        f = user_data
+        ret = f(closure, return_value, n_param_values, param_values, invocation_hint)
+        nothing
+    end
+    function GSignalAccumulator(ihint, return_accu, handler_return, user_data)
+        f = user_data
+        ret = f(ihint, return_accu, handler_return)
+        convert(Cint, ret)
+    end
+    function GSignalEmissionHook(ihint, n_param_values, param_values, user_data)
+        f = user_data
+        ret = f(ihint, n_param_values, param_values)
+        convert(Cint, ret)
+    end
+    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin, GBindingTransformFunc, GClosureMarshal, GSignalAccumulator, GSignalEmissionHook
 end))
 end

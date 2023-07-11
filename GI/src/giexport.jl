@@ -169,6 +169,23 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
     struct_skiplist, loaded
 end
 
+function all_callbacks!(exprs, exports, ns)
+    callbacks=get_all(ns,GICallbackInfo)
+    for c in callbacks
+        try
+	    push!(exprs, decl(c))
+	catch e
+	    if isa(e, NotImplementedError)
+	        continue
+	    else
+	        rethrow(e)
+	    end
+        end
+        push!(exports.args, get_full_name(c))
+    end
+    nothing
+end
+
 function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=Symbol[], struct_skiplist=Symbol[], liboverride=nothing)
     structs=get_structs(ns)
     handled_symbols=Symbol[]
