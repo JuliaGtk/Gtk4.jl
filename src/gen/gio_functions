@@ -19,15 +19,15 @@ $(Expr(:toplevel, quote
         (ret2, _action_name, _target_value)
     end
     function action_print_detailed_name(_action_name::Union{AbstractString, Symbol}, _target_value::Maybe(GVariant))
-        _target_value = nothing_to_null(_target_value)
-        ret = ccall(("g_action_print_detailed_name", libgio), Cstring, (Cstring, Ptr{GVariant}), _action_name, _target_value)
+        _target_value_maybe = nothing_to_null(_target_value)
+        ret = ccall(("g_action_print_detailed_name", libgio), Cstring, (Cstring, Ptr{GVariant}), _action_name, _target_value_maybe)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
     function app_info_create_from_commandline(_commandline::Union{AbstractString, Symbol}, _application_name::Maybe(Union{AbstractString, Symbol}), _flags)
-        _application_name = nothing_to_null(_application_name)
+        _application_name_maybe = nothing_to_null(_application_name)
         err = err_buf()
-        ret = ccall(("g_app_info_create_from_commandline", libgio), Ptr{GObject}, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _commandline, _application_name, _flags, err)
+        ret = ccall(("g_app_info_create_from_commandline", libgio), Ptr{GObject}, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _commandline, _application_name_maybe, _flags, err)
         check_err(err)
         ret2 = begin
                 leaftype = GLib.find_leaf_type(ret)
@@ -86,9 +86,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function app_info_launch_default_for_uri(_uri::Union{AbstractString, Symbol}, _context::Maybe(GAppLaunchContext))
-        _context = nothing_to_null(_context)
+        _context_maybe = nothing_to_null(_context)
         err = err_buf()
-        ret = ccall(("g_app_info_launch_default_for_uri", libgio), Cint, (Cstring, Ptr{GObject}, Ptr{Ptr{GError}}), _uri, _context, err)
+        ret = ccall(("g_app_info_launch_default_for_uri", libgio), Cint, (Cstring, Ptr{GObject}, Ptr{Ptr{GError}}), _uri, _context_maybe, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -112,9 +112,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function bus_get_sync(_bus_type, _cancellable::Maybe(GCancellable))
-        _cancellable = nothing_to_null(_cancellable)
+        _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
-        ret = ccall(("g_bus_get_sync", libgio), Ptr{GObject}, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
+        ret = ccall(("g_bus_get_sync", libgio), Ptr{GObject}, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable_maybe, err)
         check_err(err)
         ret2 = convert(GDBusConnection, ret, true)
         ret2
@@ -183,11 +183,11 @@ $(Expr(:toplevel, quote
         ret2
     end
     function content_type_guess(_filename::Maybe(Union{AbstractString, Symbol}), _data)
-        _filename = nothing_to_null(_filename)
-        _data = convert(Vector{UInt8}, _data)
+        _filename_maybe = nothing_to_null(_filename)
+        _data_arr = convert(Vector{UInt8}, _data)
         m_result_uncertain = Ref{Cint}()
         _data_size = length(_data)
-        ret = ccall(("g_content_type_guess", libgio), Cstring, (Cstring, Ptr{UInt8}, UInt64, Ptr{Cint}), _filename, _data, _data_size, m_result_uncertain)
+        ret = ccall(("g_content_type_guess", libgio), Cstring, (Cstring, Ptr{UInt8}, UInt64, Ptr{Cint}), _filename_maybe, _data_arr, _data_size, m_result_uncertain)
         ret2 = string_or_nothing(ret, true)
         _result_uncertain = m_result_uncertain[]
         _result_uncertain = convert(Bool, _result_uncertain)
@@ -219,8 +219,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function content_type_set_mime_dirs(_dirs)
-        _dirs = nothing_to_null(_dirs)
-        ret = ccall(("g_content_type_set_mime_dirs", libgio), Nothing, (Ptr{Cstring},), _dirs)
+        _dirs_maybe = nothing_to_null(_dirs)
+        ret = ccall(("g_content_type_set_mime_dirs", libgio), Nothing, (Ptr{Cstring},), _dirs_maybe)
         nothing
     end
     function content_types_get_registered()
@@ -234,9 +234,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function dbus_address_get_for_bus_sync(_bus_type, _cancellable::Maybe(GCancellable))
-        _cancellable = nothing_to_null(_cancellable)
+        _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
-        ret = ccall(("g_dbus_address_get_for_bus_sync", libgio), Cstring, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable, err)
+        ret = ccall(("g_dbus_address_get_for_bus_sync", libgio), Cstring, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable_maybe, err)
         check_err(err)
         ret2 = string_or_nothing(ret, true)
         ret2
@@ -253,9 +253,9 @@ $(Expr(:toplevel, quote
     end
     function dbus_address_get_stream_sync(_address::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable))
         m_out_guid = Ref{Cstring}()
-        _cancellable = nothing_to_null(_cancellable)
+        _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
-        ret = ccall(("g_dbus_address_get_stream_sync", libgio), Ptr{GObject}, (Cstring, Ptr{Cstring}, Ptr{GObject}, Ptr{Ptr{GError}}), _address, m_out_guid, _cancellable, err)
+        ret = ccall(("g_dbus_address_get_stream_sync", libgio), Ptr{GObject}, (Cstring, Ptr{Cstring}, Ptr{GObject}, Ptr{Ptr{GError}}), _address, m_out_guid, _cancellable_maybe, err)
         check_err(err)
         ret2 = convert(GIOStream, ret, true)
         _out_guid = m_out_guid[]
@@ -282,8 +282,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function dbus_escape_object_path_bytestring(_bytes)
-        _bytes = convert(Vector{UInt8}, _bytes)
-        ret = ccall(("g_dbus_escape_object_path_bytestring", libgio), Cstring, (Ptr{UInt8},), _bytes)
+        _bytes_arr = convert(Vector{UInt8}, _bytes)
+        ret = ccall(("g_dbus_escape_object_path_bytestring", libgio), Cstring, (Ptr{UInt8},), _bytes_arr)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
@@ -335,9 +335,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function dtls_client_connection_new(_base_socket::GDatagramBased, _server_identity::Maybe(GSocketConnectable))
-        _server_identity = nothing_to_null(_server_identity)
+        _server_identity_maybe = nothing_to_null(_server_identity)
         err = err_buf()
-        ret = ccall(("g_dtls_client_connection_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_socket, _server_identity, err)
+        ret = ccall(("g_dtls_client_connection_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_socket, _server_identity_maybe, err)
         check_err(err)
         ret2 = begin
                 leaftype = GLib.find_leaf_type(ret)
@@ -346,9 +346,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function dtls_server_connection_new(_base_socket::GDatagramBased, _certificate::Maybe(GTlsCertificate))
-        _certificate = nothing_to_null(_certificate)
+        _certificate_maybe = nothing_to_null(_certificate)
         err = err_buf()
-        ret = ccall(("g_dtls_server_connection_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_socket, _certificate, err)
+        ret = ccall(("g_dtls_server_connection_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_socket, _certificate_maybe, err)
         check_err(err)
         ret2 = begin
                 leaftype = GLib.find_leaf_type(ret)
@@ -389,10 +389,10 @@ $(Expr(:toplevel, quote
         ret2
     end
     function file_new_tmp(_tmpl::Maybe(Union{AbstractString, Symbol}))
-        _tmpl = nothing_to_null(_tmpl)
+        _tmpl_maybe = nothing_to_null(_tmpl)
         m_iostream = Ref{Ptr{GObject}}()
         err = err_buf()
-        ret = ccall(("g_file_new_tmp", libgio), Ptr{GObject}, (Cstring, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), _tmpl, m_iostream, err)
+        ret = ccall(("g_file_new_tmp", libgio), Ptr{GObject}, (Cstring, Ptr{Ptr{GObject}}, Ptr{Ptr{GError}}), _tmpl_maybe, m_iostream, err)
         check_err(err)
         ret2 = begin
                 leaftype = GLib.find_leaf_type(ret)
@@ -476,8 +476,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function keyfile_settings_backend_new(_filename::Union{AbstractString, Symbol}, _root_path::Union{AbstractString, Symbol}, _root_group::Maybe(Union{AbstractString, Symbol}))
-        _root_group = nothing_to_null(_root_group)
-        ret = ccall(("g_keyfile_settings_backend_new", libgio), Ptr{GObject}, (Cstring, Cstring, Cstring), _filename, _root_path, _root_group)
+        _root_group_maybe = nothing_to_null(_root_group)
+        ret = ccall(("g_keyfile_settings_backend_new", libgio), Ptr{GObject}, (Cstring, Cstring, Cstring), _filename, _root_path, _root_group_maybe)
         ret2 = convert(GSettingsBackend, ret, true)
         ret2
     end
@@ -517,37 +517,37 @@ $(Expr(:toplevel, quote
         ret2
     end
     function pollable_source_new_full(_pollable_stream::GObject, _child_source::Maybe(Union{GSource, Ref{_GSource}}), _cancellable::Maybe(GCancellable))
-        _child_source = nothing_to_null(_child_source)
-        _cancellable = nothing_to_null(_cancellable)
-        ret = ccall(("g_pollable_source_new_full", libgio), Ptr{_GSource}, (Ptr{GObject}, Ptr{_GSource}, Ptr{GObject}), _pollable_stream, _child_source, _cancellable)
+        _child_source_maybe = nothing_to_null(_child_source)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        ret = ccall(("g_pollable_source_new_full", libgio), Ptr{_GSource}, (Ptr{GObject}, Ptr{_GSource}, Ptr{GObject}), _pollable_stream, _child_source_maybe, _cancellable_maybe)
         ret2 = convert(Union{GSource, Ref{_GSource}}, ret, true)
         ret2
     end
     function pollable_stream_read(_stream::GInputStream, _buffer, _blocking::Bool, _cancellable::Maybe(GCancellable))
-        _buffer = convert(Vector{UInt8}, _buffer)
-        _cancellable = nothing_to_null(_cancellable)
+        _buffer_arr = convert(Vector{UInt8}, _buffer)
+        _cancellable_maybe = nothing_to_null(_cancellable)
         _count = length(_buffer)
         err = err_buf()
-        ret = ccall(("g_pollable_stream_read", libgio), Int64, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer, _count, _blocking, _cancellable, err)
+        ret = ccall(("g_pollable_stream_read", libgio), Int64, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer_arr, _count, _blocking, _cancellable_maybe, err)
         check_err(err)
         ret
     end
     function pollable_stream_write(_stream::GOutputStream, _buffer, _blocking::Bool, _cancellable::Maybe(GCancellable))
-        _buffer = convert(Vector{UInt8}, _buffer)
-        _cancellable = nothing_to_null(_cancellable)
+        _buffer_arr = convert(Vector{UInt8}, _buffer)
+        _cancellable_maybe = nothing_to_null(_cancellable)
         _count = length(_buffer)
         err = err_buf()
-        ret = ccall(("g_pollable_stream_write", libgio), Int64, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer, _count, _blocking, _cancellable, err)
+        ret = ccall(("g_pollable_stream_write", libgio), Int64, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer_arr, _count, _blocking, _cancellable_maybe, err)
         check_err(err)
         ret
     end
     function pollable_stream_write_all(_stream::GOutputStream, _buffer, _blocking::Bool, _cancellable::Maybe(GCancellable))
-        _buffer = convert(Vector{UInt8}, _buffer)
+        _buffer_arr = convert(Vector{UInt8}, _buffer)
         m_bytes_written = Ref{UInt64}()
-        _cancellable = nothing_to_null(_cancellable)
+        _cancellable_maybe = nothing_to_null(_cancellable)
         _count = length(_buffer)
         err = err_buf()
-        ret = ccall(("g_pollable_stream_write_all", libgio), Cint, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{UInt64}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer, _count, _blocking, m_bytes_written, _cancellable, err)
+        ret = ccall(("g_pollable_stream_write_all", libgio), Cint, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cint, Ptr{UInt64}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _buffer_arr, _count, _blocking, m_bytes_written, _cancellable_maybe, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _bytes_written = m_bytes_written[]
@@ -652,9 +652,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function tls_client_connection_new(_base_io_stream::GIOStream, _server_identity::Maybe(GSocketConnectable))
-        _server_identity = nothing_to_null(_server_identity)
+        _server_identity_maybe = nothing_to_null(_server_identity)
         err = err_buf()
-        ret = ccall(("g_tls_client_connection_new", libgio), Ptr{GTlsConnection}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_io_stream, _server_identity, err)
+        ret = ccall(("g_tls_client_connection_new", libgio), Ptr{GTlsConnection}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_io_stream, _server_identity_maybe, err)
         check_err(err)
         ret2 = begin
                 leaftype = GLib.find_leaf_type(ret)
@@ -677,9 +677,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function tls_server_connection_new(_base_io_stream::GIOStream, _certificate::Maybe(GTlsCertificate))
-        _certificate = nothing_to_null(_certificate)
+        _certificate_maybe = nothing_to_null(_certificate)
         err = err_buf()
-        ret = ccall(("g_tls_server_connection_new", libgio), Ptr{GTlsConnection}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_io_stream, _certificate, err)
+        ret = ccall(("g_tls_server_connection_new", libgio), Ptr{GTlsConnection}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _base_io_stream, _certificate_maybe, err)
         check_err(err)
         ret2 = begin
                 leaftype = GLib.find_leaf_type(ret)

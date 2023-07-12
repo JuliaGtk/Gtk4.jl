@@ -402,9 +402,6 @@ end
 # convert_from_c(name,arginfo,typeinfo) produces an expression that sets the symbol "name" from GIArgInfo
 # used for certain types to convert returned values from ccall's to Julia types
 
-# convert_to_c(argname, arginfo, typeinfo) produces an expression that converts
-# a Julia input to something a ccall can use as an argument
-
 function extract_type(info::GIArgInfo)
     typdesc = extract_type(get_type(info))
     if may_be_null(info) && typdesc.jtype !== :Any
@@ -499,7 +496,8 @@ function convert_from_c(argname::Symbol, info::ArgInfo, ti::TypeDesc{T}) where {
 end
 
 function convert_to_c(argname::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:GIEnumOrFlags}
-    :( enum_get($(enum_name(ti.gitype)),$argname) )
+    throw(NotImplementedError())
+    return (:( enum_get($(enum_name(ti.gitype)),$argname)))
 end
 
 function extract_type(typeinfo::GITypeInfo,info::Type{GICArray})
@@ -580,16 +578,21 @@ end
 
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{GICArray}}
     if typeof(info)==GIFunctionInfo
-        return nothing
+        return (name, nothing)
     end
     typeinfo=get_type(info)
     elm = get_param_type(typeinfo,0)
     elmtype = extract_type(elm)
     elmctype=elmtype.ctype
     if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
-        return nothing
+        if may_be_null(info)
+            newname = Symbol(name,"_maybe")
+            return (newname, :(nothing_to_null($name)))
+        end
+        return (name, nothing)
     end
-    :(convert(Vector{$elmctype},$name))
+    arrname = Symbol(string(name),"_arr")
+    (arrname, :(convert(Vector{$elmctype},$name)))
 end
 
 function extract_type(typeinfo::GITypeInfo,info::Type{GArray})
@@ -734,8 +737,21 @@ function extract_type(typeinfo::TypeInfo, info::ObjectLike)
     end
 end
 
-#this should only be used for stuff that's hard to implement as cconvert
-convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc) = nothing
+"""
+    convert_to_c(argname, arginfo, typeinfo) => name, expr
+
+Produces an expression that converts a Julia input to something `ccall` can use as an argument, along with
+a new name. If no translation is necessary, (argname, nothing) will be returned.
+
+This function is expected to handle arguments that may be nothing by possibly converting them to C_NULL.
+"""
+function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc)
+    if may_be_null(info)
+        newname = Symbol(name,"_maybe")
+        return (newname, :(nothing_to_null($name)))
+    end
+    (name, nothing)
+end
 
 function convert_from_c(name::Symbol, arginfo::ArgInfo, ti::TypeDesc{T}) where {T}
     # check transfer
@@ -929,33 +945,32 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         aname = Symbol("_$(get_name(arg))")
         typ = extract_type(arg)
         dir = get_direction(arg)
+        anametran = aname
         if dir != GIDirection.OUT
             push!(jargs, Arg( aname, typ.jtype))
-            expr = convert_to_c(aname,arg,typ)
+            anametran, expr = convert_to_c(aname,arg,typ)
             if expr !== nothing
-                push!(prologue, :($aname = $expr))
-            elseif may_be_null(arg)
-                push!(prologue, :($aname = nothing_to_null($aname)))
+                push!(prologue, :($anametran = $expr))
             end
         end
 
         if dir == GIDirection.IN
-            push!(cargs, Arg(aname, typ.ctype))
+            push!(cargs, Arg(anametran, typ.ctype))
         else
             ctype = typ.ctype
             wname = Symbol("m_$(get_name(arg))")
             atyp = get_type(arg)
             push!(prologue, :( $wname = Ref{$ctype}() ))
             if dir == GIDirection.INOUT
-                push!(prologue, :( $wname[] = Base.cconvert($ctype,$aname) ))
+                push!(prologue, :( $wname[] = Base.cconvert($ctype,$anametran) ))
             end
             push!(cargs, Arg(wname, :(Ptr{$ctype})))
-            push!(epilogue,:( $aname = $wname[] ))
-            expr = convert_from_c(aname,arg,typ)
+            push!(epilogue,:( $anametran = $wname[] ))
+            expr = convert_from_c(anametran,arg,typ)
             if expr !== nothing
-                push!(epilogue, :($aname = $expr))
+                push!(epilogue, :($anametran = $expr))
             end
-            push!(retvals, aname)
+            push!(retvals, anametran)
         end
     end
 
