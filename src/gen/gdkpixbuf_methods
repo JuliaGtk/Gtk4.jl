@@ -78,6 +78,22 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkPixbuf, ret, true)
         ret2
     end
+    function Pixbuf_new_from_data(_data, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer, _destroy_fn::Maybe(Function))
+        _data_arr = convert(Vector{UInt8}, _data)
+        begin
+            if _destroy_fn === nothing
+                C_NULL
+            else
+                _destroy_fn_cfunc = @cfunction(GdkPixbufDestroyNotify, Nothing, (Ptr{UInt8}, Ref{Function}))
+                begin
+                    _destroy_fn_closure = GLib.gc_ref(_destroy_fn)
+                end
+            end
+        end
+        ret = ccall(("gdk_pixbuf_new_from_data", libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, UInt32, Cint, Int32, Int32, Int32, Int32, Ptr{Cvoid}, Ptr{Nothing}), _data_arr, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn_cfunc, _destroy_fn_closure)
+        ret2 = convert(GdkPixbuf, ret, true)
+        ret2
+    end
     function Pixbuf_new_from_file(_filename::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("gdk_pixbuf_new_from_file", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _filename, err)
@@ -154,6 +170,21 @@ $(Expr(:toplevel, quote
         _height = m_height[]
         (ret2, _width, _height)
     end
+    function get_file_info_async(_filename::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("gdk_pixbuf_get_file_info_async", libgdkpixbuf), Nothing, (Cstring, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _filename, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function get_formats()
         ret = ccall(("gdk_pixbuf_get_formats", libgdkpixbuf), Ptr{GLib._GSList{_GdkPixbufFormat}}, ())
         ret2 = GLib.GList(ret, false)
@@ -165,6 +196,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function new_from_stream_at_scale_async(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("gdk_pixbuf_new_from_stream_at_scale_async", libgdkpixbuf), Nothing, (Ptr{GObject}, Int32, Int32, Cint, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _width, _height, _preserve_aspect_ratio, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function save_to_stream_finish(_async_result::GAsyncResult)
         err = err_buf()
@@ -341,6 +387,23 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function save_to_streamv_async(instance::GdkPixbuf, _stream::GOutputStream, _type::Union{AbstractString, Symbol}, _option_keys, _option_values, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _option_keys_maybe = nothing_to_null(_option_keys)
+        _option_values_maybe = nothing_to_null(_option_values)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("gdk_pixbuf_save_to_streamv_async", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _stream, _type, _option_keys_maybe, _option_values_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function savev(instance::GdkPixbuf, _filename::Union{AbstractString, Symbol}, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
         _option_keys_maybe = nothing_to_null(_option_keys)

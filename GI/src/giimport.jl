@@ -580,6 +580,7 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
     if typeof(info)==GIFunctionInfo
         return (name, nothing)
     end
+    is_caller_allocates(info) && throw(NotImplementedException())
     typeinfo=get_type(info)
     elm = get_param_type(typeinfo,0)
     elmtype = extract_type(elm)
@@ -639,7 +640,7 @@ end
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{Function}}
     st = get_scope(info)
     closure = get_closure(info)
-    (st == GIScopeType.CALL && closure > -1) || throw(NotImplementedError())
+    ((st == GIScopeType.CALL || st == GIScopeType.ASYNC) && closure > -1) || throw(NotImplementedError())
     typeinfo=get_type(info)
     callbackinfo=get_interface(typeinfo)
     cclosure = get_closure(callbackinfo)
@@ -670,7 +671,10 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
     elseif st == GIScopeType.NOTIFIED # for "notified" follow gc_ref_closure stuff
         closure_expr = nothing
     elseif st == GIScopeType.ASYNC # for "async" unref after callback finishes?
-        closure_expr = nothing
+        # TODO: set up to unref when callback is finished -- currently this leaks
+        closure_expr = quote
+            $(func_closure) = GLib.gc_ref($name)
+        end
     else
         closure_expr = nothing
     end

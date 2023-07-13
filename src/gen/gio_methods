@@ -583,6 +583,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret
     end
+    function fill_async(instance::GBufferedInputStream, _count::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_buffered_input_stream_fill_async", libgio), Nothing, (Ptr{GObject}, Int64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _count, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function fill_finish(instance::GBufferedInputStream, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_buffered_input_stream_fill_finish", libgio), Int64, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -1265,6 +1280,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret
     end
+    function read_line_async(instance::GDataInputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_data_input_stream_read_line_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function read_line_finish_utf8(instance::GDataInputStream, _result::GAsyncResult)
         m_length = Ref{UInt64}()
         err = err_buf()
@@ -1314,6 +1344,21 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         _length = m_length[]
         (ret2, _length)
+    end
+    function read_upto_async(instance::GDataInputStream, _stop_chars::Union{AbstractString, Symbol}, _stop_chars_len::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_data_input_stream_read_upto_async", libgio), Nothing, (Ptr{GObject}, Cstring, Int64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _stop_chars, _stop_chars_len, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function read_upto_finish(instance::GDataInputStream, _result::GAsyncResult)
         m_length = Ref{UInt64}()
@@ -1517,6 +1562,64 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_desktop_app_info_launch_action", libgio), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}), instance, _action_name, _launch_context_maybe)
         nothing
     end
+    function launch_uris_as_manager(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{Cstring}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _pid_callback::Maybe(Function))
+        _launch_context_maybe = nothing_to_null(_launch_context)
+        begin
+            if _user_setup === nothing
+                C_NULL
+            else
+                _user_setup_cfunc = @cfunction(GSpawnChildSetupFunc, Nothing, (Ref{Function},))
+                begin
+                    _user_setup_closure = GLib.gc_ref(_user_setup)
+                end
+            end
+        end
+        begin
+            if _pid_callback === nothing
+                C_NULL
+            else
+                _pid_callback_cfunc = @cfunction(GDesktopAppLaunchCallback, Nothing, (Ptr{GObject}, Int32, Ref{Function}))
+                begin
+                    ref = Ref{Any}(_pid_callback)
+                    _pid_callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+                end
+            end
+        end
+        err = err_buf()
+        ret = ccall(("g_desktop_app_info_launch_uris_as_manager", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{Cstring}}, Ptr{GObject}, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _uris, _launch_context_maybe, _spawn_flags, _user_setup_cfunc, _user_setup_closure, _pid_callback_cfunc, _pid_callback_closure, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function launch_uris_as_manager_with_fds(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{Cstring}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _pid_callback::Maybe(Function), _stdin_fd::Integer, _stdout_fd::Integer, _stderr_fd::Integer)
+        _launch_context_maybe = nothing_to_null(_launch_context)
+        begin
+            if _user_setup === nothing
+                C_NULL
+            else
+                _user_setup_cfunc = @cfunction(GSpawnChildSetupFunc, Nothing, (Ref{Function},))
+                begin
+                    _user_setup_closure = GLib.gc_ref(_user_setup)
+                end
+            end
+        end
+        begin
+            if _pid_callback === nothing
+                C_NULL
+            else
+                _pid_callback_cfunc = @cfunction(GDesktopAppLaunchCallback, Nothing, (Ptr{GObject}, Int32, Ref{Function}))
+                begin
+                    ref = Ref{Any}(_pid_callback)
+                    _pid_callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+                end
+            end
+        end
+        err = err_buf()
+        ret = ccall(("g_desktop_app_info_launch_uris_as_manager_with_fds", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{Cstring}}, Ptr{GObject}, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}, Int32, Int32, Int32, Ptr{Ptr{GError}}), instance, _uris, _launch_context_maybe, _spawn_flags, _user_setup_cfunc, _user_setup_closure, _pid_callback_cfunc, _pid_callback_closure, _stdin_fd, _stdout_fd, _stderr_fd, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function list_actions(instance::GDesktopAppInfo)
         ret = ccall(("g_desktop_app_info_list_actions", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
         ret2 = begin
@@ -1583,6 +1686,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function close_async(instance::GFileEnumerator, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_enumerator_close_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function close_finish(instance::GFileEnumerator, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_enumerator_close_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -1641,6 +1759,21 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GFileInfo, ret, true)
         ret2
     end
+    function next_files_async(instance::GFileEnumerator, _num_files::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_enumerator_next_files_async", libgio), Nothing, (Ptr{GObject}, Int32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _num_files, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function next_files_finish(instance::GFileEnumerator, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_enumerator_next_files_finish", libgio), Ptr{GLib._GList{Ptr{GObject}}}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -1664,6 +1797,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GFileInfo, ret, true)
         ret2
+    end
+    function query_info_async(instance::GFileIOStream, _attributes::Union{AbstractString, Symbol}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_io_stream_query_info_async", libgio), Nothing, (Ptr{GObject}, Cstring, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _attributes, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function query_info_finish(instance::GFileIOStream, _result::GAsyncResult)
         err = err_buf()
@@ -2011,6 +2159,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInfo, ret, true)
         ret2
     end
+    function query_info_async(instance::GFileInputStream, _attributes::Union{AbstractString, Symbol}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_input_stream_query_info_async", libgio), Nothing, (Ptr{GObject}, Cstring, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _attributes, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function query_info_finish(instance::GFileInputStream, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_input_stream_query_info_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -2048,6 +2211,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GFileInfo, ret, true)
         ret2
+    end
+    function query_info_async(instance::GFileOutputStream, _attributes::Union{AbstractString, Symbol}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_output_stream_query_info_async", libgio), Nothing, (Ptr{GObject}, Cstring, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _attributes, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function query_info_finish(instance::GFileOutputStream, _result::GAsyncResult)
         err = err_buf()
@@ -2127,6 +2305,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function close_async(instance::GIOStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_io_stream_close_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function close_finish(instance::GIOStream, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_io_stream_close_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -2160,6 +2353,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function splice_async(instance::GIOStream, _stream2::GIOStream, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_io_stream_splice_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _stream2, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function InetAddress_new_any(_family)
         ret = ccall(("g_inet_address_new_any", libgio), Ptr{GObject}, (UInt32,), _family)
@@ -2333,6 +2541,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function close_async(instance::GInputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_input_stream_close_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function close_finish(instance::GInputStream, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_input_stream_close_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -2375,6 +2598,25 @@ $(Expr(:toplevel, quote
         _bytes_read = m_bytes_read[]
         (ret2, _buffer, _bytes_read)
     end
+    function read_all_async(instance::GInputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        m_buffer = Ref{Ptr{UInt8}}()
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        _count = length(_buffer)
+        ret = ccall(("g_input_stream_read_all_async", libgio), Nothing, (Ptr{GObject}, Ptr{Ptr{UInt8}}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, m_buffer, _count, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_count[]))
+        _buffer
+    end
     function read_all_finish(instance::GInputStream, _result::GAsyncResult)
         m_bytes_read = Ref{UInt64}()
         err = err_buf()
@@ -2384,6 +2626,25 @@ $(Expr(:toplevel, quote
         _bytes_read = m_bytes_read[]
         (ret2, _bytes_read)
     end
+    function read_async(instance::GInputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        m_buffer = Ref{Ptr{UInt8}}()
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        _count = length(_buffer)
+        ret = ccall(("g_input_stream_read_async", libgio), Nothing, (Ptr{GObject}, Ptr{Ptr{UInt8}}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, m_buffer, _count, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        _buffer = m_buffer[]
+        _buffer = collect(unsafe_wrap(Vector{UInt8}, _buffer, m_count[]))
+        _buffer
+    end
     function read_bytes(instance::GInputStream, _count::Integer, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
@@ -2391,6 +2652,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GBytes, ret, true)
         ret2
+    end
+    function read_bytes_async(instance::GInputStream, _count::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_input_stream_read_bytes_async", libgio), Nothing, (Ptr{GObject}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _count, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function read_bytes_finish(instance::GInputStream, _result::GAsyncResult)
         err = err_buf()
@@ -2418,6 +2694,21 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_input_stream_skip", libgio), Int64, (Ptr{GObject}, UInt64, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _count, _cancellable_maybe, err)
         check_err(err)
         ret
+    end
+    function skip_async(instance::GInputStream, _count::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_input_stream_skip_async", libgio), Nothing, (Ptr{GObject}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _count, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function skip_finish(instance::GInputStream, _result::GAsyncResult)
         err = err_buf()
@@ -2995,6 +3286,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function close_async(instance::GOutputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_output_stream_close_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function close_finish(instance::GOutputStream, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_output_stream_close_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -3009,6 +3315,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function flush_async(instance::GOutputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_output_stream_flush_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function flush_finish(instance::GOutputStream, _result::GAsyncResult)
         err = err_buf()
@@ -3046,6 +3367,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret
     end
+    function splice_async(instance::GOutputStream, _source::GInputStream, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_output_stream_splice_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _source, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function splice_finish(instance::GOutputStream, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_output_stream_splice_finish", libgio), Int64, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -3073,6 +3409,23 @@ $(Expr(:toplevel, quote
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_written)
     end
+    function write_all_async(instance::GOutputStream, _buffer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _buffer_arr = convert(Vector{UInt8}, _buffer)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        _count = length(_buffer)
+        ret = ccall(("g_output_stream_write_all_async", libgio), Nothing, (Ptr{GObject}, Ptr{UInt8}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _buffer_arr, _count, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function write_all_finish(instance::GOutputStream, _result::GAsyncResult)
         m_bytes_written = Ref{UInt64}()
         err = err_buf()
@@ -3082,12 +3435,44 @@ $(Expr(:toplevel, quote
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_written)
     end
+    function write_async(instance::GOutputStream, _buffer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _buffer_arr = convert(Vector{UInt8}, _buffer)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        _count = length(_buffer)
+        ret = ccall(("g_output_stream_write_async", libgio), Nothing, (Ptr{GObject}, Ptr{UInt8}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _buffer_arr, _count, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function write_bytes(instance::GOutputStream, _bytes::GBytes, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
         ret = ccall(("g_output_stream_write_bytes", libgio), Int64, (Ptr{GObject}, Ptr{GBytes}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _bytes, _cancellable_maybe, err)
         check_err(err)
         ret
+    end
+    function write_bytes_async(instance::GOutputStream, _bytes::GBytes, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_output_stream_write_bytes_async", libgio), Nothing, (Ptr{GObject}, Ptr{GBytes}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _bytes, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function write_bytes_finish(instance::GOutputStream, _result::GAsyncResult)
         err = err_buf()
@@ -3101,6 +3486,23 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret
     end
+    function writev_all_async(instance::GOutputStream, _vectors, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _vectors_arr = convert(Vector{_GOutputVector}, _vectors)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        _n_vectors = length(_vectors)
+        ret = ccall(("g_output_stream_writev_all_async", libgio), Nothing, (Ptr{GObject}, Ptr{_GOutputVector}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _vectors_arr, _n_vectors, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function writev_all_finish(instance::GOutputStream, _result::GAsyncResult)
         m_bytes_written = Ref{UInt64}()
         err = err_buf()
@@ -3109,6 +3511,23 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_written)
+    end
+    function writev_async(instance::GOutputStream, _vectors, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _vectors_arr = convert(Vector{_GOutputVector}, _vectors)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        _n_vectors = length(_vectors)
+        ret = ccall(("g_output_stream_writev_async", libgio), Nothing, (Ptr{GObject}, Ptr{_GOutputVector}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _vectors_arr, _n_vectors, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function writev_finish(instance::GOutputStream, _result::GAsyncResult)
         m_bytes_written = Ref{UInt64}()
@@ -3126,6 +3545,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function acquire_async(instance::GPermission, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_permission_acquire_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function acquire_finish(instance::GPermission, _result::GAsyncResult)
         err = err_buf()
@@ -3160,6 +3594,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function release_async(instance::GPermission, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_permission_release_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function release_finish(instance::GPermission, _result::GAsyncResult)
         err = err_buf()
@@ -3222,6 +3671,21 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
+    function lookup_by_address_async(instance::GResolver, _address::GInetAddress, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_resolver_lookup_by_address_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _address, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function lookup_by_address_finish(instance::GResolver, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_resolver_lookup_by_address_finish", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -3236,6 +3700,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = GLib.GList(ret, true)
         ret2
+    end
+    function lookup_by_name_async(instance::GResolver, _hostname::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_resolver_lookup_by_name_async", libgio), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _hostname, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function lookup_by_name_finish(instance::GResolver, _result::GAsyncResult)
         err = err_buf()
@@ -3252,6 +3731,21 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, true)
         ret2
     end
+    function lookup_by_name_with_flags_async(instance::GResolver, _hostname::Union{AbstractString, Symbol}, _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_resolver_lookup_by_name_with_flags_async", libgio), Nothing, (Ptr{GObject}, Cstring, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _hostname, _flags, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function lookup_by_name_with_flags_finish(instance::GResolver, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_resolver_lookup_by_name_with_flags_finish", libgio), Ptr{GLib._GList{Ptr{GObject}}}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -3267,6 +3761,21 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, true)
         ret2
     end
+    function lookup_records_async(instance::GResolver, _rrname::Union{AbstractString, Symbol}, _record_type, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_resolver_lookup_records_async", libgio), Nothing, (Ptr{GObject}, Cstring, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _rrname, _record_type, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function lookup_records_finish(instance::GResolver, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_resolver_lookup_records_finish", libgio), Ptr{GLib._GList{GVariant}}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -3281,6 +3790,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = GLib.GList(ret, true)
         ret2
+    end
+    function lookup_service_async(instance::GResolver, _service::Union{AbstractString, Symbol}, _protocol::Union{AbstractString, Symbol}, _domain::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_resolver_lookup_service_async", libgio), Nothing, (Ptr{GObject}, Cstring, Cstring, Cstring, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _service, _protocol, _domain, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function lookup_service_finish(instance::GResolver, _result::GAsyncResult)
         err = err_buf()
@@ -3968,6 +4492,21 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GSocketAddress, ret, true)
         ret2
     end
+    function next_async(instance::GSocketAddressEnumerator, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_socket_address_enumerator_next_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function next_finish(instance::GSocketAddressEnumerator, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_socket_address_enumerator_next_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -3992,6 +4531,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GSocketConnection, ret, true)
         ret2
     end
+    function connect_async(instance::GSocketClient, _connectable::GSocketConnectable, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_socket_client_connect_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _connectable, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function connect_finish(instance::GSocketClient, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_socket_client_connect_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -4006,6 +4560,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GSocketConnection, ret, true)
         ret2
+    end
+    function connect_to_host_async(instance::GSocketClient, _host_and_port::Union{AbstractString, Symbol}, _default_port::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_socket_client_connect_to_host_async", libgio), Nothing, (Ptr{GObject}, Cstring, UInt16, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _host_and_port, _default_port, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function connect_to_host_finish(instance::GSocketClient, _result::GAsyncResult)
         err = err_buf()
@@ -4022,6 +4591,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GSocketConnection, ret, true)
         ret2
     end
+    function connect_to_service_async(instance::GSocketClient, _domain::Union{AbstractString, Symbol}, _service::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_socket_client_connect_to_service_async", libgio), Nothing, (Ptr{GObject}, Cstring, Cstring, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _domain, _service, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function connect_to_service_finish(instance::GSocketClient, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_socket_client_connect_to_service_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -4036,6 +4620,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GSocketConnection, ret, true)
         ret2
+    end
+    function connect_to_uri_async(instance::GSocketClient, _uri::Union{AbstractString, Symbol}, _default_port::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_socket_client_connect_to_uri_async", libgio), Nothing, (Ptr{GObject}, Cstring, UInt16, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _uri, _default_port, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function connect_to_uri_finish(instance::GSocketClient, _result::GAsyncResult)
         err = err_buf()
@@ -4136,6 +4735,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function connect_async(instance::GSocketConnection, _address::GSocketAddress, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_socket_connection_connect_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _address, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function connect_finish(instance::GSocketConnection, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_socket_connection_connect_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -4206,6 +4820,21 @@ $(Expr(:toplevel, quote
         _source_object = convert_if_not_null(Maybe(GObject), _source_object, false)
         (ret2, _source_object)
     end
+    function accept_async(instance::GSocketListener, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_socket_listener_accept_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function accept_finish(instance::GSocketListener, _result::GAsyncResult)
         m_source_object = Ref{Ptr{GObject}}()
         err = err_buf()
@@ -4226,6 +4855,21 @@ $(Expr(:toplevel, quote
         _source_object = m_source_object[]
         _source_object = convert_if_not_null(Maybe(GObject), _source_object, false)
         (ret2, _source_object)
+    end
+    function accept_socket_async(instance::GSocketListener, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_socket_listener_accept_socket_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function accept_socket_finish(instance::GSocketListener, _result::GAsyncResult)
         m_source_object = Ref{Ptr{GObject}}()
@@ -4319,6 +4963,22 @@ $(Expr(:toplevel, quote
         _stderr_buf = convert_if_not_null(Maybe(GBytes), _stderr_buf, true)
         (ret2, _stdout_buf, _stderr_buf)
     end
+    function communicate_async(instance::GSubprocess, _stdin_buf::Maybe(GBytes), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _stdin_buf_maybe = nothing_to_null(_stdin_buf)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_subprocess_communicate_async", libgio), Nothing, (Ptr{GObject}, Ptr{GBytes}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _stdin_buf_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function communicate_finish(instance::GSubprocess, _result::GAsyncResult)
         m_stdout_buf = Ref{Ptr{GBytes}}()
         m_stderr_buf = Ref{Ptr{GBytes}}()
@@ -4346,6 +5006,22 @@ $(Expr(:toplevel, quote
         _stderr_buf = m_stderr_buf[]
         _stderr_buf = string_or_nothing(_stderr_buf, true)
         (ret2, _stdout_buf, _stderr_buf)
+    end
+    function communicate_utf8_async(instance::GSubprocess, _stdin_buf::Maybe(Union{AbstractString, Symbol}), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _stdin_buf_maybe = nothing_to_null(_stdin_buf)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_subprocess_communicate_utf8_async", libgio), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _stdin_buf_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function communicate_utf8_finish(instance::GSubprocess, _result::GAsyncResult)
         m_stdout_buf = Ref{Cstring}()
@@ -4423,6 +5099,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function wait_async(instance::GSubprocess, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_subprocess_wait_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function wait_check(instance::GSubprocess, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
@@ -4430,6 +5121,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function wait_check_async(instance::GSubprocess, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_subprocess_wait_check_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function wait_check_finish(instance::GSubprocess, _result::GAsyncResult)
         err = err_buf()
@@ -4764,6 +5470,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function handshake_async(instance::GTlsConnection, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_tls_connection_handshake_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function handshake_finish(instance::GTlsConnection, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_tls_connection_handshake_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -4808,6 +5529,22 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GTlsCertificate, ret, true)
         ret2
     end
+    function lookup_certificate_for_handle_async(instance::GTlsDatabase, _handle::Union{AbstractString, Symbol}, _interaction::Maybe(GTlsInteraction), _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _interaction_maybe = nothing_to_null(_interaction)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_tls_database_lookup_certificate_for_handle_async", libgio), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _handle, _interaction_maybe, _flags, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function lookup_certificate_for_handle_finish(instance::GTlsDatabase, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_tls_database_lookup_certificate_for_handle_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -4824,12 +5561,44 @@ $(Expr(:toplevel, quote
         ret2 = convert(GTlsCertificate, ret, true)
         ret2
     end
+    function lookup_certificate_issuer_async(instance::GTlsDatabase, _certificate::GTlsCertificate, _interaction::Maybe(GTlsInteraction), _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _interaction_maybe = nothing_to_null(_interaction)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_tls_database_lookup_certificate_issuer_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _certificate, _interaction_maybe, _flags, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function lookup_certificate_issuer_finish(instance::GTlsDatabase, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_tls_database_lookup_certificate_issuer_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
         ret2 = convert(GTlsCertificate, ret, true)
         ret2
+    end
+    function lookup_certificates_issued_by_async(instance::GTlsDatabase, _issuer_raw_dn, _interaction::Maybe(GTlsInteraction), _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _interaction_maybe = nothing_to_null(_interaction)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_tls_database_lookup_certificates_issued_by_async", libgio), Nothing, (Ptr{GObject}, Ptr{GByteArray}, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _issuer_raw_dn, _interaction_maybe, _flags, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function lookup_certificates_issued_by_finish(instance::GTlsDatabase, _result::GAsyncResult)
         err = err_buf()
@@ -4848,6 +5617,23 @@ $(Expr(:toplevel, quote
         ret2 = TlsCertificateFlags(ret)
         ret2
     end
+    function verify_chain_async(instance::GTlsDatabase, _chain::GTlsCertificate, _purpose::Union{AbstractString, Symbol}, _identity::Maybe(GSocketConnectable), _interaction::Maybe(GTlsInteraction), _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _identity_maybe = nothing_to_null(_identity)
+        _interaction_maybe = nothing_to_null(_interaction)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_tls_database_verify_chain_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _chain, _purpose, _identity_maybe, _interaction_maybe, _flags, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function verify_chain_finish(instance::GTlsDatabase, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_tls_database_verify_chain_finish", libgio), UInt32, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -4862,6 +5648,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = TlsInteractionResult(ret)
         ret2
+    end
+    function ask_password_async(instance::GTlsInteraction, _password::GTlsPassword, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_tls_interaction_ask_password_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _password, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function ask_password_finish(instance::GTlsInteraction, _result::GAsyncResult)
         err = err_buf()
@@ -4893,6 +5694,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = TlsInteractionResult(ret)
         ret2
+    end
+    function request_certificate_async(instance::GTlsInteraction, _connection::GTlsConnection, _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_tls_interaction_request_certificate_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _connection, _flags, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function request_certificate_finish(instance::GTlsInteraction, _result::GAsyncResult)
         err = err_buf()
@@ -4954,6 +5770,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GCredentials, ret, true)
         ret2
     end
+    function receive_credentials_async(instance::GUnixConnection, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_unix_connection_receive_credentials_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function receive_credentials_finish(instance::GUnixConnection, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_unix_connection_receive_credentials_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -4975,6 +5806,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function send_credentials_async(instance::GUnixConnection, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_unix_connection_send_credentials_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function send_credentials_finish(instance::GUnixConnection, _result::GAsyncResult)
         err = err_buf()
@@ -5275,6 +6121,21 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_action_map_remove_action", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _action_name)
         nothing
     end
+    function init_async(instance::GAsyncInitable, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_async_initable_init_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function init_finish(instance::GAsyncInitable, _res::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_async_initable_init_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _res, err)
@@ -5420,6 +6281,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function close_async(instance::GDtlsConnection, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_dtls_connection_close_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function close_finish(instance::GDtlsConnection, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_dtls_connection_close_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -5495,6 +6371,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function handshake_async(instance::GDtlsConnection, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_dtls_connection_handshake_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function handshake_finish(instance::GDtlsConnection, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_dtls_connection_handshake_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -5532,6 +6423,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function shutdown_async(instance::GDtlsConnection, _shutdown_read::Bool, _shutdown_write::Bool, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_dtls_connection_shutdown_async", libgio), Nothing, (Ptr{GObject}, Cint, Cint, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _shutdown_read, _shutdown_write, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function shutdown_finish(instance::GDtlsConnection, _result::GAsyncResult)
         err = err_buf()
@@ -5586,6 +6492,38 @@ $(Expr(:toplevel, quote
         _iostream = convert(GFileIOStream, _iostream, true)
         (ret2, _iostream)
     end
+    function new_tmp_async(_tmpl::Maybe(Union{AbstractString, Symbol}), _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _tmpl_maybe = nothing_to_null(_tmpl)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_new_tmp_async", libgio), Nothing, (Cstring, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _tmpl_maybe, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function new_tmp_dir_async(_tmpl::Maybe(Union{AbstractString, Symbol}), _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _tmpl_maybe = nothing_to_null(_tmpl)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_new_tmp_dir_async", libgio), Nothing, (Cstring, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _tmpl_maybe, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function new_tmp_dir_finish(_result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_new_tmp_dir_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
@@ -5624,6 +6562,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
+    end
+    function append_to_async(instance::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_append_to_async", libgio), Nothing, (Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function append_to_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
@@ -5682,6 +6635,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
     end
+    function create_async(instance::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_create_async", libgio), Nothing, (Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function create_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_create_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _res, err)
@@ -5696,6 +6664,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GFileIOStream, ret, true)
         ret2
+    end
+    function create_readwrite_async(instance::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_create_readwrite_async", libgio), Nothing, (Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function create_readwrite_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
@@ -5712,6 +6695,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function delete_async(instance::GFile, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_delete_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function delete_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_delete_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -5727,6 +6725,22 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
+    function eject_mountable_with_operation(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _mount_operation_maybe = nothing_to_null(_mount_operation)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_eject_mountable_with_operation", libgio), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _mount_operation_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function eject_mountable_with_operation_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_eject_mountable_with_operation_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -5741,6 +6755,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GFileEnumerator, ret, true)
         ret2
+    end
+    function enumerate_children_async(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_enumerate_children_async", libgio), Nothing, (Ptr{GObject}, Cstring, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _attributes, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function enumerate_children_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
@@ -5764,6 +6793,21 @@ $(Expr(:toplevel, quote
                 convert(leaftype, ret, true)
             end
         ret2
+    end
+    function find_enclosing_mount_async(instance::GFile, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_find_enclosing_mount_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function find_enclosing_mount_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
@@ -5864,6 +6908,21 @@ $(Expr(:toplevel, quote
         _etag_out = string_or_nothing(_etag_out, true)
         (ret2, _etag_out)
     end
+    function load_bytes_async(instance::GFile, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_load_bytes_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function load_bytes_finish(instance::GFile, _result::GAsyncResult)
         m_etag_out = Ref{Cstring}()
         err = err_buf()
@@ -5893,6 +6952,21 @@ $(Expr(:toplevel, quote
         _etag_out = m_etag_out[]
         _etag_out = string_or_nothing(_etag_out, true)
         (ret2, _contents, _etag_out)
+    end
+    function load_contents_async(instance::GFile, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_load_contents_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function load_contents_finish(instance::GFile, _res::GAsyncResult)
         m_contents = Ref{Ptr{UInt8}}()
@@ -5940,6 +7014,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function make_directory_async(instance::GFile, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_make_directory_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function make_directory_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_make_directory_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -5962,6 +7051,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function make_symbolic_link_async(instance::GFile, _symlink_value::Union{AbstractString, Symbol}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_make_symbolic_link_async", libgio), Nothing, (Ptr{GObject}, Cstring, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _symlink_value, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function make_symbolic_link_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
@@ -6007,12 +7111,44 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileMonitor, ret, true)
         ret2
     end
+    function mount_enclosing_volume(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _mount_operation_maybe = nothing_to_null(_mount_operation)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_mount_enclosing_volume", libgio), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _mount_operation_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function mount_enclosing_volume_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_mount_enclosing_volume_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function mount_mountable(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _mount_operation_maybe = nothing_to_null(_mount_operation)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_mount_mountable", libgio), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _mount_operation_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function mount_mountable_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
@@ -6043,6 +7179,32 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function move_async(instance::GFile, _destination::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _progress_callback === nothing
+                C_NULL
+            else
+                _progress_callback_cfunc = @cfunction(GFileProgressCallback, Nothing, (Int64, Int64, Ref{Function}))
+                begin
+                    ref = Ref{Any}(_progress_callback)
+                    _progress_callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+                end
+            end
+        end
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_move_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}), instance, _destination, _flags, _io_priority, _cancellable_maybe, _progress_callback_cfunc, _progress_callback_closure, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function move_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_move_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
@@ -6058,6 +7220,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileIOStream, ret, true)
         ret2
     end
+    function open_readwrite_async(instance::GFile, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_open_readwrite_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function open_readwrite_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_open_readwrite_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _res, err)
@@ -6069,6 +7246,21 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_file_peek_path", libgio), Cstring, (Ptr{GObject},), instance)
         ret2 = string_or_nothing(ret, false)
         ret2
+    end
+    function poll_mountable(instance::GFile, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_poll_mountable", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function poll_mountable_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
@@ -6087,6 +7279,21 @@ $(Expr(:toplevel, quote
                 convert(leaftype, ret, true)
             end
         ret2
+    end
+    function query_default_handler_async(instance::GFile, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_query_default_handler_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function query_default_handler_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
@@ -6118,6 +7325,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInfo, ret, true)
         ret2
     end
+    function query_filesystem_info_async(instance::GFile, _attributes::Union{AbstractString, Symbol}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_query_filesystem_info_async", libgio), Nothing, (Ptr{GObject}, Cstring, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _attributes, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function query_filesystem_info_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_query_filesystem_info_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _res, err)
@@ -6132,6 +7354,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GFileInfo, ret, true)
         ret2
+    end
+    function query_info_async(instance::GFile, _attributes::Union{AbstractString, Symbol}, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_query_info_async", libgio), Nothing, (Ptr{GObject}, Cstring, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _attributes, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function query_info_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
@@ -6164,6 +7401,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInputStream, ret, true)
         ret2
     end
+    function read_async(instance::GFile, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_read_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function read_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_read_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _res, err)
@@ -6180,6 +7432,22 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileOutputStream, ret, true)
         ret2
     end
+    function replace_async(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _etag_maybe = nothing_to_null(_etag)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_replace_async", libgio), Nothing, (Ptr{GObject}, Cstring, Cint, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _etag_maybe, _make_backup, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function replace_contents(instance::GFile, _contents, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _cancellable::Maybe(GCancellable))
         _contents_arr = convert(Vector{UInt8}, _contents)
         _etag_maybe = nothing_to_null(_etag)
@@ -6193,6 +7461,40 @@ $(Expr(:toplevel, quote
         _new_etag = m_new_etag[]
         _new_etag = string_or_nothing(_new_etag, true)
         (ret2, _new_etag)
+    end
+    function replace_contents_async(instance::GFile, _contents, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _contents_arr = convert(Vector{UInt8}, _contents)
+        _etag_maybe = nothing_to_null(_etag)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        _length = length(_contents)
+        ret = ccall(("g_file_replace_contents_async", libgio), Nothing, (Ptr{GObject}, Ptr{UInt8}, UInt64, Cstring, Cint, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _contents_arr, _length, _etag_maybe, _make_backup, _flags, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function replace_contents_bytes_async(instance::GFile, _contents::GBytes, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _etag_maybe = nothing_to_null(_etag)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_replace_contents_bytes_async", libgio), Nothing, (Ptr{GObject}, Ptr{GBytes}, Cstring, Cint, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _contents, _etag_maybe, _make_backup, _flags, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function replace_contents_finish(instance::GFile, _res::GAsyncResult)
         m_new_etag = Ref{Cstring}()
@@ -6219,6 +7521,22 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GFileIOStream, ret, true)
         ret2
+    end
+    function replace_readwrite_async(instance::GFile, _etag::Maybe(Union{AbstractString, Symbol}), _make_backup::Bool, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _etag_maybe = nothing_to_null(_etag)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_replace_readwrite_async", libgio), Nothing, (Ptr{GObject}, Cstring, Cint, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _etag_maybe, _make_backup, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function replace_readwrite_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
@@ -6292,6 +7610,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function set_attributes_async(instance::GFile, _info::GFileInfo, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_set_attributes_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _info, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function set_attributes_finish(instance::GFile, _result::GAsyncResult)
         m_info = Ref{Ptr{GObject}}()
         err = err_buf()
@@ -6321,6 +7654,21 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
+    function set_display_name_async(instance::GFile, _display_name::Union{AbstractString, Symbol}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_set_display_name_async", libgio), Nothing, (Ptr{GObject}, Cstring, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _display_name, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function set_display_name_finish(instance::GFile, _res::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_set_display_name_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _res, err)
@@ -6331,12 +7679,44 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
+    function start_mountable(instance::GFile, _flags, _start_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _start_operation_maybe = nothing_to_null(_start_operation)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_start_mountable", libgio), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _start_operation_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function start_mountable_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_start_mountable_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function stop_mountable(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _mount_operation_maybe = nothing_to_null(_mount_operation)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_stop_mountable", libgio), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _mount_operation_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function stop_mountable_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
@@ -6358,12 +7738,43 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function trash_async(instance::GFile, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_trash_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
     function trash_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_file_trash_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function unmount_mountable_with_operation(instance::GFile, _flags, _mount_operation::Maybe(GMountOperation), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _mount_operation_maybe = nothing_to_null(_mount_operation)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_file_unmount_mountable_with_operation", libgio), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _flags, _mount_operation_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function unmount_mountable_with_operation_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
@@ -6411,6 +7822,21 @@ $(Expr(:toplevel, quote
         _type = m_type[]
         _type = string_or_nothing(_type, true)
         (ret2, _type)
+    end
+    function load_async(instance::GLoadableIcon, _size::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_loadable_icon_load_async", libgio), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _size, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function load_finish(instance::GLoadableIcon, _res::GAsyncResult)
         m_type = Ref{Cstring}()
@@ -6466,6 +7892,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GIOStream, ret, true)
         ret2
+    end
+    function connect_async(instance::GProxy, _connection::GIOStream, _proxy_address::GProxyAddress, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _callback === nothing
+                C_NULL
+            else
+                _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+                begin
+                    _callback_closure = GLib.gc_ref(_callback)
+                end
+            end
+        end
+        ret = ccall(("g_proxy_connect_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _connection, _proxy_address, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
     function connect_finish(instance::GProxy, _result::GAsyncResult)
         err = err_buf()
