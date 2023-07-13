@@ -637,26 +637,60 @@ function extract_type(typeinfo::GITypeInfo,basetype::Type{Function})
 end
 
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{Function}}
-    throw(NotImplementedError())
+    st = get_scope(info)
+    closure = get_closure(info)
+    (st == GIScopeType.CALL && closure > -1) || throw(NotImplementedError())
     typeinfo=get_type(info)
     callbackinfo=get_interface(typeinfo)
-    #println(get_name(callbackinfo))
+    cclosure = get_closure(callbackinfo)
     # get return type
     rettyp=get_return_type(callbackinfo)
+    cname=get_full_name(callbackinfo)
+    cfunc = Symbol("$(name)_cfunc")
+    func_closure = Symbol("$(name)_closure")
     retctyp=extract_type(rettyp).ctype
     # get arg types
     argctypes_arr=[]
-    for arg in get_args(callbackinfo)
-        argtyp=get_type(arg)
-        argctyp=extract_type(argtyp).ctype
-        push!(argctypes_arr,argctyp)
+    for (i,arg) in enumerate(get_args(callbackinfo))
+        if i-1 == cclosure
+            push!(argctypes_arr,:(Ref{Function}))
+        else
+            argtyp=get_type(arg)
+            argctyp=extract_type(argtyp).ctype
+            push!(argctypes_arr,argctyp)
+        end
     end
     argctypes = Expr(:tuple, argctypes_arr...)
-    special=QuoteNode(Expr(:$, :name))
-    expr = quote
-        @cfunction($special, $retctyp, $argctypes)
+    if st == GIScopeType.CALL # for "call" just create a pointer from a Ref{Function}
+                              # and ccall will keep the function around during the call(?)
+        closure_expr = quote
+            ref = Ref{Any}($name)
+            $(func_closure) = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+        end
+    elseif st == GIScopeType.NOTIFIED # for "notified" follow gc_ref_closure stuff
+        closure_expr = nothing
+    elseif st == GIScopeType.ASYNC # for "async" unref after callback finishes?
+        closure_expr = nothing
+    else
+        closure_expr = nothing
     end
-    MacroTools.striplines(expr)
+    expr = if may_be_null(info)
+        quote
+            if $name === nothing
+                C_NULL
+            else
+                $cfunc = @cfunction($cname, $retctyp, $argctypes)
+                $(closure_expr)
+           end
+        end
+    else
+        quote
+            $cfunc = @cfunction($cname, $retctyp, $argctypes)
+            $(closure_expr)
+        end
+    end
+    # special case: return name symbol, which can be used to find the cfunc and closure names
+    name, MacroTools.striplines(expr)
 end
 
 const ObjectLike = Union{GIObjectInfo, GIInterfaceInfo}
@@ -940,22 +974,46 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
             push!(retvals,:ret)
         end
     end
+    # go through args and find the closure arguments for each function argument
+    closure_args=Dict{Symbol,Int}()
     for arg in args
+        is_skip(arg) && continue
+        typ = extract_type(arg)
+        closure = get_closure(arg)
+        if typ.gitype == Function && closure > -1
+            aname = Symbol("_", get_name(arg))
+            closure_args[aname]=closure+1
+        end
+    end
+    for (iarg,arg) in enumerate(args)
         is_skip(arg) && continue
         aname = Symbol("_$(get_name(arg))")
         typ = extract_type(arg)
         dir = get_direction(arg)
         anametran = aname
         if dir != GIDirection.OUT
-            push!(jargs, Arg( aname, typ.jtype))
+            !(iarg in values(closure_args)) && push!(jargs, Arg( aname, typ.jtype))
             anametran, expr = convert_to_c(aname,arg,typ)
-            if expr !== nothing
-                push!(prologue, :($anametran = $expr))
+            if expr !== nothing && !(iarg in values(closure_args))
+                if typ.gitype == Function
+                    push!(prologue, expr)
+                else
+                    push!(prologue, :($anametran = $expr))
+                end
             end
         end
 
         if dir == GIDirection.IN
-            push!(cargs, Arg(anametran, typ.ctype))
+            if typ.gitype == Function
+                cfuncname = Symbol(anametran, "_cfunc")
+                push!(cargs, Arg(cfuncname, typ.ctype))
+                if haskey(closure_args, anametran)
+                    closurename = Symbol(anametran, "_closure")
+                    push!(cargs, Arg(closurename, :(Ptr{Nothing})))
+                end
+            elseif !(iarg in values(closure_args))
+                push!(cargs, Arg(anametran, typ.ctype))
+            end
         else
             ctype = typ.ctype
             wname = Symbol("m_$(get_name(arg))")
@@ -991,6 +1049,14 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
             end
             len_i=findfirst(==(len_name),retvals)
             len_i !== nothing && deleteat!(retvals,len_i)
+        end
+        closure = get_closure(arg)
+        if typ.gitype == Function && closure > -1
+            closure_name=Symbol("_",get_name(args[closure+1]))
+            closure_i=findfirst(a->(a.name === closure_name),jargs)
+            if closure_i !== nothing
+                deleteat!(jargs,closure_i)  # could avoid this by using ignore_args to skip adding them to jargs
+            end
         end
     end
     if rettype.gitype == GICArray

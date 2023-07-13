@@ -316,6 +316,22 @@ $(Expr(:toplevel, quote
         _buffer_size = m_buffer_size[]
         (ret2, _buffer)
     end
+    function save_to_callbackv(instance::GdkPixbuf, _save_func::Function, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
+        begin
+            _save_func_cfunc = @cfunction(GdkPixbufSaveFunc, Cint, (Ptr{UInt8}, UInt64, Ptr{GError}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_save_func)
+                _save_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        _option_keys_maybe = nothing_to_null(_option_keys)
+        _option_values_maybe = nothing_to_null(_option_values)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_save_to_callbackv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _save_func_cfunc, _save_func_closure, _type, _option_keys_maybe, _option_values_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function save_to_streamv(instance::GdkPixbuf, _stream::GOutputStream, _type::Union{AbstractString, Symbol}, _option_keys, _option_values, _cancellable::Maybe(GCancellable))
         _option_keys_maybe = nothing_to_null(_option_keys)
         _option_values_maybe = nothing_to_null(_option_values)

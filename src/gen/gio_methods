@@ -2441,9 +2441,34 @@ $(Expr(:toplevel, quote
         _position = m_position[]
         (ret2, _position)
     end
+    function find_with_equal_func_full(instance::GListStore, _item::GObject, _equal_func::Function)
+        begin
+            _equal_func_cfunc = @cfunction(GEqualFuncFull, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_equal_func)
+                _equal_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        m_position = Ref{UInt32}()
+        ret = ccall(("g_list_store_find_with_equal_func_full", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{UInt32}), instance, _item, _equal_func_cfunc, _equal_func_closure, m_position)
+        ret2 = convert(Bool, ret)
+        _position = m_position[]
+        (ret2, _position)
+    end
     function insert(instance::GListStore, _position::Integer, _item::GObject)
         ret = ccall(("g_list_store_insert", libgio), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}), instance, _position, _item)
         nothing
+    end
+    function insert_sorted(instance::GListStore, _item::GObject, _compare_func::Function)
+        begin
+            _compare_func_cfunc = @cfunction(GCompareDataFunc, Int32, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_compare_func)
+                _compare_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_list_store_insert_sorted", libgio), UInt32, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _item, _compare_func_cfunc, _compare_func_closure)
+        ret
     end
     function remove(instance::GListStore, _position::Integer)
         ret = ccall(("g_list_store_remove", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _position)
@@ -2451,6 +2476,17 @@ $(Expr(:toplevel, quote
     end
     function remove_all(instance::GListStore)
         ret = ccall(("g_list_store_remove_all", libgio), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function sort(instance::GListStore, _compare_func::Function)
+        begin
+            _compare_func_cfunc = @cfunction(GCompareDataFunc, Int32, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_compare_func)
+                _compare_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_list_store_sort", libgio), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _compare_func_cfunc, _compare_func_closure)
         nothing
     end
     function splice(instance::GListStore, _position::Integer, _n_removals::Integer, _additions)
@@ -3355,6 +3391,18 @@ $(Expr(:toplevel, quote
     function get_int64(instance::GSettings, _key::Union{AbstractString, Symbol})
         ret = ccall(("g_settings_get_int64", libgio), Int64, (Ptr{GObject}, Cstring), instance, _key)
         ret
+    end
+    function get_mapped(instance::GSettings, _key::Union{AbstractString, Symbol}, _mapping::Function)
+        begin
+            _mapping_cfunc = @cfunction(GSettingsGetMapping, Cint, (Ptr{GVariant}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_mapping)
+                _mapping_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_settings_get_mapped", libgio), Ptr{Nothing}, (Ptr{GObject}, Cstring, Ptr{Cvoid}, Ptr{Nothing}), instance, _key, _mapping_cfunc, _mapping_closure)
+        ret2 = convert(Nothing, ret)
+        ret2
     end
     function get_string(instance::GSettings, _key::Union{AbstractString, Symbol})
         ret = ccall(("g_settings_get_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _key)
@@ -5592,6 +5640,25 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
+    function copy(instance::GFile, _destination::GFile, _flags, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _progress_callback === nothing
+                C_NULL
+            else
+                _progress_callback_cfunc = @cfunction(GFileProgressCallback, Nothing, (Int64, Int64, Ref{Function}))
+                begin
+                    ref = Ref{Any}(_progress_callback)
+                    _progress_callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+                end
+            end
+        end
+        err = err_buf()
+        ret = ccall(("g_file_copy", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _destination, _flags, _cancellable_maybe, _progress_callback_cfunc, _progress_callback_closure, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function copy_attributes(instance::GFile, _destination::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
@@ -5955,6 +6022,25 @@ $(Expr(:toplevel, quote
                 leaftype = GLib.find_leaf_type(ret)
                 convert(leaftype, ret, true)
             end
+        ret2
+    end
+    function move(instance::GFile, _destination::GFile, _flags, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        begin
+            if _progress_callback === nothing
+                C_NULL
+            else
+                _progress_callback_cfunc = @cfunction(GFileProgressCallback, Nothing, (Int64, Int64, Ref{Function}))
+                begin
+                    ref = Ref{Any}(_progress_callback)
+                    _progress_callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+                end
+            end
+        end
+        err = err_buf()
+        ret = ccall(("g_file_move", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _destination, _flags, _cancellable_maybe, _progress_callback_cfunc, _progress_callback_closure, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
         ret2
     end
     function move_finish(instance::GFile, _result::GAsyncResult)

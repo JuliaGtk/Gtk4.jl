@@ -16,8 +16,10 @@ iterate(ls::GListStore, i=0) = (i==length(ls) ? nothing : (getindex(ls, i+1),i+1
 eltype(::Type{GListStore}) = GObject
 Base.keys(lm::GListStore) = Base.OneTo(length(lm))
 
+## GListModel interface
 length(lm::GListModel) = G_.get_n_items(lm)
 getindex(lm::GListModel, i::Integer) = G_.get_item(lm,i - 1)
 iterate(lm::GListModel, i=0) = (i==length(lm) ? nothing : (getindex(lm, i+1),i+1))
 eltype(::Type{GListModel}) = GObject
 Base.keys(lm::GListModel) = 1:length(lm)
+
