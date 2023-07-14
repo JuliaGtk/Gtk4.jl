@@ -151,7 +151,7 @@ function convert_(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject
         end
     else
         # create a wrapper
-        ret = wrap_gobject(hnd)::T
+        ret = wrap_gobject(hnd, owns)::T
     end
     ret
 end
@@ -305,6 +305,10 @@ function run_delayed_finalizers()
         x = pop!(await_finalize)
         finalize_gc_unref(x)
     end
+    # prevents empty WeakRefs from filling gc_preserve_glib
+    gc_preserve_glib_lock[] = true
+    filter!(x->!(isa(x.first,WeakRef) && x.first.value === nothing),gc_preserve_glib)
+    gc_preserve_glib_lock[] = false
     topfinalizer[] = true
 end
 

@@ -131,7 +131,7 @@ end
 function GtkTreeStore(types::Type...)
     gtypes = GLib.gtypes(types...)
     handle = ccall((:gtk_tree_store_newv, libgtk4), Ptr{GObject}, (Cint, Ptr{GLib.GType}), length(types), gtypes)
-    GtkTreeStoreLeaf(handle)
+    GtkTreeStoreLeaf(handle,true)
 end
 
 iter_from_index(store::GtkTreeStoreLeaf, index::Vector{Int}) = iter_from_string_index(store, join(index.-1, ":"))

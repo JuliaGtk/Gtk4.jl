@@ -48,7 +48,7 @@ show(io::IO, iter::_GtkTextIter) = println("_GtkTextIter($(iter.offset) ))")
 Returns the buffer associated with `iter`.
 """
 buffer(iter::TI) = convert(GtkTextBuffer,
-    ccall((:gtk_text_iter_get_buffer, libgtk4),Ptr{GtkTextBuffer},(Ref{_GtkTextIter},),iter)
+    ccall((:gtk_text_iter_get_buffer, libgtk4),Ptr{GtkTextBuffer},(Ref{_GtkTextIter},),iter), false
 )
 
 """
@@ -521,7 +521,7 @@ function create_tag(buffer::GtkTextBuffer, tag_name::AbstractString; properties.
     tag = ccall((:gtk_text_buffer_create_tag, libgtk4), Ptr{GObject},
                 (Ptr{GObject}, Ptr{UInt8}, Ptr{Nothing}),
                            buffer, bytestring(tag_name), C_NULL)
-    tag = convert(GtkTextTag, tag)
+    tag = convert(GtkTextTag, tag, false)
     for (k, v) in properties
         set_gtk_property!(tag, k, v)
     end
@@ -563,11 +563,11 @@ create_mark(buffer::GtkTextBuffer, it::TI)  = create_mark(buffer, C_NULL, it, fa
 
 function getindex(text::GtkTextView, sym::Symbol, ::Type{GtkTextBuffer})
     sym === :buffer || error("must supply :buffer, got ", sym)
-    return convert(GtkTextBuffer, G_.get_buffer(text))::GtkTextBuffer
+    return G_.get_buffer(text)
 end
 function getindex(text::GtkTextView, sym::Symbol, ::Type{Bool})
     sym === :editable || error("must supply :editable, got ", sym)
-    return convert(Bool, G_.get_editable(text))::Bool
+    return G_.get_editable(text)
 end
 
 function insert!(text::GtkTextView, index::TI, child::GtkWidget)

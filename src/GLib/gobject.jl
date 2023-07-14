@@ -23,6 +23,7 @@ function show(io::IO, w::GObject)
         return
     end
     n = Ref{Cuint}()
+    
     props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
         (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
     v = gvalue(String)
