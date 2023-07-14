@@ -2,6 +2,8 @@ using gobject_introspection_jll
 ENV["GI_TYPELIB_PATH"]=gobject_introspection_jll.find_artifact_dir()*"/lib/girepository-1.0"
 using GI, EzXML
 
+printstyled("Generating constants for GLib, GObject, and Gio\n";bold=true)
+
 toplevel, exprs, exports = GI.output_exprs()
 
 path="../src/gen"
@@ -39,6 +41,8 @@ push!(exprs, const_mod)
 
 ## export constants, enums, and flags code
 GI.write_to_file(path,"glib_consts",toplevel)
+
+printstyled("Generating code for GLib\n";bold=true)
 
 ## structs
 

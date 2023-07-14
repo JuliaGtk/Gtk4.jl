@@ -364,8 +364,7 @@ function decl(callbackinfo::GICallbackInfo)
         push!(fargs, get_name(arg))
     end
     if closure == -1
-        println("Not implementing $name, didn't find a closure")
-        throw(NotImplementedError())
+        throw(NotImplementedError("Not implementing callback $name, didn't find a closure"))
     else
         closure_name = get_name(args[closure+1])
     end
@@ -381,7 +380,10 @@ end
 
 ## Handling argument types, creating methods
 
-struct NotImplementedError <: Exception end
+struct NotImplementedError <: Exception
+    message::String
+end
+NotImplementedError() = NotImplementedError("") # could overload `Base.showerror`
 
 abstract type InstanceType end
 is_pointer(::Type{InstanceType}) = true
@@ -496,7 +498,7 @@ function convert_from_c(argname::Symbol, info::ArgInfo, ti::TypeDesc{T}) where {
 end
 
 function convert_to_c(argname::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:GIEnumOrFlags}
-    throw(NotImplementedError())
+    throw(NotImplementedError("Enum/flags"))
     return (:( enum_get($(enum_name(ti.gitype)),$argname)))
 end
 
@@ -535,7 +537,7 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
             if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
                 return :(_len=length_zt($name);arrtemp=bytestring.(unsafe_wrap(Vector{$elmctype}, $name,_len));GLib.g_strfreev($name);arrtemp)
             else
-                throw(NotImplementedError())  # TODO
+                throw(NotImplementedError("Zero terminated array that's not strings"))  # TODO
                 #:(_len=length_zt($name);arrtemp=copy(unsafe_wrap(Vector{$elmctype}, $name,i-1));GLib.g_free($name);arrtemp)
             end
         else
@@ -570,17 +572,17 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
             if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
                 return :(_len=length_zt($name);arrtemp=bytestring.(unsafe_wrap(Vector{$elmctype}, $name,_len));arrtemp)
             end
-            throw(NotImplementedError())
+            throw(NotImplementedError("Zero terminated array that's not strings"))
         end
     end
-    throw(NotImplementedError())
+    throw(NotImplementedError("Unknown array type"))
 end
 
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{GICArray}}
     if typeof(info)==GIFunctionInfo
         return (name, nothing)
     end
-    is_caller_allocates(info) && throw(NotImplementedException())
+    is_caller_allocates(info) && throw(NotImplementedException("Array output with 'caller_allocates'"))
     typeinfo=get_type(info)
     elm = get_param_type(typeinfo,0)
     elmtype = extract_type(elm)
@@ -640,7 +642,8 @@ end
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{Function}}
     st = get_scope(info)
     closure = get_closure(info)
-    ((st == GIScopeType.CALL || st == GIScopeType.ASYNC) && closure > -1) || throw(NotImplementedError())
+    (st == GIScopeType.FOREVER || st == GIScopeType.INVALID) && throw(NotImplementedError("Scope type $st not implemented."))
+    closure == -1 && throw(NotImplementedError("Closure not found."))
     typeinfo=get_type(info)
     callbackinfo=get_interface(typeinfo)
     cclosure = get_closure(callbackinfo)
@@ -649,6 +652,7 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
     cname=get_full_name(callbackinfo)
     cfunc = Symbol("$(name)_cfunc")
     func_closure = Symbol("$(name)_closure")
+    func_notify = Symbol("$(name)_notify")
     retctyp=extract_type(rettyp).ctype
     # get arg types
     argctypes_arr=[]
@@ -668,20 +672,35 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
             ref = Ref{Any}($name)
             $(func_closure) = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         end
+        null_closure_expr = quote
+            $(func_closure) = C_NULL
+        end
     elseif st == GIScopeType.NOTIFIED # for "notified" follow gc_ref_closure stuff
-        closure_expr = nothing
+        closure_expr = quote
+            $(func_closure),$(func_notify) = GLib.gc_ref_closure($name)
+        end
+        null_closure_expr = quote
+            $(func_closure) = C_NULL
+            $(func_notify) = C_NULL
+        end
     elseif st == GIScopeType.ASYNC # for "async" unref after callback finishes?
         # TODO: set up to unref when callback is finished -- currently this leaks
         closure_expr = quote
             $(func_closure) = GLib.gc_ref($name)
         end
+        null_closure_expr = quote
+            $(func_closure) = C_NULL
+        end
     else
         closure_expr = nothing
     end
+    closure_expr = unblock(closure_expr)
+    null_closure_expr = unblock(null_closure_expr)
     expr = if may_be_null(info)
         quote
             if $name === nothing
-                C_NULL
+                $cfunc = C_NULL
+                $(null_closure_expr)
             else
                 $cfunc = @cfunction($cname, $retctyp, $argctypes)
                 $(closure_expr)
@@ -694,7 +713,7 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
         end
     end
     # special case: return name symbol, which can be used to find the cfunc and closure names
-    name, MacroTools.striplines(expr)
+    name, MacroTools.striplines(unblock(expr))
 end
 
 const ObjectLike = Union{GIObjectInfo, GIInterfaceInfo}
@@ -764,7 +783,7 @@ end
 function extract_type(typeinfo::TypeInfo, info::ObjectLike)
     if is_pointer(typeinfo)
         if typename(info)===:GParam  # these are not really GObjects
-            throw(NotImplementedError())
+            throw(NotImplementedError("ObjectLike but not a GObject"))
             #return TypeDesc(info,:GParamSpec,:(Ptr{GParamSpec}))
         end
         t = get_toplevel(info)

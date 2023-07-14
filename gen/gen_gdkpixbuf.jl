@@ -1,5 +1,7 @@
 using GI
 
+printstyled("Generating code for GdkPixbuf\n";bold=true)
+
 toplevel, exprs, exports = GI.output_exprs()
 
 ns = GINamespace(:GdkPixbuf,"2.0")

@@ -1,5 +1,7 @@
 using GI
 
+printstyled("Generating code for Gio\n";bold=true)
+
 toplevel, exprs, exports = GI.output_exprs()
 
 path="../src/gen"
