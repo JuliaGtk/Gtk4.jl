@@ -639,6 +639,8 @@ function extract_type(typeinfo::GITypeInfo,basetype::Type{Function})
     TypeDesc{Type{Function}}(Function,:Function, :Function, :(Ptr{Cvoid}))
 end
 
+callback_symbols(name) = (Symbol("$(name)_cfunc"),Symbol("$(name)_closure"),Symbol("$(name)_notify"))
+
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{Function}}
     st = get_scope(info)
     closure = get_closure(info)
@@ -650,9 +652,7 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
     # get return type
     rettyp=get_return_type(callbackinfo)
     cname=get_full_name(callbackinfo)
-    cfunc = Symbol("$(name)_cfunc")
-    func_closure = Symbol("$(name)_closure")
-    func_notify = Symbol("$(name)_notify")
+    cfunc, func_closure, func_notify = callback_symbols(name)
     retctyp=extract_type(rettyp).ctype
     # get arg types
     argctypes_arr=[]
@@ -1028,10 +1028,9 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
 
         if dir == GIDirection.IN
             if typ.gitype == Function
-                cfuncname = Symbol(anametran, "_cfunc")
+                cfuncname, closurename, notifyname = callback_symbols(anametran)
                 push!(cargs, Arg(cfuncname, typ.ctype))
                 if haskey(closure_args, anametran)
-                    closurename = Symbol(anametran, "_closure")
                     push!(cargs, Arg(closurename, :(Ptr{Nothing})))
                 end
             elseif !(iarg in values(closure_args))
