@@ -193,6 +193,7 @@ include("gobject.jl")
 include("listmodel.jl")
 include("loop.jl")
 include("actions.jl")
+include("gio.jl")
 
 const exiting = Ref(false)
 function __init__()

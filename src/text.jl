@@ -434,8 +434,7 @@ in(x::TI, r::GtkTextRange) = Bool(ccall((:gtk_text_iter_in_range, libgtk4), Cint
 #TODO: clipboard, selection/cursor, user_action_groups
 
 iterate(text::GtkTextBuffer, iter=start_(_GtkTextIter(text))) = iterate(iter, iter)
-length(text::GtkTextBuffer) = ccall((:gtk_text_buffer_get_char_count, libgtk4), Cint,
-    (Ptr{GObject},), text)
+length(text::GtkTextBuffer) = G_.get_char_count(text)
 #get_line_count(text::GtkTextBuffer) = ccall((:gtk_text_buffer_get_line_count, libgtk4), Cint, (Ptr{GObject},), text)
 function insert!(text::GtkTextBuffer, index::TI, str::AbstractString)
     ccall((:gtk_text_buffer_insert, libgtk4), Nothing,
@@ -443,8 +442,7 @@ function insert!(text::GtkTextBuffer, index::TI, str::AbstractString)
     text
 end
 function insert!(text::GtkTextBuffer, str::AbstractString)
-    ccall((:gtk_text_buffer_insert_at_cursor, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{UInt8}, Cint), text, bytestring(str), sizeof(str))
+    G_.insert_at_cursor(text, str, sizeof(str))
     text
 end
 function splice!(text::GtkTextBuffer, index::TI)
@@ -453,13 +451,11 @@ function splice!(text::GtkTextBuffer, index::TI)
     text
 end
 function splice!(text::GtkTextBuffer)
-    ccall((:gtk_text_buffer_delete_selection, libgtk4), Cint,
-        (Ptr{GObject}, Cint, Cint), text, false, true)
+    G_.delete_selection(text, false, true)
     text
 end
 
-setindex!(buffer::GtkTextBuffer, content::String, ::Type{String}) =
-    ccall((:gtk_text_buffer_set_text, libgtk4), Nothing, (Ptr{GObject}, Ptr{UInt8}, Cint), buffer, content, -1)
+setindex!(buffer::GtkTextBuffer, content::String, ::Type{String}) = G_.set_text(buffer, content, -1)
 
 """
     selection_bounds(buffer::GtkTextBuffer)
@@ -502,11 +498,8 @@ place_cursor(buffer::GtkTextBuffer, it::_GtkTextIter)  =
 place_cursor(buffer::GtkTextBuffer, pos::Int) = place_cursor(buffer, _GtkTextIter(buffer, pos))
 place_cursor(buffer::GtkTextBuffer, it::Ref{_GtkTextIter}) = place_cursor(buffer, it[])
 
-begin_user_action(buffer::GtkTextBuffer) =
-  ccall((:gtk_text_buffer_begin_user_action, libgtk4), Nothing, (Ptr{GObject},), buffer)
-
-end_user_action(buffer::GtkTextBuffer) =
-  ccall((:gtk_text_buffer_end_user_action, libgtk4), Nothing, (Ptr{GObject},), buffer)
+begin_user_action(buffer::GtkTextBuffer) = G_.begin_user_action(buffer)
+end_user_action(buffer::GtkTextBuffer) = G_.end_user_action(buffer)
 
 function user_action(f::Function, buffer::GtkTextBuffer)
     begin_user_action(buffer)
@@ -563,11 +556,11 @@ create_mark(buffer::GtkTextBuffer, it::TI)  = create_mark(buffer, C_NULL, it, fa
 
 function getindex(text::GtkTextView, sym::Symbol, ::Type{GtkTextBuffer})
     sym === :buffer || error("must supply :buffer, got ", sym)
-    return convert(GtkTextBuffer, G_.get_buffer(text))::GtkTextBuffer
+    return G_.get_buffer(text)
 end
 function getindex(text::GtkTextView, sym::Symbol, ::Type{Bool})
     sym === :editable || error("must supply :editable, got ", sym)
-    return convert(Bool, G_.get_editable(text))::Bool
+    return G_.get_editable(text)
 end
 
 function insert!(text::GtkTextView, index::TI, child::GtkWidget)
@@ -611,15 +604,11 @@ Implements `gtk_text_view_scroll_to_mark` and `gtk_text_view_scroll_to_iter`.
 """
 function scroll_to(view::GtkTextView, mark::GtkTextMark, within_margin::Real,
                    use_align::Bool, xalign::Real, yalign::Real)
-
-    ccall((:gtk_text_view_scroll_to_mark, libgtk4), Nothing,
-    (Ptr{GObject}, Ptr{GObject}, Cdouble, Cint, Cdouble, Cdouble),
-    view, mark, within_margin, use_align, xalign, yalign)
+    G_.scroll_to_mark(view, mark, within_margin, use_align, xalign, yalign)
 end
 
 function scroll_to(view::GtkTextView, iter::TI, within_margin::Real,
                    use_align::Bool, xalign::Real, yalign::Real)
-
     ccall((:gtk_text_view_scroll_to_iter, libgtk4), Nothing,
     (Ptr{GObject}, Ptr{_GtkTextIter}, Cdouble, Cint, Cdouble, Cdouble),
     view, iter, within_margin, use_align, xalign, yalign)
@@ -631,14 +620,8 @@ end
 
 Implements `gtk_text_view_buffer_to_window_coords`.
 """
-function buffer_to_window_coords(view::GtkTextView, buffer_x::Integer, buffer_y::Integer, wintype::Integer = 0)
-	window_x, window_y = Ref{Cint}(), Ref{Cint}()
-	ccall(
-        (:gtk_text_view_buffer_to_window_coords, libgtk4), Cvoid,
-        (Ptr{GObject}, Cint, Cint, Cint, Ptr{Cint}, Ptr{Cint}),
-        view, Int32(wintype), buffer_x, buffer_y, window_x, window_y
-    )
-	return (window_x[], window_y[])
+function buffer_to_window_coords(view::GtkTextView, buffer_x::Integer, buffer_y::Integer, wintype = TextWindowType_WIDGET)
+	G_.buffer_to_window_coords(view, wintype, buffer_x, buffer_y)
 end
 
 """
@@ -646,14 +629,8 @@ end
 
 Implements `gtk_text_view_window_to_buffer_coords`.
 """
-function window_to_buffer_coords(view::GtkTextView, window_x::Integer, window_y::Integer, wintype::Integer = 2)
-    buffer_x, buffer_y = Ref{Cint}(), Ref{Cint}()
-    ccall(
-        (:gtk_text_view_window_to_buffer_coords, libgtk4), Cvoid,
-        (Ptr{GObject}, Cint, Cint, Cint, Ptr{Cint}, Ptr{Cint}),
-        view, Int32(wintype), window_x, window_y, buffer_x, buffer_y
-    )
-    return (buffer_x[],buffer_y[])
+function window_to_buffer_coords(view::GtkTextView, window_x::Integer, window_y::Integer, wintype = TextWindowType_LEFT)
+    G_.window_to_buffer_coords(view, wintype, window_x, window_y)
 end
 
 """
@@ -690,5 +667,4 @@ end
 
 ####  GtkTextMark  ####
 
-visible(w::GtkTextMark, state::Bool) = G_.set_visible(w,state)
 show(w::GtkTextMark) = visible(w, true)
