@@ -72,7 +72,7 @@ function find_leaf_type_if_not_null(o,owns)
     if o == C_NULL
         nothing
     else
-        leaftype = GLib.find_leaf_type(o)
+        leaftype = find_leaf_type(o)
         convert(leaftype, o, owns)
     end
 end

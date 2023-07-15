@@ -77,7 +77,7 @@ g_source_remove(id) = G_.source_remove(id)
 
 const g_main_running = Ref{Bool}(true)
 
-glib_main() = GLib.g_sigatom() do
+glib_main() = g_sigatom() do
     # gtk_main() was deprecated in GTK 4.0, hence we iterate the loop ourselves
     while g_main_running[]
         ccall((:g_main_context_iteration, libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, true)
@@ -157,7 +157,7 @@ See also [`set_uv_loop_integration`](@ref).
 """
 is_uv_loop_integration_enabled() = uv_int_enabled[]
 
-GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
+GApplication(id = nothing, flags = ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
 
 function run(app::GApplication)
     ccall(("g_application_run", libgio), Int32, (Ptr{GObject}, Int32, Ptr{Cstring}), app, 0, C_NULL)

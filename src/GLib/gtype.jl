@@ -91,6 +91,7 @@ mutable struct GObjectLeaf <: GObject
         if handle == C_NULL
             error("Cannot construct $gname with a NULL pointer")
         end
+        gobject_maybe_sink(handle, owns)
         return gobject_ref(new(handle))
     end
 end
@@ -127,16 +128,14 @@ cconvert(::Type{Ptr{GObject}}, @nospecialize(x::GObject)) = x
 # or to override this method (e.g. GtkNullContainer, AbstractString)
 unsafe_convert(::Type{Ptr{GObject}}, w::GObject) = getfield(w, :handle)
 
-# this method should be used by gtk methods returning widgets of unknown type
-# and/or that might have been wrapped by julia before,
-# instead of a direct call to the constructor
-convert(::Type{T}, w::Ptr{Y}, owns=false) where {T <: GObject, Y <: GObject} = convert_(T, convert(Ptr{T}, w), owns) # this definition must be first due to a 0.2 dispatch bug
+# This method should be used by gtk methods returning widgets of unknown type and/or that
+# might have been wrapped by julia before, instead of a direct call to the constructor.
+# The argument `owns` should be set to true when the method that produced the Ptr{GObject}
+# transfers ownership to the callee.
+convert(::Type{T}, w::Ptr{Y}, owns=false) where {T <: GObject, Y <: GObject} = convert_(T, convert(Ptr{T}, w), owns)
 convert(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject = convert_(T, ptr, owns)
 
 # need to introduce convert_ since otherwise there was a StackOverFlow error
-
-# The argument owns should be set to true when the method that produced the Ptr{GObject}
-# transfers ownership to the callee.
 function convert_(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject
     hnd = convert(Ptr{GObject}, ptr)
     if hnd == C_NULL
@@ -149,8 +148,7 @@ function convert_(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject
         if owns # we already had a reference so we should get rid of the one we just received
             gc_unref(hnd)
         end
-    else
-        # create a wrapper
+    else # new GObject, create a wrapper
         ret = wrap_gobject(hnd)::T
     end
     ret
@@ -167,9 +165,10 @@ function find_leaf_type(hnd::Ptr{T}) where T <: GObject
     gtype_wrappers[typname]
 end
 
+# Finds the best leaf type and calls the constructor
 function wrap_gobject(hnd::Ptr{GObject},owns=false)
     T = find_leaf_type(hnd)
-    return T(hnd,owns)
+    return T(hnd,owns) # these are defined in xlib_structs
 end
 
 ### GList support for GObject
@@ -207,14 +206,15 @@ _gc_unref(@nospecialize(x), ::Ptr{Nothing}) = gc_unref(x)
 gc_ref_closure(@nospecialize(cb::Function)) = (invoke(gc_ref, Tuple{Any}, cb), @cfunction(_gc_unref, Nothing, (Any, Ptr{Nothing})))
 gc_ref_closure(x::T) where {T} = (gc_ref(x), @cfunction(_gc_unref, Nothing, (Any, Ptr{Nothing})))
 
-# generally, you shouldn't be calling gc_ref(::Ptr{GObject})
-function gc_ref(x::Ptr{GObject})
+# GLib ref/unref functions -- generally, you shouldn't be calling these
+function glib_ref(x::Ptr{GObject})
     ccall((:g_object_ref, libgobject), Nothing, (Ptr{GObject},), x)
 end
-function gc_unref(x::Ptr{GObject})
+gc_unref(p::Ptr{GObject}) = glib_unref(p)
+function glib_unref(x::Ptr{GObject})
     ccall((:g_object_unref, libgobject), Nothing, (Ptr{GObject},), x)
 end
-function gc_ref_sink(x::Ptr{GObject})
+function glib_ref_sink(x::Ptr{GObject})
     ccall((:g_object_ref_sink, libgobject), Nothing, (Ptr{GObject},), x)
 end
 const gc_preserve_glib = Dict{Union{WeakRef, GObject}, Bool}() # glib objects
@@ -263,7 +263,7 @@ end
 function gobject_maybe_sink(handle,owns::Bool)
     is_floating = (ccall(("g_object_is_floating", libgobject), Cint, (Ptr{GObject},), handle)!=0)
     if !owns || is_floating # if owns is true then we already have a reference, but if it's floating we should sink it
-        GLib.gc_ref_sink(handle)
+        glib_ref_sink(handle)
     end
 end
 function gobject_ref(x::T) where T <: GObject
@@ -286,7 +286,7 @@ function gobject_ref(x::T) where T <: GObject
         end
     elseif strong
         # oops, we previously deleted the link, but now it's back
-        gc_ref(getfield(x,:handle))
+        glib_ref(getfield(x,:handle))
         addref(Ref{GObject}(x)[])
     else
         # already gc-protected, nothing to do
@@ -305,6 +305,10 @@ function run_delayed_finalizers()
         x = pop!(await_finalize)
         finalize_gc_unref(x)
     end
+    # prevents empty WeakRefs from filling gc_preserve_glib
+    gc_preserve_glib_lock[] = true
+    filter!(x->!(isa(x.first,WeakRef) && x.first.value === nothing),gc_preserve_glib)
+    gc_preserve_glib_lock[] = false
     topfinalizer[] = true
 end
 
@@ -341,9 +345,9 @@ gc_ref_closure(x::GObject) = (gc_ref(x), C_NULL)
 function gobject_move_ref(new::GObject, old::GObject)
     h = unsafe_convert(Ptr{GObject}, new)
     @assert h == unsafe_convert(Ptr{GObject}, old) != C_NULL
-    gc_ref(h)
+    glib_ref(h)
     gc_unref(old)
     gc_ref(new)
-    gc_unref(h)
+    glib_unref(h)
     new
 end
