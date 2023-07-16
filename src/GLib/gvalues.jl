@@ -48,7 +48,7 @@ function settype!(gv::Ref{GValue}, ::Type{T}) where T <: CEnum.Cenum
 end
 
 function setindex!(v::Base.Ref{GValue}, x, ::Type{T}) where T <: CEnum.Cenum
-    ccall((:g_value_set_enum, libgobject), Nothing, (Ptr{GLib.GValue}, Cint), v, x)
+    ccall((:g_value_set_enum, libgobject), Nothing, (Ptr{GValue}, Cint), v, x)
 end
 
 function settype!(gv::Ref{GValue}, ::Type{T}) where T <: BitFlag
@@ -58,7 +58,7 @@ function settype!(gv::Ref{GValue}, ::Type{T}) where T <: BitFlag
 end
 
 function setindex!(v::Base.Ref{GValue}, x, ::Type{T}) where T <: BitFlag
-    ccall((:g_value_set_flags, libgobject), Nothing, (Ptr{GLib.GValue}, Cint), v, Int32(x))
+    ccall((:g_value_set_flags, libgobject), Nothing, (Ptr{GValue}, Cint), v, Int32(x))
 end
 
 function setindex!(dest::Base.RefValue{GValue}, src::Ref{GValue})
@@ -205,7 +205,7 @@ const fundamental_fns = tuple(Function[ make_gvalue_from_fundamental_type(i, @__
 g_type(::Type{GValue}) = ccall(("g_value_get_type", libgobject), GType, ())
 push!(gboxed_types, GValue)
 function getindex(v::Base.RefValue{GValue}, ::Type{GValue})
-    x = ccall(("g_value_get_boxed", GLib.libgobject), Ptr{GValue}, (Ptr{GValue},), v)
+    x = ccall(("g_value_get_boxed", libgobject), Ptr{GValue}, (Ptr{GValue},), v)
     if x == C_NULL
         return nothing
     end
