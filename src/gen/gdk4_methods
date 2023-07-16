@@ -32,9 +32,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function FileList_new_from_array(_files)
-        _files = convert(Vector{Ptr{GObject}}, _files)
+        _files_arr = convert(Vector{Ptr{GObject}}, _files)
         _n_files = length(_files)
-        ret = ccall(("gdk_file_list_new_from_array", libgtk4), Ptr{GdkFileList}, (Ptr{Ptr{GObject}}, UInt64), _files, _n_files)
+        ret = ccall(("gdk_file_list_new_from_array", libgtk4), Ptr{GdkFileList}, (Ptr{Ptr{GObject}}, UInt64), _files_arr, _n_files)
         ret2 = convert(GdkFileList, ret, true)
         ret2
     end
@@ -278,8 +278,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function set_fullscreen(instance::GdkToplevelLayout, _fullscreen::Bool, _monitor::Maybe(GdkMonitor))
-        _monitor = nothing_to_null(_monitor)
-        ret = ccall(("gdk_toplevel_layout_set_fullscreen", libgtk4), Nothing, (Ptr{GdkToplevelLayout}, Cint, Ptr{GObject}), instance, _fullscreen, _monitor)
+        _monitor_maybe = nothing_to_null(_monitor)
+        ret = ccall(("gdk_toplevel_layout_set_fullscreen", libgtk4), Nothing, (Ptr{GdkToplevelLayout}, Cint, Ptr{GObject}), instance, _fullscreen, _monitor_maybe)
         nothing
     end
     function set_maximized(instance::GdkToplevelLayout, _maximized::Bool)
@@ -304,13 +304,13 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_icon(instance::GdkAppLaunchContext, _icon::Maybe(GIcon))
-        _icon = nothing_to_null(_icon)
-        ret = ccall(("gdk_app_launch_context_set_icon", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _icon)
+        _icon_maybe = nothing_to_null(_icon)
+        ret = ccall(("gdk_app_launch_context_set_icon", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _icon_maybe)
         nothing
     end
     function set_icon_name(instance::GdkAppLaunchContext, _icon_name::Maybe(Union{AbstractString, Symbol}))
-        _icon_name = nothing_to_null(_icon_name)
-        ret = ccall(("gdk_app_launch_context_set_icon_name", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _icon_name)
+        _icon_name_maybe = nothing_to_null(_icon_name)
+        ret = ccall(("gdk_app_launch_context_set_icon_name", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _icon_name_maybe)
         nothing
     end
     function set_timestamp(instance::GdkAppLaunchContext, _timestamp::Integer)
@@ -346,11 +346,16 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function read_async(instance::GdkClipboard, _mime_types, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_clipboard_read_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cstring}, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _mime_types, _io_priority, _cancellable, _callback, _user_data)
+    function read_async(instance::GdkClipboard, _mime_types, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_clipboard_read_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cstring}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _mime_types, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function read_finish(instance::GdkClipboard, _result::GAsyncResult)
@@ -363,11 +368,16 @@ $(Expr(:toplevel, quote
         _out_mime_type = string_or_nothing(_out_mime_type, false)
         (ret2, _out_mime_type)
     end
-    function read_text_async(instance::GdkClipboard, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_clipboard_read_text_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _cancellable, _callback, _user_data)
+    function read_text_async(instance::GdkClipboard, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_clipboard_read_text_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function read_text_finish(instance::GdkClipboard, _result::GAsyncResult)
@@ -377,11 +387,16 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
-    function read_texture_async(instance::GdkClipboard, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_clipboard_read_texture_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _cancellable, _callback, _user_data)
+    function read_texture_async(instance::GdkClipboard, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_clipboard_read_texture_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function read_texture_finish(instance::GdkClipboard, _result::GAsyncResult)
@@ -391,11 +406,16 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GdkTexture, ret, true)
         ret2
     end
-    function read_value_async(instance::GdkClipboard, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_clipboard_read_value_async", libgtk4), Nothing, (Ptr{GObject}, UInt64, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _type, _io_priority, _cancellable, _callback, _user_data)
+    function read_value_async(instance::GdkClipboard, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_clipboard_read_value_async", libgtk4), Nothing, (Ptr{GObject}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function read_value_finish(instance::GdkClipboard, _result::GAsyncResult)
@@ -406,8 +426,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function set_content(instance::GdkClipboard, _provider::Maybe(GdkContentProvider))
-        _provider = nothing_to_null(_provider)
-        ret = ccall(("gdk_clipboard_set_content", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}), instance, _provider)
+        _provider_maybe = nothing_to_null(_provider)
+        ret = ccall(("gdk_clipboard_set_content", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}), instance, _provider_maybe)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -415,11 +435,16 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_clipboard_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GValue}), instance, _value)
         nothing
     end
-    function store_async(instance::GdkClipboard, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_clipboard_store_async", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _io_priority, _cancellable, _callback, _user_data)
+    function store_async(instance::GdkClipboard, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_clipboard_store_async", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function store_finish(instance::GdkClipboard, _result::GAsyncResult)
@@ -486,9 +511,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ContentProvider_new_union(_providers)
-        _providers = convert(Vector{Ptr{GObject}}, _providers)
+        _providers_arr = convert(Vector{Ptr{GObject}}, _providers)
         _n_providers = length(_providers)
-        ret = ccall(("gdk_content_provider_new_union", libgtk4), Ptr{GObject}, (Ptr{Ptr{GObject}}, UInt64), _providers, _n_providers)
+        ret = ccall(("gdk_content_provider_new_union", libgtk4), Ptr{GObject}, (Ptr{Ptr{GObject}}, UInt64), _providers_arr, _n_providers)
         ret2 = convert(GdkContentProvider, ret, true)
         ret2
     end
@@ -515,11 +540,16 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkContentFormats, ret, true)
         ret2
     end
-    function write_mime_type_async(instance::GdkContentProvider, _mime_type::Union{AbstractString, Symbol}, _stream::GOutputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_content_provider_write_mime_type_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _mime_type, _stream, _io_priority, _cancellable, _callback, _user_data)
+    function write_mime_type_async(instance::GdkContentProvider, _mime_type::Union{AbstractString, Symbol}, _stream::GOutputStream, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_content_provider_write_mime_type_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _mime_type, _stream, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function write_mime_type_finish(instance::GdkContentProvider, _result::GAsyncResult)
@@ -591,14 +621,14 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Cursor_new_from_name(_name::Union{AbstractString, Symbol}, _fallback::Maybe(GdkCursor))
-        _fallback = nothing_to_null(_fallback)
-        ret = ccall(("gdk_cursor_new_from_name", libgtk4), Ptr{GObject}, (Cstring, Ptr{GObject}), _name, _fallback)
+        _fallback_maybe = nothing_to_null(_fallback)
+        ret = ccall(("gdk_cursor_new_from_name", libgtk4), Ptr{GObject}, (Cstring, Ptr{GObject}), _name, _fallback_maybe)
         ret2 = convert_if_not_null(GdkCursor, ret, true)
         ret2
     end
     function Cursor_new_from_texture(_texture::GdkTexture, _hotspot_x::Integer, _hotspot_y::Integer, _fallback::Maybe(GdkCursor))
-        _fallback = nothing_to_null(_fallback)
-        ret = ccall(("gdk_cursor_new_from_texture", libgtk4), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Ptr{GObject}), _texture, _hotspot_x, _hotspot_y, _fallback)
+        _fallback_maybe = nothing_to_null(_fallback)
+        ret = ccall(("gdk_cursor_new_from_texture", libgtk4), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Ptr{GObject}), _texture, _hotspot_x, _hotspot_y, _fallback_maybe)
         ret2 = convert(GdkCursor, ret, true)
         ret2
     end
@@ -1040,11 +1070,16 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkSurface, ret, false)
         ret2
     end
-    function read_async(instance::GdkDrop, _mime_types, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_drop_read_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cstring}, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _mime_types, _io_priority, _cancellable, _callback, _user_data)
+    function read_async(instance::GdkDrop, _mime_types, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_drop_read_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cstring}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _mime_types, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function read_finish(instance::GdkDrop, _result::GAsyncResult)
@@ -1057,11 +1092,16 @@ $(Expr(:toplevel, quote
         _out_mime_type = string_or_nothing(_out_mime_type, true)
         (ret2, _out_mime_type)
     end
-    function read_value_async(instance::GdkDrop, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_drop_read_value_async", libgtk4), Nothing, (Ptr{GObject}, UInt64, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), instance, _type, _io_priority, _cancellable, _callback, _user_data)
+    function read_value_async(instance::GdkDrop, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_drop_read_value_async", libgtk4), Nothing, (Ptr{GObject}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function read_value_finish(instance::GdkDrop, _result::GAsyncResult)
@@ -1646,8 +1686,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_cursor(instance::GdkSurface, _cursor::Maybe(GdkCursor))
-        _cursor = nothing_to_null(_cursor)
-        ret = ccall(("gdk_surface_set_cursor", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _cursor)
+        _cursor_maybe = nothing_to_null(_cursor)
+        ret = ccall(("gdk_surface_set_cursor", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _cursor_maybe)
         nothing
     end
     function set_device_cursor(instance::GdkSurface, _device::GdkDevice, _cursor::GdkCursor)
@@ -1659,8 +1699,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_opaque_region(instance::GdkSurface, _region::Maybe(cairoRegion))
-        _region = nothing_to_null(_region)
-        ret = ccall(("gdk_surface_set_opaque_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region)
+        _region_maybe = nothing_to_null(_region)
+        ret = ccall(("gdk_surface_set_opaque_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region_maybe)
         nothing
     end
     function translate_coordinates(instance::GdkSurface, _to::GdkSurface, _x::Real, _y::Real)
@@ -1706,8 +1746,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function download(instance::GdkTexture, _data, _stride::Integer)
-        _data = convert(Vector{UInt8}, _data)
-        ret = ccall(("gdk_texture_download", libgtk4), Nothing, (Ptr{GObject}, Ptr{UInt8}, UInt64), instance, _data, _stride)
+        _data_arr = convert(Vector{UInt8}, _data)
+        ret = ccall(("gdk_texture_download", libgtk4), Nothing, (Ptr{GObject}, Ptr{UInt8}, UInt64), instance, _data_arr, _stride)
         nothing
     end
     function get_height(instance::GdkTexture)
@@ -1880,8 +1920,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function begin_resize(instance::GdkToplevel, _edge, _device::Maybe(GdkDevice), _button::Integer, _x::Real, _y::Real, _timestamp::Integer)
-        _device = nothing_to_null(_device)
-        ret = ccall(("gdk_toplevel_begin_resize", libgtk4), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}, Int32, Float64, Float64, UInt32), instance, _edge, _device, _button, _x, _y, _timestamp)
+        _device_maybe = nothing_to_null(_device)
+        ret = ccall(("gdk_toplevel_begin_resize", libgtk4), Nothing, (Ptr{GObject}, UInt32, Ptr{GObject}, Int32, Float64, Float64, UInt32), instance, _edge, _device_maybe, _button, _x, _y, _timestamp)
         nothing
     end
     function focus(instance::GdkToplevel, _timestamp::Integer)

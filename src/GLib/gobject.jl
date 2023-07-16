@@ -6,7 +6,7 @@ end
 
 # converts the string output by `g_value_get_string` to Julia equivalent
 function gvalue_string_convert(str)
-    value = (str == C_NULL ? "nothing" : GLib.bytestring(str))
+    value = (str == C_NULL ? "nothing" : bytestring(str))
     if value == "TRUE"
         value = "true"
     elseif value == "FALSE"
@@ -35,7 +35,7 @@ function show(io::IO, w::GObject)
         else
             first = false
         end
-        print(io, GLib.bytestring(param.name))
+        print(io, bytestring(param.name))
         if (ParamFlags(param.flags) & ParamFlags_READABLE) != 0 &&
            (param.flags & DEPRECATED) == 0 &&
            (ccall((:g_value_type_transformable, libgobject), Cint,

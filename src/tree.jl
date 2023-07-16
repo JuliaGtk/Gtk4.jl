@@ -34,7 +34,7 @@ end
 function GtkListStore(types::Type...)
     gtypes = GLib.gtypes(types...)
     handle = ccall((:gtk_list_store_newv, libgtk4), Ptr{GObject}, (Cint, Ptr{GLib.GType}), length(types), gtypes)
-    GtkListStoreLeaf(handle)
+    GtkListStoreLeaf(handle,true)
 end
 
 function GtkListStore(combo::GtkComboBoxText)
@@ -45,16 +45,16 @@ end
 ## index is integer for a liststore, vector of ints for tree
 iter_from_index(store::GtkListStore, index::Int) = iter_from_string_index(store, string(index - 1))
 function index_from_iter(store::GtkListStore, iter::TRI)
-	s = get_string_from_iter(GtkTreeModel(store), iter)
-	s !== nothing ? parse(Int, s) + 1 : 0
+    s = get_string_from_iter(GtkTreeModel(store), iter)
+    s !== nothing ? parse(Int, s) + 1 : 0
 end
 
 function list_store_set_values(store::GtkListStore, iter, values)
-	G_.set(store, Ref(iter), 0:(length(values)-1), GLib.gvalues(values...))
+    G_.set(store, Ref(iter), 0:(length(values)-1), GLib.gvalues(values...))
 end
 
 function push!(listStore::GtkListStore, values::Tuple)
-	iter = G_.append(listStore)
+    iter = G_.append(listStore)
     list_store_set_values(listStore, iter, values)
     iter
 end
@@ -67,10 +67,10 @@ end
 
 ## insert before
 function insert!(listStore::GtkListStoreLeaf, iter::TRI, values)
-	if isa(iter,_GtkTreeIter)
-		iter=Ref(iter)
-	end
-	newiter = Ref{_GtkTreeIter}()
+    if isa(iter,_GtkTreeIter)
+        iter=Ref(iter)
+    end
+    newiter = Ref{_GtkTreeIter}()
     ccall((:gtk_list_store_insert_before, libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ref{_GtkTreeIter}), listStore, newiter, iter)
     list_store_set_values(listStore, newiter[], values)
     newiter
@@ -79,10 +79,10 @@ end
 
 function delete!(listStore::GtkListStore, iter::TRI)
     # not sure what to do with the return value here
-	if isa(iter,_GtkTreeIter)
-		iter=Ref(iter)
-	end
-	ret = ccall(("gtk_list_store_remove", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), listStore, iter)
+    if isa(iter,_GtkTreeIter)
+        iter=Ref(iter)
+    end
+    ret = ccall(("gtk_list_store_remove", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), listStore, iter)
     listStore
 end
 
@@ -107,14 +107,14 @@ popfirst!(listStore::GtkListStoreLeaf) = deleteat!(listStore, 1)
 
 
 function isvalid(listStore::GtkListStore, iter::_GtkTreeIter)
-	_iter = Ref(iter)
-	ret = ccall(("gtk_list_store_iter_is_valid", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), listStore, _iter)
-	ret2 = convert(Bool, ret)
+    _iter = Ref(iter)
+    ret = ccall(("gtk_list_store_iter_is_valid", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), listStore, _iter)
+    ret2 = convert(Bool, ret)
 end
 
 function length(listStore::GtkListStore)
     _len = G_.iter_n_children(GtkTreeModel(listStore), nothing)
-	return convert(Int, _len)
+    return convert(Int, _len)
 end
 
 size(listStore::GtkListStore) = (length(listStore), ncolumns(GtkTreeModel(listStore)))
@@ -137,23 +137,23 @@ end
 iter_from_index(store::GtkTreeStoreLeaf, index::Vector{Int}) = iter_from_string_index(store, join(index.-1, ":"))
 
 function tree_store_set_values(treeStore::GtkTreeStoreLeaf, iter, values)
-	G_.set(treeStore, Ref(iter), 0:(length(values)-1), GLib.gvalues(values...))
+    G_.set(treeStore, Ref(iter), 0:(length(values)-1), GLib.gvalues(values...))
     iter
 end
 
 # FIXME: push! and pushfirst! return iters, not the collection, which is inconsistent
 # getting the iters is pretty useful, the question is what should these methods be renamed to?
 function push!(treeStore::GtkTreeStore, values::Tuple, parent = nothing)
-	if isa(parent,_GtkTreeIter)
-		parent=Ref(parent)
-	end
-	G_.insert_with_values(treeStore, parent, -1, 0:(length(values)-1), GLib.gvalues(values...))
+    if isa(parent,_GtkTreeIter)
+        parent=Ref(parent)
+    end
+    G_.insert_with_values(treeStore, parent, -1, 0:(length(values)-1), GLib.gvalues(values...))
 end
 
 function pushfirst!(treeStore::GtkTreeStore, values::Tuple, parent = nothing)
-	if isa(parent,_GtkTreeIter)
-		parent=Ref(parent)
-	end
+    if isa(parent,_GtkTreeIter)
+        parent=Ref(parent)
+    end
     iter = G_.prepend(treeStore, parent)
 
     tree_store_set_values(treeStore, iter, values)
@@ -243,7 +243,7 @@ end
 
 
 function setindex!(store::GtkTreeStore, value, index::Vector{Int}, column::Integer)
-     setindex!(store, value, iter_from_index(store, index), column)
+    setindex!(store, value, iter_from_index(store, index), column)
 end
 
 
@@ -253,18 +253,18 @@ end
 GtkTreeModelFilter(child_model::GObject) = G_.filter_new(GtkTreeModel(child_model), nothing)
 
 function convert_iter_to_child_iter(model::Union{GtkTreeModelFilter,GtkTreeModelSort}, filter_iter::TRI)
-	if isa(filter_iter,_GtkTreeIter)
-		filter_iter = Ref(filter_iter)
-	end
-	child_iter = G_.convert_iter_to_child_iter(model, filter_iter)
+    if isa(filter_iter,_GtkTreeIter)
+        filter_iter = Ref(filter_iter)
+    end
+    child_iter = G_.convert_iter_to_child_iter(model, filter_iter)
 end
 
 function convert_child_iter_to_iter(model::Union{GtkTreeModelFilter,GtkTreeModelSort}, child_iter::TRI)
-	if isa(child_iter,_GtkTreeIter)
-		child_iter = Ref(child_iter)
-	end
-	b, filter_iter = G_.convert_child_iter_to_iter(model, child_iter)
-	b ? filter_iter : nothing
+    if isa(child_iter,_GtkTreeIter)
+        child_iter = Ref(child_iter)
+    end
+    b, filter_iter = G_.convert_child_iter_to_iter(model, child_iter)
+    b ? filter_iter : nothing
 end
 
 GtkTreeModelSort(child_model::GObject) = G_.TreeModelSort_new_with_model(GtkTreeModel(child_model))
@@ -273,9 +273,9 @@ GtkTreeModelSort(child_model::GObject) = G_.TreeModelSort_new_with_model(GtkTree
 
 function getindex(treeModel::GtkTreeModel, iter::TRI, column::Integer)
     val = Ref(GValue())
-	if isa(iter,_GtkTreeIter)
-		iter = Ref(iter)
-	end
+    if isa(iter,_GtkTreeIter)
+        iter = Ref(iter)
+    end
     ccall((:gtk_tree_model_get_value, libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Cint, Ptr{GValue}),
            treeModel, iter, column - 1, val)
     val[Any]
@@ -349,12 +349,12 @@ end
 
 ## string is of type "0:1:0" (0-based)
 function get_string_from_iter(treeModel::GtkTreeModel, iter::_GtkTreeIter)
-	ret = ccall(("gtk_tree_model_get_string_from_iter", libgtk4), Cstring, (Ptr{GObject}, Ptr{_GtkTreeIter}), treeModel, Ref(iter))
-	ret2 = if ret == C_NULL
-			nothing
-		else
-			bytestring(ret, true)
-		end
+    ret = ccall(("gtk_tree_model_get_string_from_iter", libgtk4), Cstring, (Ptr{GObject}, Ptr{_GtkTreeIter}), treeModel, Ref(iter))
+    ret2 = if ret == C_NULL
+        nothing
+    else
+        bytestring(ret, true)
+    end
 end
 
 ## these mutate iter to point to new object.
@@ -368,8 +368,8 @@ string(treeModel::GtkTreeModel, iter::TRI) = get_string_from_iter(treeModel, ite
 
 ## index is Int[] 1-based
 function index_from_iter(treeModel::GtkTreeModel, iter::TRI)
-	s = get_string_from_iter(treeModel, iter)
-	s !== nothing ? (parse.(Int32, split(s, ":")) .+ 1) : nothing
+    s = get_string_from_iter(treeModel, iter)
+    s !== nothing ? (parse.(Int32, split(s, ":")) .+ 1) : nothing
 end
 
 ## An iterator to walk a tree, e.g.,
@@ -386,7 +386,7 @@ Base.IteratorSize(::TreeIterator) = Base.SizeUnknown()
 
 ## iterator interface for depth first search
 function start_(x::TreeIterator)
-	i = x.iter
+    i = x.iter
     i === nothing ? nothing : Ref(copy(i))
 end
 
@@ -444,14 +444,14 @@ iterate(x::TreeIterator, state=start_(x)) = done_(x, state) ? nothing : next_(x,
 
 
 function iter(treeModel::GtkTreeModel, path::GtkTreePath)
-  it = Ref{_GtkTreeIter}()
-  ret = ccall((:gtk_tree_model_get_iter, libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{GtkTreePath}),
+    it = Ref{_GtkTreeIter}()
+    ret = ccall((:gtk_tree_model_get_iter, libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{GtkTreePath}),
                     treeModel, it, path) != 0
-  ret, it[]
+    ret, it[]
 end
 
 function path(treeModel::GtkTreeModel, iter::TRI)
-  GtkTreePath( ccall((:gtk_tree_model_get_path, libgtk4), Ptr{GtkTreePath},
+    GtkTreePath( ccall((:gtk_tree_model_get_path, libgtk4), Ptr{GtkTreePath},
                             (Ptr{GObject}, Ref{_GtkTreeIter}),
                             treeModel, iter ) )
 end

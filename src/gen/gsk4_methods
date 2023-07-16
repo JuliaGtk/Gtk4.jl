@@ -56,8 +56,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function equal(instance::GskTransform, _second::Maybe(GskTransform))
-        _second = nothing_to_null(_second)
-        ret = ccall(("gsk_transform_equal", libgtk4), Cint, (Ptr{GskTransform}, Ptr{GskTransform}), instance, _second)
+        _second_maybe = nothing_to_null(_second)
+        ret = ccall(("gsk_transform_equal", libgtk4), Cint, (Ptr{GskTransform}, Ptr{GskTransform}), instance, _second_maybe)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -181,8 +181,8 @@ $(Expr(:toplevel, quote
         (_out_dx, _out_dy)
     end
     function transform(instance::GskTransform, _other::Maybe(GskTransform))
-        _other = nothing_to_null(_other)
-        ret = ccall(("gsk_transform_transform", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{GskTransform}), instance, _other)
+        _other_maybe = nothing_to_null(_other)
+        ret = ccall(("gsk_transform_transform", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{GskTransform}), instance, _other_maybe)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
@@ -247,9 +247,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function BorderNode_new(_outline::_GskRoundedRect, _border_width, _border_color)
-        _border_width = convert(Vector{Float32}, _border_width)
-        _border_color = convert(Vector{_GdkRGBA}, _border_color)
-        ret = ccall(("gsk_border_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GskRoundedRect}, Ptr{Float32}, Ptr{_GdkRGBA}), _outline, _border_width, _border_color)
+        _border_width_arr = convert(Vector{Float32}, _border_width)
+        _border_color_arr = convert(Vector{_GdkRGBA}, _border_color)
+        ret = ccall(("gsk_border_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GskRoundedRect}, Ptr{Float32}, Ptr{_GdkRGBA}), _outline, _border_width_arr, _border_color_arr)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -334,9 +334,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ConicGradientNode_new(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _rotation::Real, _color_stops)
-        _color_stops = convert(Vector{_GskColorStop}, _color_stops)
+        _color_stops_arr = convert(Vector{_GskColorStop}, _color_stops)
         _n_color_stops = length(_color_stops)
-        ret = ccall(("gsk_conic_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Ptr{_GskColorStop}, UInt64), _bounds, _center, _rotation, _color_stops, _n_color_stops)
+        ret = ccall(("gsk_conic_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Ptr{_GskColorStop}, UInt64), _bounds, _center, _rotation, _color_stops_arr, _n_color_stops)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -365,9 +365,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function ContainerNode_new(_children)
-        _children = convert(Vector{Ptr{GskRenderNode}}, _children)
+        _children_arr = convert(Vector{Ptr{GskRenderNode}}, _children)
         _n_children = length(_children)
-        ret = ccall(("gsk_container_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{Ptr{GskRenderNode}}, UInt32), _children, _n_children)
+        ret = ccall(("gsk_container_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{Ptr{GskRenderNode}}, UInt32), _children_arr, _n_children)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -506,9 +506,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function GLShaderNode_new(_shader::GskGLShader, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _args::GBytes, _children)
-        _children = convert(Vector{Ptr{GskRenderNode}}, _children)
+        _children_arr = convert(Vector{Ptr{GskRenderNode}}, _children)
         _n_children = length(_children)
-        ret = ccall(("gsk_gl_shader_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{GBytes}, Ptr{Ptr{GskRenderNode}}, UInt32), _shader, _bounds, _args, _children, _n_children)
+        ret = ccall(("gsk_gl_shader_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{GBytes}, Ptr{Ptr{GskRenderNode}}, UInt32), _shader, _bounds, _args, _children_arr, _n_children)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -563,9 +563,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function LinearGradientNode_new(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _start::Union{GraphenePoint, Ref{_GraphenePoint}}, _end::Union{GraphenePoint, Ref{_GraphenePoint}}, _color_stops)
-        _color_stops = convert(Vector{_GskColorStop}, _color_stops)
+        _color_stops_arr = convert(Vector{_GskColorStop}, _color_stops)
         _n_color_stops = length(_color_stops)
-        ret = ccall(("gsk_linear_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), _bounds, _start, _end, _color_stops, _n_color_stops)
+        ret = ccall(("gsk_linear_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), _bounds, _start, _end, _color_stops_arr, _n_color_stops)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -636,9 +636,9 @@ $(Expr(:toplevel, quote
         ret
     end
     function RadialGradientNode_new(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _color_stops)
-        _color_stops = convert(Vector{_GskColorStop}, _color_stops)
+        _color_stops_arr = convert(Vector{_GskColorStop}, _color_stops)
         _n_color_stops = length(_color_stops)
-        ret = ccall(("gsk_radial_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), _bounds, _center, _hradius, _vradius, _start, _end, _color_stops, _n_color_stops)
+        ret = ccall(("gsk_radial_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), _bounds, _center, _hradius, _vradius, _start, _end, _color_stops_arr, _n_color_stops)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -674,10 +674,18 @@ $(Expr(:toplevel, quote
         ret = ccall(("gsk_radial_gradient_node_get_vradius", libgtk4), Float32, (Ptr{GskRenderNode},), instance)
         ret
     end
-    function deserialize(_bytes::GBytes, _error_func::Maybe(Function), _user_data::Maybe(Nothing))
-        _error_func = nothing_to_null(_error_func)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gsk_render_node_deserialize", libgtk4), Ptr{GskRenderNode}, (Ptr{GBytes}, Ptr{Nothing}, Ptr{Nothing}), _bytes, _error_func, _user_data)
+    function deserialize(_bytes::GBytes, _error_func::Maybe(Function))
+        if _error_func === nothing
+            _error_func_cfunc = C_NULL
+            _error_func_closure = C_NULL
+        else
+            _error_func_cfunc = @cfunction(GskParseErrorFunc, Nothing, (Ptr{_GskParseLocation}, Ptr{_GskParseLocation}, Ptr{GError}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_error_func)
+                _error_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("gsk_render_node_deserialize", libgtk4), Ptr{GskRenderNode}, (Ptr{GBytes}, Ptr{Cvoid}, Ptr{Nothing}), _bytes, _error_func_cfunc, _error_func_closure)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -733,21 +741,21 @@ $(Expr(:toplevel, quote
         ret2
     end
     function realize(instance::GskRenderer, _surface::Maybe(GdkSurface))
-        _surface = nothing_to_null(_surface)
+        _surface_maybe = nothing_to_null(_surface)
         err = err_buf()
-        ret = ccall(("gsk_renderer_realize", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _surface, err)
+        ret = ccall(("gsk_renderer_realize", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _surface_maybe, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
     function render(instance::GskRenderer, _root::GskRenderNode, _region::Maybe(cairoRegion))
-        _region = nothing_to_null(_region)
-        ret = ccall(("gsk_renderer_render", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskRenderNode}, Ptr{cairoRegion}), instance, _root, _region)
+        _region_maybe = nothing_to_null(_region)
+        ret = ccall(("gsk_renderer_render", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskRenderNode}, Ptr{cairoRegion}), instance, _root, _region_maybe)
         nothing
     end
     function render_texture(instance::GskRenderer, _root::GskRenderNode, _viewport::Maybe(Union{GrapheneRect, Ref{_GrapheneRect}}))
-        _viewport = nothing_to_null(_viewport)
-        ret = ccall(("gsk_renderer_render_texture", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GskRenderNode}, Ptr{_GrapheneRect}), instance, _root, _viewport)
+        _viewport_maybe = nothing_to_null(_viewport)
+        ret = ccall(("gsk_renderer_render_texture", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GskRenderNode}, Ptr{_GrapheneRect}), instance, _root, _viewport_maybe)
         ret2 = convert(GdkTexture, ret, true)
         ret2
     end
@@ -756,8 +764,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function RepeatNode_new(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _child::GskRenderNode, _child_bounds::Maybe(Union{GrapheneRect, Ref{_GrapheneRect}}))
-        _child_bounds = nothing_to_null(_child_bounds)
-        ret = ccall(("gsk_repeat_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{GskRenderNode}, Ptr{_GrapheneRect}), _bounds, _child, _child_bounds)
+        _child_bounds_maybe = nothing_to_null(_child_bounds)
+        ret = ccall(("gsk_repeat_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{GskRenderNode}, Ptr{_GrapheneRect}), _bounds, _child, _child_bounds_maybe)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -772,16 +780,16 @@ $(Expr(:toplevel, quote
         ret2
     end
     function RepeatingLinearGradientNode_new(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _start::Union{GraphenePoint, Ref{_GraphenePoint}}, _end::Union{GraphenePoint, Ref{_GraphenePoint}}, _color_stops)
-        _color_stops = convert(Vector{_GskColorStop}, _color_stops)
+        _color_stops_arr = convert(Vector{_GskColorStop}, _color_stops)
         _n_color_stops = length(_color_stops)
-        ret = ccall(("gsk_repeating_linear_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), _bounds, _start, _end, _color_stops, _n_color_stops)
+        ret = ccall(("gsk_repeating_linear_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), _bounds, _start, _end, _color_stops_arr, _n_color_stops)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
     function RepeatingRadialGradientNode_new(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _color_stops)
-        _color_stops = convert(Vector{_GskColorStop}, _color_stops)
+        _color_stops_arr = convert(Vector{_GskColorStop}, _color_stops)
         _n_color_stops = length(_color_stops)
-        ret = ccall(("gsk_repeating_radial_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), _bounds, _center, _hradius, _vradius, _start, _end, _color_stops, _n_color_stops)
+        ret = ccall(("gsk_repeating_radial_gradient_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), _bounds, _center, _hradius, _vradius, _start, _end, _color_stops_arr, _n_color_stops)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
@@ -801,9 +809,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ShadowNode_new(_child::GskRenderNode, _shadows)
-        _shadows = convert(Vector{_GskShadow}, _shadows)
+        _shadows_arr = convert(Vector{_GskShadow}, _shadows)
         _n_shadows = length(_shadows)
-        ret = ccall(("gsk_shadow_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Ptr{_GskShadow}, UInt64), _child, _shadows, _n_shadows)
+        ret = ccall(("gsk_shadow_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Ptr{_GskShadow}, UInt64), _child, _shadows_arr, _n_shadows)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
