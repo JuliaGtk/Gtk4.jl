@@ -36,6 +36,7 @@ struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_ski
 
 GI.all_objects!(exprs,exports,ns)
 GI.all_interfaces!(exprs,exports,ns)
+GI.all_callbacks!(exprs, exports, ns)
 
 push!(exprs,exports)
 

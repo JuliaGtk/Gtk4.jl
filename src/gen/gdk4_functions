@@ -21,11 +21,16 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_cairo_set_source_rgba", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRGBA}), _cr, _rgba)
         nothing
     end
-    function content_deserialize_async(_stream::GInputStream, _mime_type::Union{AbstractString, Symbol}, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_content_deserialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt64, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _stream, _mime_type, _type, _io_priority, _cancellable, _callback, _user_data)
+    function content_deserialize_async(_stream::GInputStream, _mime_type::Union{AbstractString, Symbol}, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_content_deserialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _mime_type, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function content_deserialize_finish(_result::GAsyncResult)
@@ -42,11 +47,16 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GdkContentFormats, ret, true)
         ret2
     end
-    function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gdk_content_serialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{_GValue}, Int32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _stream, _mime_type, _value, _io_priority, _cancellable, _callback, _user_data)
+    function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_content_serialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{_GValue}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _mime_type, _value, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function content_serialize_finish(_result::GAsyncResult)

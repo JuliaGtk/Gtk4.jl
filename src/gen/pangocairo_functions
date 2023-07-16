@@ -10,19 +10,12 @@ $(Expr(:toplevel, quote
         ret
     end
     function context_set_font_options(_context::PangoContext, _options::Maybe(cairoFontOptions))
-        _options = nothing_to_null(_options)
-        ret = ccall(("pango_cairo_context_set_font_options", libpangocairo), Nothing, (Ptr{GObject}, Ptr{cairoFontOptions}), _context, _options)
+        _options_maybe = nothing_to_null(_options)
+        ret = ccall(("pango_cairo_context_set_font_options", libpangocairo), Nothing, (Ptr{GObject}, Ptr{cairoFontOptions}), _context, _options_maybe)
         nothing
     end
     function context_set_resolution(_context::PangoContext, _dpi::Real)
         ret = ccall(("pango_cairo_context_set_resolution", libpangocairo), Nothing, (Ptr{GObject}, Float64), _context, _dpi)
-        nothing
-    end
-    function context_set_shape_renderer(_context::PangoContext, _func::Maybe(Function), _data::Maybe(Nothing), _dnotify::Maybe(Function))
-        _func = nothing_to_null(_func)
-        _data = nothing_to_null(_data)
-        _dnotify = nothing_to_null(_dnotify)
-        ret = ccall(("pango_cairo_context_set_shape_renderer", libpangocairo), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), _context, _func, _data, _dnotify)
         nothing
     end
     function create_context(_cr::cairoContext)

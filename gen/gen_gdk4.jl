@@ -41,6 +41,7 @@ object_skiplist=Symbol[]
 c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist;print_summary=true,constructor_skiplist=[:new_from_resource])
 GI.append_object_docs!(exprs, "gdk4", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns)
+GI.all_callbacks!(exprs, exports, ns)
 
 push!(exprs,exports)
 
