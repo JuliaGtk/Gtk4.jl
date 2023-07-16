@@ -321,8 +321,8 @@ $(Expr(:toplevel, quote
     end
     begin
         struct _GSourceCallbackFuncs
-            ref::Ptr{Nothing}
-            unref::Ptr{Nothing}
+            ref::Ptr{Cvoid}
+            unref::Ptr{Cvoid}
             get::Ptr{Nothing}
         end
         mutable struct GSourceCallbackFuncs
@@ -547,6 +547,171 @@ $(Expr(:toplevel, quote
     @doc "A utility type for constructing container-type #GVariant instances.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantBuilder.html)." GVariantBuilder
     @doc "#GVariantDict is a mutable interface to #GVariant dictionaries.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantDict.html)." GVariantDict
     @doc "This section introduces the GVariant type system. It is based, in\nlarge part, on the D-Bus type system, with two major changes and\nsome minor lifting of restrictions. The\n[D-Bus specification](http://dbus.freedesktop.org/doc/dbus-specification.html),\ntherefore, provides a significant amount of\ninformation that is useful when working with GVariant.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantType.html)." GVariantType
-    export GBytes, GChecksum, GDate, _GDate, GDateTime, GDebugKey, _GDebugKey, GKeyFile, GLogField, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, _GOptionEntry, GPatternSpec, GRegex, GScannerConfig, _GScannerConfig, GSource, _GSource, GSourceCallbackFuncs, _GSourceCallbackFuncs, GString, _GString, GTestConfig, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType
+    function GChildWatchFunc(pid, wait_status, user_data)
+        f = user_data
+        ret = f(pid, wait_status)
+        nothing
+    end
+    function GCompareDataFunc(a, b, user_data)
+        f = user_data
+        ret = f(a, b)
+        convert(Int32, ret)
+    end
+    function GCopyFunc(src, user_data)
+        f = user_data
+        ret = f(src)
+        convert(Ptr{Nothing}, ret)
+    end
+    function GDataForeachFunc(key_id, data, user_data)
+        f = user_data
+        ret = f(key_id, data)
+        nothing
+    end
+    function GDuplicateFunc(data, user_data)
+        f = user_data
+        ret = f(data)
+        convert(Ptr{Nothing}, ret)
+    end
+    function GEqualFuncFull(a, b, user_data)
+        f = user_data
+        ret = f(a, b)
+        convert(Cint, ret)
+    end
+    function GFunc(data, user_data)
+        f = user_data
+        ret = f(data)
+        nothing
+    end
+    function GHFunc(key, value, user_data)
+        f = user_data
+        ret = f(key, value)
+        nothing
+    end
+    function GHRFunc(key, value, user_data)
+        f = user_data
+        ret = f(key, value)
+        convert(Cint, ret)
+    end
+    function GHookCheckMarshaller(hook, user_data)
+        f = user_data
+        ret = f(hook)
+        convert(Cint, ret)
+    end
+    function GHookFindFunc(hook, user_data)
+        f = user_data
+        ret = f(hook)
+        convert(Cint, ret)
+    end
+    function GHookMarshaller(hook, user_data)
+        f = user_data
+        ret = f(hook)
+        nothing
+    end
+    function GIOFunc(source, condition, user_data)
+        f = user_data
+        ret = f(source, condition)
+        convert(Cint, ret)
+    end
+    function GLogFunc(log_domain, log_level, message, user_data)
+        f = user_data
+        ret = f(log_domain, log_level, message)
+        nothing
+    end
+    function GLogWriterFunc(log_level, fields, n_fields, user_data)
+        f = user_data
+        ret = f(log_level, fields, n_fields)
+        convert(UInt32, ret)
+    end
+    function GNodeForeachFunc(node, user_data)
+        f = user_data
+        ret = f(node)
+        nothing
+    end
+    function GNodeTraverseFunc(node, user_data)
+        f = user_data
+        ret = f(node)
+        convert(Cint, ret)
+    end
+    function GOptionArgFunc(option_name, value, user_data)
+        f = user_data
+        ret = f(option_name, value)
+        convert(Cint, ret)
+    end
+    function GOptionErrorFunc(context, group, user_data)
+        f = user_data
+        ret = f(context, group)
+        nothing
+    end
+    function GOptionParseFunc(context, group, user_data)
+        f = user_data
+        ret = f(context, group)
+        convert(Cint, ret)
+    end
+    function GRegexEvalCallback(match_info, result, user_data)
+        f = user_data
+        ret = f(match_info, result)
+        convert(Cint, ret)
+    end
+    function GSequenceIterCompareFunc(a, b, user_data)
+        f = user_data
+        ret = f(a, b)
+        convert(Int32, ret)
+    end
+    function GSourceFunc(user_data)
+        f = user_data
+        ret = f()
+        convert(Cint, ret)
+    end
+    function GSourceOnceFunc(user_data)
+        f = user_data
+        ret = f()
+        nothing
+    end
+    function GSpawnChildSetupFunc(user_data)
+        f = user_data
+        ret = f()
+        nothing
+    end
+    function GTestDataFunc(user_data)
+        f = user_data
+        ret = f()
+        nothing
+    end
+    function GTestFixtureFunc(fixture, user_data)
+        f = user_data
+        ret = f(fixture)
+        nothing
+    end
+    function GTestLogFatalFunc(log_domain, log_level, message, user_data)
+        f = user_data
+        ret = f(log_domain, log_level, message)
+        convert(Cint, ret)
+    end
+    function GThreadFunc(user_data)
+        f = user_data
+        ret = f()
+        convert(Ptr{Nothing}, ret)
+    end
+    function GTranslateFunc(str, user_data)
+        f = user_data
+        ret = f(str)
+        convert(Cstring, ret)
+    end
+    function GTraverseFunc(key, value, user_data)
+        f = user_data
+        ret = f(key, value)
+        convert(Cint, ret)
+    end
+    function GTraverseNodeFunc(node, user_data)
+        f = user_data
+        ret = f(node)
+        convert(Cint, ret)
+    end
+    function GUnixFDSourceFunc(fd, condition, user_data)
+        f = user_data
+        ret = f(fd, condition)
+        convert(Cint, ret)
+    end
+    export GBytes, GChecksum, GDate, _GDate, GDateTime, GDebugKey, _GDebugKey, GKeyFile, GLogField, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, _GOptionEntry, GPatternSpec, GRegex, GScannerConfig, _GScannerConfig, GSource, _GSource, GSourceCallbackFuncs, _GSourceCallbackFuncs, GString, _GString, GTestConfig, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDuplicateFunc, GEqualFuncFull, GFunc, GHFunc, GHRFunc, GHookCheckMarshaller, GHookFindFunc, GHookMarshaller, GIOFunc, GLogFunc, GLogWriterFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc, GUnixFDSourceFunc
 end))
 end

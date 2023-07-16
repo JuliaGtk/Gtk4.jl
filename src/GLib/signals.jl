@@ -1,3 +1,6 @@
+# First the version of `signal_connect` that takes the return type and argument types and passes a 
+# function and closure to `g_signal_connect_data`.
+
 # id = signal_connect(widget, :event, Nothing, (ArgsT...)) do ptr, evt_args..., closure
 #    stuff
 # end
@@ -19,6 +22,8 @@ function signal_connect_generic(@nospecialize(cb::Function), w::GObject, sig::Ab
                  deref,
                  after ? ConnectFlags_AFTER : 0)
 end
+
+# Next the more user friendly version, which passes everything as GValues.
 
 # id = signal_connect(widget, :event) do obj, evt_args...
 #    stuff

@@ -1,16 +1,16 @@
 quote
 $(Expr(:toplevel, quote
     function Bytes_new(_data)
-        _data = convert(Vector{UInt8}, _data)
+        _data_arr = convert(Vector{UInt8}, _data)
         _size = length(_data)
-        ret = ccall(("g_bytes_new", libglib), Ptr{GBytes}, (Ptr{UInt8}, UInt64), _data, _size)
+        ret = ccall(("g_bytes_new", libglib), Ptr{GBytes}, (Ptr{UInt8}, UInt64), _data_arr, _size)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
     function Bytes_new_take(_data)
-        _data = convert(Vector{UInt8}, _data)
+        _data_arr = convert(Vector{UInt8}, _data)
         _size = length(_data)
-        ret = ccall(("g_bytes_new_take", libglib), Ptr{GBytes}, (Ptr{UInt8}, UInt64), _data, _size)
+        ret = ccall(("g_bytes_new_take", libglib), Ptr{GBytes}, (Ptr{UInt8}, UInt64), _data_arr, _size)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
@@ -92,9 +92,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function update(instance::GChecksum, _data)
-        _data = convert(Vector{UInt8}, _data)
+        _data_arr = convert(Vector{UInt8}, _data)
         _length = length(_data)
-        ret = ccall(("g_checksum_update", libglib), Nothing, (Ptr{GChecksum}, Ptr{UInt8}, Int64), instance, _data, _length)
+        ret = ccall(("g_checksum_update", libglib), Nothing, (Ptr{GChecksum}, Ptr{UInt8}, Int64), instance, _data_arr, _length)
         nothing
     end
     function Date_new()
@@ -256,8 +256,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DateTime_new_from_iso8601(_text::Union{AbstractString, Symbol}, _default_tz::Maybe(GTimeZone))
-        _default_tz = nothing_to_null(_default_tz)
-        ret = ccall(("g_date_time_new_from_iso8601", libglib), Ptr{GDateTime}, (Cstring, Ptr{GTimeZone}), _text, _default_tz)
+        _default_tz_maybe = nothing_to_null(_default_tz)
+        ret = ccall(("g_date_time_new_from_iso8601", libglib), Ptr{GDateTime}, (Cstring, Ptr{GTimeZone}), _text, _default_tz_maybe)
         ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
@@ -499,10 +499,10 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_comment(instance::GKeyFile, _group_name::Maybe(Union{AbstractString, Symbol}), _key::Maybe(Union{AbstractString, Symbol}))
-        _group_name = nothing_to_null(_group_name)
-        _key = nothing_to_null(_key)
+        _group_name_maybe = nothing_to_null(_group_name)
+        _key_maybe = nothing_to_null(_key)
         err = err_buf()
-        ret = ccall(("g_key_file_get_comment", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_get_comment", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name_maybe, _key_maybe, err)
         check_err(err)
         ret2 = string_or_nothing(ret, true)
         ret2
@@ -578,24 +578,24 @@ $(Expr(:toplevel, quote
         (ret2, _length)
     end
     function get_locale_for_key(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _locale::Maybe(Union{AbstractString, Symbol}))
-        _locale = nothing_to_null(_locale)
-        ret = ccall(("g_key_file_get_locale_for_key", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _locale)
+        _locale_maybe = nothing_to_null(_locale)
+        ret = ccall(("g_key_file_get_locale_for_key", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring), instance, _group_name, _key, _locale_maybe)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_locale_string(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _locale::Maybe(Union{AbstractString, Symbol}))
-        _locale = nothing_to_null(_locale)
+        _locale_maybe = nothing_to_null(_locale)
         err = err_buf()
-        ret = ccall(("g_key_file_get_locale_string", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale, err)
+        ret = ccall(("g_key_file_get_locale_string", libglib), Cstring, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale_maybe, err)
         check_err(err)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
     function get_locale_string_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _locale::Maybe(Union{AbstractString, Symbol}))
-        _locale = nothing_to_null(_locale)
+        _locale_maybe = nothing_to_null(_locale)
         m_length = Ref{UInt64}()
         err = err_buf()
-        ret = ccall(("g_key_file_get_locale_string_list", libglib), Ptr{Cstring}, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale, m_length, err)
+        ret = ccall(("g_key_file_get_locale_string_list", libglib), Ptr{Cstring}, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _group_name, _key, _locale_maybe, m_length, err)
         check_err(err)
         ret2 = begin
                 _len = length_zt(ret)
@@ -692,10 +692,10 @@ $(Expr(:toplevel, quote
         ret2
     end
     function remove_comment(instance::GKeyFile, _group_name::Maybe(Union{AbstractString, Symbol}), _key::Maybe(Union{AbstractString, Symbol}))
-        _group_name = nothing_to_null(_group_name)
-        _key = nothing_to_null(_key)
+        _group_name_maybe = nothing_to_null(_group_name)
+        _key_maybe = nothing_to_null(_key)
         err = err_buf()
-        ret = ccall(("g_key_file_remove_comment", libglib), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, err)
+        ret = ccall(("g_key_file_remove_comment", libglib), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name_maybe, _key_maybe, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -726,16 +726,16 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_boolean_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _list)
-        _list = convert(Vector{Cint}, _list)
+        _list_arr = convert(Vector{Cint}, _list)
         _length = length(_list)
-        ret = ccall(("g_key_file_set_boolean_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Cint}, UInt64), instance, _group_name, _key, _list, _length)
+        ret = ccall(("g_key_file_set_boolean_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Cint}, UInt64), instance, _group_name, _key, _list_arr, _length)
         nothing
     end
     function set_comment(instance::GKeyFile, _group_name::Maybe(Union{AbstractString, Symbol}), _key::Maybe(Union{AbstractString, Symbol}), _comment::Union{AbstractString, Symbol})
-        _group_name = nothing_to_null(_group_name)
-        _key = nothing_to_null(_key)
+        _group_name_maybe = nothing_to_null(_group_name)
+        _key_maybe = nothing_to_null(_key)
         err = err_buf()
-        ret = ccall(("g_key_file_set_comment", libglib), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name, _key, _comment, err)
+        ret = ccall(("g_key_file_set_comment", libglib), Cint, (Ptr{GKeyFile}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _group_name_maybe, _key_maybe, _comment, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -745,9 +745,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_double_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _list)
-        _list = convert(Vector{Float64}, _list)
+        _list_arr = convert(Vector{Float64}, _list)
         _length = length(_list)
-        ret = ccall(("g_key_file_set_double_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Float64}, UInt64), instance, _group_name, _key, _list, _length)
+        ret = ccall(("g_key_file_set_double_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Float64}, UInt64), instance, _group_name, _key, _list_arr, _length)
         nothing
     end
     function set_int64(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _value::Integer)
@@ -759,9 +759,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_integer_list(instance::GKeyFile, _group_name::Union{AbstractString, Symbol}, _key::Union{AbstractString, Symbol}, _list)
-        _list = convert(Vector{Int32}, _list)
+        _list_arr = convert(Vector{Int32}, _list)
         _length = length(_list)
-        ret = ccall(("g_key_file_set_integer_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Int32}, UInt64), instance, _group_name, _key, _list, _length)
+        ret = ccall(("g_key_file_set_integer_list", libglib), Nothing, (Ptr{GKeyFile}, Cstring, Cstring, Ptr{Int32}, UInt64), instance, _group_name, _key, _list_arr, _length)
         nothing
     end
     function set_list_separator(instance::GKeyFile, _separator::Integer)
@@ -874,8 +874,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function MainLoop_new(_context::Maybe(GMainContext), _is_running::Bool)
-        _context = nothing_to_null(_context)
-        ret = ccall(("g_main_loop_new", libglib), Ptr{GMainLoop}, (Ptr{GMainContext}, Cint), _context, _is_running)
+        _context_maybe = nothing_to_null(_context)
+        ret = ccall(("g_main_loop_new", libglib), Ptr{GMainLoop}, (Ptr{GMainContext}, Cint), _context_maybe, _is_running)
         ret2 = convert(GMainLoop, ret, true)
         ret2
     end
@@ -1052,8 +1052,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function match(instance::GPatternSpec, _string_length::Integer, _string::Union{AbstractString, Symbol}, _string_reversed::Maybe(Union{AbstractString, Symbol}))
-        _string_reversed = nothing_to_null(_string_reversed)
-        ret = ccall(("g_pattern_spec_match", libglib), Cint, (Ptr{GPatternSpec}, UInt64, Cstring, Cstring), instance, _string_length, _string, _string_reversed)
+        _string_reversed_maybe = nothing_to_null(_string_reversed)
+        ret = ccall(("g_pattern_spec_match", libglib), Cint, (Ptr{GPatternSpec}, UInt64, Cstring, Cstring), instance, _string_length, _string, _string_reversed_maybe)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -1192,8 +1192,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function String_new(_init::Maybe(Union{AbstractString, Symbol}))
-        _init = nothing_to_null(_init)
-        ret = ccall(("g_string_new", libglib), Ptr{_GString}, (Cstring,), _init)
+        _init_maybe = nothing_to_null(_init)
+        ret = ccall(("g_string_new", libglib), Ptr{_GString}, (Cstring,), _init_maybe)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, true)
         ret2
     end
@@ -1336,8 +1336,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function TimeZone_new_identifier(_identifier::Maybe(Union{AbstractString, Symbol}))
-        _identifier = nothing_to_null(_identifier)
-        ret = ccall(("g_time_zone_new_identifier", libglib), Ptr{GTimeZone}, (Cstring,), _identifier)
+        _identifier_maybe = nothing_to_null(_identifier)
+        ret = ccall(("g_time_zone_new_identifier", libglib), Ptr{GTimeZone}, (Cstring,), _identifier_maybe)
         ret2 = convert_if_not_null(GTimeZone, ret, true)
         ret2
     end
@@ -1464,10 +1464,10 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Variant_new_array(_child_type::Maybe(GVariantType), _children)
-        _child_type = nothing_to_null(_child_type)
-        _children = convert(Vector{Ptr{GVariant}}, _children)
+        _child_type_maybe = nothing_to_null(_child_type)
+        _children_arr = convert(Vector{Ptr{GVariant}}, _children)
         _n_children = length(_children)
-        ret = ccall(("g_variant_new_array", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{Ptr{GVariant}}, UInt64), _child_type, _children, _n_children)
+        ret = ccall(("g_variant_new_array", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{Ptr{GVariant}}, UInt64), _child_type_maybe, _children_arr, _n_children)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1482,8 +1482,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Variant_new_bytestring(_string)
-        _string = convert(Vector{UInt8}, _string)
-        ret = ccall(("g_variant_new_bytestring", libglib), Ptr{GVariant}, (Ptr{UInt8},), _string)
+        _string_arr = convert(Vector{UInt8}, _string)
+        ret = ccall(("g_variant_new_bytestring", libglib), Ptr{GVariant}, (Ptr{UInt8},), _string_arr)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1504,8 +1504,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Variant_new_fixed_array(_element_type::GVariantType, _elements::Maybe(Nothing), _n_elements::Integer, _element_size::Integer)
-        _elements = nothing_to_null(_elements)
-        ret = ccall(("g_variant_new_fixed_array", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{Nothing}, UInt64, UInt64), _element_type, _elements, _n_elements, _element_size)
+        _elements_maybe = nothing_to_null(_elements)
+        ret = ccall(("g_variant_new_fixed_array", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{Nothing}, UInt64, UInt64), _element_type, _elements_maybe, _n_elements, _element_size)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1535,9 +1535,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Variant_new_maybe(_child_type::Maybe(GVariantType), _child::Maybe(GVariant))
-        _child_type = nothing_to_null(_child_type)
-        _child = nothing_to_null(_child)
-        ret = ccall(("g_variant_new_maybe", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{GVariant}), _child_type, _child)
+        _child_type_maybe = nothing_to_null(_child_type)
+        _child_maybe = nothing_to_null(_child)
+        ret = ccall(("g_variant_new_maybe", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Ptr{GVariant}), _child_type_maybe, _child_maybe)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1569,9 +1569,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function Variant_new_tuple(_children)
-        _children = convert(Vector{Ptr{GVariant}}, _children)
+        _children_arr = convert(Vector{Ptr{GVariant}}, _children)
         _n_children = length(_children)
-        ret = ccall(("g_variant_new_tuple", libglib), Ptr{GVariant}, (Ptr{Ptr{GVariant}}, UInt64), _children, _n_children)
+        ret = ccall(("g_variant_new_tuple", libglib), Ptr{GVariant}, (Ptr{Ptr{GVariant}}, UInt64), _children_arr, _n_children)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1799,8 +1799,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function lookup_value(instance::GVariant, _key::Union{AbstractString, Symbol}, _expected_type::Maybe(GVariantType))
-        _expected_type = nothing_to_null(_expected_type)
-        ret = ccall(("g_variant_lookup_value", libglib), Ptr{GVariant}, (Ptr{GVariant}, Cstring, Ptr{GVariantType}), instance, _key, _expected_type)
+        _expected_type_maybe = nothing_to_null(_expected_type)
+        ret = ccall(("g_variant_lookup_value", libglib), Ptr{GVariant}, (Ptr{GVariant}, Cstring, Ptr{GVariantType}), instance, _key, _expected_type_maybe)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1863,8 +1863,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function VariantDict_new(_from_asv::Maybe(GVariant))
-        _from_asv = nothing_to_null(_from_asv)
-        ret = ccall(("g_variant_dict_new", libglib), Ptr{GVariantDict}, (Ptr{GVariant},), _from_asv)
+        _from_asv_maybe = nothing_to_null(_from_asv)
+        ret = ccall(("g_variant_dict_new", libglib), Ptr{GVariantDict}, (Ptr{GVariant},), _from_asv_maybe)
         ret2 = convert(GVariantDict, ret, true)
         ret2
     end
@@ -1882,8 +1882,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function lookup_value(instance::GVariantDict, _key::Union{AbstractString, Symbol}, _expected_type::Maybe(GVariantType))
-        _expected_type = nothing_to_null(_expected_type)
-        ret = ccall(("g_variant_dict_lookup_value", libglib), Ptr{GVariant}, (Ptr{GVariantDict}, Cstring, Ptr{GVariantType}), instance, _key, _expected_type)
+        _expected_type_maybe = nothing_to_null(_expected_type)
+        ret = ccall(("g_variant_dict_lookup_value", libglib), Ptr{GVariant}, (Ptr{GVariantDict}, Cstring, Ptr{GVariantType}), instance, _key, _expected_type_maybe)
         ret2 = convert(GVariant, ret)
         ret2
     end
@@ -1922,9 +1922,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function VariantType_new_tuple(_items)
-        _items = convert(Vector{Ptr{GVariantType}}, _items)
+        _items_arr = convert(Vector{Ptr{GVariantType}}, _items)
         _length = length(_items)
-        ret = ccall(("g_variant_type_new_tuple", libglib), Ptr{GVariantType}, (Ptr{Ptr{GVariantType}}, Int32), _items, _length)
+        ret = ccall(("g_variant_type_new_tuple", libglib), Ptr{GVariantType}, (Ptr{Ptr{GVariantType}}, Int32), _items_arr, _length)
         ret2 = convert(GVariantType, ret, true)
         ret2
     end

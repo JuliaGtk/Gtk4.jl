@@ -11,8 +11,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function accelerator_get_label_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods)
-        _display = nothing_to_null(_display)
-        ret = ccall(("gtk_accelerator_get_label_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display, _accelerator_key, _keycode, _accelerator_mods)
+        _display_maybe = nothing_to_null(_display)
+        ret = ccall(("gtk_accelerator_get_label_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display_maybe, _accelerator_key, _keycode, _accelerator_mods)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
@@ -22,8 +22,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function accelerator_name_with_keycode(_display::Maybe(GdkDisplay), _accelerator_key::Integer, _keycode::Integer, _accelerator_mods)
-        _display = nothing_to_null(_display)
-        ret = ccall(("gtk_accelerator_name_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display, _accelerator_key, _keycode, _accelerator_mods)
+        _display_maybe = nothing_to_null(_display)
+        ret = ccall(("gtk_accelerator_name_with_keycode", libgtk4), Cstring, (Ptr{GObject}, UInt32, UInt32, UInt32), _display_maybe, _accelerator_key, _keycode, _accelerator_mods)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
@@ -107,9 +107,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function distribute_natural_allocation(_extra_space::Integer, _sizes)
-        _sizes = convert(Vector{_GtkRequestedSize}, _sizes)
+        _sizes_arr = convert(Vector{_GtkRequestedSize}, _sizes)
         _n_requested_sizes = length(_sizes)
-        ret = ccall(("gtk_distribute_natural_allocation", libgtk4), Int32, (Int32, UInt32, Ptr{_GtkRequestedSize}), _extra_space, _n_requested_sizes, _sizes)
+        ret = ccall(("gtk_distribute_natural_allocation", libgtk4), Int32, (Int32, UInt32, Ptr{_GtkRequestedSize}), _extra_space, _n_requested_sizes, _sizes_arr)
         ret
     end
     function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
@@ -209,11 +209,21 @@ $(Expr(:toplevel, quote
         ret
     end
     function print_run_page_setup_dialog(_parent::Maybe(GtkWindow), _page_setup::Maybe(GtkPageSetup), _settings::GtkPrintSettings)
-        _parent = nothing_to_null(_parent)
-        _page_setup = nothing_to_null(_page_setup)
-        ret = ccall(("gtk_print_run_page_setup_dialog", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), _parent, _page_setup, _settings)
+        _parent_maybe = nothing_to_null(_parent)
+        _page_setup_maybe = nothing_to_null(_page_setup)
+        ret = ccall(("gtk_print_run_page_setup_dialog", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), _parent_maybe, _page_setup_maybe, _settings)
         ret2 = convert(GtkPageSetup, ret, true)
         ret2
+    end
+    function print_run_page_setup_dialog_async(_parent::Maybe(GtkWindow), _page_setup::Maybe(GtkPageSetup), _settings::GtkPrintSettings, _done_cb::Function)
+        _parent_maybe = nothing_to_null(_parent)
+        _page_setup_maybe = nothing_to_null(_page_setup)
+        begin
+            _done_cb_cfunc = @cfunction(GtkPageSetupDoneFunc, Nothing, (Ptr{GObject}, Ref{Function}))
+            _done_cb_closure = GLib.gc_ref(_done_cb)
+        end
+        ret = ccall(("gtk_print_run_page_setup_dialog_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _parent_maybe, _page_setup_maybe, _settings, _done_cb_cfunc, _done_cb_closure)
+        nothing
     end
     function recent_manager_error_quark()
         ret = ccall(("gtk_recent_manager_error_quark", libgtk4), UInt32, ())
@@ -282,16 +292,21 @@ $(Expr(:toplevel, quote
         nothing
     end
     function show_uri(_parent::Maybe(GtkWindow), _uri::Union{AbstractString, Symbol}, _timestamp::Integer)
-        _parent = nothing_to_null(_parent)
-        ret = ccall(("gtk_show_uri", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32), _parent, _uri, _timestamp)
+        _parent_maybe = nothing_to_null(_parent)
+        ret = ccall(("gtk_show_uri", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32), _parent_maybe, _uri, _timestamp)
         nothing
     end
-    function show_uri_full(_parent::Maybe(GtkWindow), _uri::Union{AbstractString, Symbol}, _timestamp::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _user_data::Maybe(Nothing))
-        _parent = nothing_to_null(_parent)
-        _cancellable = nothing_to_null(_cancellable)
-        _callback = nothing_to_null(_callback)
-        _user_data = nothing_to_null(_user_data)
-        ret = ccall(("gtk_show_uri_full", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32, Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}), _parent, _uri, _timestamp, _cancellable, _callback, _user_data)
+    function show_uri_full(_parent::Maybe(GtkWindow), _uri::Union{AbstractString, Symbol}, _timestamp::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_show_uri_full", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _parent_maybe, _uri, _timestamp, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function show_uri_full_finish(_parent::GtkWindow, _result::GAsyncResult)
@@ -351,9 +366,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_get_row_drag_data", libgtk4), Cint, (Ptr{_GValue}, Ptr{Ptr{GObject}}, Ptr{Ptr{GtkTreePath}}), _value, m_tree_model, m_path)
         ret2 = convert(Bool, ret)
         _tree_model = m_tree_model[]
-        _tree_model = convert(Maybe(GtkTreeModel), _tree_model)
+        _tree_model = GLib.find_leaf_type_if_not_null(_tree_model, false)
         _path = m_path[]
-        _path = convert(Maybe(GtkTreePath), _path)
+        _path = convert_if_not_null(Maybe(GtkTreePath), _path, true)
         (ret2, _tree_model, _path)
     end
     function tree_row_reference_deleted(_proxy::GObject, _path::GtkTreePath)

@@ -1,5 +1,7 @@
 using GI
 
+printstyled("Generating code for GObject\n";bold=true)
+
 toplevel, exprs, exports = GI.output_exprs()
 
 path="../src/gen"
@@ -31,6 +33,7 @@ c = GI.all_objects!(exprs,exports,ns;handled=[:Object],skiplist=[:SignalGroup])
 GI.append_object_docs!(exprs, "gobject", d, c, ns)
 push!(exprs,:(gtype_wrapper_cache[:GObject] = GObjectLeaf))
 GI.all_interfaces!(exprs,exports,ns)
+GI.all_callbacks!(exprs, exports, ns)
 
 push!(exprs,exports)
 
@@ -46,7 +49,7 @@ skiplist=[:init_from_instance,:get_private,:get_param,:set_param]
 
 filter!(x->x≠:Value,struct_skiplist)
 
-symbols_handled=GI.all_struct_methods!(exprs,ns;print_detailed=true,skiplist=skiplist,struct_skiplist=struct_skiplist)
+symbols_handled=GI.all_struct_methods!(exprs,ns;skiplist=skiplist,struct_skiplist=struct_skiplist)
 
 ## object methods
 

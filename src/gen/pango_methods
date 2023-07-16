@@ -582,9 +582,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function get_metrics(instance::PangoContext, _desc::Maybe(PangoFontDescription), _language::Maybe(PangoLanguage))
-        _desc = nothing_to_null(_desc)
-        _language = nothing_to_null(_language)
-        ret = ccall(("pango_context_get_metrics", libpango), Ptr{_PangoFontMetrics}, (Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{PangoLanguage}), instance, _desc, _language)
+        _desc_maybe = nothing_to_null(_desc)
+        _language_maybe = nothing_to_null(_language)
+        ret = ccall(("pango_context_get_metrics", libpango), Ptr{_PangoFontMetrics}, (Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{PangoLanguage}), instance, _desc_maybe, _language_maybe)
         ret2 = convert(Union{PangoFontMetrics, Ref{_PangoFontMetrics}}, ret, true)
         ret2
     end
@@ -629,13 +629,13 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_font_description(instance::PangoContext, _desc::Maybe(PangoFontDescription))
-        _desc = nothing_to_null(_desc)
-        ret = ccall(("pango_context_set_font_description", libpango), Nothing, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _desc)
+        _desc_maybe = nothing_to_null(_desc)
+        ret = ccall(("pango_context_set_font_description", libpango), Nothing, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _desc_maybe)
         nothing
     end
     function set_font_map(instance::PangoContext, _font_map::Maybe(PangoFontMap))
-        _font_map = nothing_to_null(_font_map)
-        ret = ccall(("pango_context_set_font_map", libpango), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _font_map)
+        _font_map_maybe = nothing_to_null(_font_map)
+        ret = ccall(("pango_context_set_font_map", libpango), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _font_map_maybe)
         nothing
     end
     function set_gravity_hint(instance::PangoContext, _hint)
@@ -643,13 +643,13 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_language(instance::PangoContext, _language::Maybe(PangoLanguage))
-        _language = nothing_to_null(_language)
-        ret = ccall(("pango_context_set_language", libpango), Nothing, (Ptr{GObject}, Ptr{PangoLanguage}), instance, _language)
+        _language_maybe = nothing_to_null(_language)
+        ret = ccall(("pango_context_set_language", libpango), Nothing, (Ptr{GObject}, Ptr{PangoLanguage}), instance, _language_maybe)
         nothing
     end
     function set_matrix(instance::PangoContext, _matrix::Maybe(Union{PangoMatrix, Ref{_PangoMatrix}}))
-        _matrix = nothing_to_null(_matrix)
-        ret = ccall(("pango_context_set_matrix", libpango), Nothing, (Ptr{GObject}, Ptr{_PangoMatrix}), instance, _matrix)
+        _matrix_maybe = nothing_to_null(_matrix)
+        ret = ccall(("pango_context_set_matrix", libpango), Nothing, (Ptr{GObject}, Ptr{_PangoMatrix}), instance, _matrix_maybe)
         nothing
     end
     function set_round_glyph_positions(instance::PangoContext, _round_positions::Bool)
@@ -676,9 +676,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function descriptions_free(_descs)
-        _descs = convert(Vector{Ptr{PangoFontDescription}}, _descs)
+        _descs_arr = convert(Vector{Ptr{PangoFontDescription}}, _descs)
         _n_descs = length(_descs)
-        ret = ccall(("pango_font_descriptions_free", libpango), Nothing, (Ptr{Ptr{PangoFontDescription}}, Int32), _descs, _n_descs)
+        ret = ccall(("pango_font_descriptions_free", libpango), Nothing, (Ptr{Ptr{PangoFontDescription}}, Int32), _descs_arr, _n_descs)
         nothing
     end
     function deserialize(_context::PangoContext, _bytes::GBytes)
@@ -722,8 +722,8 @@ $(Expr(:toplevel, quote
         (_ink_rect, _logical_rect)
     end
     function get_metrics(instance::PangoFont, _language::Maybe(PangoLanguage))
-        _language = nothing_to_null(_language)
-        ret = ccall(("pango_font_get_metrics", libpango), Ptr{_PangoFontMetrics}, (Ptr{GObject}, Ptr{PangoLanguage}), instance, _language)
+        _language_maybe = nothing_to_null(_language)
+        ret = ccall(("pango_font_get_metrics", libpango), Ptr{_PangoFontMetrics}, (Ptr{GObject}, Ptr{PangoLanguage}), instance, _language_maybe)
         ret2 = convert(Union{PangoFontMetrics, Ref{_PangoFontMetrics}}, ret, true)
         ret2
     end
@@ -771,8 +771,8 @@ $(Expr(:toplevel, quote
         _sizes
     end
     function get_face(instance::PangoFontFamily, _name::Maybe(Union{AbstractString, Symbol}))
-        _name = nothing_to_null(_name)
-        ret = ccall(("pango_font_family_get_face", libpango), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _name)
+        _name_maybe = nothing_to_null(_name)
+        ret = ccall(("pango_font_family_get_face", libpango), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _name_maybe)
         ret2 = convert_if_not_null(PangoFontFace, ret, false)
         ret2
     end
@@ -844,6 +844,17 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_font_map_load_fontset", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{PangoLanguage}), instance, _context, _desc, _language)
         ret2 = convert_if_not_null(PangoFontset, ret, true)
         ret2
+    end
+    function foreach(instance::PangoFontset, _func::Function)
+        begin
+            _func_cfunc = @cfunction(PangoFontsetForeachFunc, Cint, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_func)
+                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("pango_fontset_foreach", libpango), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _func_cfunc, _func_closure)
+        nothing
     end
     function get_font(instance::PangoFontset, _wc::Integer)
         ret = ccall(("pango_fontset_get_font", libpango), Ptr{GObject}, (Ptr{GObject}, UInt32), instance, _wc)
@@ -1127,8 +1138,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_attributes(instance::PangoLayout, _attrs::Maybe(PangoAttrList))
-        _attrs = nothing_to_null(_attrs)
-        ret = ccall(("pango_layout_set_attributes", libpango), Nothing, (Ptr{GObject}, Ptr{PangoAttrList}), instance, _attrs)
+        _attrs_maybe = nothing_to_null(_attrs)
+        ret = ccall(("pango_layout_set_attributes", libpango), Nothing, (Ptr{GObject}, Ptr{PangoAttrList}), instance, _attrs_maybe)
         nothing
     end
     function set_auto_dir(instance::PangoLayout, _auto_dir::Bool)
@@ -1140,8 +1151,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_font_description(instance::PangoLayout, _desc::Maybe(PangoFontDescription))
-        _desc = nothing_to_null(_desc)
-        ret = ccall(("pango_layout_set_font_description", libpango), Nothing, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _desc)
+        _desc_maybe = nothing_to_null(_desc)
+        ret = ccall(("pango_layout_set_font_description", libpango), Nothing, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _desc_maybe)
         nothing
     end
     function set_height(instance::PangoLayout, _height::Integer)
@@ -1183,8 +1194,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_tabs(instance::PangoLayout, _tabs::Maybe(PangoTabArray))
-        _tabs = nothing_to_null(_tabs)
-        ret = ccall(("pango_layout_set_tabs", libpango), Nothing, (Ptr{GObject}, Ptr{PangoTabArray}), instance, _tabs)
+        _tabs_maybe = nothing_to_null(_tabs)
+        ret = ccall(("pango_layout_set_tabs", libpango), Nothing, (Ptr{GObject}, Ptr{PangoTabArray}), instance, _tabs_maybe)
         nothing
     end
     function set_text(instance::PangoLayout, _text::Union{AbstractString, Symbol}, _length::Integer)
@@ -1232,8 +1243,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function draw_glyph_item(instance::PangoRenderer, _text::Maybe(Union{AbstractString, Symbol}), _glyph_item::Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, _x::Integer, _y::Integer)
-        _text = nothing_to_null(_text)
-        ret = ccall(("pango_renderer_draw_glyph_item", libpango), Nothing, (Ptr{GObject}, Cstring, Ptr{_PangoGlyphItem}, Int32, Int32), instance, _text, _glyph_item, _x, _y)
+        _text_maybe = nothing_to_null(_text)
+        ret = ccall(("pango_renderer_draw_glyph_item", libpango), Nothing, (Ptr{GObject}, Cstring, Ptr{_PangoGlyphItem}, Int32, Int32), instance, _text_maybe, _glyph_item, _x, _y)
         nothing
     end
     function draw_glyphs(instance::PangoRenderer, _font::PangoFont, _glyphs::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _x::Integer, _y::Integer)
@@ -1289,13 +1300,13 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_color(instance::PangoRenderer, _part, _color::Maybe(Union{PangoColor, Ref{_PangoColor}}))
-        _color = nothing_to_null(_color)
-        ret = ccall(("pango_renderer_set_color", libpango), Nothing, (Ptr{GObject}, UInt32, Ptr{_PangoColor}), instance, _part, _color)
+        _color_maybe = nothing_to_null(_color)
+        ret = ccall(("pango_renderer_set_color", libpango), Nothing, (Ptr{GObject}, UInt32, Ptr{_PangoColor}), instance, _part, _color_maybe)
         nothing
     end
     function set_matrix(instance::PangoRenderer, _matrix::Maybe(Union{PangoMatrix, Ref{_PangoMatrix}}))
-        _matrix = nothing_to_null(_matrix)
-        ret = ccall(("pango_renderer_set_matrix", libpango), Nothing, (Ptr{GObject}, Ptr{_PangoMatrix}), instance, _matrix)
+        _matrix_maybe = nothing_to_null(_matrix)
+        ret = ccall(("pango_renderer_set_matrix", libpango), Nothing, (Ptr{GObject}, Ptr{_PangoMatrix}), instance, _matrix_maybe)
         nothing
     end
 end))

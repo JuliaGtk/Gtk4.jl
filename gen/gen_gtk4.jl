@@ -42,6 +42,7 @@ object_skiplist=[:CClosureExpression,:ClosureExpression,:ConstantExpression,:Obj
 GI.all_interfaces!(exprs,exports,ns)
 c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name],output_cache_define=false,output_cache_init=false)
 GI.append_object_docs!(exprs, "gtk4", d, c, ns)
+GI.all_callbacks!(exprs, exports, ns)
 
 push!(exprs,exports)
 

@@ -340,15 +340,56 @@ function decl(interfaceinfo::GIInterfaceInfo)
     unblock(decl)
 end
 
+function get_closure(callbackinfo::GICallbackInfo)
+    closure = -1
+    for arg in get_args(callbackinfo)
+        if get_closure(arg) > -1
+            closure = get_closure(arg)
+        end
+    end
+    return closure
+end
+
+## Callback output
+function decl(callbackinfo::GICallbackInfo)
+    name = get_full_name(callbackinfo)
+    fargs = Symbol[]
+    args=get_args(callbackinfo)
+    rettypeinfo=get_return_type(callbackinfo)
+    rettype = extract_type(rettypeinfo)
+    retexpr = (rettype.ctype == :Nothing) ? :(nothing) : :(convert($(rettype.ctype), ret))
+    
+    closure = get_closure(callbackinfo)
+    for arg in args
+        push!(fargs, get_name(arg))
+    end
+    if closure == -1
+        throw(NotImplementedError("Not implementing callback $name, didn't find a closure"))
+    else
+        closure_name = get_name(args[closure+1])
+    end
+    d = quote
+        function $name($(fargs...))
+            f = $closure_name
+            ret = f($(fargs[1:end-1]...))
+            $retexpr
+        end
+    end
+    unblock(d)
+end
+
 ## Handling argument types, creating methods
 
-struct NotImplementedError <: Exception end
+struct NotImplementedError <: Exception
+    message::String
+end
+NotImplementedError() = NotImplementedError("") # could overload `Base.showerror`
 
 abstract type InstanceType end
 is_pointer(::Type{InstanceType}) = true
 const TypeInfo = Union{GITypeInfo,Type{InstanceType}}
 
-struct TypeDesc{T}
+mutable struct TypeDesc{T}
     gitype::T
     jtype::Union{Expr,Symbol}    # used in Julia for arguments
     jstype::Union{Expr,Symbol}   # most specific relevant Julia type (for properties)
@@ -363,14 +404,11 @@ end
 # convert_from_c(name,arginfo,typeinfo) produces an expression that sets the symbol "name" from GIArgInfo
 # used for certain types to convert returned values from ccall's to Julia types
 
-# convert_to_c(argname, arginfo, typeinfo) produces an expression that converts
-# a Julia input to something a ccall can use as an argument
-
 function extract_type(info::GIArgInfo)
     typdesc = extract_type(get_type(info))
     if may_be_null(info) && typdesc.jtype !== :Any
         jtype=typdesc.jtype
-        typdesc = TypeDesc(typdesc.gitype, :(Maybe($jtype)), typdesc.jstype, typdesc.ctype)
+        typdesc.jtype = :(Maybe($jtype))
     end
     typdesc
 end
@@ -460,7 +498,8 @@ function convert_from_c(argname::Symbol, info::ArgInfo, ti::TypeDesc{T}) where {
 end
 
 function convert_to_c(argname::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:GIEnumOrFlags}
-    :( enum_get($(enum_name(ti.gitype)),$argname) )
+    throw(NotImplementedError("Enum/flags"))
+    return (:( enum_get($(enum_name(ti.gitype)),$argname)))
 end
 
 function extract_type(typeinfo::GITypeInfo,info::Type{GICArray})
@@ -498,7 +537,7 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
             if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
                 return :(_len=length_zt($name);arrtemp=bytestring.(unsafe_wrap(Vector{$elmctype}, $name,_len));GLib.g_strfreev($name);arrtemp)
             else
-                throw(NotImplementedError())  # TODO
+                throw(NotImplementedError("Zero terminated array that's not strings"))  # TODO
                 #:(_len=length_zt($name);arrtemp=copy(unsafe_wrap(Vector{$elmctype}, $name,i-1));GLib.g_free($name);arrtemp)
             end
         else
@@ -533,24 +572,30 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
             if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
                 return :(_len=length_zt($name);arrtemp=bytestring.(unsafe_wrap(Vector{$elmctype}, $name,_len));arrtemp)
             end
-            throw(NotImplementedError())
+            throw(NotImplementedError("Zero terminated array that's not strings"))
         end
     end
-    throw(NotImplementedError())
+    throw(NotImplementedError("Unknown array type"))
 end
 
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{GICArray}}
     if typeof(info)==GIFunctionInfo
-        return nothing
+        return (name, nothing)
     end
+    is_caller_allocates(info) && throw(NotImplementedException("Array output with 'caller_allocates'"))
     typeinfo=get_type(info)
     elm = get_param_type(typeinfo,0)
     elmtype = extract_type(elm)
     elmctype=elmtype.ctype
     if elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
-        return nothing
+        if may_be_null(info)
+            newname = Symbol(name,"_maybe")
+            return (newname, :(nothing_to_null($name)))
+        end
+        return (name, nothing)
     end
-    :(convert(Vector{$elmctype},$name))
+    arrname = Symbol(string(name),"_arr")
+    (arrname, :(convert(Vector{$elmctype},$name)))
 end
 
 function extract_type(typeinfo::GITypeInfo,info::Type{GArray})
@@ -591,30 +636,84 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{Type{
 end
 
 function extract_type(typeinfo::GITypeInfo,basetype::Type{Function})
-    TypeDesc{Type{Function}}(Function,:Function, :Function, :(Ptr{Nothing}))
+    TypeDesc{Type{Function}}(Function,:Function, :Function, :(Ptr{Cvoid}))
 end
 
+callback_symbols(name) = (Symbol("$(name)_cfunc"),Symbol("$(name)_closure"),Symbol("$(name)_notify"))
+
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{Function}}
-    throw(NotImplementedError())
+    st = get_scope(info)
+    closure = get_closure(info)
+    (st == GIScopeType.FOREVER || st == GIScopeType.INVALID) && throw(NotImplementedError("Scope type $st not implemented."))
+    closure == -1 && throw(NotImplementedError("Closure not found."))
     typeinfo=get_type(info)
     callbackinfo=get_interface(typeinfo)
-    #println(get_name(callbackinfo))
+    cclosure = get_closure(callbackinfo)
     # get return type
     rettyp=get_return_type(callbackinfo)
+    cname=get_full_name(callbackinfo)
+    cfunc, func_closure, func_notify = callback_symbols(name)
     retctyp=extract_type(rettyp).ctype
     # get arg types
     argctypes_arr=[]
-    for arg in get_args(callbackinfo)
-        argtyp=get_type(arg)
-        argctyp=extract_type(argtyp).ctype
-        push!(argctypes_arr,argctyp)
+    for (i,arg) in enumerate(get_args(callbackinfo))
+        if i-1 == cclosure
+            push!(argctypes_arr,:(Ref{Function}))
+        else
+            argtyp=get_type(arg)
+            argctyp=extract_type(argtyp).ctype
+            push!(argctypes_arr,argctyp)
+        end
     end
     argctypes = Expr(:tuple, argctypes_arr...)
-    special=QuoteNode(Expr(:$, :name))
-    expr = quote
-        @cfunction($special, $retctyp, $argctypes)
+    if st == GIScopeType.CALL # for "call" just create a pointer from a Ref{Function}
+                              # and ccall will keep the function around during the call(?)
+        closure_expr = quote
+            ref = Ref{Any}($name)
+            $(func_closure) = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+        end
+        null_closure_expr = quote
+            $(func_closure) = C_NULL
+        end
+    elseif st == GIScopeType.NOTIFIED # for "notified" follow gc_ref_closure stuff
+        closure_expr = quote
+            $(func_closure),$(func_notify) = GLib.gc_ref_closure($name)
+        end
+        null_closure_expr = quote
+            $(func_closure) = C_NULL
+            $(func_notify) = C_NULL
+        end
+    elseif st == GIScopeType.ASYNC # for "async" unref after callback finishes?
+        # TODO: set up to unref when callback is finished -- currently this leaks
+        closure_expr = quote
+            $(func_closure) = GLib.gc_ref($name)
+        end
+        null_closure_expr = quote
+            $(func_closure) = C_NULL
+        end
+    else
+        closure_expr = nothing
     end
-    MacroTools.striplines(expr)
+    closure_expr = unblock(closure_expr)
+    null_closure_expr = unblock(null_closure_expr)
+    expr = if may_be_null(info)
+        quote
+            if $name === nothing
+                $cfunc = C_NULL
+                $(null_closure_expr)
+            else
+                $cfunc = @cfunction($cname, $retctyp, $argctypes)
+                $(closure_expr)
+           end
+        end
+    else
+        quote
+            $cfunc = @cfunction($cname, $retctyp, $argctypes)
+            $(closure_expr)
+        end
+    end
+    # special case: return name symbol, which can be used to find the cfunc and closure names
+    name, MacroTools.striplines(unblock(expr))
 end
 
 const ObjectLike = Union{GIObjectInfo, GIInterfaceInfo}
@@ -684,7 +783,7 @@ end
 function extract_type(typeinfo::TypeInfo, info::ObjectLike)
     if is_pointer(typeinfo)
         if typename(info)===:GParam  # these are not really GObjects
-            throw(NotImplementedError())
+            throw(NotImplementedError("ObjectLike but not a GObject"))
             #return TypeDesc(info,:GParamSpec,:(Ptr{GParamSpec}))
         end
         t = get_toplevel(info)
@@ -695,8 +794,21 @@ function extract_type(typeinfo::TypeInfo, info::ObjectLike)
     end
 end
 
-#this should only be used for stuff that's hard to implement as cconvert
-convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc) = nothing
+"""
+    convert_to_c(argname, arginfo, typeinfo) => name, expr
+
+Produces an expression that converts a Julia input to something `ccall` can use as an argument, along with
+a new name. If no translation is necessary, (argname, nothing) will be returned.
+
+This function is expected to handle arguments that may be nothing by possibly converting them to C_NULL.
+"""
+function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc)
+    if may_be_null(info)
+        newname = Symbol(name,"_maybe")
+        return (newname, :(nothing_to_null($name)))
+    end
+    (name, nothing)
+end
 
 function convert_from_c(name::Symbol, arginfo::ArgInfo, ti::TypeDesc{T}) where {T}
     # check transfer
@@ -736,7 +848,7 @@ libnames = Dict("libglib"=>:libglib, "libgobject"=>:libgobject,
                 "libpango"=>:libpango, "libatk"=>:libatk,
                 "libgdk_pixbuf"=>:libgdkpixbuf, "libgdk-3"=>:libgdk3,
                 "libgtk-3"=>:libgtk3, "libgraphene"=>:libgraphene,
-                 "libgtk-4"=>:libgtk4, "libaravis"=>:libaravis)
+                 "libgtk-4"=>:libgtk4, "libaravis"=>:libaravis, "libadwaita"=>:libadwaita)
 function symbol_from_lib(libname)
     ks = collect(keys(libnames))
     k=findfirst(n->occursin(n, libname), ks)
@@ -885,38 +997,60 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
             push!(retvals,:ret)
         end
     end
+    # go through args and find the closure arguments for each function argument
+    closure_args=Dict{Symbol,Int}()
     for arg in args
+        is_skip(arg) && continue
+        typ = extract_type(arg)
+        closure = get_closure(arg)
+        if typ.gitype == Function && closure > -1
+            aname = Symbol("_", get_name(arg))
+            closure_args[aname]=closure+1
+        end
+    end
+    for (iarg,arg) in enumerate(args)
         is_skip(arg) && continue
         aname = Symbol("_$(get_name(arg))")
         typ = extract_type(arg)
         dir = get_direction(arg)
+        anametran = aname
         if dir != GIDirection.OUT
-            push!(jargs, Arg( aname, typ.jtype))
-            expr = convert_to_c(aname,arg,typ)
-            if expr !== nothing
-                push!(prologue, :($aname = $expr))
-            elseif may_be_null(arg)
-                push!(prologue, :($aname = nothing_to_null($aname)))
+            !(iarg in values(closure_args)) && push!(jargs, Arg( aname, typ.jtype))
+            anametran, expr = convert_to_c(aname,arg,typ)
+            if expr !== nothing && !(iarg in values(closure_args))
+                if typ.gitype == Function
+                    push!(prologue, expr)
+                else
+                    push!(prologue, :($anametran = $expr))
+                end
             end
         end
 
         if dir == GIDirection.IN
-            push!(cargs, Arg(aname, typ.ctype))
+            if typ.gitype == Function
+                cfuncname, closurename, notifyname = callback_symbols(anametran)
+                push!(cargs, Arg(cfuncname, typ.ctype))
+                if haskey(closure_args, anametran)
+                    push!(cargs, Arg(closurename, :(Ptr{Nothing})))
+                end
+            elseif !(iarg in values(closure_args))
+                push!(cargs, Arg(anametran, typ.ctype))
+            end
         else
             ctype = typ.ctype
             wname = Symbol("m_$(get_name(arg))")
             atyp = get_type(arg)
             push!(prologue, :( $wname = Ref{$ctype}() ))
             if dir == GIDirection.INOUT
-                push!(prologue, :( $wname[] = Base.cconvert($ctype,$aname) ))
+                push!(prologue, :( $wname[] = Base.cconvert($ctype,$anametran) ))
             end
             push!(cargs, Arg(wname, :(Ptr{$ctype})))
-            push!(epilogue,:( $aname = $wname[] ))
-            expr = convert_from_c(aname,arg,typ)
+            push!(epilogue,:( $anametran = $wname[] ))
+            expr = convert_from_c(anametran,arg,typ)
             if expr !== nothing
-                push!(epilogue, :($aname = $expr))
+                push!(epilogue, :($anametran = $expr))
             end
-            push!(retvals, aname)
+            push!(retvals, anametran)
         end
     end
 
@@ -937,6 +1071,14 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
             end
             len_i=findfirst(==(len_name),retvals)
             len_i !== nothing && deleteat!(retvals,len_i)
+        end
+        closure = get_closure(arg)
+        if typ.gitype == Function && closure > -1
+            closure_name=Symbol("_",get_name(args[closure+1]))
+            closure_i=findfirst(a->(a.name === closure_name),jargs)
+            if closure_i !== nothing
+                deleteat!(jargs,closure_i)  # could avoid this by using ignore_args to skip adding them to jargs
+            end
         end
     end
     if rettype.gitype == GICArray

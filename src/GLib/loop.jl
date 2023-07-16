@@ -1,5 +1,3 @@
-_g_callback(cb::Function) = Cint(cb())
-
 """
     g_timeout_add(f, interval, priority=PRIORITY_DEFAULT)
 
@@ -16,7 +14,7 @@ to stop the timeout.
 Related GTK function: [`g_timeout_add`()]($(gtkdoc_func_url("glib","timeout_add")))
 """
 function g_timeout_add(cb::Function, interval::Integer, priority=PRIORITY_DEFAULT)
-    callback = @cfunction(_g_callback, Cint, (Ref{Function},))
+    callback = @cfunction(GSourceFunc, Cint, (Ref{Function},))
     ref, deref = gc_ref_closure(cb)
     return ccall((:g_timeout_add_full, libglib),Cint,
         (Cint, UInt32, Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}),
@@ -37,7 +35,7 @@ See also [`@idle_add`](@ref).
 Related GTK function: [`g_idle_add_full`()]($(gtkdoc_func_url("glib","idle_add_full")))
 """
 function g_idle_add(cb::Function, priority=PRIORITY_DEFAULT_IDLE)
-    callback = @cfunction(_g_callback, Cint, (Ref{Function},))
+    callback = @cfunction(GSourceFunc, Cint, (Ref{Function},))
     ref, deref = gc_ref_closure(cb)
     return ccall((:g_idle_add_full , libglib),Cint,
         (Cint, Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}),
