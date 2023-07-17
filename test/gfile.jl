@@ -23,16 +23,13 @@ f2=GLib.G_.dup(GFile(f))
 fi = GLib.G_.query_info(GFile(f),"*",GLib.FileQueryInfoFlags_NONE,nothing)
 attributes = GLib.G_.list_attributes(fi,nothing)
 
-cond=Condition()
+#fileinfo=Ref{GFileInfo}()
 
-function query_cb(obj, result)
-    fileinfo = GLib.G_.query_info_finish(GFile(GLib.GObjectLeaf(Ptr{GObject}(obj),true)), GLib.GAsyncResult(GLib.GObjectLeaf(result,true)))
-    notify(cond)
-    nothing
-end
+#function query_cb(obj, result)
+#    fileinfo[] = GLib.G_.query_info_finish(GFile(GLib.GObjectLeaf(Ptr{GObject}(obj))), GLib.GAsyncResult(GLib.GObjectLeaf(result)))
+#end
 
-GLib.G_.query_info_async(GFile(f),"*",GLib.FileQueryInfoFlags_NONE,GLib.PRIORITY_DEFAULT, nothing, query_cb)
-wait(cond)
+#GLib.G_.query_info_async(GFile(f),"*",GLib.FileQueryInfoFlags_NONE,GLib.PRIORITY_DEFAULT, nothing, query_cb)
 
 # TODO: add tests for this
 
