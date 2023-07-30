@@ -92,34 +92,83 @@ Related GTK function: [`g_main_depth`()]($(gtkdoc_func_url("glib","main_depth"))
 is_loop_running() = (G_.main_depth() != 0)
 
 """
-    start_main_loop()
+    start_main_loop(wait=false)
 
 If the default GLib main event loop is not already running, start a Julia task
-that runs it.
+that runs it. Returns the task. If `wait` is true, it will block until the
+main loop starts running.
 
 See also [`stop_main_loop`](@ref).
 """
-function start_main_loop()
+function start_main_loop(wait=false)
     @debug("Starting GLib main loop using g_main_context_iteration()")
     # if a glib main-loop is already running, we don't need to start a new one
     if !is_loop_running()
         g_main_running[] = true
         global glib_main_task = schedule(Task(glib_main))
     end
+    if wait
+        i=1
+        while !is_loop_running()
+            sleep(0.001)
+            i+=1
+            if i>1000
+                @warn("Main loop is not starting, returning from start_main_loop() anyway!")
+                break
+            end
+        end
+    end
+    glib_main_task
 end
 
 """
-    stop_main_loop()
+    stop_main_loop(wait=false)
 
-Stops the default GLib main loop after the next iteration. Does not affect loop
-operation if GApplication's `run()` method is being used instead of
+Stops the default GLib main loop after the next iteration. If `wait` is true, it will block until the
+main loop stops running.
+
+Does not affect loop operation if GApplication's `run()` method is being used instead of
 `GLib.start_main_loop()`.
 
 See also [`start_main_loop`](@ref).
 """
-function stop_main_loop()
+function stop_main_loop(wait=false)
+    if !g_main_running[] # we are either already stopped, or in a GApplication
+        return
+    end
     g_main_running[] = false
     ccall((:g_main_context_wakeup, libglib), Cvoid, (Ptr{Cvoid},), C_NULL)
+    if wait
+        i=1
+        while is_loop_running()
+            sleep(0.001)
+            i+=1
+            if i>1000
+                @warn("Main loop is not stopping, returning from stop_main_loop() anyway!")
+                break
+            end
+        end
+    end
+    nothing
+end
+
+"""
+    pause_main_loop(f)
+
+Pauses the GLib eventloop around a function. Restores the original state of the eventloop after
+calling the function.
+"""
+function pause_main_loop(f)
+    was_running = is_loop_running()
+    if was_running && g_main_running[] == false
+        error("Main loop is running, but not via `glib_main`. Pausing the main loop inside a GApplication is not currently supported.")
+    end
+    was_running && stop_main_loop(true)
+    try
+        f()
+    finally
+        was_running && start_main_loop(true)
+    end
 end
 
 """
@@ -157,7 +206,17 @@ is_uv_loop_integration_enabled() = uv_int_enabled[]
 
 GApplication(id = nothing, flags = ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
 
+"""
+    run(app::GApplication)
+
+Calls `g_application_run`, starting the main loop. If the loop is already running, it will stop it before
+starting the application loop.
+"""
 function run(app::GApplication)
+    if is_loop_running()
+        stop_main_loop(true)
+        @warn("A main loop is already running. Stopping it and starting a new one for the application.")
+    end
     ccall(("g_application_run", libgio), Int32, (Ptr{GObject}, Int32, Ptr{Cstring}), app, 0, C_NULL)
 end
 register(app::GApplication) = G_.register(app, nothing)

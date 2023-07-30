@@ -1,4 +1,4 @@
-using Gtk4.GLib, Gtk4
+using Gtk4.GLib, Gtk4, Test
 
 @testset "mainloop" begin
 
@@ -58,9 +58,23 @@ g_source_remove(id)
 sleep(0.5)
 @test x[] == 1
 
+@test GLib.get_uv_loop_integration() == "auto"
+
+# pausing the loop
+
+x[] = 1 # reset
+
+GLib.pause_main_loop() do
+    @test GLib.is_loop_running() == false
+    x[] = 2
 end
 
-@testset "misc" begin
+@test GLib.is_loop_running() == true
+@test x[] == 2
+
+end
+
+@testset "guarded" begin
 
 unhandled = convert(Cint, false)
 

@@ -225,7 +225,7 @@ function icon_theme_add_search_path(icon_theme::GtkIconTheme, path::AbstractStri
     G_.add_search_path(icon_theme, path)
 end
 
-## GtkApplication
+## GtkApplication and actions
 
 GtkApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
 function push!(app::GtkApplication, win::GtkWindow)
@@ -235,4 +235,9 @@ end
 function delete!(app::GtkApplication, win::GtkWindow)
     G_.remove_window(app, win)
     app
+end
+
+function push!(widget::GtkWidget, group::GActionGroup, name::AbstractString)
+    G_.insert_action_group(widget, name, group)
+    widget
 end
