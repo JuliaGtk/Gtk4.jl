@@ -10,6 +10,22 @@ function canvas_draw_backing_store(w, cr, width, height, user_data) # cr is a Ca
     ccall((:cairo_paint, libcairo), Nothing, (Ptr{Nothing},), cr)
 end
 
+function _init_canvas!(widget, w, h)
+    widget.back = CairoARGBSurface(w, h)
+    widget.backcc = CairoContext(widget.back)
+end
+
+"""
+    GtkCanvas(w = -1, h = -1, init_back = false; kwargs...)
+
+Create a GtkCanvas widget for drawing using Cairo (based on GtkDrawingArea).
+Optional arguments `w` and `h` can be used to set the minimum width and height
+of the drawing area in pixels. If `init_back` is set to true, the canvas's
+image CairoSurface will be initialized immediately, which is useful for
+precompilation.
+
+Keyword arguments can be used to set properties of the GtkDrawingArea widget.
+"""
 mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     handle::Ptr{GObject}
     is_sized::Bool
@@ -18,10 +34,18 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     back::CairoSurface   # backing store
     backcc::CairoContext
 
-    function GtkCanvas(w = -1, h = -1; kwargs...)
+    function GtkCanvas(w = -1, h = -1, init_back = false; kwargs...)
         da = GtkDrawingArea(; kwargs...)
-        G_.set_size_request(da, w, h)
+        if w > 0 && h > 0
+            G_.set_content_height(da, h)
+            G_.set_content_width(da, w)
+        elseif init_back
+            error("Width and height arguments must be provided to immediately initialize GtkCanvas.")
+        end
         widget = new(getfield(da,:handle), false, nothing, nothing)
+        if init_back
+            _init_canvas!(widget, w, h)
+        end
 
         function on_realize(da::GtkWidget)
             if widget.is_sized
@@ -34,8 +58,7 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
         function on_resize(da::GtkDrawingArea, width::Cint, height::Cint)
             widget.is_sized = true
             if G_.get_realized(widget)
-                widget.back = CairoARGBSurface(width, height)
-                widget.backcc = CairoContext(widget.back)
+                _init_canvas!(widget, width, height)
 
                 if isa(widget.resize, Function)
                     widget.resize(widget)
@@ -83,6 +106,11 @@ function draw(widget::GtkCanvas)
     G_.queue_draw(widget)
 end
 
+"""
+    getgc(c::GtkCanvas)
+
+Return the CairoContext of the CairoSurface for a GtkCanvas.
+"""
 function getgc(c::GtkCanvas)
     if !isdefined(c,:backcc)
       error("GtkCanvas not yet initialized.")
@@ -90,6 +118,11 @@ function getgc(c::GtkCanvas)
     return c.backcc
 end
 
+"""
+    cairo_surface(c::GtkCanvas)
+
+Return the image CairoSurface for a GtkCanvas.
+"""
 function cairo_surface(c::GtkCanvas)
     if !isdefined(c,:back)
       error("GtkCanvas not yet initialized.")

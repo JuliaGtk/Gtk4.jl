@@ -133,7 +133,7 @@ Does not affect loop operation if GApplication's `run()` method is being used in
 See also [`start_main_loop`](@ref).
 """
 function stop_main_loop(wait=false)
-    if !g_main_running[] # we are either already stopped, or in a GApplication
+    if !g_main_running[] # we are either already stopped or in a GApplication
         return
     end
     g_main_running[] = false

@@ -1,6 +1,6 @@
 using Gtk4
 
-c = GtkCanvas()
+c = GtkCanvas(100,100)
 
 # define a function that will be called every time the widget needs to be drawn
 @guarded draw(c) do widget
