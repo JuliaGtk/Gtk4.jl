@@ -146,3 +146,9 @@ end
     pw2[2][]=GtkLabel("three")
     destroy(w)
 end
+
+@testset "Labelframe" begin
+f = GtkFrame("Label")
+w = GtkWindow(f,"Labelframe", 400, 400)
+destroy(w)
+end

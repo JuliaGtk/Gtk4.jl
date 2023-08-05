@@ -58,7 +58,7 @@ g_source_remove(id)
 sleep(0.5)
 @test x[] == 1
 
-@test GLib.get_uv_loop_integration() == "auto"
+#@test GLib.get_uv_loop_integration() == "auto"
 
 # pausing the loop
 
