@@ -28,3 +28,31 @@ destroy(dlg)
 destroy(main_window)
 
 end
+
+@testset "File Chooser" begin
+    dlg = GtkFileChooserDialog("Select file", nothing, Gtk4.FileChooserAction_OPEN,
+                            (("_Cancel", Gtk4.ResponseType_CANCEL),
+                             ("_Open", Gtk4.ResponseType_ACCEPT)))
+    destroy(dlg)
+end
+
+@testset "FileFilter" begin
+emptyfilter = GtkFileFilter()
+@test get_gtk_property(emptyfilter, "name") === nothing
+fname = "test.csv"
+fdisplay = "test.csv"
+fmime = "text/csv"
+csvfilter1 = GtkFileFilter("*.csv")
+@test csvfilter1.name == "*.csv"
+
+csvfilter2 = GtkFileFilter("*.csv"; name = "Comma Separated Format")
+@test csvfilter2.name == "Comma Separated Format"
+
+csvfilter3 = GtkFileFilter("", "text/csv")
+@test csvfilter3.name == "text/csv"
+
+csvfilter4 = GtkFileFilter("*.csv", "text/csv")
+# Pattern takes precedence over mime-type, causing mime-type to be ignored
+@test csvfilter4.name == "*.csv"
+end
+

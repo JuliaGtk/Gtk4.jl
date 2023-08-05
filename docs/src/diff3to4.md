@@ -38,9 +38,13 @@ Events such as button presses are handled through "event controllers" in GTK 4.
 
 Dialogs no longer have a `run` method that takes over the GLib main loop while waiting for the user's response.
 
-## For developers
+## GLib event loop
 
-All uses of `mutable` from `GLib.MutableTypes` should be replaced by Julia's `Ref`.
+The GLib main loop starts automatically if Julia is in an interactive session. If not, you will have to start it by calling `start_main_loop` or by creating a `GtkApplication` and calling `run` (see the example `application.jl`).
+
+## MutableTypes and GValue
+
+All uses of `mutable` from Gtk.jl's `GLib.MutableTypes` should be replaced by Julia's `Ref`.
 The type of a `GValue` can be set using `settype!` rather than `setindex!`.
 
 ## More information

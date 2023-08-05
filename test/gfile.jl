@@ -8,6 +8,7 @@ using Test
 path=pwd()
 
 f=GLib.GFile(path)
+@test basename(f) == "test"
 path2=GLib.path(GFile(f))
 
 @test path==path2
@@ -19,8 +20,13 @@ f2=GLib.G_.dup(GFile(f))
 @test ispath(GFile(f))
 
 @test isdir(GFile(f))
+@test !isfile(GFile(f))
 
-fi = GLib.G_.query_info(GFile(f),"*",GLib.FileQueryInfoFlags_NONE,nothing)
+fi = GLib.query_info(f)
+@test fi["standard::name"] == "test"
+for k in keys(fi)
+    q=fi[k]
+end
 attributes = GLib.G_.list_attributes(fi,nothing)
 
 #fileinfo=Ref{GFileInfo}()

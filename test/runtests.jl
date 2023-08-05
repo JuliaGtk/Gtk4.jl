@@ -32,10 +32,15 @@ include("gui.jl")
 include("comboboxtext.jl")
 include("tree.jl")
 include("text.jl")
+include("gui/misc.jl")
+include("gui/canvas.jl")
 include("gui/dialogs.jl")
+include("gui/displays.jl")
+include("gui/input.jl")
 include("gui/layout.jl")
+include("gui/window.jl")
 include("gui/examples.jl")
-include("gui/application.jl")
+include("gui/application.jl")  # needs to be last because it messes with the main loop
 end
 
 GC.gc()

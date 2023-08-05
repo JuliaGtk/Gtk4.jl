@@ -14,6 +14,7 @@ to stop the timeout.
 Related GTK function: [`g_timeout_add`()]($(gtkdoc_func_url("glib","timeout_add")))
 """
 function g_timeout_add(cb::Function, interval::Integer, priority=PRIORITY_DEFAULT)
+    #is_loop_running() || @warn("g_timeout_add needs GLib main loop to be running.")
     callback = @cfunction(GSourceFunc, Cint, (Ref{Function},))
     ref, deref = gc_ref_closure(cb)
     return ccall((:g_timeout_add_full, libglib),Cint,
@@ -35,6 +36,7 @@ See also [`@idle_add`](@ref).
 Related GTK function: [`g_idle_add_full`()]($(gtkdoc_func_url("glib","idle_add_full")))
 """
 function g_idle_add(cb::Function, priority=PRIORITY_DEFAULT_IDLE)
+    #is_loop_running() || @warn("g_idle_add needs GLib main loop to be running.")
     callback = @cfunction(GSourceFunc, Cint, (Ref{Function},))
     ref, deref = gc_ref_closure(cb)
     return ccall((:g_idle_add_full , libglib),Cint,

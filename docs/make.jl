@@ -27,7 +27,8 @@ makedocs(
                     ],
         "Gtk.jl to Gtk4.jl" => "diff3to4.md",
         "Reference" => ["doc/reference.md",
-                        "doc/GLib_reference.md"
+                        "doc/GLib_reference.md",
+                        "doc/preferences.md"
                     ],
         #"GI Reference" => "doc/GI_reference.md"
     ],

@@ -8,6 +8,7 @@ Base.islink(f::GFile) = (G_.query_file_type(f,FileQueryInfoFlags_NONE,nothing)==
 Base.basename(f::GFile) = G_.get_basename(f)
 path(f::GFile) = G_.get_path(f)
 
+query_info(f::GFile, attributes="*", flags=FileQueryInfoFlags_NONE) = G_.query_info(f,attributes,flags,nothing)
 Base.keys(fi::GFileInfo) = G_.list_attributes(fi,nothing)
 function getindex(fi::GFileInfo,att::AbstractString)
     typ = G_.get_attribute_type(fi,att)
