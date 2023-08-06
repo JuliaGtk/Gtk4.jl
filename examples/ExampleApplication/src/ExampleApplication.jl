@@ -18,7 +18,7 @@ end
 function new_window()
     app = rapp[]
     window = GtkApplicationWindow(app, "")
-    id = Gtk4.G_.get_id(window)
+    id = Gtk4.id(window)
     window.title = "GtkApplication example: $id"
 
     button_box = GtkBox(:v)

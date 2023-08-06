@@ -37,7 +37,7 @@ end
 ## GtkApplication
 
 For larger projects, you may want to use `GtkApplication`, which enables useful functionality based around `GtkApplicationWindow`, `GAction`, `GActionMap`, etc.
-For that you can use the following pattern:
+For that you can use the following pattern in a non-interactive script:
 ```julia
 using Gtk4
 
@@ -54,3 +54,8 @@ run(app)
 ```
 
 In the `activate` function, you can create your windows, widgets, etc. and connect them to signals. When all `GtkApplicationWindows` have been closed, the script will exit.
+
+## Creating an app with PackageCompiler
+
+[PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl) can be used to create an executable file that can be transferred to other computers without installing Julia. An example can be found in the [examples/ExampleApplication](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples/ExampleApplication) directory in the Gtk4.jl repo.
+

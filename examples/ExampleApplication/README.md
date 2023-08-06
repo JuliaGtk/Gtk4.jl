@@ -7,4 +7,3 @@ using PackageCompiler
 create_app("","target")
 ```
 
-This has not been tested much, and it appears that the accessor methods don't work when using `PackageCompiler`.

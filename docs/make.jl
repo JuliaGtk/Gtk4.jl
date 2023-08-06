@@ -23,7 +23,8 @@ makedocs(
                      "manual/canvas.md"
                     ],
         "Howto" => ["howto/nonreplusage.md",
-                    "howto/async.md"
+                    "howto/async.md",
+                    "howto/sysimage.md"
                     ],
         "Gtk.jl to Gtk4.jl" => "diff3to4.md",
         "Reference" => ["doc/reference.md",

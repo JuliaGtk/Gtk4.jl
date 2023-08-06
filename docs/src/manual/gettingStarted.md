@@ -21,7 +21,7 @@ Since a `GtkWindow` can have only one child widget, we could have added the butt
 win[] = b
 ```
 Finally, `show(win)` makes the window visible.
-This could also have been accomplished using the `visible` property (GObject properties are discussed on the [Properties](../manual/properties.md) section of this manual).
+This could also have been accomplished using the `visible` property (properties of "GObjects" like `GtkWindow` are discussed on the [Properties](../manual/properties.md) section of this manual).
 
 ## Extended Example
 
