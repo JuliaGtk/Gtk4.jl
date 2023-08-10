@@ -73,3 +73,11 @@ function GtkTreeListModel(root::GListModel, passthrough, autoexpand, create_func
     ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), root, passthrough, autoexpand, create_cfunc, C_NULL, C_NULL)
     convert(GtkTreeListModel, ret, true)
 end
+
+## GtkCustomFilter
+
+function GtkCustomFilter(match::Function)
+    create_cfunc = @cfunction($match, Cint, (Ptr{GObject}, Ptr{Nothing}))
+    ret = ccall(("gtk_custom_filter_new", libgtk4), Ptr{GObject}, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), create_cfunc, C_NULL, C_NULL)
+    convert(GtkCustomFilter, ret, true)
+end
