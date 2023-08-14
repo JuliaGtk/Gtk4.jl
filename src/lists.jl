@@ -74,6 +74,25 @@ function GtkTreeListModel(root::GListModel, passthrough, autoexpand, create_func
     convert(GtkTreeListModel, ret, true)
 end
 
+## GtkListBox
+setindex!(lb::GtkListBox, w::GtkWidget, i::Integer) = (G_.insert(lb, w, i - 1); lb[i])
+getindex(lb::GtkListBox, i::Integer) = G_.get_row_at_index(lb, i - 1)
+
+push!(lb::GtkListBox, w::GtkWidget) = (G_.append(lb, w); lb)
+pushfirst!(lb::GtkListBox, w::GtkWidget) = (G_.prepend(lb, w); lb)
+insert!(lb::GtkListBox, i::Integer, w::GtkWidget) = (G_.insert(lb, w, i - 1); lb)
+
+#empty!(lb::GtkListBox) = (ccall(("gtk_list_box_remove_all", libgtk4), Nothing, (Ptr{GObject},), lb); lb)
+
+delete!(lb::GtkListBox, w::GtkWidget) = (G_.remove(lb, w); lb)
+
+function set_filter_func(lb::GtkListBox, match::Function)
+    create_cfunc = @cfunction($match, Cint, (Ptr{GObject}, Ptr{Nothing}))
+    ccall(("gtk_list_box_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), lb, create_cfunc, C_NULL, C_NULL)
+    return nothing
+end
+
+
 ## GtkCustomFilter
 
 function GtkCustomFilter(match::Function)
