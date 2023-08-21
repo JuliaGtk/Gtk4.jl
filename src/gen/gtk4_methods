@@ -690,6 +690,8 @@ $(Expr(:toplevel, quote
         nothing
     end
     function AlternativeTrigger_new(_first::GtkShortcutTrigger, _second::GtkShortcutTrigger)
+        _first = GLib.glib_ref(_first)
+        _second = GLib.glib_ref(_second)
         ret = ccall(("gtk_alternative_trigger_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _first, _second)
         ret2 = convert(GtkShortcutTrigger, ret, true)
         ret2
@@ -2162,7 +2164,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function ColumnView_new(_model::Maybe(GtkSelectionModel))
-        _model_maybe = nothing_to_null(_model)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
         ret = ccall(("gtk_column_view_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model_maybe)
         ret2 = GtkColumnViewLeaf(ret, false)
         ret2
@@ -2254,7 +2261,12 @@ $(Expr(:toplevel, quote
     end
     function ColumnViewColumn_new(_title::Maybe(Union{AbstractString, Symbol}), _factory::Maybe(GtkListItemFactory))
         _title_maybe = nothing_to_null(_title)
-        _factory_maybe = nothing_to_null(_factory)
+        _factory_maybe = begin
+                if _factory !== nothing
+                    GLib.glib_ref(_factory)
+                end
+                nothing_to_null(_factory)
+            end
         ret = ccall(("gtk_column_view_column_new", libgtk4), Ptr{GObject}, (Cstring, Ptr{GObject}), _title_maybe, _factory_maybe)
         ret2 = convert(GtkColumnViewColumn, ret, true)
         ret2
@@ -2642,6 +2654,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_constraint(instance::GtkConstraintLayout, _constraint::GtkConstraint)
+        _constraint = GLib.glib_ref(_constraint)
         ret = ccall(("gtk_constraint_layout_add_constraint", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _constraint)
         nothing
     end
@@ -2654,6 +2667,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_guide(instance::GtkConstraintLayout, _guide::GtkConstraintGuide)
+        _guide = GLib.glib_ref(_guide)
         ret = ccall(("gtk_constraint_layout_add_guide", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _guide)
         nothing
     end
@@ -2920,7 +2934,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function DropDown_new(_model::Maybe(GListModel), _expression::Maybe(GtkExpression))
-        _model_maybe = nothing_to_null(_model)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
         _expression_maybe = nothing_to_null(_expression)
         ret = ccall(("gtk_drop_down_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GtkExpression}), _model_maybe, _expression_maybe)
         ret2 = GtkDropDownLeaf(ret, false)
@@ -3876,8 +3895,18 @@ $(Expr(:toplevel, quote
         ret2
     end
     function FilterListModel_new(_model::Maybe(GListModel), _filter::Maybe(GtkFilter))
-        _model_maybe = nothing_to_null(_model)
-        _filter_maybe = nothing_to_null(_filter)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
+        _filter_maybe = begin
+                if _filter !== nothing
+                    GLib.glib_ref(_filter)
+                end
+                nothing_to_null(_filter)
+            end
         ret = ccall(("gtk_filter_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _model_maybe, _filter_maybe)
         ret2 = convert(GtkFilterListModel, ret, true)
         ret2
@@ -3965,7 +3994,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function FlattenListModel_new(_model::Maybe(GListModel))
-        _model_maybe = nothing_to_null(_model)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
         ret = ccall(("gtk_flatten_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model_maybe)
         ret2 = convert(GtkFlattenListModel, ret, true)
         ret2
@@ -4766,8 +4800,18 @@ $(Expr(:toplevel, quote
         nothing
     end
     function GridView_new(_model::Maybe(GtkSelectionModel), _factory::Maybe(GtkListItemFactory))
-        _model_maybe = nothing_to_null(_model)
-        _factory_maybe = nothing_to_null(_factory)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
+        _factory_maybe = begin
+                if _factory !== nothing
+                    GLib.glib_ref(_factory)
+                end
+                nothing_to_null(_factory)
+            end
         ret = ccall(("gtk_grid_view_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _model_maybe, _factory_maybe)
         ret2 = GtkGridViewLeaf(ret, false)
         ret2
@@ -6386,8 +6430,18 @@ $(Expr(:toplevel, quote
         nothing
     end
     function ListView_new(_model::Maybe(GtkSelectionModel), _factory::Maybe(GtkListItemFactory))
-        _model_maybe = nothing_to_null(_model)
-        _factory_maybe = nothing_to_null(_factory)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
+        _factory_maybe = begin
+                if _factory !== nothing
+                    GLib.glib_ref(_factory)
+                end
+                nothing_to_null(_factory)
+            end
         ret = ccall(("gtk_list_view_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _model_maybe, _factory_maybe)
         ret2 = GtkListViewLeaf(ret, false)
         ret2
@@ -6825,6 +6879,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function append(instance::GtkMultiFilter, _filter::GtkFilter)
+        _filter = GLib.glib_ref(_filter)
         ret = ccall(("gtk_multi_filter_append", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _filter)
         nothing
     end
@@ -6833,7 +6888,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function MultiSelection_new(_model::Maybe(GListModel))
-        _model_maybe = nothing_to_null(_model)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
         ret = ccall(("gtk_multi_selection_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model_maybe)
         ret2 = convert(GtkMultiSelection, ret, true)
         ret2
@@ -6854,6 +6914,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function append(instance::GtkMultiSorter, _sorter::GtkSorter)
+        _sorter = GLib.glib_ref(_sorter)
         ret = ccall(("gtk_multi_sorter_append", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _sorter)
         nothing
     end
@@ -6917,7 +6978,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function NoSelection_new(_model::Maybe(GListModel))
-        _model_maybe = nothing_to_null(_model)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
         ret = ccall(("gtk_no_selection_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model_maybe)
         ret2 = convert(GtkNoSelection, ret, true)
         ret2
@@ -8628,8 +8694,18 @@ $(Expr(:toplevel, quote
         nothing
     end
     function Shortcut_new(_trigger::Maybe(GtkShortcutTrigger), _action::Maybe(GtkShortcutAction))
-        _trigger_maybe = nothing_to_null(_trigger)
-        _action_maybe = nothing_to_null(_action)
+        _trigger_maybe = begin
+                if _trigger !== nothing
+                    GLib.glib_ref(_trigger)
+                end
+                nothing_to_null(_trigger)
+            end
+        _action_maybe = begin
+                if _action !== nothing
+                    GLib.glib_ref(_action)
+                end
+                nothing_to_null(_action)
+            end
         ret = ccall(("gtk_shortcut_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _trigger_maybe, _action_maybe)
         ret2 = convert(GtkShortcut, ret, true)
         ret2
@@ -8650,7 +8726,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function set_action(instance::GtkShortcut, _action::Maybe(GtkShortcutAction))
-        _action_maybe = nothing_to_null(_action)
+        _action_maybe = begin
+                if _action !== nothing
+                    GLib.glib_ref(_action)
+                end
+                nothing_to_null(_action)
+            end
         ret = ccall(("gtk_shortcut_set_action", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _action_maybe)
         nothing
     end
@@ -8660,7 +8741,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_trigger(instance::GtkShortcut, _trigger::Maybe(GtkShortcutTrigger))
-        _trigger_maybe = nothing_to_null(_trigger)
+        _trigger_maybe = begin
+                if _trigger !== nothing
+                    GLib.glib_ref(_trigger)
+                end
+                nothing_to_null(_trigger)
+            end
         ret = ccall(("gtk_shortcut_set_trigger", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _trigger_maybe)
         nothing
     end
@@ -8675,6 +8761,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function add_shortcut(instance::GtkShortcutController, _shortcut::GtkShortcut)
+        _shortcut = GLib.glib_ref(_shortcut)
         ret = ccall(("gtk_shortcut_controller_add_shortcut", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _shortcut)
         nothing
     end
@@ -8739,7 +8826,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function SingleSelection_new(_model::Maybe(GListModel))
-        _model_maybe = nothing_to_null(_model)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
         ret = ccall(("gtk_single_selection_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _model_maybe)
         ret2 = convert(GtkSingleSelection, ret, true)
         ret2
@@ -8812,7 +8904,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function SliceListModel_new(_model::Maybe(GListModel), _offset::Integer, _size::Integer)
-        _model_maybe = nothing_to_null(_model)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
         ret = ccall(("gtk_slice_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, UInt32, UInt32), _model_maybe, _offset, _size)
         ret2 = convert(GtkSliceListModel, ret, true)
         ret2
@@ -9019,8 +9116,18 @@ $(Expr(:toplevel, quote
         nothing
     end
     function SortListModel_new(_model::Maybe(GListModel), _sorter::Maybe(GtkSorter))
-        _model_maybe = nothing_to_null(_model)
-        _sorter_maybe = nothing_to_null(_sorter)
+        _model_maybe = begin
+                if _model !== nothing
+                    GLib.glib_ref(_model)
+                end
+                nothing_to_null(_model)
+            end
+        _sorter_maybe = begin
+                if _sorter !== nothing
+                    GLib.glib_ref(_sorter)
+                end
+                nothing_to_null(_sorter)
+            end
         ret = ccall(("gtk_sort_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _model_maybe, _sorter_maybe)
         ret2 = convert(GtkSortListModel, ret, true)
         ret2
@@ -10739,7 +10846,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function TreeListRowSorter_new(_sorter::Maybe(GtkSorter))
-        _sorter_maybe = nothing_to_null(_sorter)
+        _sorter_maybe = begin
+                if _sorter !== nothing
+                    GLib.glib_ref(_sorter)
+                end
+                nothing_to_null(_sorter)
+            end
         ret = ccall(("gtk_tree_list_row_sorter_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _sorter_maybe)
         ret2 = convert(GtkTreeListRowSorter, ret, true)
         ret2
@@ -11888,6 +12000,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function add_controller(instance::GtkWidget, _controller::GtkEventController)
+        _controller = GLib.glib_ref(_controller)
         ret = ccall(("gtk_widget_add_controller", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _controller)
         nothing
     end
@@ -12506,7 +12619,12 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_layout_manager(instance::GtkWidget, _layout_manager::Maybe(GtkLayoutManager))
-        _layout_manager_maybe = nothing_to_null(_layout_manager)
+        _layout_manager_maybe = begin
+                if _layout_manager !== nothing
+                    GLib.glib_ref(_layout_manager)
+                end
+                nothing_to_null(_layout_manager)
+            end
         ret = ccall(("gtk_widget_set_layout_manager", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _layout_manager_maybe)
         nothing
     end

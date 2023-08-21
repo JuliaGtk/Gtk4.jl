@@ -743,6 +743,37 @@ function extract_type(typeinfo::GITypeInfo, basetype::Type{T}) where {T<:GBoxed}
     TypeDesc{Type{GBoxed}}(GBoxed, jarg, name, ctype)
 end
 
+function _convert_obj_to_c(name::Symbol, arginfo::GIArgInfo, typeinfo)
+    if may_be_null(arginfo)
+        if get_ownership_transfer(arginfo) == GITransfer.EVERYTHING
+            newname = Symbol(name,"_maybe")
+            exprs = quote
+                if $name !== nothing
+                    GLib.glib_ref($name)
+                end
+                nothing_to_null($name)
+            end
+            return (newname, exprs)
+        else
+            newname = Symbol(name,"_maybe")
+            return (newname, :(nothing_to_null($name)))
+        end
+    else
+        if get_ownership_transfer(arginfo) == GITransfer.EVERYTHING
+            return (name, :(GLib.glib_ref($name)))
+        end
+    end
+    (name, nothing)
+end
+
+function convert_to_c(name::Symbol, arginfo::GIArgInfo, typeinfo::TypeDesc{T}) where {T<:Type{GObject}}
+    _convert_obj_to_c(name,arginfo,typeinfo)
+end
+
+function convert_to_c(name::Symbol, arginfo::GIArgInfo, typeinfo::TypeDesc{T}) where {T<:Type{GInterface}}
+    _convert_obj_to_c(name,arginfo,typeinfo)
+end
+
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}, isconstructor=false) where {T <: Type{GObject}}
     owns = get_ownership_transfer(arginfo) != GITransfer.NOTHING
     object = get_container(arginfo)

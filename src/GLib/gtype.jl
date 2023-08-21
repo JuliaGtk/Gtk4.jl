@@ -149,7 +149,7 @@ function convert_(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject
             gc_unref(hnd)
         end
     else # new GObject, create a wrapper
-        ret = wrap_gobject(hnd)::T
+        ret = wrap_gobject(hnd,owns)::T
     end
     ret
 end
@@ -209,6 +209,10 @@ gc_ref_closure(x::T) where {T} = (gc_ref(x), @cfunction(_gc_unref, Nothing, (Any
 # GLib ref/unref functions -- generally, you shouldn't be calling these
 function glib_ref(x::Ptr{GObject})
     ccall((:g_object_ref, libgobject), Nothing, (Ptr{GObject},), x)
+end
+function glib_ref(x::GObject)
+    glib_ref(x.handle)
+    x
 end
 gc_unref(p::Ptr{GObject}) = glib_unref(p)
 function glib_unref(x::Ptr{GObject})
