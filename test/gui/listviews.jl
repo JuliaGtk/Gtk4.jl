@@ -5,6 +5,9 @@ win = GtkWindow("Listview demo")
 sw = GtkScrolledWindow()
 push!(win, sw)
 
+slist0 = GtkStringList()
+@test length(slist0) == 0
+
 slist = GtkStringList(["Apple","Orange","Kiwi"])
 model = GLib.GListModel(slist)
 push!(slist, "Mango")

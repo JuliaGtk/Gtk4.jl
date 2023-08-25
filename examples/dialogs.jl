@@ -34,7 +34,7 @@ input_dialog_button = GtkButton("Input dialog")
 push!(box, input_dialog_button)
 
 function open_input_dialog(b)
-    input_dialog("Enter your information", "") do t
+    input_dialog("Enter your information", "", (("Cancel", 0), ("Accept", 1)), main_window) do t
         @async println("response was ",t)
     end
 end

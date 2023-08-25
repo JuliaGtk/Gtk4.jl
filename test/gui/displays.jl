@@ -21,6 +21,11 @@ pic2 = GtkPicture(pb)
 texture = GdkTexture(pb)
 @test width(texture)==100
 @test height(texture)==100
+
+# test ambiguous constructor handling
+@test_throws ErrorException GtkPicture(nothing)
+@test_throws ErrorException GtkImage(nothing)
+@test_throws ErrorException GtkVideo(nothing)
 end
 
 @testset "progressbar" begin

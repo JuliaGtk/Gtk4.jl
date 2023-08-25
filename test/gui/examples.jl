@@ -34,5 +34,10 @@ end
     include(joinpath(@__DIR__, "..", "..", "examples", "dialogs.jl"))
     destroy(main_window)
 end
-    
+
+@testset "Listbox" begin
+    include(joinpath(@__DIR__, "..", "..", "examples", "listbox.jl"))
+    destroy(main_window)
+end
+
 end

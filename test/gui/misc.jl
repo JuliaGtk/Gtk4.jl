@@ -70,6 +70,7 @@ b12 = GtkButton(:mnemonic,"_second")
 push!(g1, b12)
 b21 = GtkButton(:label,"first")
 b22 = GtkButton(:icon_name,"document-open-symbolic")
+@test_throws ErrorException GtkButton(:shiny,"shiny")
 push!(g2, b22)
 pushfirst!(g2, b21)
 push!(g2, GtkSeparator(:h))
@@ -150,6 +151,12 @@ end
 b3 = GtkBuilder(s,-1)
 win = b3["a_window"]
 destroy(win)
+
+b4 = GtkBuilder()
+push!(b4; filename="test.ui")
+
+b5 = GtkBuilder()
+push!(b5; buffer=s)
 
 end
 

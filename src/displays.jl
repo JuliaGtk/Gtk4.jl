@@ -10,9 +10,7 @@ function screen_size(widget=nothing)
         d=G_.get_display(widget)
     else
         d=G_.get_default() # gdk_display_get_default
-        if d===nothing
-            error("No default display, no way to return screen_size")
-        end
+        d===nothing && error("No default display, no way to return screen_size")
     end
 
     m=G_.get_monitors(d)
