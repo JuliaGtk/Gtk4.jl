@@ -48,3 +48,30 @@ destroy(win)
 
 end
 
+@testset "Listbox" begin
+win = GtkWindow("ListBox demo with filter")
+box = GtkBox(:v)
+entry = GtkSearchEntry()
+sw = GtkScrolledWindow()
+push!(box, entry)
+push!(box, sw)
+push!(win, box)
+
+listBox = GtkListBox()
+l=GtkLabel("widget 1")
+push!(listBox, l)
+@test listBox[1].child == l
+l0=GtkLabel("widget 0")
+pushfirst!(listBox, l0)
+@test listBox[1].child == l0
+delete!(listBox, listBox[1])
+@test listBox[1].child == l
+
+listBox[1] = GtkLabel("widget 2")
+@test listBox[1].child != l
+sw[] = listBox
+listBox.vexpand = true
+
+destroy(win)
+
+end

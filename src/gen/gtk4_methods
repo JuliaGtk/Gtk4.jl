@@ -1159,6 +1159,31 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_bookmark_list_set_io_priority", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _io_priority)
         nothing
     end
+    function BoolFilter_new(_expression::Maybe(GtkExpression))
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_bool_filter_new", libgtk4), Ptr{GObject}, (Ptr{GtkExpression},), _expression_maybe)
+        ret2 = convert(GtkBoolFilter, ret, true)
+        ret2
+    end
+    function get_expression(instance::GtkBoolFilter)
+        ret = ccall(("gtk_bool_filter_get_expression", libgtk4), Ptr{GtkExpression}, (Ptr{GObject},), instance)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function get_invert(instance::GtkBoolFilter)
+        ret = ccall(("gtk_bool_filter_get_invert", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_expression(instance::GtkBoolFilter, _expression::Maybe(GtkExpression))
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_bool_filter_set_expression", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkExpression}), instance, _expression_maybe)
+        nothing
+    end
+    function set_invert(instance::GtkBoolFilter, _invert::Bool)
+        ret = ccall(("gtk_bool_filter_set_invert", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _invert)
+        nothing
+    end
     function Box_new(_orientation, _spacing::Integer)
         ret = ccall(("gtk_box_new", libgtk4), Ptr{GObject}, (UInt32, Int32), _orientation, _spacing)
         ret2 = GtkBoxLeaf(ret, false)
@@ -2522,6 +2547,16 @@ $(Expr(:toplevel, quote
     function remove_all(instance::GtkComboBoxText)
         ret = ccall(("gtk_combo_box_text_remove_all", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
+    end
+    function ConstantExpression_new_for_value(_value::Union{GValue, Ref{_GValue}})
+        ret = ccall(("gtk_constant_expression_new_for_value", libgtk4), Ptr{GtkExpression}, (Ptr{_GValue},), _value)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function get_value(instance::GtkConstantExpression)
+        ret = ccall(("gtk_constant_expression_get_value", libgtk4), Ptr{_GValue}, (Ptr{GtkExpression},), instance)
+        ret2 = convert(Union{GValue, Ref{_GValue}}, ret, false)
+        ret2
     end
     function Constraint_new(_target::Maybe(GtkConstraintTarget), _target_attribute, _relation, _source::Maybe(GtkConstraintTarget), _source_attribute, _multiplier::Real, _constant::Real, _strength::Integer)
         _target_maybe = nothing_to_null(_target)
@@ -7214,6 +7249,41 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkWidget, ret, false)
         ret2
     end
+    function NumericSorter_new(_expression::Maybe(GtkExpression))
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_numeric_sorter_new", libgtk4), Ptr{GObject}, (Ptr{GtkExpression},), _expression_maybe)
+        ret2 = convert(GtkNumericSorter, ret, true)
+        ret2
+    end
+    function get_expression(instance::GtkNumericSorter)
+        ret = ccall(("gtk_numeric_sorter_get_expression", libgtk4), Ptr{GtkExpression}, (Ptr{GObject},), instance)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function get_sort_order(instance::GtkNumericSorter)
+        ret = ccall(("gtk_numeric_sorter_get_sort_order", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = SortType(ret)
+        ret2
+    end
+    function set_expression(instance::GtkNumericSorter, _expression::Maybe(GtkExpression))
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_numeric_sorter_set_expression", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkExpression}), instance, _expression_maybe)
+        nothing
+    end
+    function set_sort_order(instance::GtkNumericSorter, _sort_order)
+        ret = ccall(("gtk_numeric_sorter_set_sort_order", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _sort_order)
+        nothing
+    end
+    function ObjectExpression_new(_object::GObject)
+        ret = ccall(("gtk_object_expression_new", libgtk4), Ptr{GtkExpression}, (Ptr{GObject},), _object)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function get_object(instance::GtkObjectExpression)
+        ret = ccall(("gtk_object_expression_get_object", libgtk4), Ptr{GObject}, (Ptr{GtkExpression},), instance)
+        ret2 = convert_if_not_null(GObject, ret, false)
+        ret2
+    end
     function Overlay_new()
         ret = ccall(("gtk_overlay_new", libgtk4), Ptr{GObject}, ())
         ret2 = GtkOverlayLeaf(ret, false)
@@ -8177,6 +8247,28 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_progress_bar_set_text", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _text_maybe)
         nothing
     end
+    function PropertyExpression_new(_this_type::Integer, _expression::Maybe(GtkExpression), _property_name::Union{AbstractString, Symbol})
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_property_expression_new", libgtk4), Ptr{GtkExpression}, (UInt64, Ptr{GtkExpression}, Cstring), _this_type, _expression_maybe, _property_name)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function PropertyExpression_new_for_pspec(_expression::Maybe(GtkExpression), _pspec::GParam)
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_property_expression_new_for_pspec", libgtk4), Ptr{GtkExpression}, (Ptr{GtkExpression}, Ptr{GParam}), _expression_maybe, _pspec)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function get_expression(instance::GtkPropertyExpression)
+        ret = ccall(("gtk_property_expression_get_expression", libgtk4), Ptr{GtkExpression}, (Ptr{GtkExpression},), instance)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function get_pspec(instance::GtkPropertyExpression)
+        ret = ccall(("gtk_property_expression_get_pspec", libgtk4), Ptr{GParam}, (Ptr{GtkExpression},), instance)
+        ret2 = convert(GParam, ret)
+        ret2
+    end
     function get_adjustment(instance::GtkRange)
         ret = ccall(("gtk_range_get_adjustment", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GtkAdjustment, ret, false)
@@ -8750,6 +8842,26 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_shortcut_set_trigger", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _trigger_maybe)
         nothing
     end
+    function ShortcutAction_parse_string(_string::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_shortcut_action_parse_string", libgtk4), Ptr{GObject}, (Cstring,), _string)
+        ret2 = convert_if_not_null(GtkShortcutAction, ret, true)
+        ret2
+    end
+    function activate(instance::GtkShortcutAction, _flags, _widget::GtkWidget, _args::Maybe(GVariant))
+        _args_maybe = nothing_to_null(_args)
+        ret = ccall(("gtk_shortcut_action_activate", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{GObject}, Ptr{GVariant}), instance, _flags, _widget, _args_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function print(instance::GtkShortcutAction, _string::Union{GString, Ref{_GString}})
+        ret = ccall(("gtk_shortcut_action_print", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GString}), instance, _string)
+        nothing
+    end
+    function to_string(instance::GtkShortcutAction)
+        ret = ccall(("gtk_shortcut_action_to_string", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
     function ShortcutController_new()
         ret = ccall(("gtk_shortcut_controller_new", libgtk4), Ptr{GObject}, ())
         ret2 = convert(GtkEventController, ret, true)
@@ -8945,6 +9057,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkSnapshot, ret, true)
         ret2
     end
+    function append_border(instance::GtkSnapshot, _outline::_GskRoundedRect, _border_width, _border_color)
+        _border_width_arr = convert(Vector{Float32}, _border_width)
+        _border_color_arr = convert(Vector{_GdkRGBA}, _border_color)
+        ret = ccall(("gtk_snapshot_append_border", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}, Ptr{Float32}, Ptr{_GdkRGBA}), instance, _outline, _border_width_arr, _border_color_arr)
+        nothing
+    end
     function append_cairo(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
         ret = ccall(("gtk_snapshot_append_cairo", libgtk4), Ptr{cairoContext}, (Ptr{GObject}, Ptr{_GrapheneRect}), instance, _bounds)
         ret2 = convert(cairoContext, ret, true)
@@ -8960,6 +9078,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_append_conic_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _rotation, _stops_arr, _n_stops)
         nothing
     end
+    function append_inset_shadow(instance::GtkSnapshot, _outline::_GskRoundedRect, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
+        ret = ccall(("gtk_snapshot_append_inset_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}, Ptr{_GdkRGBA}, Float32, Float32, Float32, Float32), instance, _outline, _color, _dx, _dy, _spread, _blur_radius)
+        nothing
+    end
     function append_layout(instance::GtkSnapshot, _layout::PangoLayout, _color::Union{GdkRGBA, Ref{_GdkRGBA}})
         ret = ccall(("gtk_snapshot_append_layout", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRGBA}), instance, _layout, _color)
         nothing
@@ -8968,6 +9090,10 @@ $(Expr(:toplevel, quote
         _stops_arr = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
         ret = ccall(("gtk_snapshot_append_linear_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), instance, _bounds, _start_point, _end_point, _stops_arr, _n_stops)
+        nothing
+    end
+    function append_outset_shadow(instance::GtkSnapshot, _outline::_GskRoundedRect, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
+        ret = ccall(("gtk_snapshot_append_outset_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}, Ptr{_GdkRGBA}, Float32, Float32, Float32, Float32), instance, _outline, _color, _dx, _dy, _spread, _blur_radius)
         nothing
     end
     function append_radial_gradient(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _stops)
@@ -9035,6 +9161,10 @@ $(Expr(:toplevel, quote
     function push_repeat(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _child_bounds::Maybe(Union{GrapheneRect, Ref{_GrapheneRect}}))
         _child_bounds_maybe = nothing_to_null(_child_bounds)
         ret = ccall(("gtk_snapshot_push_repeat", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _bounds, _child_bounds_maybe)
+        nothing
+    end
+    function push_rounded_clip(instance::GtkSnapshot, _bounds::_GskRoundedRect)
+        ret = ccall(("gtk_snapshot_push_rounded_clip", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}), instance, _bounds)
         nothing
     end
     function push_shadow(instance::GtkSnapshot, _shadow)
@@ -9550,6 +9680,50 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_statusbar_remove_all", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _context_id)
         nothing
     end
+    function StringFilter_new(_expression::Maybe(GtkExpression))
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_string_filter_new", libgtk4), Ptr{GObject}, (Ptr{GtkExpression},), _expression_maybe)
+        ret2 = convert(GtkStringFilter, ret, true)
+        ret2
+    end
+    function get_expression(instance::GtkStringFilter)
+        ret = ccall(("gtk_string_filter_get_expression", libgtk4), Ptr{GtkExpression}, (Ptr{GObject},), instance)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function get_ignore_case(instance::GtkStringFilter)
+        ret = ccall(("gtk_string_filter_get_ignore_case", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_match_mode(instance::GtkStringFilter)
+        ret = ccall(("gtk_string_filter_get_match_mode", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = StringFilterMatchMode(ret)
+        ret2
+    end
+    function get_search(instance::GtkStringFilter)
+        ret = ccall(("gtk_string_filter_get_search", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function set_expression(instance::GtkStringFilter, _expression::Maybe(GtkExpression))
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_string_filter_set_expression", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkExpression}), instance, _expression_maybe)
+        nothing
+    end
+    function set_ignore_case(instance::GtkStringFilter, _ignore_case::Bool)
+        ret = ccall(("gtk_string_filter_set_ignore_case", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _ignore_case)
+        nothing
+    end
+    function set_match_mode(instance::GtkStringFilter, _mode)
+        ret = ccall(("gtk_string_filter_set_match_mode", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _mode)
+        nothing
+    end
+    function set_search(instance::GtkStringFilter, _search::Maybe(Union{AbstractString, Symbol}))
+        _search_maybe = nothing_to_null(_search)
+        ret = ccall(("gtk_string_filter_set_search", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _search_maybe)
+        nothing
+    end
     function StringList_new(_strings)
         _strings_maybe = nothing_to_null(_strings)
         ret = ccall(("gtk_string_list_new", libgtk4), Ptr{GObject}, (Ptr{Cstring},), _strings_maybe)
@@ -9587,6 +9761,31 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_string_object_get_string", libgtk4), Cstring, (Ptr{GObject},), instance)
         ret2 = string_or_nothing(ret, false)
         ret2
+    end
+    function StringSorter_new(_expression::Maybe(GtkExpression))
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_string_sorter_new", libgtk4), Ptr{GObject}, (Ptr{GtkExpression},), _expression_maybe)
+        ret2 = convert(GtkStringSorter, ret, true)
+        ret2
+    end
+    function get_expression(instance::GtkStringSorter)
+        ret = ccall(("gtk_string_sorter_get_expression", libgtk4), Ptr{GtkExpression}, (Ptr{GObject},), instance)
+        ret2 = convert(GtkExpression, ret)
+        ret2
+    end
+    function get_ignore_case(instance::GtkStringSorter)
+        ret = ccall(("gtk_string_sorter_get_ignore_case", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_expression(instance::GtkStringSorter, _expression::Maybe(GtkExpression))
+        _expression_maybe = nothing_to_null(_expression)
+        ret = ccall(("gtk_string_sorter_set_expression", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkExpression}), instance, _expression_maybe)
+        nothing
+    end
+    function set_ignore_case(instance::GtkStringSorter, _ignore_case::Bool)
+        ret = ccall(("gtk_string_sorter_set_ignore_case", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _ignore_case)
+        nothing
     end
     function add_provider_for_display(_display::GdkDisplay, _provider::GtkStyleProvider, _priority::Integer)
         ret = ccall(("gtk_style_context_add_provider_for_display", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32), _display, _provider, _priority)

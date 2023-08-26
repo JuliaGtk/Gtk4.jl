@@ -1,7 +1,11 @@
 
 function push!(builder::GtkBuilder; buffer = nothing, filename = nothing)
     if buffer !== nothing
-        G_.add_from_string(builder, buffer, -1)
+        if Sys.WORD_SIZE == 64  # this method takes gssize as the length of the string so crashes on 32 bit
+            G_.add_from_string(builder, buffer, -1)
+        else
+            error("this method doesn't work on 32 bit systems, use a ccall")
+        end
     elseif filename !== nothing
         G_.add_from_file(builder, filename)
     end

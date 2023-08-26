@@ -152,9 +152,7 @@ function __init__()
         G_.set_default_icon_name("julia")
     end
 
-    if isinteractive()
-        GLib.start_main_loop()
-    end
+    isinteractive() && GLib.start_main_loop()
 
     #@debug("Gtk4 initialized.")
 end

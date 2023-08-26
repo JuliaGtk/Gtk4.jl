@@ -37,7 +37,7 @@ GI.append_struc_docs!(exprs, "gtk4", d, c, ns)
 
 ## objects
 
-object_skiplist=[:CClosureExpression,:ClosureExpression,:ConstantExpression,:ObjectExpression,:PropertyExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
+object_skiplist=[:CClosureExpression,:ClosureExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
 
 GI.all_interfaces!(exprs,exports,ns)
 c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name],output_cache_define=false,output_cache_init=false)
@@ -56,9 +56,9 @@ GI.all_struct_methods!(exprs,ns,struct_skiplist=vcat(struct_skiplist,[:Bitset,:B
 
 ## object methods
 
-skiplist=[:create_closure,:activate_cell,:event,:start_editing,:filter_keypress,:trigger,:append_node,:im_context_filter_keypress,:get_backlog,:append_border,:append_inset_shadow,:append_outset_shadow,:push_rounded_clip,:get,:get_default,:get_for_display,:get_current_event_state,:get_axes]
+skiplist=[:create_closure,:activate_cell,:event,:start_editing,:filter_keypress,:append_node,:im_context_filter_keypress,:get_backlog,:get,:get_default,:get_for_display,:get_current_event_state,:get_axes]
 
-object_skiplist=vcat(object_skiplist,[:BoolFilter,:CellRenderer,:MnemonicAction,:NeverTrigger,:NothingAction,:NumericSorter,:PrintJob,:PrintSettings,:RecentManager,:StringFilter,:StringSorter,:ShortcutAction,:ShortcutTrigger])
+object_skiplist=vcat(object_skiplist,[:CellRenderer,:MnemonicAction,:NeverTrigger,:NothingAction,:PrintJob,:PrintSettings,:RecentManager,:ShortcutTrigger])
 
 # skips are to avoid method name collisions
 GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=object_skiplist)

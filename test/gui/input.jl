@@ -147,8 +147,10 @@ end
 w = GtkWindow("Togglebutton group test")
 b = GtkBox(:v)
 tb1 = GtkToggleButton("option 1")
+Gtk4.size_request(tb1,(100,200))
 tb2 = GtkToggleButton()
 tb2.label = "option 2"
+Gtk4.size_request(tb2,100,100)
 w[]=b
 push!(b,tb1)
 push!(b,tb2)

@@ -7,6 +7,7 @@ using Test, Gtk4
     activate(b2)
     sleep(0.5)
     activate(b)
+    sleep(0.25)
     destroy(win)
 end
 

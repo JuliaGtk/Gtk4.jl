@@ -75,6 +75,44 @@ $(Expr(:toplevel, quote
     @doc "The shadow parameters in a shadow node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.Shadow.html)." GskShadow
     @doc "`GskTransform` is an object to describe transform matrices.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.Transform.html)." GskTransform
     begin
+        abstract type GskRenderNode end
+        Base.convert(::Type{GskRenderNode}, ptr::Ptr{GskRenderNode}) = begin
+                GskRenderNodeLeaf(ptr)
+            end
+        Base.unsafe_convert(::Type{Ptr{GskRenderNode}}, o::GskRenderNode) = begin
+                o.handle
+            end
+    end
+    begin
+        mutable struct GskRenderNodeLeaf <: GskRenderNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskBlendNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskBlendNodeLeaf <: GskBlendNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskBlurNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskBlurNodeLeaf <: GskBlurNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskBorderNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskBorderNodeLeaf <: GskBorderNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
         abstract type GskRenderer <: GObject end
         mutable struct GskRendererLeaf <: GskRenderer
             handle::Ptr{GObject}
@@ -103,6 +141,14 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
     end
     begin
+        abstract type GskCairoNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskCairoNodeLeaf <: GskCairoNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
         abstract type GskCairoRenderer <: GskRenderer end
         mutable struct GskCairoRendererLeaf <: GskCairoRenderer
             handle::Ptr{GObject}
@@ -115,6 +161,22 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
+    end
+    begin
+        abstract type GskClipNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskClipNodeLeaf <: GskClipNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskColorNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskColorNodeLeaf <: GskColorNode
+            handle::Ptr{GskRenderNode}
+        end
     end
     begin
         abstract type GskGLRenderer <: GskRenderer end
@@ -145,6 +207,14 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
     end
     begin
+        abstract type GskLinearGradientNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskLinearGradientNodeLeaf <: GskLinearGradientNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
         abstract type GskNglRenderer <: GskRenderer end
         mutable struct GskNglRendererLeaf <: GskNglRenderer
             handle::Ptr{GObject}
@@ -159,24 +229,84 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
     end
     begin
-        abstract type GskRenderNode end
-        Base.convert(::Type{GskRenderNode}, ptr::Ptr{GskRenderNode}) = begin
-                GskRenderNodeLeaf(ptr)
-            end
-        Base.unsafe_convert(::Type{Ptr{GskRenderNode}}, o::GskRenderNode) = begin
-                o.handle
-            end
+        abstract type GskOpacityNode <: GskRenderNode end
     end
     begin
-        mutable struct GskRenderNodeLeaf <: GskRenderNode
+        mutable struct GskOpacityNodeLeaf <: GskOpacityNode
             handle::Ptr{GskRenderNode}
         end
+    end
+    begin
+        abstract type GskRepeatNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskRepeatNodeLeaf <: GskRepeatNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskRoundedClipNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskRoundedClipNodeLeaf <: GskRoundedClipNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskShadowNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskShadowNodeLeaf <: GskShadowNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskTextNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskTextNodeLeaf <: GskTextNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskTextureNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskTextureNodeLeaf <: GskTextureNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskTransformNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskTransformNodeLeaf <: GskTransformNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    function GskBlendNode(_bottom::GskRenderNode, _top::GskRenderNode, _blend_mode)
+        G_.BlendNode_new(_bottom, _top, _blend_mode)
+    end
+    function GskBlurNode(_child::GskRenderNode, _radius::Real)
+        G_.BlurNode_new(_child, _radius)
+    end
+    function GskBorderNode(_outline::_GskRoundedRect, _border_width, _border_color)
+        G_.BorderNode_new(_outline, _border_width, _border_color)
     end
     function GskBroadwayRenderer()
         G_.BroadwayRenderer_new()
     end
+    function GskCairoNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+        G_.CairoNode_new(_bounds)
+    end
     function GskCairoRenderer()
         G_.CairoRenderer_new()
+    end
+    function GskClipNode(_child::GskRenderNode, _clip::Union{GrapheneRect, Ref{_GrapheneRect}})
+        G_.ClipNode_new(_child, _clip)
+    end
+    function GskColorNode(_rgba::Union{GdkRGBA, Ref{_GdkRGBA}}, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+        G_.ColorNode_new(_rgba, _bounds)
     end
     function GskGLRenderer()
         G_.GLRenderer_new()
@@ -191,15 +321,53 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GskLinearGradientNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _start::Union{GraphenePoint, Ref{_GraphenePoint}}, _end::Union{GraphenePoint, Ref{_GraphenePoint}}, _color_stops)
+        G_.LinearGradientNode_new(_bounds, _start, _end, _color_stops)
+    end
+    function GskOpacityNode(_child::GskRenderNode, _opacity::Real)
+        G_.OpacityNode_new(_child, _opacity)
+    end
     function GskRenderer(_surface::GdkSurface; kwargs...)
         obj = G_.Renderer_new_for_surface(_surface)
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GskRepeatNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _child::GskRenderNode, _child_bounds::Maybe(Union{GrapheneRect, Ref{_GrapheneRect}}))
+        G_.RepeatNode_new(_bounds, _child, _child_bounds)
+    end
+    function GskRoundedClipNode(_child::GskRenderNode, _clip::_GskRoundedRect)
+        G_.RoundedClipNode_new(_child, _clip)
+    end
+    function GskShadowNode(_child::GskRenderNode, _shadows)
+        G_.ShadowNode_new(_child, _shadows)
+    end
+    function GskTextNode(_font::PangoFont, _glyphs::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _offset::Union{GraphenePoint, Ref{_GraphenePoint}})
+        G_.TextNode_new(_font, _glyphs, _color, _offset)
+    end
+    function GskTextureNode(_texture::GdkTexture, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+        G_.TextureNode_new(_texture, _bounds)
+    end
+    function GskTransformNode(_child::GskRenderNode, _transform::GskTransform)
+        G_.TransformNode_new(_child, _transform)
+    end
+    @doc "A render node applying a blending function between its two child nodes.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.BlendNode.html)." GskBlendNode
+    @doc "A render node applying a blur effect to its single child.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.BlurNode.html)." GskBlurNode
+    @doc "A render node for a border.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.BorderNode.html)." GskBorderNode
+    @doc "A render node for a Cairo surface.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.CairoNode.html)." GskCairoNode
     @doc "A GSK renderer that is using cairo.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.CairoRenderer.html)." GskCairoRenderer
+    @doc "A render node applying a rectangular clip to its single child node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.ClipNode.html)." GskClipNode
+    @doc "A render node for a solid color.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.ColorNode.html)." GskColorNode
     @doc "A `GskGLShader` is a snippet of GLSL that is meant to run in the\nfragment shader of the rendering pipeline.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.GLShader.html)." GskGLShader
+    @doc "A render node for a linear gradient.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.LinearGradientNode.html)." GskLinearGradientNode
+    @doc "A render node controlling the opacity of its single child node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.OpacityNode.html)." GskOpacityNode
     @doc "`GskRenderNode` is the basic block in a scene graph to be\nrendered using [class@Gsk.Renderer].\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.RenderNode.html)." GskRenderNode
     @doc "`GskRenderer` is a class that renders a scene graph defined via a\ntree of [class@Gsk.RenderNode] instances.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.Renderer.html)." GskRenderer
-    export GskColorStop, _GskColorStop, GskParseLocation, _GskParseLocation, GskRoundedRect, _GskRoundedRect, GskShadow, _GskShadow, GskTransform, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskNglRenderer, GskNglRendererLeaf, GskRenderNode, GskRenderer
+    @doc "A render node repeating its single child node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.RepeatNode.html)." GskRepeatNode
+    @doc "A render node applying a rounded rectangle clip to its single child.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.RoundedClipNode.html)." GskRoundedClipNode
+    @doc "A render node drawing one or more shadows behind its single child node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.ShadowNode.html)." GskShadowNode
+    @doc "A render node drawing a set of glyphs.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.TextNode.html)." GskTextNode
+    @doc "A render node for a `GdkTexture`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.TextureNode.html)." GskTextureNode
+    @doc "A render node applying a `GskTransform` to its single child node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/class.TransformNode.html)." GskTransformNode
+    export GskColorStop, _GskColorStop, GskParseLocation, _GskParseLocation, GskRoundedRect, _GskRoundedRect, GskShadow, _GskShadow, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorNode, GskColorNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTransformNode, GskTransformNodeLeaf
 end))
 end
