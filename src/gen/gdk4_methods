@@ -502,19 +502,19 @@ $(Expr(:toplevel, quote
     end
     function ContentProvider_new_for_bytes(_mime_type::Union{AbstractString, Symbol}, _bytes::GBytes)
         ret = ccall(("gdk_content_provider_new_for_bytes", libgtk4), Ptr{GObject}, (Cstring, Ptr{GBytes}), _mime_type, _bytes)
-        ret2 = convert(GdkContentProvider, ret, true)
+        ret2 = GdkContentProviderLeaf(ret, true)
         ret2
     end
     function ContentProvider_new_for_value(_value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gdk_content_provider_new_for_value", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
-        ret2 = convert(GdkContentProvider, ret, true)
+        ret2 = GdkContentProviderLeaf(ret, true)
         ret2
     end
     function ContentProvider_new_union(_providers)
         _providers_arr = convert(Vector{Ptr{GObject}}, _providers)
         _n_providers = length(_providers)
         ret = ccall(("gdk_content_provider_new_union", libgtk4), Ptr{GObject}, (Ptr{Ptr{GObject}}, UInt64), _providers_arr, _n_providers)
-        ret2 = convert(GdkContentProvider, ret, true)
+        ret2 = GdkContentProviderLeaf(ret, true)
         ret2
     end
     function content_changed(instance::GdkContentProvider)
@@ -629,7 +629,7 @@ $(Expr(:toplevel, quote
     function Cursor_new_from_texture(_texture::GdkTexture, _hotspot_x::Integer, _hotspot_y::Integer, _fallback::Maybe(GdkCursor))
         _fallback_maybe = nothing_to_null(_fallback)
         ret = ccall(("gdk_cursor_new_from_texture", libgtk4), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Ptr{GObject}), _texture, _hotspot_x, _hotspot_y, _fallback_maybe)
-        ret2 = convert(GdkCursor, ret, true)
+        ret2 = GdkCursorLeaf(ret, true)
         ret2
     end
     function get_fallback(instance::GdkCursor)
@@ -1449,7 +1449,7 @@ $(Expr(:toplevel, quote
     end
     function MemoryTexture_new(_width::Integer, _height::Integer, _format, _bytes::GBytes, _stride::Integer)
         ret = ccall(("gdk_memory_texture_new", libgtk4), Ptr{GObject}, (Int32, Int32, UInt32, Ptr{GBytes}, UInt64), _width, _height, _format, _bytes, _stride)
-        ret2 = convert(GdkMemoryTexture, ret, true)
+        ret2 = GdkMemoryTextureLeaf(ret, true)
         ret2
     end
     function get_connector(instance::GdkMonitor)

@@ -265,7 +265,7 @@ $(Expr(:toplevel, quote
     end
     function BroadwayRenderer_new()
         ret = ccall(("gsk_broadway_renderer_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GskRenderer, ret, true)
+        ret2 = GskBroadwayRendererLeaf(ret, true)
         ret2
     end
     function CairoNode_new(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
@@ -285,7 +285,7 @@ $(Expr(:toplevel, quote
     end
     function CairoRenderer_new()
         ret = ccall(("gsk_cairo_renderer_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GskRenderer, ret, true)
+        ret2 = GskCairoRendererLeaf(ret, true)
         ret2
     end
     function ClipNode_new(_child::GskRenderNode, _clip::Union{GrapheneRect, Ref{_GrapheneRect}})
@@ -416,17 +416,17 @@ $(Expr(:toplevel, quote
     end
     function GLRenderer_new()
         ret = ccall(("gsk_gl_renderer_new", libgtk4), Ptr{GObject}, ())
-        ret2 = convert(GskRenderer, ret, true)
+        ret2 = GskGLRendererLeaf(ret, true)
         ret2
     end
     function GLShader_new_from_bytes(_sourcecode::GBytes)
         ret = ccall(("gsk_gl_shader_new_from_bytes", libgtk4), Ptr{GObject}, (Ptr{GBytes},), _sourcecode)
-        ret2 = convert(GskGLShader, ret, true)
+        ret2 = GskGLShaderLeaf(ret, true)
         ret2
     end
     function GLShader_new_from_resource(_resource_path::Union{AbstractString, Symbol})
         ret = ccall(("gsk_gl_shader_new_from_resource", libgtk4), Ptr{GObject}, (Cstring,), _resource_path)
-        ret2 = convert(GskGLShader, ret, true)
+        ret2 = GskGLShaderLeaf(ret, true)
         ret2
     end
     function compile(instance::GskGLShader, _renderer::GskRenderer)

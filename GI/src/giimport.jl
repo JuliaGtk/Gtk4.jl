@@ -779,7 +779,7 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}, i
     object = get_container(arginfo)
     if may_be_null(arginfo)
         :(convert_if_not_null($(typeinfo.jtype), $name, $owns))
-    elseif isconstructor && !get_abstract(object) && !owns
+    elseif isconstructor && !get_abstract(object)
         # For a constructor, we know this is a never-before-seen object, so use the known concrete type to allow type inference
         # Many of these have an abstract type as the return type in GI, but we need the
         # concrete one. Since this is a constructor we can look up the name.

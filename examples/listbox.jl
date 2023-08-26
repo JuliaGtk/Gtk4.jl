@@ -26,3 +26,4 @@ end
 
 sw[] = listBox
 listBox.vexpand = true
+

@@ -75,7 +75,7 @@ $(Expr(:toplevel, quote
     end
     function Pixbuf_new_from_bytes(_data::GBytes, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer)
         ret = ccall(("gdk_pixbuf_new_from_bytes", libgdkpixbuf), Ptr{GObject}, (Ptr{GBytes}, UInt32, Cint, Int32, Int32, Int32, Int32), _data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride)
-        ret2 = convert(GdkPixbuf, ret, true)
+        ret2 = GdkPixbufLeaf(ret, true)
         ret2
     end
     function Pixbuf_new_from_data(_data, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer, _destroy_fn::Maybe(Function))
@@ -88,7 +88,7 @@ $(Expr(:toplevel, quote
             _destroy_fn_closure = GLib.gc_ref(_destroy_fn)
         end
         ret = ccall(("gdk_pixbuf_new_from_data", libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, UInt32, Cint, Int32, Int32, Int32, Int32, Ptr{Cvoid}, Ptr{Nothing}), _data_arr, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn_cfunc, _destroy_fn_closure)
-        ret2 = convert(GdkPixbuf, ret, true)
+        ret2 = GdkPixbufLeaf(ret, true)
         ret2
     end
     function Pixbuf_new_from_file(_filename::Union{AbstractString, Symbol})
@@ -151,7 +151,7 @@ $(Expr(:toplevel, quote
     end
     function Pixbuf_new_from_xpm_data(_data)
         ret = ccall(("gdk_pixbuf_new_from_xpm_data", libgdkpixbuf), Ptr{GObject}, (Ptr{Cstring},), _data)
-        ret2 = convert(GdkPixbuf, ret, true)
+        ret2 = GdkPixbufLeaf(ret, true)
         ret2
     end
     function calculate_rowstride(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
@@ -479,21 +479,21 @@ $(Expr(:toplevel, quote
     end
     function PixbufLoader_new()
         ret = ccall(("gdk_pixbuf_loader_new", libgdkpixbuf), Ptr{GObject}, ())
-        ret2 = convert(GdkPixbufLoader, ret, true)
+        ret2 = GdkPixbufLoaderLeaf(ret, true)
         ret2
     end
     function PixbufLoader_new_with_mime_type(_mime_type::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("gdk_pixbuf_loader_new_with_mime_type", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _mime_type, err)
         check_err(err)
-        ret2 = convert(GdkPixbufLoader, ret, true)
+        ret2 = GdkPixbufLoaderLeaf(ret, true)
         ret2
     end
     function PixbufLoader_new_with_type(_image_type::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("gdk_pixbuf_loader_new_with_type", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _image_type, err)
         check_err(err)
-        ret2 = convert(GdkPixbufLoader, ret, true)
+        ret2 = GdkPixbufLoaderLeaf(ret, true)
         ret2
     end
     function close(instance::GdkPixbufLoader)
@@ -540,12 +540,12 @@ $(Expr(:toplevel, quote
     end
     function PixbufNonAnim_new(_pixbuf::GdkPixbuf)
         ret = ccall(("gdk_pixbuf_non_anim_new", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), _pixbuf)
-        ret2 = convert(GdkPixbufAnimation, ret, true)
+        ret2 = GdkPixbufNonAnimLeaf(ret, true)
         ret2
     end
     function PixbufSimpleAnim_new(_width::Integer, _height::Integer, _rate::Real)
         ret = ccall(("gdk_pixbuf_simple_anim_new", libgdkpixbuf), Ptr{GObject}, (Int32, Int32, Float32), _width, _height, _rate)
-        ret2 = convert(GdkPixbufSimpleAnim, ret, true)
+        ret2 = GdkPixbufSimpleAnimLeaf(ret, true)
         ret2
     end
     function add_frame(instance::GdkPixbufSimpleAnim, _pixbuf::GdkPixbuf)

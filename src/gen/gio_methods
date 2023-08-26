@@ -302,7 +302,7 @@ $(Expr(:toplevel, quote
     end
     function AppLaunchContext_new()
         ret = ccall(("g_app_launch_context_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GAppLaunchContext, ret, true)
+        ret2 = GAppLaunchContextLeaf(ret, true)
         ret2
     end
     function get_display(instance::GAppLaunchContext, _info::GAppInfo, _files::GLib.LList{GLib._GList{Ptr{GObject}}})
@@ -340,7 +340,7 @@ $(Expr(:toplevel, quote
     function Application_new(_application_id::Maybe(Union{AbstractString, Symbol}), _flags)
         _application_id_maybe = nothing_to_null(_application_id)
         ret = ccall(("g_application_new", libgio), Ptr{GObject}, (Cstring, UInt32), _application_id_maybe, _flags)
-        ret2 = convert(GApplication, ret, true)
+        ret2 = GApplicationLeaf(ret, true)
         ret2
     end
     function id_is_valid(_application_id::Union{AbstractString, Symbol})
@@ -568,12 +568,12 @@ $(Expr(:toplevel, quote
     end
     function BufferedInputStream_new(_base_stream::GInputStream)
         ret = ccall(("g_buffered_input_stream_new", libgio), Ptr{GObject}, (Ptr{GObject},), _base_stream)
-        ret2 = convert(GInputStream, ret, true)
+        ret2 = GBufferedInputStreamLeaf(ret, true)
         ret2
     end
     function BufferedInputStream_new_sized(_base_stream::GInputStream, _size::Integer)
         ret = ccall(("g_buffered_input_stream_new_sized", libgio), Ptr{GObject}, (Ptr{GObject}, UInt64), _base_stream, _size)
-        ret2 = convert(GInputStream, ret, true)
+        ret2 = GBufferedInputStreamLeaf(ret, true)
         ret2
     end
     function fill(instance::GBufferedInputStream, _count::Integer, _cancellable::Maybe(GCancellable))
@@ -635,12 +635,12 @@ $(Expr(:toplevel, quote
     end
     function BufferedOutputStream_new(_base_stream::GOutputStream)
         ret = ccall(("g_buffered_output_stream_new", libgio), Ptr{GObject}, (Ptr{GObject},), _base_stream)
-        ret2 = convert(GOutputStream, ret, true)
+        ret2 = GBufferedOutputStreamLeaf(ret, true)
         ret2
     end
     function BufferedOutputStream_new_sized(_base_stream::GOutputStream, _size::Integer)
         ret = ccall(("g_buffered_output_stream_new_sized", libgio), Ptr{GObject}, (Ptr{GObject}, UInt64), _base_stream, _size)
-        ret2 = convert(GOutputStream, ret, true)
+        ret2 = GBufferedOutputStreamLeaf(ret, true)
         ret2
     end
     function get_auto_grow(instance::GBufferedOutputStream)
@@ -662,7 +662,7 @@ $(Expr(:toplevel, quote
     end
     function BytesIcon_new(_bytes::GBytes)
         ret = ccall(("g_bytes_icon_new", libgio), Ptr{GObject}, (Ptr{GBytes},), _bytes)
-        ret2 = convert(GBytesIcon, ret, true)
+        ret2 = GBytesIconLeaf(ret, true)
         ret2
     end
     function get_bytes(instance::GBytesIcon)
@@ -672,7 +672,7 @@ $(Expr(:toplevel, quote
     end
     function Cancellable_new()
         ret = ccall(("g_cancellable_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GCancellable, ret, true)
+        ret2 = GCancellableLeaf(ret, true)
         ret2
     end
     function get_current()
@@ -729,7 +729,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_charset_converter_new", libgio), Ptr{GObject}, (Cstring, Cstring, Ptr{Ptr{GError}}), _to_charset, _from_charset, err)
         check_err(err)
-        ret2 = convert(GCharsetConverter, ret, true)
+        ret2 = GCharsetConverterLeaf(ret, true)
         ret2
     end
     function get_num_fallbacks(instance::GCharsetConverter)
@@ -747,7 +747,7 @@ $(Expr(:toplevel, quote
     end
     function ConverterInputStream_new(_base_stream::GInputStream, _converter::GConverter)
         ret = ccall(("g_converter_input_stream_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _base_stream, _converter)
-        ret2 = convert(GInputStream, ret, true)
+        ret2 = GConverterInputStreamLeaf(ret, true)
         ret2
     end
     function get_converter(instance::GConverterInputStream)
@@ -760,7 +760,7 @@ $(Expr(:toplevel, quote
     end
     function ConverterOutputStream_new(_base_stream::GOutputStream, _converter::GConverter)
         ret = ccall(("g_converter_output_stream_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _base_stream, _converter)
-        ret2 = convert(GOutputStream, ret, true)
+        ret2 = GConverterOutputStreamLeaf(ret, true)
         ret2
     end
     function get_converter(instance::GConverterOutputStream)
@@ -773,7 +773,7 @@ $(Expr(:toplevel, quote
     end
     function Credentials_new()
         ret = ccall(("g_credentials_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GCredentials, ret, true)
+        ret2 = GCredentialsLeaf(ret, true)
         ret2
     end
     function get_unix_pid(instance::GCredentials)
@@ -819,7 +819,7 @@ $(Expr(:toplevel, quote
     end
     function DBusAuthObserver_new()
         ret = ccall(("g_dbus_auth_observer_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GDBusAuthObserver, ret, true)
+        ret2 = GDBusAuthObserverLeaf(ret, true)
         ret2
     end
     function allow_mechanism(instance::GDBusAuthObserver, _mechanism::Union{AbstractString, Symbol})
@@ -881,7 +881,7 @@ $(Expr(:toplevel, quote
     end
     function DBusMessage_new()
         ret = ccall(("g_dbus_message_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GDBusMessage, ret, true)
+        ret2 = GDBusMessageLeaf(ret, true)
         ret2
     end
     function DBusMessage_new_from_blob(_blob, _capabilities)
@@ -890,19 +890,19 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_dbus_message_new_from_blob", libgio), Ptr{GObject}, (Ptr{UInt8}, UInt64, UInt32, Ptr{Ptr{GError}}), _blob_arr, _blob_len, _capabilities, err)
         check_err(err)
-        ret2 = convert(GDBusMessage, ret, true)
+        ret2 = GDBusMessageLeaf(ret, true)
         ret2
     end
     function DBusMessage_new_method_call(_name::Maybe(Union{AbstractString, Symbol}), _path::Union{AbstractString, Symbol}, _interface_::Maybe(Union{AbstractString, Symbol}), _method::Union{AbstractString, Symbol})
         _name_maybe = nothing_to_null(_name)
         _interface__maybe = nothing_to_null(_interface_)
         ret = ccall(("g_dbus_message_new_method_call", libgio), Ptr{GObject}, (Cstring, Cstring, Cstring, Cstring), _name_maybe, _path, _interface__maybe, _method)
-        ret2 = convert(GDBusMessage, ret, true)
+        ret2 = GDBusMessageLeaf(ret, true)
         ret2
     end
     function DBusMessage_new_signal(_path::Union{AbstractString, Symbol}, _interface_::Union{AbstractString, Symbol}, _signal::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_message_new_signal", libgio), Ptr{GObject}, (Cstring, Cstring, Cstring), _path, _interface_, _signal)
-        ret2 = convert(GDBusMessage, ret, true)
+        ret2 = GDBusMessageLeaf(ret, true)
         ret2
     end
     function bytes_needed(_blob)
@@ -1112,14 +1112,14 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_dbus_object_manager_client_new_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _res, err)
         check_err(err)
-        ret2 = convert(GDBusObjectManagerClient, ret, true)
+        ret2 = GDBusObjectManagerClientLeaf(ret, true)
         ret2
     end
     function DBusObjectManagerClient_new_for_bus_finish(_res::GAsyncResult)
         err = err_buf()
         ret = ccall(("g_dbus_object_manager_client_new_for_bus_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _res, err)
         check_err(err)
-        ret2 = convert(GDBusObjectManagerClient, ret, true)
+        ret2 = GDBusObjectManagerClientLeaf(ret, true)
         ret2
     end
     function get_connection(instance::GDBusObjectManagerClient)
@@ -1144,7 +1144,7 @@ $(Expr(:toplevel, quote
     end
     function DBusObjectManagerServer_new(_object_path::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_object_manager_server_new", libgio), Ptr{GObject}, (Cstring,), _object_path)
-        ret2 = convert(GDBusObjectManagerServer, ret, true)
+        ret2 = GDBusObjectManagerServerLeaf(ret, true)
         ret2
     end
     function export_uniquely(instance::GDBusObjectManagerServer, _object::GDBusObjectSkeleton)
@@ -1173,7 +1173,7 @@ $(Expr(:toplevel, quote
     end
     function DBusObjectProxy_new(_connection::GDBusConnection, _object_path::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_object_proxy_new", libgio), Ptr{GObject}, (Ptr{GObject}, Cstring), _connection, _object_path)
-        ret2 = convert(GDBusObjectProxy, ret, true)
+        ret2 = GDBusObjectProxyLeaf(ret, true)
         ret2
     end
     function get_connection(instance::GDBusObjectProxy)
@@ -1183,7 +1183,7 @@ $(Expr(:toplevel, quote
     end
     function DBusObjectSkeleton_new(_object_path::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_object_skeleton_new", libgio), Ptr{GObject}, (Cstring,), _object_path)
-        ret2 = convert(GDBusObjectSkeleton, ret, true)
+        ret2 = GDBusObjectSkeletonLeaf(ret, true)
         ret2
     end
     function add_interface(instance::GDBusObjectSkeleton, _interface_::GDBusInterfaceSkeleton)
@@ -1236,7 +1236,7 @@ $(Expr(:toplevel, quote
     end
     function DataInputStream_new(_base_stream::GInputStream)
         ret = ccall(("g_data_input_stream_new", libgio), Ptr{GObject}, (Ptr{GObject},), _base_stream)
-        ret2 = convert(GDataInputStream, ret, true)
+        ret2 = GDataInputStreamLeaf(ret, true)
         ret2
     end
     function get_byte_order(instance::GDataInputStream)
@@ -1370,7 +1370,7 @@ $(Expr(:toplevel, quote
     end
     function DataOutputStream_new(_base_stream::GOutputStream)
         ret = ccall(("g_data_output_stream_new", libgio), Ptr{GObject}, (Ptr{GObject},), _base_stream)
-        ret2 = convert(GDataOutputStream, ret, true)
+        ret2 = GDataOutputStreamLeaf(ret, true)
         ret2
     end
     function get_byte_order(instance::GDataOutputStream)
@@ -1614,12 +1614,12 @@ $(Expr(:toplevel, quote
     end
     function Emblem_new(_icon::GIcon)
         ret = ccall(("g_emblem_new", libgio), Ptr{GObject}, (Ptr{GObject},), _icon)
-        ret2 = convert(GEmblem, ret, true)
+        ret2 = GEmblemLeaf(ret, true)
         ret2
     end
     function Emblem_new_with_origin(_icon::GIcon, _origin)
         ret = ccall(("g_emblem_new_with_origin", libgio), Ptr{GObject}, (Ptr{GObject}, UInt32), _icon, _origin)
-        ret2 = convert(GEmblem, ret, true)
+        ret2 = GEmblemLeaf(ret, true)
         ret2
     end
     function get_icon(instance::GEmblem)
@@ -1638,7 +1638,7 @@ $(Expr(:toplevel, quote
     function EmblemedIcon_new(_icon::GIcon, _emblem::Maybe(GEmblem))
         _emblem_maybe = nothing_to_null(_emblem)
         ret = ccall(("g_emblemed_icon_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _icon, _emblem_maybe)
-        ret2 = convert(GEmblemedIcon, ret, true)
+        ret2 = GEmblemedIconLeaf(ret, true)
         ret2
     end
     function add_emblem(instance::GEmblemedIcon, _emblem::GEmblem)
@@ -1796,7 +1796,7 @@ $(Expr(:toplevel, quote
     end
     function FileIcon_new(_file::GFile)
         ret = ccall(("g_file_icon_new", libgio), Ptr{GObject}, (Ptr{GObject},), _file)
-        ret2 = convert(GFileIcon, ret, true)
+        ret2 = GFileIconLeaf(ret, true)
         ret2
     end
     function get_file(instance::GFileIcon)
@@ -1809,7 +1809,7 @@ $(Expr(:toplevel, quote
     end
     function FileInfo_new()
         ret = ccall(("g_file_info_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GFileInfo, ret, true)
+        ret2 = GFileInfoLeaf(ret, true)
         ret2
     end
     function clear_status(instance::GFileInfo)
@@ -2204,7 +2204,7 @@ $(Expr(:toplevel, quote
     end
     function FilenameCompleter_new()
         ret = ccall(("g_filename_completer_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GFilenameCompleter, ret, true)
+        ret2 = GFilenameCompleterLeaf(ret, true)
         ret2
     end
     function get_completion_suffix(instance::GFilenameCompleter, _initial_text::Union{AbstractString, Symbol})
@@ -2333,13 +2333,13 @@ $(Expr(:toplevel, quote
     end
     function InetAddress_new_any(_family)
         ret = ccall(("g_inet_address_new_any", libgio), Ptr{GObject}, (UInt32,), _family)
-        ret2 = convert(GInetAddress, ret, true)
+        ret2 = GInetAddressLeaf(ret, true)
         ret2
     end
     function InetAddress_new_from_bytes(_bytes, _family)
         _bytes_arr = convert(Vector{UInt8}, _bytes)
         ret = ccall(("g_inet_address_new_from_bytes", libgio), Ptr{GObject}, (Ptr{UInt8}, UInt32), _bytes_arr, _family)
-        ret2 = convert(GInetAddress, ret, true)
+        ret2 = GInetAddressLeaf(ret, true)
         ret2
     end
     function InetAddress_new_from_string(_string::Union{AbstractString, Symbol})
@@ -2349,7 +2349,7 @@ $(Expr(:toplevel, quote
     end
     function InetAddress_new_loopback(_family)
         ret = ccall(("g_inet_address_new_loopback", libgio), Ptr{GObject}, (UInt32,), _family)
-        ret2 = convert(GInetAddress, ret, true)
+        ret2 = GInetAddressLeaf(ret, true)
         ret2
     end
     function equal(instance::GInetAddress, _other_address::GInetAddress)
@@ -2425,14 +2425,14 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_inet_address_mask_new", libgio), Ptr{GObject}, (Ptr{GObject}, UInt32, Ptr{Ptr{GError}}), _addr, _length, err)
         check_err(err)
-        ret2 = convert(GInetAddressMask, ret, true)
+        ret2 = GInetAddressMaskLeaf(ret, true)
         ret2
     end
     function InetAddressMask_new_from_string(_mask_string::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("g_inet_address_mask_new_from_string", libgio), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _mask_string, err)
         check_err(err)
-        ret2 = convert(GInetAddressMask, ret, true)
+        ret2 = GInetAddressMaskLeaf(ret, true)
         ret2
     end
     function equal(instance::GInetAddressMask, _mask2::GInetAddressMask)
@@ -2466,7 +2466,7 @@ $(Expr(:toplevel, quote
     end
     function InetSocketAddress_new(_address::GInetAddress, _port::Integer)
         ret = ccall(("g_inet_socket_address_new", libgio), Ptr{GObject}, (Ptr{GObject}, UInt16), _address, _port)
-        ret2 = convert(GSocketAddress, ret, true)
+        ret2 = GInetSocketAddressLeaf(ret, true)
         ret2
     end
     function InetSocketAddress_new_from_string(_address::Union{AbstractString, Symbol}, _port::Integer)
@@ -2665,7 +2665,7 @@ $(Expr(:toplevel, quote
     end
     function ListStore_new(_item_type::Integer)
         ret = ccall(("g_list_store_new", libgio), Ptr{GObject}, (UInt64,), _item_type)
-        ret2 = convert(GListStore, ret, true)
+        ret2 = GListStoreLeaf(ret, true)
         ret2
     end
     function append(instance::GListStore, _item::GObject)
@@ -2735,12 +2735,12 @@ $(Expr(:toplevel, quote
     end
     function MemoryInputStream_new()
         ret = ccall(("g_memory_input_stream_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GInputStream, ret, true)
+        ret2 = GMemoryInputStreamLeaf(ret, true)
         ret2
     end
     function MemoryInputStream_new_from_bytes(_bytes::GBytes)
         ret = ccall(("g_memory_input_stream_new_from_bytes", libgio), Ptr{GObject}, (Ptr{GBytes},), _bytes)
-        ret2 = convert(GInputStream, ret, true)
+        ret2 = GMemoryInputStreamLeaf(ret, true)
         ret2
     end
     function add_bytes(instance::GMemoryInputStream, _bytes::GBytes)
@@ -2749,7 +2749,7 @@ $(Expr(:toplevel, quote
     end
     function MemoryOutputStream_new_resizable()
         ret = ccall(("g_memory_output_stream_new_resizable", libgio), Ptr{GObject}, ())
-        ret2 = convert(GOutputStream, ret, true)
+        ret2 = GMemoryOutputStreamLeaf(ret, true)
         ret2
     end
     function get_data(instance::GMemoryOutputStream)
@@ -2777,7 +2777,7 @@ $(Expr(:toplevel, quote
     end
     function Menu_new()
         ret = ccall(("g_menu_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GMenu, ret, true)
+        ret2 = GMenuLeaf(ret, true)
         ret2
     end
     function append(instance::GMenu, _label::Maybe(Union{AbstractString, Symbol}), _detailed_action::Maybe(Union{AbstractString, Symbol}))
@@ -2882,24 +2882,24 @@ $(Expr(:toplevel, quote
         _label_maybe = nothing_to_null(_label)
         _detailed_action_maybe = nothing_to_null(_detailed_action)
         ret = ccall(("g_menu_item_new", libgio), Ptr{GObject}, (Cstring, Cstring), _label_maybe, _detailed_action_maybe)
-        ret2 = convert(GMenuItem, ret, true)
+        ret2 = GMenuItemLeaf(ret, true)
         ret2
     end
     function MenuItem_new_from_model(_model::GMenuModel, _item_index::Integer)
         ret = ccall(("g_menu_item_new_from_model", libgio), Ptr{GObject}, (Ptr{GObject}, Int32), _model, _item_index)
-        ret2 = convert(GMenuItem, ret, true)
+        ret2 = GMenuItemLeaf(ret, true)
         ret2
     end
     function MenuItem_new_section(_label::Maybe(Union{AbstractString, Symbol}), _section::GMenuModel)
         _label_maybe = nothing_to_null(_label)
         ret = ccall(("g_menu_item_new_section", libgio), Ptr{GObject}, (Cstring, Ptr{GObject}), _label_maybe, _section)
-        ret2 = convert(GMenuItem, ret, true)
+        ret2 = GMenuItemLeaf(ret, true)
         ret2
     end
     function MenuItem_new_submenu(_label::Maybe(Union{AbstractString, Symbol}), _submenu::GMenuModel)
         _label_maybe = nothing_to_null(_label)
         ret = ccall(("g_menu_item_new_submenu", libgio), Ptr{GObject}, (Cstring, Ptr{GObject}), _label_maybe, _submenu)
-        ret2 = convert(GMenuItem, ret, true)
+        ret2 = GMenuItemLeaf(ret, true)
         ret2
     end
     function get_attribute_value(instance::GMenuItem, _attribute::Union{AbstractString, Symbol}, _expected_type::Maybe(GVariantType))
@@ -3014,7 +3014,7 @@ $(Expr(:toplevel, quote
     end
     function MountOperation_new()
         ret = ccall(("g_mount_operation_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GMountOperation, ret, true)
+        ret2 = GMountOperationLeaf(ret, true)
         ret2
     end
     function get_anonymous(instance::GMountOperation)
@@ -3106,17 +3106,17 @@ $(Expr(:toplevel, quote
     function NativeSocketAddress_new(_native::Maybe(Nothing), _len::Integer)
         _native_maybe = nothing_to_null(_native)
         ret = ccall(("g_native_socket_address_new", libgio), Ptr{GObject}, (Ptr{Nothing}, UInt64), _native_maybe, _len)
-        ret2 = convert(GSocketAddress, ret, true)
+        ret2 = GNativeSocketAddressLeaf(ret, true)
         ret2
     end
     function NetworkAddress_new(_hostname::Union{AbstractString, Symbol}, _port::Integer)
         ret = ccall(("g_network_address_new", libgio), Ptr{GObject}, (Cstring, UInt16), _hostname, _port)
-        ret2 = convert(GNetworkAddress, ret, true)
+        ret2 = GNetworkAddressLeaf(ret, true)
         ret2
     end
     function NetworkAddress_new_loopback(_port::Integer)
         ret = ccall(("g_network_address_new_loopback", libgio), Ptr{GObject}, (UInt16,), _port)
-        ret2 = convert(GNetworkAddress, ret, true)
+        ret2 = GNetworkAddressLeaf(ret, true)
         ret2
     end
     function parse(_host_and_port::Union{AbstractString, Symbol}, _default_port::Integer)
@@ -3149,7 +3149,7 @@ $(Expr(:toplevel, quote
     end
     function NetworkService_new(_service::Union{AbstractString, Symbol}, _protocol::Union{AbstractString, Symbol}, _domain::Union{AbstractString, Symbol})
         ret = ccall(("g_network_service_new", libgio), Ptr{GObject}, (Cstring, Cstring, Cstring), _service, _protocol, _domain)
-        ret2 = convert(GNetworkService, ret, true)
+        ret2 = GNetworkServiceLeaf(ret, true)
         ret2
     end
     function get_domain(instance::GNetworkService)
@@ -3178,7 +3178,7 @@ $(Expr(:toplevel, quote
     end
     function Notification_new(_title::Union{AbstractString, Symbol})
         ret = ccall(("g_notification_new", libgio), Ptr{GObject}, (Cstring,), _title)
-        ret2 = convert(GNotification, ret, true)
+        ret2 = GNotificationLeaf(ret, true)
         ret2
     end
     function add_button(instance::GNotification, _label::Union{AbstractString, Symbol}, _detailed_action::Union{AbstractString, Symbol})
@@ -3536,14 +3536,14 @@ $(Expr(:toplevel, quote
     end
     function PropertyAction_new(_name::Union{AbstractString, Symbol}, _object::GObject, _property_name::Union{AbstractString, Symbol})
         ret = ccall(("g_property_action_new", libgio), Ptr{GObject}, (Cstring, Ptr{GObject}, Cstring), _name, _object, _property_name)
-        ret2 = convert(GPropertyAction, ret, true)
+        ret2 = GPropertyActionLeaf(ret, true)
         ret2
     end
     function ProxyAddress_new(_inetaddr::GInetAddress, _port::Integer, _protocol::Union{AbstractString, Symbol}, _dest_hostname::Union{AbstractString, Symbol}, _dest_port::Integer, _username::Maybe(Union{AbstractString, Symbol}), _password::Maybe(Union{AbstractString, Symbol}))
         _username_maybe = nothing_to_null(_username)
         _password_maybe = nothing_to_null(_password)
         ret = ccall(("g_proxy_address_new", libgio), Ptr{GObject}, (Ptr{GObject}, UInt16, Cstring, Cstring, UInt16, Cstring, Cstring), _inetaddr, _port, _protocol, _dest_hostname, _dest_port, _username_maybe, _password_maybe)
-        ret2 = convert(GSocketAddress, ret, true)
+        ret2 = GProxyAddressLeaf(ret, true)
         ret2
     end
     function get_destination_hostname(instance::GProxyAddress)
@@ -3721,29 +3721,29 @@ $(Expr(:toplevel, quote
     end
     function Settings_new(_schema_id::Union{AbstractString, Symbol})
         ret = ccall(("g_settings_new", libgio), Ptr{GObject}, (Cstring,), _schema_id)
-        ret2 = convert(GSettings, ret, true)
+        ret2 = GSettingsLeaf(ret, true)
         ret2
     end
     function Settings_new_full(_schema::GSettingsSchema, _backend::Maybe(GSettingsBackend), _path::Maybe(Union{AbstractString, Symbol}))
         _backend_maybe = nothing_to_null(_backend)
         _path_maybe = nothing_to_null(_path)
         ret = ccall(("g_settings_new_full", libgio), Ptr{GObject}, (Ptr{GSettingsSchema}, Ptr{GObject}, Cstring), _schema, _backend_maybe, _path_maybe)
-        ret2 = convert(GSettings, ret, true)
+        ret2 = GSettingsLeaf(ret, true)
         ret2
     end
     function Settings_new_with_backend(_schema_id::Union{AbstractString, Symbol}, _backend::GSettingsBackend)
         ret = ccall(("g_settings_new_with_backend", libgio), Ptr{GObject}, (Cstring, Ptr{GObject}), _schema_id, _backend)
-        ret2 = convert(GSettings, ret, true)
+        ret2 = GSettingsLeaf(ret, true)
         ret2
     end
     function Settings_new_with_backend_and_path(_schema_id::Union{AbstractString, Symbol}, _backend::GSettingsBackend, _path::Union{AbstractString, Symbol})
         ret = ccall(("g_settings_new_with_backend_and_path", libgio), Ptr{GObject}, (Cstring, Ptr{GObject}, Cstring), _schema_id, _backend, _path)
-        ret2 = convert(GSettings, ret, true)
+        ret2 = GSettingsLeaf(ret, true)
         ret2
     end
     function Settings_new_with_path(_schema_id::Union{AbstractString, Symbol}, _path::Union{AbstractString, Symbol})
         ret = ccall(("g_settings_new_with_path", libgio), Ptr{GObject}, (Cstring, Cstring), _schema_id, _path)
-        ret2 = convert(GSettings, ret, true)
+        ret2 = GSettingsLeaf(ret, true)
         ret2
     end
     function sync()
@@ -3968,13 +3968,13 @@ $(Expr(:toplevel, quote
     function SimpleAction_new(_name::Union{AbstractString, Symbol}, _parameter_type::Maybe(GVariantType))
         _parameter_type_maybe = nothing_to_null(_parameter_type)
         ret = ccall(("g_simple_action_new", libgio), Ptr{GObject}, (Cstring, Ptr{GVariantType}), _name, _parameter_type_maybe)
-        ret2 = convert(GSimpleAction, ret, true)
+        ret2 = GSimpleActionLeaf(ret, true)
         ret2
     end
     function SimpleAction_new_stateful(_name::Union{AbstractString, Symbol}, _parameter_type::Maybe(GVariantType), _state::GVariant)
         _parameter_type_maybe = nothing_to_null(_parameter_type)
         ret = ccall(("g_simple_action_new_stateful", libgio), Ptr{GObject}, (Cstring, Ptr{GVariantType}, Ptr{GVariant}), _name, _parameter_type_maybe, _state)
-        ret2 = convert(GSimpleAction, ret, true)
+        ret2 = GSimpleActionLeaf(ret, true)
         ret2
     end
     function set_enabled(instance::GSimpleAction, _enabled::Bool)
@@ -3992,31 +3992,31 @@ $(Expr(:toplevel, quote
     end
     function SimpleActionGroup_new()
         ret = ccall(("g_simple_action_group_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GSimpleActionGroup, ret, true)
+        ret2 = GSimpleActionGroupLeaf(ret, true)
         ret2
     end
     function SimpleIOStream_new(_input_stream::GInputStream, _output_stream::GOutputStream)
         ret = ccall(("g_simple_io_stream_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _input_stream, _output_stream)
-        ret2 = convert(GIOStream, ret, true)
+        ret2 = GSimpleIOStreamLeaf(ret, true)
         ret2
     end
     function SimplePermission_new(_allowed::Bool)
         ret = ccall(("g_simple_permission_new", libgio), Ptr{GObject}, (Cint,), _allowed)
-        ret2 = convert(GPermission, ret, true)
+        ret2 = GSimplePermissionLeaf(ret, true)
         ret2
     end
     function Socket_new(_family, _type, _protocol)
         err = err_buf()
         ret = ccall(("g_socket_new", libgio), Ptr{GObject}, (UInt32, UInt32, UInt32, Ptr{Ptr{GError}}), _family, _type, _protocol, err)
         check_err(err)
-        ret2 = convert(GSocket, ret, true)
+        ret2 = GSocketLeaf(ret, true)
         ret2
     end
     function Socket_new_from_fd(_fd::Integer)
         err = err_buf()
         ret = ccall(("g_socket_new_from_fd", libgio), Ptr{GObject}, (Int32, Ptr{Ptr{GError}}), _fd, err)
         check_err(err)
-        ret2 = convert(GSocket, ret, true)
+        ret2 = GSocketLeaf(ret, true)
         ret2
     end
     function accept(instance::GSocket, _cancellable::Maybe(GCancellable))
@@ -4415,7 +4415,7 @@ $(Expr(:toplevel, quote
     end
     function SocketClient_new()
         ret = ccall(("g_socket_client_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GSocketClient, ret, true)
+        ret2 = GSocketClientLeaf(ret, true)
         ret2
     end
     function add_application_proxy(instance::GSocketClient, _protocol::Union{AbstractString, Symbol})
@@ -4690,7 +4690,7 @@ $(Expr(:toplevel, quote
     end
     function SocketListener_new()
         ret = ccall(("g_socket_listener_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GSocketListener, ret, true)
+        ret2 = GSocketListenerLeaf(ret, true)
         ret2
     end
     function accept(instance::GSocketListener, _cancellable::Maybe(GCancellable))
@@ -4803,7 +4803,7 @@ $(Expr(:toplevel, quote
     end
     function SocketService_new()
         ret = ccall(("g_socket_service_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GSocketService, ret, true)
+        ret2 = GSocketServiceLeaf(ret, true)
         ret2
     end
     function is_active(instance::GSocketService)
@@ -4823,7 +4823,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("g_subprocess_newv", libgio), Ptr{GObject}, (Ptr{Cstring}, UInt32, Ptr{Ptr{GError}}), _argv, _flags, err)
         check_err(err)
-        ret2 = convert(GSubprocess, ret, true)
+        ret2 = GSubprocessLeaf(ret, true)
         ret2
     end
     function communicate(instance::GSubprocess, _stdin_buf::Maybe(GBytes), _cancellable::Maybe(GCancellable))
@@ -5019,7 +5019,7 @@ $(Expr(:toplevel, quote
     end
     function SubprocessLauncher_new(_flags)
         ret = ccall(("g_subprocess_launcher_new", libgio), Ptr{GObject}, (UInt32,), _flags)
-        ret2 = convert(GSubprocessLauncher, ret, true)
+        ret2 = GSubprocessLauncherLeaf(ret, true)
         ret2
     end
     function close(instance::GSubprocessLauncher)
@@ -5099,7 +5099,7 @@ $(Expr(:toplevel, quote
     end
     function TcpWrapperConnection_new(_base_io_stream::GIOStream, _socket::GSocket)
         ret = ccall(("g_tcp_wrapper_connection_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _base_io_stream, _socket)
-        ret2 = convert(GSocketConnection, ret, true)
+        ret2 = GTcpWrapperConnectionLeaf(ret, true)
         ret2
     end
     function get_base_io_stream(instance::GTcpWrapperConnection)
@@ -5109,7 +5109,7 @@ $(Expr(:toplevel, quote
     end
     function TestDBus_new(_flags)
         ret = ccall(("g_test_dbus_new", libgio), Ptr{GObject}, (UInt32,), _flags)
-        ret2 = convert(GTestDBus, ret, true)
+        ret2 = GTestDBusLeaf(ret, true)
         ret2
     end
     function unset()
@@ -5144,18 +5144,18 @@ $(Expr(:toplevel, quote
     end
     function ThemedIcon_new(_iconname::Union{AbstractString, Symbol})
         ret = ccall(("g_themed_icon_new", libgio), Ptr{GObject}, (Cstring,), _iconname)
-        ret2 = convert(GThemedIcon, ret, true)
+        ret2 = GThemedIconLeaf(ret, true)
         ret2
     end
     function ThemedIcon_new_from_names(_iconnames)
         _len = length(_iconnames)
         ret = ccall(("g_themed_icon_new_from_names", libgio), Ptr{GObject}, (Ptr{Cstring}, Int32), _iconnames, _len)
-        ret2 = convert(GThemedIcon, ret, true)
+        ret2 = GThemedIconLeaf(ret, true)
         ret2
     end
     function ThemedIcon_new_with_default_fallbacks(_iconname::Union{AbstractString, Symbol})
         ret = ccall(("g_themed_icon_new_with_default_fallbacks", libgio), Ptr{GObject}, (Cstring,), _iconname)
-        ret2 = convert(GThemedIcon, ret, true)
+        ret2 = GThemedIconLeaf(ret, true)
         ret2
     end
     function append_name(instance::GThemedIcon, _iconname::Union{AbstractString, Symbol})
@@ -5177,7 +5177,7 @@ $(Expr(:toplevel, quote
     end
     function ThreadedSocketService_new(_max_threads::Integer)
         ret = ccall(("g_threaded_socket_service_new", libgio), Ptr{GObject}, (Int32,), _max_threads)
-        ret2 = convert(GSocketService, ret, true)
+        ret2 = GThreadedSocketServiceLeaf(ret, true)
         ret2
     end
     function TlsCertificate_new_from_file(_file::Union{AbstractString, Symbol})
@@ -5564,7 +5564,7 @@ $(Expr(:toplevel, quote
     end
     function TlsPassword_new(_flags, _description::Union{AbstractString, Symbol})
         ret = ccall(("g_tls_password_new", libgio), Ptr{GObject}, (UInt32, Cstring), _flags, _description)
-        ret2 = convert(GTlsPassword, ret, true)
+        ret2 = GTlsPasswordLeaf(ret, true)
         ret2
     end
     function get_description(instance::GTlsPassword)
@@ -5678,12 +5678,12 @@ $(Expr(:toplevel, quote
     end
     function UnixCredentialsMessage_new()
         ret = ccall(("g_unix_credentials_message_new", libgio), Ptr{GObject}, ())
-        ret2 = convert(GSocketControlMessage, ret, true)
+        ret2 = GUnixCredentialsMessageLeaf(ret, true)
         ret2
     end
     function UnixCredentialsMessage_new_with_credentials(_credentials::GCredentials)
         ret = ccall(("g_unix_credentials_message_new_with_credentials", libgio), Ptr{GObject}, (Ptr{GObject},), _credentials)
-        ret2 = convert(GSocketControlMessage, ret, true)
+        ret2 = GUnixCredentialsMessageLeaf(ret, true)
         ret2
     end
     function is_supported()
@@ -5776,7 +5776,7 @@ $(Expr(:toplevel, quote
     end
     function ZlibCompressor_new(_format, _level::Integer)
         ret = ccall(("g_zlib_compressor_new", libgio), Ptr{GObject}, (UInt32, Int32), _format, _level)
-        ret2 = convert(GZlibCompressor, ret, true)
+        ret2 = GZlibCompressorLeaf(ret, true)
         ret2
     end
     function get_file_info(instance::GZlibCompressor)
@@ -5791,7 +5791,7 @@ $(Expr(:toplevel, quote
     end
     function ZlibDecompressor_new(_format)
         ret = ccall(("g_zlib_decompressor_new", libgio), Ptr{GObject}, (UInt32,), _format)
-        ret2 = convert(GZlibDecompressor, ret, true)
+        ret2 = GZlibDecompressorLeaf(ret, true)
         ret2
     end
     function get_file_info(instance::GZlibDecompressor)

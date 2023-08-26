@@ -11,11 +11,11 @@ In function definitions, it uses [annotations](https://gi.readthedocs.io/en/late
 should be freed, whether pointer arguments can be optionally NULL, whether list
 outputs are NULL-terminated, which argument corresponds to the length of array
 inputs, which arguments are outputs and which are inputs, and more.
-The primary advantage over writing `ccall`'s (as is done in Gtk.jl) is that it can rapidly cover an entire library, saving a lot of tedious work.
+The primary advantage over manually writing `ccall`'s (as is done in Gtk.jl) is that it can rapidly cover an entire library, saving a lot of tedious work.
 As new functionality is added to libraries, you just have to run GI.jl again and new code is generated.
 Disadvantages include: the current implementation only extracts GI information on Linux, leading to potential bugs on other platforms, and annotations are inaccurate in some libraries.
 
-This package is currently unregistered, and it only works on Linux because it uses gobject_introspection_jll, which is currently only available for Linux. However, most generated code works on other platforms.
+This package is currently unregistered, and it only works on Linux because it uses [gobject_introspection_jll](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/gobject_introspection), which is currently only available for Linux. However, most generated code works on other platforms.
 
 ## Status
 

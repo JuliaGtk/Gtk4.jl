@@ -156,7 +156,7 @@ b4 = GtkBuilder()
 push!(b4; filename="test.ui")
 
 b5 = GtkBuilder()
-push!(b5; buffer=s)
+Sys.WORD_SIZE == 64 && push!(b5; buffer=s)
 
 end
 

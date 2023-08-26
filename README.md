@@ -15,9 +15,9 @@ Most of the code for GLib support (`GType`, `GValue`, `GObject`, etc.) was copie
 Documentation for the master branch version of this package can be found [here](https://juliagtk.github.io/Gtk4.jl/dev/). Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
 
 ## Current status
-Based on limited data, Gtk4.jl works about as well as Gtk.jl. Notably, it does not cause REPL lag on Windows the way that Gtk.jl does.
-
 For auto-generated code, Gtk4.jl relies on GObject introspection data generated on a Linux x86_64 machine, which may result in code that crashes on 32 bit computers. This seems to affect mostly obscure parts of GLib that are unlikely to be useful to Julia users, but 32 bit users should be aware of this.
+
+Note that this package uses binaries for the GTK library and its dependencies that are built and packaged using [BinaryBuilder.jl](https://github.com/JuliaPackaging/BinaryBuilder.jl). On Linux it does **not** use the binaries that are packaged with your distribution. The build scripts for these binaries, including the library versions currently being used, can be found by perusing [Yggdrasil.jl](https://github.com/JuliaPackaging/Yggdrasil.jl).
 
 ## Enabling GTK4's EGL backend (Linux)
 On Wayland, a Cairo-based fallback backend will be used unless you tell `libglvnd_jll` where to find libEGL. This can be done by setting the environment variable __EGL_VENDOR_LIBRARY_DIRS. See [here](https://gitlab.freedesktop.org/glvnd/libglvnd/-/blob/master/src/EGL/icd_enumeration.md) for details.

@@ -64,11 +64,15 @@ push!(listBox, l)
 l0=GtkLabel("widget 0")
 pushfirst!(listBox, l0)
 @test listBox[1].child == l0
+lmiddle=GtkLabel("widget 0.5")
+insert!(listBox,2,lmiddle)
+@test listBox[2].child == lmiddle
+
 delete!(listBox, listBox[1])
-@test listBox[1].child == l
+@test listBox[2].child == l
 
 listBox[1] = GtkLabel("widget 2")
-@test listBox[1].child != l
+@test listBox[2].child != l
 sw[] = listBox
 listBox.vexpand = true
 

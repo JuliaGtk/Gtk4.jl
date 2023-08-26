@@ -35,7 +35,7 @@ GI.append_struc_docs!(exprs, "gsk4", d, c, ns)
 
 ## objects
 
-c = GI.all_objects!(exprs,exports,ns,,output_cache_define=false,output_cache_init=false)
+c = GI.all_objects!(exprs,exports,ns,output_cache_define=false,output_cache_init=false)
 GI.append_object_docs!(exprs, "gsk4", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns)
 
