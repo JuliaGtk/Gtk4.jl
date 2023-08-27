@@ -76,6 +76,20 @@ listBox[1] = GtkLabel("widget 2")
 sw[] = listBox
 listBox.vexpand = true
 
+# while we're at it, test GtkExpression
+pe = GtkPropertyExpression(GtkWindow, "title")
+rgv=Ref(GLib.GValue())
+Gtk4.G_.evaluate(pe, win, rgv)
+@test rgv[String] == "ListBox demo with filter"
+@test Gtk4.evaluate(pe, win) == "ListBox demo with filter"
+
+ce = GtkConstantExpression(Gtk4.GLib.gvalue(3.0))
+rgv[] = GValue()
+Gtk4.G_.evaluate(ce, nothing, rgv)
+@test rgv[Float64] == 3.0
+@test Gtk4.evaluate(ce) == 3.0
+
 destroy(win)
 
 end
+

@@ -113,7 +113,7 @@ end
 function GtkConstantExpression(x)
     t=GLib.g_type(typeof(x))
     t == 0 && error("Failed to look up the GType of $x")
-    G_.GtkConstantExpression(t, x)
+    G_.GtkConstantExpression(gvalue(x))
 end
 
 function GtkPropertyExpression(typ::Type,name::AbstractString)
@@ -122,4 +122,8 @@ function GtkPropertyExpression(typ::Type,name::AbstractString)
     G_.GtkPropertyExpression(t, nothing, name)
 end
 
-
+function evaluate(e::GtkExpression, this=nothing)
+    rgv=Ref(GLib.GValue())
+    Gtk4.G_.evaluate(e, this, rgv)
+    rgv[Any]
+end
