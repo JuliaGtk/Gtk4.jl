@@ -75,7 +75,7 @@ $(Expr(:toplevel, quote
     @doc "The shadow parameters in a shadow node.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.Shadow.html)." GskShadow
     @doc "`GskTransform` is an object to describe transform matrices.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/struct.Transform.html)." GskTransform
     begin
-        abstract type GskRenderNode end
+        abstract type GskRenderNode <: GTypeInstance end
         Base.convert(::Type{GskRenderNode}, ptr::Ptr{GskRenderNode}) = begin
                 GskRenderNodeLeaf(ptr)
             end
@@ -125,6 +125,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GskRenderer] = GskRendererLeaf
+        (GLib.g_type(::Type{T}) where T <: GskRenderer) = begin
+                ccall(("gsk_renderer_get_type", libgtk4), GType, ())
+            end
     end
     begin
         abstract type GskBroadwayRenderer <: GskRenderer end
@@ -139,6 +142,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
+        (GLib.g_type(::Type{T}) where T <: GskBroadwayRenderer) = begin
+                ccall(("gsk_broadway_renderer_get_type", libgtk4), GType, ())
+            end
     end
     begin
         abstract type GskCairoNode <: GskRenderNode end
@@ -161,6 +167,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
+        (GLib.g_type(::Type{T}) where T <: GskCairoRenderer) = begin
+                ccall(("gsk_cairo_renderer_get_type", libgtk4), GType, ())
+            end
     end
     begin
         abstract type GskClipNode <: GskRenderNode end
@@ -231,6 +240,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GskGLRenderer] = GskGLRendererLeaf
+        (GLib.g_type(::Type{T}) where T <: GskGLRenderer) = begin
+                ccall(("gsk_gl_renderer_get_type", libgtk4), GType, ())
+            end
     end
     begin
         abstract type GskGLShader <: GObject end
@@ -245,6 +257,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
+        (GLib.g_type(::Type{T}) where T <: GskGLShader) = begin
+                ccall(("gsk_gl_shader_get_type", libgtk4), GType, ())
+            end
     end
     begin
         abstract type GskGLShaderNode <: GskRenderNode end
@@ -283,6 +298,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
+        (GLib.g_type(::Type{T}) where T <: GskNglRenderer) = begin
+                ccall(("gsk_ngl_renderer_get_type", libgtk4), GType, ())
+            end
     end
     begin
         abstract type GskOpacityNode <: GskRenderNode end

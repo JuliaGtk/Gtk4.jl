@@ -8,7 +8,7 @@ module GI
 
     import .GLibBase as GLib
     import .GLibBase:
-      unsafe_convert, GError, GObject, GType, GArray, GPtrArray, GByteArray,
+      unsafe_convert, GError, GObject, GType, GArray, GPtrArray, GByteArray, GTypeInstance,
       GHashTable, GList, GInterface, GBoxed, AbstractStringLike, bytestring,
       gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
       gtkdoc_func_url, gtkdoc_struc_url, gtkdoc_object_url

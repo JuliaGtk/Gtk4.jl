@@ -242,12 +242,9 @@ end
 # For each GObject type GMyObject, we output:
 # * an abstract type "GMyObject"
 # * a leaf type "GMyObjectLeaf" that has a handle to the C pointer and a
-#   constructor that takes a C pointer
-# * a constructor for the leaf type that takes key word arguments, for
-#   constructing an object with particular property values
-# * a key word constructor for the abstract type that calls the constructor just
-#   mentioned
+#   constructor that takes a C pointer and "owns" (which controls ref/unref issues)
 # * an expression adding this object to the GObject wrapper cache
+# * 
 
 function gobject_decl(objectinfo)
     g_type = get_g_type(objectinfo)
@@ -263,6 +260,11 @@ function gobject_decl(objectinfo)
     if oname === :void
         println("get_g_type returns void -- not in library? : ", get_name(objectinfo))
     end
+    
+    type_init = String(get_type_init(objectinfo))
+    libs=get_shlibs(GINamespace(get_namespace(objectinfo)))
+    lib=libs[findfirst(find_symbol(type_init),libs)]
+    slib=symbol_from_lib(lib)
 
     exprs=Expr[]
     decl=quote
@@ -278,6 +280,8 @@ function gobject_decl(objectinfo)
             end
         end
         gtype_wrapper_cache[$(QuoteNode(oname))] = $leafname
+        GLib.g_type(::Type{T}) where {T <: $oname} =
+                      ccall(($type_init, $slib), GType, ())
     end
     push!(exprs, decl)
     exprs
@@ -301,7 +305,7 @@ function obj_decl!(exprs,o,ns,handled)
         if p === nothing
             # abstract declaration for toplevel GTypeInstance and convert method
             d=quote
-                abstract type $oname end
+                abstract type $oname <: GTypeInstance end
                 Base.convert(::Type{$oname}, ptr::Ptr{$tname}) = $leafname(ptr)
                 Base.unsafe_convert(::Type{Ptr{$tname}}, o::$oname) = o.handle
             end
@@ -813,7 +817,7 @@ end
 
 function extract_type(typeinfo::TypeInfo, info::ObjectLike)
     if is_pointer(typeinfo)
-        if typename(info)===:GParam  # these are not really GObjects
+        if typename(info)===:GParam  # GParamSpec is a GTypeInstance but we handle it differently
             throw(NotImplementedError("ObjectLike but not a GObject"))
             #return TypeDesc(info,:GParamSpec,:(Ptr{GParamSpec}))
         end

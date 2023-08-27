@@ -100,3 +100,26 @@ function GtkCustomFilter(match::Function)
     ret = ccall(("gtk_custom_filter_new", libgtk4), Ptr{GObject}, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), create_cfunc, C_NULL, C_NULL)
     convert(GtkCustomFilter, ret, true)
 end
+
+## GtkExpressions
+
+function glib_ref(x::Ptr{GtkExpression})
+    ccall((:gtk_expression_ref, libgtk4), Nothing, (Ptr{GtkExpression},), x)
+end
+function glib_unref(x::Ptr{GtkExpression})
+    ccall((:gtk_expression_unref, libgtk4), Nothing, (Ptr{GtkExpression},), x)
+end
+
+function GtkConstantExpression(x)
+    t=GLib.g_type(typeof(x))
+    t == 0 && error("Failed to look up the GType of $x")
+    G_.GtkConstantExpression(t, x)
+end
+
+function GtkPropertyExpression(typ::Type,name::AbstractString)
+    t=GLib.g_type(typ)
+    t == 0 && error("Failed to look up the GType of $x")
+    G_.GtkPropertyExpression(t, nothing, name)
+end
+
+

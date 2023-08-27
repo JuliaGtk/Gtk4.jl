@@ -183,6 +183,13 @@ IteratorSize(::GtkWidget) = Base.SizeUnknown()
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
 
+function glib_ref(x::Ptr{GskRenderNode})
+    ccall((:gsk_render_node_ref, libgtk4), Nothing, (Ptr{GskRenderNode},), x)
+end
+function glib_unref(x::Ptr{GskRenderNode})
+    ccall((:gsk_render_node_unref, libgtk4), Nothing, (Ptr{GskRenderNode},), x)
+end
+
 ## CSS, style
 
 function GtkCssProvider(data, filename = nothing)

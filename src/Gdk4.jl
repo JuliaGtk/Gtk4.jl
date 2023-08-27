@@ -47,3 +47,10 @@ function monitors()
     d=GdkDisplay()
     G_.get_monitors(d)
 end
+
+function glib_ref(x::Ptr{GdkEvent})
+    ccall((:gdk_event_ref, libgtk4), Nothing, (Ptr{GdkEvent},), x)
+end
+function glib_unref(x::Ptr{GdkEvent})
+    ccall((:gdk_event_unref, libgtk4), Nothing, (Ptr{GdkEvent},), x)
+end

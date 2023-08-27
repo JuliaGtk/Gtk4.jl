@@ -11,7 +11,7 @@ import Base: convert, size, length, getindex, setindex!, get,
              sigatomic_begin, sigatomic_end, unsafe_convert, getproperty,
              getindex, setindex!
 
-export GInterface, GType, GObject, GBoxed
+export GInterface, GType, GObject, GBoxed, GTypeInstance
 export GEnum, GError, GValue, gvalue, g_type
 export GHashTable, GByteArray, GArray, GPtrArray
 export GList, glist_iter, _GSList, _GList

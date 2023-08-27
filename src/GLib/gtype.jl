@@ -1,4 +1,5 @@
-abstract type GObject end
+abstract type GTypeInstance end
+abstract type GObject <: GTypeInstance end
 abstract type GTypeInterface end
 abstract type _GTypeInterface end
 abstract type GInterface <: GObject end

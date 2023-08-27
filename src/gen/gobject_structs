@@ -186,6 +186,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GBinding] = GBindingLeaf
+        (GLib.g_type(::Type{T}) where T <: GBinding) = begin
+                ccall(("g_binding_get_type", libgobject), GType, ())
+            end
     end
     begin
         abstract type GBindingGroup <: GObject end
@@ -200,6 +203,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GBindingGroup] = GBindingGroupLeaf
+        (GLib.g_type(::Type{T}) where T <: GBindingGroup) = begin
+                ccall(("g_binding_group_get_type", libgobject), GType, ())
+            end
     end
     begin
         abstract type GInitiallyUnowned <: GObject end
@@ -214,6 +220,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GInitiallyUnowned] = GInitiallyUnownedLeaf
+        (GLib.g_type(::Type{T}) where T <: GInitiallyUnowned) = begin
+                ccall(("g_initially_unowned_get_type", libgobject), GType, ())
+            end
     end
     begin
         abstract type GTypeModule <: GObject end
@@ -228,6 +237,9 @@ $(Expr(:toplevel, quote
             end
         end
         gtype_wrapper_cache[:GTypeModule] = GTypeModuleLeaf
+        (GLib.g_type(::Type{T}) where T <: GTypeModule) = begin
+                ccall(("g_type_module_get_type", libgobject), GType, ())
+            end
     end
     begin
         gtype_wrapper_cache_init() = begin

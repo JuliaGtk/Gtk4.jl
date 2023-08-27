@@ -372,7 +372,7 @@ $(Expr(:toplevel, quote
     function Application_new(_application_id::Maybe(Union{AbstractString, Symbol}), _flags)
         _application_id_maybe = nothing_to_null(_application_id)
         ret = ccall(("adw_application_new", libadwaita), Ptr{GObject}, (Cstring, UInt32), _application_id_maybe, _flags)
-        ret2 = convert(AdwApplication, ret, true)
+        ret2 = AdwApplicationLeaf(ret, true)
         ret2
     end
     function get_style_manager(instance::AdwApplication)
@@ -666,7 +666,7 @@ $(Expr(:toplevel, quote
     end
     function ClampLayout_new()
         ret = ccall(("adw_clamp_layout_new", libadwaita), Ptr{GObject}, ())
-        ret2 = convert(GtkLayoutManager, ret, true)
+        ret2 = AdwClampLayoutLeaf(ret, true)
         ret2
     end
     function get_maximum_size(instance::AdwClampLayout)
@@ -861,7 +861,7 @@ $(Expr(:toplevel, quote
     end
     function EnumListModel_new(_enum_type::Integer)
         ret = ccall(("adw_enum_list_model_new", libadwaita), Ptr{GObject}, (UInt64,), _enum_type)
-        ret2 = convert(AdwEnumListModel, ret, true)
+        ret2 = AdwEnumListModelLeaf(ret, true)
         ret2
     end
     function find_position(instance::AdwEnumListModel, _value::Integer)
@@ -1643,12 +1643,12 @@ $(Expr(:toplevel, quote
     end
     function PropertyAnimationTarget_new(_object::GObject, _property_name::Union{AbstractString, Symbol})
         ret = ccall(("adw_property_animation_target_new", libadwaita), Ptr{GObject}, (Ptr{GObject}, Cstring), _object, _property_name)
-        ret2 = convert(AdwAnimationTarget, ret, true)
+        ret2 = AdwPropertyAnimationTargetLeaf(ret, true)
         ret2
     end
     function PropertyAnimationTarget_new_for_pspec(_object::GObject, _pspec::GParam)
         ret = ccall(("adw_property_animation_target_new_for_pspec", libadwaita), Ptr{GObject}, (Ptr{GObject}, Ptr{GParam}), _object, _pspec)
-        ret2 = convert(AdwAnimationTarget, ret, true)
+        ret2 = AdwPropertyAnimationTargetLeaf(ret, true)
         ret2
     end
     function get_object(instance::AdwPropertyAnimationTarget)
@@ -2028,7 +2028,7 @@ $(Expr(:toplevel, quote
     end
     function SwipeTracker_new(_swipeable::AdwSwipeable)
         ret = ccall(("adw_swipe_tracker_new", libadwaita), Ptr{GObject}, (Ptr{GtkWidget},), _swipeable)
-        ret2 = convert(AdwSwipeTracker, ret, true)
+        ret2 = AdwSwipeTrackerLeaf(ret, true)
         ret2
     end
     function get_allow_long_swipes(instance::AdwSwipeTracker)
@@ -2505,7 +2505,7 @@ $(Expr(:toplevel, quote
     end
     function Toast_new(_title::Union{AbstractString, Symbol})
         ret = ccall(("adw_toast_new", libadwaita), Ptr{GObject}, (Cstring,), _title)
-        ret2 = convert(AdwToast, ret, true)
+        ret2 = AdwToastLeaf(ret, true)
         ret2
     end
     function dismiss(instance::AdwToast)
