@@ -92,9 +92,7 @@ gtkdoc_func_url(ns,func)="https://docs.gtk.org/$(ns)/func.$(func).html"
 
 # related to array handling
 function length_zt(arr::Ptr)
-    if arr==C_NULL
-        return 0
-    end
+    arr==C_NULL && return 0
     i=1
     while unsafe_load(arr,i)!=C_NULL
         i+=1

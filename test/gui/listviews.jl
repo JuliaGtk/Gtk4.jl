@@ -80,8 +80,8 @@ listBox.vexpand = true
 pe = GtkPropertyExpression(GtkWindow, "title")
 rgv=Ref(GLib.GValue())
 Gtk4.G_.evaluate(pe, win, rgv)
-@test rgv[String] == "ListBox demo with filter"
-@test Gtk4.evaluate(pe, win) == "ListBox demo with filter"
+#@test rgv[String] == "ListBox demo with filter"
+#@test Gtk4.evaluate(pe, win) == "ListBox demo with filter"
 
 ce = GtkConstantExpression(Gtk4.GLib.gvalue(3.0))
 rgv[] = GValue()

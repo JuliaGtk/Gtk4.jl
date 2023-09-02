@@ -17,8 +17,10 @@ end
 function check_err(err::Base.RefValue{Ptr{GError}})
     if err[] != C_NULL
         gerror = GError(err[])
-        emsg = bytestring(gerror.message)
+        emsg = message(gerror)
         ccall((:g_clear_error,libglib),Nothing,(Ptr{Ptr{GError}},),err)
         error(emsg)
     end
 end
+
+message(err::GError) = bytestring(err.message)

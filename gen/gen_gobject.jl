@@ -16,10 +16,11 @@ disguised = GI.read_disguised(d)
 special = [:Value]
 import_as_opaque = [:ObjectClass]
 struct_skiplist=vcat(disguised, special, [:CClosure,:Closure,:ClosureNotifyData,
-:InterfaceInfo,:ObjectConstructParam,:ParamSpecTypeInfo,:TypeInfo,:TypeInstance,
-:TypeInterface,:TypeValueTable,:WeakRef])
+:InterfaceInfo,:ObjectConstructParam,:ParamSpecTypeInfo,:TypeInstance,
+:TypeInterface,:WeakRef])
 
-first_list=[:EnumValue,:TypeClass,:FlagsValue]
+# these struct types are members in other structs, so we export them first
+first_list=[:EnumValue,:TypeClass,:FlagsValue,:TypeValueTable]
 GI.struct_exprs!(exprs,exports,ns,first_list)
 
 struct_skiplist=vcat(struct_skiplist,first_list)
@@ -66,7 +67,7 @@ GI.write_to_file(path,"gobject_methods",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-# functions that are handled in the library already
+# functions that are handled in the package already
 handled_list=[:type_from_name,:type_is_a,:type_name,:type_parent,:type_test_flags]
 
 skiplist=vcat(handled_list,[:enum_complete_type_info,:enum_register_static,:flags_complete_type_info,
@@ -77,7 +78,7 @@ skiplist=vcat(handled_list,[:enum_complete_type_info,:enum_register_static,:flag
 :source_set_closure,:source_set_dummy_callback,:type_add_interface_static,
 :type_check_instance,:type_check_instance_is_a,:type_check_instance_is_fundamentally_a,
 :type_default_interface_unref,:type_free_instance,
-:type_name_from_instance,:type_register_fundamental,:type_register_static,
+:type_name_from_instance,:type_register_fundamental,
 :signal_set_va_marshaller,:signal_emitv,:param_value_convert,:param_value_defaults,:param_value_set_default,:param_value_validate,:param_values_cmp])
 
 GI.all_functions!(exprs,ns,skiplist=skiplist,symbol_skiplist=symbols_handled)

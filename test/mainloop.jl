@@ -101,3 +101,10 @@ end
 @test @test_logs (:warn, "Error in @guarded callback") bar4(3,5) == unhandled
 
 end
+
+@testset "preferences" begin
+
+GLib.set_uv_loop_integration("auto")
+check = GLib.is_uv_loop_integration_enabled()
+
+end

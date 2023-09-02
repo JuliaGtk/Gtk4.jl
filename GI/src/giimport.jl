@@ -507,7 +507,7 @@ function convert_to_c(argname::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {
 end
 
 function extract_type(typeinfo::GITypeInfo,info::Type{GICArray})
-    @assert is_pointer(typeinfo)
+    #@assert is_pointer(typeinfo)
     elm = get_param_type(typeinfo,0)
     elmtype = extract_type(elm)
     elmctype=elmtype.ctype

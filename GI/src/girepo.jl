@@ -11,9 +11,7 @@ mutable struct GIInfo{Typeid}
 end
 
 function GIInfo(h::Ptr{GIBaseInfo},owns=true)
-    if h == C_NULL
-        error("Cannot construct GIInfo from NULL")
-    end
+    h == C_NULL && error("Cannot construct GIInfo from NULL")
     typeid = ccall((:g_base_info_get_type, libgi), Int, (Ptr{GIBaseInfo},), h)
     info = GIInfo{typeid}(h)
     owns && finalizer(info_unref, info)
@@ -139,9 +137,7 @@ function gi_find_by_name(namespace::GINamespace, name::Symbol)
     info = ccall((:g_irepository_find_by_name, libgi), Ptr{GIBaseInfo},
                   (Ptr{GIRepository}, Cstring, Cstring), C_NULL, namespace.name, name)
 
-    if info == C_NULL
-        error("Name $name not found in $namespace")
-    end
+    info == C_NULL && error("Name $name not found in $namespace")
     GIInfo(info)
 end
 

@@ -38,6 +38,24 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        struct _GTypeValueTable
+            value_init::Ptr{Cvoid}
+            value_free::Ptr{Cvoid}
+            value_copy::Ptr{Cvoid}
+            value_peek_pointer::Ptr{Cvoid}
+            collect_format::Cstring
+            collect_value::Ptr{Cvoid}
+            lcopy_format::Cstring
+            lcopy_value::Ptr{Cvoid}
+        end
+        mutable struct GTypeValueTable
+            handle::Ptr{_GTypeValueTable}
+        end
+        unsafe_convert(::Type{Ptr{_GTypeValueTable}}, box::GTypeValueTable) = begin
+                convert(Ptr{_GTypeValueTable}, box.handle)
+            end
+    end
+    begin
         struct _GEnumClass
             g_type_class::_GTypeClass
             minimum::Int32
@@ -108,6 +126,26 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        struct _GTypeInfo
+            class_size::UInt16
+            base_init::Ptr{Cvoid}
+            base_finalize::Ptr{Cvoid}
+            class_init::Ptr{Cvoid}
+            class_finalize::Ptr{Cvoid}
+            class_data::Ptr{Nothing}
+            instance_size::UInt16
+            n_preallocs::UInt16
+            instance_init::Ptr{Cvoid}
+            value_table::Ptr{_GTypeValueTable}
+        end
+        mutable struct GTypeInfo
+            handle::Ptr{_GTypeInfo}
+        end
+        unsafe_convert(::Type{Ptr{_GTypeInfo}}, box::GTypeInfo) = begin
+                convert(Ptr{_GTypeInfo}, box.handle)
+            end
+    end
+    begin
         struct _GTypePluginClass
             base_iface::_GTypeInterface
             use_plugin::Ptr{Cvoid}
@@ -169,6 +207,7 @@ $(Expr(:toplevel, quote
     @doc "The #GSignalInvocationHint structure is used to pass on additional information\nto callbacks during a signal emission.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.SignalInvocationHint.html)." GSignalInvocationHint
     @doc "A structure holding in-depth information for a specific signal.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.SignalQuery.html)." GSignalQuery
     @doc "A structure that provides information to the type system which is\nused specifically for managing fundamental types.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeFundamentalInfo.html)." GTypeFundamentalInfo
+    @doc "This structure is used to provide the type system with the information\nrequired to initialize and destruct (finalize) a type's class and\nits instances.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeInfo.html)." GTypeInfo
     @doc "The #GTypePlugin interface is used by the type system in order to handle\nthe lifecycle of dynamically loaded types.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypePluginClass.html)." GTypePluginClass
     @doc "A structure holding information for a specific type.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
     @doc "A #GValueArray contains an array of #GValue elements.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.ValueArray.html)." GValueArray
@@ -283,6 +322,6 @@ $(Expr(:toplevel, quote
         ret = f(ihint, n_param_values, param_values)
         convert(Cint, ret)
     end
-    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin, GBindingTransformFunc, GClosureMarshal, GSignalAccumulator, GSignalEmissionHook
+    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GTypeValueTable, _GTypeValueTable, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypeInfo, _GTypeInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin, GBindingTransformFunc, GClosureMarshal, GSignalAccumulator, GSignalEmissionHook
 end))
 end

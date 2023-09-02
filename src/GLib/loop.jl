@@ -135,9 +135,7 @@ Does not affect loop operation if GApplication's `run()` method is being used in
 See also [`start_main_loop`](@ref).
 """
 function stop_main_loop(wait=false)
-    if !g_main_running[] # we are either already stopped or in a GApplication
-        return
-    end
+    g_main_running[] || return nothing  # we are either already stopped or in a GApplication
     g_main_running[] = false
     ccall((:g_main_context_wakeup, libglib), Cvoid, (Ptr{Cvoid},), C_NULL)
     if wait
@@ -206,7 +204,7 @@ See also [`set_uv_loop_integration`](@ref).
 """
 is_uv_loop_integration_enabled() = uv_int_enabled[]
 
-GApplication(id = nothing, flags = ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
+GApplication(id = nothing) = G_.Application_new(id,ApplicationFlags_FLAGS_NONE)
 
 """
     run(app::GApplication)

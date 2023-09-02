@@ -39,16 +39,6 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
     loaded
 end
 
-function all_const_exprs(ns;print_summary=true)
-    const_mod = Expr(:block)
-    const_exports = Expr(:export)
-
-    all_const_exprs!(const_mod,const_exports,ns;print_summary=print_summary)
-    push!(const_mod.args,const_exports)
-
-    const_mod
-end
-
 function struct_cache_expr!(exprs)
     gboxed_types_list = quote
         gboxed_types = Any[]
