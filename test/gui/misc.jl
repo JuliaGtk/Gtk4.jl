@@ -213,3 +213,8 @@ win = GtkWindow(b, "Menus", 200, 40)
 destroy(win)
 end
 
+@testset "preferences" begin
+
+Gtk4.set_EGL_vendorlib_dirs("")
+
+end
