@@ -57,6 +57,7 @@ GtkGridView(model=nothing; kwargs...) = GtkGridView(model, nothing; kwargs...)
 
 GtkColumnView(; kwargs...) = GtkColumnView(nothing; kwargs...)
 GtkColumnViewColumn(title=""; kwargs...) = GtkColumnViewColumn(title, nothing; kwargs...)
+push!(cv::GtkColumnView, cvc::GtkColumnViewColumn) = (G_.append_column(cv,cvc); cv)
 
 getindex(li::GtkListItem) = G_.get_item(li)
 set_child(li::GtkListItem, w) = G_.set_child(li, w)
@@ -69,9 +70,22 @@ get_child(te::GtkTreeExpander) = G_.get_child(te)
 get_item(trl::GtkTreeListRow) = G_.get_item(trl)
 
 function GtkTreeListModel(root::GListModel, passthrough, autoexpand, create_func)
-    create_cfunc = @cfunction($create_func, Ptr{GObject}, (Ptr{GObject}, Ptr{Nothing}))
-    ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), root, passthrough, autoexpand, create_cfunc, C_NULL, C_NULL)
+    create_cfunc = @cfunction(GtkTreeListModelCreateModelFunc, Ptr{GObject}, (Ptr{GObject},Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(create_func)
+    ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), root, passthrough, autoexpand, create_cfunc, ref, deref)
     convert(GtkTreeListModel, ret, true)
+end
+
+"""
+    GtkSignalListItemFactory(setup_cb, bind_cb)
+
+Create a `GtkSignalListItemFactory` and immediately connect "setup" and "bind" callback functions `setup_cb` and `bind_cb`, respectively.
+"""
+function GtkSignalListItemFactory(@nospecialize(setup_cb::Function), @nospecialize(bind_cb::Function))
+    factory = GtkSignalListItemFactory()
+    signal_connect(setup_cb, factory, "setup")
+    signal_connect(bind_cb, factory, "bind")
+    factory
 end
 
 ## GtkListBox

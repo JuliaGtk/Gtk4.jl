@@ -10,7 +10,6 @@ push!(win, box)
 
 modelValues = string.(names(Gtk4))
 model = GtkStringList(modelValues)
-factory = GtkSignalListItemFactory()
 
 function setup_cb(f, li)
     set_child(li,GtkLabel(""))
@@ -21,6 +20,8 @@ function bind_cb(f, li)
     label = get_child(li)
     label.label = text
 end
+
+factory = GtkSignalListItemFactory(setup_cb, bind_cb)
 
 function match(list_item, user_data)
   itemLeaf = Gtk4.GLib.find_leaf_type(list_item)
@@ -34,9 +35,6 @@ filteredModel = GtkFilterListModel(GLib.GListModel(model), filter)
 
 list = GtkListView(GtkSelectionModel(GtkSingleSelection(GLib.GListModel(filteredModel))), factory)
 list.vexpand = true
-
-signal_connect(setup_cb, factory, "setup")
-signal_connect(bind_cb, factory, "bind")
 
 signal_connect(entry, :search_changed) do w
   @idle_add Gtk4.G_.changed(filter, Gtk4.FilterChange_DIFFERENT) 

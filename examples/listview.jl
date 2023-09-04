@@ -5,7 +5,6 @@ sw = GtkScrolledWindow()
 push!(win, sw)
 
 model = GtkStringList(string.(names(Gtk4)))
-factory = GtkSignalListItemFactory()
 
 function setup_cb(f, li)
     set_child(li,GtkLabel(""))
@@ -17,9 +16,7 @@ function bind_cb(f, li)
     label.label = text
 end
 
+factory = GtkSignalListItemFactory(setup_cb, bind_cb)
 list = GtkListView(GtkSelectionModel(GtkSingleSelection(GLib.GListModel(model))), factory)
-
-signal_connect(setup_cb, factory, "setup")
-signal_connect(bind_cb, factory, "bind")
 
 sw[] = list
