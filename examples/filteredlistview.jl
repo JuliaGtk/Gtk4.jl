@@ -23,14 +23,14 @@ end
 
 factory = GtkSignalListItemFactory(setup_cb, bind_cb)
 
-function match(list_item, user_data)
+function match(list_item)
   itemLeaf = Gtk4.GLib.find_leaf_type(list_item)
   item = convert(itemLeaf, list_item)
   result = startswith(item.string, entry.text)
   return result ? Cint(1) : Cint(0)
 end
 
-filter = GtkCustomFilter((li, ud) -> match(li, ud))
+filter = GtkCustomFilter(match)
 filteredModel = GtkFilterListModel(GLib.GListModel(model), filter)
 
 list = GtkListView(GtkSelectionModel(GtkSingleSelection(GLib.GListModel(filteredModel))), factory)

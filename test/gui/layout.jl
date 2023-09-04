@@ -49,9 +49,6 @@ end
     insert!(grid,2,:right)
 
     @test_throws ErrorException insert!(grid,1,:above)
-    for w in grid
-        println(w)
-    end
     empty!(grid)
     destroy(w)
 end

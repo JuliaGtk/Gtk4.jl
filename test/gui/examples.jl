@@ -36,6 +36,11 @@ end
     destroy(main_window)
 end
 
+@testset "Filtered List View" begin
+    include(joinpath(@__DIR__, "..", "..", "examples", "filteredlistview.jl"))
+    destroy(win)
+end
+
 @testset "Listbox" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "listbox.jl"))
     destroy(main_window)

@@ -101,8 +101,9 @@ insert!(lb::GtkListBox, i::Integer, w::GtkWidget) = (G_.insert(lb, w, i - 1); lb
 delete!(lb::GtkListBox, w::GtkWidget) = (G_.remove(lb, w); lb)
 
 function set_filter_func(lb::GtkListBox, match::Function)
-    create_cfunc = @cfunction($match, Cint, (Ptr{GObject}, Ptr{Nothing}))
-    ccall(("gtk_list_box_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), lb, create_cfunc, C_NULL, C_NULL)
+    cfunc = @cfunction(GtkListBoxFilterFunc, Cint, (Ptr{GObject}, Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(match)
+    ccall(("gtk_list_box_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), lb, cfunc, ref, deref)
     return nothing
 end
 
@@ -110,9 +111,17 @@ end
 ## GtkCustomFilter
 
 function GtkCustomFilter(match::Function)
-    create_cfunc = @cfunction($match, Cint, (Ptr{GObject}, Ptr{Nothing}))
-    ret = ccall(("gtk_custom_filter_new", libgtk4), Ptr{GObject}, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), create_cfunc, C_NULL, C_NULL)
-    convert(GtkCustomFilter, ret, true)
+    cfunc = @cfunction(GtkCustomFilterFunc, Cint, (Ptr{GObject},Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(match)
+    ret = ccall(("gtk_custom_filter_new", libgtk4), Ptr{GObject}, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cfunc, ref, deref)
+    GtkCustomFilterLeaf(ret, true)
+end
+
+function set_filter_func(cf::GtkCustomFilter, match::Function)
+    cfunc = @cfunction(GtkListBoxFilterFunc, Cint, (Ptr{GObject}, Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(match)
+    ccall(("gtk_custom_filter_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, cfunc, ref, deref)
+    return nothing
 end
 
 ## GtkExpressions
