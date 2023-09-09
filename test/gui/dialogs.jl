@@ -22,9 +22,12 @@ input_dialog("What is the meaning of life, the universe, and everything?", "42",
 dlg = GtkDialog("General dialog",
                 Dict("Cancel" => Gtk4.ResponseType_CANCEL,
                      "OK"=> Gtk4.ResponseType_ACCEPT),
-                      Gtk4.DialogFlags_MODAL )
+                      Gtk4.DialogFlags_MODAL, main_window)
 show(dlg)
 destroy(dlg)
+
+sleep(0.3) # allow dialogs to time out
+
 destroy(main_window)
 
 end

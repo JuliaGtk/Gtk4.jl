@@ -349,20 +349,12 @@ function get_closure(callbackinfo::GICallbackInfo)
     if length(args) == 0
         return -1
     end
+    # this seems very wrong, but they removed the "closure" annotation for callbacks with gobject-introspection 1.76
     if endswith(string(get_name(args[end])),"data") == true
         return length(args)-1
     else
         return -1
     end
-    #i=findfirst(x->endswith(x,"data"),string.(get_name.(get_args(callbackinfo))))
-    #return (i==nothing) ? -1 : i-1
-    #closure = -1
-    #for arg in get_args(callbackinfo)
-    #    if get_closure(arg) > -1
-    #        closure = get_closure(arg)
-    #    end
-    #end
-    #return closure
 end
 
 ## Callback output
