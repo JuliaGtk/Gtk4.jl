@@ -202,15 +202,15 @@ $(Expr(:toplevel, quote
                 convert(Ptr{_GValueArray}, box.handle)
             end
     end
-    @doc "The class of an enumeration type holds information about its\npossible values.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.EnumClass.html)." GEnumClass
-    @doc "The class of a flags type holds information about its\npossible values.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.FlagsClass.html)." GFlagsClass
-    @doc "The #GSignalInvocationHint structure is used to pass on additional information\nto callbacks during a signal emission.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.SignalInvocationHint.html)." GSignalInvocationHint
-    @doc "A structure holding in-depth information for a specific signal.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.SignalQuery.html)." GSignalQuery
-    @doc "A structure that provides information to the type system which is\nused specifically for managing fundamental types.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeFundamentalInfo.html)." GTypeFundamentalInfo
-    @doc "This structure is used to provide the type system with the information\nrequired to initialize and destruct (finalize) a type's class and\nits instances.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeInfo.html)." GTypeInfo
-    @doc "The #GTypePlugin interface is used by the type system in order to handle\nthe lifecycle of dynamically loaded types.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypePluginClass.html)." GTypePluginClass
-    @doc "A structure holding information for a specific type.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
-    @doc "A #GValueArray contains an array of #GValue elements.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/struct.ValueArray.html)." GValueArray
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.EnumClass.html)." GEnumClass
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.FlagsClass.html)." GFlagsClass
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.SignalInvocationHint.html)." GSignalInvocationHint
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.SignalQuery.html)." GSignalQuery
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeFundamentalInfo.html)." GTypeFundamentalInfo
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeInfo.html)." GTypeInfo
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypePluginClass.html)." GTypePluginClass
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.ValueArray.html)." GValueArray
     gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type GBinding <: GObject end
@@ -290,10 +290,10 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    @doc "#GBinding is the representation of a binding between a property on a\n#GObject instance (or source) and another property on another #GObject\ninstance (or target).\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.Binding.html)." GBinding
-    @doc "The #GBindingGroup can be used to bind multiple properties\nfrom an object collectively.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.BindingGroup.html)." GBindingGroup
-    @doc "A type for objects that have an initially floating reference.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.InitiallyUnowned.html)." GInitiallyUnowned
-    @doc "#GTypeModule provides a simple implementation of the #GTypePlugin\ninterface.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gobject/class.TypeModule.html)." GTypeModule
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.Binding.html)." GBinding
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.BindingGroup.html)." GBindingGroup
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.InitiallyUnowned.html)." GInitiallyUnowned
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.TypeModule.html)." GTypeModule
     gtype_wrapper_cache[:GObject] = GObjectLeaf
     struct GTypePlugin <: GInterface
         handle::Ptr{GObject}
@@ -307,21 +307,41 @@ $(Expr(:toplevel, quote
         ret = f(binding, from_value, to_value)
         convert(Cint, ret)
     end
-    function GClosureMarshal(closure, return_value, n_param_values, param_values, invocation_hint, user_data)
-        f = user_data
+    function GClassFinalizeFunc(g_class, class_data)
+        f = class_data
+        ret = f(g_class)
+        nothing
+    end
+    function GClassInitFunc(g_class, class_data)
+        f = class_data
+        ret = f(g_class)
+        nothing
+    end
+    function GClosureMarshal(closure, return_value, n_param_values, param_values, invocation_hint, marshal_data)
+        f = marshal_data
         ret = f(closure, return_value, n_param_values, param_values, invocation_hint)
         nothing
     end
-    function GSignalAccumulator(ihint, return_accu, handler_return, user_data)
-        f = user_data
+    function GInterfaceFinalizeFunc(g_iface, iface_data)
+        f = iface_data
+        ret = f(g_iface)
+        nothing
+    end
+    function GInterfaceInitFunc(g_iface, iface_data)
+        f = iface_data
+        ret = f(g_iface)
+        nothing
+    end
+    function GSignalAccumulator(ihint, return_accu, handler_return, data)
+        f = data
         ret = f(ihint, return_accu, handler_return)
         convert(Cint, ret)
     end
-    function GSignalEmissionHook(ihint, n_param_values, param_values, user_data)
-        f = user_data
+    function GSignalEmissionHook(ihint, n_param_values, param_values, data)
+        f = data
         ret = f(ihint, n_param_values, param_values)
         convert(Cint, ret)
     end
-    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GTypeValueTable, _GTypeValueTable, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypeInfo, _GTypeInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin, GBindingTransformFunc, GClosureMarshal, GSignalAccumulator, GSignalEmissionHook
+    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GTypeValueTable, _GTypeValueTable, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypeInfo, _GTypeInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
 end))
 end

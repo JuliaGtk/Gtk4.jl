@@ -46,11 +46,11 @@ function struct_cache_expr!(exprs)
     push!(exprs,unblock(gboxed_types_list))
 end
 
-function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false)
+function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=[],output_cache_init=true,only_opaque=false,exclude_deprecated=true)
     struct_skiplist=excludelist
 
     if structs === nothing
-        s=get_all(ns,GIStructInfo)
+        s=get_all(ns,GIStructInfo,exclude_deprecated)
         structinfos=filter(p->∉(get_name(p),struct_skiplist),s)
         structs = get_name.(structinfos)
     end
@@ -95,7 +95,7 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
 
     for ss in structs
         ssi=gi_find_by_name(ns,ss)
-        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist)
+        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
         if !isempty(constructors)
             append!(exprs,constructors)
         end
@@ -108,11 +108,11 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
     struct_skiplist
 end
 
-function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false)
+function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false,exclude_deprecated=true)
     struct_skiplist=excludelist
     loaded=Symbol[]
 
-    s=get_all(ns,GIStructInfo)
+    s=get_all(ns,GIStructInfo,exclude_deprecated)
     ss=filter(p->∉(get_name(p),struct_skiplist),s)
     imported=length(ss)
     for ssi in ss
@@ -148,7 +148,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
 
     
     for ssi in ss
-        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist)
+        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
         isempty(constructors) || append!(exprs,constructors)
     end
 
@@ -176,8 +176,8 @@ function all_callbacks!(exprs, exports, ns)
     nothing
 end
 
-function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=Symbol[], struct_skiplist=Symbol[], liboverride=nothing)
-    structs=get_structs(ns)
+function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=Symbol[], struct_skiplist=Symbol[], liboverride=nothing,exclude_deprecated=true)
+    structs=get_structs(ns,exclude_deprecated)
     handled_symbols=Symbol[]
 
     not_implemented=0
@@ -199,7 +199,7 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
             if get_flags(m) & (GIFunction.IS_CONSTRUCTOR | GIFunction.IS_METHOD) == 0
                 continue
             end
-            is_deprecated(m) && continue
+            (exclude_deprecated && is_deprecated(m)) && continue
             print_detailed && println(get_name(m))
             try
                 fun=create_method(m, liboverride)
@@ -229,8 +229,8 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
     handled_symbols
 end
 
-function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skiplist=Symbol[],constructor_skiplist=[],output_cache_define=true,output_cache_init=true)
-    objects=get_all(ns,GIObjectInfo)
+function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skiplist=Symbol[],constructor_skiplist=[],output_cache_define=true,output_cache_init=true, exclude_deprecated=true)
+    objects=get_all(ns,GIObjectInfo,exclude_deprecated)
 
     imported=length(objects)
     loaded=Symbol[]
@@ -270,7 +270,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     end
     for o in objects
         in(get_name(o), skiplist) && continue
-        constructors = get_constructors(o;skiplist=constructor_skiplist, struct_skiplist=skiplist)
+        constructors = get_constructors(o;skiplist=constructor_skiplist, struct_skiplist=skiplist, exclude_deprecated=exclude_deprecated)
         isempty(constructors) || append!(exprs,constructors)
     end
     if print_summary
@@ -279,11 +279,11 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     loaded
 end
 
-function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing)
+function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing, exclude_deprecated=true)
     not_implemented=0
     skipped=0
     created=0
-    objects=get_all(ns,GIObjectInfo)
+    objects=get_all(ns,GIObjectInfo,exclude_deprecated)
     for o in objects
         name=get_name(o)
         methods=get_methods(o)
@@ -296,7 +296,7 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
                 skipped+=1
                 continue
             end
-            is_deprecated(m) && continue
+            (exclude_deprecated && is_deprecated(m)) && continue
             try
                 fun=create_method(m, liboverride)
                 push!(exprs, fun)
@@ -314,8 +314,8 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
     end
 end
 
-function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=Symbol[])
-    interfaces=get_all(ns,GIInterfaceInfo)
+function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=Symbol[],exclude_deprecated=true)
+    interfaces=get_all(ns,GIInterfaceInfo,exclude_deprecated)
 
     imported=length(interfaces)
     for i in interfaces
@@ -337,11 +337,11 @@ function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=Symbol[])
     skiplist
 end
 
-function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Symbol[], liboverride=nothing)
+function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Symbol[], liboverride=nothing,exclude_deprecated=true)
     not_implemented=0
     skipped=0
     created=0
-    interfaces=get_all(ns,GIInterfaceInfo)
+    interfaces=get_all(ns,GIInterfaceInfo,exclude_deprecated)
     for i in interfaces
         name=get_name(i)
         methods=get_methods(i)
@@ -354,7 +354,7 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
                 skipped+=1
                 continue
             end
-            is_deprecated(m) && continue
+            (exclude_deprecated && is_deprecated(m)) && continue
             try
                 fun=create_method(m, liboverride)
                 push!(exprs, fun)
@@ -371,11 +371,11 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
     end
 end
 
-function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_skiplist=Symbol[], liboverride=nothing)
+function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_skiplist=Symbol[], liboverride=nothing,exclude_deprecated=true)
     j=0
     skipped=0
     not_implemented=0
-    for i in get_all(ns,GIFunctionInfo)
+    for i in get_all(ns,GIFunctionInfo,exclude_deprecated)
         if in(get_name(i),skiplist) || occursin("cclosure",string(get_name(i)))
             skipped+=1
             continue

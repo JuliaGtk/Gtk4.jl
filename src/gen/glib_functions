@@ -19,6 +19,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_aligned_free", libglib), Nothing, (Ptr{Nothing},), _mem_maybe)
         nothing
     end
+    function aligned_free_sized(_mem::Maybe(Nothing), _alignment::Integer, _size::Integer)
+        _mem_maybe = nothing_to_null(_mem)
+        ret = ccall(("g_aligned_free_sized", libglib), Nothing, (Ptr{Nothing}, UInt64, UInt64), _mem_maybe, _alignment, _size)
+        nothing
+    end
     function ascii_digit_value(_c::Integer)
         ret = ccall(("g_ascii_digit_value", libglib), Int32, (Int8,), _c)
         ret
@@ -108,6 +113,10 @@ $(Expr(:toplevel, quote
     end
     function assertion_message(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _message::Union{AbstractString, Symbol})
         ret = ccall(("g_assertion_message", libglib), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring), _domain, _file, _line, _func, _message)
+        nothing
+    end
+    function assertion_message_cmpint(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _expr::Union{AbstractString, Symbol}, _arg1::Integer, _cmp::Union{AbstractString, Symbol}, _arg2::Integer, _numtype::Integer)
+        ret = ccall(("g_assertion_message_cmpint", libglib), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, UInt64, Cstring, UInt64, Int8), _domain, _file, _line, _func, _expr, _arg1, _cmp, _arg2, _numtype)
         nothing
     end
     function assertion_message_cmpstr(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _expr::Union{AbstractString, Symbol}, _arg1::Union{AbstractString, Symbol}, _cmp::Union{AbstractString, Symbol}, _arg2::Union{AbstractString, Symbol})
@@ -741,6 +750,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_free", libglib), Nothing, (Ptr{Nothing},), _mem_maybe)
         nothing
     end
+    function free_sized(_mem::Maybe(Nothing), _size::Integer)
+        _mem_maybe = nothing_to_null(_mem)
+        ret = ccall(("g_free_sized", libglib), Nothing, (Ptr{Nothing}, UInt64), _mem_maybe, _size)
+        nothing
+    end
     function get_application_name()
         ret = ccall(("g_get_application_name", libglib), Cstring, ())
         ret2 = string_or_nothing(ret, false)
@@ -1268,6 +1282,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_option_error_quark", libglib), UInt32, ())
         ret
     end
+    function path_buf_equal(_v1::Nothing, _v2::Nothing)
+        ret = ccall(("g_path_buf_equal", libglib), Cint, (Ptr{Nothing}, Ptr{Nothing}), _v1, _v2)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function path_get_basename(_file_name::Union{AbstractString, Symbol})
         ret = ccall(("g_path_get_basename", libglib), Cstring, (Cstring,), _file_name)
         ret2 = string_or_nothing(ret, true)
@@ -1462,9 +1481,8 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
-    function regex_escape_string(_string)
-        _length = length(_string)
-        ret = ccall(("g_regex_escape_string", libglib), Cstring, (Ptr{Cstring}, Int32), _string, _length)
+    function regex_escape_string(_string::Union{AbstractString, Symbol}, _length::Integer)
+        ret = ccall(("g_regex_escape_string", libglib), Cstring, (Cstring, Int32), _string, _length)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
@@ -1814,6 +1832,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_test_bug_base", libglib), Nothing, (Cstring,), _uri_pattern)
         nothing
     end
+    function test_disable_crash_reporting()
+        ret = ccall(("g_test_disable_crash_reporting", libglib), Nothing, ())
+        nothing
+    end
     function test_expect_message(_log_domain::Maybe(Union{AbstractString, Symbol}), _log_level, _pattern::Union{AbstractString, Symbol})
         _log_domain_maybe = nothing_to_null(_log_domain)
         ret = ccall(("g_test_expect_message", libglib), Nothing, (Cstring, UInt32, Cstring), _log_domain_maybe, _log_level, _pattern)
@@ -1959,6 +1981,14 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_thread_yield", libglib), Nothing, ())
         nothing
     end
+    function trace_define_int64_counter(_group::Union{AbstractString, Symbol}, _name::Union{AbstractString, Symbol}, _description::Union{AbstractString, Symbol})
+        ret = ccall(("g_trace_define_int64_counter", libglib), UInt32, (Cstring, Cstring, Cstring), _group, _name, _description)
+        ret
+    end
+    function trace_set_int64_counter(_id::Integer, _value::Integer)
+        ret = ccall(("g_trace_set_int64_counter", libglib), Nothing, (UInt32, Int64), _id, _value)
+        nothing
+    end
     function try_malloc(_n_bytes::Integer)
         ret = ccall(("g_try_malloc", libglib), Ptr{Nothing}, (UInt64,), _n_bytes)
         ret2 = convert(Nothing, ret)
@@ -1991,22 +2021,26 @@ $(Expr(:toplevel, quote
         ret2 = convert(Nothing, ret)
         ret2
     end
-    function ucs4_to_utf16(_str::Nothing, _len::Integer)
+    function ucs4_to_utf16(_str)
+        _str_arr = convert(Vector{Nothing}, _str)
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
+        _len = length(_str)
         err = err_buf()
-        ret = ccall(("g_ucs4_to_utf16", libglib), Ptr{UInt16}, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_ucs4_to_utf16", libglib), Ptr{UInt16}, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str_arr, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = convert(UInt16, ret)
         _items_read = m_items_read[]
         _items_written = m_items_written[]
         (ret2, _items_read, _items_written)
     end
-    function ucs4_to_utf8(_str::Nothing, _len::Integer)
+    function ucs4_to_utf8(_str)
+        _str_arr = convert(Vector{Nothing}, _str)
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
+        _len = length(_str)
         err = err_buf()
-        ret = ccall(("g_ucs4_to_utf8", libglib), Cstring, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_ucs4_to_utf8", libglib), Cstring, (Ptr{Nothing}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str_arr, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = string_or_nothing(ret, true)
         _items_read = m_items_read[]
@@ -2176,8 +2210,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_unichar_xdigit_value", libglib), Int32, (Nothing,), _c)
         ret
     end
-    function unicode_canonical_ordering(_string::Nothing, _len::Integer)
-        ret = ccall(("g_unicode_canonical_ordering", libglib), Nothing, (Ptr{Nothing}, UInt64), _string, _len)
+    function unicode_canonical_ordering(_string)
+        _string_arr = convert(Vector{Nothing}, _string)
+        _len = length(_string)
+        ret = ccall(("g_unicode_canonical_ordering", libglib), Nothing, (Ptr{Nothing}, UInt64), _string_arr, _len)
         nothing
     end
     function unicode_script_from_iso15924(_iso15924::Integer)
@@ -2423,22 +2459,26 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_usleep", libglib), Nothing, (UInt64,), _microseconds)
         nothing
     end
-    function utf16_to_ucs4(_str::UInt16, _len::Integer)
+    function utf16_to_ucs4(_str)
+        _str_arr = convert(Vector{UInt16}, _str)
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
+        _len = length(_str)
         err = err_buf()
-        ret = ccall(("g_utf16_to_ucs4", libglib), Ptr{Nothing}, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_utf16_to_ucs4", libglib), Ptr{Nothing}, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str_arr, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = convert(Nothing, ret)
         _items_read = m_items_read[]
         _items_written = m_items_written[]
         (ret2, _items_read, _items_written)
     end
-    function utf16_to_utf8(_str::UInt16, _len::Integer)
+    function utf16_to_utf8(_str)
+        _str_arr = convert(Vector{UInt16}, _str)
         m_items_read = Ref{Int64}()
         m_items_written = Ref{Int64}()
+        _len = length(_str)
         err = err_buf()
-        ret = ccall(("g_utf16_to_utf8", libglib), Cstring, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str, _len, m_items_read, m_items_written, err)
+        ret = ccall(("g_utf16_to_utf8", libglib), Cstring, (Ptr{UInt16}, Int64, Ptr{Int64}, Ptr{Int64}, Ptr{Ptr{GError}}), _str_arr, _len, m_items_read, m_items_written, err)
         check_err(err)
         ret2 = string_or_nothing(ret, true)
         _items_read = m_items_read[]
@@ -2574,6 +2614,11 @@ $(Expr(:toplevel, quote
         _items_read = m_items_read[]
         _items_written = m_items_written[]
         (ret2, _items_read, _items_written)
+    end
+    function utf8_truncate_middle(_string::Union{AbstractString, Symbol}, _truncate_length::Integer)
+        ret = ccall(("g_utf8_truncate_middle", libglib), Cstring, (Cstring, UInt64), _string, _truncate_length)
+        ret2 = string_or_nothing(ret, true)
+        ret2
     end
     function utf8_validate(_str)
         _str_arr = convert(Vector{UInt8}, _str)

@@ -32,15 +32,15 @@ struct_skiplist=vcat(disguised, [:PageRange,:TreeRowReference])
 constructor_skiplist=[:new_first]
 
 GI.struct_cache_expr!(exprs)
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,constructor_skiplist=constructor_skiplist,import_as_opaque=[:BitsetIter,:BuildableParser],output_cache_init=false)
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,constructor_skiplist=constructor_skiplist,import_as_opaque=[:BitsetIter,:BuildableParser],output_cache_init=false, exclude_deprecated=false)
 GI.append_struc_docs!(exprs, "gtk4", d, c, ns)
 
 ## objects
 
 object_skiplist=[:CClosureExpression,:ClosureExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
 
-GI.all_interfaces!(exprs,exports,ns)
-c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name],output_cache_define=false,output_cache_init=false)
+GI.all_interfaces!(exprs,exports,ns;exclude_deprecated=false)
+c = GI.all_objects!(exprs,exports,ns,exclude_deprecated=false,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name],output_cache_define=false,output_cache_init=false)
 GI.append_object_docs!(exprs, "gtk4", d, c, ns)
 GI.all_callbacks!(exprs, exports, ns)
 
@@ -52,7 +52,7 @@ GI.write_to_file(path,"gtk4_structs",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-GI.all_struct_methods!(exprs,ns,struct_skiplist=vcat(struct_skiplist,[:Bitset,:BitsetIter,:BuildableParseContext,:CssSection,:TextIter]);print_detailed=true)
+GI.all_struct_methods!(exprs,ns,struct_skiplist=vcat(struct_skiplist,[:Bitset,:BitsetIter,:BuildableParseContext,:CssSection,:TextIter]);print_detailed=true,exclude_deprecated=false)
 
 ## object methods
 
@@ -61,11 +61,11 @@ skiplist=[:create_closure,:activate_cell,:event,:start_editing,:filter_keypress,
 object_skiplist=vcat(object_skiplist,[:CellRenderer,:MnemonicAction,:NeverTrigger,:NothingAction,:PrintJob,:PrintSettings,:RecentManager,:ShortcutTrigger])
 
 # skips are to avoid method name collisions
-GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=object_skiplist)
+GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=object_skiplist,exclude_deprecated=false)
 
 skiplist=[:start_editing,:install_properties]
 # skips are to avoid method name collisions
-GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[:PrintOperationPreview])
+GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[:PrintOperationPreview],exclude_deprecated=false)
 
 GI.write_to_file(path,"gtk4_methods",toplevel)
 
@@ -75,6 +75,6 @@ toplevel, exprs, exports = GI.output_exprs()
 
 skiplist=[:editable_install_properties,:ordering_from_cmpfunc,:value_set_expression,:value_take_expression]
 
-GI.all_functions!(exprs,ns,skiplist=skiplist)
+GI.all_functions!(exprs,ns,skiplist=skiplist,exclude_deprecated=false)
 
 GI.write_to_file(path,"gtk4_functions",toplevel)

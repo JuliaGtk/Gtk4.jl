@@ -1,5 +1,23 @@
 quote
 $(Expr(:toplevel, quote
+    mutable struct GBookmarkFile <: GBoxed
+        handle::Ptr{GBookmarkFile}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GBookmarkFile) = begin
+                    ccall(("g_bookmark_file_get_type", libgobject), GType, ())
+                end
+            function GBookmarkFile(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GBookmarkFile)
+        end
+    end
     mutable struct GBytes <: GBoxed
         handle::Ptr{GBytes}
         begin
@@ -502,6 +520,9 @@ $(Expr(:toplevel, quote
     function GString(_init::Union{AbstractString, Symbol}, _len::Integer)
         G_.String_new_len(_init, _len)
     end
+    function GString(_init::Maybe(Union{AbstractString, Symbol}))
+        G_.String_new_take(_init)
+    end
     function GString(_dfl_size::Integer)
         G_.String_sized_new(_dfl_size)
     end
@@ -523,30 +544,31 @@ $(Expr(:toplevel, quote
     function GVariantType(_items)
         G_.VariantType_new_tuple(_items)
     end
-    @doc "A simple refcounted data type representing an immutable sequence of zero or\nmore bytes from an unspecified origin.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Bytes.html)." GBytes
-    @doc "An opaque structure representing a checksumming operation.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Checksum.html)." GChecksum
-    @doc "Represents a day between January 1, Year 1 and a few thousand years in\nthe future. None of its members should be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Date.html)." GDate
-    @doc "An opaque structure that represents a date and time, including a time zone.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.DateTime.html)." GDateTime
-    @doc "Associates a string with a bit flag.\nUsed in g_parse_debug_string().\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.DebugKey.html)." GDebugKey
-    @doc "The GKeyFile struct contains only private data\nand should not be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.KeyFile.html)." GKeyFile
-    @doc "Structure representing a single field in a structured log entry. See\ng_log_structured() for details.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.LogField.html)." GLogField
-    @doc "The `GMainContext` struct is an opaque data\ntype representing a set of sources to be handled in a main loop.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.MainContext.html)." GMainContext
-    @doc "The `GMainLoop` struct is an opaque data type\nrepresenting the main event loop of a GLib or GTK+ application.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.MainLoop.html)." GMainLoop
-    @doc "The #GMappedFile represents a file mapping created with\ng_mapped_file_new(). It has only private members and should\nnot be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.MappedFile.html)." GMappedFile
-    @doc "A parse context is used to parse a stream of bytes that\nyou expect to contain marked-up text.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.MarkupParseContext.html)." GMarkupParseContext
-    @doc "A GMatchInfo is an opaque struct used to return information about\nmatches.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.MatchInfo.html)." GMatchInfo
-    @doc "A GOptionEntry struct defines a single option. To have an effect, they\nmust be added to a #GOptionGroup with g_option_context_add_main_entries()\nor g_option_group_add_entries().\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.OptionEntry.html)." GOptionEntry
-    @doc "A GPatternSpec struct is the 'compiled' form of a pattern. This\nstructure is opaque and its fields cannot be accessed directly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.PatternSpec.html)." GPatternSpec
-    @doc "The g_regex_*() functions implement regular\nexpression pattern matching using syntax and semantics similar to\nPerl regular expression.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Regex.html)." GRegex
-    @doc "Specifies the #GScanner parser configuration. Most settings can\nbe changed during the parsing phase and will affect the lexical\nparsing of the next unpeeked token.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.ScannerConfig.html)." GScannerConfig
-    @doc "The `GSource` struct is an opaque data type\nrepresenting an event source.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Source.html)." GSource
-    @doc "The `GSourceCallbackFuncs` struct contains\nfunctions for managing callback objects.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.SourceCallbackFuncs.html)." GSourceCallbackFuncs
-    @doc "The GString struct contains the public fields of a GString.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.String.html)." GString
-    @doc "#GTimeZone is an opaque structure whose members cannot be accessed\ndirectly.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.TimeZone.html)." GTimeZone
-    @doc "The #GUri type and related functions can be used to parse URIs into\ntheir components, and build valid URIs from individual components.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.Uri.html)." GUri
-    @doc "A utility type for constructing container-type #GVariant instances.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantBuilder.html)." GVariantBuilder
-    @doc "#GVariantDict is a mutable interface to #GVariant dictionaries.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantDict.html)." GVariantDict
-    @doc "This section introduces the GVariant type system. It is based, in\nlarge part, on the D-Bus type system, with two major changes and\nsome minor lifting of restrictions. The\n[D-Bus specification](http://dbus.freedesktop.org/doc/dbus-specification.html),\ntherefore, provides a significant amount of\ninformation that is useful when working with GVariant.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/glib/struct.VariantType.html)." GVariantType
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.BookmarkFile.html)." GBookmarkFile
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Bytes.html)." GBytes
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Checksum.html)." GChecksum
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Date.html)." GDate
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.DateTime.html)." GDateTime
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.DebugKey.html)." GDebugKey
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.KeyFile.html)." GKeyFile
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.LogField.html)." GLogField
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MainContext.html)." GMainContext
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MainLoop.html)." GMainLoop
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MappedFile.html)." GMappedFile
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MarkupParseContext.html)." GMarkupParseContext
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MatchInfo.html)." GMatchInfo
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.OptionEntry.html)." GOptionEntry
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.PatternSpec.html)." GPatternSpec
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Regex.html)." GRegex
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.ScannerConfig.html)." GScannerConfig
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Source.html)." GSource
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.SourceCallbackFuncs.html)." GSourceCallbackFuncs
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.String.html)." GString
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.TimeZone.html)." GTimeZone
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Uri.html)." GUri
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantBuilder.html)." GVariantBuilder
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantDict.html)." GVariantDict
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantType.html)." GVariantType
     function GChildWatchFunc(pid, wait_status, user_data)
         f = user_data
         ret = f(pid, wait_status)
@@ -557,14 +579,19 @@ $(Expr(:toplevel, quote
         ret = f(a, b)
         convert(Int32, ret)
     end
-    function GCopyFunc(src, user_data)
-        f = user_data
+    function GCopyFunc(src, data)
+        f = data
         ret = f(src)
         convert(Ptr{Nothing}, ret)
     end
     function GDataForeachFunc(key_id, data, user_data)
         f = user_data
         ret = f(key_id, data)
+        nothing
+    end
+    function GDestroyNotify(data)
+        f = data
+        ret = f()
         nothing
     end
     function GDuplicateFunc(data, user_data)
@@ -576,6 +603,11 @@ $(Expr(:toplevel, quote
         f = user_data
         ret = f(a, b)
         convert(Cint, ret)
+    end
+    function GFreeFunc(data)
+        f = data
+        ret = f()
+        nothing
     end
     function GFunc(data, user_data)
         f = user_data
@@ -592,23 +624,33 @@ $(Expr(:toplevel, quote
         ret = f(key, value)
         convert(Cint, ret)
     end
-    function GHookCheckMarshaller(hook, user_data)
-        f = user_data
+    function GHookCheckFunc(data)
+        f = data
+        ret = f()
+        convert(Cint, ret)
+    end
+    function GHookCheckMarshaller(hook, marshal_data)
+        f = marshal_data
         ret = f(hook)
         convert(Cint, ret)
     end
-    function GHookFindFunc(hook, user_data)
-        f = user_data
+    function GHookFindFunc(hook, data)
+        f = data
         ret = f(hook)
         convert(Cint, ret)
     end
-    function GHookMarshaller(hook, user_data)
-        f = user_data
+    function GHookFunc(data)
+        f = data
+        ret = f()
+        nothing
+    end
+    function GHookMarshaller(hook, marshal_data)
+        f = marshal_data
         ret = f(hook)
         nothing
     end
-    function GIOFunc(source, condition, user_data)
-        f = user_data
+    function GIOFunc(source, condition, data)
+        f = data
         ret = f(source, condition)
         convert(Cint, ret)
     end
@@ -622,28 +664,28 @@ $(Expr(:toplevel, quote
         ret = f(log_level, fields, n_fields)
         convert(UInt32, ret)
     end
-    function GNodeForeachFunc(node, user_data)
-        f = user_data
+    function GNodeForeachFunc(node, data)
+        f = data
         ret = f(node)
         nothing
     end
-    function GNodeTraverseFunc(node, user_data)
-        f = user_data
+    function GNodeTraverseFunc(node, data)
+        f = data
         ret = f(node)
         convert(Cint, ret)
     end
-    function GOptionArgFunc(option_name, value, user_data)
-        f = user_data
+    function GOptionArgFunc(option_name, value, data)
+        f = data
         ret = f(option_name, value)
         convert(Cint, ret)
     end
-    function GOptionErrorFunc(context, group, user_data)
-        f = user_data
+    function GOptionErrorFunc(context, group, data)
+        f = data
         ret = f(context, group)
         nothing
     end
-    function GOptionParseFunc(context, group, user_data)
-        f = user_data
+    function GOptionParseFunc(context, group, data)
+        f = data
         ret = f(context, group)
         convert(Cint, ret)
     end
@@ -652,8 +694,8 @@ $(Expr(:toplevel, quote
         ret = f(match_info, result)
         convert(Cint, ret)
     end
-    function GSequenceIterCompareFunc(a, b, user_data)
-        f = user_data
+    function GSequenceIterCompareFunc(a, b, data)
+        f = data
         ret = f(a, b)
         convert(Int32, ret)
     end
@@ -667,8 +709,8 @@ $(Expr(:toplevel, quote
         ret = f()
         nothing
     end
-    function GSpawnChildSetupFunc(user_data)
-        f = user_data
+    function GSpawnChildSetupFunc(data)
+        f = data
         ret = f()
         nothing
     end
@@ -687,23 +729,23 @@ $(Expr(:toplevel, quote
         ret = f(log_domain, log_level, message)
         convert(Cint, ret)
     end
-    function GThreadFunc(user_data)
-        f = user_data
+    function GThreadFunc(data)
+        f = data
         ret = f()
         convert(Ptr{Nothing}, ret)
     end
-    function GTranslateFunc(str, user_data)
-        f = user_data
+    function GTranslateFunc(str, data)
+        f = data
         ret = f(str)
         convert(Cstring, ret)
     end
-    function GTraverseFunc(key, value, user_data)
-        f = user_data
+    function GTraverseFunc(key, value, data)
+        f = data
         ret = f(key, value)
         convert(Cint, ret)
     end
-    function GTraverseNodeFunc(node, user_data)
-        f = user_data
+    function GTraverseNodeFunc(node, data)
+        f = data
         ret = f(node)
         convert(Cint, ret)
     end
@@ -712,6 +754,6 @@ $(Expr(:toplevel, quote
         ret = f(fd, condition)
         convert(Cint, ret)
     end
-    export GBytes, GChecksum, GDate, _GDate, GDateTime, GDebugKey, _GDebugKey, GKeyFile, GLogField, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, _GOptionEntry, GPatternSpec, GRegex, GScannerConfig, _GScannerConfig, GSource, _GSource, GSourceCallbackFuncs, _GSourceCallbackFuncs, GString, _GString, GTestConfig, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDuplicateFunc, GEqualFuncFull, GFunc, GHFunc, GHRFunc, GHookCheckMarshaller, GHookFindFunc, GHookMarshaller, GIOFunc, GLogFunc, GLogWriterFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc, GUnixFDSourceFunc
+    export GBookmarkFile, GBytes, GChecksum, GDate, _GDate, GDateTime, GDebugKey, _GDebugKey, GKeyFile, GLogField, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, _GOptionEntry, GPatternSpec, GRegex, GScannerConfig, _GScannerConfig, GSource, _GSource, GSourceCallbackFuncs, _GSourceCallbackFuncs, GString, _GString, GTestConfig, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDestroyNotify, GDuplicateFunc, GEqualFuncFull, GFreeFunc, GFunc, GHFunc, GHRFunc, GHookCheckFunc, GHookCheckMarshaller, GHookFindFunc, GHookFunc, GHookMarshaller, GIOFunc, GLogFunc, GLogWriterFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc, GUnixFDSourceFunc
 end))
 end

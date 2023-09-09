@@ -2679,7 +2679,8 @@ $(Expr(:toplevel, quote
         _position = m_position[]
         (ret2, _position)
     end
-    function find_with_equal_func_full(instance::GListStore, _item::GObject, _equal_func::Function)
+    function find_with_equal_func_full(instance::GListStore, _item::Maybe(GObject), _equal_func::Function)
+        _item_maybe = nothing_to_null(_item)
         begin
             _equal_func_cfunc = @cfunction(GEqualFuncFull, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
             begin
@@ -2688,7 +2689,7 @@ $(Expr(:toplevel, quote
             end
         end
         m_position = Ref{UInt32}()
-        ret = ccall(("g_list_store_find_with_equal_func_full", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{UInt32}), instance, _item, _equal_func_cfunc, _equal_func_closure, m_position)
+        ret = ccall(("g_list_store_find_with_equal_func_full", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{UInt32}), instance, _item_maybe, _equal_func_cfunc, _equal_func_closure, m_position)
         ret2 = convert(Bool, ret)
         _position = m_position[]
         (ret2, _position)
@@ -4163,10 +4164,6 @@ $(Expr(:toplevel, quote
         ret2 = SocketType(ret)
         ret2
     end
-    function get_timeout(instance::GSocket)
-        ret = ccall(("g_socket_get_timeout", libgio), UInt32, (Ptr{GObject},), instance)
-        ret
-    end
     function get_ttl(instance::GSocket)
         ret = ccall(("g_socket_get_ttl", libgio), UInt32, (Ptr{GObject},), instance)
         ret
@@ -4343,10 +4340,6 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
-    end
-    function set_timeout(instance::GSocket, _timeout::Integer)
-        ret = ccall(("g_socket_set_timeout", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _timeout)
-        nothing
     end
     function set_ttl(instance::GSocket, _ttl::Integer)
         ret = ccall(("g_socket_set_ttl", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _ttl)
@@ -4563,10 +4556,6 @@ $(Expr(:toplevel, quote
         ret2 = SocketType(ret)
         ret2
     end
-    function get_timeout(instance::GSocketClient)
-        ret = ccall(("g_socket_client_get_timeout", libgio), UInt32, (Ptr{GObject},), instance)
-        ret
-    end
     function get_tls(instance::GSocketClient)
         ret = ccall(("g_socket_client_get_tls", libgio), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -4596,10 +4585,6 @@ $(Expr(:toplevel, quote
     end
     function set_socket_type(instance::GSocketClient, _type)
         ret = ccall(("g_socket_client_set_socket_type", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _type)
-        nothing
-    end
-    function set_timeout(instance::GSocketClient, _timeout::Integer)
-        ret = ccall(("g_socket_client_set_timeout", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _timeout)
         nothing
     end
     function set_tls(instance::GSocketClient, _tls::Bool)
@@ -4669,7 +4654,7 @@ $(Expr(:toplevel, quote
         _data_arr = convert(Vector{UInt8}, _data)
         _size = length(_data)
         ret = ccall(("g_socket_control_message_deserialize", libgio), Ptr{GObject}, (Int32, Int32, UInt64, Ptr{UInt8}), _level, _type, _size, _data_arr)
-        ret2 = convert(GSocketControlMessage, ret, true)
+        ret2 = convert_if_not_null(GSocketControlMessage, ret, true)
         ret2
     end
     function get_level(instance::GSocketControlMessage)
@@ -5814,7 +5799,7 @@ $(Expr(:toplevel, quote
         _action_name = m_action_name[]
         _action_name = string_or_nothing(_action_name, true)
         _target_value = m_target_value[]
-        _target_value = convert(GVariant, _target_value)
+        _target_value = convert(Maybe(GVariant), _target_value)
         (ret2, _action_name, _target_value)
     end
     function print_detailed_name(_action_name::Union{AbstractString, Symbol}, _target_value::Maybe(GVariant))

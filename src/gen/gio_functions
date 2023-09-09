@@ -15,7 +15,7 @@ $(Expr(:toplevel, quote
         _action_name = m_action_name[]
         _action_name = string_or_nothing(_action_name, true)
         _target_value = m_target_value[]
-        _target_value = convert(GVariant, _target_value)
+        _target_value = convert(Maybe(GVariant), _target_value)
         (ret2, _action_name, _target_value)
     end
     function action_print_detailed_name(_action_name::Union{AbstractString, Symbol}, _target_value::Maybe(GVariant))
@@ -525,10 +525,6 @@ $(Expr(:toplevel, quote
         ret2 = GLib.find_leaf_type_if_not_null(ret, true)
         ret2
     end
-    function icon_hash(_icon::Nothing)
-        ret = ccall(("g_icon_hash", libgio), UInt32, (Ptr{Nothing},), _icon)
-        ret
-    end
     function icon_new_for_string(_str::Union{AbstractString, Symbol})
         err = err_buf()
         ret = ccall(("g_icon_new_for_string", libgio), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _str, err)
@@ -663,6 +659,10 @@ $(Expr(:toplevel, quote
     end
     function resolver_error_quark()
         ret = ccall(("g_resolver_error_quark", libgio), UInt32, ())
+        ret
+    end
+    function resolver_record_type_to_rrtype(_type)
+        ret = ccall(("g_resolver_record_type_to_rrtype", libgio), Int32, (UInt32,), _type)
         ret
     end
     function resource_error_quark()
