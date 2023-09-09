@@ -1,5 +1,291 @@
 quote
 $(Expr(:toplevel, quote
+    function BookmarkFile_new()
+        ret = ccall(("g_bookmark_file_new", libglib), Ptr{GBookmarkFile}, ())
+        ret2 = convert(GBookmarkFile, ret, true)
+        ret2
+    end
+    function add_application(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _name::Maybe(Union{AbstractString, Symbol}), _exec::Maybe(Union{AbstractString, Symbol}))
+        _name_maybe = nothing_to_null(_name)
+        _exec_maybe = nothing_to_null(_exec)
+        ret = ccall(("g_bookmark_file_add_application", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Cstring, Cstring), instance, _uri, _name_maybe, _exec_maybe)
+        nothing
+    end
+    function add_group(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _group::Union{AbstractString, Symbol})
+        ret = ccall(("g_bookmark_file_add_group", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Cstring), instance, _uri, _group)
+        nothing
+    end
+    function copy(instance::GBookmarkFile)
+        ret = ccall(("g_bookmark_file_copy", libglib), Ptr{GBookmarkFile}, (Ptr{GBookmarkFile},), instance)
+        ret2 = convert(GBookmarkFile, ret, true)
+        ret2
+    end
+    function free(instance::GBookmarkFile)
+        ret = ccall(("g_bookmark_file_free", libglib), Nothing, (Ptr{GBookmarkFile},), instance)
+        nothing
+    end
+    function get_added_date_time(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_added_date_time", libglib), Ptr{GDateTime}, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _uri, err)
+        check_err(err)
+        ret2 = convert(GDateTime, ret, false)
+        ret2
+    end
+    function get_application_info(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _name::Union{AbstractString, Symbol})
+        m_exec = Ref{Cstring}()
+        m_count = Ref{UInt32}()
+        m_stamp = Ref{Ptr{GDateTime}}()
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_application_info", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Cstring, Ptr{Cstring}, Ptr{UInt32}, Ptr{Ptr{GDateTime}}, Ptr{Ptr{GError}}), instance, _uri, _name, m_exec, m_count, m_stamp, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        _exec = m_exec[]
+        _exec = string_or_nothing(_exec, true)
+        _count = m_count[]
+        _stamp = m_stamp[]
+        _stamp = convert(GDateTime, _stamp, false)
+        (ret2, _exec, _count, _stamp)
+    end
+    function get_applications(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        m_length = Ref{UInt64}()
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_applications", libglib), Ptr{Cstring}, (Ptr{GBookmarkFile}, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _uri, m_length, err)
+        check_err(err)
+        ret2 = begin
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
+        _length = m_length[]
+        ret2
+    end
+    function get_description(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_description", libglib), Cstring, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _uri, err)
+        check_err(err)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function get_groups(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        m_length = Ref{UInt64}()
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_groups", libglib), Ptr{Cstring}, (Ptr{GBookmarkFile}, Cstring, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, _uri, m_length, err)
+        check_err(err)
+        ret2 = begin
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
+        _length = m_length[]
+        ret2
+    end
+    function get_icon(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        m_href = Ref{Cstring}()
+        m_mime_type = Ref{Cstring}()
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_icon", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _uri, m_href, m_mime_type, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        _href = m_href[]
+        _href = string_or_nothing(_href, true)
+        _mime_type = m_mime_type[]
+        _mime_type = string_or_nothing(_mime_type, true)
+        (ret2, _href, _mime_type)
+    end
+    function get_is_private(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_is_private", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _uri, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_mime_type(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_mime_type", libglib), Cstring, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _uri, err)
+        check_err(err)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function get_modified_date_time(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_modified_date_time", libglib), Ptr{GDateTime}, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _uri, err)
+        check_err(err)
+        ret2 = convert(GDateTime, ret, false)
+        ret2
+    end
+    function get_size(instance::GBookmarkFile)
+        ret = ccall(("g_bookmark_file_get_size", libglib), Int32, (Ptr{GBookmarkFile},), instance)
+        ret
+    end
+    function get_title(instance::GBookmarkFile, _uri::Maybe(Union{AbstractString, Symbol}))
+        _uri_maybe = nothing_to_null(_uri)
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_title", libglib), Cstring, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _uri_maybe, err)
+        check_err(err)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function get_uris(instance::GBookmarkFile)
+        m_length = Ref{UInt64}()
+        ret = ccall(("g_bookmark_file_get_uris", libglib), Ptr{Cstring}, (Ptr{GBookmarkFile}, Ptr{UInt64}), instance, m_length)
+        ret2 = begin
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_length[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
+        _length = m_length[]
+        ret2
+    end
+    function get_visited_date_time(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_get_visited_date_time", libglib), Ptr{GDateTime}, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _uri, err)
+        check_err(err)
+        ret2 = convert(GDateTime, ret, false)
+        ret2
+    end
+    function has_application(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _name::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_has_application", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _uri, _name, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function has_group(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _group::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_has_group", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _uri, _group, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function has_item(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        ret = ccall(("g_bookmark_file_has_item", libglib), Cint, (Ptr{GBookmarkFile}, Cstring), instance, _uri)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function load_from_data(instance::GBookmarkFile, _data)
+        _data_arr = convert(Vector{UInt8}, _data)
+        _length = length(_data)
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_load_from_data", libglib), Cint, (Ptr{GBookmarkFile}, Ptr{UInt8}, UInt64, Ptr{Ptr{GError}}), instance, _data_arr, _length, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function load_from_data_dirs(instance::GBookmarkFile, _file::Union{AbstractString, Symbol})
+        m_full_path = Ref{Cstring}()
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_load_from_data_dirs", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _file, m_full_path, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        _full_path = m_full_path[]
+        _full_path = string_or_nothing(_full_path, true)
+        (ret2, _full_path)
+    end
+    function load_from_file(instance::GBookmarkFile, _filename::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_load_from_file", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _filename, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function move_item(instance::GBookmarkFile, _old_uri::Union{AbstractString, Symbol}, _new_uri::Maybe(Union{AbstractString, Symbol}))
+        _new_uri_maybe = nothing_to_null(_new_uri)
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_move_item", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _old_uri, _new_uri_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function remove_application(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _name::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_remove_application", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _uri, _name, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function remove_group(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _group::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_remove_group", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Cstring, Ptr{Ptr{GError}}), instance, _uri, _group, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function remove_item(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_remove_item", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _uri, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_added_date_time(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _added::GDateTime)
+        ret = ccall(("g_bookmark_file_set_added_date_time", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Ptr{GDateTime}), instance, _uri, _added)
+        nothing
+    end
+    function set_application_info(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _name::Union{AbstractString, Symbol}, _exec::Union{AbstractString, Symbol}, _count::Integer, _stamp::Maybe(GDateTime))
+        _stamp_maybe = nothing_to_null(_stamp)
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_set_application_info", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Cstring, Cstring, Int32, Ptr{GDateTime}, Ptr{Ptr{GError}}), instance, _uri, _name, _exec, _count, _stamp_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_description(instance::GBookmarkFile, _uri::Maybe(Union{AbstractString, Symbol}), _description::Union{AbstractString, Symbol})
+        _uri_maybe = nothing_to_null(_uri)
+        ret = ccall(("g_bookmark_file_set_description", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Cstring), instance, _uri_maybe, _description)
+        nothing
+    end
+    function set_groups(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _groups)
+        _groups_maybe = nothing_to_null(_groups)
+        _length = length(_groups)
+        ret = ccall(("g_bookmark_file_set_groups", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Ptr{Cstring}, UInt64), instance, _uri, _groups_maybe, _length)
+        nothing
+    end
+    function set_icon(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _href::Maybe(Union{AbstractString, Symbol}), _mime_type::Union{AbstractString, Symbol})
+        _href_maybe = nothing_to_null(_href)
+        ret = ccall(("g_bookmark_file_set_icon", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Cstring, Cstring), instance, _uri, _href_maybe, _mime_type)
+        nothing
+    end
+    function set_is_private(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _is_private::Bool)
+        ret = ccall(("g_bookmark_file_set_is_private", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Cint), instance, _uri, _is_private)
+        nothing
+    end
+    function set_mime_type(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _mime_type::Union{AbstractString, Symbol})
+        ret = ccall(("g_bookmark_file_set_mime_type", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Cstring), instance, _uri, _mime_type)
+        nothing
+    end
+    function set_modified_date_time(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _modified::GDateTime)
+        ret = ccall(("g_bookmark_file_set_modified_date_time", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Ptr{GDateTime}), instance, _uri, _modified)
+        nothing
+    end
+    function set_title(instance::GBookmarkFile, _uri::Maybe(Union{AbstractString, Symbol}), _title::Union{AbstractString, Symbol})
+        _uri_maybe = nothing_to_null(_uri)
+        ret = ccall(("g_bookmark_file_set_title", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Cstring), instance, _uri_maybe, _title)
+        nothing
+    end
+    function set_visited_date_time(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _visited::GDateTime)
+        ret = ccall(("g_bookmark_file_set_visited_date_time", libglib), Nothing, (Ptr{GBookmarkFile}, Cstring, Ptr{GDateTime}), instance, _uri, _visited)
+        nothing
+    end
+    function to_data(instance::GBookmarkFile)
+        m_length = Ref{UInt64}()
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_to_data", libglib), Ptr{UInt8}, (Ptr{GBookmarkFile}, Ptr{UInt64}, Ptr{Ptr{GError}}), instance, m_length, err)
+        check_err(err)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt8}, ret, m_length[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
+        _length = m_length[]
+        ret2
+    end
+    function to_file(instance::GBookmarkFile, _filename::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_bookmark_file_to_file", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Ptr{Ptr{GError}}), instance, _filename, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function Bytes_new(_data)
         _data_arr = convert(Vector{UInt8}, _data)
         _size = length(_data)
@@ -1202,6 +1488,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(Union{GString, Ref{_GString}}, ret, true)
         ret2
     end
+    function String_new_take(_init::Maybe(Union{AbstractString, Symbol}))
+        _init_maybe = nothing_to_null(_init)
+        ret = ccall(("g_string_new_take", libglib), Ptr{_GString}, (Cstring,), _init_maybe)
+        ret2 = convert(Union{GString, Ref{_GString}}, ret, true)
+        ret2
+    end
     function String_sized_new(_dfl_size::Integer)
         ret = ccall(("g_string_sized_new", libglib), Ptr{_GString}, (UInt64,), _dfl_size)
         ret2 = convert(Union{GString, Ref{_GString}}, ret, true)
@@ -1259,6 +1551,11 @@ $(Expr(:toplevel, quote
     end
     function free(instance::GString, _free_segment::Bool)
         ret = ccall(("g_string_free", libglib), Cstring, (Ptr{_GString}, Cint), instance, _free_segment)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function free_and_steal(instance::GString)
+        ret = ccall(("g_string_free_and_steal", libglib), Cstring, (Ptr{_GString},), instance)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
@@ -1356,9 +1653,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(GTimeZone, ret, true)
         ret2
     end
-    function adjust_time(instance::GTimeZone, _type, _time_::Int64)
-        ret = ccall(("g_time_zone_adjust_time", libglib), Int32, (Ptr{GTimeZone}, UInt32, Ptr{Int64}), instance, _type, _time_)
-        ret
+    function adjust_time(instance::GTimeZone, _type, _time_::Integer)
+        m_time_ = Ref{Int64}()
+        m_time_[] = Base.cconvert(Int64, _time_)
+        ret = ccall(("g_time_zone_adjust_time", libglib), Int32, (Ptr{GTimeZone}, UInt32, Ptr{Int64}), instance, _type, m_time_)
+        _time_ = m_time_[]
+        (ret, _time_)
     end
     function find_interval(instance::GTimeZone, _type, _time_::Integer)
         ret = ccall(("g_time_zone_find_interval", libglib), Int32, (Ptr{GTimeZone}, UInt32, Int64), instance, _type, _time_)

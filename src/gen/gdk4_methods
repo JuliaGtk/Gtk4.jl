@@ -770,8 +770,9 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
-    function open(_display_name::Union{AbstractString, Symbol})
-        ret = ccall(("gdk_display_open", libgtk4), Ptr{GObject}, (Cstring,), _display_name)
+    function open(_display_name::Maybe(Union{AbstractString, Symbol}))
+        _display_name_maybe = nothing_to_null(_display_name)
+        ret = ccall(("gdk_display_open", libgtk4), Ptr{GObject}, (Cstring,), _display_name_maybe)
         ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
@@ -816,7 +817,7 @@ $(Expr(:toplevel, quote
     end
     function get_monitor_at_surface(instance::GdkDisplay, _surface::GdkSurface)
         ret = ccall(("gdk_display_get_monitor_at_surface", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), instance, _surface)
-        ret2 = convert(GdkMonitor, ret, false)
+        ret2 = convert_if_not_null(GdkMonitor, ret, false)
         ret2
     end
     function get_monitors(instance::GdkDisplay)
@@ -840,11 +841,6 @@ $(Expr(:toplevel, quote
     function get_setting(instance::GdkDisplay, _name::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}})
         ret = ccall(("gdk_display_get_setting", libgtk4), Cint, (Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _name, _value)
         ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_startup_notification_id(instance::GdkDisplay)
-        ret = ccall(("gdk_display_get_startup_notification_id", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function is_closed(instance::GdkDisplay)
@@ -901,10 +897,6 @@ $(Expr(:toplevel, quote
             end
         _n_keys = m_n_keys[]
         (ret2, _keys)
-    end
-    function notify_startup_complete(instance::GdkDisplay, _startup_id::Union{AbstractString, Symbol})
-        ret = ccall(("gdk_display_notify_startup_complete", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _startup_id)
-        nothing
     end
     function prepare_gl(instance::GdkDisplay)
         err = err_buf()
@@ -1457,6 +1449,11 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, false)
         ret2
     end
+    function get_description(instance::GdkMonitor)
+        ret = ccall(("gdk_monitor_get_description", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
     function get_display(instance::GdkMonitor)
         ret = ccall(("gdk_monitor_get_display", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GdkDisplay, ret, false)
@@ -1749,6 +1746,11 @@ $(Expr(:toplevel, quote
         _data_arr = convert(Vector{UInt8}, _data)
         ret = ccall(("gdk_texture_download", libgtk4), Nothing, (Ptr{GObject}, Ptr{UInt8}, UInt64), instance, _data_arr, _stride)
         nothing
+    end
+    function get_format(instance::GdkTexture)
+        ret = ccall(("gdk_texture_get_format", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = MemoryFormat(ret)
+        ret2
     end
     function get_height(instance::GdkTexture)
         ret = ccall(("gdk_texture_get_height", libgtk4), Int32, (Ptr{GObject},), instance)

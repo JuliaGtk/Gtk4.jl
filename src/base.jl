@@ -192,10 +192,10 @@ end
 
 ## CSS, style
 
-function GtkCssProvider(data, filename = nothing)
+function GtkCssProvider(data::Union{AbstractString,Nothing}, filename = nothing)
     provider = G_.CssProvider_new()
     if data !== nothing
-        G_.load_from_data(provider, collect(data))
+        G_.load_from_data(provider, data, -1)
     elseif filename !== nothing
         G_.load_from_path(provider, filename)
     end

@@ -6,7 +6,7 @@ $(Expr(:toplevel, quote
     end
     function dup_object(instance::GValue)
         ret = ccall(("g_value_dup_object", libgobject), Ptr{GObject}, (Ptr{_GValue},), instance)
-        ret2 = convert(GObject, ret, true)
+        ret2 = convert_if_not_null(GObject, ret, true)
         ret2
     end
     function dup_string(instance::GValue)
@@ -68,7 +68,7 @@ $(Expr(:toplevel, quote
     end
     function get_object(instance::GValue)
         ret = ccall(("g_value_get_object", libgobject), Ptr{GObject}, (Ptr{_GValue},), instance)
-        ret2 = convert(GObject, ret, false)
+        ret2 = convert_if_not_null(GObject, ret, false)
         ret2
     end
     function get_pointer(instance::GValue)

@@ -376,7 +376,6 @@ $(Expr(:toplevel, quote
     @doc "A struct that specifies a border around a rectangular area.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/struct.Border.html)." GtkBorder
     @doc "An opaque context struct for `GtkBuildableParser`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/struct.BuildableParseContext.html)." GtkBuildableParseContext
     @doc "A sub-parser for `GtkBuildable` implementations.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/struct.BuildableParser.html)." GtkBuildableParser
-    @doc "Represents a location in a file or other source of data parsed\nby the CSS engine.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/struct.CssLocation.html)." GtkCssLocation
     @doc "Defines a part of a CSS document.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/struct.CssSection.html)." GtkCssSection
     @doc "An opaque structure representing a watched `GtkExpression`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/struct.ExpressionWatch.html)." GtkExpressionWatch
     @doc "Struct defining a pad action entry.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/struct.PadActionEntry.html)." GtkPadActionEntry
@@ -392,6 +391,13 @@ $(Expr(:toplevel, quote
         handle::Ptr{GObject}
         gc::Any
         GtkAccessible(x::GObject) = begin
+                new(unsafe_convert(Ptr{GObject}, x), x)
+            end
+    end
+    struct GtkAccessibleRange <: GInterface
+        handle::Ptr{GObject}
+        gc::Any
+        GtkAccessibleRange(x::GObject) = begin
                 new(unsafe_convert(Ptr{GObject}, x), x)
             end
     end
@@ -697,6 +703,23 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GtkAdjustment] = GtkAdjustmentLeaf
         (GLib.g_type(::Type{T}) where T <: GtkAdjustment) = begin
                 ccall(("gtk_adjustment_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
+        abstract type GtkAlertDialog <: GObject end
+        mutable struct GtkAlertDialogLeaf <: GtkAlertDialog
+            handle::Ptr{GObject}
+            function GtkAlertDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkAlertDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkAlertDialog] = GtkAlertDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkAlertDialog) = begin
+                ccall(("gtk_alert_dialog_get_type", libgtk4), GType, ())
             end
     end
     begin
@@ -1482,6 +1505,40 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        abstract type GtkColorDialog <: GObject end
+        mutable struct GtkColorDialogLeaf <: GtkColorDialog
+            handle::Ptr{GObject}
+            function GtkColorDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkColorDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkColorDialog] = GtkColorDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkColorDialog) = begin
+                ccall(("gtk_color_dialog_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
+        abstract type GtkColorDialogButton <: GtkWidget end
+        mutable struct GtkColorDialogButtonLeaf <: GtkColorDialogButton
+            handle::Ptr{GObject}
+            function GtkColorDialogButtonLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkColorDialogButtonLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkColorDialogButton] = GtkColorDialogButtonLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkColorDialogButton) = begin
+                ccall(("gtk_color_dialog_button_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
         abstract type GtkColumnView <: GtkWidget end
         mutable struct GtkColumnViewLeaf <: GtkColumnView
             handle::Ptr{GObject}
@@ -1513,6 +1570,40 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GtkColumnViewColumn] = GtkColumnViewColumnLeaf
         (GLib.g_type(::Type{T}) where T <: GtkColumnViewColumn) = begin
                 ccall(("gtk_column_view_column_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
+        abstract type GtkSorter <: GObject end
+        mutable struct GtkSorterLeaf <: GtkSorter
+            handle::Ptr{GObject}
+            function GtkSorterLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkSorterLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkSorter] = GtkSorterLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkSorter) = begin
+                ccall(("gtk_sorter_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
+        abstract type GtkColumnViewSorter <: GtkSorter end
+        mutable struct GtkColumnViewSorterLeaf <: GtkColumnViewSorter
+            handle::Ptr{GObject}
+            function GtkColumnViewSorterLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkColumnViewSorterLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkColumnViewSorter] = GtkColumnViewSorterLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkColumnViewSorter) = begin
+                ccall(("gtk_column_view_sorter_get_type", libgtk4), GType, ())
             end
     end
     begin
@@ -1705,23 +1796,6 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GtkCustomLayout] = GtkCustomLayoutLeaf
         (GLib.g_type(::Type{T}) where T <: GtkCustomLayout) = begin
                 ccall(("gtk_custom_layout_get_type", libgtk4), GType, ())
-            end
-    end
-    begin
-        abstract type GtkSorter <: GObject end
-        mutable struct GtkSorterLeaf <: GtkSorter
-            handle::Ptr{GObject}
-            function GtkSorterLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GtkSorterLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GtkSorter] = GtkSorterLeaf
-        (GLib.g_type(::Type{T}) where T <: GtkSorter) = begin
-                ccall(("gtk_sorter_get_type", libgtk4), GType, ())
             end
     end
     begin
@@ -2218,6 +2292,23 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        abstract type GtkFileDialog <: GObject end
+        mutable struct GtkFileDialogLeaf <: GtkFileDialog
+            handle::Ptr{GObject}
+            function GtkFileDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkFileDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkFileDialog] = GtkFileDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkFileDialog) = begin
+                ccall(("gtk_file_dialog_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
         abstract type GtkFileFilter <: GtkFilter end
         mutable struct GtkFileFilterLeaf <: GtkFileFilter
             handle::Ptr{GObject}
@@ -2232,6 +2323,23 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GtkFileFilter] = GtkFileFilterLeaf
         (GLib.g_type(::Type{T}) where T <: GtkFileFilter) = begin
                 ccall(("gtk_file_filter_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
+        abstract type GtkFileLauncher <: GObject end
+        mutable struct GtkFileLauncherLeaf <: GtkFileLauncher
+            handle::Ptr{GObject}
+            function GtkFileLauncherLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkFileLauncherLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkFileLauncher] = GtkFileLauncherLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkFileLauncher) = begin
+                ccall(("gtk_file_launcher_get_type", libgtk4), GType, ())
             end
     end
     begin
@@ -2402,6 +2510,40 @@ $(Expr(:toplevel, quote
         gtype_wrapper_cache[:GtkFontChooserWidget] = GtkFontChooserWidgetLeaf
         (GLib.g_type(::Type{T}) where T <: GtkFontChooserWidget) = begin
                 ccall(("gtk_font_chooser_widget_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
+        abstract type GtkFontDialog <: GObject end
+        mutable struct GtkFontDialogLeaf <: GtkFontDialog
+            handle::Ptr{GObject}
+            function GtkFontDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkFontDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkFontDialog] = GtkFontDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkFontDialog) = begin
+                ccall(("gtk_font_dialog_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
+        abstract type GtkFontDialogButton <: GtkWidget end
+        mutable struct GtkFontDialogButtonLeaf <: GtkFontDialogButton
+            handle::Ptr{GObject}
+            function GtkFontDialogButtonLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkFontDialogButtonLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkFontDialogButton] = GtkFontDialogButtonLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkFontDialogButton) = begin
+                ccall(("gtk_font_dialog_button_get_type", libgtk4), GType, ())
             end
     end
     begin
@@ -4597,6 +4739,23 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        abstract type GtkUriLauncher <: GObject end
+        mutable struct GtkUriLauncherLeaf <: GtkUriLauncher
+            handle::Ptr{GObject}
+            function GtkUriLauncherLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GtkUriLauncherLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GtkUriLauncher] = GtkUriLauncherLeaf
+        (GLib.g_type(::Type{T}) where T <: GtkUriLauncher) = begin
+                ccall(("gtk_uri_launcher_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
         abstract type GtkVideo <: GtkWidget end
         mutable struct GtkVideoLeaf <: GtkVideo
             handle::Ptr{GObject}
@@ -4950,6 +5109,16 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GtkColorDialog(; kwargs...)
+        obj = G_.ColorDialog_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GtkColorDialogButton(_dialog::Maybe(GtkColorDialog); kwargs...)
+        obj = G_.ColorDialogButton_new(_dialog)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GtkColumnView(_model::Maybe(GtkSelectionModel); kwargs...)
         obj = G_.ColumnView_new(_model)
         GLib.setproperties!(obj; kwargs...)
@@ -5123,6 +5292,11 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GtkFileDialog(; kwargs...)
+        obj = G_.FileDialog_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GtkFileFilter(; kwargs...)
         obj = G_.FileFilter_new()
         GLib.setproperties!(obj; kwargs...)
@@ -5130,6 +5304,11 @@ $(Expr(:toplevel, quote
     end
     function GtkFileFilter(_variant::GVariant; kwargs...)
         obj = G_.FileFilter_new_from_gvariant(_variant)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GtkFileLauncher(_file::Maybe(GFile); kwargs...)
+        obj = G_.FileLauncher_new(_file)
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -5177,6 +5356,16 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GtkFontDialog(; kwargs...)
+        obj = G_.FontDialog_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GtkFontDialogButton(_dialog::Maybe(GtkFontDialog); kwargs...)
+        obj = G_.FontDialogButton_new(_dialog)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GtkFrame(_label::Maybe(Union{AbstractString, Symbol}); kwargs...)
         obj = G_.Frame_new(_label)
         GLib.setproperties!(obj; kwargs...)
@@ -5206,8 +5395,10 @@ $(Expr(:toplevel, quote
     function GtkGestureRotate()
         G_.GestureRotate_new()
     end
-    function GtkGestureStylus()
-        G_.GestureStylus_new()
+    function GtkGestureStylus(; kwargs...)
+        obj = G_.GestureStylus_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
     end
     function GtkGestureSwipe()
         G_.GestureSwipe_new()
@@ -5701,8 +5892,10 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function GtkStringList(_strings)
-        G_.StringList_new(_strings)
+    function GtkStringList(_strings; kwargs...)
+        obj = G_.StringList_new(_strings)
+        GLib.setproperties!(obj; kwargs...)
+        obj
     end
     function GtkStringObject(_string::Union{AbstractString, Symbol}; kwargs...)
         obj = G_.StringObject_new(_string)
@@ -5816,6 +6009,11 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GtkUriLauncher(_uri::Maybe(Union{AbstractString, Symbol}); kwargs...)
+        obj = G_.UriLauncher_new(_uri)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GtkVideo(; kwargs...)
         obj = G_.Video_new()
         GLib.setproperties!(obj; kwargs...)
@@ -5874,6 +6072,7 @@ $(Expr(:toplevel, quote
     @doc "`GtkActionBar` is designed to present contextual actions.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ActionBar.html)." GtkActionBar
     @doc "A `GtkShortcutAction` that calls gtk_widget_activate().\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ActivateAction.html)." GtkActivateAction
     @doc "`GtkAdjustment` is a model for a numeric value.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.Adjustment.html)." GtkAdjustment
+    @doc "A `GtkAlertDialog` object collects the arguments that\nare needed to present a message to the user.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.AlertDialog.html)." GtkAlertDialog
     @doc "A `GtkShortcutTrigger` that combines two triggers.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.AlternativeTrigger.html)." GtkAlternativeTrigger
     @doc "`GtkAnyFilter` matches an item when at least one of its filters matches.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.AnyFilter.html)." GtkAnyFilter
     @doc "The `GtkAppChooserButton` lets the user select an application.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.AppChooserButton.html)." GtkAppChooserButton
@@ -5914,8 +6113,11 @@ $(Expr(:toplevel, quote
     @doc "The `GtkColorButton` allows to open a color chooser dialog to change\nthe color.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ColorButton.html)." GtkColorButton
     @doc "A dialog for choosing a color.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ColorChooserDialog.html)." GtkColorChooserDialog
     @doc "The `GtkColorChooserWidget` widget lets the user select a color.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ColorChooserWidget.html)." GtkColorChooserWidget
+    @doc "A `GtkColorDialog` object collects the arguments that\nare needed to present a color chooser dialog to the\nuser, such as a title for the dialog and whether it\nshould be modal.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ColorDialog.html)." GtkColorDialog
+    @doc "The `GtkColorDialogButton` is a wrapped around a [class@Gtk.ColorDialog]\nand allows to open a color chooser dialog to change the color.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ColorDialogButton.html)." GtkColorDialogButton
     @doc "`GtkColumnView` presents a large dynamic list of items using multiple columns\nwith headers.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ColumnView.html)." GtkColumnView
     @doc "`GtkColumnViewColumn` represents the columns being added to `GtkColumnView`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ColumnViewColumn.html)." GtkColumnViewColumn
+    @doc "`GtkColumnViewSorter` is a sorter implementation that\nis geared towards the needs of `GtkColumnView`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ColumnViewSorter.html)." GtkColumnViewSorter
     @doc "A `GtkComboBox` is a widget that allows the user to choose from a list of\nvalid choices.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ComboBox.html)." GtkComboBox
     @doc "A `GtkComboBoxText` is a simple variant of `GtkComboBox` for text-only\nuse cases.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ComboBoxText.html)." GtkComboBoxText
     @doc "A constant value in a `GtkExpression`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.ConstantExpression.html)." GtkConstantExpression
@@ -5953,7 +6155,9 @@ $(Expr(:toplevel, quote
     @doc "`GtkFileChooserDialog` is a dialog suitable for use with\n“File Open” or “File Save” commands.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FileChooserDialog.html)." GtkFileChooserDialog
     @doc "`GtkFileChooserNative` is an abstraction of a dialog suitable\nfor use with “File Open” or “File Save as” commands.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FileChooserNative.html)." GtkFileChooserNative
     @doc "`GtkFileChooserWidget` is a widget for choosing files.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FileChooserWidget.html)." GtkFileChooserWidget
+    @doc "A `GtkFileDialog` object collects the arguments that\nare needed to present a file chooser dialog to the\nuser, such as a title for the dialog and whether it\nshould be modal.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FileDialog.html)." GtkFileDialog
     @doc "`GtkFileFilter` filters files by name or mime type.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FileFilter.html)." GtkFileFilter
+    @doc "A `GtkFileLauncher` object collects the arguments that are needed to open a\nfile with an application.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FileLauncher.html)." GtkFileLauncher
     @doc "A `GtkFilter` object describes the filtering to be performed by a\n[class@Gtk.FilterListModel].\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.Filter.html)." GtkFilter
     @doc "`GtkFilterListModel` is a list model that filters the elements of\nthe underlying model according to a `GtkFilter`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FilterListModel.html)." GtkFilterListModel
     @doc "`GtkFixed` places its child widgets at fixed positions and with fixed sizes.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.Fixed.html)." GtkFixed
@@ -5965,6 +6169,8 @@ $(Expr(:toplevel, quote
     @doc "The `GtkFontButton` allows to open a font chooser dialog to change\nthe font.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FontButton.html)." GtkFontButton
     @doc "The `GtkFontChooserDialog` widget is a dialog for selecting a font.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FontChooserDialog.html)." GtkFontChooserDialog
     @doc "The `GtkFontChooserWidget` widget lets the user select a font.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FontChooserWidget.html)." GtkFontChooserWidget
+    @doc "A `GtkFontDialog` object collects the arguments that\nare needed to present a font chooser dialog to the\nuser, such as a title for the dialog and whether it\nshould be modal.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FontDialog.html)." GtkFontDialog
+    @doc "The `GtkFontDialogButton` is wrapped around a [class@Gtk.FontDialog]\nand allows to open a font chooser dialog to change the font.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.FontDialogButton.html)." GtkFontDialogButton
     @doc "`GtkFrame` is a widget that surrounds its child with a decorative\nframe and an optional label.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.Frame.html)." GtkFrame
     @doc "`GtkGLArea` is a widget that allows drawing with OpenGL.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.GLArea.html)." GtkGLArea
     @doc "`GtkGesture` is the base class for gesture recognition.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.Gesture.html)." GtkGesture
@@ -6103,9 +6309,10 @@ $(Expr(:toplevel, quote
     @doc "A `GtkTreeModel` which hides parts of an underlying tree model\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.TreeModelFilter.html)." GtkTreeModelFilter
     @doc "A GtkTreeModel which makes an underlying tree model sortable\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.TreeModelSort.html)." GtkTreeModelSort
     @doc "The selection object for GtkTreeView\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.TreeSelection.html)." GtkTreeSelection
-    @doc "A tree-like data structure that can be used with the GtkTreeView\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.TreeStore.html)." GtkTreeStore
+    @doc "A tree-like data structure that can be used with the [class@Gtk.TreeView].\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.TreeStore.html)." GtkTreeStore
     @doc "A widget for displaying both trees and lists\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.TreeView.html)." GtkTreeView
     @doc "A visible column in a [class@Gtk.TreeView] widget\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.TreeViewColumn.html)." GtkTreeViewColumn
+    @doc "A `GtkUriLauncher` object collects the arguments that are needed to open a uri\nwith an application.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.UriLauncher.html)." GtkUriLauncher
     @doc "`GtkVideo` is a widget to show a `GtkMediaStream` with media controls.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.Video.html)." GtkVideo
     @doc "`GtkViewport` implements scrollability for widgets that lack their\nown scrolling capabilities.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.Viewport.html)." GtkViewport
     @doc "`GtkVolumeButton` is a `GtkScaleButton` subclass tailored for\nvolume control.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gtk4/class.VolumeButton.html)." GtkVolumeButton
@@ -6225,11 +6432,6 @@ $(Expr(:toplevel, quote
         ret = f(page_setup)
         nothing
     end
-    function GtkPrintJobCompleteFunc(print_job, user_data, error)
-        f = user_data
-        ret = f(print_job, user_data)
-        nothing
-    end
     function GtkPrintSettingsFunc(key, value, user_data)
         f = user_data
         ret = f(key, value)
@@ -6325,6 +6527,6 @@ $(Expr(:toplevel, quote
         ret = f(model, column, key, iter)
         convert(Cint, ret)
     end
-    export GtkBitset, GtkBitsetIter, _GtkBitsetIter, GtkBorder, _GtkBorder, GtkBuildableParseContext, GtkBuildableParser, _GtkBuildableParser, GtkCssLocation, _GtkCssLocation, GtkCssSection, GtkCssStyleChange, GtkExpressionWatch, GtkPadActionEntry, _GtkPadActionEntry, GtkPaperSize, GtkPrintBackend, GtkRecentData, _GtkRecentData, GtkRecentInfo, GtkRequestedSize, _GtkRequestedSize, GtkRequisition, _GtkRequisition, GtkTextIter, _GtkTextIter, GtkTreeIter, _GtkTreeIter, GtkTreePath, GtkAccessible, GtkActionable, GtkAppChooser, GtkBuildable, GtkBuilderScope, GtkCellEditable, GtkCellLayout, GtkColorChooser, GtkConstraintTarget, GtkEditable, GtkFileChooser, GtkFontChooser, GtkNative, GtkOrientable, GtkPrintOperationPreview, GtkRoot, GtkScrollable, GtkSelectionModel, GtkShortcutManager, GtkStyleProvider, GtkSymbolicPaintable, GtkTreeDragDest, GtkTreeDragSource, GtkTreeModel, GtkTreeSortable, GtkATContext, GtkAboutDialog, GtkAboutDialogLeaf, GtkActionBar, GtkActionBarLeaf, GtkActivateAction, GtkActivateActionLeaf, GtkAdjustment, GtkAdjustmentLeaf, GtkAlternativeTrigger, GtkAlternativeTriggerLeaf, GtkAnyFilter, GtkAnyFilterLeaf, GtkAppChooserButton, GtkAppChooserButtonLeaf, GtkAppChooserDialog, GtkAppChooserDialogLeaf, GtkAppChooserWidget, GtkAppChooserWidgetLeaf, GtkApplication, GtkApplicationLeaf, GtkApplicationWindow, GtkApplicationWindowLeaf, GtkAspectFrame, GtkAspectFrameLeaf, GtkAssistant, GtkAssistantLeaf, GtkAssistantPage, GtkAssistantPageLeaf, GtkBinLayout, GtkBinLayoutLeaf, GtkBookmarkList, GtkBookmarkListLeaf, GtkBoolFilter, GtkBoolFilterLeaf, GtkBox, GtkBoxLeaf, GtkBoxLayout, GtkBoxLayoutLeaf, GtkBuilder, GtkBuilderLeaf, GtkBuilderCScope, GtkBuilderCScopeLeaf, GtkBuilderListItemFactory, GtkBuilderListItemFactoryLeaf, GtkButton, GtkButtonLeaf, GtkCalendar, GtkCalendarLeaf, GtkCallbackAction, GtkCallbackActionLeaf, GtkCellArea, GtkCellAreaBox, GtkCellAreaBoxLeaf, GtkCellAreaContext, GtkCellAreaContextLeaf, GtkCellRenderer, GtkCellRendererAccel, GtkCellRendererAccelLeaf, GtkCellRendererCombo, GtkCellRendererComboLeaf, GtkCellRendererPixbuf, GtkCellRendererPixbufLeaf, GtkCellRendererProgress, GtkCellRendererProgressLeaf, GtkCellRendererSpin, GtkCellRendererSpinLeaf, GtkCellRendererSpinner, GtkCellRendererSpinnerLeaf, GtkCellRendererText, GtkCellRendererTextLeaf, GtkCellRendererToggle, GtkCellRendererToggleLeaf, GtkCellView, GtkCellViewLeaf, GtkCenterBox, GtkCenterBoxLeaf, GtkCenterLayout, GtkCenterLayoutLeaf, GtkCheckButton, GtkCheckButtonLeaf, GtkColorButton, GtkColorButtonLeaf, GtkColorChooserDialog, GtkColorChooserDialogLeaf, GtkColorChooserWidget, GtkColorChooserWidgetLeaf, GtkColumnView, GtkColumnViewLeaf, GtkColumnViewColumn, GtkColumnViewColumnLeaf, GtkComboBox, GtkComboBoxLeaf, GtkComboBoxText, GtkComboBoxTextLeaf, GtkConstantExpression, GtkConstantExpressionLeaf, GtkConstraint, GtkConstraintLeaf, GtkConstraintGuide, GtkConstraintGuideLeaf, GtkConstraintLayout, GtkConstraintLayoutLeaf, GtkConstraintLayoutChild, GtkConstraintLayoutChildLeaf, GtkCssProvider, GtkCssProviderLeaf, GtkCustomFilter, GtkCustomFilterLeaf, GtkCustomLayout, GtkCustomLayoutLeaf, GtkCustomSorter, GtkCustomSorterLeaf, GtkDialog, GtkDialogLeaf, GtkDirectoryList, GtkDirectoryListLeaf, GtkDragIcon, GtkDragIconLeaf, GtkDragSource, GtkDragSourceLeaf, GtkDrawingArea, GtkDrawingAreaLeaf, GtkDropControllerMotion, GtkDropControllerMotionLeaf, GtkDropDown, GtkDropDownLeaf, GtkDropTarget, GtkDropTargetLeaf, GtkDropTargetAsync, GtkDropTargetAsyncLeaf, GtkEditableLabel, GtkEditableLabelLeaf, GtkEmojiChooser, GtkEmojiChooserLeaf, GtkEntry, GtkEntryLeaf, GtkEntryBuffer, GtkEntryBufferLeaf, GtkEntryCompletion, GtkEntryCompletionLeaf, GtkEventController, GtkEventControllerFocus, GtkEventControllerFocusLeaf, GtkEventControllerKey, GtkEventControllerKeyLeaf, GtkEventControllerLegacy, GtkEventControllerLegacyLeaf, GtkEventControllerMotion, GtkEventControllerMotionLeaf, GtkEventControllerScroll, GtkEventControllerScrollLeaf, GtkEveryFilter, GtkEveryFilterLeaf, GtkExpander, GtkExpanderLeaf, GtkExpression, GtkFileChooserDialog, GtkFileChooserDialogLeaf, GtkFileChooserNative, GtkFileChooserNativeLeaf, GtkFileChooserWidget, GtkFileChooserWidgetLeaf, GtkFileFilter, GtkFileFilterLeaf, GtkFilter, GtkFilterLeaf, GtkFilterListModel, GtkFilterListModelLeaf, GtkFixed, GtkFixedLeaf, GtkFixedLayout, GtkFixedLayoutLeaf, GtkFixedLayoutChild, GtkFixedLayoutChildLeaf, GtkFlattenListModel, GtkFlattenListModelLeaf, GtkFlowBox, GtkFlowBoxLeaf, GtkFlowBoxChild, GtkFlowBoxChildLeaf, GtkFontButton, GtkFontButtonLeaf, GtkFontChooserDialog, GtkFontChooserDialogLeaf, GtkFontChooserWidget, GtkFontChooserWidgetLeaf, GtkFrame, GtkFrameLeaf, GtkGLArea, GtkGLAreaLeaf, GtkGesture, GtkGestureClick, GtkGestureClickLeaf, GtkGestureDrag, GtkGestureDragLeaf, GtkGestureLongPress, GtkGestureLongPressLeaf, GtkGesturePan, GtkGesturePanLeaf, GtkGestureRotate, GtkGestureRotateLeaf, GtkGestureSingle, GtkGestureSingleLeaf, GtkGestureStylus, GtkGestureStylusLeaf, GtkGestureSwipe, GtkGestureSwipeLeaf, GtkGestureZoom, GtkGestureZoomLeaf, GtkGrid, GtkGridLeaf, GtkGridLayout, GtkGridLayoutLeaf, GtkGridLayoutChild, GtkGridLayoutChildLeaf, GtkGridView, GtkGridViewLeaf, GtkHeaderBar, GtkHeaderBarLeaf, GtkIMContext, GtkIMContextSimple, GtkIMContextSimpleLeaf, GtkIMMulticontext, GtkIMMulticontextLeaf, GtkIconPaintable, GtkIconPaintableLeaf, GtkIconTheme, GtkIconThemeLeaf, GtkIconView, GtkIconViewLeaf, GtkImage, GtkImageLeaf, GtkInfoBar, GtkInfoBarLeaf, GtkInscription, GtkInscriptionLeaf, GtkKeyvalTrigger, GtkKeyvalTriggerLeaf, GtkLabel, GtkLabelLeaf, GtkLayoutChild, GtkLayoutManager, GtkLevelBar, GtkLevelBarLeaf, GtkLinkButton, GtkLinkButtonLeaf, GtkListBase, GtkListBox, GtkListBoxLeaf, GtkListBoxRow, GtkListBoxRowLeaf, GtkListItem, GtkListItemLeaf, GtkListItemFactory, GtkListItemFactoryLeaf, GtkListStore, GtkListStoreLeaf, GtkListView, GtkListViewLeaf, GtkLockButton, GtkLockButtonLeaf, GtkMapListModel, GtkMapListModelLeaf, GtkMediaControls, GtkMediaControlsLeaf, GtkMediaFile, GtkMediaStream, GtkMenuButton, GtkMenuButtonLeaf, GtkMessageDialog, GtkMessageDialogLeaf, GtkMnemonicAction, GtkMnemonicActionLeaf, GtkMnemonicTrigger, GtkMnemonicTriggerLeaf, GtkMountOperation, GtkMountOperationLeaf, GtkMultiFilter, GtkMultiSelection, GtkMultiSelectionLeaf, GtkMultiSorter, GtkMultiSorterLeaf, GtkNamedAction, GtkNamedActionLeaf, GtkNativeDialog, GtkNeverTrigger, GtkNeverTriggerLeaf, GtkNoSelection, GtkNoSelectionLeaf, GtkNotebook, GtkNotebookLeaf, GtkNotebookPage, GtkNotebookPageLeaf, GtkNothingAction, GtkNothingActionLeaf, GtkNumericSorter, GtkNumericSorterLeaf, GtkObjectExpression, GtkObjectExpressionLeaf, GtkOverlay, GtkOverlayLeaf, GtkOverlayLayout, GtkOverlayLayoutLeaf, GtkOverlayLayoutChild, GtkOverlayLayoutChildLeaf, GtkPadController, GtkPadControllerLeaf, GtkPageSetup, GtkPageSetupLeaf, GtkPaned, GtkPanedLeaf, GtkPasswordEntry, GtkPasswordEntryLeaf, GtkPasswordEntryBuffer, GtkPasswordEntryBufferLeaf, GtkPicture, GtkPictureLeaf, GtkPopover, GtkPopoverLeaf, GtkPopoverMenu, GtkPopoverMenuLeaf, GtkPopoverMenuBar, GtkPopoverMenuBarLeaf, GtkPrintContext, GtkPrintContextLeaf, GtkPrintJob, GtkPrintJobLeaf, GtkPrintOperation, GtkPrintOperationLeaf, GtkPrintSettings, GtkPrintSettingsLeaf, GtkPrinter, GtkPrinterLeaf, GtkProgressBar, GtkProgressBarLeaf, GtkPropertyExpression, GtkPropertyExpressionLeaf, GtkRange, GtkRangeLeaf, GtkRecentManager, GtkRecentManagerLeaf, GtkRevealer, GtkRevealerLeaf, GtkScale, GtkScaleLeaf, GtkScaleButton, GtkScaleButtonLeaf, GtkScrollbar, GtkScrollbarLeaf, GtkScrolledWindow, GtkScrolledWindowLeaf, GtkSearchBar, GtkSearchBarLeaf, GtkSearchEntry, GtkSearchEntryLeaf, GtkSelectionFilterModel, GtkSelectionFilterModelLeaf, GtkSeparator, GtkSeparatorLeaf, GtkSettings, GtkSettingsLeaf, GtkShortcut, GtkShortcutLeaf, GtkShortcutAction, GtkShortcutController, GtkShortcutControllerLeaf, GtkShortcutLabel, GtkShortcutLabelLeaf, GtkShortcutTrigger, GtkShortcutsGroup, GtkShortcutsGroupLeaf, GtkShortcutsSection, GtkShortcutsSectionLeaf, GtkShortcutsShortcut, GtkShortcutsShortcutLeaf, GtkShortcutsWindow, GtkShortcutsWindowLeaf, GtkSignalAction, GtkSignalActionLeaf, GtkSignalListItemFactory, GtkSignalListItemFactoryLeaf, GtkSingleSelection, GtkSingleSelectionLeaf, GtkSizeGroup, GtkSizeGroupLeaf, GtkSliceListModel, GtkSliceListModelLeaf, GtkSnapshot, GtkSnapshotLeaf, GtkSortListModel, GtkSortListModelLeaf, GtkSorter, GtkSorterLeaf, GtkSpinButton, GtkSpinButtonLeaf, GtkSpinner, GtkSpinnerLeaf, GtkStack, GtkStackLeaf, GtkStackPage, GtkStackPageLeaf, GtkStackSidebar, GtkStackSidebarLeaf, GtkStackSwitcher, GtkStackSwitcherLeaf, GtkStatusbar, GtkStatusbarLeaf, GtkStringFilter, GtkStringFilterLeaf, GtkStringList, GtkStringListLeaf, GtkStringObject, GtkStringObjectLeaf, GtkStringSorter, GtkStringSorterLeaf, GtkStyleContext, GtkStyleContextLeaf, GtkSwitch, GtkSwitchLeaf, GtkText, GtkTextLeaf, GtkTextBuffer, GtkTextBufferLeaf, GtkTextChildAnchor, GtkTextChildAnchorLeaf, GtkTextMark, GtkTextMarkLeaf, GtkTextTag, GtkTextTagLeaf, GtkTextTagTable, GtkTextTagTableLeaf, GtkTextView, GtkTextViewLeaf, GtkToggleButton, GtkToggleButtonLeaf, GtkTooltip, GtkTooltipLeaf, GtkTreeExpander, GtkTreeExpanderLeaf, GtkTreeListModel, GtkTreeListModelLeaf, GtkTreeListRow, GtkTreeListRowLeaf, GtkTreeListRowSorter, GtkTreeListRowSorterLeaf, GtkTreeModelFilter, GtkTreeModelFilterLeaf, GtkTreeModelSort, GtkTreeModelSortLeaf, GtkTreeSelection, GtkTreeSelectionLeaf, GtkTreeStore, GtkTreeStoreLeaf, GtkTreeView, GtkTreeViewLeaf, GtkTreeViewColumn, GtkTreeViewColumnLeaf, GtkVideo, GtkVideoLeaf, GtkViewport, GtkViewportLeaf, GtkVolumeButton, GtkVolumeButtonLeaf, GtkWidget, GtkWidgetPaintable, GtkWidgetPaintableLeaf, GtkWindow, GtkWindowLeaf, GtkWindowControls, GtkWindowControlsLeaf, GtkWindowGroup, GtkWindowGroupLeaf, GtkWindowHandle, GtkWindowHandleLeaf, GtkAssistantPageFunc, GtkCellAllocCallback, GtkCellCallback, GtkCellLayoutDataFunc, GtkCustomFilterFunc, GtkDrawingAreaDrawFunc, GtkEntryCompletionMatchFunc, GtkExpressionNotify, GtkFlowBoxCreateWidgetFunc, GtkFlowBoxFilterFunc, GtkFlowBoxForeachFunc, GtkFlowBoxSortFunc, GtkFontFilterFunc, GtkIconViewForeachFunc, GtkListBoxCreateWidgetFunc, GtkListBoxFilterFunc, GtkListBoxForeachFunc, GtkListBoxSortFunc, GtkListBoxUpdateHeaderFunc, GtkMapListModelMapFunc, GtkMenuButtonCreatePopupFunc, GtkPageSetupDoneFunc, GtkPrintJobCompleteFunc, GtkPrintSettingsFunc, GtkPrinterFunc, GtkScaleFormatValueFunc, GtkShortcutFunc, GtkTextCharPredicate, GtkTextTagTableForeach, GtkTickCallback, GtkTreeCellDataFunc, GtkTreeIterCompareFunc, GtkTreeListModelCreateModelFunc, GtkTreeModelFilterModifyFunc, GtkTreeModelFilterVisibleFunc, GtkTreeModelForeachFunc, GtkTreeSelectionForeachFunc, GtkTreeSelectionFunc, GtkTreeViewColumnDropFunc, GtkTreeViewMappingFunc, GtkTreeViewRowSeparatorFunc, GtkTreeViewSearchEqualFunc
+    export GtkBitset, GtkBitsetIter, _GtkBitsetIter, GtkBorder, _GtkBorder, GtkBuildableParseContext, GtkBuildableParser, _GtkBuildableParser, GtkCssLocation, _GtkCssLocation, GtkCssSection, GtkCssStyleChange, GtkExpressionWatch, GtkPadActionEntry, _GtkPadActionEntry, GtkPaperSize, GtkPrintBackend, GtkRecentData, _GtkRecentData, GtkRecentInfo, GtkRequestedSize, _GtkRequestedSize, GtkRequisition, _GtkRequisition, GtkTextIter, _GtkTextIter, GtkTreeIter, _GtkTreeIter, GtkTreePath, GtkAccessible, GtkAccessibleRange, GtkActionable, GtkAppChooser, GtkBuildable, GtkBuilderScope, GtkCellEditable, GtkCellLayout, GtkColorChooser, GtkConstraintTarget, GtkEditable, GtkFileChooser, GtkFontChooser, GtkNative, GtkOrientable, GtkPrintOperationPreview, GtkRoot, GtkScrollable, GtkSelectionModel, GtkShortcutManager, GtkStyleProvider, GtkSymbolicPaintable, GtkTreeDragDest, GtkTreeDragSource, GtkTreeModel, GtkTreeSortable, GtkATContext, GtkAboutDialog, GtkAboutDialogLeaf, GtkActionBar, GtkActionBarLeaf, GtkActivateAction, GtkActivateActionLeaf, GtkAdjustment, GtkAdjustmentLeaf, GtkAlertDialog, GtkAlertDialogLeaf, GtkAlternativeTrigger, GtkAlternativeTriggerLeaf, GtkAnyFilter, GtkAnyFilterLeaf, GtkAppChooserButton, GtkAppChooserButtonLeaf, GtkAppChooserDialog, GtkAppChooserDialogLeaf, GtkAppChooserWidget, GtkAppChooserWidgetLeaf, GtkApplication, GtkApplicationLeaf, GtkApplicationWindow, GtkApplicationWindowLeaf, GtkAspectFrame, GtkAspectFrameLeaf, GtkAssistant, GtkAssistantLeaf, GtkAssistantPage, GtkAssistantPageLeaf, GtkBinLayout, GtkBinLayoutLeaf, GtkBookmarkList, GtkBookmarkListLeaf, GtkBoolFilter, GtkBoolFilterLeaf, GtkBox, GtkBoxLeaf, GtkBoxLayout, GtkBoxLayoutLeaf, GtkBuilder, GtkBuilderLeaf, GtkBuilderCScope, GtkBuilderCScopeLeaf, GtkBuilderListItemFactory, GtkBuilderListItemFactoryLeaf, GtkButton, GtkButtonLeaf, GtkCalendar, GtkCalendarLeaf, GtkCallbackAction, GtkCallbackActionLeaf, GtkCellArea, GtkCellAreaBox, GtkCellAreaBoxLeaf, GtkCellAreaContext, GtkCellAreaContextLeaf, GtkCellRenderer, GtkCellRendererAccel, GtkCellRendererAccelLeaf, GtkCellRendererCombo, GtkCellRendererComboLeaf, GtkCellRendererPixbuf, GtkCellRendererPixbufLeaf, GtkCellRendererProgress, GtkCellRendererProgressLeaf, GtkCellRendererSpin, GtkCellRendererSpinLeaf, GtkCellRendererSpinner, GtkCellRendererSpinnerLeaf, GtkCellRendererText, GtkCellRendererTextLeaf, GtkCellRendererToggle, GtkCellRendererToggleLeaf, GtkCellView, GtkCellViewLeaf, GtkCenterBox, GtkCenterBoxLeaf, GtkCenterLayout, GtkCenterLayoutLeaf, GtkCheckButton, GtkCheckButtonLeaf, GtkColorButton, GtkColorButtonLeaf, GtkColorChooserDialog, GtkColorChooserDialogLeaf, GtkColorChooserWidget, GtkColorChooserWidgetLeaf, GtkColorDialog, GtkColorDialogLeaf, GtkColorDialogButton, GtkColorDialogButtonLeaf, GtkColumnView, GtkColumnViewLeaf, GtkColumnViewColumn, GtkColumnViewColumnLeaf, GtkColumnViewSorter, GtkColumnViewSorterLeaf, GtkComboBox, GtkComboBoxLeaf, GtkComboBoxText, GtkComboBoxTextLeaf, GtkConstantExpression, GtkConstantExpressionLeaf, GtkConstraint, GtkConstraintLeaf, GtkConstraintGuide, GtkConstraintGuideLeaf, GtkConstraintLayout, GtkConstraintLayoutLeaf, GtkConstraintLayoutChild, GtkConstraintLayoutChildLeaf, GtkCssProvider, GtkCssProviderLeaf, GtkCustomFilter, GtkCustomFilterLeaf, GtkCustomLayout, GtkCustomLayoutLeaf, GtkCustomSorter, GtkCustomSorterLeaf, GtkDialog, GtkDialogLeaf, GtkDirectoryList, GtkDirectoryListLeaf, GtkDragIcon, GtkDragIconLeaf, GtkDragSource, GtkDragSourceLeaf, GtkDrawingArea, GtkDrawingAreaLeaf, GtkDropControllerMotion, GtkDropControllerMotionLeaf, GtkDropDown, GtkDropDownLeaf, GtkDropTarget, GtkDropTargetLeaf, GtkDropTargetAsync, GtkDropTargetAsyncLeaf, GtkEditableLabel, GtkEditableLabelLeaf, GtkEmojiChooser, GtkEmojiChooserLeaf, GtkEntry, GtkEntryLeaf, GtkEntryBuffer, GtkEntryBufferLeaf, GtkEntryCompletion, GtkEntryCompletionLeaf, GtkEventController, GtkEventControllerFocus, GtkEventControllerFocusLeaf, GtkEventControllerKey, GtkEventControllerKeyLeaf, GtkEventControllerLegacy, GtkEventControllerLegacyLeaf, GtkEventControllerMotion, GtkEventControllerMotionLeaf, GtkEventControllerScroll, GtkEventControllerScrollLeaf, GtkEveryFilter, GtkEveryFilterLeaf, GtkExpander, GtkExpanderLeaf, GtkExpression, GtkFileChooserDialog, GtkFileChooserDialogLeaf, GtkFileChooserNative, GtkFileChooserNativeLeaf, GtkFileChooserWidget, GtkFileChooserWidgetLeaf, GtkFileDialog, GtkFileDialogLeaf, GtkFileFilter, GtkFileFilterLeaf, GtkFileLauncher, GtkFileLauncherLeaf, GtkFilter, GtkFilterLeaf, GtkFilterListModel, GtkFilterListModelLeaf, GtkFixed, GtkFixedLeaf, GtkFixedLayout, GtkFixedLayoutLeaf, GtkFixedLayoutChild, GtkFixedLayoutChildLeaf, GtkFlattenListModel, GtkFlattenListModelLeaf, GtkFlowBox, GtkFlowBoxLeaf, GtkFlowBoxChild, GtkFlowBoxChildLeaf, GtkFontButton, GtkFontButtonLeaf, GtkFontChooserDialog, GtkFontChooserDialogLeaf, GtkFontChooserWidget, GtkFontChooserWidgetLeaf, GtkFontDialog, GtkFontDialogLeaf, GtkFontDialogButton, GtkFontDialogButtonLeaf, GtkFrame, GtkFrameLeaf, GtkGLArea, GtkGLAreaLeaf, GtkGesture, GtkGestureClick, GtkGestureClickLeaf, GtkGestureDrag, GtkGestureDragLeaf, GtkGestureLongPress, GtkGestureLongPressLeaf, GtkGesturePan, GtkGesturePanLeaf, GtkGestureRotate, GtkGestureRotateLeaf, GtkGestureSingle, GtkGestureSingleLeaf, GtkGestureStylus, GtkGestureStylusLeaf, GtkGestureSwipe, GtkGestureSwipeLeaf, GtkGestureZoom, GtkGestureZoomLeaf, GtkGrid, GtkGridLeaf, GtkGridLayout, GtkGridLayoutLeaf, GtkGridLayoutChild, GtkGridLayoutChildLeaf, GtkGridView, GtkGridViewLeaf, GtkHeaderBar, GtkHeaderBarLeaf, GtkIMContext, GtkIMContextSimple, GtkIMContextSimpleLeaf, GtkIMMulticontext, GtkIMMulticontextLeaf, GtkIconPaintable, GtkIconPaintableLeaf, GtkIconTheme, GtkIconThemeLeaf, GtkIconView, GtkIconViewLeaf, GtkImage, GtkImageLeaf, GtkInfoBar, GtkInfoBarLeaf, GtkInscription, GtkInscriptionLeaf, GtkKeyvalTrigger, GtkKeyvalTriggerLeaf, GtkLabel, GtkLabelLeaf, GtkLayoutChild, GtkLayoutManager, GtkLevelBar, GtkLevelBarLeaf, GtkLinkButton, GtkLinkButtonLeaf, GtkListBase, GtkListBox, GtkListBoxLeaf, GtkListBoxRow, GtkListBoxRowLeaf, GtkListItem, GtkListItemLeaf, GtkListItemFactory, GtkListItemFactoryLeaf, GtkListStore, GtkListStoreLeaf, GtkListView, GtkListViewLeaf, GtkLockButton, GtkLockButtonLeaf, GtkMapListModel, GtkMapListModelLeaf, GtkMediaControls, GtkMediaControlsLeaf, GtkMediaFile, GtkMediaStream, GtkMenuButton, GtkMenuButtonLeaf, GtkMessageDialog, GtkMessageDialogLeaf, GtkMnemonicAction, GtkMnemonicActionLeaf, GtkMnemonicTrigger, GtkMnemonicTriggerLeaf, GtkMountOperation, GtkMountOperationLeaf, GtkMultiFilter, GtkMultiSelection, GtkMultiSelectionLeaf, GtkMultiSorter, GtkMultiSorterLeaf, GtkNamedAction, GtkNamedActionLeaf, GtkNativeDialog, GtkNeverTrigger, GtkNeverTriggerLeaf, GtkNoSelection, GtkNoSelectionLeaf, GtkNotebook, GtkNotebookLeaf, GtkNotebookPage, GtkNotebookPageLeaf, GtkNothingAction, GtkNothingActionLeaf, GtkNumericSorter, GtkNumericSorterLeaf, GtkObjectExpression, GtkObjectExpressionLeaf, GtkOverlay, GtkOverlayLeaf, GtkOverlayLayout, GtkOverlayLayoutLeaf, GtkOverlayLayoutChild, GtkOverlayLayoutChildLeaf, GtkPadController, GtkPadControllerLeaf, GtkPageSetup, GtkPageSetupLeaf, GtkPaned, GtkPanedLeaf, GtkPasswordEntry, GtkPasswordEntryLeaf, GtkPasswordEntryBuffer, GtkPasswordEntryBufferLeaf, GtkPicture, GtkPictureLeaf, GtkPopover, GtkPopoverLeaf, GtkPopoverMenu, GtkPopoverMenuLeaf, GtkPopoverMenuBar, GtkPopoverMenuBarLeaf, GtkPrintContext, GtkPrintContextLeaf, GtkPrintJob, GtkPrintJobLeaf, GtkPrintOperation, GtkPrintOperationLeaf, GtkPrintSettings, GtkPrintSettingsLeaf, GtkPrinter, GtkPrinterLeaf, GtkProgressBar, GtkProgressBarLeaf, GtkPropertyExpression, GtkPropertyExpressionLeaf, GtkRange, GtkRangeLeaf, GtkRecentManager, GtkRecentManagerLeaf, GtkRevealer, GtkRevealerLeaf, GtkScale, GtkScaleLeaf, GtkScaleButton, GtkScaleButtonLeaf, GtkScrollbar, GtkScrollbarLeaf, GtkScrolledWindow, GtkScrolledWindowLeaf, GtkSearchBar, GtkSearchBarLeaf, GtkSearchEntry, GtkSearchEntryLeaf, GtkSelectionFilterModel, GtkSelectionFilterModelLeaf, GtkSeparator, GtkSeparatorLeaf, GtkSettings, GtkSettingsLeaf, GtkShortcut, GtkShortcutLeaf, GtkShortcutAction, GtkShortcutController, GtkShortcutControllerLeaf, GtkShortcutLabel, GtkShortcutLabelLeaf, GtkShortcutTrigger, GtkShortcutsGroup, GtkShortcutsGroupLeaf, GtkShortcutsSection, GtkShortcutsSectionLeaf, GtkShortcutsShortcut, GtkShortcutsShortcutLeaf, GtkShortcutsWindow, GtkShortcutsWindowLeaf, GtkSignalAction, GtkSignalActionLeaf, GtkSignalListItemFactory, GtkSignalListItemFactoryLeaf, GtkSingleSelection, GtkSingleSelectionLeaf, GtkSizeGroup, GtkSizeGroupLeaf, GtkSliceListModel, GtkSliceListModelLeaf, GtkSnapshot, GtkSnapshotLeaf, GtkSortListModel, GtkSortListModelLeaf, GtkSorter, GtkSorterLeaf, GtkSpinButton, GtkSpinButtonLeaf, GtkSpinner, GtkSpinnerLeaf, GtkStack, GtkStackLeaf, GtkStackPage, GtkStackPageLeaf, GtkStackSidebar, GtkStackSidebarLeaf, GtkStackSwitcher, GtkStackSwitcherLeaf, GtkStatusbar, GtkStatusbarLeaf, GtkStringFilter, GtkStringFilterLeaf, GtkStringList, GtkStringListLeaf, GtkStringObject, GtkStringObjectLeaf, GtkStringSorter, GtkStringSorterLeaf, GtkStyleContext, GtkStyleContextLeaf, GtkSwitch, GtkSwitchLeaf, GtkText, GtkTextLeaf, GtkTextBuffer, GtkTextBufferLeaf, GtkTextChildAnchor, GtkTextChildAnchorLeaf, GtkTextMark, GtkTextMarkLeaf, GtkTextTag, GtkTextTagLeaf, GtkTextTagTable, GtkTextTagTableLeaf, GtkTextView, GtkTextViewLeaf, GtkToggleButton, GtkToggleButtonLeaf, GtkTooltip, GtkTooltipLeaf, GtkTreeExpander, GtkTreeExpanderLeaf, GtkTreeListModel, GtkTreeListModelLeaf, GtkTreeListRow, GtkTreeListRowLeaf, GtkTreeListRowSorter, GtkTreeListRowSorterLeaf, GtkTreeModelFilter, GtkTreeModelFilterLeaf, GtkTreeModelSort, GtkTreeModelSortLeaf, GtkTreeSelection, GtkTreeSelectionLeaf, GtkTreeStore, GtkTreeStoreLeaf, GtkTreeView, GtkTreeViewLeaf, GtkTreeViewColumn, GtkTreeViewColumnLeaf, GtkUriLauncher, GtkUriLauncherLeaf, GtkVideo, GtkVideoLeaf, GtkViewport, GtkViewportLeaf, GtkVolumeButton, GtkVolumeButtonLeaf, GtkWidget, GtkWidgetPaintable, GtkWidgetPaintableLeaf, GtkWindow, GtkWindowLeaf, GtkWindowControls, GtkWindowControlsLeaf, GtkWindowGroup, GtkWindowGroupLeaf, GtkWindowHandle, GtkWindowHandleLeaf, GtkAssistantPageFunc, GtkCellAllocCallback, GtkCellCallback, GtkCellLayoutDataFunc, GtkCustomFilterFunc, GtkDrawingAreaDrawFunc, GtkEntryCompletionMatchFunc, GtkExpressionNotify, GtkFlowBoxCreateWidgetFunc, GtkFlowBoxFilterFunc, GtkFlowBoxForeachFunc, GtkFlowBoxSortFunc, GtkFontFilterFunc, GtkIconViewForeachFunc, GtkListBoxCreateWidgetFunc, GtkListBoxFilterFunc, GtkListBoxForeachFunc, GtkListBoxSortFunc, GtkListBoxUpdateHeaderFunc, GtkMapListModelMapFunc, GtkMenuButtonCreatePopupFunc, GtkPageSetupDoneFunc, GtkPrintSettingsFunc, GtkPrinterFunc, GtkScaleFormatValueFunc, GtkShortcutFunc, GtkTextCharPredicate, GtkTextTagTableForeach, GtkTickCallback, GtkTreeCellDataFunc, GtkTreeIterCompareFunc, GtkTreeListModelCreateModelFunc, GtkTreeModelFilterModifyFunc, GtkTreeModelFilterVisibleFunc, GtkTreeModelForeachFunc, GtkTreeSelectionForeachFunc, GtkTreeSelectionFunc, GtkTreeViewColumnDropFunc, GtkTreeViewMappingFunc, GtkTreeViewRowSeparatorFunc, GtkTreeViewSearchEqualFunc
 end))
 end

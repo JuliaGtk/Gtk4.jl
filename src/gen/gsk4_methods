@@ -590,6 +590,26 @@ $(Expr(:toplevel, quote
         ret2 = convert(Union{GraphenePoint, Ref{_GraphenePoint}}, ret, false)
         ret2
     end
+    function MaskNode_new(_source::GskRenderNode, _mask::GskRenderNode, _mask_mode)
+        ret = ccall(("gsk_mask_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Ptr{GskRenderNode}, UInt32), _source, _mask, _mask_mode)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_mask(instance::GskMaskNode)
+        ret = ccall(("gsk_mask_node_get_mask", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), instance)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_mask_mode(instance::GskMaskNode)
+        ret = ccall(("gsk_mask_node_get_mask_mode", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
+        ret2 = MaskMode(ret)
+        ret2
+    end
+    function get_source(instance::GskMaskNode)
+        ret = ccall(("gsk_mask_node_get_source", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), instance)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
     function OpacityNode_new(_child::GskRenderNode, _opacity::Real)
         ret = ccall(("gsk_opacity_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Float32), _child, _opacity)
         ret2 = convert(GskRenderNode, ret)
@@ -872,6 +892,21 @@ $(Expr(:toplevel, quote
     end
     function get_texture(instance::GskTextureNode)
         ret = ccall(("gsk_texture_node_get_texture", libgtk4), Ptr{GObject}, (Ptr{GskRenderNode},), instance)
+        ret2 = convert(GdkTexture, ret, false)
+        ret2
+    end
+    function TextureScaleNode_new(_texture::GdkTexture, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _filter)
+        ret = ccall(("gsk_texture_scale_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GObject}, Ptr{_GrapheneRect}, UInt32), _texture, _bounds, _filter)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_filter(instance::GskTextureScaleNode)
+        ret = ccall(("gsk_texture_scale_node_get_filter", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
+        ret2 = ScalingFilter(ret)
+        ret2
+    end
+    function get_texture(instance::GskTextureScaleNode)
+        ret = ccall(("gsk_texture_scale_node_get_texture", libgtk4), Ptr{GObject}, (Ptr{GskRenderNode},), instance)
         ret2 = convert(GdkTexture, ret, false)
         ret2
     end

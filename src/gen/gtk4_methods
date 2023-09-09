@@ -689,6 +689,86 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_adjustment_set_value", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _value)
         nothing
     end
+    function choose(instance::GtkAlertDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_alert_dialog_choose", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function choose_finish(instance::GtkAlertDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_alert_dialog_choose_finish", libgtk4), Int32, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret
+    end
+    function get_buttons(instance::GtkAlertDialog)
+        ret = ccall(("gtk_alert_dialog_get_buttons", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
+    end
+    function get_cancel_button(instance::GtkAlertDialog)
+        ret = ccall(("gtk_alert_dialog_get_cancel_button", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_default_button(instance::GtkAlertDialog)
+        ret = ccall(("gtk_alert_dialog_get_default_button", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_detail(instance::GtkAlertDialog)
+        ret = ccall(("gtk_alert_dialog_get_detail", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_message(instance::GtkAlertDialog)
+        ret = ccall(("gtk_alert_dialog_get_message", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_modal(instance::GtkAlertDialog)
+        ret = ccall(("gtk_alert_dialog_get_modal", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_buttons(instance::GtkAlertDialog, _labels)
+        ret = ccall(("gtk_alert_dialog_set_buttons", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cstring}), instance, _labels)
+        nothing
+    end
+    function set_cancel_button(instance::GtkAlertDialog, _button::Integer)
+        ret = ccall(("gtk_alert_dialog_set_cancel_button", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _button)
+        nothing
+    end
+    function set_default_button(instance::GtkAlertDialog, _button::Integer)
+        ret = ccall(("gtk_alert_dialog_set_default_button", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _button)
+        nothing
+    end
+    function set_detail(instance::GtkAlertDialog, _detail::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_alert_dialog_set_detail", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _detail)
+        nothing
+    end
+    function set_message(instance::GtkAlertDialog, _message::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_alert_dialog_set_message", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _message)
+        nothing
+    end
+    function set_modal(instance::GtkAlertDialog, _modal::Bool)
+        ret = ccall(("gtk_alert_dialog_set_modal", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _modal)
+        nothing
+    end
+    function show(instance::GtkAlertDialog, _parent::Maybe(GtkWindow))
+        _parent_maybe = nothing_to_null(_parent)
+        ret = ccall(("gtk_alert_dialog_show", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _parent_maybe)
+        nothing
+    end
     function AlternativeTrigger_new(_first::GtkShortcutTrigger, _second::GtkShortcutTrigger)
         _first = GLib.glib_ref(_first)
         _second = GLib.glib_ref(_second)
@@ -1443,9 +1523,8 @@ $(Expr(:toplevel, quote
         ret2 = GtkButtonLeaf(ret, false)
         ret2
     end
-    function Button_new_from_icon_name(_icon_name::Maybe(Union{AbstractString, Symbol}))
-        _icon_name_maybe = nothing_to_null(_icon_name)
-        ret = ccall(("gtk_button_new_from_icon_name", libgtk4), Ptr{GObject}, (Cstring,), _icon_name_maybe)
+    function Button_new_from_icon_name(_icon_name::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_button_new_from_icon_name", libgtk4), Ptr{GObject}, (Cstring,), _icon_name)
         ret2 = GtkButtonLeaf(ret, false)
         ret2
     end
@@ -2188,6 +2267,88 @@ $(Expr(:toplevel, quote
         ret2 = GtkColorChooserWidgetLeaf(ret, false)
         ret2
     end
+    function ColorDialog_new()
+        ret = ccall(("gtk_color_dialog_new", libgtk4), Ptr{GObject}, ())
+        ret2 = GtkColorDialogLeaf(ret, true)
+        ret2
+    end
+    function choose_rgba(instance::GtkColorDialog, _parent::Maybe(GtkWindow), _initial_color::Maybe(Union{GdkRGBA, Ref{_GdkRGBA}}), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _initial_color_maybe = nothing_to_null(_initial_color)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_color_dialog_choose_rgba", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRGBA}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _initial_color_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function choose_rgba_finish(instance::GtkColorDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_color_dialog_choose_rgba_finish", libgtk4), Ptr{_GdkRGBA}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert_if_not_null(Union{GdkRGBA, Ref{_GdkRGBA}}, ret, true)
+        ret2
+    end
+    function get_modal(instance::GtkColorDialog)
+        ret = ccall(("gtk_color_dialog_get_modal", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_title(instance::GtkColorDialog)
+        ret = ccall(("gtk_color_dialog_get_title", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_with_alpha(instance::GtkColorDialog)
+        ret = ccall(("gtk_color_dialog_get_with_alpha", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_modal(instance::GtkColorDialog, _modal::Bool)
+        ret = ccall(("gtk_color_dialog_set_modal", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _modal)
+        nothing
+    end
+    function set_title(instance::GtkColorDialog, _title::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_color_dialog_set_title", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _title)
+        nothing
+    end
+    function set_with_alpha(instance::GtkColorDialog, _with_alpha::Bool)
+        ret = ccall(("gtk_color_dialog_set_with_alpha", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _with_alpha)
+        nothing
+    end
+    function ColorDialogButton_new(_dialog::Maybe(GtkColorDialog))
+        _dialog_maybe = begin
+                if _dialog !== nothing
+                    GLib.glib_ref(_dialog)
+                end
+                nothing_to_null(_dialog)
+            end
+        ret = ccall(("gtk_color_dialog_button_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _dialog_maybe)
+        ret2 = GtkColorDialogButtonLeaf(ret, false)
+        ret2
+    end
+    function get_dialog(instance::GtkColorDialogButton)
+        ret = ccall(("gtk_color_dialog_button_get_dialog", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GtkColorDialog, ret, false)
+        ret2
+    end
+    function get_rgba(instance::GtkColorDialogButton)
+        ret = ccall(("gtk_color_dialog_button_get_rgba", libgtk4), Ptr{_GdkRGBA}, (Ptr{GObject},), instance)
+        ret2 = convert(Union{GdkRGBA, Ref{_GdkRGBA}}, ret, false)
+        ret2
+    end
+    function set_dialog(instance::GtkColorDialogButton, _dialog::GtkColorDialog)
+        ret = ccall(("gtk_color_dialog_button_set_dialog", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _dialog)
+        nothing
+    end
+    function set_rgba(instance::GtkColorDialogButton, _color::Union{GdkRGBA, Ref{_GdkRGBA}})
+        ret = ccall(("gtk_color_dialog_button_set_rgba", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRGBA}), instance, _color)
+        nothing
+    end
     function ColumnView_new(_model::Maybe(GtkSelectionModel))
         _model_maybe = begin
                 if _model !== nothing
@@ -2320,6 +2481,11 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GMenuModel, ret, false)
         ret2
     end
+    function get_id(instance::GtkColumnViewColumn)
+        ret = ccall(("gtk_column_view_column_get_id", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
     function get_resizable(instance::GtkColumnViewColumn)
         ret = ccall(("gtk_column_view_column_get_resizable", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -2358,6 +2524,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_column_view_column_set_header_menu", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _menu_maybe)
         nothing
     end
+    function set_id(instance::GtkColumnViewColumn, _id::Maybe(Union{AbstractString, Symbol}))
+        _id_maybe = nothing_to_null(_id)
+        ret = ccall(("gtk_column_view_column_set_id", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _id_maybe)
+        nothing
+    end
     function set_resizable(instance::GtkColumnViewColumn, _resizable::Bool)
         ret = ccall(("gtk_column_view_column_set_resizable", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _resizable)
         nothing
@@ -2375,6 +2546,28 @@ $(Expr(:toplevel, quote
     function set_visible(instance::GtkColumnViewColumn, _visible::Bool)
         ret = ccall(("gtk_column_view_column_set_visible", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visible)
         nothing
+    end
+    function get_n_sort_columns(instance::GtkColumnViewSorter)
+        ret = ccall(("gtk_column_view_sorter_get_n_sort_columns", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_nth_sort_column(instance::GtkColumnViewSorter, _position::Integer)
+        m_sort_order = Ref{UInt32}()
+        ret = ccall(("gtk_column_view_sorter_get_nth_sort_column", libgtk4), Ptr{GObject}, (Ptr{GObject}, UInt32, Ptr{UInt32}), instance, _position, m_sort_order)
+        ret2 = convert_if_not_null(GtkColumnViewColumn, ret, false)
+        _sort_order = m_sort_order[]
+        _sort_order = SortType(_sort_order)
+        (ret2, _sort_order)
+    end
+    function get_primary_sort_column(instance::GtkColumnViewSorter)
+        ret = ccall(("gtk_column_view_sorter_get_primary_sort_column", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GtkColumnViewColumn, ret, false)
+        ret2
+    end
+    function get_primary_sort_order(instance::GtkColumnViewSorter)
+        ret = ccall(("gtk_column_view_sorter_get_primary_sort_order", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = SortType(ret)
+        ret2
     end
     function ComboBox_new()
         ret = ccall(("gtk_combo_box_new", libgtk4), Ptr{GObject}, ())
@@ -2739,10 +2932,8 @@ $(Expr(:toplevel, quote
         ret2 = GtkCssProviderLeaf(ret, true)
         ret2
     end
-    function load_from_data(instance::GtkCssProvider, _data)
-        _data_arr = convert(Vector{UInt8}, _data)
-        _length = length(_data)
-        ret = ccall(("gtk_css_provider_load_from_data", libgtk4), Nothing, (Ptr{GObject}, Ptr{UInt8}, Int64), instance, _data_arr, _length)
+    function load_from_data(instance::GtkCssProvider, _data::Union{AbstractString, Symbol}, _length::Integer)
+        ret = ccall(("gtk_css_provider_load_from_data", libgtk4), Nothing, (Ptr{GObject}, Cstring, Int64), instance, _data, _length)
         nothing
     end
     function load_from_file(instance::GtkCssProvider, _file::GFile)
@@ -3068,6 +3259,11 @@ $(Expr(:toplevel, quote
     end
     function get_current_drop(instance::GtkDropTarget)
         ret = ccall(("gtk_drop_target_get_current_drop", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkDrop, ret, false)
+        ret2
+    end
+    function get_drop(instance::GtkDropTarget)
+        ret = ccall(("gtk_drop_target_get_drop", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GdkDrop, ret, false)
         ret2
     end
@@ -3865,6 +4061,188 @@ $(Expr(:toplevel, quote
         ret2 = GtkFileChooserWidgetLeaf(ret, false)
         ret2
     end
+    function FileDialog_new()
+        ret = ccall(("gtk_file_dialog_new", libgtk4), Ptr{GObject}, ())
+        ret2 = GtkFileDialogLeaf(ret, true)
+        ret2
+    end
+    function get_accept_label(instance::GtkFileDialog)
+        ret = ccall(("gtk_file_dialog_get_accept_label", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_default_filter(instance::GtkFileDialog)
+        ret = ccall(("gtk_file_dialog_get_default_filter", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GtkFileFilter, ret, false)
+        ret2
+    end
+    function get_filters(instance::GtkFileDialog)
+        ret = ccall(("gtk_file_dialog_get_filters", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, false)
+        ret2
+    end
+    function get_initial_file(instance::GtkFileDialog)
+        ret = ccall(("gtk_file_dialog_get_initial_file", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, false)
+        ret2
+    end
+    function get_initial_folder(instance::GtkFileDialog)
+        ret = ccall(("gtk_file_dialog_get_initial_folder", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, false)
+        ret2
+    end
+    function get_initial_name(instance::GtkFileDialog)
+        ret = ccall(("gtk_file_dialog_get_initial_name", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_modal(instance::GtkFileDialog)
+        ret = ccall(("gtk_file_dialog_get_modal", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_title(instance::GtkFileDialog)
+        ret = ccall(("gtk_file_dialog_get_title", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function open(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_dialog_open", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function open_finish(instance::GtkFileDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_file_dialog_open_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function open_multiple(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_dialog_open_multiple", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function open_multiple_finish(instance::GtkFileDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_file_dialog_open_multiple_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function save(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_dialog_save", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function save_finish(instance::GtkFileDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_file_dialog_save_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function select_folder(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_dialog_select_folder", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function select_folder_finish(instance::GtkFileDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_file_dialog_select_folder_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function select_multiple_folders(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_dialog_select_multiple_folders", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function select_multiple_folders_finish(instance::GtkFileDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_file_dialog_select_multiple_folders_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function set_accept_label(instance::GtkFileDialog, _accept_label::Maybe(Union{AbstractString, Symbol}))
+        _accept_label_maybe = nothing_to_null(_accept_label)
+        ret = ccall(("gtk_file_dialog_set_accept_label", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _accept_label_maybe)
+        nothing
+    end
+    function set_default_filter(instance::GtkFileDialog, _filter::Maybe(GtkFileFilter))
+        _filter_maybe = nothing_to_null(_filter)
+        ret = ccall(("gtk_file_dialog_set_default_filter", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _filter_maybe)
+        nothing
+    end
+    function set_filters(instance::GtkFileDialog, _filters::GListModel)
+        ret = ccall(("gtk_file_dialog_set_filters", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _filters)
+        nothing
+    end
+    function set_initial_file(instance::GtkFileDialog, _file::Maybe(GFile))
+        _file_maybe = nothing_to_null(_file)
+        ret = ccall(("gtk_file_dialog_set_initial_file", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _file_maybe)
+        nothing
+    end
+    function set_initial_folder(instance::GtkFileDialog, _folder::Maybe(GFile))
+        _folder_maybe = nothing_to_null(_folder)
+        ret = ccall(("gtk_file_dialog_set_initial_folder", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _folder_maybe)
+        nothing
+    end
+    function set_initial_name(instance::GtkFileDialog, _name::Maybe(Union{AbstractString, Symbol}))
+        _name_maybe = nothing_to_null(_name)
+        ret = ccall(("gtk_file_dialog_set_initial_name", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _name_maybe)
+        nothing
+    end
+    function set_modal(instance::GtkFileDialog, _modal::Bool)
+        ret = ccall(("gtk_file_dialog_set_modal", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _modal)
+        nothing
+    end
+    function set_title(instance::GtkFileDialog, _title::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_file_dialog_set_title", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _title)
+        nothing
+    end
     function FileFilter_new()
         ret = ccall(("gtk_file_filter_new", libgtk4), Ptr{GObject}, ())
         ret2 = GtkFileFilterLeaf(ret, true)
@@ -3914,6 +4292,62 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_file_filter_to_gvariant", libgtk4), Ptr{GVariant}, (Ptr{GObject},), instance)
         ret2 = convert(GVariant, ret)
         ret2
+    end
+    function FileLauncher_new(_file::Maybe(GFile))
+        _file_maybe = nothing_to_null(_file)
+        ret = ccall(("gtk_file_launcher_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _file_maybe)
+        ret2 = GtkFileLauncherLeaf(ret, true)
+        ret2
+    end
+    function get_file(instance::GtkFileLauncher)
+        ret = ccall(("gtk_file_launcher_get_file", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, false)
+        ret2
+    end
+    function launch(instance::GtkFileLauncher, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_launcher_launch", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function launch_finish(instance::GtkFileLauncher, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_file_launcher_launch_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function open_containing_folder(instance::GtkFileLauncher, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_launcher_open_containing_folder", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function open_containing_folder_finish(instance::GtkFileLauncher, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_file_launcher_open_containing_folder_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_file(instance::GtkFileLauncher, _file::Maybe(GFile))
+        _file_maybe = nothing_to_null(_file)
+        ret = ccall(("gtk_file_launcher_set_file", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _file_maybe)
+        nothing
     end
     function changed(instance::GtkFilter, _change)
         ret = ccall(("gtk_filter_changed", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _change)
@@ -4278,6 +4712,227 @@ $(Expr(:toplevel, quote
         ret2 = GtkFontChooserWidgetLeaf(ret, false)
         ret2
     end
+    function FontDialog_new()
+        ret = ccall(("gtk_font_dialog_new", libgtk4), Ptr{GObject}, ())
+        ret2 = GtkFontDialogLeaf(ret, true)
+        ret2
+    end
+    function choose_face(instance::GtkFontDialog, _parent::Maybe(GtkWindow), _initial_value::Maybe(PangoFontFace), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _initial_value_maybe = nothing_to_null(_initial_value)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_font_dialog_choose_face", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _initial_value_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function choose_face_finish(instance::GtkFontDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_font_dialog_choose_face_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert_if_not_null(PangoFontFace, ret, true)
+        ret2
+    end
+    function choose_family(instance::GtkFontDialog, _parent::Maybe(GtkWindow), _initial_value::Maybe(PangoFontFamily), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _initial_value_maybe = nothing_to_null(_initial_value)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_font_dialog_choose_family", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _initial_value_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function choose_family_finish(instance::GtkFontDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_font_dialog_choose_family_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert_if_not_null(PangoFontFamily, ret, true)
+        ret2
+    end
+    function choose_font(instance::GtkFontDialog, _parent::Maybe(GtkWindow), _initial_value::Maybe(PangoFontDescription), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _initial_value_maybe = nothing_to_null(_initial_value)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_font_dialog_choose_font", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _initial_value_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function choose_font_and_features(instance::GtkFontDialog, _parent::Maybe(GtkWindow), _initial_value::Maybe(PangoFontDescription), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _initial_value_maybe = nothing_to_null(_initial_value)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_font_dialog_choose_font_and_features", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _initial_value_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function choose_font_and_features_finish(instance::GtkFontDialog, _result::GAsyncResult)
+        m_font_desc = Ref{Ptr{PangoFontDescription}}()
+        m_font_features = Ref{Cstring}()
+        m_language = Ref{Ptr{PangoLanguage}}()
+        err = err_buf()
+        ret = ccall(("gtk_font_dialog_choose_font_and_features_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{PangoFontDescription}}, Ptr{Cstring}, Ptr{Ptr{PangoLanguage}}, Ptr{Ptr{GError}}), instance, _result, m_font_desc, m_font_features, m_language, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        _font_desc = m_font_desc[]
+        _font_desc = convert(PangoFontDescription, _font_desc, false)
+        _font_features = m_font_features[]
+        _font_features = string_or_nothing(_font_features, false)
+        _language = m_language[]
+        _language = convert(PangoLanguage, _language, false)
+        (ret2, _font_desc, _font_features, _language)
+    end
+    function choose_font_finish(instance::GtkFontDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_font_dialog_choose_font_finish", libgtk4), Ptr{PangoFontDescription}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert_if_not_null(PangoFontDescription, ret, true)
+        ret2
+    end
+    function get_filter(instance::GtkFontDialog)
+        ret = ccall(("gtk_font_dialog_get_filter", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GtkFilter, ret, false)
+        ret2
+    end
+    function get_font_map(instance::GtkFontDialog)
+        ret = ccall(("gtk_font_dialog_get_font_map", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(PangoFontMap, ret, false)
+        ret2
+    end
+    function get_language(instance::GtkFontDialog)
+        ret = ccall(("gtk_font_dialog_get_language", libgtk4), Ptr{PangoLanguage}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(PangoLanguage, ret, true)
+        ret2
+    end
+    function get_modal(instance::GtkFontDialog)
+        ret = ccall(("gtk_font_dialog_get_modal", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_title(instance::GtkFontDialog)
+        ret = ccall(("gtk_font_dialog_get_title", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function set_filter(instance::GtkFontDialog, _filter::Maybe(GtkFilter))
+        _filter_maybe = nothing_to_null(_filter)
+        ret = ccall(("gtk_font_dialog_set_filter", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _filter_maybe)
+        nothing
+    end
+    function set_font_map(instance::GtkFontDialog, _fontmap::Maybe(PangoFontMap))
+        _fontmap_maybe = nothing_to_null(_fontmap)
+        ret = ccall(("gtk_font_dialog_set_font_map", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _fontmap_maybe)
+        nothing
+    end
+    function set_language(instance::GtkFontDialog, _language::PangoLanguage)
+        ret = ccall(("gtk_font_dialog_set_language", libgtk4), Nothing, (Ptr{GObject}, Ptr{PangoLanguage}), instance, _language)
+        nothing
+    end
+    function set_modal(instance::GtkFontDialog, _modal::Bool)
+        ret = ccall(("gtk_font_dialog_set_modal", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _modal)
+        nothing
+    end
+    function set_title(instance::GtkFontDialog, _title::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_font_dialog_set_title", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _title)
+        nothing
+    end
+    function FontDialogButton_new(_dialog::Maybe(GtkFontDialog))
+        _dialog_maybe = begin
+                if _dialog !== nothing
+                    GLib.glib_ref(_dialog)
+                end
+                nothing_to_null(_dialog)
+            end
+        ret = ccall(("gtk_font_dialog_button_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _dialog_maybe)
+        ret2 = GtkFontDialogButtonLeaf(ret, false)
+        ret2
+    end
+    function get_dialog(instance::GtkFontDialogButton)
+        ret = ccall(("gtk_font_dialog_button_get_dialog", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GtkFontDialog, ret, false)
+        ret2
+    end
+    function get_font_desc(instance::GtkFontDialogButton)
+        ret = ccall(("gtk_font_dialog_button_get_font_desc", libgtk4), Ptr{PangoFontDescription}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(PangoFontDescription, ret, false)
+        ret2
+    end
+    function get_font_features(instance::GtkFontDialogButton)
+        ret = ccall(("gtk_font_dialog_button_get_font_features", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_language(instance::GtkFontDialogButton)
+        ret = ccall(("gtk_font_dialog_button_get_language", libgtk4), Ptr{PangoLanguage}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(PangoLanguage, ret, true)
+        ret2
+    end
+    function get_level(instance::GtkFontDialogButton)
+        ret = ccall(("gtk_font_dialog_button_get_level", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = FontLevel(ret)
+        ret2
+    end
+    function get_use_font(instance::GtkFontDialogButton)
+        ret = ccall(("gtk_font_dialog_button_get_use_font", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_use_size(instance::GtkFontDialogButton)
+        ret = ccall(("gtk_font_dialog_button_get_use_size", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_dialog(instance::GtkFontDialogButton, _dialog::GtkFontDialog)
+        ret = ccall(("gtk_font_dialog_button_set_dialog", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _dialog)
+        nothing
+    end
+    function set_font_desc(instance::GtkFontDialogButton, _font_desc::PangoFontDescription)
+        ret = ccall(("gtk_font_dialog_button_set_font_desc", libgtk4), Nothing, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _font_desc)
+        nothing
+    end
+    function set_font_features(instance::GtkFontDialogButton, _font_features::Maybe(Union{AbstractString, Symbol}))
+        _font_features_maybe = nothing_to_null(_font_features)
+        ret = ccall(("gtk_font_dialog_button_set_font_features", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _font_features_maybe)
+        nothing
+    end
+    function set_language(instance::GtkFontDialogButton, _language::Maybe(PangoLanguage))
+        _language_maybe = nothing_to_null(_language)
+        ret = ccall(("gtk_font_dialog_button_set_language", libgtk4), Nothing, (Ptr{GObject}, Ptr{PangoLanguage}), instance, _language_maybe)
+        nothing
+    end
+    function set_level(instance::GtkFontDialogButton, _level)
+        ret = ccall(("gtk_font_dialog_button_set_level", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _level)
+        nothing
+    end
+    function set_use_font(instance::GtkFontDialogButton, _use_font::Bool)
+        ret = ccall(("gtk_font_dialog_button_set_use_font", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_font)
+        nothing
+    end
+    function set_use_size(instance::GtkFontDialogButton, _use_size::Bool)
+        ret = ccall(("gtk_font_dialog_button_set_use_size", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_size)
+        nothing
+    end
     function Frame_new(_label::Maybe(Union{AbstractString, Symbol}))
         _label_maybe = nothing_to_null(_label)
         ret = ccall(("gtk_frame_new", libgtk4), Ptr{GObject}, (Cstring,), _label_maybe)
@@ -4513,9 +5168,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_drag_get_offset", libgtk4), Cint, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_x, m_y)
         ret2 = convert(Bool, ret)
         _x = m_x[]
-        _x = convert(Maybe(Real), _x)
         _y = m_y[]
-        _y = convert(Maybe(Real), _y)
         (ret2, _x, _y)
     end
     function get_start_point(instance::GtkGestureDrag)
@@ -4524,9 +5177,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_drag_get_start_point", libgtk4), Cint, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_x, m_y)
         ret2 = convert(Bool, ret)
         _x = m_x[]
-        _x = convert(Maybe(Real), _x)
         _y = m_y[]
-        _y = convert(Maybe(Real), _y)
         (ret2, _x, _y)
     end
     function GestureLongPress_new()
@@ -4616,6 +5267,15 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_stylus_get_device_tool", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GdkDeviceTool, ret, false)
         ret2
+    end
+    function get_stylus_only(instance::GtkGestureStylus)
+        ret = ccall(("gtk_gesture_stylus_get_stylus_only", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_stylus_only(instance::GtkGestureStylus, _stylus_only::Bool)
+        ret = ccall(("gtk_gesture_stylus_set_stylus_only", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _stylus_only)
+        nothing
     end
     function GestureSwipe_new()
         ret = ccall(("gtk_gesture_swipe_new", libgtk4), Ptr{GObject}, ())
@@ -4981,6 +5641,16 @@ $(Expr(:toplevel, quote
         _cursor_pos = m_cursor_pos[]
         (_str, _attrs, _cursor_pos)
     end
+    function get_surrounding(instance::GtkIMContext)
+        m_text = Ref{Cstring}()
+        m_cursor_index = Ref{Int32}()
+        ret = ccall(("gtk_im_context_get_surrounding", libgtk4), Cint, (Ptr{GObject}, Ptr{Cstring}, Ptr{Int32}), instance, m_text, m_cursor_index)
+        ret2 = convert(Bool, ret)
+        _text = m_text[]
+        _text = string_or_nothing(_text, true)
+        _cursor_index = m_cursor_index[]
+        (ret2, _text, _cursor_index)
+    end
     function get_surrounding_with_selection(instance::GtkIMContext)
         m_text = Ref{Cstring}()
         m_cursor_index = Ref{Int32}()
@@ -5004,6 +5674,10 @@ $(Expr(:toplevel, quote
     end
     function set_cursor_location(instance::GtkIMContext, _area::Union{GdkRectangle, Ref{_GdkRectangle}})
         ret = ccall(("gtk_im_context_set_cursor_location", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, _area)
+        nothing
+    end
+    function set_surrounding(instance::GtkIMContext, _text::Union{AbstractString, Symbol}, _len::Integer, _cursor_index::Integer)
+        ret = ccall(("gtk_im_context_set_surrounding", libgtk4), Nothing, (Ptr{GObject}, Cstring, Int32, Int32), instance, _text, _len, _cursor_index)
         nothing
     end
     function set_surrounding_with_selection(instance::GtkIMContext, _text::Union{AbstractString, Symbol}, _len::Integer, _cursor_index::Integer, _anchor_index::Integer)
@@ -6764,6 +7438,11 @@ $(Expr(:toplevel, quote
         ret2 = GtkMenuButtonLeaf(ret, false)
         ret2
     end
+    function get_active(instance::GtkMenuButton)
+        ret = ccall(("gtk_menu_button_get_active", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function get_always_show_arrow(instance::GtkMenuButton)
         ret = ccall(("gtk_menu_button_get_always_show_arrow", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -6820,6 +7499,10 @@ $(Expr(:toplevel, quote
     end
     function popup(instance::GtkMenuButton)
         ret = ccall(("gtk_menu_button_popup", libgtk4), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function set_active(instance::GtkMenuButton, _active::Bool)
+        ret = ccall(("gtk_menu_button_set_active", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _active)
         nothing
     end
     function set_always_show_arrow(instance::GtkMenuButton, _always_show_arrow::Bool)
@@ -7658,6 +8341,11 @@ $(Expr(:toplevel, quote
         ret2 = GLib.find_leaf_type_if_not_null(ret, false)
         ret2
     end
+    function get_keep_aspect_ratio(instance::GtkPicture)
+        ret = ccall(("gtk_picture_get_keep_aspect_ratio", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function get_paintable(instance::GtkPicture)
         ret = ccall(("gtk_picture_get_paintable", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = GLib.find_leaf_type_if_not_null(ret, false)
@@ -7684,6 +8372,10 @@ $(Expr(:toplevel, quote
     function set_filename(instance::GtkPicture, _filename::Maybe(Union{AbstractString, Symbol}))
         _filename_maybe = nothing_to_null(_filename)
         ret = ccall(("gtk_picture_set_filename", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _filename_maybe)
+        nothing
+    end
+    function set_keep_aspect_ratio(instance::GtkPicture, _keep_aspect_ratio::Bool)
+        ret = ccall(("gtk_picture_set_keep_aspect_ratio", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _keep_aspect_ratio)
         nothing
     end
     function set_paintable(instance::GtkPicture, _paintable::Maybe(GdkPaintable))
@@ -7736,9 +8428,7 @@ $(Expr(:toplevel, quote
         m_y_offset = Ref{Int32}()
         ret = ccall(("gtk_popover_get_offset", libgtk4), Nothing, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, m_x_offset, m_y_offset)
         _x_offset = m_x_offset[]
-        _x_offset = convert(Maybe(Integer), _x_offset)
         _y_offset = m_y_offset[]
-        _y_offset = convert(Maybe(Integer), _y_offset)
         (_x_offset, _y_offset)
     end
     function get_pointing_to(instance::GtkPopover)
@@ -8489,6 +9179,11 @@ $(Expr(:toplevel, quote
         ret2 = GtkScaleButtonLeaf(ret, false)
         ret2
     end
+    function get_active(instance::GtkScaleButton)
+        ret = ccall(("gtk_scale_button_get_active", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function get_adjustment(instance::GtkScaleButton)
         ret = ccall(("gtk_scale_button_get_adjustment", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GtkAdjustment, ret, false)
@@ -8747,6 +9442,11 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GtkWidget, ret, false)
         ret2
     end
+    function get_placeholder_text(instance::GtkSearchEntry)
+        ret = ccall(("gtk_search_entry_get_placeholder_text", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
     function get_search_delay(instance::GtkSearchEntry)
         ret = ccall(("gtk_search_entry_get_search_delay", libgtk4), UInt32, (Ptr{GObject},), instance)
         ret
@@ -8754,6 +9454,11 @@ $(Expr(:toplevel, quote
     function set_key_capture_widget(instance::GtkSearchEntry, _widget::Maybe(GtkWidget))
         _widget_maybe = nothing_to_null(_widget)
         ret = ccall(("gtk_search_entry_set_key_capture_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget_maybe)
+        nothing
+    end
+    function set_placeholder_text(instance::GtkSearchEntry, _text::Maybe(Union{AbstractString, Symbol}))
+        _text_maybe = nothing_to_null(_text)
+        ret = ccall(("gtk_search_entry_set_placeholder_text", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _text_maybe)
         nothing
     end
     function set_search_delay(instance::GtkSearchEntry, _delay::Integer)
@@ -9114,6 +9819,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_append_repeating_radial_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _hradius, _vradius, _start, _end, _stops_arr, _n_stops)
         nothing
     end
+    function append_scaled_texture(instance::GtkSnapshot, _texture::GdkTexture, _filter, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+        ret = ccall(("gtk_snapshot_append_scaled_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{_GrapheneRect}), instance, _texture, _filter, _bounds)
+        nothing
+    end
     function append_texture(instance::GtkSnapshot, _texture::GdkTexture, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
         ret = ccall(("gtk_snapshot_append_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}), instance, _texture, _bounds)
         nothing
@@ -9152,6 +9861,10 @@ $(Expr(:toplevel, quote
     end
     function push_gl_shader(instance::GtkSnapshot, _shader::GskGLShader, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _take_args::GBytes)
         ret = ccall(("gtk_snapshot_push_gl_shader", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{GBytes}), instance, _shader, _bounds, _take_args)
+        nothing
+    end
+    function push_mask(instance::GtkSnapshot, _mask_mode)
+        ret = ccall(("gtk_snapshot_push_mask", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _mask_mode)
         nothing
     end
     function push_opacity(instance::GtkSnapshot, _opacity::Real)
@@ -9768,6 +10481,11 @@ $(Expr(:toplevel, quote
         ret2 = GtkStringSorterLeaf(ret, true)
         ret2
     end
+    function get_collation(instance::GtkStringSorter)
+        ret = ccall(("gtk_string_sorter_get_collation", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = Collation(ret)
+        ret2
+    end
     function get_expression(instance::GtkStringSorter)
         ret = ccall(("gtk_string_sorter_get_expression", libgtk4), Ptr{GtkExpression}, (Ptr{GObject},), instance)
         ret2 = convert(GtkExpression, ret)
@@ -9777,6 +10495,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_string_sorter_get_ignore_case", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function set_collation(instance::GtkStringSorter, _collation)
+        ret = ccall(("gtk_string_sorter_set_collation", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _collation)
+        nothing
     end
     function set_expression(instance::GtkStringSorter, _expression::Maybe(GtkExpression))
         _expression_maybe = nothing_to_null(_expression)
@@ -10941,6 +11663,16 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GtkWidget, ret, false)
         ret2
     end
+    function get_hide_expander(instance::GtkTreeExpander)
+        ret = ccall(("gtk_tree_expander_get_hide_expander", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_indent_for_depth(instance::GtkTreeExpander)
+        ret = ccall(("gtk_tree_expander_get_indent_for_depth", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function get_indent_for_icon(instance::GtkTreeExpander)
         ret = ccall(("gtk_tree_expander_get_indent_for_icon", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -10959,6 +11691,14 @@ $(Expr(:toplevel, quote
     function set_child(instance::GtkTreeExpander, _child::Maybe(GtkWidget))
         _child_maybe = nothing_to_null(_child)
         ret = ccall(("gtk_tree_expander_set_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child_maybe)
+        nothing
+    end
+    function set_hide_expander(instance::GtkTreeExpander, _hide_expander::Bool)
+        ret = ccall(("gtk_tree_expander_set_hide_expander", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _hide_expander)
+        nothing
+    end
+    function set_indent_for_depth(instance::GtkTreeExpander, _indent_for_depth::Bool)
+        ret = ccall(("gtk_tree_expander_set_indent_for_depth", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _indent_for_depth)
         nothing
     end
     function set_indent_for_icon(instance::GtkTreeExpander, _indent_for_icon::Bool)
@@ -12062,6 +12802,42 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_view_column_set_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget_maybe)
         nothing
     end
+    function UriLauncher_new(_uri::Maybe(Union{AbstractString, Symbol}))
+        _uri_maybe = nothing_to_null(_uri)
+        ret = ccall(("gtk_uri_launcher_new", libgtk4), Ptr{GObject}, (Cstring,), _uri_maybe)
+        ret2 = GtkUriLauncherLeaf(ret, true)
+        ret2
+    end
+    function get_uri(instance::GtkUriLauncher)
+        ret = ccall(("gtk_uri_launcher_get_uri", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function launch(instance::GtkUriLauncher, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_uri_launcher_launch", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function launch_finish(instance::GtkUriLauncher, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_uri_launcher_launch_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_uri(instance::GtkUriLauncher, _uri::Maybe(Union{AbstractString, Symbol}))
+        _uri_maybe = nothing_to_null(_uri)
+        ret = ccall(("gtk_uri_launcher_set_uri", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _uri_maybe)
+        nothing
+    end
     function Video_new()
         ret = ccall(("gtk_video_new", libgtk4), Ptr{GObject}, ())
         ret2 = GtkVideoLeaf(ret, false)
@@ -12318,6 +13094,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_widget_get_clipboard", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GdkClipboard, ret, false)
         ret2
+    end
+    function get_color(instance::GtkWidget)
+        m_color = Ref{_GdkRGBA}()
+        ret = ccall(("gtk_widget_get_color", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRGBA}), instance, m_color)
+        _color = m_color[]
+        _color
     end
     function get_css_classes(instance::GtkWidget)
         ret = ccall(("gtk_widget_get_css_classes", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
@@ -13310,9 +14092,47 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_window_handle_set_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child_maybe)
         nothing
     end
+    function get_accessible_parent(instance::GtkAccessible)
+        ret = ccall(("gtk_accessible_get_accessible_parent", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
     function get_accessible_role(instance::GtkAccessible)
         ret = ccall(("gtk_accessible_get_accessible_role", libgtk4), UInt32, (Ptr{GObject},), instance)
         ret2 = AccessibleRole(ret)
+        ret2
+    end
+    function get_at_context(instance::GtkAccessible)
+        ret = ccall(("gtk_accessible_get_at_context", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GtkATContext, ret, true)
+        ret2
+    end
+    function get_bounds(instance::GtkAccessible)
+        m_x = Ref{Int32}()
+        m_y = Ref{Int32}()
+        m_width = Ref{Int32}()
+        m_height = Ref{Int32}()
+        ret = ccall(("gtk_accessible_get_bounds", libgtk4), Cint, (Ptr{GObject}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}, Ptr{Int32}), instance, m_x, m_y, m_width, m_height)
+        ret2 = convert(Bool, ret)
+        _x = m_x[]
+        _y = m_y[]
+        _width = m_width[]
+        _height = m_height[]
+        (ret2, _x, _y, _width, _height)
+    end
+    function get_first_accessible_child(instance::GtkAccessible)
+        ret = ccall(("gtk_accessible_get_first_accessible_child", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function get_next_accessible_sibling(instance::GtkAccessible)
+        ret = ccall(("gtk_accessible_get_next_accessible_sibling", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function get_platform_state(instance::GtkAccessible, _state)
+        ret = ccall(("gtk_accessible_get_platform_state", libgtk4), Cint, (Ptr{GObject}, UInt32), instance, _state)
+        ret2 = convert(Bool, ret)
         ret2
     end
     function reset_property(instance::GtkAccessible, _property)
@@ -13325,6 +14145,17 @@ $(Expr(:toplevel, quote
     end
     function reset_state(instance::GtkAccessible, _state)
         ret = ccall(("gtk_accessible_reset_state", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _state)
+        nothing
+    end
+    function set_accessible_parent(instance::GtkAccessible, _parent::Maybe(GtkAccessible), _next_sibling::Maybe(GtkAccessible))
+        _parent_maybe = nothing_to_null(_parent)
+        _next_sibling_maybe = nothing_to_null(_next_sibling)
+        ret = ccall(("gtk_accessible_set_accessible_parent", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), instance, _parent_maybe, _next_sibling_maybe)
+        nothing
+    end
+    function update_next_accessible_sibling(instance::GtkAccessible, _new_sibling::Maybe(GtkAccessible))
+        _new_sibling_maybe = nothing_to_null(_new_sibling)
+        ret = ccall(("gtk_accessible_update_next_accessible_sibling", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _new_sibling_maybe)
         nothing
     end
     function update_property(instance::GtkAccessible, _properties, _values)
@@ -13465,6 +14296,11 @@ $(Expr(:toplevel, quote
     end
     function delegate_set_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
         ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function delegate_get_accessible_platform_state(instance::GtkEditable, _state)
+        ret = ccall(("gtk_editable_delegate_get_accessible_platform_state", libgtk4), Cint, (Ptr{GObject}, UInt32), instance, _state)
         ret2 = convert(Bool, ret)
         ret2
     end

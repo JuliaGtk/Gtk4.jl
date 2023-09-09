@@ -20,7 +20,13 @@ $(Expr(:toplevel, quote
                 end
         end
         begin
-            @cenum RenderNodeType::Int32 RenderNodeType_NOT_A_RENDER_NODE = 0 RenderNodeType_CONTAINER_NODE = 1 RenderNodeType_CAIRO_NODE = 2 RenderNodeType_COLOR_NODE = 3 RenderNodeType_LINEAR_GRADIENT_NODE = 4 RenderNodeType_REPEATING_LINEAR_GRADIENT_NODE = 5 RenderNodeType_RADIAL_GRADIENT_NODE = 6 RenderNodeType_REPEATING_RADIAL_GRADIENT_NODE = 7 RenderNodeType_CONIC_GRADIENT_NODE = 8 RenderNodeType_BORDER_NODE = 9 RenderNodeType_TEXTURE_NODE = 10 RenderNodeType_INSET_SHADOW_NODE = 11 RenderNodeType_OUTSET_SHADOW_NODE = 12 RenderNodeType_TRANSFORM_NODE = 13 RenderNodeType_OPACITY_NODE = 14 RenderNodeType_COLOR_MATRIX_NODE = 15 RenderNodeType_REPEAT_NODE = 16 RenderNodeType_CLIP_NODE = 17 RenderNodeType_ROUNDED_CLIP_NODE = 18 RenderNodeType_SHADOW_NODE = 19 RenderNodeType_BLEND_NODE = 20 RenderNodeType_CROSS_FADE_NODE = 21 RenderNodeType_TEXT_NODE = 22 RenderNodeType_BLUR_NODE = 23 RenderNodeType_DEBUG_NODE = 24 RenderNodeType_GL_SHADER_NODE = 25
+            @cenum MaskMode::Int32 MaskMode_ALPHA = 0 MaskMode_INVERTED_ALPHA = 1 MaskMode_LUMINANCE = 2 MaskMode_INVERTED_LUMINANCE = 3
+            (GLib.g_type(::Type{T}) where T <: MaskMode) = begin
+                    ccall(("gsk_mask_mode_get_type", libgtk4), GType, ())
+                end
+        end
+        begin
+            @cenum RenderNodeType::Int32 RenderNodeType_NOT_A_RENDER_NODE = 0 RenderNodeType_CONTAINER_NODE = 1 RenderNodeType_CAIRO_NODE = 2 RenderNodeType_COLOR_NODE = 3 RenderNodeType_LINEAR_GRADIENT_NODE = 4 RenderNodeType_REPEATING_LINEAR_GRADIENT_NODE = 5 RenderNodeType_RADIAL_GRADIENT_NODE = 6 RenderNodeType_REPEATING_RADIAL_GRADIENT_NODE = 7 RenderNodeType_CONIC_GRADIENT_NODE = 8 RenderNodeType_BORDER_NODE = 9 RenderNodeType_TEXTURE_NODE = 10 RenderNodeType_INSET_SHADOW_NODE = 11 RenderNodeType_OUTSET_SHADOW_NODE = 12 RenderNodeType_TRANSFORM_NODE = 13 RenderNodeType_OPACITY_NODE = 14 RenderNodeType_COLOR_MATRIX_NODE = 15 RenderNodeType_REPEAT_NODE = 16 RenderNodeType_CLIP_NODE = 17 RenderNodeType_ROUNDED_CLIP_NODE = 18 RenderNodeType_SHADOW_NODE = 19 RenderNodeType_BLEND_NODE = 20 RenderNodeType_CROSS_FADE_NODE = 21 RenderNodeType_TEXT_NODE = 22 RenderNodeType_BLUR_NODE = 23 RenderNodeType_DEBUG_NODE = 24 RenderNodeType_GL_SHADER_NODE = 25 RenderNodeType_TEXTURE_SCALE_NODE = 26 RenderNodeType_MASK_NODE = 27
             (GLib.g_type(::Type{T}) where T <: RenderNodeType) = begin
                     ccall(("gsk_render_node_type_get_type", libgtk4), GType, ())
                 end
@@ -46,6 +52,7 @@ $(Expr(:toplevel, quote
         @doc "The blend modes available for render nodes.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/enum.BlendMode.html)." BlendMode
         @doc "The corner indices used by `GskRoundedRect`.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/enum.Corner.html)." Corner
         @doc "This defines the types of the uniforms that `GskGLShaders`\ndeclare.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/enum.GLUniformType.html)." GLUniformType
+        @doc "The mask modes available for mask nodes.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/enum.MaskMode.html)." MaskMode
         @doc "The type of a node determines what the node is rendering.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/enum.RenderNodeType.html)." RenderNodeType
         @doc "The filters used when scaling texture data.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/enum.ScalingFilter.html)." ScalingFilter
         @doc "Errors that can happen during (de)serialization.\n \nDetails can be found in the [GTK docs](https://docs.gtk.org/gsk4/enum.SerializationError.html)." SerializationError

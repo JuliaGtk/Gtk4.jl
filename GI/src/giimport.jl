@@ -345,13 +345,24 @@ function decl(interfaceinfo::GIInterfaceInfo)
 end
 
 function get_closure(callbackinfo::GICallbackInfo)
-    closure = -1
-    for arg in get_args(callbackinfo)
-        if get_closure(arg) > -1
-            closure = get_closure(arg)
-        end
+    args = get_args(callbackinfo)
+    if length(args) == 0
+        return -1
     end
-    return closure
+    if endswith(string(get_name(args[end])),"data") == true
+        return length(args)-1
+    else
+        return -1
+    end
+    #i=findfirst(x->endswith(x,"data"),string.(get_name.(get_args(callbackinfo))))
+    #return (i==nothing) ? -1 : i-1
+    #closure = -1
+    #for arg in get_args(callbackinfo)
+    #    if get_closure(arg) > -1
+    #        closure = get_closure(arg)
+    #    end
+    #end
+    #return closure
 end
 
 ## Callback output
@@ -660,8 +671,9 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
     retctyp=extract_type(rettyp).ctype
     # get arg types
     argctypes_arr=[]
-    for (i,arg) in enumerate(get_args(callbackinfo))
-        if i-1 == cclosure
+    args = get_args(callbackinfo)
+    for (i,arg) in enumerate(args)
+        if i == length(args) # we already know there is a closure, and it has to be the last argument
             push!(argctypes_arr,:(Ref{Function}))
         else
             argtyp=get_type(arg)
@@ -906,7 +918,7 @@ function make_ccall(libs::AbstractArray, id, rtype, args)
     make_ccall(slib, id, rtype, args)
 end
 
-function get_constructors(info::Union{GIStructInfo,GIObjectInfo};skiplist=Symbol[],struct_skiplist=Symbol[])
+function get_constructors(info::Union{GIStructInfo,GIObjectInfo};skiplist=Symbol[],struct_skiplist=Symbol[],exclude_deprecated=true)
     methods=get_methods(info)
     name=get_name(info)
     nsstring=get_namespace(info)
@@ -916,7 +928,7 @@ function get_constructors(info::Union{GIStructInfo,GIObjectInfo};skiplist=Symbol
     gskiplist=[Symbol(nsstring,i) for i in struct_skiplist]
     ugskiplist=[Symbol("_",nsstring,i) for i in struct_skiplist]
     for minfo in methods
-        if is_deprecated(minfo) || get_name(minfo) in skiplist
+        if (exclude_deprecated && is_deprecated(minfo)) || get_name(minfo) in skiplist
             continue
         end
         if get_flags(minfo) & GIFunction.IS_CONSTRUCTOR != 0

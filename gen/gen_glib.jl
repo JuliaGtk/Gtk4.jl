@@ -60,7 +60,7 @@ import_as_opaque = [:Date,:Source]
 # These include callbacks or are otherwise currently problematic
 struct_skiplist=vcat(disguised, special, [:Cond,:HashTableIter,:Hook,
     :HookList,:IOChannel,:IOFuncs,
-    :MarkupParser,:MemVTable,:Node,:Once,:OptionGroup,:PollFD,:Private,:Queue,:RWLock,
+    :MarkupParser,:MemVTable,:Node,:Once,:OptionGroup,:PathBuf,:PollFD,:Private,:Queue,:RWLock,
     :RecMutex,:Scanner,
     :TestLogBuffer,:TestLogMsg,:Thread,:ThreadPool,:Tree,:UriParamsIter])
 
