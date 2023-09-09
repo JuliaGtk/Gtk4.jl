@@ -12,7 +12,12 @@ end
 
 function doc_add_link(docstring, l)
     # FIXME: should escape the string in the square brackets because the underscores mess up the markdown formatting
-    "$docstring\n \nDetails can be found in the [GTK docs]($l)."
+    if docstring != ""
+        dc = "$docstring\n \n"
+    else
+        dc = ""
+    end
+    dc*"See the [GTK docs]($l)."
 end
 
 _name_match(n, name)=n["name"]==String(name)
@@ -49,10 +54,15 @@ for (item, xmlitem) in [
     end
 end
 
-function append_const_docs!(exprs, ns, d, c)
+# Pulling the docstrings from the XML is disabled by default due to licensing concerns.
+
+function append_const_docs!(exprs, ns, d, c; incl_text=false)
     for x in c
         dc = GI.doc_const(d,x)
         if dc !== nothing
+            if !incl_text
+                dc = ""
+            end
             dc = GI.doc_const_add_link(dc, x, ns)
             GI.append_doc!(exprs, dc, x)
         end
@@ -60,6 +70,9 @@ function append_const_docs!(exprs, ns, d, c)
     for x in c
         dc = GI.doc_enum(d,x)
         if dc !== nothing
+            if !incl_text
+                dc = ""
+            end
             dc = GI.doc_enum_add_link(dc, x, ns)
             GI.append_doc!(exprs, dc, x)
         end
@@ -67,26 +80,35 @@ function append_const_docs!(exprs, ns, d, c)
     for x in c
         dc = GI.doc_flags(d,x)
         if dc !== nothing
+            if !incl_text
+                dc = ""
+            end
             dc = GI.doc_flags_add_link(dc, x, ns)
             GI.append_doc!(exprs, dc, x)
         end
     end
 end
 
-function append_struc_docs!(exprs, ns, d, c, gins)
+function append_struc_docs!(exprs, ns, d, c, gins; incl_text=false)
     for x in c
         dc = GI.doc_struc(d,x)
         if dc !== nothing
+            if !incl_text
+                dc = ""
+            end
             dc = GI.doc_struc_add_link(dc, x, ns)
             GI.append_doc!(exprs, dc, get_full_name(gins[x]))
         end
     end
 end
 
-function append_object_docs!(exprs, ns, d, c, gins)
+function append_object_docs!(exprs, ns, d, c, gins; incl_text=false)
     for x in c
         dc = GI.doc_object(d,x)
         if dc !== nothing
+            if !incl_text
+                dc = ""
+            end
             dc = GI.doc_object_add_link(dc, x, ns)
             GI.append_doc!(exprs, dc, get_full_name(gins[x]))
         end
