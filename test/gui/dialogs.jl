@@ -26,7 +26,7 @@ dlg = GtkDialog("General dialog",
 show(dlg)
 destroy(dlg)
 
-sleep(0.3) # allow dialogs to time out
+GC.gc() # ensure GtkDialog is really gone before main_window
 
 destroy(main_window)
 
