@@ -192,6 +192,13 @@ end
 
 ## CSS, style
 
+"""
+    GtkCssProvider(data, filename = nothing)
+
+Create a GtkCssProvider object using CSS from a string `data`. If `data` is set to `nothing`, CSS is instead loaded from a file `filename`. If both arguments are `nothing`, an empty GtkCssProvider is returned.
+
+Related GTK functions: [`gtk_css_provider_load_from_path`()]($(gtkdoc_method_url("gtk4","CssProvider","load_from_path"))), [`gtk_css_provider_load_from_data`()]($(gtkdoc_method_url("gtk4","CssProvider","load_from_data")))
+"""
 function GtkCssProvider(data::Union{AbstractString,Nothing}, filename = nothing)
     provider = G_.CssProvider_new()
     if data !== nothing
@@ -223,9 +230,16 @@ function delete!(display::GdkDisplay, provider)
 end
 
 # because of a name collision this is annoying to generate using GI
+"""
+    GtkIconTheme(d::GdkDisplay)
+
+Get the icon theme for a `GdkDisplay`.
+
+Related GTK function: [`gtk_icon_theme_get_for_display`()]($(gtkdoc_method_url("gtk4","IconTheme","get_for_display")))
+"""
 function GtkIconTheme(d::GdkDisplay)
     ret = ccall(("gtk_icon_theme_get_for_display",libgtk4), Ptr{GObject}, (Ptr{GObject},), d)
-    convert(GtkIconTheme, ret, false)
+    GtkIconThemeLeaf(ret, false)
 end
 
 function icon_theme_add_search_path(icon_theme::GtkIconTheme, path::AbstractString)
@@ -234,6 +248,13 @@ end
 
 ## GtkApplication and actions
 
+"""
+    GtkApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE)
+
+Create a `GtkApplication` with DBus id `id` and flags.
+
+Related GTK function: [`gtk_application_new`()]($(gtkdoc_method_url("gtk4","Application","new")))
+"""
 GtkApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
 function push!(app::GtkApplication, win::GtkWindow)
     G_.add_window(app, win)

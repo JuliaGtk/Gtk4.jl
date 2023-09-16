@@ -2,7 +2,8 @@ using Documenter, Gtk4
 
 makedocs(
     format = Documenter.HTML(
-        prettyurls = get(ENV, "CI", nothing) == "true"
+        prettyurls = get(ENV, "CI", nothing) == "true",
+        size_threshold_ignore = ["doc/GLib_reference.md","doc/reference.md","doc/constants_reference.md"]
     ),
     modules = [Gtk4],
     sitename = "Gtk4.jl",
@@ -29,6 +30,7 @@ makedocs(
         "Gtk.jl to Gtk4.jl" => "diff3to4.md",
         "Reference" => ["doc/reference.md",
                         "doc/GLib_reference.md",
+                        "doc/constants_reference.md",
                         "doc/preferences.md"
                     ],
         #"GI Reference" => "doc/GI_reference.md"

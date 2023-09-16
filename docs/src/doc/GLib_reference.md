@@ -27,9 +27,3 @@ Public  = true
 Private = false
 ```
 
-### Constants
-
-```@autodocs
-Modules = [Gtk4.GLib]
-Order   = [:constant]
-```

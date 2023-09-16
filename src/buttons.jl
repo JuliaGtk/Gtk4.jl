@@ -1,10 +1,29 @@
 ## GtkButton
 
+"""
+    GtkButton(w::GtkWidget)
+
+Create a `GtkButton` and add a widget `w` as its child.
+"""
 function GtkButton(w::GtkWidget)
     b = G_.Button_new()
     G_.set_child(b,w)
     b
 end
+
+"""
+    GtkButton(s::Symbol, str::AbstractString)
+
+Create and return a `GtkButton` widget.
+
+If `s` is :label, create a button with a string label.
+
+If `s` is :mnemonic, create a button with a string label, where the first letter preceded by an underscore character defines a mnemonic. Pressing Alt and that letter activates the button.
+
+If `s` is :icon_name, create a button with an icon from the current icon theme.
+
+Related GTK functions: [`gtk_button_new_with_label`()]($(gtkdoc_method_url("gtk4","Button","new_with_label"))), [`gtk_button_new_with_mnemonic`()]($(gtkdoc_method_url("gtk4","Button","new_with_mnemonic"))), [`gtk_button_new_from_icon_name`()]($(gtkdoc_method_url("gtk4","Button","new_from_icon_name")))
+"""
 function GtkButton(s::Symbol,str::AbstractString)
     if s === :mnemonic
         G_.Button_new_with_mnemonic(str)
@@ -45,26 +64,26 @@ end
 
 ## GtkLinkButton
 
-function GtkLinkButton(uri::AbstractString, label::AbstractString, visited::Bool)
-    b = GtkLinkButton(uri, label)
+function GtkLinkButton(uri::AbstractString, label::AbstractString, visited::Bool; kwargs...)
+    b = GtkLinkButton(uri, label; kwargs...)
     G_.set_visited(b, visited)
     b
 end
-function GtkLinkButton(uri::AbstractString, visited::Bool)
-    b = GtkLinkButton(uri)
+function GtkLinkButton(uri::AbstractString, visited::Bool; kwargs...)
+    b = GtkLinkButton(uri; kwargs...)
     G_.set_visited(b, visited)
     b
 end
 
-function GtkVolumeButton(value::Real) # 0 <= value <= 1
-    b = GtkVolumeButton()
+function GtkVolumeButton(value::Real; kwargs...) # 0 <= value <= 1
+    b = GtkVolumeButton(; kwargs...)
     G_.set_value(b, value)
     b
 end
 
 popup(b::GtkMenuButton) = G_.popup(b)
 
-function GtkPopoverMenu(model::GMenu, nested = false)
+function GtkPopoverMenu(model::GMenu, nested::Bool = false)
     if nested
         G_.PopoverMenu_new_from_model_full(model, PopoverMenuFlags_Nested)
     else
