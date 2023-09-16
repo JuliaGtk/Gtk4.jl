@@ -10,6 +10,7 @@ end
 
 import CEnum: @cenum
 import BitFlags: @bitflag
+import ColorTypes: Colorant, RGBA
 
 include("GLib/GLib.jl")
 include("Pango/Pango.jl")
