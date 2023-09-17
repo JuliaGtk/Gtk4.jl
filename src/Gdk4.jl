@@ -18,7 +18,7 @@ function GdkRGBA(rgba::AbstractString)
    r
 end
 
-convert(::Type{RGBA}, gcolor::Gtk4.GdkRGBA) = RGBA(gcolor.red, gcolor.green, gcolor.blue, gcolor.alpha)
+convert(::Type{RGBA}, gcolor::Gtk4._GdkRGBA) = RGBA(gcolor.red, gcolor.green, gcolor.blue, gcolor.alpha)
 convert(::Type{Gtk4.GdkRGBA}, color::Colorant) = Gtk4.GdkRGBA(red(color), green(color), blue(color), alpha(color))
 
 ## GdkCursor

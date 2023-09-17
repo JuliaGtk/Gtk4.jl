@@ -1,4 +1,4 @@
-using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.GdkPixbufLib, Cairo
+using Test, Gtk4, Gtk4.GLib, Gtk4.G_, Gtk4.GdkPixbufLib, Cairo, ColorTypes
 
 @testset "Labelframe" begin
 f = GtkFrame("Label")
@@ -118,4 +118,19 @@ pushfirst!(ts,("first child of two",),iter2)
 destroy(w)
 end
 
+@testset "GdkRGBA" begin
+    r=RGBA(1,0,0,0)
+    q=convert(GdkRGBA,r)
+    qs=unsafe_load(q.handle)
+    @test red(r)==qs.red
+    @test green(r)==qs.green
+    @test blue(r)==qs.blue
+    @test alpha(r)==qs.alpha
+    
+    rr=convert(RGBA,qs)
+    @test red(r)==red(rr)
+    @test green(r)==green(rr)
+    @test blue(r)==blue(rr)
+    @test alpha(r)==alpha(rr)
+end
 
