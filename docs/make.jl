@@ -3,7 +3,7 @@ using Documenter, Gtk4
 makedocs(
     format = Documenter.HTML(
         prettyurls = get(ENV, "CI", nothing) == "true",
-        size_threshold_ignore = ["doc/GLib_reference.md","doc/reference.md","doc/constants_reference.md"]
+        #size_threshold_ignore = ["doc/GLib_reference.md","doc/reference.md","doc/constants_reference.md"]
     ),
     modules = [Gtk4],
     sitename = "Gtk4.jl",
