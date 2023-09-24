@@ -40,6 +40,11 @@ function GtkEventControllerKey(widget::GtkWidget)
     push!(widget, g)
     g
 end
+function GtkShortcutController(widget::GtkWidget)
+    g = G_.ShortcutController_new()
+    push!(widget, g)
+    g
+end
 
 function GtkGestureClick(widget::GtkWidget,button=1)
     g = G_.GestureClick_new()

@@ -9627,6 +9627,48 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_shortcut_label_set_disabled_text", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _disabled_text)
         nothing
     end
+    function ShortcutTrigger_parse_string(_string::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_shortcut_trigger_parse_string", libgtk4), Ptr{GObject}, (Cstring,), _string)
+        ret2 = convert_if_not_null(GtkShortcutTrigger, ret, true)
+        ret2
+    end
+    function compare(instance::GtkShortcutTrigger, _trigger2::GtkShortcutTrigger)
+        ret = ccall(("gtk_shortcut_trigger_compare", libgtk4), Int32, (Ptr{GObject}, Ptr{GObject}), instance, _trigger2)
+        ret
+    end
+    function equal(instance::GtkShortcutTrigger, _trigger2::GtkShortcutTrigger)
+        ret = ccall(("gtk_shortcut_trigger_equal", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}), instance, _trigger2)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function hash(instance::GtkShortcutTrigger)
+        ret = ccall(("gtk_shortcut_trigger_hash", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function print(instance::GtkShortcutTrigger, _string::Union{GString, Ref{_GString}})
+        ret = ccall(("gtk_shortcut_trigger_print", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GString}), instance, _string)
+        nothing
+    end
+    function print_label(instance::GtkShortcutTrigger, _display::GdkDisplay, _string::Union{GString, Ref{_GString}})
+        ret = ccall(("gtk_shortcut_trigger_print_label", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{_GString}), instance, _display, _string)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function to_label(instance::GtkShortcutTrigger, _display::GdkDisplay)
+        ret = ccall(("gtk_shortcut_trigger_to_label", libgtk4), Cstring, (Ptr{GObject}, Ptr{GObject}), instance, _display)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function to_string(instance::GtkShortcutTrigger)
+        ret = ccall(("gtk_shortcut_trigger_to_string", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function trigger(instance::GtkShortcutTrigger, _event::GdkEvent, _enable_mnemonics::Bool)
+        ret = ccall(("gtk_shortcut_trigger_trigger", libgtk4), UInt32, (Ptr{GObject}, Ptr{GdkEvent}, Cint), instance, _event, _enable_mnemonics)
+        ret2 = KeyMatch(ret)
+        ret2
+    end
     function SignalAction_new(_signal_name::Union{AbstractString, Symbol})
         ret = ccall(("gtk_signal_action_new", libgtk4), Ptr{GObject}, (Cstring,), _signal_name)
         ret2 = GtkSignalActionLeaf(ret, true)
