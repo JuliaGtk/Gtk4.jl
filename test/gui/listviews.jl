@@ -30,7 +30,8 @@ function bind_cb(f, li)
 end
 
 
-list = GtkListView(GtkSelectionModel(GtkSingleSelection(model)), factory)
+list = GtkListView(GtkSelectionModel(GtkSingleSelection(model)))
+Gtk4.factory(list,factory)
 
 signal_connect(setup_cb, factory, "setup")
 signal_connect(bind_cb, factory, "bind")
@@ -48,7 +49,7 @@ destroy(win)
 
 end
 
-@testset "Listbox" begin
+@testset "ListBox" begin
 win = GtkWindow("ListBox demo with filter")
 box = GtkBox(:v)
 entry = GtkSearchEntry()
@@ -88,6 +89,38 @@ rgv[] = GValue()
 Gtk4.G_.evaluate(ce, nothing, rgv)
 @test rgv[Float64] == 3.0
 @test Gtk4.evaluate(ce) == 3.0
+
+destroy(win)
+
+end
+
+@testset "FlowBox" begin
+win = GtkWindow("FlowBox demo with filter")
+box = GtkBox(:v)
+entry = GtkSearchEntry()
+sw = GtkScrolledWindow()
+push!(box, entry)
+push!(box, sw)
+push!(win, box)
+
+listBox = GtkFlowBox()
+l=GtkLabel("widget 1")
+push!(listBox, l)
+@test listBox[1].child == l
+l0=GtkLabel("widget 0")
+pushfirst!(listBox, l0)
+@test listBox[1].child == l0
+lmiddle=GtkLabel("widget 0.5")
+insert!(listBox,2,lmiddle)
+@test listBox[2].child == lmiddle
+
+delete!(listBox, listBox[1])
+@test listBox[2].child == l
+
+listBox[1] = GtkLabel("widget 2")
+@test listBox[2].child != l
+sw[] = listBox
+listBox.vexpand = true
 
 destroy(win)
 

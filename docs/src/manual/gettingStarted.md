@@ -16,10 +16,6 @@ We will now go through this example step by step. First the package is loaded `u
 ```julia
 push!(win,b)
 ```
-Since a `GtkWindow` can have only one child widget, we could have added the button to the window using
-```julia
-win[] = b
-```
 Finally, `show(win)` makes the window visible.
 This could also have been accomplished using the `visible` property (properties of "GObjects" like `GtkWindow` are discussed on the [Properties](../manual/properties.md) section of this manual).
 
@@ -49,3 +45,35 @@ function on_button_clicked(w)
 end
 signal_connect(on_button_clicked, b, "clicked")
 ```
+
+## The hierarchy of widgets
+
+In the example above, `GtkWindow` and `GtkButton` are GTK "widgets", which represent GUI elements. 
+Widgets are arranged in a hierarchy, with a `GtkWindow` at the top level (typically), inside which are widgets that contain other widgets.
+A widget in this hierarchy can have child widgets and a parent widget.
+The parent widget can be found using the method `parent`:
+```julia
+julia> parent(b) == win
+true
+```
+The toplevel widget in a particular widget's hierarchy can be found using the method `toplevel`:
+```julia
+julia> toplevel(b) == win
+true
+```
+Iterating over a widget gives you its child widgets:
+```julia
+for child in widget
+    myfunc(child)
+end
+```
+
+Widgets can be added and removed using interface methods defined by Gtk4.jl.
+For many widgets that can contain children, `push!` is defined to append a widget to another's children.
+Some widget types can only have one child.
+For this situation, Gtk4.jl defines `setindex!(w,x)` and `getindex(w)` methods with no arguments, which can be written as `w[] = x` and `output = w[]`, respectively.
+For example, a `GtkWindow` can have only one child widget, so we could have added the button to the window in our example using
+```julia
+win[] = b
+```
+

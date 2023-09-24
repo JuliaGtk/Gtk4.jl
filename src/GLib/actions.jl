@@ -21,10 +21,20 @@ function add_action(m::GActionMap, name::AbstractString, cb, user_data)
     action
 end
 
-function add_stateful_action(m::GActionMap, name::AbstractString, initial_state, handler::Function)
+function add_stateful_action(m::GActionMap, name::AbstractString, initial_state,
+                             handler::Function)
     action = GSimpleAction(name, nothing, GVariant(initial_state))
     push!(m,GAction(action))
     signal_connect(handler, action, :change_state)
+    action
+end
+
+function add_stateful_action(m::GActionMap, name::AbstractString, initial_state,
+                             cb, user_data)
+    action = GSimpleAction(name, nothing, GVariant(initial_state))
+    push!(m,GAction(action))
+    signal_connect(cb, action, :change_state, Nothing,
+                   (Ptr{GVariant},), false, user_data)
     action
 end
 

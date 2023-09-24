@@ -38,6 +38,7 @@ end
 
 @testset "Filtered List View" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "filteredlistview.jl"))
+    @test Gtk4.G_.match(filter,Gtk4.GLib.G_.get_item(GListModel(model),0))
     destroy(win)
 end
 

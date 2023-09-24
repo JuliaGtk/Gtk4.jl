@@ -22,7 +22,7 @@ Constants and struct definitions are also generated using GObject introspection.
 
 ## Constructors
 
-Constructor methods in `G_` are treated a little differently. They are named according to GObject_constructor_name, as in the following table:
+Constructor methods in `G_` are treated a little differently. They are named according to `GObject_$constructor_name`, as in the following table:
 
 | C function | Gtk4.G_ Julia method | Comments |
 | :--- | :--- | :--- |

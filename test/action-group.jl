@@ -61,10 +61,32 @@ end
 
 delete!(g, "do-something")
 
+# test the more sophisticated `signal_connect`
 signal_connect(on_action_added2, g, "action_added", Nothing, (String,), false, 3)
 
-push!(g,a)
+# test `add_action`
+function cb(a,v)
+    nothing
+end
+
+add_action(GActionMap(g), "new-action", cb)
+
 @test extra_arg_ref[] == 3
+
+function cb2(a,v,user_data)
+    nothing
+end
+
+add_action(GActionMap(g), "new-action2", cb2, 4)
+
+# test `add_stateful_action`
+
+a5 = add_stateful_action(GActionMap(g), "new-action3", true, cb)
+add_stateful_action(GActionMap(g), "new-action4", true, cb2, 5)
+
+@test a5.state == GVariant(true)
+GLib.set_state(a5, GVariant(false))
+@test a5.state == GVariant(false)
 
 # test keyword constructor
 

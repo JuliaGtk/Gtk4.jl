@@ -95,6 +95,8 @@ for child in g1
     i += 1
 end
 
+@test length(Gtk4.toplevels()) == 1
+
 destroy(w)
 end
 

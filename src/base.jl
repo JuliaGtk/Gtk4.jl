@@ -121,6 +121,13 @@ Related GTK function: [`gtk_widget_activate`()]($(gtkdoc_method_url("gtk4","Widg
 """
 activate(w::GtkWidget) = G_.activate(w)
 
+"""
+    toplevels()
+    
+Returns a GListModel of all toplevel widgets (i.e. windows) known to GTK4.
+"""
+toplevels() = G_.get_toplevels()
+
 @doc """
     display(w::GtkWidget)
 

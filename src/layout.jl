@@ -226,6 +226,10 @@ function splice!(w::GtkNotebook, i::Integer)
     G_.remove_page(w, i - 1)
     w
 end
+function deleteat!(w::GtkNotebook, i::Integer)
+    G_.remove_page(w, i - 1)
+    w
+end
 
 pagenumber(w::GtkNotebook, child::GtkWidget) =
     G_.page_num(w, child) + 1

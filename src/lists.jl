@@ -108,6 +108,23 @@ function set_filter_func(lb::GtkListBox, match::Function)
     return nothing
 end
 
+## GtkFlowBox
+setindex!(fb::GtkFlowBox, w::GtkWidget, i::Integer) = (G_.insert(fb, w, i - 1); fb[i])
+getindex(fb::GtkFlowBox, i::Integer) = G_.get_child_at_index(fb, i - 1)
+
+push!(fb::GtkFlowBox, w::GtkWidget) = (G_.append(fb, w); fb)
+pushfirst!(fb::GtkFlowBox, w::GtkWidget) = (G_.prepend(fb, w); fb)
+insert!(fb::GtkFlowBox, i::Integer, w::GtkWidget) = (G_.insert(fb, w, i - 1); fb)
+
+delete!(fb::GtkFlowBox, w::GtkWidget) = (G_.remove(fb, w); fb)
+
+function set_filter_func(fb::GtkFlowBox, match::Function)
+    cfunc = @cfunction(GtkFlowBoxFilterFunc, Cint, (Ptr{GObject}, Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(match)
+    ccall(("gtk_flow_box_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), fb, cfunc, ref, deref)
+    return nothing
+end
+
 
 ## GtkCustomFilter
 
@@ -119,7 +136,7 @@ function GtkCustomFilter(match::Function)
 end
 
 function set_filter_func(cf::GtkCustomFilter, match::Function)
-    cfunc = @cfunction(GtkListBoxFilterFunc, Cint, (Ptr{GObject}, Ref{Function}))
+    cfunc = @cfunction(GtkCustomFilterFunc, Cint, (Ptr{GObject}, Ref{Function}))
     ref, deref = GLib.gc_ref_closure(match)
     ccall(("gtk_custom_filter_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, cfunc, ref, deref)
     return nothing

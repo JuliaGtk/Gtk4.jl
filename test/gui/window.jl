@@ -28,12 +28,11 @@ if m!==nothing
     r = Gtk4.G_.get_geometry(m)
 end
 
-#r2 = m.geometry
-
 hide(w)
 show(w)
 grab_focus(w)
 close(w)
+sleep(0.2)
 destroy(w)
 
 end

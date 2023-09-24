@@ -7,7 +7,7 @@ Gtk4 provides many layout widgets for arranging widgets in a window.
 
 ## GtkBox
 
-The simplest layout widget is the `GtkBox`. It is one-dimensional and can be either be horizontally or vertical aligned.
+The layout widget used most often is `GtkBox`. It is one-dimensional and can be either be horizontally or vertical aligned.
 ```julia
 win = GtkWindow("New title")
 hbox = GtkBox(:h)  # :h makes a horizontal layout, :v a vertical layout
@@ -143,6 +143,17 @@ push!(nb, vbox, "Vertical")  # here "Vertical" is the label for the tab
 push!(nb, hbox, "Horizontal")
 ```
 
+Julia interface methods defined for `GtkNotebook`:
+
+| method | what it does |
+| :--- | :--- |
+| `push!(n::GtkNotebook, x::GtkWidget, label::AbstractString)` | Appends a widget with a label |
+| `push!(n::GtkNotebook, x::GtkWidget, label::GtkWidget)` | Appends a widget with a widget to be shown in the tab |
+| `pushfirst!(n::GtkNotebook, x::GtkWidget, label::AbstractString)` | Prepends a widget with a label |
+| `pushfirst!(n::GtkNotebook, x::GtkWidget, label::GtkWidget)` | Prepends a widget with a widget to be shown in the tab |
+| `deleteat!(n::GtkNotebook, x::GtkWidget)` | Removes a widget from the notebook |
+| `empty!(n::GtkNotebook)` | Removes all widgets from the notebook |
+
 ## GtkStack
 
 The `GtkStack` widget is a lot like `GtkNotebook`, but a separate widget `GtkStackSwitcher` controls what page is shown.
@@ -157,11 +168,34 @@ push!(s, GtkLabel("First label"), "id1", "Label 1")  # first string is an id, se
 push!(s, GtkLabel("Second label"), "id2", "Label 2") # widget can be retrieved using s[id]
 ```
 
+Julia interface methods defined for `GtkStack`:
+
+| method | what it does |
+| :--- | :--- |
+| `getindex(s::GtkStack, name::AbstractString)` or `s[name]` | Gets a widget by name |
+| `setindex!(s::GtkStack, x::GtkWidget, name::AbstractString)` or `s[name] = x` | Sets a widget by name |
+| `push!(s::GtkStack, x::GtkWidget)` | Appends a widget |
+| `push!(s::GtkStack, x::GtkWidget, name::AbstractString)` | Appends a widget with a name |
+| `push!(s::GtkStack, x::GtkWidget, name::AbstractString, title::AbstractString)` | Appends a widget with a name and a title |
+| `delete!(s::GtkStack, x::GtkWidget)` | Removes a widget from the stack |
+| `empty!(s::GtkStack)` | Removes all widgets from the stack |
+
+## GtkFrame, GtkAspectFrame, and GtkExpander
+
+These widgets hold one child widget. `GtkFrame` and `GtkAspectFrame` display them in a decorative frame with an optional label. `GtkExpander` allows the user to hide the child.
+
+Julia interface methods defined for `GtkFrame`, `GtkAspectFrame`, and `GtkExpander`:
+
+| method | what it does |
+| :--- | :--- |
+| `getindex(f)` or `f[]` | Gets the child widget |
+| `setindex!(f, w::Union{GtkWidget,Nothing})` or `f[] = w` | Sets or clears the child widget |
+
 ## Iterating over child widgets
 
 For any of the widgets described above (or any `GtkWidget` that has children), you can iterate over all child widgets using
 ```julia
-for w in widget
-    myfunc(w)
+for child in widget
+    myfunc(child)
 end
 ```
