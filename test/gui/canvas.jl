@@ -1,7 +1,7 @@
 using Test, Gtk4, Cairo
 
 @testset "Canvas & AspectFrame" begin
-c = GtkCanvas()
+c = GtkCanvas(100,100)
 f = GtkAspectFrame(0.5, 1, 0.5, false)
 f[] = c
 @test f[] == c
@@ -14,26 +14,31 @@ ggz = GtkGestureZoom(c)
 t = Gtk4.find_controller(c,GtkEventControllerMotion)
 @test t==gm
 @test widget(gm) == c
+drew = Ref(false)
+resized = Ref(false)
 c.draw = function(_)
     if isdefined(c,:back)
         ctx = Gtk4.getgc(c)
         set_source_rgb(ctx, 1.0, 0.0, 0.0)
         paint(ctx)
+        drew[] = true
     end
 end
 gf = GtkEventControllerFocus(c)
 w = GtkWindow(f, "Canvas")
 draw(c)
 sleep(0.5)
-reveal(c)
-destroyed = Ref(false)
-function test_destroy(w)
-    destroyed[] = true
+@test drew[]
+drew[]=false
+resize(c) do _
+    resized[] = true
 end
-on_signal_destroy(test_destroy, c)
+Gtk4.G_.set_content_width(c,200)
+sleep(0.1)
+@test resized[]
+@test drew[]
+reveal(c)
 destroy(w)
-#sleep(0.5)
-#@test destroyed[] == true
 end
 
 @testset "SetCoordinates" begin
@@ -72,3 +77,11 @@ w = GtkWindow(nb,"TestDataViewer",600,600)
 @test pagenumber(nb,c)==3
 destroy(w)
 end
+
+@testset "Canvas initialization" begin
+# must provide a nonzero size to use `init_back`
+@test_throws ErrorException c = GtkCanvas(0,0,true)
+c = GtkCanvas(10,10,true)
+@test isdefined(c,:back)
+end
+

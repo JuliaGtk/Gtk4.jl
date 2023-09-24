@@ -2,17 +2,41 @@ import Cairo: CairoSurface, CairoContext, CairoARGBSurface
 
 using Cairo_jll
 
-function canvas_draw_backing_store(w, cr, width, height, user_data) # cr is a Cairo context, user_data is a Cairo surface
+function _canvas_draw_backing_store(w, cr, width, height, user_data) # cr is a Cairo context, user_data is a Cairo surface
     user_data==C_NULL && return
-
+    
     ccall((:cairo_set_source_surface, libcairo), Nothing,
-        (Ptr{Nothing}, Ptr{Nothing}, Float64, Float64), cr, user_data, 0, 0)
+          (Ptr{Nothing}, Ptr{Nothing}, Float64, Float64), cr, user_data, 0, 0)
     ccall((:cairo_paint, libcairo), Nothing, (Ptr{Nothing},), cr)
 end
 
 function _init_canvas!(widget, w, h)
     widget.back = CairoARGBSurface(w, h)
     widget.backcc = CairoContext(widget.back)
+end
+
+function _canvas_on_realize(::Ptr, canvas)
+    if canvas.is_sized
+        _canvas_on_resize(da,1,1)
+    end
+    nothing
+end
+
+function _canvas_on_resize(::Ptr, width, height, canvas)
+    canvas.is_sized = true
+    if G_.get_realized(canvas)
+        _init_canvas!(canvas, width, height)
+
+        if isa(canvas.resize, Function)
+            canvas.resize(canvas)
+        end
+
+        draw_back = @cfunction(_canvas_draw_backing_store, Nothing, (Ptr{GObject}, Ptr{Nothing}, Cint, Cint, Ptr{Nothing}))
+        ccall((:gtk_drawing_area_set_draw_func, libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), getfield(canvas,:handle), draw_back, canvas.back.ptr, C_NULL)
+
+        draw(canvas)
+    end
+    nothing
 end
 
 """
@@ -47,35 +71,11 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
             _init_canvas!(widget, w, h)
         end
 
-        function on_realize(da::GtkWidget)
-            if widget.is_sized
-                on_resize(da,1,1)
-            end
-            nothing
-        end
+        widget = GLib.gobject_move_ref(widget, da)
+        signal_connect(Base.inferencebarrier(_canvas_on_realize), widget, "realize", Nothing, (), false, widget)
+        signal_connect(Base.inferencebarrier(_canvas_on_resize), widget, "resize", Nothing, (Cint, Cint), false, widget)
 
-        on_resize(da::GtkDrawingArea, width, height) = on_resize(da, Cint(width), Cint(height))
-        function on_resize(da::GtkDrawingArea, width::Cint, height::Cint)
-            widget.is_sized = true
-            if G_.get_realized(widget)
-                _init_canvas!(widget, width, height)
-
-                if isa(widget.resize, Function)
-                    widget.resize(widget)
-                end
-
-                draw_back = @cfunction(canvas_draw_backing_store, Nothing, (Ptr{GObject}, Ptr{Nothing}, Cint, Cint, Ptr{Nothing}))
-                ccall((:gtk_drawing_area_set_draw_func, libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), getfield(da,:handle), draw_back, widget.back.ptr, C_NULL)
-
-                draw(widget)
-            end
-            nothing
-        end
-
-        signal_connect(Base.inferencebarrier(on_realize), widget, "realize")
-        signal_connect(Base.inferencebarrier(on_resize), widget, "resize")
-
-        return GLib.gobject_move_ref(widget, da)
+        return widget
     end
 end
 const GtkCanvasLeaf = GtkCanvas
