@@ -13,9 +13,39 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_clear_signal_handler", libgobject), Nothing, (Ptr{UInt64}, Ptr{GObject}), _handler_id_ptr, _instance)
         nothing
     end
+    function enum_get_value(_enum_class::Union{GEnumClass, Ref{_GEnumClass}}, _value::Integer)
+        ret = ccall(("g_enum_get_value", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Int32), _enum_class, _value)
+        ret2 = convert(Union{GEnumValue, Ref{_GEnumValue}}, ret)
+        ret2
+    end
+    function enum_get_value_by_name(_enum_class::Union{GEnumClass, Ref{_GEnumClass}}, _name::Union{AbstractString, Symbol})
+        ret = ccall(("g_enum_get_value_by_name", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Cstring), _enum_class, _name)
+        ret2 = convert(Union{GEnumValue, Ref{_GEnumValue}}, ret)
+        ret2
+    end
+    function enum_get_value_by_nick(_enum_class::Union{GEnumClass, Ref{_GEnumClass}}, _nick::Union{AbstractString, Symbol})
+        ret = ccall(("g_enum_get_value_by_nick", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Cstring), _enum_class, _nick)
+        ret2 = convert(Union{GEnumValue, Ref{_GEnumValue}}, ret)
+        ret2
+    end
     function enum_to_string(_g_enum_type::Integer, _value::Integer)
         ret = ccall(("g_enum_to_string", libgobject), Cstring, (UInt64, Int32), _g_enum_type, _value)
         ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function flags_get_first_value(_flags_class::Union{GFlagsClass, Ref{_GFlagsClass}}, _value::Integer)
+        ret = ccall(("g_flags_get_first_value", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, UInt32), _flags_class, _value)
+        ret2 = convert(Union{GFlagsValue, Ref{_GFlagsValue}}, ret)
+        ret2
+    end
+    function flags_get_value_by_name(_flags_class::Union{GFlagsClass, Ref{_GFlagsClass}}, _name::Union{AbstractString, Symbol})
+        ret = ccall(("g_flags_get_value_by_name", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, Cstring), _flags_class, _name)
+        ret2 = convert(Union{GFlagsValue, Ref{_GFlagsValue}}, ret)
+        ret2
+    end
+    function flags_get_value_by_nick(_flags_class::Union{GFlagsClass, Ref{_GFlagsClass}}, _nick::Union{AbstractString, Symbol})
+        ret = ccall(("g_flags_get_value_by_nick", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, Cstring), _flags_class, _nick)
+        ret2 = convert(Union{GFlagsValue, Ref{_GFlagsValue}}, ret)
         ret2
     end
     function flags_to_string(_flags_type::Integer, _value::Integer)
@@ -40,6 +70,11 @@ $(Expr(:toplevel, quote
         _instance_and_params_arr = convert(Vector{_GValue}, _instance_and_params)
         ret = ccall(("g_signal_chain_from_overridden", libgobject), Nothing, (Ptr{_GValue}, Ptr{_GValue}), _instance_and_params_arr, _return_value)
         nothing
+    end
+    function signal_get_invocation_hint(_instance::GObject)
+        ret = ccall(("g_signal_get_invocation_hint", libgobject), Ptr{_GSignalInvocationHint}, (Ptr{GObject},), _instance)
+        ret2 = convert(Union{GSignalInvocationHint, Ref{_GSignalInvocationHint}}, ret)
+        ret2
     end
     function signal_handler_block(_instance::GObject, _handler_id::Integer)
         ret = ccall(("g_signal_handler_block", libgobject), Nothing, (Ptr{GObject}, UInt64), _instance, _handler_id)
@@ -130,7 +165,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_type_add_interface_dynamic", libgobject), Nothing, (UInt64, UInt64, Ptr{GObject}), _instance_type, _interface_type, _plugin)
         nothing
     end
-    function type_check_class_is_a(_g_class::_GTypeClass, _is_a_type::Integer)
+    function type_check_class_is_a(_g_class::Union{GTypeClass, Ref{_GTypeClass}}, _is_a_type::Integer)
         ret = ccall(("g_type_check_class_is_a", libgobject), Cint, (Ptr{_GTypeClass}, UInt64), _g_class, _is_a_type)
         ret2 = convert(Bool, ret)
         ret2
@@ -165,6 +200,31 @@ $(Expr(:toplevel, quote
         _g_class_maybe = nothing_to_null(_g_class)
         ret = ccall(("g_type_class_adjust_private_offset", libgobject), Nothing, (Ptr{Nothing}, Ptr{Int32}), _g_class_maybe, _private_size_or_offset)
         nothing
+    end
+    function type_class_peek(_type::Integer)
+        ret = ccall(("g_type_class_peek", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
+        ret2 = convert(Union{GTypeClass, Ref{_GTypeClass}}, ret)
+        ret2
+    end
+    function type_class_peek_static(_type::Integer)
+        ret = ccall(("g_type_class_peek_static", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
+        ret2 = convert(Union{GTypeClass, Ref{_GTypeClass}}, ret)
+        ret2
+    end
+    function type_class_ref(_type::Integer)
+        ret = ccall(("g_type_class_ref", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
+        ret2 = convert(Union{GTypeClass, Ref{_GTypeClass}}, ret)
+        ret2
+    end
+    function type_default_interface_peek(_g_type::Integer)
+        ret = ccall(("g_type_default_interface_peek", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
+        ret2 = convert(Union{GTypeInterface, Ref{_GTypeInterface}}, ret)
+        ret2
+    end
+    function type_default_interface_ref(_g_type::Integer)
+        ret = ccall(("g_type_default_interface_ref", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
+        ret2 = convert(Union{GTypeInterface, Ref{_GTypeInterface}}, ret)
+        ret2
     end
     function type_depth(_type::Integer)
         ret = ccall(("g_type_depth", libgobject), UInt32, (UInt64,), _type)
@@ -219,6 +279,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_type_interface_instantiatable_prerequisite", libgobject), UInt64, (UInt64,), _interface_type)
         ret
     end
+    function type_interface_peek(_instance_class::Union{GTypeClass, Ref{_GTypeClass}}, _iface_type::Integer)
+        ret = ccall(("g_type_interface_peek", libgobject), Ptr{_GTypeInterface}, (Ptr{_GTypeClass}, UInt64), _instance_class, _iface_type)
+        ret2 = convert(Union{GTypeInterface, Ref{_GTypeInterface}}, ret)
+        ret2
+    end
     function type_interface_prerequisites(_interface_type::Integer)
         m_n_prerequisites = Ref{UInt32}()
         ret = ccall(("g_type_interface_prerequisites", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _interface_type, m_n_prerequisites)
@@ -241,7 +306,7 @@ $(Expr(:toplevel, quote
         _n_interfaces = m_n_interfaces[]
         ret2
     end
-    function type_name_from_class(_g_class::_GTypeClass)
+    function type_name_from_class(_g_class::Union{GTypeClass, Ref{_GTypeClass}})
         ret = ccall(("g_type_name_from_class", libgobject), Cstring, (Ptr{_GTypeClass},), _g_class)
         ret2 = string_or_nothing(ret, false)
         ret2
@@ -258,13 +323,14 @@ $(Expr(:toplevel, quote
         m_query = Ref{_GTypeQuery}()
         ret = ccall(("g_type_query", libgobject), Nothing, (UInt64, Ptr{_GTypeQuery}), _type, m_query)
         _query = m_query[]
+        _query = convert(_GTypeQuery, _query)
         _query
     end
     function type_register_dynamic(_parent_type::Integer, _type_name::Union{AbstractString, Symbol}, _plugin::GTypePlugin, _flags)
         ret = ccall(("g_type_register_dynamic", libgobject), UInt64, (UInt64, Cstring, Ptr{GObject}, UInt32), _parent_type, _type_name, _plugin, _flags)
         ret
     end
-    function type_register_static(_parent_type::Integer, _type_name::Union{AbstractString, Symbol}, _info::_GTypeInfo, _flags)
+    function type_register_static(_parent_type::Integer, _type_name::Union{AbstractString, Symbol}, _info::Union{GTypeInfo, Ref{_GTypeInfo}}, _flags)
         ret = ccall(("g_type_register_static", libgobject), UInt64, (UInt64, Cstring, Ptr{_GTypeInfo}, UInt32), _parent_type, _type_name, _info, _flags)
         ret
     end

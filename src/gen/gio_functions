@@ -353,6 +353,11 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
+    function dbus_gvalue_to_gvariant(_gvalue::Union{GValue, Ref{_GValue}}, _type::GVariantType)
+        ret = ccall(("g_dbus_gvalue_to_gvariant", libgio), Ptr{GVariant}, (Ptr{_GValue}, Ptr{GVariantType}), _gvalue, _type)
+        ret2 = convert(GVariant, ret)
+        ret2
+    end
     function dbus_is_address(_string::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_is_address", libgio), Cint, (Cstring,), _string)
         ret2 = convert(Bool, ret)

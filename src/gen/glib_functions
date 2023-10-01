@@ -2664,6 +2664,16 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function variant_parse(_type::Maybe(GVariantType), _text::Union{AbstractString, Symbol}, _limit::Maybe(Union{AbstractString, Symbol}), _endptr::Maybe(Union{AbstractString, Symbol}))
+        _type_maybe = nothing_to_null(_type)
+        _limit_maybe = nothing_to_null(_limit)
+        _endptr_maybe = nothing_to_null(_endptr)
+        err = err_buf()
+        ret = ccall(("g_variant_parse", libglib), Ptr{GVariant}, (Ptr{GVariantType}, Cstring, Cstring, Cstring, Ptr{Ptr{GError}}), _type_maybe, _text, _limit_maybe, _endptr_maybe, err)
+        check_err(err)
+        ret2 = convert(GVariant, ret)
+        ret2
+    end
     function variant_parse_error_print_context(_error, _source_str::Union{AbstractString, Symbol})
         ret = ccall(("g_variant_parse_error_print_context", libglib), Cstring, (Ptr{GError}, Cstring), _error, _source_str)
         ret2 = string_or_nothing(ret, true)

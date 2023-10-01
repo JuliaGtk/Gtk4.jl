@@ -472,13 +472,24 @@ function typename(info::GIStructInfo)
         Symbol(GLib.g_type_name(g_type))
     end
 end
-function extract_type(typeinfo::TypeInfo, info::GIStructInfo)
+function extract_type(typeinfo::GITypeInfo, info::GIStructInfo)
     name = typename(info)
     sname = get_struct_name(info)
     if is_pointer(typeinfo)
-        #TypeDesc(info,:(Ptr{$name}),:(Ptr{$name})) # use this for plain old structs?
-        TypeDesc(info,typename(info),typename(info),:(Ptr{$sname}))
-        #TypeDesc(info,:Any,:(Ptr{Nothing}))
+        fname = get_full_name(info)
+        tname = isopaque(info) ? fname : :(Union{$fname,Ref{$sname}})
+        TypeDesc(info,tname,typename(info),:(Ptr{$sname}))
+    else
+        TypeDesc(info,sname,sname,sname)
+    end
+end
+function extract_type(typeinfo::Type{InstanceType}, info::GIStructInfo)
+    name = typename(info)
+    sname = get_struct_name(info)
+    if is_pointer(typeinfo)
+        fname = get_full_name(info)
+        tname = isopaque(info) ? fname : :(Union{$fname,Ref{$sname}})
+        TypeDesc(info,tname,typename(info),:(Ptr{$sname}))
     else
         TypeDesc(info,sname,sname,sname)
     end

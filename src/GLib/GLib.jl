@@ -120,13 +120,14 @@ function _extract_instance_type(m)
     # type unfortunately has a namespace attached
     p=split(decls[2][2],".")
     length(p)==0 && error("Empty instance type in accessor generation for $m: maybe skip this one?")
-    length(p)>3 && error("Too many namespaces in accessor generation for $m.")
+    length(p)>3 && return nothing
     p
 end
 
 # for an instance method in `G_`, generate a getter method
 function gen_getter(func,v,m)
     p=_extract_instance_type(m)
+    isnothing(p) && return nothing
     t=Symbol(p[end]) # the type name
     return :($v(x::$t)=G_.$func(x))
 end
@@ -134,6 +135,7 @@ end
 # for an instance method in `G_`, generate a setter method
 function gen_setter(func,v,m)
     p=_extract_instance_type(m)
+    isnothing(p) && return nothing
     t=Symbol(p[end]) # the type name
     return :($v(x::$t,y)=G_.$func(x,y))
 end

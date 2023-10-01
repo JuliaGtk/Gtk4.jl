@@ -397,8 +397,7 @@ function get_base_type(info::GITypeInfo)
             if GLib.g_isa(gtyp,boxed_gtype)
                 return GBoxed
             else
-                # we don't have a type defined so return the name
-                return get_struct_name(interf_info)
+                return interf_info
             end
         elseif typ === :GIEnumInfo
             return CEnum.Cenum
