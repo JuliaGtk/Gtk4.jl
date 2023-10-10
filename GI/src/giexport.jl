@@ -238,7 +238,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     # so we add to a package local cache and merge with GLib's cache in __init__()
     if output_cache_define
         gtype_cache = quote
-            gtype_wrapper_cache = Dict{Symbol, Type}()
+            const gtype_wrapper_cache = Dict{Symbol, Type}()
         end
         push!(exprs,unblock(gtype_cache))
     end
