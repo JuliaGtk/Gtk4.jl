@@ -1,6 +1,6 @@
 # use libgirepository to produce Julia declarations and methods
 
-const_expr(name,val) =  :($(Symbol(name)) = $(val))
+const_expr(name,val) =  :(const $(Symbol(name)) = $(val))
 
 # export enum using a baremodule, as is done in Gtk.jl
 function enum_decl(enum)
