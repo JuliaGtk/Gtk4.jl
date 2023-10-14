@@ -159,13 +159,16 @@ Julia interface methods defined for `GtkNotebook`:
 The `GtkStack` widget is a lot like `GtkNotebook`, but a separate widget `GtkStackSwitcher` controls what page is shown.
 An interface very similar to `GtkNotebook` is defined:
 ```julia
+win = GtkWindow("GtkStack")
 s = GtkStack()
 sw = GtkStackSwitcher()
+stack(sw,s)
 vbox = GtkBox(:v)
 push!(vbox, sw)
 push!(vbox, s)
 push!(s, GtkLabel("First label"), "id1", "Label 1")  # first string is an id, second is a label
 push!(s, GtkLabel("Second label"), "id2", "Label 2") # widget can be retrieved using s[id]
+win[]=vbox
 ```
 
 Julia interface methods defined for `GtkStack`:

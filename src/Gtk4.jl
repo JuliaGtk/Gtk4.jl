@@ -119,7 +119,7 @@ function set_EGL_vendorlib_dirs(dirs)
 end
 
 function __init__()
-    in(:Gtk, names(Main, imported=true)) && error("Gtk4 is incompatible with Gtk.")
+    in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
 
     # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
     ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [

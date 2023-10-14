@@ -215,13 +215,16 @@ function pushfirst!(w::GtkNotebook, x::GtkWidget, label::Union{GtkWidget, Abstra
     G_.prepend_page(w, x, label) + 1
     w
 end
-function push!(w::GtkNotebook, x::GtkWidget, label::Union{GtkWidget, AbstractString})
-    if isa(label, AbstractString)
-        label = G_.Label_new(label)
-    end
+function push!(w::GtkNotebook, x::GtkWidget, label::AbstractString)
+    widget = G_.Label_new(label)
+    G_.append_page(w, x, widget) + 1
+    w
+end
+function push!(w::GtkNotebook, x::GtkWidget, label::GtkWidget)
     G_.append_page(w, x, label) + 1
     w
 end
+
 function splice!(w::GtkNotebook, i::Integer)
     G_.remove_page(w, i - 1)
     w
@@ -269,8 +272,14 @@ push!(s::GtkStack, x::GtkWidget, name::AbstractString) = (G_.add_named(s,x,name)
 push!(s::GtkStack, x::GtkWidget, name::AbstractString, title::AbstractString) = (G_.add_titled(s,x,name,title); s)
 getindex(s::GtkStack, name::AbstractString) = G_.get_child_by_name(s,name)
 setindex!(s::GtkStack, x::GtkWidget, name::AbstractString) = G_.add_named(s,x,name)
+delete!(s::GtkStack, x::GtkWidget) = (G_.remove(s,x); s)
 
-stack(w::GtkStackSwitcher, s::GtkStack) = G_.set_stack(w,s)
+function empty!(s::GtkStack)
+    while (w = G_.get_first_child(s)) !== nothing
+        G_.remove(s,w)
+    end
+    s
+end
 
 ## GtkPopover
 
