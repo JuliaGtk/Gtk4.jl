@@ -314,6 +314,24 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
     end
 end
 
+function all_object_signals!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing, exclude_deprecated=true)
+    not_implemented=0
+    skipped=0
+    created=0
+    objects=get_all(ns,GIObjectInfo,exclude_deprecated)
+    for o in objects
+        name=get_name(o)
+        if in(name,object_skiplist)
+            continue
+        end
+        signals = get_signals(o)
+        for s in signals
+            (exclude_deprecated && is_deprecated(s)) && continue
+            push!(exprs, decl(s))
+        end
+    end
+end
+
 function all_interfaces!(exprs,exports,ns;print_summary=true,skiplist=Symbol[],exclude_deprecated=true)
     interfaces=get_all(ns,GIInterfaceInfo,exclude_deprecated)
 

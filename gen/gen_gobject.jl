@@ -35,6 +35,7 @@ GI.append_object_docs!(exprs, "gobject", d, c, ns)
 push!(exprs,:(gtype_wrapper_cache[:GObject] = GObjectLeaf))
 GI.all_interfaces!(exprs,exports,ns)
 GI.all_callbacks!(exprs, exports, ns)
+GI.all_object_signals!(exprs, ns;skiplist=skiplist,object_skiplist=[:BindingGroup,:SignalGroup,:Object])
 
 push!(exprs,exports)
 
@@ -74,7 +75,7 @@ skiplist=vcat(handled_list,[:enum_complete_type_info,:enum_register_static,:flag
 :flags_register_static,:param_type_register_static,:signal_accumulator_first_wins,
 :signal_accumulator_true_handled,:signal_connect_closure,:signal_connect_closure_by_id,
 :signal_handler_find,:signal_handlers_block_matched,:signal_handlers_disconnect_matched,
-:signal_handlers_unblock_matched,:signal_override_class_closure,:signal_query,
+:signal_handlers_unblock_matched,:signal_override_class_closure,
 :source_set_closure,:source_set_dummy_callback,:type_add_interface_static,
 :type_check_instance,:type_check_instance_is_a,:type_check_instance_is_fundamentally_a,
 :type_default_interface_unref,:type_free_instance,

@@ -42,6 +42,7 @@ c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist;print_summary=true
 GI.append_object_docs!(exprs, "gdk4", d, c, ns)
 GI.all_interfaces!(exprs,exports,ns)
 GI.all_callbacks!(exprs, exports, ns)
+GI.all_object_signals!(exprs,ns;skiplist=skiplist,object_skiplist=object_skiplist)
 
 push!(exprs,exports)
 

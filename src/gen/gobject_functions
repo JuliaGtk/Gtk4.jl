@@ -136,6 +136,13 @@ $(Expr(:toplevel, quote
         _detail_p = m_detail_p[]
         (ret2, _signal_id_p, _detail_p)
     end
+    function signal_query(_signal_id::Integer)
+        m_query = Ref{_GSignalQuery}()
+        ret = ccall(("g_signal_query", libgobject), Nothing, (UInt32, Ptr{_GSignalQuery}), _signal_id, m_query)
+        _query = m_query[]
+        _query = convert(_GSignalQuery, _query)
+        _query
+    end
     function signal_remove_emission_hook(_signal_id::Integer, _hook_id::Integer)
         ret = ccall(("g_signal_remove_emission_hook", libgobject), Nothing, (UInt32, UInt64), _signal_id, _hook_id)
         nothing

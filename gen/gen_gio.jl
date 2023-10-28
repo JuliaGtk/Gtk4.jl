@@ -31,6 +31,7 @@ GI.all_interfaces!(exprs,exports,ns;skiplist=[:XdpProxyResolverIface])
 c = GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,constructor_skiplist=[:new_for_bus_sync,:new_sync,:new_with_fd_list,:new_for_address_finish,:new_for_bus_finish,:new_for_bus_finish,:new_from_filename,:new_loopback,:new_section,:new_with_default_fallbacks,:new_from_file_with_password],output_cache_define=false,output_cache_init=false)
 GI.append_object_docs!(exprs, "gio", d, c, ns)
 GI.all_callbacks!(exprs, exports, ns)
+GI.all_object_signals!(exprs,ns;object_skiplist=vcat(obj_skiplist,[:AppInfoMonitor,:DBusConnection,:DBusMenuModel,:DBusProxy,:DBusMethodInvocation,:IOModule,:SimpleProxyResolver,:UnixMountMonitor,:Task]))
 
 push!(exprs,exports)
 

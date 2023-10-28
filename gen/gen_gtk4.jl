@@ -43,6 +43,7 @@ GI.all_interfaces!(exprs,exports,ns;exclude_deprecated=false)
 c = GI.all_objects!(exprs,exports,ns,exclude_deprecated=false,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name],output_cache_define=false,output_cache_init=false)
 GI.append_object_docs!(exprs, "gtk4", d, c, ns)
 GI.all_callbacks!(exprs, exports, ns)
+GI.all_object_signals!(exprs,ns;skiplist=skiplist,object_skiplist=object_skiplist,exclude_deprecated=false)
 
 push!(exprs,exports)
 

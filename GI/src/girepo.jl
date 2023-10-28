@@ -316,7 +316,7 @@ may_be_null(ai::GICallableInfo) = may_return_null(ai)
 
 for (owner,flag) in [
     (:type, :is_pointer), (:callable, :may_return_null), (:callable, :skip_return),
-    (:arg, :is_caller_allocates), (:arg, :may_be_null),
+    (:callable, :is_method), (:arg, :is_caller_allocates), (:arg, :may_be_null),
     (:arg, :is_skip), (:arg, :is_return_value), (:arg, :is_optional),
     (:type, :is_zero_terminated), (:base, :is_deprecated), (:struct, :is_gtype_struct),
     (:object, :get_abstract)]

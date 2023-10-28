@@ -385,12 +385,46 @@ function decl(callbackinfo::GICallbackInfo)
     unblock(d)
 end
 
+## Signal output
+function decl(signalinfo::GISignalInfo)
+    name = get_name(signalinfo)
+    fname=Symbol(replace(String(name),"-"=>"_"))
+    oname = Symbol("on_$fname")
+    rettypefunc = Symbol("$(fname)_signal_return_type")
+    typeargsfunc = Symbol("$(fname)_signal_arg_types")
+    @assert is_method(signalinfo)
+    object = get_container(signalinfo)
+    @assert object !== nothing
+    objtypeinfo = extract_type(InstanceType,object)
+    rettypeinfo=get_return_type(signalinfo)
+    rettype = extract_type(rettypeinfo).ctype
+    args=get_args(signalinfo)
+    argctypes_arr=[]
+    for arg in args
+        argtype = extract_type(arg)
+        push!(argctypes_arr, argtype.ctype)
+    end
+    argctypes = Expr(:tuple, argctypes_arr...)
+    d = quote
+        function $oname(f, object::$(objtypeinfo.jtype), user_data=object, after=false)
+            GLib.signal_connect_generic(f, object, $(String(name)), $rettype, $argctypes, after, user_data)
+        end
+        function $rettypefunc(object::$(objtypeinfo.jtype))
+            $rettype
+        end
+        function $typeargsfunc(object::$(objtypeinfo.jtype))
+            $argctypes
+        end
+    end
+    unblock(d)
+end
+
 ## Handling argument types, creating methods
 
 struct NotImplementedError <: Exception
     message::String
 end
-NotImplementedError() = NotImplementedError("") # could overload `Base.showerror`
+NotImplementedError() = NotImplementedError("")
 
 abstract type InstanceType end
 is_pointer(::Type{InstanceType}) = true
