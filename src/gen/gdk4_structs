@@ -721,7 +721,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GdkTexture})
-            signalnames(supertype(GdkTexture))
+            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkTexture)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkTexture
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkTexture
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -743,7 +751,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GdkGLTexture})
-            signalnames(supertype(GdkGLTexture))
+            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkGLTexture)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkGLTexture
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkGLTexture
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -781,7 +797,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GdkMemoryTexture})
-            signalnames(supertype(GdkMemoryTexture))
+            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkMemoryTexture)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkMemoryTexture
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkMemoryTexture
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -1173,6 +1197,18 @@ $(Expr(:toplevel, quote
     function on_update(f, object::GdkFrameClock, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "update", Nothing, (), after, user_data)
     end
+    function on_invalidate_contents(f, object::GdkGLTexture, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-contents", Nothing, (), after, user_data)
+    end
+    function on_invalidate_size(f, object::GdkGLTexture, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
+    end
+    function on_invalidate_contents(f, object::GdkMemoryTexture, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-contents", Nothing, (), after, user_data)
+    end
+    function on_invalidate_size(f, object::GdkMemoryTexture, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
+    end
     function on_invalidate(f, object::GdkMonitor, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "invalidate", Nothing, (), after, user_data)
     end
@@ -1202,6 +1238,12 @@ $(Expr(:toplevel, quote
     end
     function on_render(f, object::GdkSurface, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "render", Cint, (cairoRegion,), after, user_data)
+    end
+    function on_invalidate_contents(f, object::GdkTexture, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-contents", Nothing, (), after, user_data)
+    end
+    function on_invalidate_size(f, object::GdkTexture, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
     end
     function on_images_updated(f, object::GdkVulkanContext, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "images-updated", Nothing, (), after, user_data)

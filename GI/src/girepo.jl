@@ -275,6 +275,15 @@ function get_properties(info::GIInterfaceInfo)
                   (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
 end
 
+# including the interfaces
+function get_all_signals(info::GIObjectInfo)
+    sigs = get_signals(info)
+    for interf in get_interfaces(info)
+        append!(sigs, get_signals(interf))
+    end
+    sigs
+end
+
 getindex(info::GIRegisteredTypeInfo, name::Symbol) = find_method(info, name)
 
 # one->one

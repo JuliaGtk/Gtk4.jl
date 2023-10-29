@@ -754,7 +754,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{PangoFontFamily})
-            signalnames(supertype(PangoFontFamily))
+            vcat([:items_changed], signalnames(supertype(PangoFontFamily)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: PangoFontFamily
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: PangoFontFamily
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -776,7 +784,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{PangoFontMap})
-            signalnames(supertype(PangoFontMap))
+            vcat([:items_changed], signalnames(supertype(PangoFontMap)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: PangoFontMap
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: PangoFontMap
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -898,6 +914,12 @@ $(Expr(:toplevel, quote
         f = user_data
         ret = f(fontset, font)
         convert(Cint, ret)
+    end
+    function on_items_changed(f, object::PangoFontFamily, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_items_changed(f, object::PangoFontMap, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
     end
     export PangoLanguage, PangoColor, _PangoColor, PangoAttrClass, _PangoAttrClass, PangoRectangle, _PangoRectangle, PangoFontDescription, PangoAttribute, _PangoAttribute, PangoAnalysis, _PangoAnalysis, PangoItem, _PangoItem, PangoGlyphVisAttr, _PangoGlyphVisAttr, PangoGlyphGeometry, _PangoGlyphGeometry, PangoGlyphInfo, _PangoGlyphInfo, PangoGlyphString, _PangoGlyphString, PangoGlyphItem, _PangoGlyphItem, PangoAttrColor, _PangoAttrColor, PangoAttrFloat, _PangoAttrFloat, PangoAttrFontDesc, _PangoAttrFontDesc, PangoAttrFontFeatures, _PangoAttrFontFeatures, PangoAttrInt, _PangoAttrInt, PangoAttrIterator, PangoAttrLanguage, _PangoAttrLanguage, PangoAttrList, PangoAttrShape, _PangoAttrShape, PangoAttrSize, _PangoAttrSize, PangoAttrString, _PangoAttrString, PangoFontMetrics, _PangoFontMetrics, PangoGlyphItemIter, _PangoGlyphItemIter, PangoLayoutIter, PangoLayoutLine, _PangoLayoutLine, PangoLogAttr, _PangoLogAttr, PangoMatrix, _PangoMatrix, PangoScriptIter, PangoTabArray, PangoContext, PangoContextLeaf, PangoCoverage, PangoCoverageLeaf, PangoFont, PangoFontFace, PangoFontFamily, PangoFontMap, PangoFontset, PangoFontsetSimple, PangoFontsetSimpleLeaf, PangoLayout, PangoLayoutLeaf, PangoRenderer, PangoAttrDataCopyFunc, PangoAttrFilterFunc, PangoFontsetForeachFunc
 end))

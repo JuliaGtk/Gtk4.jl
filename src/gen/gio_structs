@@ -681,7 +681,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GApplication})
-            vcat([:activate, :command_line, :handle_local_options, :name_lost, :open, :shutdown, :startup], signalnames(supertype(GApplication)))
+            vcat([:activate, :command_line, :handle_local_options, :name_lost, :open, :shutdown, :startup, :action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(GApplication)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :startup => (:Nothing, Any[]), :shutdown => (:Nothing, Any[]), :command_line => (:Int32, Any[:(Ptr{GObject})]), :name_lost => (:Cint, Any[]), :open => (:Nothing, Any[:(Ptr{Ptr{GObject}}), :Int32, :Cstring]), :activate => (:Nothing, Any[]), :handle_local_options => (:Int32, Any[:GVariantDict]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GApplication
@@ -1005,7 +1005,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GDBusActionGroup})
-            signalnames(supertype(GDBusActionGroup))
+            vcat([:action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(GDBusActionGroup)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GDBusActionGroup
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GDBusActionGroup
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -1213,7 +1221,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GDBusObjectManagerClient})
-            vcat([:interface_proxy_properties_changed, :interface_proxy_signal], signalnames(supertype(GDBusObjectManagerClient)))
+            vcat([:interface_proxy_properties_changed, :interface_proxy_signal, :interface_added, :interface_removed, :object_added, :object_removed], signalnames(supertype(GDBusObjectManagerClient)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :interface_proxy_signal => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :Cstring, :Cstring, :GVariant]), :interface_proxy_properties_changed => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :GVariant, :(Ptr{Cstring})]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GDBusObjectManagerClient
@@ -1243,7 +1251,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GDBusObjectManagerServer})
-            signalnames(supertype(GDBusObjectManagerServer))
+            vcat([:interface_added, :interface_removed, :object_added, :object_removed], signalnames(supertype(GDBusObjectManagerServer)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GDBusObjectManagerServer
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GDBusObjectManagerServer
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -1265,7 +1281,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GDBusObjectProxy})
-            signalnames(supertype(GDBusObjectProxy))
+            vcat([:interface_added, :interface_removed], signalnames(supertype(GDBusObjectProxy)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GDBusObjectProxy
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GDBusObjectProxy
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -1287,7 +1311,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GDBusObjectSkeleton})
-            vcat([:authorize_method], signalnames(supertype(GDBusObjectSkeleton)))
+            vcat([:authorize_method, :interface_added, :interface_removed], signalnames(supertype(GDBusObjectSkeleton)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :authorize_method => (:Cint, Any[:(Ptr{GObject}), :(Ptr{GObject})]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GDBusObjectSkeleton
@@ -1811,7 +1835,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GListStore})
-            signalnames(supertype(GListStore))
+            vcat([:items_changed], signalnames(supertype(GListStore)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GListStore
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GListStore
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -2357,7 +2389,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GSimpleActionGroup})
-            signalnames(supertype(GSimpleActionGroup))
+            vcat([:action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(GSimpleActionGroup)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GSimpleActionGroup
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GSimpleActionGroup
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -3733,8 +3773,32 @@ $(Expr(:toplevel, quote
     function on_startup(f, object::GApplication, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "startup", Nothing, (), after, user_data)
     end
+    function on_action_added(f, object::GApplication, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-added", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_enabled_changed(f, object::GApplication, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-enabled-changed", Nothing, (Cstring, Cint), after, user_data)
+    end
+    function on_action_removed(f, object::GApplication, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-removed", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_state_changed(f, object::GApplication, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-state-changed", Nothing, (Cstring, GVariant), after, user_data)
+    end
     function on_cancelled(f, object::GCancellable, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "cancelled", Nothing, (), after, user_data)
+    end
+    function on_action_added(f, object::GDBusActionGroup, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-added", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_enabled_changed(f, object::GDBusActionGroup, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-enabled-changed", Nothing, (Cstring, Cint), after, user_data)
+    end
+    function on_action_removed(f, object::GDBusActionGroup, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-removed", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_state_changed(f, object::GDBusActionGroup, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-state-changed", Nothing, (Cstring, GVariant), after, user_data)
     end
     function on_allow_mechanism(f, object::GDBusAuthObserver, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "allow-mechanism", Cint, (Cstring,), after, user_data)
@@ -3751,8 +3815,44 @@ $(Expr(:toplevel, quote
     function on_interface_proxy_signal(f, object::GDBusObjectManagerClient, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "interface-proxy-signal", Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Cstring, GVariant), after, user_data)
     end
+    function on_interface_added(f, object::GDBusObjectManagerClient, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "interface-added", Nothing, (Ptr{GObject}, Ptr{GObject}), after, user_data)
+    end
+    function on_interface_removed(f, object::GDBusObjectManagerClient, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "interface-removed", Nothing, (Ptr{GObject}, Ptr{GObject}), after, user_data)
+    end
+    function on_object_added(f, object::GDBusObjectManagerClient, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "object-added", Nothing, (Ptr{GObject},), after, user_data)
+    end
+    function on_object_removed(f, object::GDBusObjectManagerClient, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "object-removed", Nothing, (Ptr{GObject},), after, user_data)
+    end
+    function on_interface_added(f, object::GDBusObjectManagerServer, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "interface-added", Nothing, (Ptr{GObject}, Ptr{GObject}), after, user_data)
+    end
+    function on_interface_removed(f, object::GDBusObjectManagerServer, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "interface-removed", Nothing, (Ptr{GObject}, Ptr{GObject}), after, user_data)
+    end
+    function on_object_added(f, object::GDBusObjectManagerServer, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "object-added", Nothing, (Ptr{GObject},), after, user_data)
+    end
+    function on_object_removed(f, object::GDBusObjectManagerServer, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "object-removed", Nothing, (Ptr{GObject},), after, user_data)
+    end
+    function on_interface_added(f, object::GDBusObjectProxy, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "interface-added", Nothing, (Ptr{GObject},), after, user_data)
+    end
+    function on_interface_removed(f, object::GDBusObjectProxy, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "interface-removed", Nothing, (Ptr{GObject},), after, user_data)
+    end
     function on_authorize_method(f, object::GDBusObjectSkeleton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "authorize-method", Cint, (Ptr{GObject}, Ptr{GObject}), after, user_data)
+    end
+    function on_interface_added(f, object::GDBusObjectSkeleton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "interface-added", Nothing, (Ptr{GObject},), after, user_data)
+    end
+    function on_interface_removed(f, object::GDBusObjectSkeleton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "interface-removed", Nothing, (Ptr{GObject},), after, user_data)
     end
     function on_new_connection(f, object::GDBusServer, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "new-connection", Cint, (Ptr{GObject},), after, user_data)
@@ -3762,6 +3862,9 @@ $(Expr(:toplevel, quote
     end
     function on_got_completion_data(f, object::GFilenameCompleter, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "got-completion-data", Nothing, (), after, user_data)
+    end
+    function on_items_changed(f, object::GListStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
     end
     function on_items_changed(f, object::GMenuModel, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "items-changed", Nothing, (Int32, Int32, Int32), after, user_data)
@@ -3804,6 +3907,18 @@ $(Expr(:toplevel, quote
     end
     function on_change_state(f, object::GSimpleAction, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "change-state", Nothing, (GVariant,), after, user_data)
+    end
+    function on_action_added(f, object::GSimpleActionGroup, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-added", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_enabled_changed(f, object::GSimpleActionGroup, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-enabled-changed", Nothing, (Cstring, Cint), after, user_data)
+    end
+    function on_action_removed(f, object::GSimpleActionGroup, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-removed", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_state_changed(f, object::GSimpleActionGroup, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-state-changed", Nothing, (Cstring, GVariant), after, user_data)
     end
     function on_event(f, object::GSocketClient, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "event", Nothing, (UInt32, Ptr{GObject}, Ptr{GObject}), after, user_data)

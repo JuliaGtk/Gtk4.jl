@@ -307,7 +307,7 @@ function gobject_decl(objectinfo)
     end
     push!(exprs, decl)
     # if there are signals, add "signal_return_type" method, and "signal_arg_types" method
-    signals = get_signals(objectinfo)
+    signals = get_all_signals(objectinfo)
     sigdict = signal_dict_incl_parents(objectinfo)
     if length(signals)>0
         signalnames = [Symbol(replace(String(sname),"-"=>"_")) for sname in get_name.(signals)]
@@ -450,14 +450,14 @@ function get_arg_types(signalinfo::GISignalInfo)
 end
 
 ## Signal output
-function decl(signalinfo::GISignalInfo)
+function decl(signalinfo::GISignalInfo, objectinfo=nothing)
     name = get_name(signalinfo)
     fname=Symbol(replace(String(name),"-"=>"_"))
     oname = Symbol("on_$fname")
     rettypefunc = Symbol("$(fname)_signal_return_type")
     typeargsfunc = Symbol("$(fname)_signal_arg_types")
     @assert is_method(signalinfo)
-    object = get_container(signalinfo)
+    object = isnothing(objectinfo) ? get_container(signalinfo) : objectinfo
     @assert object !== nothing
     objtypeinfo = extract_type(InstanceType,object)
     rettype = get_ret_type(signalinfo)

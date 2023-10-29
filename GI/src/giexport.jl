@@ -324,10 +324,10 @@ function all_object_signals!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
         if in(name,object_skiplist)
             continue
         end
-        signals = get_signals(o)
+        signals = get_all_signals(o)
         for s in signals
             (exclude_deprecated && is_deprecated(s)) && continue
-            push!(exprs, decl(s))
+            push!(exprs, decl(s,o))
         end
     end
 end

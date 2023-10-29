@@ -25,9 +25,11 @@ repr = Base.print_to_string(a) # should display properties
 @test occursin("name=\"do-something\"",repr)
 @test occursin("enabled=true",repr)
 
+# test properties
 gpropnames = gtk_propertynames(a)
 @test :name in gpropnames
 @test :enabled in gpropnames
+@test !(:handle in gpropnames)
 
 propnames = propertynames(a)
 @test :name in propnames
@@ -37,23 +39,36 @@ propnames = propertynames(a)
 GLib.propertyinfo(a,:name)
 @test_throws ErrorException GLib.propertyinfo(a,:serial_number)
 
+# test signals
+signames = signalnames(GSimpleAction)
+@test :notify in signames
+@test :activate in signames
+@test :change_state in signames
+
+@test signal_return_type(GSimpleAction, :notify) == Nothing
+@test signal_argument_types(GSimpleAction, :notify) == (GParam,)
+
 action_added = Ref(false)
 
-function on_action_added(action_group, action_name)
+function action_added_cb(action_group, action_name)
     action_added[] = true
 end
 
-signal_connect(on_action_added, g, "action_added")
+id = signal_connect(action_added_cb, g, "action_added")
 
 @test action_added[] == false
 push!(g,a)
 @test action_added[] == true
 
+@test GLib.signal_handler_is_connected(g, id)
+GLib.signal_handler_disconnect(g, id)
+@test !GLib.signal_handler_is_connected(g, id)
+
 @test ["do-something"] == GLib.list_actions(GActionGroup(g))
 
 extra_arg_ref=Ref(0)
 
-function on_action_added2(action_group, action_name, extra_arg)
+function action_added_cb2(action_group, action_name, extra_arg)
     action_added[] = true
     extra_arg_ref[] = extra_arg
     nothing
@@ -62,9 +77,9 @@ end
 delete!(g, "do-something")
 
 # test the more sophisticated `signal_connect`
-signal_connect(on_action_added2, g, "action_added", Nothing, (String,), false, 3)
+GLib.on_action_added(action_added_cb2, g, 3)
 
-# test `add_action`
+# while we're at it, test `add_action`
 function cb(a,v)
     nothing
 end

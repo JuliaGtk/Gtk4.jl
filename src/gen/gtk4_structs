@@ -900,7 +900,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkMultiFilter})
-            signalnames(supertype(GtkMultiFilter))
+            vcat([:items_changed], signalnames(supertype(GtkMultiFilter)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :changed => (:Nothing, Any[:UInt32]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkMultiFilter
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkMultiFilter
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -922,7 +930,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkAnyFilter})
-            signalnames(supertype(GtkAnyFilter))
+            vcat([:items_changed], signalnames(supertype(GtkAnyFilter)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :changed => (:Nothing, Any[:UInt32]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkAnyFilter
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkAnyFilter
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -1056,7 +1072,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkApplication})
-            vcat([:query_end, :window_added, :window_removed], signalnames(supertype(GtkApplication)))
+            vcat([:query_end, :window_added, :window_removed, :action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(GtkApplication)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :startup => (:Nothing, Any[]), :command_line => (:Int32, Any[:(Ptr{GObject})]), :open => (:Nothing, Any[:(Ptr{Ptr{GObject}}), :Int32, :Cstring]), :window_removed => (:Nothing, Any[:(Ptr{GObject})]), :shutdown => (:Nothing, Any[]), :name_lost => (:Cint, Any[]), :window_added => (:Nothing, Any[:(Ptr{GObject})]), :activate => (:Nothing, Any[]), :handle_local_options => (:Int32, Any[:GVariantDict]), :query_end => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkApplication
@@ -1086,7 +1102,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkApplicationWindow})
-            signalnames(supertype(GtkApplicationWindow))
+            vcat([:action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(GtkApplicationWindow)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :keys_changed => (:Nothing, Any[]), :close_request => (:Cint, Any[]), :enable_debugging => (:Cint, Any[:Cint]), :unrealize => (:Nothing, Any[]), :activate_focus => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :activate_default => (:Nothing, Any[]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkApplicationWindow
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkApplicationWindow
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -1226,7 +1250,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkBookmarkList})
-            signalnames(supertype(GtkBookmarkList))
+            vcat([:items_changed], signalnames(supertype(GtkBookmarkList)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkBookmarkList
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkBookmarkList
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -1892,7 +1924,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkColorButton})
-            vcat([:activate, :color_set], signalnames(supertype(GtkColorButton)))
+            vcat([:activate, :color_set, :color_activated], signalnames(supertype(GtkColorButton)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :color_set => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkColorButton
@@ -1922,7 +1954,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkColorChooserDialog})
-            signalnames(supertype(GtkColorChooserDialog))
+            vcat([:color_activated], signalnames(supertype(GtkColorChooserDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :close => (:Nothing, Any[]), :keys_changed => (:Nothing, Any[]), :close_request => (:Cint, Any[]), :enable_debugging => (:Cint, Any[:Cint]), :unrealize => (:Nothing, Any[]), :activate_focus => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :activate_default => (:Nothing, Any[]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :response => (:Nothing, Any[:Int32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkColorChooserDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkColorChooserDialog
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -1944,7 +1984,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkColorChooserWidget})
-            signalnames(supertype(GtkColorChooserWidget))
+            vcat([:color_activated], signalnames(supertype(GtkColorChooserWidget)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkColorChooserWidget
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkColorChooserWidget
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -2114,7 +2162,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkComboBox})
-            vcat([:activate, :changed, :format_entry_text, :move_active, :popdown, :popup], signalnames(supertype(GtkComboBox)))
+            vcat([:activate, :changed, :format_entry_text, :move_active, :popdown, :popup, :editing_done, :remove_widget], signalnames(supertype(GtkComboBox)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :changed => (:Nothing, Any[]), :popdown => (:Cint, Any[]), :unrealize => (:Nothing, Any[]), :move_active => (:Nothing, Any[:UInt32]), :popup => (:Nothing, Any[]), :format_entry_text => (:Cstring, Any[:Cstring]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkComboBox
@@ -2144,7 +2192,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkComboBoxText})
-            signalnames(supertype(GtkComboBoxText))
+            vcat([:editing_done, :remove_widget], signalnames(supertype(GtkComboBoxText)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :changed => (:Nothing, Any[]), :popdown => (:Cint, Any[]), :unrealize => (:Nothing, Any[]), :move_active => (:Nothing, Any[:UInt32]), :popup => (:Nothing, Any[]), :format_entry_text => (:Cstring, Any[:Cstring]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkComboBoxText
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkComboBoxText
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -2298,7 +2354,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkCssProvider})
-            vcat([:parsing_error], signalnames(supertype(GtkCssProvider)))
+            vcat([:parsing_error, :gtk_private_changed], signalnames(supertype(GtkCssProvider)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :parsing_error => (:Nothing, Any[:GtkCssSection, :(Ptr{GError})]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkCssProvider
@@ -2394,7 +2450,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkDirectoryList})
-            signalnames(supertype(GtkDirectoryList))
+            vcat([:items_changed], signalnames(supertype(GtkDirectoryList)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkDirectoryList
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkDirectoryList
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -2692,7 +2756,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkEditableLabel})
-            signalnames(supertype(GtkEditableLabel))
+            vcat([:changed, :delete_text, :insert_text], signalnames(supertype(GtkEditableLabel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkEditableLabel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkEditableLabel
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -2774,7 +2846,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkEntry})
-            vcat([:activate, :icon_press, :icon_release], signalnames(supertype(GtkEntry)))
+            vcat([:activate, :icon_press, :icon_release, :editing_done, :remove_widget, :changed, :delete_text, :insert_text], signalnames(supertype(GtkEntry)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :icon_release => (:Nothing, Any[:UInt32]), :unrealize => (:Nothing, Any[]), :icon_press => (:Nothing, Any[:UInt32]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkEntry
@@ -3014,7 +3086,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkEveryFilter})
-            signalnames(supertype(GtkEveryFilter))
+            vcat([:items_changed], signalnames(supertype(GtkEveryFilter)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :changed => (:Nothing, Any[:UInt32]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkEveryFilter
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkEveryFilter
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -3236,7 +3316,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkFilterListModel})
-            signalnames(supertype(GtkFilterListModel))
+            vcat([:items_changed], signalnames(supertype(GtkFilterListModel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkFilterListModel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkFilterListModel
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -3324,7 +3412,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkFlattenListModel})
-            signalnames(supertype(GtkFlattenListModel))
+            vcat([:items_changed], signalnames(supertype(GtkFlattenListModel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkFlattenListModel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkFlattenListModel
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -3406,7 +3502,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkFontButton})
-            vcat([:activate, :font_set], signalnames(supertype(GtkFontButton)))
+            vcat([:activate, :font_set, :font_activated], signalnames(supertype(GtkFontButton)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :font_set => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkFontButton
@@ -3436,7 +3532,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkFontChooserDialog})
-            signalnames(supertype(GtkFontChooserDialog))
+            vcat([:font_activated], signalnames(supertype(GtkFontChooserDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :close => (:Nothing, Any[]), :keys_changed => (:Nothing, Any[]), :close_request => (:Cint, Any[]), :enable_debugging => (:Cint, Any[:Cint]), :unrealize => (:Nothing, Any[]), :activate_focus => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :activate_default => (:Nothing, Any[]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :response => (:Nothing, Any[:Int32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkFontChooserDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkFontChooserDialog
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -3458,7 +3562,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkFontChooserWidget})
-            signalnames(supertype(GtkFontChooserWidget))
+            vcat([:font_activated], signalnames(supertype(GtkFontChooserWidget)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkFontChooserWidget
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkFontChooserWidget
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -4030,7 +4142,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkIconPaintable})
-            signalnames(supertype(GtkIconPaintable))
+            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GtkIconPaintable)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkIconPaintable
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkIconPaintable
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -4380,7 +4500,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkListStore})
-            signalnames(supertype(GtkListStore))
+            vcat([:row_changed, :row_deleted, :row_has_child_toggled, :row_inserted, :sort_column_changed], signalnames(supertype(GtkListStore)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkListStore
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkListStore
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -4454,7 +4582,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkMapListModel})
-            signalnames(supertype(GtkMapListModel))
+            vcat([:items_changed], signalnames(supertype(GtkMapListModel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkMapListModel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkMapListModel
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -4498,7 +4634,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkMediaStream})
-            signalnames(supertype(GtkMediaStream))
+            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GtkMediaStream)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkMediaStream
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkMediaStream
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -4520,7 +4664,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkMediaFile})
-            signalnames(supertype(GtkMediaFile))
+            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GtkMediaFile)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkMediaFile
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkMediaFile
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -4660,7 +4812,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkMultiSelection})
-            signalnames(supertype(GtkMultiSelection))
+            vcat([:items_changed, :selection_changed], signalnames(supertype(GtkMultiSelection)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkMultiSelection
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkMultiSelection
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -4682,7 +4842,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkMultiSorter})
-            signalnames(supertype(GtkMultiSorter))
+            vcat([:items_changed], signalnames(supertype(GtkMultiSorter)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :changed => (:Nothing, Any[:UInt32]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkMultiSorter
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkMultiSorter
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -4748,7 +4916,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkNoSelection})
-            signalnames(supertype(GtkNoSelection))
+            vcat([:items_changed, :selection_changed], signalnames(supertype(GtkNoSelection)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkNoSelection
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkNoSelection
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -5022,7 +5198,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkPasswordEntry})
-            vcat([:activate], signalnames(supertype(GtkPasswordEntry)))
+            vcat([:activate, :changed, :delete_text, :insert_text], signalnames(supertype(GtkPasswordEntry)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkPasswordEntry
@@ -5192,7 +5368,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkPrintOperation})
-            vcat([:begin_print, :create_custom_widget, :custom_widget_apply, :done, :draw_page, :end_print, :paginate, :preview, :request_page_setup, :status_changed, :update_custom_widget], signalnames(supertype(GtkPrintOperation)))
+            vcat([:begin_print, :create_custom_widget, :custom_widget_apply, :done, :draw_page, :end_print, :paginate, :preview, :request_page_setup, :status_changed, :update_custom_widget, :got_page_size, :ready], signalnames(supertype(GtkPrintOperation)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :create_custom_widget => (:(Ptr{GObject}), Any[]), :status_changed => (:Nothing, Any[]), :end_print => (:Nothing, Any[:(Ptr{GObject})]), :update_custom_widget => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :(Ptr{GObject})]), :paginate => (:Cint, Any[:(Ptr{GObject})]), :request_page_setup => (:Nothing, Any[:(Ptr{GObject}), :Int32, :(Ptr{GObject})]), :begin_print => (:Nothing, Any[:(Ptr{GObject})]), :done => (:Nothing, Any[:UInt32]), :preview => (:Cint, Any[:(Ptr{GObject}), :(Ptr{GObject}), :(Ptr{GObject})]), :custom_widget_apply => (:Nothing, Any[:(Ptr{GObject})]), :draw_page => (:Nothing, Any[:(Ptr{GObject}), :Int32]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkPrintOperation
@@ -5512,7 +5688,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkSearchEntry})
-            vcat([:activate, :next_match, :previous_match, :search_changed, :search_started, :stop_search], signalnames(supertype(GtkSearchEntry)))
+            vcat([:activate, :next_match, :previous_match, :search_changed, :search_started, :stop_search, :changed, :delete_text, :insert_text], signalnames(supertype(GtkSearchEntry)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :previous_match => (:Nothing, Any[]), :search_started => (:Nothing, Any[]), :search_changed => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :stop_search => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :next_match => (:Nothing, Any[]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkSearchEntry
@@ -5542,7 +5718,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkSelectionFilterModel})
-            signalnames(supertype(GtkSelectionFilterModel))
+            vcat([:items_changed], signalnames(supertype(GtkSelectionFilterModel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkSelectionFilterModel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkSelectionFilterModel
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -5586,7 +5770,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkSettings})
-            signalnames(supertype(GtkSettings))
+            vcat([:gtk_private_changed], signalnames(supertype(GtkSettings)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkSettings
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkSettings
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -5630,7 +5822,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkShortcutController})
-            signalnames(supertype(GtkShortcutController))
+            vcat([:items_changed], signalnames(supertype(GtkShortcutController)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkShortcutController
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkShortcutController
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -5830,7 +6030,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkSingleSelection})
-            signalnames(supertype(GtkSingleSelection))
+            vcat([:items_changed, :selection_changed], signalnames(supertype(GtkSingleSelection)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkSingleSelection
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkSingleSelection
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -5874,7 +6082,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkSliceListModel})
-            signalnames(supertype(GtkSliceListModel))
+            vcat([:items_changed], signalnames(supertype(GtkSliceListModel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkSliceListModel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkSliceListModel
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -5918,7 +6134,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkSortListModel})
-            signalnames(supertype(GtkSortListModel))
+            vcat([:items_changed], signalnames(supertype(GtkSortListModel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkSortListModel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkSortListModel
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -5940,7 +6164,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkSpinButton})
-            vcat([:change_value, :input, :output, :value_changed, :wrapped], signalnames(supertype(GtkSpinButton)))
+            vcat([:change_value, :input, :output, :value_changed, :wrapped, :editing_done, :remove_widget, :changed, :delete_text, :insert_text], signalnames(supertype(GtkSpinButton)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :state_flags_changed => (:Nothing, Any[:UInt32]), :map => (:Nothing, Any[]), :change_value => (:Nothing, Any[:UInt32]), :unrealize => (:Nothing, Any[]), :input => (:Int32, Any[:Float64]), :value_changed => (:Nothing, Any[]), :wrapped => (:Nothing, Any[]), :output => (:Cint, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, Any[:UInt32]), :mnemonic_activate => (:Cint, Any[:Cint]), :direction_changed => (:Nothing, Any[:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkSpinButton
@@ -6132,7 +6356,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkStringList})
-            signalnames(supertype(GtkStringList))
+            vcat([:items_changed], signalnames(supertype(GtkStringList)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkStringList
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkStringList
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -6250,7 +6482,7 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkText})
-            vcat([:activate, :backspace, :copy_clipboard, :cut_clipboard, :delete_from_cursor, :insert_at_cursor, :insert_emoji, :move_cursor, :paste_clipboard, :preedit_changed, :toggle_overwrite], signalnames(supertype(GtkText)))
+            vcat([:activate, :backspace, :copy_clipboard, :cut_clipboard, :delete_from_cursor, :insert_at_cursor, :insert_emoji, :move_cursor, :paste_clipboard, :preedit_changed, :toggle_overwrite, :changed, :delete_text, :insert_text], signalnames(supertype(GtkText)))
         end
         let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :insert_at_cursor => (:Nothing, Any[:Cstring]), :map => (:Nothing, Any[]), :preedit_changed => (:Nothing, Any[:Cstring]), :cut_clipboard => (:Nothing, Any[]), :insert_emoji => (:Nothing, Any[]), :move_focus => (:Nothing, Any[:UInt32]), :activate => (:Nothing, Any[]), :direction_changed => (:Nothing, Any[:UInt32]), :state_flags_changed => (:Nothing, Any[:UInt32]), :delete_from_cursor => (:Nothing, Any[:UInt32, :Int32]), :unrealize => (:Nothing, Any[]), :toggle_overwrite => (:Nothing, Any[]), :backspace => (:Nothing, Any[]), :paste_clipboard => (:Nothing, Any[]), :move_cursor => (:Nothing, Any[:UInt32, :Int32, :Cint]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :copy_clipboard => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :mnemonic_activate => (:Cint, Any[:Cint]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, Any[:UInt32]), :realize => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkText
@@ -6510,7 +6742,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkTreeListModel})
-            signalnames(supertype(GtkTreeListModel))
+            vcat([:items_changed], signalnames(supertype(GtkTreeListModel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkTreeListModel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkTreeListModel
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -6576,7 +6816,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkTreeModelFilter})
-            signalnames(supertype(GtkTreeModelFilter))
+            vcat([:row_changed, :row_deleted, :row_has_child_toggled, :row_inserted], signalnames(supertype(GtkTreeModelFilter)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkTreeModelFilter
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkTreeModelFilter
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -6598,7 +6846,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkTreeModelSort})
-            signalnames(supertype(GtkTreeModelSort))
+            vcat([:row_changed, :row_deleted, :row_has_child_toggled, :row_inserted, :sort_column_changed], signalnames(supertype(GtkTreeModelSort)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkTreeModelSort
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkTreeModelSort
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -6650,7 +6906,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkTreeStore})
-            signalnames(supertype(GtkTreeStore))
+            vcat([:row_changed, :row_deleted, :row_has_child_toggled, :row_inserted, :sort_column_changed], signalnames(supertype(GtkTreeStore)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkTreeStore
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkTreeStore
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -6820,7 +7084,15 @@ $(Expr(:toplevel, quote
     end
     begin
         function GLib.signalnames(::Type{GtkWidgetPaintable})
-            signalnames(supertype(GtkWidgetPaintable))
+            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GtkWidgetPaintable)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkWidgetPaintable
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkWidgetPaintable
+                Tuple(eval.((d[name])[2]))
+            end
         end
     end
     begin
@@ -8554,6 +8826,9 @@ $(Expr(:toplevel, quote
     function on_value_changed(f, object::GtkAdjustment, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "value-changed", Nothing, (), after, user_data)
     end
+    function on_items_changed(f, object::GtkAnyFilter, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
     function on_activate(f, object::GtkAppChooserButton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (), after, user_data)
     end
@@ -8578,6 +8853,30 @@ $(Expr(:toplevel, quote
     function on_window_removed(f, object::GtkApplication, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "window-removed", Nothing, (Ptr{GObject},), after, user_data)
     end
+    function on_action_added(f, object::GtkApplication, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-added", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_enabled_changed(f, object::GtkApplication, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-enabled-changed", Nothing, (Cstring, Cint), after, user_data)
+    end
+    function on_action_removed(f, object::GtkApplication, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-removed", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_state_changed(f, object::GtkApplication, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-state-changed", Nothing, (Cstring, GVariant), after, user_data)
+    end
+    function on_action_added(f, object::GtkApplicationWindow, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-added", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_enabled_changed(f, object::GtkApplicationWindow, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-enabled-changed", Nothing, (Cstring, Cint), after, user_data)
+    end
+    function on_action_removed(f, object::GtkApplicationWindow, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-removed", Nothing, (Cstring,), after, user_data)
+    end
+    function on_action_state_changed(f, object::GtkApplicationWindow, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "action-state-changed", Nothing, (Cstring, GVariant), after, user_data)
+    end
     function on_apply(f, object::GtkAssistant, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "apply", Nothing, (), after, user_data)
     end
@@ -8592,6 +8891,9 @@ $(Expr(:toplevel, quote
     end
     function on_prepare(f, object::GtkAssistant, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "prepare", Nothing, (Ptr{GObject},), after, user_data)
+    end
+    function on_items_changed(f, object::GtkBookmarkList, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
     end
     function on_activate(f, object::GtkButton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (), after, user_data)
@@ -8659,6 +8961,15 @@ $(Expr(:toplevel, quote
     function on_color_set(f, object::GtkColorButton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "color-set", Nothing, (), after, user_data)
     end
+    function on_color_activated(f, object::GtkColorButton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "color-activated", Nothing, (_GdkRGBA,), after, user_data)
+    end
+    function on_color_activated(f, object::GtkColorChooserDialog, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "color-activated", Nothing, (_GdkRGBA,), after, user_data)
+    end
+    function on_color_activated(f, object::GtkColorChooserWidget, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "color-activated", Nothing, (_GdkRGBA,), after, user_data)
+    end
     function on_activate(f, object::GtkColumnView, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (UInt32,), after, user_data)
     end
@@ -8680,14 +8991,32 @@ $(Expr(:toplevel, quote
     function on_popup(f, object::GtkComboBox, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "popup", Nothing, (), after, user_data)
     end
+    function on_editing_done(f, object::GtkComboBox, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "editing-done", Nothing, (), after, user_data)
+    end
+    function on_remove_widget(f, object::GtkComboBox, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "remove-widget", Nothing, (), after, user_data)
+    end
+    function on_editing_done(f, object::GtkComboBoxText, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "editing-done", Nothing, (), after, user_data)
+    end
+    function on_remove_widget(f, object::GtkComboBoxText, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "remove-widget", Nothing, (), after, user_data)
+    end
     function on_parsing_error(f, object::GtkCssProvider, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "parsing-error", Nothing, (GtkCssSection, Ptr{GError}), after, user_data)
+    end
+    function on_gtk_private_changed(f, object::GtkCssProvider, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "gtk-private-changed", Nothing, (), after, user_data)
     end
     function on_close(f, object::GtkDialog, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "close", Nothing, (), after, user_data)
     end
     function on_response(f, object::GtkDialog, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "response", Nothing, (Int32,), after, user_data)
+    end
+    function on_items_changed(f, object::GtkDirectoryList, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
     end
     function on_drag_begin(f, object::GtkDragSource, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "drag-begin", Nothing, (Ptr{GObject},), after, user_data)
@@ -8746,6 +9075,15 @@ $(Expr(:toplevel, quote
     function on_drop(f, object::GtkDropTargetAsync, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "drop", Cint, (Ptr{GObject}, Float64, Float64), after, user_data)
     end
+    function on_changed(f, object::GtkEditableLabel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
+    end
+    function on_delete_text(f, object::GtkEditableLabel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "delete-text", Nothing, (Int32, Int32), after, user_data)
+    end
+    function on_insert_text(f, object::GtkEditableLabel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "insert-text", Nothing, (Cstring, Int32, Int32), after, user_data)
+    end
     function on_emoji_picked(f, object::GtkEmojiChooser, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "emoji-picked", Nothing, (Cstring,), after, user_data)
     end
@@ -8757,6 +9095,21 @@ $(Expr(:toplevel, quote
     end
     function on_icon_release(f, object::GtkEntry, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "icon-release", Nothing, (UInt32,), after, user_data)
+    end
+    function on_editing_done(f, object::GtkEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "editing-done", Nothing, (), after, user_data)
+    end
+    function on_remove_widget(f, object::GtkEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "remove-widget", Nothing, (), after, user_data)
+    end
+    function on_changed(f, object::GtkEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
+    end
+    function on_delete_text(f, object::GtkEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "delete-text", Nothing, (Int32, Int32), after, user_data)
+    end
+    function on_insert_text(f, object::GtkEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "insert-text", Nothing, (Cstring, Int32, Int32), after, user_data)
     end
     function on_deleted_text(f, object::GtkEntryBuffer, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "deleted-text", Nothing, (UInt32, UInt32), after, user_data)
@@ -8818,6 +9171,9 @@ $(Expr(:toplevel, quote
     function on_scroll_end(f, object::GtkEventControllerScroll, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "scroll-end", Nothing, (), after, user_data)
     end
+    function on_items_changed(f, object::GtkEveryFilter, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
     function on_activate(f, object::GtkExpander, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (), after, user_data)
     end
@@ -8860,6 +9216,12 @@ $(Expr(:toplevel, quote
     function on_changed(f, object::GtkFilter, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "changed", Nothing, (UInt32,), after, user_data)
     end
+    function on_items_changed(f, object::GtkFilterListModel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_items_changed(f, object::GtkFlattenListModel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
     function on_activate_cursor_child(f, object::GtkFlowBox, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate-cursor-child", Nothing, (), after, user_data)
     end
@@ -8889,6 +9251,15 @@ $(Expr(:toplevel, quote
     end
     function on_font_set(f, object::GtkFontButton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "font-set", Nothing, (), after, user_data)
+    end
+    function on_font_activated(f, object::GtkFontButton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "font-activated", Nothing, (Cstring,), after, user_data)
+    end
+    function on_font_activated(f, object::GtkFontChooserDialog, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "font-activated", Nothing, (Cstring,), after, user_data)
+    end
+    function on_font_activated(f, object::GtkFontChooserWidget, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "font-activated", Nothing, (Cstring,), after, user_data)
     end
     function on_create_context(f, object::GtkGLArea, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "create-context", Ptr{GObject}, (), after, user_data)
@@ -8986,6 +9357,12 @@ $(Expr(:toplevel, quote
     function on_retrieve_surrounding(f, object::GtkIMContext, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "retrieve-surrounding", Cint, (), after, user_data)
     end
+    function on_invalidate_contents(f, object::GtkIconPaintable, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-contents", Nothing, (), after, user_data)
+    end
+    function on_invalidate_size(f, object::GtkIconPaintable, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
+    end
     function on_changed(f, object::GtkIconTheme, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
     end
@@ -9064,14 +9441,62 @@ $(Expr(:toplevel, quote
     function on_activate(f, object::GtkListBoxRow, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (), after, user_data)
     end
+    function on_row_changed(f, object::GtkListStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-changed", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_deleted(f, object::GtkListStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-deleted", Nothing, (GtkTreePath,), after, user_data)
+    end
+    function on_row_has_child_toggled(f, object::GtkListStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-has-child-toggled", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_inserted(f, object::GtkListStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-inserted", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_sort_column_changed(f, object::GtkListStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "sort-column-changed", Nothing, (), after, user_data)
+    end
     function on_activate(f, object::GtkListView, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (UInt32,), after, user_data)
+    end
+    function on_items_changed(f, object::GtkMapListModel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_invalidate_contents(f, object::GtkMediaFile, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-contents", Nothing, (), after, user_data)
+    end
+    function on_invalidate_size(f, object::GtkMediaFile, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
+    end
+    function on_invalidate_contents(f, object::GtkMediaStream, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-contents", Nothing, (), after, user_data)
+    end
+    function on_invalidate_size(f, object::GtkMediaStream, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
     end
     function on_activate(f, object::GtkMenuButton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (), after, user_data)
     end
+    function on_items_changed(f, object::GtkMultiFilter, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_items_changed(f, object::GtkMultiSelection, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_selection_changed(f, object::GtkMultiSelection, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "selection-changed", Nothing, (UInt32, UInt32), after, user_data)
+    end
+    function on_items_changed(f, object::GtkMultiSorter, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
     function on_response(f, object::GtkNativeDialog, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "response", Nothing, (Int32,), after, user_data)
+    end
+    function on_items_changed(f, object::GtkNoSelection, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_selection_changed(f, object::GtkNoSelection, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "selection-changed", Nothing, (UInt32, UInt32), after, user_data)
     end
     function on_change_current_page(f, object::GtkNotebook, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "change-current-page", Cint, (Int32,), after, user_data)
@@ -9127,6 +9552,15 @@ $(Expr(:toplevel, quote
     function on_activate(f, object::GtkPasswordEntry, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (), after, user_data)
     end
+    function on_changed(f, object::GtkPasswordEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
+    end
+    function on_delete_text(f, object::GtkPasswordEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "delete-text", Nothing, (Int32, Int32), after, user_data)
+    end
+    function on_insert_text(f, object::GtkPasswordEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "insert-text", Nothing, (Cstring, Int32, Int32), after, user_data)
+    end
     function on_activate_default(f, object::GtkPopover, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate-default", Nothing, (), after, user_data)
     end
@@ -9168,6 +9602,12 @@ $(Expr(:toplevel, quote
     end
     function on_update_custom_widget(f, object::GtkPrintOperation, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "update-custom-widget", Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), after, user_data)
+    end
+    function on_got_page_size(f, object::GtkPrintOperation, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "got-page-size", Nothing, (Ptr{GObject}, Ptr{GObject}), after, user_data)
+    end
+    function on_ready(f, object::GtkPrintOperation, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "ready", Nothing, (Ptr{GObject},), after, user_data)
     end
     function on_details_acquired(f, object::GtkPrinter, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "details-acquired", Nothing, (Cint,), after, user_data)
@@ -9226,6 +9666,24 @@ $(Expr(:toplevel, quote
     function on_stop_search(f, object::GtkSearchEntry, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "stop-search", Nothing, (), after, user_data)
     end
+    function on_changed(f, object::GtkSearchEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
+    end
+    function on_delete_text(f, object::GtkSearchEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "delete-text", Nothing, (Int32, Int32), after, user_data)
+    end
+    function on_insert_text(f, object::GtkSearchEntry, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "insert-text", Nothing, (Cstring, Int32, Int32), after, user_data)
+    end
+    function on_items_changed(f, object::GtkSelectionFilterModel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_gtk_private_changed(f, object::GtkSettings, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "gtk-private-changed", Nothing, (), after, user_data)
+    end
+    function on_items_changed(f, object::GtkShortcutController, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
     function on_change_current_page(f, object::GtkShortcutsSection, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "change-current-page", Cint, (Int32,), after, user_data)
     end
@@ -9247,6 +9705,18 @@ $(Expr(:toplevel, quote
     function on_unbind(f, object::GtkSignalListItemFactory, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "unbind", Nothing, (Ptr{GObject},), after, user_data)
     end
+    function on_items_changed(f, object::GtkSingleSelection, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_selection_changed(f, object::GtkSingleSelection, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "selection-changed", Nothing, (UInt32, UInt32), after, user_data)
+    end
+    function on_items_changed(f, object::GtkSliceListModel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_items_changed(f, object::GtkSortListModel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
     function on_changed(f, object::GtkSorter, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "changed", Nothing, (UInt32,), after, user_data)
     end
@@ -9265,11 +9735,29 @@ $(Expr(:toplevel, quote
     function on_wrapped(f, object::GtkSpinButton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "wrapped", Nothing, (), after, user_data)
     end
+    function on_editing_done(f, object::GtkSpinButton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "editing-done", Nothing, (), after, user_data)
+    end
+    function on_remove_widget(f, object::GtkSpinButton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "remove-widget", Nothing, (), after, user_data)
+    end
+    function on_changed(f, object::GtkSpinButton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
+    end
+    function on_delete_text(f, object::GtkSpinButton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "delete-text", Nothing, (Int32, Int32), after, user_data)
+    end
+    function on_insert_text(f, object::GtkSpinButton, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "insert-text", Nothing, (Cstring, Int32, Int32), after, user_data)
+    end
     function on_text_popped(f, object::GtkStatusbar, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "text-popped", Nothing, (UInt32, Cstring), after, user_data)
     end
     function on_text_pushed(f, object::GtkStatusbar, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "text-pushed", Nothing, (UInt32, Cstring), after, user_data)
+    end
+    function on_items_changed(f, object::GtkStringList, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
     end
     function on_activate(f, object::GtkSwitch, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (), after, user_data)
@@ -9309,6 +9797,15 @@ $(Expr(:toplevel, quote
     end
     function on_toggle_overwrite(f, object::GtkText, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "toggle-overwrite", Nothing, (), after, user_data)
+    end
+    function on_changed(f, object::GtkText, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
+    end
+    function on_delete_text(f, object::GtkText, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "delete-text", Nothing, (Int32, Int32), after, user_data)
+    end
+    function on_insert_text(f, object::GtkText, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "insert-text", Nothing, (Cstring, Int32, Int32), after, user_data)
     end
     function on_apply_tag(f, object::GtkTextBuffer, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "apply-tag", Nothing, (Ptr{GObject}, _GtkTextIter, _GtkTextIter), after, user_data)
@@ -9412,8 +9909,53 @@ $(Expr(:toplevel, quote
     function on_toggled(f, object::GtkToggleButton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "toggled", Nothing, (), after, user_data)
     end
+    function on_items_changed(f, object::GtkTreeListModel, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_row_changed(f, object::GtkTreeModelFilter, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-changed", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_deleted(f, object::GtkTreeModelFilter, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-deleted", Nothing, (GtkTreePath,), after, user_data)
+    end
+    function on_row_has_child_toggled(f, object::GtkTreeModelFilter, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-has-child-toggled", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_inserted(f, object::GtkTreeModelFilter, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-inserted", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_changed(f, object::GtkTreeModelSort, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-changed", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_deleted(f, object::GtkTreeModelSort, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-deleted", Nothing, (GtkTreePath,), after, user_data)
+    end
+    function on_row_has_child_toggled(f, object::GtkTreeModelSort, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-has-child-toggled", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_inserted(f, object::GtkTreeModelSort, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-inserted", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_sort_column_changed(f, object::GtkTreeModelSort, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "sort-column-changed", Nothing, (), after, user_data)
+    end
     function on_changed(f, object::GtkTreeSelection, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
+    end
+    function on_row_changed(f, object::GtkTreeStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-changed", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_deleted(f, object::GtkTreeStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-deleted", Nothing, (GtkTreePath,), after, user_data)
+    end
+    function on_row_has_child_toggled(f, object::GtkTreeStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-has-child-toggled", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_row_inserted(f, object::GtkTreeStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "row-inserted", Nothing, (GtkTreePath, _GtkTreeIter), after, user_data)
+    end
+    function on_sort_column_changed(f, object::GtkTreeStore, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "sort-column-changed", Nothing, (), after, user_data)
     end
     function on_columns_changed(f, object::GtkTreeView, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "columns-changed", Nothing, (), after, user_data)
@@ -9501,6 +10043,12 @@ $(Expr(:toplevel, quote
     end
     function on_unrealize(f, object::GtkWidget, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "unrealize", Nothing, (), after, user_data)
+    end
+    function on_invalidate_contents(f, object::GtkWidgetPaintable, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-contents", Nothing, (), after, user_data)
+    end
+    function on_invalidate_size(f, object::GtkWidgetPaintable, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
     end
     function on_activate_default(f, object::GtkWindow, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate-default", Nothing, (), after, user_data)
