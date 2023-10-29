@@ -230,6 +230,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{GBinding})
+            signalnames(supertype(GBinding))
+        end
+    end
+    begin
         abstract type GBindingGroup <: GObject end
         mutable struct GBindingGroupLeaf <: GBindingGroup
             handle::Ptr{GObject}
@@ -245,6 +250,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: GBindingGroup) = begin
                 ccall(("g_binding_group_get_type", libgobject), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{GBindingGroup})
+            signalnames(supertype(GBindingGroup))
+        end
     end
     begin
         abstract type GInitiallyUnowned <: GObject end
@@ -264,6 +274,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{GInitiallyUnowned})
+            signalnames(supertype(GInitiallyUnowned))
+        end
+    end
+    begin
         abstract type GTypeModule <: GObject end
         mutable struct GTypeModuleLeaf <: GTypeModule
             handle::Ptr{GObject}
@@ -279,6 +294,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: GTypeModule) = begin
                 ccall(("g_type_module_get_type", libgobject), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{GTypeModule})
+            signalnames(supertype(GTypeModule))
+        end
     end
     begin
         gtype_wrapper_cache_init() = begin

@@ -228,6 +228,28 @@ function prop_dict_incl_parents(objectinfo::GIObjectInfo)
     end
 end
 
+function signal_dict(info)
+    signals=get_signals(info)
+    d=Dict{Symbol,Tuple{Any,Any}}()
+    for s in signals
+        rettyp = get_ret_type(s)
+        argtyps = get_arg_types(s)
+        name=Symbol(replace(String(get_name(s)),"-"=>"_"))
+        d[name]=(rettyp,argtyps)
+    end
+    d
+end
+
+function signal_dict_incl_parents(objectinfo::GIObjectInfo)
+    d=signal_dict(objectinfo)
+    parentinfo=get_parent(objectinfo)
+    if parentinfo!==nothing
+        return merge(signal_dict_incl_parents(parentinfo),d)
+    else
+        return d
+    end
+end
+
 get_toplevel(o::GIInterfaceInfo) = :GObject
 function get_toplevel(o)
     p = o
@@ -284,6 +306,33 @@ function gobject_decl(objectinfo)
                       ccall(($type_init, $slib), GType, ())
     end
     push!(exprs, decl)
+    # if there are signals, add "signal_return_type" method, and "signal_arg_types" method
+    signals = get_signals(objectinfo)
+    sigdict = signal_dict_incl_parents(objectinfo)
+    if length(signals)>0
+        signalnames = [Symbol(replace(String(sname),"-"=>"_")) for sname in get_name.(signals)]
+        signalexprs = quote
+            function GLib.signalnames(::Type{$oname})
+                vcat($signalnames,signalnames(supertype($oname)))
+            end
+            let d = $sigdict
+                function GLib.signal_return_type(::Type{T},name::Symbol) where T<:$oname
+                    eval(d[name][1])
+                end
+                function GLib.signal_argument_types(::Type{T},name::Symbol) where T<:$oname
+                    Tuple(eval.(d[name][2]))
+                end
+            end
+        end
+        push!(exprs,signalexprs)
+    else
+        signalexprs = quote
+            function GLib.signalnames(::Type{$oname})
+                signalnames(supertype($oname))
+            end
+        end
+        push!(exprs,signalexprs)
+    end
     exprs
 end
 
@@ -385,6 +434,21 @@ function decl(callbackinfo::GICallbackInfo)
     unblock(d)
 end
 
+function get_ret_type(signalinfo::GISignalInfo)
+    rettypeinfo=get_return_type(signalinfo)
+    extract_type(rettypeinfo).ctype
+end
+
+function get_arg_types(signalinfo::GISignalInfo)
+    args=get_args(signalinfo)
+    argctypes_arr=[]
+    for arg in args
+        argtype = extract_type(arg)
+        push!(argctypes_arr, argtype.ctype)
+    end
+    argctypes_arr
+end
+
 ## Signal output
 function decl(signalinfo::GISignalInfo)
     name = get_name(signalinfo)
@@ -396,24 +460,12 @@ function decl(signalinfo::GISignalInfo)
     object = get_container(signalinfo)
     @assert object !== nothing
     objtypeinfo = extract_type(InstanceType,object)
-    rettypeinfo=get_return_type(signalinfo)
-    rettype = extract_type(rettypeinfo).ctype
-    args=get_args(signalinfo)
-    argctypes_arr=[]
-    for arg in args
-        argtype = extract_type(arg)
-        push!(argctypes_arr, argtype.ctype)
-    end
+    rettype = get_ret_type(signalinfo)
+    argctypes_arr = get_arg_types(signalinfo)
     argctypes = Expr(:tuple, argctypes_arr...)
     d = quote
         function $oname(f, object::$(objtypeinfo.jtype), user_data=object, after=false)
             GLib.signal_connect_generic(f, object, $(String(name)), $rettype, $argctypes, after, user_data)
-        end
-        function $rettypefunc(object::$(objtypeinfo.jtype))
-            $rettype
-        end
-        function $typeargsfunc(object::$(objtypeinfo.jtype))
-            $argctypes
         end
     end
     unblock(d)

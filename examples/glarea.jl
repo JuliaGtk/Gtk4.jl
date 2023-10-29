@@ -181,7 +181,7 @@ function on_realized(a)
 	@async println(state.program)
 end
 
-function on_render(a, c, user_data)
+function render(a, c, user_data)
 	glUseProgram(state.program)
 	positionAttribute = glGetAttribLocation(state.program, "position");
 	glEnableVertexAttribArray(positionAttribute)
@@ -201,7 +201,7 @@ w = GtkWindow("GL example", wh, wh)
 glarea = GtkGLArea()
 
 signal_connect(on_realized, glarea, "realize")
-signal_connect(on_render, glarea, "render", Cint, (Ptr{Gtk4.GdkGLContext},))
+Gtk4.on_render(render, glarea)
 
 w[]=glarea
 

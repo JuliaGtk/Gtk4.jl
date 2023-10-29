@@ -83,11 +83,93 @@ signal_connect(win, "notify::title") do obj, pspec    # here `obj` is the GObjec
 end
 ```
 
-## Alternative approach to signals and signal-handlers
+## Alternative approach to signals and signal handlers
 
-In addition to the "simple" interface, `signal_connect` supports an approach that allows your callback function to be directly compiled to machine code.
+In addition to the "simple" interface described above, Gtk4 includes an approach that allows your callback function to be directly compiled to machine code. Gtk4 makes this easier by using GObject introspection data to look up the return type and parameter types, saving the user the hassle of doing this themselves.
 
-This alternative syntax is as follows:
+For the "clicked" signal of a `GtkButton`, the equivalent to the example at the beginning of this page is as follows:
+```julia
+b = GtkButton("Press me")
+win = GtkWindow(b, "Callbacks")
+function button_cb(::Ptr, b)
+    println(b, " was clicked!")
+end
+
+on_clicked(cb, b)
+```
+
+Note that the main difference here, other than the name of the function being called to connect the signal, is the argument list of the callback. The first argument here is always a pointer to the GObject that sends the signal, which in this case is the `GtkButton`.
+
+The full definition of the function `on_clicked` is
+```julia
+on_clicked(cb::Function, widget::GtkButton, user_data = widget, after = false)
+```
+where:
+- `cb` is your callback function. This will be compiled with `@cfunction`, and you need to follow its rules. In particular, you should use a generic function
+  (i.e., one defined as `function foo(x,y,z) ... end`), and the
+  arguments and return type should match the GTK+ documentation for
+  the widget and signal ([see
+  examples](https://docs.gtk.org/gtk4/signal.Widget.query-tooltip.html)).
+  **In contrast with the simpler interface, when writing these callbacks you must include the `user_data` argument**.  See examples below.
+- `widget` is the widget that will send the signal
+- `user_data` contains any additional information your callback needs
+  to operate.  For example, you can pass other widgets, tuples of
+  values, etc.  If omitted (as it was in the example above), it defaults to `widget`.
+- `after` is a boolean, `true` if you want your callback to run after
+  the default handler for your signal. When in doubt, specify `false`.
+
+Functions like this are defined for every signal of every widget supported by Gtk4.jl. They are named `on_signalname`, where signals with `-` in their names have them replaced by underscores `_`. So to connect to `GtkWindow`'s "close-request" signal, you would use `on_close_request`.
+
+When you define the callback, you still have to use the correct argument list or else the call to `@cfunction` will throw an error. It should be `Ptr{GObject}`, `param_types...`, `user_data`. The callback should also return the right type. Functions `signal_return_type(WidgetType, signame)` and `signal_argument_types(WidgetType, signame)` are defined that return the needed types for the signal "signame" of the type "WidgetType".
+
+For example, consider a GUI in which pressing a button updates
+a counter:
+
+```julia
+box = GtkBox(:h)
+button = GtkButton("click me")
+label  = GtkLabel("0")
+push!(box, button)
+push!(box, label)
+win = GtkWindow(box, "Callbacks")
+
+const counter = [0]  # Pack counter value inside array to make it a reference
+
+# "clicked" callback declaration is
+#     void user_function(GtkButton *button, gpointer user_data)
+# But user_data gets converted into a Julia object automatically
+function button_cb(widgetptr::Ptr, user_data)
+     widget = convert(Gtk4.GtkButtonLeaf, widgetptr)  # pointer -> object
+     lbl, cntr = user_data                # unpack the user_data tuple
+     cntr[] = cntr[]+1                    # increment counter[1]
+     lbl.label = string(cntr[])
+     nothing                              # return type is void
+end
+
+on_clicked(button_cb, button, (label, counter))
+```
+Here, the tuple `(label, counter)` was passed in as `user_data`. Note that the value of `counter[]` matches the display in the GUI.
+
+### `@guarded`
+
+The "simple" callback interface includes protections against
+corrupting Gtk state from errors, but this `@cfunction`-based approach
+does not. Consequently, you may wish to use `@guarded` when writing
+these functions. ([Canvas](../manual/canvas.md) draw functions and
+mouse event-handling are called through this interface, which is why
+you should use `@guarded` there.) For functions that should return a
+value, you can specify the value to be returned on error as the first
+argument. For example:
+
+```julia
+    const unhandled = convert(Int32, false)
+    @guarded unhandled function my_callback(widgetptr, ...)
+        ...
+    end
+```
+
+### Old approach to @cfunction based signals
+The approach taken by Gtk.jl and earlier versions of Gtk4.jl is still supported, where you supply the return type and parameter types:
 ```julia
 signal_connect(cb, widget, signalname, return_type, parameter_type_tuple, after, user_data=widget)
 ```
@@ -164,20 +246,3 @@ write a callback using the "simple" interface, e.g.,
 
 and then use the reported type in `parameter_type_tuple`.
 
-### `@guarded`
-
-The "simple" callback interface includes protections against
-corrupting Gtk state from errors, but this `@cfunction`-based approach
-does not. Consequently, you may wish to use `@guarded` when writing
-these functions. ([Canvas](../manual/canvas.md) draw functions and
-mouse event-handling are called through this interface, which is why
-you should use `@guarded` there.) For functions that should return a
-value, you can specify the value to be returned on error as the first
-argument. For example:
-
-```julia
-    const unhandled = convert(Int32, false)
-    @guarded unhandled function my_callback(widgetptr, ...)
-        ...
-    end
-```

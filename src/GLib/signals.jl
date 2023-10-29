@@ -6,6 +6,7 @@
 # end
 function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike,
         ::Type{RT}, param_types::Tuple, after::Bool = false, user_data::CT = w) where {CT, RT}
+    # could use signal_query to check RT and param_types and throw an error if not correct
     signal_connect_generic(cb, w, sig, RT, param_types, after, user_data)
 end
 
@@ -400,4 +401,46 @@ function waitforsignal(obj::GObject,signal)
       notify(c)
   end
   wait(c)
+end
+
+"""
+    on_notify(f, object::GObject, property::Symbol, user_data = object, after = false)
+
+Connect a callback `f` to the object's "notify::property" signal that will be
+called whenever the property changes. The callback signature should be
+`f(::Ptr, param::GParam, user_data)` and should return `nothing`.
+"""
+function on_notify(f, object::GObject, property::Symbol, user_data = object, after = false)
+    signal_connect_generic(f, object, "notify::$property", Nothing, (GParam,), after, user_data)
+end
+
+# The following are overridden by GI for each subtype of GObject
+
+"""
+    signalnames(::Type{T}) where T <: GObject
+
+Returns a list of the names of supported signals for T.
+"""
+function signalnames(::Type{GObject})
+    [:notify]
+end
+
+"""
+    signal_return_type(::Type{T}, name::Symbol) where T <: GObject
+
+Gets the return type for the callback for the signal `name` of a `GObject` type
+(for example `GtkWidget`).
+"""
+function signal_return_type(::Type{GObject},name::Symbol)
+    Nothing
+end
+
+"""
+    signal_argument_types(::Type{T}, name::Symbol) where T <: GObject
+
+Gets the argument types for the callback for the signal `name` of a `GObject` type
+(for example `GtkWidget`).
+"""
+function signal_argument_types(::Type{GObject},name::Symbol)
+    (GParam,)
 end

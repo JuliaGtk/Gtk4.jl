@@ -65,7 +65,7 @@ end
 end
 
 import .GLib: set_gtk_property!, get_gtk_property, run,
-              signal_handler_is_connected
+              signal_handler_is_connected, signalnames
 
 # define accessor methods in Gtk4
 

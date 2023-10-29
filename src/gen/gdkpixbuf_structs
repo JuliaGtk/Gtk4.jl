@@ -71,6 +71,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{GdkPixbuf})
+            signalnames(supertype(GdkPixbuf))
+        end
+    end
+    begin
         abstract type GdkPixbufAnimation <: GObject end
         mutable struct GdkPixbufAnimationLeaf <: GdkPixbufAnimation
             handle::Ptr{GObject}
@@ -86,6 +91,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: GdkPixbufAnimation) = begin
                 ccall(("gdk_pixbuf_animation_get_type", libgdkpixbuf), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{GdkPixbufAnimation})
+            signalnames(supertype(GdkPixbufAnimation))
+        end
     end
     begin
         abstract type GdkPixbufAnimationIter <: GObject end
@@ -105,6 +115,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{GdkPixbufAnimationIter})
+            signalnames(supertype(GdkPixbufAnimationIter))
+        end
+    end
+    begin
         abstract type GdkPixbufLoader <: GObject end
         mutable struct GdkPixbufLoaderLeaf <: GdkPixbufLoader
             handle::Ptr{GObject}
@@ -120,6 +135,19 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: GdkPixbufLoader) = begin
                 ccall(("gdk_pixbuf_loader_get_type", libgdkpixbuf), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{GdkPixbufLoader})
+            vcat([:area_prepared, :area_updated, :closed, :size_prepared], signalnames(supertype(GdkPixbufLoader)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:GParam]), :area_prepared => (:Nothing, Any[]), :area_updated => (:Nothing, Any[:Int32, :Int32, :Int32, :Int32]), :size_prepared => (:Nothing, Any[:Int32, :Int32]), :closed => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkPixbufLoader
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkPixbufLoader
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type GdkPixbufNonAnim <: GdkPixbufAnimation end
@@ -139,6 +167,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{GdkPixbufNonAnim})
+            signalnames(supertype(GdkPixbufNonAnim))
+        end
+    end
+    begin
         abstract type GdkPixbufSimpleAnim <: GdkPixbufAnimation end
         mutable struct GdkPixbufSimpleAnimLeaf <: GdkPixbufSimpleAnim
             handle::Ptr{GObject}
@@ -156,6 +189,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{GdkPixbufSimpleAnim})
+            signalnames(supertype(GdkPixbufSimpleAnim))
+        end
+    end
+    begin
         abstract type GdkPixbufSimpleAnimIter <: GdkPixbufAnimationIter end
         mutable struct GdkPixbufSimpleAnimIterLeaf <: GdkPixbufSimpleAnimIter
             handle::Ptr{GObject}
@@ -171,6 +209,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: GdkPixbufSimpleAnimIter) = begin
                 ccall(("gdk_pixbuf_simple_anim_iter_get_type", libgdkpixbuf), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{GdkPixbufSimpleAnimIter})
+            signalnames(supertype(GdkPixbufSimpleAnimIter))
+        end
     end
     begin
         gtype_wrapper_cache_init() = begin
@@ -285,49 +328,17 @@ $(Expr(:toplevel, quote
         ret = f(buf, count, error)
         convert(Cint, ret)
     end
-    begin
-        function on_area_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
-            GLib.signal_connect_generic(f, object, "area-prepared", Nothing, (), after, user_data)
-        end
-        function area_prepared_signal_return_type(object::GdkPixbufLoader)
-            Nothing
-        end
-        function area_prepared_signal_arg_types(object::GdkPixbufLoader)
-            ()
-        end
+    function on_area_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "area-prepared", Nothing, (), after, user_data)
     end
-    begin
-        function on_area_updated(f, object::GdkPixbufLoader, user_data = object, after = false)
-            GLib.signal_connect_generic(f, object, "area-updated", Nothing, (Int32, Int32, Int32, Int32), after, user_data)
-        end
-        function area_updated_signal_return_type(object::GdkPixbufLoader)
-            Nothing
-        end
-        function area_updated_signal_arg_types(object::GdkPixbufLoader)
-            (Int32, Int32, Int32, Int32)
-        end
+    function on_area_updated(f, object::GdkPixbufLoader, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "area-updated", Nothing, (Int32, Int32, Int32, Int32), after, user_data)
     end
-    begin
-        function on_closed(f, object::GdkPixbufLoader, user_data = object, after = false)
-            GLib.signal_connect_generic(f, object, "closed", Nothing, (), after, user_data)
-        end
-        function closed_signal_return_type(object::GdkPixbufLoader)
-            Nothing
-        end
-        function closed_signal_arg_types(object::GdkPixbufLoader)
-            ()
-        end
+    function on_closed(f, object::GdkPixbufLoader, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "closed", Nothing, (), after, user_data)
     end
-    begin
-        function on_size_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
-            GLib.signal_connect_generic(f, object, "size-prepared", Nothing, (Int32, Int32), after, user_data)
-        end
-        function size_prepared_signal_return_type(object::GdkPixbufLoader)
-            Nothing
-        end
-        function size_prepared_signal_arg_types(object::GdkPixbufLoader)
-            (Int32, Int32)
-        end
+    function on_size_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "size-prepared", Nothing, (Int32, Int32), after, user_data)
     end
     export GdkPixbufModulePattern, _GdkPixbufModulePattern, GdkPixbufFormat, _GdkPixbufFormat, GdkPixbuf, GdkPixbufLeaf, GdkPixbufAnimation, GdkPixbufAnimationLeaf, GdkPixbufAnimationIter, GdkPixbufAnimationIterLeaf, GdkPixbufLoader, GdkPixbufLoaderLeaf, GdkPixbufNonAnim, GdkPixbufNonAnimLeaf, GdkPixbufSimpleAnim, GdkPixbufSimpleAnimLeaf, GdkPixbufSimpleAnimIter, GdkPixbufSimpleAnimIterLeaf, GdkPixbufDestroyNotify, GdkPixbufModuleLoadXpmDataFunc, GdkPixbufModulePreparedFunc, GdkPixbufModuleSizeFunc, GdkPixbufModuleUpdatedFunc, GdkPixbufSaveFunc
 end))
