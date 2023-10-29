@@ -24,6 +24,14 @@ end
 
 ## GtkBox
 
+"""
+    GtkBox(orientation::Symbol, spacing::Integer=0; kwargs...)
+
+Create and return a `GtkBox` widget. The `orientation` argument can be `:h` for
+horizontal, or `:v` for vertical. The `spacing` argument controls the spacing
+between child widgets in pixels. Keyword arguments allow you to set GObject
+properties.
+"""
 GtkBox(orientation::Symbol, spacing::Integer=0; kwargs...) = GtkBox(convert(Gtk4.Orientation, orientation), spacing; kwargs...)
 
 function push!(b::GtkBox,w::GtkWidget)
@@ -57,6 +65,13 @@ GtkSeparator(orientation::Symbol; kwargs...) = GtkSeparator(convert(Gtk4.Orienta
 
 ## GtkCenterBox
 
+"""
+    GtkCenterBox(orientation::Symbol; kwargs...)
+
+Create and return a `GtkCenterBox` widget. The `orientation` argument can be
+`:h` for horizontal, or `:v` for vertical. Keyword arguments allow you to set
+GObject properties.
+"""
 function GtkCenterBox(orientation::Symbol; kwargs...)
     b = GtkCenterBox(;kwargs...)
     G_.set_orientation(GtkOrientable(b), convert(Gtk4.Orientation, orientation))
@@ -88,6 +103,13 @@ function getindex(b::GtkCenterBox, pos::Symbol)
 end
 
 ## GtkPaned
+"""
+    GtkPaned(orientation::Symbol; kwargs...)
+
+Create and return a `GtkPaned` widget. The `orientation` argument can be
+`:h` for horizontal, or `:v` for vertical. Keyword arguments allow you to set
+GObject properties.
+"""
 GtkPaned(orientation::Symbol; kwargs...) = GtkPaned(convert(Gtk4.Orientation, orientation); kwargs...)
 
 function getindex(pane::GtkPaned, i::Integer)

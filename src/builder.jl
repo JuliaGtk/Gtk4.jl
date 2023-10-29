@@ -1,3 +1,16 @@
+@doc """
+    GtkBuilder(; kwargs...)
+    GtkBuilder(filename::AbstractString; kwargs...)
+    GtkBuilder(string::AbstractString, _length::Integer; kwargs...)
+
+Create a `GtkBuilder` object. If `filename` is given (the constructor with a
+single string argument), XML describing the user interface will be read from a
+file. If `string` and `length` are given (the constructor with a string and an
+integer), XML will be read from a string of a certain `length`. If `length` is
+-1 the full string will be used.
+
+See the [GTK docs](https://docs.gtk.org/gtk4/class.Builder.html).
+""" GtkBuilder
 
 function push!(builder::GtkBuilder; buffer = nothing, filename = nothing)
     if buffer !== nothing

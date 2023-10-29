@@ -1,3 +1,11 @@
+@doc """
+    GtkWindow(title::Union{Nothing, AbstractString}, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
+
+Create an empty `GtkWindow` with a title. A default width and height can be
+provided with `w` and `h`.  If `resizable` is false, the window will have a
+fixed size `w` and `h`. If `show_window` is false, the window will be initially
+invisible.
+"""
 function GtkWindow(title::Union{Nothing, AbstractString}, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
     win = G_.Window_new()
     if title !== nothing
@@ -22,6 +30,13 @@ function GtkWindow(widget::GtkWidget, args...)
     w
 end
 
+"""
+    default_size(win::GtkWindow, w, h)
+
+Set the default size of a `GtkWindow`.
+
+Related GTK function: [`gtk_window_default_size`()]($(gtkdoc_method_url("gtk4","Window","default_size")))
+"""
 default_size(win::GtkWindow, w, h) = G_.set_default_size(win, w, h)
 
 """
@@ -58,7 +73,9 @@ fullscreen(win::GtkWindow) = G_.fullscreen(win)
 """
     fullscreen(win::GtkWindow, mon::GdkMonitor)
 
-Set `win` to fullscreen mode on a particular monitor `mon.` The windowing system (outside GTK's control) may not allow this, so it may not work on some platforms.
+Set `win` to fullscreen mode on a particular monitor `mon.` The windowing
+system (outside GTK's control) may not allow this, so it may not work on some
+platforms.
 
 See also [`unfullscreen`](@ref).
 
@@ -114,8 +131,9 @@ unmaximize(win::GtkWindow) = G_.unmaximize(win)
     present(win::GtkWindow)
     present(win::GtkWindow, timestamp)
 
-Presents a window to the user. Usually means move it to the front. According to the GTK docs, this
-function "should not be used" without including a timestamp for the user's request.
+Presents a window to the user. Usually means move it to the front. According to
+the GTK docs, this function "should not be used" without including a timestamp
+for the user's request.
 
 Related GTK function: [`gtk_window_present`()]($(gtkdoc_method_url("gtk4","Window","present")))
 Related GTK function: [`gtk_window_present_with_time`()]($(gtkdoc_method_url("gtk4","Window","present_with_time")))
@@ -136,8 +154,14 @@ function delete!(wg::GtkWindowGroup, w::GtkWindow)
     wg
 end
 
-function GtkApplicationWindow(app::GtkApplication, title::AbstractString)
-    win = GtkApplicationWindow(app)
+@doc """
+    GtkApplicationWindow(app::GtkApplication, title::AbstractString; kwargs...)
+
+Create an empty `GtkApplicationWindow` for a `GtkApplication` app and a title.
+Keyword arguments can be used to set GObject properties.
+"""
+function GtkApplicationWindow(app::GtkApplication, title::AbstractString; kwargs...)
+    win = GtkApplicationWindow(app; kwargs...)
     G_.set_title(win, title)
     win
 end

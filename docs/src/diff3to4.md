@@ -24,7 +24,7 @@ The equivalent of `Gtk.ShortNames` doesn't exist. All `GObject` types are mapped
 
 ## No showall
 
-In GTK 4, widgets are shown by default, so `showall` does not exist, and calling `show` is no longer necessary in most situations. Exceptions include `GtkDialog`s and `GtkApplicationWindow`s.
+In GTK 4, widgets are shown by default, so `showall` does not exist. Controlling a widget's initial visibility can be done using the `visible` property.
 
 ## No GtkContainer
 

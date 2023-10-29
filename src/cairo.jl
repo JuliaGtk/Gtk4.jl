@@ -42,13 +42,13 @@ end
 """
     GtkCanvas(w = -1, h = -1, init_back = false; kwargs...)
 
-Create a GtkCanvas widget for drawing using Cairo (based on GtkDrawingArea).
-Optional arguments `w` and `h` can be used to set the minimum width and height
-of the drawing area in pixels. If `init_back` is set to true, the canvas's
-image CairoSurface will be initialized immediately, which is useful for
-precompilation.
+Create a `GtkCanvas` widget for drawing using Cairo (based on
+`GtkDrawingArea`). Optional arguments `w` and `h` can be used to set the
+minimum width and height of the drawing area in pixels. If `init_back` is set
+to true, the canvas's image CairoSurface will be initialized immediately, which
+is useful for precompilation.
 
-Keyword arguments can be used to set properties of the GtkDrawingArea widget.
+Keyword arguments can be used to set properties of the `GtkDrawingArea` widget.
 """
 mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
     handle::Ptr{GObject}
@@ -89,6 +89,14 @@ function resize(config::Function, widget::GtkCanvas)
     nothing
 end
 
+"""
+    draw(redraw::Function, widget::GtkCanvas)
+
+Set a function `redraw` to be called whenever the `GtkCanvas`'s `CairoSurface`
+needs to be redrawn. The function should have a single argument, the
+`GtkCanvas`, from which the `CairoSurface` can be retrieved using
+[`getgc`](@ref).
+"""
 function draw(redraw::Function, widget::GtkCanvas)
     widget.draw = redraw
     draw(widget)
@@ -109,7 +117,7 @@ end
 """
     getgc(c::GtkCanvas)
 
-Return the CairoContext of the CairoSurface for a GtkCanvas.
+Return the CairoContext of the `CairoSurface` backing store of a `GtkCanvas`.
 """
 function getgc(c::GtkCanvas)
     if !isdefined(c,:backcc)
@@ -121,7 +129,7 @@ end
 """
     cairo_surface(c::GtkCanvas)
 
-Return the image CairoSurface for a GtkCanvas.
+Return the image `CairoSurface` backing store for a `GtkCanvas`.
 """
 function cairo_surface(c::GtkCanvas)
     if !isdefined(c,:back)

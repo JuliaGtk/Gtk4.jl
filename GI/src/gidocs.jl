@@ -102,8 +102,11 @@ function append_struc_docs!(exprs, ns, d, c, gins; incl_text=false)
     end
 end
 
-function append_object_docs!(exprs, ns, d, c, gins; incl_text=false)
+function append_object_docs!(exprs, ns, d, c, gins; incl_text=false, skiplist=[])
     for x in c
+        if x in skiplist
+            continue
+        end
         dc = GI.doc_object(d,x)
         if dc !== nothing
             if !incl_text

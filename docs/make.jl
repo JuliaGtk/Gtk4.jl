@@ -1,4 +1,4 @@
-using Documenter, Gtk4
+using Documenter, Gtk4, Cairo
 
 makedocs(
     format = Documenter.HTML(
@@ -30,6 +30,8 @@ makedocs(
         "Gtk.jl to Gtk4.jl" => "diff3to4.md",
         "Reference" => ["doc/reference.md",
                         "doc/GLib_reference.md",
+                        "doc/Gtk4_types_reference.md",
+                        "doc/GLib_types_reference.md",
                         "doc/constants_reference.md",
                         "doc/preferences.md"
                     ],
