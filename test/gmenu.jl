@@ -1,6 +1,13 @@
 using Gtk4.GLib
 using Test
 
+@testset "GObject" begin
+
+@test signal_return_type(GObject, :notify) == Nothing
+@test signal_argument_types(GObject, :notify) == (Ptr{GParamSpec},)
+
+end
+
 # GMenu is a simple object with no properties
 # Its constructor is "transfer full" unlike many Gtk constructors
 

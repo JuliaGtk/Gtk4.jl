@@ -11,7 +11,7 @@ function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractSt
 end
 
 function signal_connect_generic(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike,
-        ::Type{RT}, param_types::Tuple, after::Bool = false, user_data::CT = w) where {CT, RT}  #TODO: assert that length(param_types) is correct
+        ::Type{RT}, param_types::Tuple, after::Bool = false, user_data::CT = w) where {CT, RT}
     callback = cfunction_(cb, RT, tuple(Ptr{GObject}, param_types..., Ref{CT}))
     ref, deref = gc_ref_closure(user_data)
     return ccall((:g_signal_connect_data, libgobject), Culong,
@@ -130,9 +130,23 @@ Disconnect a signal handler from a widget `w` by its `id`.
 signal_handler_disconnect(w::GObject, handler_id::Culong) =
     ccall((:g_signal_handler_disconnect, libgobject), Nothing, (Ptr{GObject}, Culong), w, handler_id)
 
+"""
+    signal_handler_block(w::GObject, id)
+
+Temporarily block a signal handler from running on a `GObject` instance.
+
+See also [`signal_handler_unblock`](@ref).
+"""
 signal_handler_block(w::GObject, handler_id::Culong) =
     ccall((:g_signal_handler_block, libgobject), Nothing, (Ptr{GObject}, Culong), w, handler_id)
 
+"""
+    signal_handler_block(w::GObject, id)
+
+Unblock a signal handler that had been previously blocked.
+
+See also [`signal_handler_block`](@ref).
+"""
 signal_handler_unblock(w::GObject, handler_id::Culong) =
     ccall((:g_signal_handler_unblock, libgobject), Nothing, (Ptr{GObject}, Culong), w, handler_id)
 
@@ -148,7 +162,7 @@ signal_handler_is_connected(w::GObject, handler_id::Culong) =
 function signal_emit(w::GObject, sig::AbstractStringLike, ::Type{RT}, args...) where RT
     i = isa(sig, AbstractString) ? something(findfirst("::", sig), 0:-1) : (0:-1)
     if !isempty(i)
-        detail = @quark_str sig[last(i) + 1:end]
+        detail = quark_from_string(sig[last(i) + 1:end])
         sig = sig[1:first(i)-1]
     else
         detail = UInt32(0)
@@ -404,15 +418,16 @@ function waitforsignal(obj::GObject,signal)
 end
 
 """
-    on_notify(f, object::GObject, property::Symbol, user_data = object, after = false)
+    on_notify(f, object::GObject, property, user_data = object, after = false)
 
 Connect a callback `f` to the object's "notify::property" signal that will be
 called whenever the property changes. The callback signature should be
-`f(::Ptr, param::GParam, user_data)` and should return `nothing`.
+`f(::Ptr, param::Ptr{GParamSpec}, user_data)` and should return `nothing`.
 """
-function on_notify(f, object::GObject, property::Symbol, user_data = object, after = false)
-    signal_connect_generic(f, object, "notify::$property", Nothing, (GParam,), after, user_data)
+function on_notify(f, object::GObject, property::AbstractString, user_data = object, after = false)
+    signal_connect_generic(f, object, "notify::$property", Nothing, (Ptr{GParamSpec},), after, user_data)
 end
+on_notify(f, object::GObject, property::Symbol, user_data = object, after = false) = on_notify(f, object, String(property), user_data, after)
 
 # The following are overridden by GI for each subtype of GObject
 
@@ -432,6 +447,7 @@ Gets the return type for the callback for the signal `name` of a `GObject` type
 (for example `GtkWidget`).
 """
 function signal_return_type(::Type{GObject},name::Symbol)
+    name === :notify || KeyError(name)
     Nothing
 end
 
@@ -442,5 +458,6 @@ Gets the argument types for the callback for the signal `name` of a `GObject` ty
 (for example `GtkWidget`).
 """
 function signal_argument_types(::Type{GObject},name::Symbol)
-    (GParam,)
+    name === :notify || KeyError(name)
+    (Ptr{GParamSpec},)
 end

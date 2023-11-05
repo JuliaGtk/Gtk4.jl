@@ -102,8 +102,9 @@ gtypes(types...) = GType[g_type(t) for t in types]
 # caches holding various kinds of GTypes
 const gtype_wrappers = Dict{Symbol, Type}()
 
+quark_from_string(q) = ccall((:g_quark_from_string, libglib), UInt32, (Ptr{UInt8},), q)
 macro quark_str(q)
-    :( ccall((:g_quark_from_string, libglib), UInt32, (Ptr{UInt8},), bytestring($q)) )
+    :( quark_from_string(bytestring($q)) )
 end
 
 unsafe_convert(::Type{Ptr{T}}, box::T) where {T <: GBoxed} = convert(Ptr{T}, box.handle)

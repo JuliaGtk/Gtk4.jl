@@ -241,11 +241,12 @@ function signal_dict(info)
 end
 
 function signal_dict_incl_parents(objectinfo::GIObjectInfo)
-    d=signal_dict(objectinfo)
     parentinfo=get_parent(objectinfo)
     if parentinfo!==nothing
-        return merge(signal_dict_incl_parents(parentinfo),d)
+        return merge(signal_dict_incl_parents(parentinfo),signal_dict(objectinfo))
     else
+        d=Dict{Symbol,Tuple{Any,Any}}()
+        d[:notify] = (:Nothing, Any[:(Ptr{GParamSpec})])
         return d
     end
 end
