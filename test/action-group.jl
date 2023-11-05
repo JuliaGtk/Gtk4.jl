@@ -48,14 +48,19 @@ signames = signalnames(GSimpleAction)
 @test signal_return_type(GSimpleAction, :notify) == Nothing
 @test signal_argument_types(GSimpleAction, :notify) == (Ptr{GParamSpec},)
 
-name_changed = Ref(false)
-function name_changed_cb(ptr, pspec, name_changed)
-    name_changed[] = true
+enabled_changed = Ref(false)
+function enabled_changed_cb(ptr, pspec, ref)
+    ref[] = true
     nothing
 end
-on_notify(name_changed_cb, a, "name", name_changed)
-signal_emit(a, "notify::name", Nothing, Ptr{GParamSpec}(C_NULL))
-@test name_changed[] == true
+on_notify(enabled_changed_cb, a, :enabled, enabled_changed)
+a.enabled = true
+
+@test enabled_changed[] == true
+
+enabled_changed[] = false
+signal_emit(a, "notify::enabled", Nothing, Ptr{GParamSpec}(C_NULL))
+@test enabled_changed[] == true
 
 action_added = Ref(false)
 
