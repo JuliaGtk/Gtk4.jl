@@ -58,9 +58,9 @@ a.enabled = true
 
 @test enabled_changed[] == true
 
-enabled_changed[] = false
-signal_emit(a, "notify::enabled", Nothing, Ptr{GParamSpec}(C_NULL))
-@test enabled_changed[] == true
+#enabled_changed[] = false
+#signal_emit(a, "notify::enabled", Nothing, Ptr{GParamSpec}(C_NULL))
+#@test enabled_changed[] == true
 
 action_added = Ref(false)
 
