@@ -112,6 +112,18 @@ delete!(g, "do-something")
 
 end
 
+@testset "add action" begin
+g=GLib.G_.SimpleActionGroup_new()
+extra_arg_ref=Ref(0)
+
+function cb(ac,va)
+    nothing
+end
+
+add_action(GActionMap(g), "new-action", cb)
+
+end
+
 @testset "add action cfunction" begin
 g=GLib.G_.SimpleActionGroup_new()
 extra_arg_ref=Ref(0)
@@ -127,19 +139,6 @@ end
 # test the more sophisticated `signal_connect`
 GLib.on_action_added(action_added_cb2, g, 3)
 
-function cb(ac,va)
-    nothing
-end
-
-add_action(GActionMap(g), "new-action", cb)
-
-#@test extra_arg_ref[] == 3
-
-function cb2(a,v,user_data)
-    nothing
-end
-
-add_action(GActionMap(g), "new-action2", cb2, 4)
 end
 
 @testset "add stateful action" begin
@@ -151,6 +150,15 @@ function cb(ac,va)
 end
 
 a5 = add_stateful_action(GActionMap(g), "new-action3", true, cb)
+@test a5.state == GVariant(true)
+GLib.set_state(a5, GVariant(false))
+@test a5.state == GVariant(false)
+
+end
+
+@testset "add stateful action cfunction" begin
+
+g=GLib.G_.SimpleActionGroup_new()
 
 function cb2(a,v,user_data)
     nothing
@@ -158,9 +166,6 @@ end
 
 add_stateful_action(GActionMap(g), "new-action4", true, cb2, 5)
 
-@test a5.state == GVariant(true)
-GLib.set_state(a5, GVariant(false))
-@test a5.state == GVariant(false)
 
 end
 
