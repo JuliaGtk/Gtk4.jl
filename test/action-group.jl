@@ -66,29 +66,28 @@ g=GLib.G_.SimpleActionGroup_new()
 @test isa(g,GSimpleActionGroup)
 @test [] == GLib.list_actions(GActionGroup(g))
 
-#enabled_changed = Ref(false)
+enabled_changed = Ref(false)
 
-#function enabled_changed_cb1(ac, p)
-#    GLib.glib_ref(p)
-#    enabled_changed[] = true
-#    nothing
-#end
-#signal_connect(enabled_changed_cb1, a, "notify::enabled")
-#a.enabled = true
-#@test enabled_changed[]
+function enabled_changed_cb1(ac, p)
+    enabled_changed[] = true
+    nothing
+end
+signal_connect(enabled_changed_cb1, a, "notify::enabled")
+a.enabled = true
+@test enabled_changed[]
 
-#function enabled_changed_cb(ptr, pspec, ref)
-#    ref[] = true
-#    nothing
-#end
-#on_notify(enabled_changed_cb, a, :enabled, enabled_changed)
-#a.enabled = true
+function enabled_changed_cb(ptr, pspec, ref)
+    ref[] = true
+    nothing
+end
+on_notify(enabled_changed_cb, a, :enabled, enabled_changed)
+a.enabled = true
 
-#@test enabled_changed[] == true
+@test enabled_changed[] == true
 
-#enabled_changed[] = false
-#signal_emit(a, "notify::enabled", Nothing, Ptr{GParamSpec}(C_NULL))
-#@test enabled_changed[] == true
+enabled_changed[] = false
+signal_emit(a, "notify::enabled", Nothing, Ptr{GParamSpec}(C_NULL))
+@test enabled_changed[] == true
 
 action_added = Ref(false)
 
