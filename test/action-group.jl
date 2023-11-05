@@ -1,16 +1,26 @@
 using Gtk4.GLib
 using Test
 
+@testset "signal basics" begin
+
+@test signal_return_type(GObject, :notify) == Nothing
+@test signal_argument_types(GObject, :notify) == (Ptr{GParamSpec},)
+
+signames = signalnames(GSimpleAction)
+@test :notify in signames
+@test :activate in signames
+@test :change_state in signames
+
+@test signal_return_type(GSimpleAction, :notify) == Nothing
+@test signal_argument_types(GSimpleAction, :notify) == (Ptr{GParamSpec},)
+
+end
+
 # GSimpleAction is an object with properties
 
-@testset "gaction" begin
+@testset "simple action" begin
 
 a=GLib.G_.SimpleAction_new("do-something",nothing)
-g=GLib.G_.SimpleActionGroup_new()
-
-@test isa(g,GSimpleActionGroup)
-@test [] == GLib.list_actions(GActionGroup(g))
-
 @test "do-something" == GLib.G_.get_name(GAction(a))
 @test a.name == "do-something"
 
@@ -39,16 +49,32 @@ propnames = propertynames(a)
 GLib.propertyinfo(a,:name)
 @test_throws ErrorException GLib.propertyinfo(a,:serial_number)
 
-# test signals
-signames = signalnames(GSimpleAction)
-@test :notify in signames
-@test :activate in signames
-@test :change_state in signames
+# test keyword constructor
 
-@test signal_return_type(GSimpleAction, :notify) == Nothing
-@test signal_argument_types(GSimpleAction, :notify) == (Ptr{GParamSpec},)
+a2 = GSimpleAction("do-something-else";enabled=false)
+@test a2.enabled == false
 
-#enabled_changed = Ref(false)
+a3 = GSimpleAction("do-something-again";enabled=true)
+@test a3.enabled == true
+
+end
+
+@testset "simple action group" begin
+a=GLib.G_.SimpleAction_new("do-something",nothing)
+g=GLib.G_.SimpleActionGroup_new()
+
+@test isa(g,GSimpleActionGroup)
+@test [] == GLib.list_actions(GActionGroup(g))
+
+enabled_changed = Ref(false)
+
+function enabled_changed_cb1(ac, p)
+    enabled_changed[] = true
+end
+signal_connect(enabled_changed_cb1, a, "notify::enabled")
+a.enabled = true
+@test enabled_changed[]
+
 #function enabled_changed_cb(ptr, pspec, ref)
 #    ref[] = true
 #    nothing
@@ -94,7 +120,7 @@ delete!(g, "do-something")
 GLib.on_action_added(action_added_cb2, g, 3)
 
 # while we're at it, test `add_action`
-function cb(a,v)
+function cb(ac,va)
     nothing
 end
 
@@ -116,14 +142,6 @@ add_stateful_action(GActionMap(g), "new-action4", true, cb2, 5)
 @test a5.state == GVariant(true)
 GLib.set_state(a5, GVariant(false))
 @test a5.state == GVariant(false)
-
-# test keyword constructor
-
-a2 = GSimpleAction("do-something-else";enabled=false)
-@test a2.enabled == false
-
-a3 = GSimpleAction("do-something-again";enabled=true)
-@test a3.enabled == true
 
 end
 
