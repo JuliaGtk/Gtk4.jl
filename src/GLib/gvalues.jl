@@ -307,11 +307,10 @@ function gtk_propertynames(w::GObject)
     n = Ref{Cuint}()
     props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
         (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
-    names=Symbol[]
+    names=Vector{Symbol}(undef,n[])
     for i = 1:n[]
         param = unsafe_load(unsafe_load(props, i))
-        name=Symbol(replace(bytestring(param.name),"-"=>"_"))
-        push!(names,name)
+        names[i]=Symbol(replace(bytestring(param.name),"-"=>"_"))
     end
     g_free(props)
     names

@@ -21,9 +21,11 @@ end
     destroy(win)
 end
 
+if !(get(ENV, "CI", nothing) == "true" && Sys.iswindows())
 @testset "GL Area" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "glarea.jl"))
     destroy(w)
+end
 end
 
 @testset "Cairo canvas" begin

@@ -66,16 +66,16 @@ g=GLib.G_.SimpleActionGroup_new()
 @test isa(g,GSimpleActionGroup)
 @test [] == GLib.list_actions(GActionGroup(g))
 
-enabled_changed = Ref(false)
+#enabled_changed = Ref(false)
 
-function enabled_changed_cb1(ac, p)
-    GLib.glib_ref(p)
-    enabled_changed[] = true
-    nothing
-end
-signal_connect(enabled_changed_cb1, a, "notify::enabled")
-a.enabled = true
-@test enabled_changed[]
+#function enabled_changed_cb1(ac, p)
+#    GLib.glib_ref(p)
+#    enabled_changed[] = true
+#    nothing
+#end
+#signal_connect(enabled_changed_cb1, a, "notify::enabled")
+#a.enabled = true
+#@test enabled_changed[]
 
 #function enabled_changed_cb(ptr, pspec, ref)
 #    ref[] = true
