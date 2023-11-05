@@ -69,7 +69,10 @@ g=GLib.G_.SimpleActionGroup_new()
 enabled_changed = Ref(false)
 
 function enabled_changed_cb1(ac, p)
+    println(ac)
+    println(unsafe_load(p))
     enabled_changed[] = true
+    nothing
 end
 signal_connect(enabled_changed_cb1, a, "notify::enabled")
 a.enabled = true
