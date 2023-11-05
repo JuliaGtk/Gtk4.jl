@@ -69,8 +69,7 @@ g=GLib.G_.SimpleActionGroup_new()
 enabled_changed = Ref(false)
 
 function enabled_changed_cb1(ac, p)
-    println(ac)
-    println(unsafe_load(p))
+    GLib.glib_ref(p)
     enabled_changed[] = true
     nothing
 end
