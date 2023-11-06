@@ -17,6 +17,13 @@ struct GParamSpec
   owner_type::GType
 end
 
+function glib_ref(x::Ptr{GParamSpec})
+    ccall((:g_param_spec_ref, libgobject), Nothing, (Ptr{GParamSpec},), x)
+end
+function glib_unref(x::Ptr{GParamSpec})
+    ccall((:g_param_spec_unref, libgobject), Nothing, (Ptr{GParamSpec},), x)
+end
+
 mutable struct GVariant
     handle::Ptr{GVariant}
     function GVariant(ref::Ptr{GVariant})

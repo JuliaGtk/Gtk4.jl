@@ -239,6 +239,7 @@ function ask_dialog(callback::Function, message::AbstractString, no_text, yes_te
 
     function on_response(dlg, response_id)
         callback(response_id == Int32(ResponseType_YES))
+        G_.set_transient_for(dlg, nothing)
         destroy(dlg)
     end
 
@@ -281,6 +282,7 @@ for (func, flag) in (
 
         function destroy_dialog(dlg, response_id)
             callback()
+            G_.set_transient_for(dlg, nothing)
             destroy(dlg)
         end
 
@@ -332,6 +334,7 @@ function input_dialog(callback::Function, message::AbstractString, entry_default
             res = ""
         end
         callback(res)
+        G_.set_transient_for(dlg, nothing)
         destroy(dlg)
     end
 
@@ -458,6 +461,7 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
     function on_response(dlg, response_id)
         sel = selection(dlg, response_id)
         callback(sel)
+        G_.set_transient_for(dlg, nothing)
         destroy(dlg)
     end
 
@@ -511,6 +515,7 @@ function save_dialog(callback::Function, title::AbstractString, parent = nothing
           sel = ""
       end
       callback(sel)
+      G_.set_transient_for(dlg, nothing)
       destroy(dlg)
   end
 
@@ -549,6 +554,7 @@ function color_dialog(callback::Function, title::AbstractString, parent = nothin
             res = nothing
         end
         callback(res)
+        G_.set_transient_for(dlg, nothing)
         destroy(dlg)
     end
 
