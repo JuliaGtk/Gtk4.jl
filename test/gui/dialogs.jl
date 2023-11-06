@@ -25,7 +25,7 @@ error_dialog("Here's an error", main_window; timeout = 0.25)
 sleep(1.0)
 GC.gc()
 sleep(1.0)
-destroy(main_window)
+close(main_window)
 
 end
 
@@ -52,7 +52,7 @@ sleep(1.0)
 
 GC.gc() # ensure GtkDialog is really gone before main_window
 
-destroy(main_window)
+close(main_window)
 
 end
 
