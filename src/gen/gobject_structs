@@ -323,41 +323,57 @@ $(Expr(:toplevel, quote
             end
     end
     function GBindingTransformFunc(binding, from_value, to_value, user_data)
+        binding = convert(GBinding, binding, false)
+        from_value = convert(Union{GValue, Ref{_GValue}}, from_value, false)
+        to_value = convert(Union{GValue, Ref{_GValue}}, to_value, false)
         f = user_data
         ret = f(binding, from_value, to_value)
         convert(Cint, ret)
     end
     function GClassFinalizeFunc(g_class, class_data)
+        g_class = convert(Union{GTypeClass, Ref{_GTypeClass}}, g_class)
         f = class_data
         ret = f(g_class)
         nothing
     end
     function GClassInitFunc(g_class, class_data)
+        g_class = convert(Union{GTypeClass, Ref{_GTypeClass}}, g_class)
         f = class_data
         ret = f(g_class)
         nothing
     end
     function GClosureMarshal(closure, return_value, n_param_values, param_values, invocation_hint, marshal_data)
+        closure = convert(Union{GClosure, Ref{_GClosure}}, closure, false)
+        return_value = convert_if_not_null(Union{GValue, Ref{_GValue}}, return_value, false)
+        param_values = collect(unsafe_wrap(Vector{_GValue}, param_values, m_n_param_values[]))
+        invocation_hint = convert(Maybe(Nothing), invocation_hint)
         f = marshal_data
         ret = f(closure, return_value, n_param_values, param_values, invocation_hint)
         nothing
     end
     function GInterfaceFinalizeFunc(g_iface, iface_data)
+        g_iface = convert(Union{GTypeInterface, Ref{_GTypeInterface}}, g_iface)
         f = iface_data
         ret = f(g_iface)
         nothing
     end
     function GInterfaceInitFunc(g_iface, iface_data)
+        g_iface = convert(Union{GTypeInterface, Ref{_GTypeInterface}}, g_iface)
         f = iface_data
         ret = f(g_iface)
         nothing
     end
     function GSignalAccumulator(ihint, return_accu, handler_return, data)
+        ihint = convert(Union{GSignalInvocationHint, Ref{_GSignalInvocationHint}}, ihint)
+        return_accu = convert(Union{GValue, Ref{_GValue}}, return_accu, false)
+        handler_return = convert(Union{GValue, Ref{_GValue}}, handler_return, false)
         f = data
         ret = f(ihint, return_accu, handler_return)
         convert(Cint, ret)
     end
     function GSignalEmissionHook(ihint, n_param_values, param_values, data)
+        ihint = convert(Union{GSignalInvocationHint, Ref{_GSignalInvocationHint}}, ihint)
+        param_values = collect(unsafe_wrap(Vector{_GValue}, param_values, m_n_param_values[]))
         f = data
         ret = f(ihint, n_param_values, param_values)
         convert(Cint, ret)

@@ -1,6 +1,6 @@
-using Gtk4, Gtk4.GLib
+using Gtk4
 
-win = GtkWindow("Listview demo")
+win = GtkWindow("Listview demo", 250, 800)
 sw = GtkScrolledWindow()
 push!(win, sw)
 
@@ -17,6 +17,6 @@ function bind_cb(f, li)
 end
 
 factory = GtkSignalListItemFactory(setup_cb, bind_cb)
-list = GtkListView(GtkSelectionModel(GtkSingleSelection(GLib.GListModel(model))), factory)
+list = GtkListView(GtkSelectionModel(GtkSingleSelection(GListModel(model))), factory)
 
 sw[] = list

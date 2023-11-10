@@ -162,7 +162,7 @@ $(Expr(:toplevel, quote
         m_width = Ref{Int32}()
         m_height = Ref{Int32}()
         ret = ccall(("gdk_pixbuf_get_file_info", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Cstring, Ptr{Int32}, Ptr{Int32}), _filename, m_width, m_height)
-        ret2 = convert_if_not_null(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, false)
+        ret2 = convert_if_not_null(GdkPixbufFormat, ret, false)
         _width = m_width[]
         _height = m_height[]
         (ret2, _width, _height)
@@ -510,7 +510,7 @@ $(Expr(:toplevel, quote
     end
     function get_format(instance::GdkPixbufLoader)
         ret = ccall(("gdk_pixbuf_loader_get_format", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Ptr{GObject},), instance)
-        ret2 = convert_if_not_null(Union{GdkPixbufFormat, Ref{_GdkPixbufFormat}}, ret, false)
+        ret2 = convert_if_not_null(GdkPixbufFormat, ret, false)
         ret2
     end
     function get_pixbuf(instance::GdkPixbufLoader)

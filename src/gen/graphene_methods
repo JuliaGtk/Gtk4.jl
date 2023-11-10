@@ -80,6 +80,12 @@ $(Expr(:toplevel, quote
         _size = m_size[]
         _size
     end
+    function get_vertices(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+        m_vertices = Ref{Ptr{_GrapheneVec3}}()
+        ret = ccall(("graphene_box_get_vertices", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{Ptr{_GrapheneVec3}}), instance, m_vertices)
+        _vertices = m_vertices[]
+        _vertices
+    end
     function get_width(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
         ret = ccall(("graphene_box_get_width", libgraphene), Float32, (Ptr{_GrapheneBox},), instance)
         ret
@@ -254,6 +260,12 @@ $(Expr(:toplevel, quote
     function free(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}})
         ret = ccall(("graphene_frustum_free", libgraphene), Nothing, (Ptr{_GrapheneFrustum},), instance)
         nothing
+    end
+    function get_planes(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}})
+        m_planes = Ref{Ptr{_GraphenePlane}}()
+        ret = ccall(("graphene_frustum_get_planes", libgraphene), Nothing, (Ptr{_GrapheneFrustum}, Ptr{Ptr{_GraphenePlane}}), instance, m_planes)
+        _planes = m_planes[]
+        _planes
     end
     function init(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, _p0::Union{GraphenePlane, Ref{_GraphenePlane}}, _p1::Union{GraphenePlane, Ref{_GraphenePlane}}, _p2::Union{GraphenePlane, Ref{_GraphenePlane}}, _p3::Union{GraphenePlane, Ref{_GraphenePlane}}, _p4::Union{GraphenePlane, Ref{_GraphenePlane}}, _p5::Union{GraphenePlane, Ref{_GraphenePlane}})
         ret = ccall(("graphene_frustum_init", libgraphene), Ptr{_GrapheneFrustum}, (Ptr{_GrapheneFrustum}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}), instance, _p0, _p1, _p2, _p3, _p4, _p5)
@@ -552,6 +564,12 @@ $(Expr(:toplevel, quote
         _x_0 = m_x_0[]
         _y_0 = m_y_0[]
         (ret2, _xx, _yx, _xy, _yy, _x_0, _y_0)
+    end
+    function to_float(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+        m_v = Ref{Ptr{Float32}}()
+        ret = ccall(("graphene_matrix_to_float", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{Ptr{Float32}}), instance, m_v)
+        _v = m_v[]
+        _v
     end
     function transform_bounds(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _r::Union{GrapheneRect, Ref{_GrapheneRect}})
         m_res = Ref{_GrapheneRect}()
@@ -1191,6 +1209,12 @@ $(Expr(:toplevel, quote
         _p = m_p[]
         _p
     end
+    function get_vertices(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+        m_vertices = Ref{Ptr{_GrapheneVec2}}()
+        ret = ccall(("graphene_rect_get_vertices", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{Ptr{_GrapheneVec2}}), instance, m_vertices)
+        _vertices = m_vertices[]
+        _vertices
+    end
     function get_width(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
         ret = ccall(("graphene_rect_get_width", libgraphene), Float32, (Ptr{_GrapheneRect},), instance)
         ret
@@ -1567,6 +1591,12 @@ $(Expr(:toplevel, quote
         _res = m_res[]
         _res
     end
+    function to_float(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+        m_dest = Ref{Ptr{Float32}}()
+        ret = ccall(("graphene_vec2_to_float", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{Ptr{Float32}}), instance, m_dest)
+        _dest = m_dest[]
+        _dest
+    end
     function Vec4_alloc()
         ret = ccall(("graphene_vec4_alloc", libgraphene), Ptr{_GrapheneVec4}, ())
         ret2 = convert(Union{GrapheneVec4, Ref{_GrapheneVec4}}, ret, true)
@@ -1707,6 +1737,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("graphene_vec4_subtract", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
         _res
+    end
+    function to_float(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+        m_dest = Ref{Ptr{Float32}}()
+        ret = ccall(("graphene_vec4_to_float", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{Ptr{Float32}}), instance, m_dest)
+        _dest = m_dest[]
+        _dest
     end
 end))
 end

@@ -1,38 +1,116 @@
 # List and Tree Widgets
 
-The `GtkTreeView` is a very powerful widget for displaying table-like or hierarchical data.
-It is used for both lists and trees.
+In version 4, GTK introduced new widgets for efficiently displaying
+table-like data as one-dimensional lists, trees, or two-dimensional arrays.
 
-The power of this widget comes with a slightly more complex design that one has to understand when
-using the widget. The most important thing is that the widget itself does not store the displayed
-data. Instead there are dedicated `GtkListStore` and `GtkTreeStore` containers that will hold the data.
-The benefit of this approach is that it is possible to decouple the view from the data:
-
-  * The widget automatically updates when adding, removing or editing data from the store
-  * The widget can sort its data without modifications in the store
-  * Columns can be reordered and resized
-  * Filtering can be used to show only subsets of data
-
-We will in the following introduce both widgets based on small and a more complex example.
-
-## List Store
-
-Lets start with a very simple example: A table with three columns representing
-the name, the age and the gender of a person. Each column must have a specific type.
-Here, we chose to represent the gender using a boolean value where `true`  represents
-female and `false` represents male. We thus initialize the list store using
+## GtkListView
+We start with the widget for displaying one-dimensional lists. Here is a simple example:
 ```julia
-ls = GtkListStore(String, Int, Bool)
+using Gtk4
+
+model = GtkStringList(string.(names(Gtk4)))
+selmodel = GtkSelectionModel(GtkSingleSelection(GListModel(model)))
+
+function setup_cb(f, li)
+    set_child(li,GtkLabel(""))
+end
+
+function bind_cb(f, li)
+    text = li[].string
+    label = get_child(li)
+    label.label = text
+end
+
+factory = GtkSignalListItemFactory(setup_cb, bind_cb)
+list = GtkListView(selmodel, factory)
+
+win = GtkWindow("Listview demo", 250, 800)
+sw = GtkScrolledWindow()
+win[] = sw
+sw[] = list
+```
+Let's go through each step. First, we create a model that holds the data we want to display. In this
+example we display a list of strings (all of the names exported by the `Gtk4` module, which was 1053
+strings when this was written), and we store them in a `GtkStringList`. This object implements
+the interface `GListModel`, which is what all of the list widgets require.
+
+Next, we create a "selection model", which wraps the model we just created and controls how the user
+can select items in the list. Possible wrappers include `GtkNoSelection` (no selection allowed),
+`GtkSingleSelection` (a single item can be selected), and `GtkMultiSelection` (multiple items can
+be selected).
+
+Next, a "factory" is created. The list widget can efficiently display a huge number of items by only
+populating display widgets for an item when the item becomes visible. The "factory" is what does this. The
+constructor takes two callback functions: "setup", which creates a suitable widget for displaying an
+item, and "bind", which sets the widget to display a particular item. The arguments of the callbacks
+are the factory `f` and a list item `li`, which is an object that represents elements of the
+GListModel. In the "setup" callback, you can call the function `set_child` on the list item to set a
+widget that will be used to display the item. In our example we create a `GtkLabel` to display the
+string. In the "bind" callback, we first fetch the element of the list model using the `getindex`
+method on the list item (by calling `li[]`) and we get the text from its "string" property. We then
+get the `GtkLabel` using the `get_child` function on the list item, and then we set the text of this
+`GtkLabel`.
+
+Finally, we construct the `GtkListView` using the selection model and the factory and add it to a
+`GtkScrolledWindow` and a `GtkWindow`.
+
+### Filtering
+
+The list above is very long, and it's useful to allow the user to filter it down. An easy way to
+implement this is to use `GtkFilterListModel`, which wraps the model and allows it to be filtered
+before being displayed.
+
+Here is an example:
+```julia
+model = GtkStringList(string.(names(Gtk4)))
+
+entry = GtkSearchEntry()
+
+function match(item)
+  return startswith(item.string, entry.text)
+end
+
+filter = GtkCustomFilter(match)
+filteredModel = GtkFilterListModel(GLib.GListModel(model), filter)
+selmodel = GtkSelectionModel(GtkSingleSelection(GListModel(filteredModel)))
+```
+
+We create a `GtkCustomFilter` using a `match` callback that returns `true` for items that we want to
+display, in our case those that start with the text entered by the user in `entry`. We construct a
+`GtkFilterListModel` using this filter and use it instead of the `GListModel` in the constructor
+for `GtkSingleSelection`.
+
+Finally, we update the filter when the user changes the text by connecting to the "search-changed" signal:
+```julia
+signal_connect(entry, :search_changed) do w
+  @idle_add Gtk4.changed(filter, Gtk4.FilterChange_DIFFERENT) 
+end
+```
+
+## GtkTreeView
+The `GtkTreeView` was the widget used to display table-like or hierarchical data and trees in version 3 of GTK.
+It's also present in version 4 but is being deprecated in the C library in favor of the widgets discussed above.
+It will continue to be supported in Gtk4.jl.
+
+### List Store
+
+This widget uses dedicated `GtkListStore` and `GtkTreeStore` containers to hold the data.
+
+Lets start with a very simple example: A table with two columns representing
+the name and age of a person. Each column must have a specific type.
+We initialize the list store using
+```julia
+ls = GtkListStore(String, Int)
 ```
 Now we will the store with data
 ```julia
-push!(ls,("Peter",20,false))
-push!(ls,("Paul",30,false))
-push!(ls,("Mary",25,true))
+push!(ls,("Peter",20))
+push!(ls,("Paul",30))
+push!(ls,("Mary",25))
 ```
 If we want so insert the data at a specific position we can use the insert function
 ```julia
-insert!(ls, 2, ("Susanne", 35, true))
+insert!(ls, 2, ("Susanne", 35))
 ```
 You can use `ls` like a matrix like container. Calling `length` and `size` will give you
 ```julia
@@ -40,7 +118,7 @@ julia> length(ls)
 4
 
 julia> size(ls)
-(4,3)
+(4,2)
 ```
 Specific element can be be accessed using
 ```julia
@@ -50,7 +128,7 @@ julia> ls[1,1] = "Pete"
 "Pete"
 ```
 
-## List View
+### Displaying a list
 
 Now we actually want to display our data. To this end we create a tree view object
 ```julia
@@ -67,11 +145,10 @@ Finally we create for each column a `TreeViewColumn` object
 ```julia
 c1 = GtkTreeViewColumn("Name", rTxt, Dict([("text",0)]))
 c2 = GtkTreeViewColumn("Age", rTxt, Dict([("text",1)]))
-c3 = GtkTreeViewColumn("Female", rTog, Dict([("active",2)]))
 ```
 We need to push these column description objects to the tree view
 ```julia
-push!(tv, c1, c2, c3)
+push!(tv, c1, c2)
 ```
 Then we can display the tree view widget in a window
 ```julia
@@ -79,28 +156,28 @@ win = GtkWindow(tv, "List View")
 ```
 If you prefer that the columns are resizable by the user call
 ```julia
-for c in [c1, c2, c3]
+for c in [c1, c2]
     Gtk4.resizable(c, true)
 end
 ```
 
-## Sorting
+### Sorting
 
 We next want to make the tree view sortable
 ```julia
-for (i,c) in enumerate([c1,c2,c3])
+for (i,c) in enumerate([c1,c2])
   Gtk4.sort_column_id(c,i-1)
 end
 ```
 If you now click on one of the column headers, the data will be sorted
 with respect to the selected column. You can even make the columns reorderable
 ```julia
-for (i,c) in enumerate([c1, c2, c3])
+for (i,c) in enumerate([c1, c2])
     Gtk4.reorderable(c, true)
 end
 ```
 
-## Selection
+### Selection
 
 Usually the interesting bit of a list will be the entry being selected. This
 is done using an additional `GtkTreeSelection` object that can be retrieved by
@@ -147,7 +224,7 @@ end
 Another useful signal is "row-activated" that will be triggered by a double click
 of the user.
 
-## Filtering
+### Filtering
 
 A very useful thing is to apply a filter to a list view such that only a subset
 of data is shown. We can do this using the `GtkTreeModelFilter` type. It is
@@ -176,12 +253,11 @@ rTog = GtkCellRendererToggle()
 
 c1 = GtkTreeViewColumn("Name", rTxt, Dict([("text",0)]), sort_column_id=0)
 c2 = GtkTreeViewColumn("Age", rTxt, Dict([("text",1)]), sort_column_id=1)
-c3 = GtkTreeViewColumn("Female", rTog, Dict([("active",2)]), sort_column_id=2)
 
 tmFiltered = GtkTreeModelFilter(ls)
-Gtk4.visible_column(tmFiltered,3)
+Gtk4.visible_column(tmFiltered,2)
 tv = GtkTreeView(GtkTreeModel(tmFiltered))
-push!(tv, c1, c2, c3)
+push!(tv, c1, c2)
 
 selection = Gtk4.selection(tv)
 
@@ -222,7 +298,7 @@ the selection will give an iterator that is only valid in the filtered tree
 model.
 
 
-## Tree Widget
+### Tree Widget
 
 Here is an example of the tree model in action:
 ```julia

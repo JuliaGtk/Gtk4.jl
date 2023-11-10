@@ -25,7 +25,7 @@ function push!(scale::GtkScale, value, position, markup::AbstractString)
     G_.add_mark(scale, value, convert(Gtk4.PositionType,position), markup)
     scale
 end
-function push!(scale::GtkScale, value, position)
+function push!(scale::GtkScale, value::Real, position)
     G_.add_mark(scale, value, convert(Gtk4.PositionType,position), nothing)
     scale
 end

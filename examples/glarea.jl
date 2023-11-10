@@ -178,7 +178,6 @@ function on_realized(a)
 	vertexShader = createShader(vsh, GL_VERTEX_SHADER)
 	fragmentShader = createShader(fsh, GL_FRAGMENT_SHADER)
 	state.program = createShaderProgram(vertexShader, fragmentShader)
-	@async println(state.program)
 end
 
 function render(a, c, user_data)

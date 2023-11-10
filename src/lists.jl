@@ -23,6 +23,12 @@ delete!(cb::GtkComboBoxText, i::Integer) = (G_.remove(cb, i-1); cb)
 
 ## GtkStringList
 
+"""
+    GtkStringList()
+
+Create an empty `GtkStringList`, which implements the `GListModel` interface
+and holds an array of strings.
+"""
 GtkStringList() = G_.StringList_new(nothing)
 push!(sl::GtkStringList, str) = (G_.append(sl, str); sl)
 deleteat!(sl::GtkStringList, i::Integer) = (G_.remove(sl, i-1); sl)
@@ -80,7 +86,8 @@ end
 """
     GtkSignalListItemFactory(setup_cb, bind_cb)
 
-Create a `GtkSignalListItemFactory` and immediately connect "setup" and "bind" callback functions `setup_cb` and `bind_cb`, respectively.
+Create a `GtkSignalListItemFactory` and immediately connect "setup" and "bind"
+callback functions `setup_cb` and `bind_cb`, respectively.
 """
 function GtkSignalListItemFactory(@nospecialize(setup_cb::Function), @nospecialize(bind_cb::Function))
     factory = GtkSignalListItemFactory()
@@ -141,6 +148,35 @@ function set_filter_func(cf::GtkCustomFilter, match::Function)
     ccall(("gtk_custom_filter_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, cfunc, ref, deref)
     return nothing
 end
+
+changed(cf::GtkCustomFilter) = G_.changed(cf, _change)
+
+## GtkCustomSorter
+
+# the GI-generated version of this is currently broken
+function CompareDataFunc(a, b, user_data)
+    item1 = convert(GObject, a, false)
+    item2 = convert(GObject, b, false)
+    f = user_data
+    ret = f(item1, item2)
+    convert(Cint, ret)
+end
+
+function GtkCustomSorter(compare::Function)
+    cfunc = @cfunction(CompareDataFunc, Cint, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(match)
+    ret = ccall(("gtk_custom_sorter_new", libgtk4), Ptr{GObject}, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cfunc, ref, deref)
+    GtkCustomSorterLeaf(ret, true)
+end
+
+function set_filter_func(cf::GtkCustomSorter, compare::Function)
+    cfunc = @cfunction(CompareDataFunc, Cint, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(match)
+    ccall(("gtk_custom_sorter_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, cfunc, ref, deref)
+    return nothing
+end
+
+changed(cs::GtkCustomSorter) = G_.changed(cs, _change)
 
 ## GtkExpressions
 
