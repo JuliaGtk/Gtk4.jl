@@ -96,6 +96,15 @@ function GtkSignalListItemFactory(@nospecialize(setup_cb::Function), @nospeciali
     factory
 end
 
+# the GI-generated version of this is currently broken
+function CompareDataFunc(a, b, user_data)
+    item1 = convert(GObject, a, false)
+    item2 = convert(GObject, b, false)
+    f = user_data
+    ret = f(item1, item2)
+    convert(Cint, ret)
+end
+
 ## GtkListBox
 setindex!(lb::GtkListBox, w::GtkWidget, i::Integer) = (G_.insert(lb, w, i - 1); lb[i])
 getindex(lb::GtkListBox, i::Integer) = G_.get_row_at_index(lb, i - 1)
@@ -114,6 +123,17 @@ function set_filter_func(lb::GtkListBox, match::Function)
     ccall(("gtk_list_box_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), lb, cfunc, ref, deref)
     return nothing
 end
+function set_filter_func(cf::GtkListBox, ::Nothing)
+    ccall(("gtk_list_box_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
+end
+function set_sort_func(cf::GtkListBox, compare::Function)
+    cfunc = @cfunction(CompareDataFunc, Cint, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(compare)
+    ccall(("gtk_list_box_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, cfunc, ref, deref)
+end
+function set_sort_func(cf::GtkListBox, ::Nothing)
+    ccall(("gtk_list_box_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
+end
 
 ## GtkFlowBox
 setindex!(fb::GtkFlowBox, w::GtkWidget, i::Integer) = (G_.insert(fb, w, i - 1); fb[i])
@@ -131,7 +151,17 @@ function set_filter_func(fb::GtkFlowBox, match::Function)
     ccall(("gtk_flow_box_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), fb, cfunc, ref, deref)
     return nothing
 end
-
+function set_filter_func(cf::GtkFlowBox, ::Nothing)
+    ccall(("gtk_flow_box_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
+end
+function set_sort_func(cf::GtkFlowBox, compare::Function)
+    cfunc = @cfunction(CompareDataFunc, Cint, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+    ref, deref = GLib.gc_ref_closure(compare)
+    ccall(("gtk_flow_box_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, cfunc, ref, deref)
+end
+function set_sort_func(cf::GtkFlowBox, ::Nothing)
+    ccall(("gtk_flow_box_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
+end
 
 ## GtkCustomFilter
 
@@ -148,35 +178,31 @@ function set_filter_func(cf::GtkCustomFilter, match::Function)
     ccall(("gtk_custom_filter_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, cfunc, ref, deref)
     return nothing
 end
+function set_filter_func(cf::GtkCustomFilter, ::Nothing)
+    ccall(("gtk_custom_filter_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
+end
 
-changed(cf::GtkCustomFilter) = G_.changed(cf, _change)
+changed(cf::GtkCustomFilter, _change = Gtk4.FilterChange_DIFFERENT) = G_.changed(cf, _change)
 
 ## GtkCustomSorter
 
-# the GI-generated version of this is currently broken
-function CompareDataFunc(a, b, user_data)
-    item1 = convert(GObject, a, false)
-    item2 = convert(GObject, b, false)
-    f = user_data
-    ret = f(item1, item2)
-    convert(Cint, ret)
-end
-
 function GtkCustomSorter(compare::Function)
     cfunc = @cfunction(CompareDataFunc, Cint, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-    ref, deref = GLib.gc_ref_closure(match)
+    ref, deref = GLib.gc_ref_closure(compare)
     ret = ccall(("gtk_custom_sorter_new", libgtk4), Ptr{GObject}, (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cfunc, ref, deref)
     GtkCustomSorterLeaf(ret, true)
 end
 
-function set_filter_func(cf::GtkCustomSorter, compare::Function)
+function set_sort_func(cf::GtkCustomSorter, compare::Function)
     cfunc = @cfunction(CompareDataFunc, Cint, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-    ref, deref = GLib.gc_ref_closure(match)
+    ref, deref = GLib.gc_ref_closure(compare)
     ccall(("gtk_custom_sorter_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, cfunc, ref, deref)
-    return nothing
+end
+function set_sort_func(cf::GtkCustomSorter, ::Nothing)
+    ccall(("gtk_custom_sorter_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
 end
 
-changed(cs::GtkCustomSorter) = G_.changed(cs, _change)
+changed(cs::GtkCustomSorter, _change = Gtk4.FilterChange_DIFFERENT) = G_.changed(cs, _change)
 
 ## GtkExpressions
 

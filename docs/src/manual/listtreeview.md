@@ -87,6 +87,23 @@ signal_connect(entry, :search_changed) do w
 end
 ```
 
+## Sorting
+
+It's also useful to sort the list. This can be done using another model wrapper, `GtkSortListModel`.
+
+Here is an example that sorts the list in reverse alphabetical order:
+```julia
+model = GtkStringList(string.(names(Gtk4)))
+
+ralpha_compare(item1, item2) = isless(item1.string, item2.string) ? 1 : 0
+
+sorter = GtkCustomSorter(match)
+sortedModel = GtkSortListModel(GListModel(model), sorter)
+```
+
+We create a `GtkCustomSorter` using a `compare` callback that takes two arguments `item1` and `item2` and returns -1 if `item1` is before `item2`, 0 if they are equal, and 1 if `item1` is after `item2`. We construct a `GtkSortListModel` using this filter and use it instead of the `GListModel` in the constructor
+for `GtkSingleSelection`.
+
 ## GtkTreeView
 The `GtkTreeView` was the widget used to display table-like or hierarchical data and trees in version 3 of GTK.
 It's also present in version 4 but is being deprecated in the C library in favor of the widgets discussed above.

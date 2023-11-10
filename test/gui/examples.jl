@@ -44,6 +44,12 @@ end
     destroy(win)
 end
 
+@testset "Sorted List View" begin
+    include(joinpath(@__DIR__, "..", "..", "examples", "sortedlistview.jl"))
+    @test Gtk4.G_.compare(sorter,Gtk4.GLib.G_.get_item(GListModel(model),0), Gtk4.GLib.G_.get_item(GListModel(model),1))
+    destroy(win)
+end
+
 @testset "Listbox" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "listbox.jl"))
     destroy(main_window)

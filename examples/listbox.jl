@@ -11,17 +11,15 @@ push!(win, box)
 listBox = GtkListBox()
 foreach(x-> push!(listBox, GtkLabel(x)), string.(names(Gtk4)))
 
-function match(ptr)
-  row = convert(GtkListBoxRowLeaf, ptr)
+function match(row)
   label = row.child
-  result = startswith(label.label, entry.text)
-  return result ? Cint(1) : Cint(0)
+  return startswith(label.label, entry.text)
 end
 
 Gtk4.set_filter_func(listBox, match)
 
 signal_connect(entry, :search_changed) do w
-  @idle_add Gtk4.G_.invalidate_filter(listBox) 
+  @idle_add Gtk4.G_.invalidate_filter(listBox)
 end
 
 sw[] = listBox

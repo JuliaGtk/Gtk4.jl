@@ -11,9 +11,10 @@
 - `glarea.jl` shows how to use the `GtkGLArea` widget to draw using OpenGL.
 
 ## Lists
-- `filteredlistview.jl` demonstrates `GtkListView` to show a huge list of strings, with a `GtkSearchEntry` to filter what's shown.
-- `listbox.jl` demonstrates `GtkListBox` to show a huge list of strings. This widget is a little easier to use than `GtkListView`.
-- `listview.jl` demonstrates a simple way of using `GtkListView`.
+- `listview.jl` demonstrates using `GtkListView` to show a huge list of strings.
+- `filteredlistview.jl` demonstrates `GtkListView` with a `GtkSearchEntry` to filter what's shown.
+- `sortedlistview.jl` demonstrates `GtkListView` with a `GtkDropDown` widget to control how the list is sorted.
+- `listbox.jl` demonstrates `GtkListBox` to show a huge list of strings. This widget is a little easier to use than `GtkListView` but may be less performant.
 
 ## Applications
 
