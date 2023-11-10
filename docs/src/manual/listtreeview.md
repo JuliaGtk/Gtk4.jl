@@ -4,6 +4,10 @@ In version 4, GTK introduced new widgets for efficiently displaying
 table-like data as one-dimensional lists, trees, or two-dimensional arrays.
 
 ## GtkListView
+
+!!! note "Example"
+    The code below can be found in "listview.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
+
 We start with the widget for displaying one-dimensional lists. Here is a simple example:
 ```julia
 using Gtk4
@@ -56,6 +60,9 @@ Finally, we construct the `GtkListView` using the selection model and the factor
 
 ### Filtering
 
+!!! note "Example"
+    The code below can be found in "filteredlistview.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
+
 The list above is very long, and it's useful to allow the user to filter it down. An easy way to
 implement this is to use `GtkFilterListModel`, which wraps the model and allows it to be filtered
 before being displayed.
@@ -89,7 +96,10 @@ end
 
 ## Sorting
 
-It's also useful to sort the list. This can be done using another model wrapper, `GtkSortListModel`.
+!!! note "Example"
+    The code below can be found in "sortedlistview.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
+
+It's also useful to be able to sort the list. This can be done using another model wrapper, `GtkSortListModel`.
 
 Here is an example that sorts the list in reverse alphabetical order:
 ```julia
@@ -103,6 +113,54 @@ sortedModel = GtkSortListModel(GListModel(model), sorter)
 
 We create a `GtkCustomSorter` using a `compare` callback that takes two arguments `item1` and `item2` and returns -1 if `item1` is before `item2`, 0 if they are equal, and 1 if `item1` is after `item2`. We construct a `GtkSortListModel` using this filter and use it instead of the `GListModel` in the constructor
 for `GtkSingleSelection`.
+
+## GtkColumnView
+
+What if we want to display information in columns? Let's say we want to have one column show the name of the function and another show the number of methods. For this we can use `GtkColumnView`. It works very similarly to `GtkListView`, but instead of having one factory for the entire widget, each column has a factory whose `setup` and `bind` callbacks populate the widgets used to display the information for that column.
+
+Here is an example:
+```julia
+using Gtk4
+
+win = GtkWindow("ColumnView demo", 450, 800)
+sw = GtkScrolledWindow()
+push!(win, sw)
+
+model = GtkStringList(string.(names(Gtk4)))
+
+function setup_cb(f, li)
+    set_child(li,GtkLabel(""))
+end
+
+function bind_cb(f, li)
+    text = li[].string
+    label = get_child(li)
+    label.label = text
+end
+
+function bind2_cb(f, li)
+    text = li[].string
+    label = get_child(li)
+    label.label = string(length(methods(eval(Symbol(text)))))
+end
+
+list = GtkColumnView(GtkSelectionModel(GtkSingleSelection(GListModel(model))))
+
+factory1 = GtkSignalListItemFactory(setup_cb, bind_cb)
+col1 = GtkColumnViewColumn("name", factory1)
+push!(list, col1)
+
+factory2 = GtkSignalListItemFactory(setup_cb, bind2_cb)
+col2 = GtkColumnViewColumn("methods", factory2)
+push!(list, col2)
+
+sw[] = list
+```
+
+Note that filtering and sorting work just the same as with `GtkListView` since they operate on the model.
+
+!!! note "Example"
+    An example of using `GtkColumnView` with filtering and sorting can be found in "columnview.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
 
 ## GtkTreeView
 The `GtkTreeView` was the widget used to display table-like or hierarchical data and trees in version 3 of GTK.

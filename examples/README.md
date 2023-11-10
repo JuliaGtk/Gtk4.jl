@@ -14,6 +14,7 @@
 - `listview.jl` demonstrates using `GtkListView` to show a huge list of strings.
 - `filteredlistview.jl` demonstrates `GtkListView` with a `GtkSearchEntry` to filter what's shown.
 - `sortedlistview.jl` demonstrates `GtkListView` with a `GtkDropDown` widget to control how the list is sorted.
+- `columnview.jl` demonstrates using `GtkColumnView` to show lists with multiple columns.
 - `listbox.jl` demonstrates `GtkListBox` to show a huge list of strings. This widget is a little easier to use than `GtkListView` but may be less performant.
 
 ## Applications
