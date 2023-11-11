@@ -74,6 +74,7 @@ set_child(te::GtkTreeExpander, w) = G_.set_child(te, w)
 get_child(te::GtkTreeExpander) = G_.get_child(te)
 
 get_item(trl::GtkTreeListRow) = G_.get_item(trl)
+get_children(trl::GtkTreeListRow) = G_.get_children(trl)
 
 function GtkTreeListModel(root::GListModel, passthrough, autoexpand, create_func)
     create_cfunc = @cfunction(GtkTreeListModelCreateModelFunc, Ptr{GObject}, (Ptr{GObject},Ref{Function}))
