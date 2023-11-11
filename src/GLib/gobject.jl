@@ -1,3 +1,9 @@
+"""
+    setproperties!(obj::GObject; kwargs...)
+
+Set many `GObject` properties at once using keyword arguments. For example
+for a `GtkWindow`, `setproperties!(win; title="New title", visible=true)`.
+"""
 function setproperties!(obj::GObject; kwargs...)
     for (kw, val) = kwargs
         set_gtk_property!(obj, kw, val)

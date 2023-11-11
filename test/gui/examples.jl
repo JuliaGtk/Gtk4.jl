@@ -40,7 +40,7 @@ end
 
 @testset "Filtered List View" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "filteredlistview.jl"))
-    @test Gtk4.G_.match(filter,Gtk4.GLib.G_.get_item(GListModel(model),0))
+    @test Gtk4.G_.match(filt,Gtk4.GLib.G_.get_item(GListModel(model),0))
     destroy(win)
 end
 
@@ -52,6 +52,12 @@ end
 
 @testset "Column View" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "columnview.jl"))
+    destroy(win)
+end
+
+@testset "List View with TreeListModel" begin
+    include(joinpath(@__DIR__, "..", "..", "examples", "filteredlistview_tree.jl"))
+    @test match(Gtk4.G_.get_row(treemodel,0))
     destroy(win)
 end
 

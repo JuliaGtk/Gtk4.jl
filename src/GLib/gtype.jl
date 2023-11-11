@@ -163,6 +163,17 @@ function convert_(::Type{T}, ptr::Ptr{T}, owns=false) where T <: GObject
     ret
 end
 
+"""
+    find_leaf_type(hnd::Ptr{T}) where T <: GObject
+
+For a pointer to a `GObject`, look up its type in the `GType` system and return
+the Julia leaf type that best matches it. For types supported by Gtk4, for
+example `GtkWindow`, this will be the leaf type `GtkWindowLeaf`. Some types
+defined in GTK4 and other libraries are not exported. In this case, the nearest
+parent type supported by the Julia package will be returned. For example,
+objects in GIO that implement the GFile interface are returned as
+`GObjectLeaf`.
+"""
 function find_leaf_type(hnd::Ptr{T}) where T <: GObject
     gtyp = G_OBJECT_CLASS_TYPE(hnd)
     typname = g_type_name(gtyp)

@@ -27,14 +27,14 @@ function match(item)
   return startswith(item.string, entry.text)
 end
 
-filter = GtkCustomFilter(match)
-filteredModel = GtkFilterListModel(GListModel(model), filter)
+filt = GtkCustomFilter(match)
+filteredModel = GtkFilterListModel(GListModel(model), filt)
 
 list = GtkListView(GtkSelectionModel(GtkSingleSelection(GListModel(filteredModel))), factory)
 list.vexpand = true
 
 signal_connect(entry, :search_changed) do w
-  @idle_add changed(filter, Gtk4.FilterChange_DIFFERENT) 
+  @idle_add changed(filt, Gtk4.FilterChange_DIFFERENT)
 end
 
 sw[] = list

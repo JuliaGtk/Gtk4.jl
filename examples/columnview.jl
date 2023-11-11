@@ -56,11 +56,11 @@ end
 
 # Filtering
 
-filter = GtkCustomFilter(match)
-filteredModel = GtkFilterListModel(GListModel(sortedModel), filter)
+filt = GtkCustomFilter(match)
+filteredModel = GtkFilterListModel(GListModel(sortedModel), filt)
 
 signal_connect(entry, :search_changed) do w
-  @idle_add changed(filter, Gtk4.FilterChange_DIFFERENT) 
+  @idle_add changed(filt, Gtk4.FilterChange_DIFFERENT)
 end
 
 # Create ColumnView

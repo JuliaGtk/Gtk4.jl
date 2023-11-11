@@ -14,6 +14,7 @@ Gtk4.GLib.g_source_remove
 Gtk4.GLib.get_uv_loop_integration
 Gtk4.GLib.set_uv_loop_integration
 Gtk4.GLib.is_uv_loop_integration_enabled
+Gtk4.GLib.run
 ```
 
 ## REPL helper functions
@@ -35,18 +36,21 @@ Gtk4.GLib.signal_argument_types
 Gtk4.GLib.on_notify
 Gtk4.GLib.bind_property
 Gtk4.GLib.unbind_property
+Gtk4.GLib.setproperties!
 ```
 
 ## Signals
 ```@docs
 Gtk4.GLib.signal_handler_is_connected
 Gtk4.GLib.signal_handler_disconnect
+Gtk4.GLib.signal_handler_block
+Gtk4.GLib.signal_handler_unblock
 Gtk4.GLib.waitforsignal
 ```
 
-## Miscellaneous
+## GObject type system
 ```@docs
 Gtk4.GLib.g_type
-Gtk4.GLib.run
+Gtk4.GLib.find_leaf_type
 ```
 

@@ -1,15 +1,15 @@
 using Gtk4, Gtk4.GLib
 
-const entry = GtkSearchEntry()
+const searchentry = GtkSearchEntry()
 
 # create root model (list of modules)
-const modules = filter(x->!endswith(x.first.name, "_jll"),Base.loaded_modules)
-const model = GtkStringList(string.(names(Gtk4)))
+modules = filter(x->!endswith(x.first.name, "_jll"),Base.loaded_modules)
+model = GtkStringList(string.(names(Gtk4)))
 
 # create tree model (names under modules)
 rootmodel = GtkStringList([x.first.name for x in modules])
 
-const ks = collect(keys(modules))
+ks = collect(keys(modules))
 
 function create_model(obj)
     if obj.string in [x.first.name for x in modules]
@@ -23,7 +23,7 @@ function create_model(obj)
     end
 end
 
-const treemodel = GtkTreeListModel(GListModel(rootmodel),false, true, create_model)
+treemodel = GtkTreeListModel(GListModel(rootmodel),false, true, create_model)
 
 # create factory for list view
 function get_funcname(text)  # faster than split(text,'.')[end]
@@ -65,7 +65,7 @@ matchstr(str, ::Nothing) = true
 matchchildren(cren, ent) = any(x->matchstr(x, ent), cren)
 
 function match(row::GtkTreeListRow)
-    entrytext = Gtk4.text(GtkEditable(entry))
+    entrytext = Gtk4.text(GtkEditable(searchentry))
     if entrytext == "" || entrytext === nothing
         return true
     end
@@ -93,13 +93,13 @@ selmodel = GtkSelectionModel(GtkSingleSelection(GListModel(filteredModel)))
 list = GtkListView(selmodel, factory; vexpand=true)
 
 # connect to filter
-signal_connect(entry, :search_changed) do w
+signal_connect(searchentry, :search_changed) do w
   @idle_add changed(filt, Gtk4.FilterChange_DIFFERENT) 
 end
 
 win = GtkWindow("Listview tree demo with filter",600,800)
 win[] = box = GtkBox(:v)
-push!(box, entry)
+push!(box, searchentry)
 sw = GtkScrolledWindow()
 push!(box, sw)
 sw[] = list

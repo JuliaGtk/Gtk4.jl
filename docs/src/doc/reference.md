@@ -37,6 +37,12 @@ Gtk4.present
 Gtk4.toplevels
 ```
 
+## Input widgets
+
+```@docs
+Gtk4.configure!
+```
+
 ## Dialogs
 ```@docs
 Gtk4.ask_dialog
@@ -46,7 +52,7 @@ Gtk4.open_dialog
 Gtk4.save_dialog
 ```
 
-## GtkCanvas (drawing with Cairo)
+## GtkCanvas (for Cairo drawing)
 
 ```@docs
 Gtk4.GtkCanvas
