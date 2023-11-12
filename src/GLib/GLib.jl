@@ -189,6 +189,11 @@ eval(include("../gen/gio_functions"))
 
 end
 
+get_pointer(x::Ptr) = x
+get_pointer(x::GObject) = x.handle
+get_pointer(x::GVariant) = x.handle
+get_pointer(::Nothing) = C_NULL
+
 include("gobject.jl")
 include("listmodel.jl")
 include("loop.jl")

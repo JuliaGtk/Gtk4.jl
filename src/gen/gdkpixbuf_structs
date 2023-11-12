@@ -306,24 +306,33 @@ $(Expr(:toplevel, quote
     function GdkPixbufModuleLoadXpmDataFunc(data)
         f = data
         ret = f()
-        convert(Ptr{GObject}, ret)
+        begin
+            GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GdkPixbufModulePreparedFunc(pixbuf, anim, user_data)
+        pixbuf = convert(GdkPixbuf, pixbuf, false)
+        anim = convert(GdkPixbufAnimation, anim, false)
         f = user_data
         ret = f(pixbuf, anim)
         nothing
     end
     function GdkPixbufModuleSizeFunc(width, height, user_data)
+        width = convert(Int32, width)
+        height = convert(Int32, height)
         f = user_data
         ret = f(width, height)
         nothing
     end
     function GdkPixbufModuleUpdatedFunc(pixbuf, x, y, width, height, user_data)
+        pixbuf = convert(GdkPixbuf, pixbuf, false)
         f = user_data
         ret = f(pixbuf, x, y, width, height)
         nothing
     end
     function GdkPixbufSaveFunc(buf, count, error, data)
+        buf = collect(unsafe_wrap(Vector{UInt8}, buf, m_count[]))
         f = data
         ret = f(buf, count, error)
         convert(Cint, ret)

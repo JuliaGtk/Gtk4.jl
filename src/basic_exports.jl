@@ -24,6 +24,8 @@ export info_dialog, ask_dialog, warn_dialog, error_dialog, input_dialog
 export color_dialog
 export response
 
+export GListModel, changed
+
 # GLib-imported event handling
 export signal_connect, signal_handler_disconnect,
     signal_handler_block, signal_handler_unblock, signal_handler_is_connected,

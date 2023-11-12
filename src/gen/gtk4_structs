@@ -8614,31 +8614,51 @@ $(Expr(:toplevel, quote
         convert(Int32, ret)
     end
     function GtkCellAllocCallback(renderer, cell_area, cell_background, data)
+        renderer = convert(GtkCellRenderer, renderer, false)
+        cell_area = convert(Union{GdkRectangle, Ref{_GdkRectangle}}, cell_area, false)
+        cell_background = convert(Union{GdkRectangle, Ref{_GdkRectangle}}, cell_background, false)
         f = data
         ret = f(renderer, cell_area, cell_background)
         convert(Cint, ret)
     end
     function GtkCellCallback(renderer, data)
+        renderer = convert(GtkCellRenderer, renderer, false)
         f = data
         ret = f(renderer)
         convert(Cint, ret)
     end
     function GtkCellLayoutDataFunc(cell_layout, cell, tree_model, iter, data)
+        cell_layout = begin
+                leaftype = GLib.find_leaf_type(cell_layout)
+                convert(leaftype, cell_layout, false)
+            end
+        cell = convert(GtkCellRenderer, cell, false)
+        tree_model = begin
+                leaftype = GLib.find_leaf_type(tree_model)
+                convert(leaftype, tree_model, false)
+            end
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = data
         ret = f(cell_layout, cell, tree_model, iter)
         nothing
     end
     function GtkCustomFilterFunc(item, user_data)
+        item = convert(GObject, item, false)
         f = user_data
         ret = f(item)
         convert(Cint, ret)
     end
     function GtkDrawingAreaDrawFunc(drawing_area, cr, width, height, user_data)
+        drawing_area = convert(GtkDrawingArea, drawing_area, false)
+        cr = convert(cairoContext, cr, false)
         f = user_data
         ret = f(drawing_area, cr, width, height)
         nothing
     end
     function GtkEntryCompletionMatchFunc(completion, key, iter, user_data)
+        completion = convert(GtkEntryCompletion, completion, false)
+        key = string_or_nothing(key, false)
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = user_data
         ret = f(completion, key, iter)
         convert(Cint, ret)
@@ -8649,91 +8669,127 @@ $(Expr(:toplevel, quote
         nothing
     end
     function GtkFlowBoxCreateWidgetFunc(item, user_data)
+        item = convert(GObject, item, false)
         f = user_data
         ret = f(item)
-        convert(Ptr{GObject}, ret)
+        begin
+            ret != C_NULL && GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GtkFlowBoxFilterFunc(child, user_data)
+        child = convert(GtkFlowBoxChild, child, false)
         f = user_data
         ret = f(child)
         convert(Cint, ret)
     end
     function GtkFlowBoxForeachFunc(box, child, user_data)
+        box = convert(GtkFlowBox, box, false)
+        child = convert(GtkFlowBoxChild, child, false)
         f = user_data
         ret = f(box, child)
         nothing
     end
     function GtkFlowBoxSortFunc(child1, child2, user_data)
+        child1 = convert(GtkFlowBoxChild, child1, false)
+        child2 = convert(GtkFlowBoxChild, child2, false)
         f = user_data
         ret = f(child1, child2)
         convert(Int32, ret)
     end
     function GtkFontFilterFunc(family, face, data)
+        family = convert(PangoFontFamily, family, false)
+        face = convert(PangoFontFace, face, false)
         f = data
         ret = f(family, face)
         convert(Cint, ret)
     end
     function GtkIconViewForeachFunc(icon_view, path, data)
+        icon_view = convert(GtkIconView, icon_view, false)
+        path = convert(GtkTreePath, path, false)
         f = data
         ret = f(icon_view, path)
         nothing
     end
     function GtkListBoxCreateWidgetFunc(item, user_data)
+        item = convert(GObject, item, false)
         f = user_data
         ret = f(item)
-        convert(Ptr{GObject}, ret)
+        begin
+            ret != C_NULL && GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GtkListBoxFilterFunc(row, user_data)
+        row = convert(GtkListBoxRow, row, false)
         f = user_data
         ret = f(row)
         convert(Cint, ret)
     end
     function GtkListBoxForeachFunc(box, row, user_data)
+        box = convert(GtkListBox, box, false)
+        row = convert(GtkListBoxRow, row, false)
         f = user_data
         ret = f(box, row)
         nothing
     end
     function GtkListBoxSortFunc(row1, row2, user_data)
+        row1 = convert(GtkListBoxRow, row1, false)
+        row2 = convert(GtkListBoxRow, row2, false)
         f = user_data
         ret = f(row1, row2)
         convert(Int32, ret)
     end
     function GtkListBoxUpdateHeaderFunc(row, before, user_data)
+        row = convert(GtkListBoxRow, row, false)
+        before = convert_if_not_null(GtkListBoxRow, before, false)
         f = user_data
         ret = f(row, before)
         nothing
     end
     function GtkMapListModelMapFunc(item, user_data)
+        item = convert(GObject, item, true)
         f = user_data
         ret = f(item)
-        convert(Ptr{GObject}, ret)
+        begin
+            ret != C_NULL && GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GtkMenuButtonCreatePopupFunc(menu_button, user_data)
+        menu_button = convert(GtkMenuButton, menu_button, false)
         f = user_data
         ret = f(menu_button)
         nothing
     end
     function GtkPageSetupDoneFunc(page_setup, data)
+        page_setup = convert(GtkPageSetup, page_setup, false)
         f = data
         ret = f(page_setup)
         nothing
     end
     function GtkPrintSettingsFunc(key, value, user_data)
+        key = string_or_nothing(key, false)
+        value = string_or_nothing(value, false)
         f = user_data
         ret = f(key, value)
         nothing
     end
     function GtkPrinterFunc(printer, data)
+        printer = convert(GtkPrinter, printer, false)
         f = data
         ret = f(printer)
         convert(Cint, ret)
     end
     function GtkScaleFormatValueFunc(scale, value, user_data)
+        scale = convert(GtkScale, scale, false)
         f = user_data
         ret = f(scale, value)
         convert(Cstring, ret)
     end
     function GtkShortcutFunc(widget, args, user_data)
+        widget = convert(GtkWidget, widget, false)
+        args = convert(Maybe(GVariant), args)
         f = user_data
         ret = f(widget, args)
         convert(Cint, ret)
@@ -8744,71 +8800,137 @@ $(Expr(:toplevel, quote
         convert(Cint, ret)
     end
     function GtkTextTagTableForeach(tag, data)
+        tag = convert(GtkTextTag, tag, false)
         f = data
         ret = f(tag)
         nothing
     end
     function GtkTickCallback(widget, frame_clock, user_data)
+        widget = convert(GtkWidget, widget, false)
+        frame_clock = convert(GdkFrameClock, frame_clock, false)
         f = user_data
         ret = f(widget, frame_clock)
         convert(Cint, ret)
     end
     function GtkTreeCellDataFunc(tree_column, cell, tree_model, iter, data)
+        tree_column = convert(GtkTreeViewColumn, tree_column, false)
+        cell = convert(GtkCellRenderer, cell, false)
+        tree_model = begin
+                leaftype = GLib.find_leaf_type(tree_model)
+                convert(leaftype, tree_model, false)
+            end
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = data
         ret = f(tree_column, cell, tree_model, iter)
         nothing
     end
     function GtkTreeIterCompareFunc(model, a, b, user_data)
+        model = begin
+                leaftype = GLib.find_leaf_type(model)
+                convert(leaftype, model, false)
+            end
+        a = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, a, false)
+        b = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, b, false)
         f = user_data
         ret = f(model, a, b)
         convert(Int32, ret)
     end
     function GtkTreeListModelCreateModelFunc(item, user_data)
+        item = convert(GObject, item, false)
         f = user_data
         ret = f(item)
-        convert(Ptr{GObject}, ret)
+        begin
+            ret != C_NULL && GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GtkTreeModelFilterModifyFunc(model, iter, value, column, data)
+        model = begin
+                leaftype = GLib.find_leaf_type(model)
+                convert(leaftype, model, false)
+            end
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = data
         ret = f(model, iter, value, column)
         nothing
     end
     function GtkTreeModelFilterVisibleFunc(model, iter, data)
+        model = begin
+                leaftype = GLib.find_leaf_type(model)
+                convert(leaftype, model, false)
+            end
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = data
         ret = f(model, iter)
         convert(Cint, ret)
     end
     function GtkTreeModelForeachFunc(model, path, iter, data)
+        model = begin
+                leaftype = GLib.find_leaf_type(model)
+                convert(leaftype, model, false)
+            end
+        path = convert(GtkTreePath, path, false)
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = data
         ret = f(model, path, iter)
         convert(Cint, ret)
     end
     function GtkTreeSelectionForeachFunc(model, path, iter, data)
+        model = begin
+                leaftype = GLib.find_leaf_type(model)
+                convert(leaftype, model, false)
+            end
+        path = convert(GtkTreePath, path, false)
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = data
         ret = f(model, path, iter)
         nothing
     end
     function GtkTreeSelectionFunc(selection, model, path, path_currently_selected, data)
+        selection = convert(GtkTreeSelection, selection, false)
+        model = begin
+                leaftype = GLib.find_leaf_type(model)
+                convert(leaftype, model, false)
+            end
+        path = convert(GtkTreePath, path, false)
+        path_currently_selected = convert(Bool, path_currently_selected)
         f = data
         ret = f(selection, model, path, path_currently_selected)
         convert(Cint, ret)
     end
     function GtkTreeViewColumnDropFunc(tree_view, column, prev_column, next_column, data)
+        tree_view = convert(GtkTreeView, tree_view, false)
+        column = convert(GtkTreeViewColumn, column, false)
+        prev_column = convert(GtkTreeViewColumn, prev_column, false)
+        next_column = convert(GtkTreeViewColumn, next_column, false)
         f = data
         ret = f(tree_view, column, prev_column, next_column)
         convert(Cint, ret)
     end
     function GtkTreeViewMappingFunc(tree_view, path, user_data)
+        tree_view = convert(GtkTreeView, tree_view, false)
+        path = convert(GtkTreePath, path, false)
         f = user_data
         ret = f(tree_view, path)
         nothing
     end
     function GtkTreeViewRowSeparatorFunc(model, iter, data)
+        model = begin
+                leaftype = GLib.find_leaf_type(model)
+                convert(leaftype, model, false)
+            end
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = data
         ret = f(model, iter)
         convert(Cint, ret)
     end
     function GtkTreeViewSearchEqualFunc(model, column, key, iter, search_data)
+        model = begin
+                leaftype = GLib.find_leaf_type(model)
+                convert(leaftype, model, false)
+            end
+        key = string_or_nothing(key, false)
+        iter = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, iter, false)
         f = search_data
         ret = f(model, column, key, iter)
         convert(Cint, ret)

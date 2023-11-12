@@ -906,11 +906,14 @@ $(Expr(:toplevel, quote
         convert(Ptr{Nothing}, ret)
     end
     function PangoAttrFilterFunc(attribute, user_data)
+        attribute = convert(Union{PangoAttribute, Ref{_PangoAttribute}}, attribute, false)
         f = user_data
         ret = f(attribute)
         convert(Cint, ret)
     end
     function PangoFontsetForeachFunc(fontset, font, user_data)
+        fontset = convert(PangoFontset, fontset, false)
+        font = convert(PangoFont, font, false)
         f = user_data
         ret = f(fontset, font)
         convert(Cint, ret)

@@ -1,7 +1,7 @@
 # Drawing with Cairo
 
 !!! note "Example"
-    The code on this page can be found in "canvas.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
+    The code below can be found in "canvas.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
 
 Cairo based drawing can be done on Gtk4.jl's `GtkCanvas` widget, which is based on GTK's `GtkDrawingArea`. The canvas widget comes with a backing store (a Cairo image surface). You control what is drawn on this backing store by defining a `draw` function:
 
@@ -54,7 +54,6 @@ function on_pressed(controller, n_press, x, y)
 end
 
 signal_connect(on_pressed, g, "pressed")
-
 ```
 
 This will draw a green circle on the canvas at every mouse click.
@@ -94,5 +93,5 @@ w = GtkWindow(canvas,"CairoMakie example")
 end
 ```
 
-A more complicated example can be found in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
-For interactive plots, you can try [Gtk4Makie.jl](https://github.com/JuliaGtk/Gtk4Makie.jl), which draws GLMakie plots onto GTK's `GtkGLArea` widget.
+!!! note "Example"
+    A more complicated example can be found in "canvas_cairomakie.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).

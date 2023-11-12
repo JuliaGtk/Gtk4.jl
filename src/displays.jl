@@ -45,7 +45,7 @@ stop(spinner::GtkSpinner) = G_.stop(spinner)
 
 context_id(status::GtkStatusbar, source) = G_.get_context_id(status, source)
 context_id(status::GtkStatusbar, source::Integer) = source
-push!(status::GtkStatusbar, context, text) =
+push!(status::GtkStatusbar, context::Union{Integer,AbstractString}, text::AbstractString) =
     (G_.push(status, context_id(status, context), text); status)
 pop!(status::GtkStatusbar, context) = G_.pop(status, context_id(status, context))
 #splice!(status::GtkStatusbar, context, message_id) =

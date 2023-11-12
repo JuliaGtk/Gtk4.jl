@@ -3604,96 +3604,169 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.ZlibCompressor.html)." GZlibCompressor
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.ZlibDecompressor.html)." GZlibDecompressor
     function GAsyncReadyCallback(source_object, res, data)
+        source_object = convert_if_not_null(GObject, source_object, false)
+        res = begin
+                leaftype = GLib.find_leaf_type(res)
+                convert(leaftype, res, false)
+            end
         f = data
         ret = f(source_object, res)
         nothing
     end
     function GBusAcquiredCallback(connection, name, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        name = string_or_nothing(name, false)
         f = user_data
         ret = f(connection, name)
         nothing
     end
     function GBusNameAcquiredCallback(connection, name, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        name = string_or_nothing(name, false)
         f = user_data
         ret = f(connection, name)
         nothing
     end
     function GBusNameAppearedCallback(connection, name, name_owner, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        name = string_or_nothing(name, false)
+        name_owner = string_or_nothing(name_owner, false)
         f = user_data
         ret = f(connection, name, name_owner)
         nothing
     end
     function GBusNameLostCallback(connection, name, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        name = string_or_nothing(name, false)
         f = user_data
         ret = f(connection, name)
         nothing
     end
     function GBusNameVanishedCallback(connection, name, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        name = string_or_nothing(name, false)
         f = user_data
         ret = f(connection, name)
         nothing
     end
     function GCancellableSourceFunc(cancellable, data)
+        cancellable = convert_if_not_null(GCancellable, cancellable, false)
         f = data
         ret = f(cancellable)
         convert(Cint, ret)
     end
     function GDBusInterfaceGetPropertyFunc(connection, sender, object_path, interface_name, property_name, error, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        sender = string_or_nothing(sender, false)
+        object_path = string_or_nothing(object_path, false)
+        interface_name = string_or_nothing(interface_name, false)
+        property_name = string_or_nothing(property_name, false)
         f = user_data
         ret = f(connection, sender, object_path, interface_name, property_name, error)
-        convert(Ptr{GVariant}, ret)
+        begin
+            GLib.glib_ref(ret)
+            convert(Ptr{GVariant}, GLib.get_pointer(ret))
+        end
     end
     function GDBusInterfaceMethodCallFunc(connection, sender, object_path, interface_name, method_name, parameters, invocation, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        sender = string_or_nothing(sender, false)
+        object_path = string_or_nothing(object_path, false)
+        interface_name = string_or_nothing(interface_name, false)
+        method_name = string_or_nothing(method_name, false)
+        parameters = convert(GVariant, parameters)
+        invocation = convert(GDBusMethodInvocation, invocation, true)
         f = user_data
         ret = f(connection, sender, object_path, interface_name, method_name, parameters, invocation)
         nothing
     end
     function GDBusInterfaceSetPropertyFunc(connection, sender, object_path, interface_name, property_name, value, error, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        sender = string_or_nothing(sender, false)
+        object_path = string_or_nothing(object_path, false)
+        interface_name = string_or_nothing(interface_name, false)
+        property_name = string_or_nothing(property_name, false)
+        value = convert(GVariant, value)
         f = user_data
         ret = f(connection, sender, object_path, interface_name, property_name, value, error)
         convert(Cint, ret)
     end
     function GDBusMessageFilterFunction(connection, message, incoming, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        message = convert(GDBusMessage, message, true)
+        incoming = convert(Bool, incoming)
         f = user_data
         ret = f(connection, message, incoming)
-        convert(Ptr{GObject}, ret)
+        begin
+            GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GDBusProxyTypeFunc(manager, object_path, interface_name, data)
+        manager = convert(GDBusObjectManagerClient, manager, false)
+        object_path = string_or_nothing(object_path, false)
+        interface_name = string_or_nothing(interface_name, false)
         f = data
         ret = f(manager, object_path, interface_name)
         convert(UInt64, ret)
     end
     function GDBusSignalCallback(connection, sender_name, object_path, interface_name, signal_name, parameters, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        sender_name = string_or_nothing(sender_name, false)
+        object_path = string_or_nothing(object_path, false)
+        interface_name = string_or_nothing(interface_name, false)
+        signal_name = string_or_nothing(signal_name, false)
+        parameters = convert(GVariant, parameters)
         f = user_data
         ret = f(connection, sender_name, object_path, interface_name, signal_name, parameters)
         nothing
     end
     function GDBusSubtreeDispatchFunc(connection, sender, object_path, interface_name, node, out_user_data, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        sender = string_or_nothing(sender, false)
+        object_path = string_or_nothing(object_path, false)
+        interface_name = string_or_nothing(interface_name, false)
+        node = string_or_nothing(node, false)
+        out_user_data = convert(Nothing, out_user_data)
         f = user_data
         ret = f(connection, sender, object_path, interface_name, node, out_user_data)
         convert(Ptr{_GDBusInterfaceVTable}, ret)
     end
     function GDBusSubtreeEnumerateFunc(connection, sender, object_path, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        sender = string_or_nothing(sender, false)
+        object_path = string_or_nothing(object_path, false)
         f = user_data
         ret = f(connection, sender, object_path)
         convert(Ptr{Cstring}, ret)
     end
     function GDBusSubtreeIntrospectFunc(connection, sender, object_path, node, user_data)
+        connection = convert(GDBusConnection, connection, false)
+        sender = string_or_nothing(sender, false)
+        object_path = string_or_nothing(object_path, false)
+        node = string_or_nothing(node, false)
         f = user_data
         ret = f(connection, sender, object_path, node)
         convert(Ptr{Ptr{_GDBusInterfaceInfo}}, ret)
     end
     function GDatagramBasedSourceFunc(datagram_based, condition, data)
+        datagram_based = begin
+                leaftype = GLib.find_leaf_type(datagram_based)
+                convert(leaftype, datagram_based, false)
+            end
+        condition = IOCondition(condition)
         f = data
         ret = f(datagram_based, condition)
         convert(Cint, ret)
     end
     function GDesktopAppLaunchCallback(appinfo, pid, user_data)
+        appinfo = convert(GDesktopAppInfo, appinfo, false)
         f = user_data
         ret = f(appinfo, pid)
         nothing
     end
     function GFileMeasureProgressCallback(reporting, current_size, num_dirs, num_files, data)
+        reporting = convert(Bool, reporting)
         f = data
         ret = f(reporting, current_size, num_dirs, num_files)
         nothing
@@ -3704,44 +3777,64 @@ $(Expr(:toplevel, quote
         nothing
     end
     function GFileReadMoreCallback(file_contents, file_size, callback_data)
+        file_contents = string_or_nothing(file_contents, false)
         f = callback_data
         ret = f(file_contents, file_size)
         convert(Cint, ret)
     end
     function GIOSchedulerJobFunc(job, cancellable, data)
+        job = convert(GIOSchedulerJob, job)
+        cancellable = convert_if_not_null(GCancellable, cancellable, false)
         f = data
         ret = f(job, cancellable)
         convert(Cint, ret)
     end
     function GPollableSourceFunc(pollable_stream, data)
+        pollable_stream = convert(GObject, pollable_stream, false)
         f = data
         ret = f(pollable_stream)
         convert(Cint, ret)
     end
     function GSettingsBindGetMapping(value, variant, user_data)
+        value = convert(Union{GValue, Ref{_GValue}}, value, false)
+        variant = convert(GVariant, variant)
         f = user_data
         ret = f(value, variant)
         convert(Cint, ret)
     end
     function GSettingsBindSetMapping(value, expected_type, user_data)
+        value = convert(Union{GValue, Ref{_GValue}}, value, false)
+        expected_type = convert(GVariantType, expected_type, false)
         f = user_data
         ret = f(value, expected_type)
-        convert(Ptr{GVariant}, ret)
+        begin
+            GLib.glib_ref(ret)
+            convert(Ptr{GVariant}, GLib.get_pointer(ret))
+        end
     end
     function GSettingsGetMapping(value, result, user_data)
+        value = convert(GVariant, value)
+        result = convert(Maybe(Nothing), result)
         f = user_data
         ret = f(value, result)
         convert(Cint, ret)
     end
     function GSocketSourceFunc(socket, condition, data)
+        socket = convert(GSocket, socket, false)
+        condition = IOCondition(condition)
         f = data
         ret = f(socket, condition)
         convert(Cint, ret)
     end
     function GVfsFileLookupFunc(vfs, identifier, user_data)
+        vfs = convert(GVfs, vfs, false)
+        identifier = string_or_nothing(identifier, false)
         f = user_data
         ret = f(vfs, identifier)
-        convert(Ptr{GObject}, ret)
+        begin
+            GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function on_launch_failed(f, object::GAppLaunchContext, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "launch-failed", Nothing, (Cstring,), after, user_data)
