@@ -16,10 +16,9 @@ function create_model(obj)
         mod = modules[ks[findfirst(x->x.name == obj.string, ks)]]
         modnames = [join([obj.string, string(n)], ".") for n in names(mod)]
         modelValues = GtkStringList(modnames)
-        GLib.glib_ref(modelValues)
-        return modelValues.handle
+        return modelValues
     else
-        return C_NULL
+        return nothing
     end
 end
 

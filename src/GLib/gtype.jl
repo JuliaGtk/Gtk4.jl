@@ -234,6 +234,7 @@ function glib_ref(x::GObject)
     glib_ref(x.handle)
     x
 end
+glib_ref(::Nothing) = nothing
 gc_unref(p::Ptr{GObject}) = glib_unref(p)
 function glib_unref(x::Ptr{GObject})
     ccall((:g_object_unref, libgobject), Nothing, (Ptr{GObject},), x)

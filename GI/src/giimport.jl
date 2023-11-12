@@ -415,7 +415,11 @@ function decl(callbackinfo::GICallbackInfo)
     rettypeinfo=get_return_type(callbackinfo)
     rettype = extract_type(rettypeinfo)
     retexpr = if rettype.ctype == :(Ptr{GObject}) || rettype.ctype == :(Ptr{GVariant}) # not a general solution, but there is not a huge variety of output types
-        :(ret.handle)
+        if get_caller_owns(callbackinfo) == GITransfer.EVERYTHING
+            :(ret != C_NULL && GLib.glib_ref(ret);convert($(rettype.ctype),GLib.get_pointer(ret)))
+        else
+            :(convert($(rettype.ctype),GLib.get_pointer(ret)))
+        end
     elseif rettype.ctype == :Nothing
         :(nothing)
     else
@@ -441,7 +445,6 @@ function decl(callbackinfo::GICallbackInfo)
             end
         end
     end
-    # should convert pointer arguments to objects, send those into f
     d = quote
         function $name($(fargs...))
             $(input_conversion...)

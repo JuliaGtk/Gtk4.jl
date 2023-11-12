@@ -306,7 +306,10 @@ $(Expr(:toplevel, quote
     function GdkPixbufModuleLoadXpmDataFunc(data)
         f = data
         ret = f()
-        ret.handle
+        begin
+            GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GdkPixbufModulePreparedFunc(pixbuf, anim, user_data)
         pixbuf = convert(GdkPixbuf, pixbuf, false)

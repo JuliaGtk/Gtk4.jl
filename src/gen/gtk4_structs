@@ -8672,7 +8672,10 @@ $(Expr(:toplevel, quote
         item = convert(GObject, item, false)
         f = user_data
         ret = f(item)
-        ret.handle
+        begin
+            ret != C_NULL && GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GtkFlowBoxFilterFunc(child, user_data)
         child = convert(GtkFlowBoxChild, child, false)
@@ -8712,7 +8715,10 @@ $(Expr(:toplevel, quote
         item = convert(GObject, item, false)
         f = user_data
         ret = f(item)
-        ret.handle
+        begin
+            ret != C_NULL && GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GtkListBoxFilterFunc(row, user_data)
         row = convert(GtkListBoxRow, row, false)
@@ -8745,7 +8751,10 @@ $(Expr(:toplevel, quote
         item = convert(GObject, item, true)
         f = user_data
         ret = f(item)
-        ret.handle
+        begin
+            ret != C_NULL && GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GtkMenuButtonCreatePopupFunc(menu_button, user_data)
         menu_button = convert(GtkMenuButton, menu_button, false)
@@ -8830,7 +8839,10 @@ $(Expr(:toplevel, quote
         item = convert(GObject, item, false)
         f = user_data
         ret = f(item)
-        ret.handle
+        begin
+            ret != C_NULL && GLib.glib_ref(ret)
+            convert(Ptr{GObject}, GLib.get_pointer(ret))
+        end
     end
     function GtkTreeModelFilterModifyFunc(model, iter, value, column, data)
         model = begin
