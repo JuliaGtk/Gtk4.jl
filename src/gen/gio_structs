@@ -3663,7 +3663,7 @@ $(Expr(:toplevel, quote
         property_name = string_or_nothing(property_name, false)
         f = user_data
         ret = f(connection, sender, object_path, interface_name, property_name, error)
-        convert(Ptr{GVariant}, ret)
+        ret.handle
     end
     function GDBusInterfaceMethodCallFunc(connection, sender, object_path, interface_name, method_name, parameters, invocation, user_data)
         connection = convert(GDBusConnection, connection, false)
@@ -3694,7 +3694,7 @@ $(Expr(:toplevel, quote
         incoming = convert(Bool, incoming)
         f = user_data
         ret = f(connection, message, incoming)
-        convert(Ptr{GObject}, ret)
+        ret.handle
     end
     function GDBusProxyTypeFunc(manager, object_path, interface_name, data)
         manager = convert(GDBusObjectManagerClient, manager, false)
@@ -3801,7 +3801,7 @@ $(Expr(:toplevel, quote
         expected_type = convert(GVariantType, expected_type, false)
         f = user_data
         ret = f(value, expected_type)
-        convert(Ptr{GVariant}, ret)
+        ret.handle
     end
     function GSettingsGetMapping(value, result, user_data)
         value = convert(GVariant, value)
@@ -3822,7 +3822,7 @@ $(Expr(:toplevel, quote
         identifier = string_or_nothing(identifier, false)
         f = user_data
         ret = f(vfs, identifier)
-        convert(Ptr{GObject}, ret)
+        ret.handle
     end
     function on_launch_failed(f, object::GAppLaunchContext, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "launch-failed", Nothing, (Cstring,), after, user_data)

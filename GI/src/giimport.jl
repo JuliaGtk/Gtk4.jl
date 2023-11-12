@@ -414,7 +414,13 @@ function decl(callbackinfo::GICallbackInfo)
     args=get_args(callbackinfo)
     rettypeinfo=get_return_type(callbackinfo)
     rettype = extract_type(rettypeinfo)
-    retexpr = (rettype.ctype == :Nothing) ? :(nothing) : :(convert($(rettype.ctype), ret))
+    retexpr = if rettype.ctype == :(Ptr{GObject}) || rettype.ctype == :(Ptr{GVariant}) # not a general solution, but there is not a huge variety of output types
+        :(ret.handle)
+    elseif rettype.ctype == :Nothing
+        :(nothing)
+    else
+        :(convert($(rettype.ctype), ret))
+    end
     
     closure = get_closure(callbackinfo)
     if closure == -1
