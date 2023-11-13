@@ -76,11 +76,12 @@ get_child(te::GtkTreeExpander) = G_.get_child(te)
 get_item(trl::GtkTreeListRow) = G_.get_item(trl)
 get_children(trl::GtkTreeListRow) = G_.get_children(trl)
 
-function GtkTreeListModel(root::GListModel, passthrough, autoexpand, create_func)
+function GtkTreeListModel(root, passthrough, autoexpand, create_func)
+    rootlm = GListModel(root)
     create_cfunc = @cfunction(GtkTreeListModelCreateModelFunc, Ptr{GObject}, (Ptr{GObject},Ref{Function}))
     ref, deref = GLib.gc_ref_closure(create_func)
-    GLib.glib_ref(root)
-    ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), root, passthrough, autoexpand, create_cfunc, ref, deref)
+    GLib.glib_ref(rootlm)
+    ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), rootlm, passthrough, autoexpand, create_cfunc, ref, deref)
     convert(GtkTreeListModel, ret, true)
 end
 

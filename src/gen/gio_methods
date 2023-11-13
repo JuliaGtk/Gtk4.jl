@@ -500,6 +500,63 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_application_withdraw_notification", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _id)
         nothing
     end
+    function action_added(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        action_added(GActionGroup(instance), _action_name)
+    end
+    function action_enabled_changed(instance::GApplication, _action_name::Union{AbstractString, Symbol}, _enabled::Bool)
+        action_enabled_changed(GActionGroup(instance), _action_name, _enabled)
+    end
+    function action_removed(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        action_removed(GActionGroup(instance), _action_name)
+    end
+    function action_state_changed(instance::GApplication, _action_name::Union{AbstractString, Symbol}, _state::GVariant)
+        action_state_changed(GActionGroup(instance), _action_name, _state)
+    end
+    function activate_action(instance::GApplication, _action_name::Union{AbstractString, Symbol}, _parameter::Maybe(GVariant))
+        activate_action(GActionGroup(instance), _action_name, _parameter)
+    end
+    function change_action_state(instance::GApplication, _action_name::Union{AbstractString, Symbol}, _value::GVariant)
+        change_action_state(GActionGroup(instance), _action_name, _value)
+    end
+    function get_action_enabled(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        get_action_enabled(GActionGroup(instance), _action_name)
+    end
+    function get_action_parameter_type(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        get_action_parameter_type(GActionGroup(instance), _action_name)
+    end
+    function get_action_state(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        get_action_state(GActionGroup(instance), _action_name)
+    end
+    function get_action_state_hint(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        get_action_state_hint(GActionGroup(instance), _action_name)
+    end
+    function get_action_state_type(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        get_action_state_type(GActionGroup(instance), _action_name)
+    end
+    function has_action(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        has_action(GActionGroup(instance), _action_name)
+    end
+    function list_actions(instance::GApplication)
+        list_actions(GActionGroup(instance))
+    end
+    function query_action(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        query_action(GActionGroup(instance), _action_name)
+    end
+    function add_action(instance::GApplication, _action::GAction)
+        add_action(GActionMap(instance), _action)
+    end
+    function add_action_entries(instance::GApplication, _entries, _user_data::Maybe(Nothing))
+        add_action_entries(GActionMap(instance), _entries, _user_data)
+    end
+    function lookup_action(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        lookup_action(GActionMap(instance), _action_name)
+    end
+    function remove_action(instance::GApplication, _action_name::Union{AbstractString, Symbol})
+        remove_action(GActionMap(instance), _action_name)
+    end
+    function remove_action_entries(instance::GApplication, _entries)
+        remove_action_entries(GActionMap(instance), _entries)
+    end
     function create_file_for_arg(instance::GApplicationCommandLine, _arg::Union{AbstractString, Symbol})
         ret = ccall(("g_application_command_line_create_file_for_arg", libgio), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _arg)
         ret2 = begin
@@ -633,6 +690,21 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_buffered_input_stream_set_buffer_size", libgio), Nothing, (Ptr{GObject}, UInt64), instance, _size)
         nothing
     end
+    function can_seek(instance::GBufferedInputStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GBufferedInputStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GBufferedInputStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GBufferedInputStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GBufferedInputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
+    end
     function BufferedOutputStream_new(_base_stream::GOutputStream)
         ret = ccall(("g_buffered_output_stream_new", libgio), Ptr{GObject}, (Ptr{GObject},), _base_stream)
         ret2 = GBufferedOutputStreamLeaf(ret, true)
@@ -660,6 +732,21 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_buffered_output_stream_set_buffer_size", libgio), Nothing, (Ptr{GObject}, UInt64), instance, _size)
         nothing
     end
+    function can_seek(instance::GBufferedOutputStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GBufferedOutputStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GBufferedOutputStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GBufferedOutputStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GBufferedOutputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
+    end
     function BytesIcon_new(_bytes::GBytes)
         ret = ccall(("g_bytes_icon_new", libgio), Ptr{GObject}, (Ptr{GBytes},), _bytes)
         ret2 = GBytesIconLeaf(ret, true)
@@ -669,6 +756,27 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_bytes_icon_get_bytes", libgio), Ptr{GBytes}, (Ptr{GObject},), instance)
         ret2 = convert(GBytes, ret, false)
         ret2
+    end
+    function equal(instance::GBytesIcon, _icon2::Maybe(GIcon))
+        equal(GIcon(instance), _icon2)
+    end
+    function hash(instance::GBytesIcon)
+        hash(GIcon(instance))
+    end
+    function serialize(instance::GBytesIcon)
+        serialize(GIcon(instance))
+    end
+    function to_string(instance::GBytesIcon)
+        to_string(GIcon(instance))
+    end
+    function load(instance::GBytesIcon, _size::Integer, _cancellable::Maybe(GCancellable))
+        load(GLoadableIcon(instance), _size, _cancellable)
+    end
+    function load_async(instance::GBytesIcon, _size::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        load_async(GLoadableIcon(instance), _size, _cancellable, _callback)
+    end
+    function load_finish(instance::GBytesIcon, _res::GAsyncResult)
+        load_finish(GLoadableIcon(instance), _res)
     end
     function Cancellable_new()
         ret = ccall(("g_cancellable_new", libgio), Ptr{GObject}, ())
@@ -745,6 +853,15 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_charset_converter_set_use_fallback", libgio), Nothing, (Ptr{GObject}, Cint), instance, _use_fallback)
         nothing
     end
+    function convert(instance::GCharsetConverter, _inbuf, _outbuf, _flags)
+        convert(GConverter(instance), _inbuf, _outbuf, _flags)
+    end
+    function reset(instance::GCharsetConverter)
+        reset(GConverter(instance))
+    end
+    function init(instance::GCharsetConverter, _cancellable::Maybe(GCancellable))
+        init(GInitable(instance), _cancellable)
+    end
     function ConverterInputStream_new(_base_stream::GInputStream, _converter::GConverter)
         ret = ccall(("g_converter_input_stream_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _base_stream, _converter)
         ret2 = GConverterInputStreamLeaf(ret, true)
@@ -758,6 +875,18 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
+    function can_poll(instance::GConverterInputStream)
+        can_poll(GPollableInputStream(instance))
+    end
+    function create_source(instance::GConverterInputStream, _cancellable::Maybe(GCancellable))
+        create_source(GPollableInputStream(instance), _cancellable)
+    end
+    function is_readable(instance::GConverterInputStream)
+        is_readable(GPollableInputStream(instance))
+    end
+    function read_nonblocking(instance::GConverterInputStream, _cancellable::Maybe(GCancellable))
+        read_nonblocking(GPollableInputStream(instance), _cancellable)
+    end
     function ConverterOutputStream_new(_base_stream::GOutputStream, _converter::GConverter)
         ret = ccall(("g_converter_output_stream_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _base_stream, _converter)
         ret2 = GConverterOutputStreamLeaf(ret, true)
@@ -770,6 +899,21 @@ $(Expr(:toplevel, quote
                 convert(leaftype, ret, false)
             end
         ret2
+    end
+    function can_poll(instance::GConverterOutputStream)
+        can_poll(GPollableOutputStream(instance))
+    end
+    function create_source(instance::GConverterOutputStream, _cancellable::Maybe(GCancellable))
+        create_source(GPollableOutputStream(instance), _cancellable)
+    end
+    function is_writable(instance::GConverterOutputStream)
+        is_writable(GPollableOutputStream(instance))
+    end
+    function write_nonblocking(instance::GConverterOutputStream, _buffer, _cancellable::Maybe(GCancellable))
+        write_nonblocking(GPollableOutputStream(instance), _buffer, _cancellable)
+    end
+    function writev_nonblocking(instance::GConverterOutputStream, _vectors, _cancellable::Maybe(GCancellable))
+        writev_nonblocking(GPollableOutputStream(instance), _vectors, _cancellable)
     end
     function Credentials_new()
         ret = ccall(("g_credentials_new", libgio), Ptr{GObject}, ())
@@ -816,6 +960,54 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_dbus_action_group_get", libgio), Ptr{GObject}, (Ptr{GObject}, Cstring, Cstring), _connection, _bus_name_maybe, _object_path)
         ret2 = convert(GDBusActionGroup, ret, true)
         ret2
+    end
+    function action_added(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        action_added(GActionGroup(instance), _action_name)
+    end
+    function action_enabled_changed(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol}, _enabled::Bool)
+        action_enabled_changed(GActionGroup(instance), _action_name, _enabled)
+    end
+    function action_removed(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        action_removed(GActionGroup(instance), _action_name)
+    end
+    function action_state_changed(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol}, _state::GVariant)
+        action_state_changed(GActionGroup(instance), _action_name, _state)
+    end
+    function activate_action(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol}, _parameter::Maybe(GVariant))
+        activate_action(GActionGroup(instance), _action_name, _parameter)
+    end
+    function change_action_state(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol}, _value::GVariant)
+        change_action_state(GActionGroup(instance), _action_name, _value)
+    end
+    function get_action_enabled(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_enabled(GActionGroup(instance), _action_name)
+    end
+    function get_action_parameter_type(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_parameter_type(GActionGroup(instance), _action_name)
+    end
+    function get_action_state(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_state(GActionGroup(instance), _action_name)
+    end
+    function get_action_state_hint(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_state_hint(GActionGroup(instance), _action_name)
+    end
+    function get_action_state_type(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_state_type(GActionGroup(instance), _action_name)
+    end
+    function has_action(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        has_action(GActionGroup(instance), _action_name)
+    end
+    function list_actions(instance::GDBusActionGroup)
+        list_actions(GActionGroup(instance))
+    end
+    function query_action(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol})
+        query_action(GActionGroup(instance), _action_name)
+    end
+    function activate_action_full(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol}, _parameter::Maybe(GVariant), _platform_data::GVariant)
+        activate_action_full(GRemoteActionGroup(instance), _action_name, _parameter, _platform_data)
+    end
+    function change_action_state_full(instance::GDBusActionGroup, _action_name::Union{AbstractString, Symbol}, _value::GVariant, _platform_data::GVariant)
+        change_action_state_full(GRemoteActionGroup(instance), _action_name, _value, _platform_data)
     end
     function DBusAuthObserver_new()
         ret = ccall(("g_dbus_auth_observer_new", libgio), Ptr{GObject}, ())
@@ -878,6 +1070,12 @@ $(Expr(:toplevel, quote
     function unexport_from_connection(instance::GDBusInterfaceSkeleton, _connection::GDBusConnection)
         ret = ccall(("g_dbus_interface_skeleton_unexport_from_connection", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _connection)
         nothing
+    end
+    function get_object(instance::GDBusInterfaceSkeleton)
+        get_object(GDBusInterface(instance))
+    end
+    function set_object(instance::GDBusInterfaceSkeleton, _object::Maybe(GDBusObject))
+        set_object(GDBusInterface(instance), _object)
     end
     function DBusMessage_new()
         ret = ccall(("g_dbus_message_new", libgio), Ptr{GObject}, ())
@@ -1142,6 +1340,27 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
+    function init_async(instance::GDBusObjectManagerClient, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        init_async(GAsyncInitable(instance), _io_priority, _cancellable, _callback)
+    end
+    function init_finish(instance::GDBusObjectManagerClient, _res::GAsyncResult)
+        init_finish(GAsyncInitable(instance), _res)
+    end
+    function get_interface(instance::GDBusObjectManagerClient, _object_path::Union{AbstractString, Symbol}, _interface_name::Union{AbstractString, Symbol})
+        get_interface(GDBusObjectManager(instance), _object_path, _interface_name)
+    end
+    function get_object(instance::GDBusObjectManagerClient, _object_path::Union{AbstractString, Symbol})
+        get_object(GDBusObjectManager(instance), _object_path)
+    end
+    function get_object_path(instance::GDBusObjectManagerClient)
+        get_object_path(GDBusObjectManager(instance))
+    end
+    function get_objects(instance::GDBusObjectManagerClient)
+        get_objects(GDBusObjectManager(instance))
+    end
+    function init(instance::GDBusObjectManagerClient, _cancellable::Maybe(GCancellable))
+        init(GInitable(instance), _cancellable)
+    end
     function DBusObjectManagerServer_new(_object_path::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_object_manager_server_new", libgio), Ptr{GObject}, (Cstring,), _object_path)
         ret2 = GDBusObjectManagerServerLeaf(ret, true)
@@ -1171,6 +1390,18 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function get_interface(instance::GDBusObjectManagerServer, _object_path::Union{AbstractString, Symbol}, _interface_name::Union{AbstractString, Symbol})
+        get_interface(GDBusObjectManager(instance), _object_path, _interface_name)
+    end
+    function get_object(instance::GDBusObjectManagerServer, _object_path::Union{AbstractString, Symbol})
+        get_object(GDBusObjectManager(instance), _object_path)
+    end
+    function get_object_path(instance::GDBusObjectManagerServer)
+        get_object_path(GDBusObjectManager(instance))
+    end
+    function get_objects(instance::GDBusObjectManagerServer)
+        get_objects(GDBusObjectManager(instance))
+    end
     function DBusObjectProxy_new(_connection::GDBusConnection, _object_path::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_object_proxy_new", libgio), Ptr{GObject}, (Ptr{GObject}, Cstring), _connection, _object_path)
         ret2 = GDBusObjectProxyLeaf(ret, true)
@@ -1180,6 +1411,15 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_dbus_object_proxy_get_connection", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GDBusConnection, ret, false)
         ret2
+    end
+    function get_interface(instance::GDBusObjectProxy, _interface_name::Union{AbstractString, Symbol})
+        get_interface(GDBusObject(instance), _interface_name)
+    end
+    function get_interfaces(instance::GDBusObjectProxy)
+        get_interfaces(GDBusObject(instance))
+    end
+    function get_object_path(instance::GDBusObjectProxy)
+        get_object_path(GDBusObject(instance))
     end
     function DBusObjectSkeleton_new(_object_path::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_object_skeleton_new", libgio), Ptr{GObject}, (Cstring,), _object_path)
@@ -1205,6 +1445,15 @@ $(Expr(:toplevel, quote
     function set_object_path(instance::GDBusObjectSkeleton, _object_path::Union{AbstractString, Symbol})
         ret = ccall(("g_dbus_object_skeleton_set_object_path", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _object_path)
         nothing
+    end
+    function get_interface(instance::GDBusObjectSkeleton, _interface_name::Union{AbstractString, Symbol})
+        get_interface(GDBusObject(instance), _interface_name)
+    end
+    function get_interfaces(instance::GDBusObjectSkeleton)
+        get_interfaces(GDBusObject(instance))
+    end
+    function get_object_path(instance::GDBusObjectSkeleton)
+        get_object_path(GDBusObject(instance))
     end
     function get_client_address(instance::GDBusServer)
         ret = ccall(("g_dbus_server_get_client_address", libgio), Cstring, (Ptr{GObject},), instance)
@@ -1233,6 +1482,9 @@ $(Expr(:toplevel, quote
     function stop(instance::GDBusServer)
         ret = ccall(("g_dbus_server_stop", libgio), Nothing, (Ptr{GObject},), instance)
         nothing
+    end
+    function init(instance::GDBusServer, _cancellable::Maybe(GCancellable))
+        init(GInitable(instance), _cancellable)
     end
     function DataInputStream_new(_base_stream::GInputStream)
         ret = ccall(("g_data_input_stream_new", libgio), Ptr{GObject}, (Ptr{GObject},), _base_stream)
@@ -1368,6 +1620,21 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_data_input_stream_set_newline_type", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _type)
         nothing
     end
+    function can_seek(instance::GDataInputStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GDataInputStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GDataInputStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GDataInputStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GDataInputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
+    end
     function DataOutputStream_new(_base_stream::GOutputStream)
         ret = ccall(("g_data_output_stream_new", libgio), Ptr{GObject}, (Ptr{GObject},), _base_stream)
         ret2 = GDataOutputStreamLeaf(ret, true)
@@ -1445,6 +1712,21 @@ $(Expr(:toplevel, quote
     function set_byte_order(instance::GDataOutputStream, _order)
         ret = ccall(("g_data_output_stream_set_byte_order", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _order)
         nothing
+    end
+    function can_seek(instance::GDataOutputStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GDataOutputStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GDataOutputStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GDataOutputStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GDataOutputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
     end
     function DesktopAppInfo_new(_desktop_id::Union{AbstractString, Symbol})
         ret = ccall(("g_desktop_app_info_new", libgio), Ptr{GObject}, (Cstring,), _desktop_id)
@@ -1612,6 +1894,81 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
+    function add_supports_type(instance::GDesktopAppInfo, _content_type::Union{AbstractString, Symbol})
+        add_supports_type(GAppInfo(instance), _content_type)
+    end
+    function can_delete(instance::GDesktopAppInfo)
+        can_delete(GAppInfo(instance))
+    end
+    function can_remove_supports_type(instance::GDesktopAppInfo)
+        can_remove_supports_type(GAppInfo(instance))
+    end
+    function delete(instance::GDesktopAppInfo)
+        delete(GAppInfo(instance))
+    end
+    function dup(instance::GDesktopAppInfo)
+        dup(GAppInfo(instance))
+    end
+    function equal(instance::GDesktopAppInfo, _appinfo2::GAppInfo)
+        equal(GAppInfo(instance), _appinfo2)
+    end
+    function get_commandline(instance::GDesktopAppInfo)
+        get_commandline(GAppInfo(instance))
+    end
+    function get_description(instance::GDesktopAppInfo)
+        get_description(GAppInfo(instance))
+    end
+    function get_display_name(instance::GDesktopAppInfo)
+        get_display_name(GAppInfo(instance))
+    end
+    function get_executable(instance::GDesktopAppInfo)
+        get_executable(GAppInfo(instance))
+    end
+    function get_icon(instance::GDesktopAppInfo)
+        get_icon(GAppInfo(instance))
+    end
+    function get_id(instance::GDesktopAppInfo)
+        get_id(GAppInfo(instance))
+    end
+    function get_name(instance::GDesktopAppInfo)
+        get_name(GAppInfo(instance))
+    end
+    function get_supported_types(instance::GDesktopAppInfo)
+        get_supported_types(GAppInfo(instance))
+    end
+    function launch(instance::GDesktopAppInfo, _files::Maybe(GLib.LList{GLib._GList{Ptr{GObject}}}), _context::Maybe(GAppLaunchContext))
+        launch(GAppInfo(instance), _files, _context)
+    end
+    function launch_uris(instance::GDesktopAppInfo, _uris::Maybe(GLib.LList{GLib._GList{Cstring}}), _context::Maybe(GAppLaunchContext))
+        launch_uris(GAppInfo(instance), _uris, _context)
+    end
+    function launch_uris_async(instance::GDesktopAppInfo, _uris::Maybe(GLib.LList{GLib._GList{Cstring}}), _context::Maybe(GAppLaunchContext), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        launch_uris_async(GAppInfo(instance), _uris, _context, _cancellable, _callback)
+    end
+    function launch_uris_finish(instance::GDesktopAppInfo, _result::GAsyncResult)
+        launch_uris_finish(GAppInfo(instance), _result)
+    end
+    function remove_supports_type(instance::GDesktopAppInfo, _content_type::Union{AbstractString, Symbol})
+        remove_supports_type(GAppInfo(instance), _content_type)
+    end
+    function set_as_default_for_extension(instance::GDesktopAppInfo, _extension::Union{AbstractString, Symbol})
+        set_as_default_for_extension(GAppInfo(instance), _extension)
+    end
+    function set_as_default_for_type(instance::GDesktopAppInfo, _content_type::Union{AbstractString, Symbol})
+        set_as_default_for_type(GAppInfo(instance), _content_type)
+    end
+    function set_as_last_used_for_type(instance::GDesktopAppInfo, _content_type::Union{AbstractString, Symbol})
+        set_as_last_used_for_type(GAppInfo(instance), _content_type)
+    end
+    function should_show(instance::GDesktopAppInfo)
+        should_show(GAppInfo(instance))
+    end
+    function supports_files(instance::GDesktopAppInfo)
+        supports_files(GAppInfo(instance))
+    end
+    function supports_uris(instance::GDesktopAppInfo)
+        supports_uris(GAppInfo(instance))
+    end
     function Emblem_new(_icon::GIcon)
         ret = ccall(("g_emblem_new", libgio), Ptr{GObject}, (Ptr{GObject},), _icon)
         ret2 = GEmblemLeaf(ret, true)
@@ -1634,6 +1991,18 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_emblem_get_origin", libgio), UInt32, (Ptr{GObject},), instance)
         ret2 = EmblemOrigin(ret)
         ret2
+    end
+    function equal(instance::GEmblem, _icon2::Maybe(GIcon))
+        equal(GIcon(instance), _icon2)
+    end
+    function hash(instance::GEmblem)
+        hash(GIcon(instance))
+    end
+    function serialize(instance::GEmblem)
+        serialize(GIcon(instance))
+    end
+    function to_string(instance::GEmblem)
+        to_string(GIcon(instance))
     end
     function EmblemedIcon_new(_icon::GIcon, _emblem::Maybe(GEmblem))
         _emblem_maybe = nothing_to_null(_emblem)
@@ -1660,6 +2029,18 @@ $(Expr(:toplevel, quote
                 convert(leaftype, ret, false)
             end
         ret2
+    end
+    function equal(instance::GEmblemedIcon, _icon2::Maybe(GIcon))
+        equal(GIcon(instance), _icon2)
+    end
+    function hash(instance::GEmblemedIcon)
+        hash(GIcon(instance))
+    end
+    function serialize(instance::GEmblemedIcon)
+        serialize(GIcon(instance))
+    end
+    function to_string(instance::GEmblemedIcon)
+        to_string(GIcon(instance))
     end
     function close(instance::GFileEnumerator, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
@@ -1794,6 +2175,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInfo, ret, true)
         ret2
     end
+    function can_seek(instance::GFileIOStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GFileIOStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GFileIOStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GFileIOStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GFileIOStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
+    end
     function FileIcon_new(_file::GFile)
         ret = ccall(("g_file_icon_new", libgio), Ptr{GObject}, (Ptr{GObject},), _file)
         ret2 = GFileIconLeaf(ret, true)
@@ -1806,6 +2202,27 @@ $(Expr(:toplevel, quote
                 convert(leaftype, ret, false)
             end
         ret2
+    end
+    function equal(instance::GFileIcon, _icon2::Maybe(GIcon))
+        equal(GIcon(instance), _icon2)
+    end
+    function hash(instance::GFileIcon)
+        hash(GIcon(instance))
+    end
+    function serialize(instance::GFileIcon)
+        serialize(GIcon(instance))
+    end
+    function to_string(instance::GFileIcon)
+        to_string(GIcon(instance))
+    end
+    function load(instance::GFileIcon, _size::Integer, _cancellable::Maybe(GCancellable))
+        load(GLoadableIcon(instance), _size, _cancellable)
+    end
+    function load_async(instance::GFileIcon, _size::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        load_async(GLoadableIcon(instance), _size, _cancellable, _callback)
+    end
+    function load_finish(instance::GFileIcon, _res::GAsyncResult)
+        load_finish(GLoadableIcon(instance), _res)
     end
     function FileInfo_new()
         ret = ccall(("g_file_info_new", libgio), Ptr{GObject}, ())
@@ -2152,6 +2569,21 @@ $(Expr(:toplevel, quote
         ret2 = convert(GFileInfo, ret, true)
         ret2
     end
+    function can_seek(instance::GFileInputStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GFileInputStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GFileInputStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GFileInputStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GFileInputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
+    end
     function cancel(instance::GFileMonitor)
         ret = ccall(("g_file_monitor_cancel", libgio), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -2201,6 +2633,21 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(GFileInfo, ret, true)
         ret2
+    end
+    function can_seek(instance::GFileOutputStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GFileOutputStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GFileOutputStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GFileOutputStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GFileOutputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
     end
     function FilenameCompleter_new()
         ret = ccall(("g_filename_completer_new", libgio), Ptr{GObject}, ())
@@ -2464,6 +2911,9 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
+    function init(instance::GInetAddressMask, _cancellable::Maybe(GCancellable))
+        init(GInitable(instance), _cancellable)
+    end
     function InetSocketAddress_new(_address::GInetAddress, _port::Integer)
         ret = ccall(("g_inet_socket_address_new", libgio), Ptr{GObject}, (Ptr{GObject}, UInt16), _address, _port)
         ret2 = GInetSocketAddressLeaf(ret, true)
@@ -2490,6 +2940,15 @@ $(Expr(:toplevel, quote
     function get_scope_id(instance::GInetSocketAddress)
         ret = ccall(("g_inet_socket_address_get_scope_id", libgio), UInt32, (Ptr{GObject},), instance)
         ret
+    end
+    function enumerate(instance::GInetSocketAddress)
+        enumerate(GSocketConnectable(instance))
+    end
+    function proxy_enumerate(instance::GInetSocketAddress)
+        proxy_enumerate(GSocketConnectable(instance))
+    end
+    function to_string(instance::GInetSocketAddress)
+        to_string(GSocketConnectable(instance))
     end
     function clear_pending(instance::GInputStream)
         ret = ccall(("g_input_stream_clear_pending", libgio), Nothing, (Ptr{GObject},), instance)
@@ -2734,6 +3193,18 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_list_store_splice", libgio), Nothing, (Ptr{GObject}, UInt32, UInt32, Ptr{Ptr{GObject}}, UInt32), instance, _position, _n_removals, _additions_arr, _n_additions)
         nothing
     end
+    function get_item_type(instance::GListStore)
+        get_item_type(GListModel(instance))
+    end
+    function get_n_items(instance::GListStore)
+        get_n_items(GListModel(instance))
+    end
+    function get_item(instance::GListStore, _position::Integer)
+        get_item(GListModel(instance), _position)
+    end
+    function items_changed(instance::GListStore, _position::Integer, _removed::Integer, _added::Integer)
+        items_changed(GListModel(instance), _position, _removed, _added)
+    end
     function MemoryInputStream_new()
         ret = ccall(("g_memory_input_stream_new", libgio), Ptr{GObject}, ())
         ret2 = GMemoryInputStreamLeaf(ret, true)
@@ -2747,6 +3218,33 @@ $(Expr(:toplevel, quote
     function add_bytes(instance::GMemoryInputStream, _bytes::GBytes)
         ret = ccall(("g_memory_input_stream_add_bytes", libgio), Nothing, (Ptr{GObject}, Ptr{GBytes}), instance, _bytes)
         nothing
+    end
+    function can_poll(instance::GMemoryInputStream)
+        can_poll(GPollableInputStream(instance))
+    end
+    function create_source(instance::GMemoryInputStream, _cancellable::Maybe(GCancellable))
+        create_source(GPollableInputStream(instance), _cancellable)
+    end
+    function is_readable(instance::GMemoryInputStream)
+        is_readable(GPollableInputStream(instance))
+    end
+    function read_nonblocking(instance::GMemoryInputStream, _cancellable::Maybe(GCancellable))
+        read_nonblocking(GPollableInputStream(instance), _cancellable)
+    end
+    function can_seek(instance::GMemoryInputStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GMemoryInputStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GMemoryInputStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GMemoryInputStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GMemoryInputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
     end
     function MemoryOutputStream_new_resizable()
         ret = ccall(("g_memory_output_stream_new_resizable", libgio), Ptr{GObject}, ())
@@ -2775,6 +3273,36 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_memory_output_stream_steal_data", libgio), Ptr{Nothing}, (Ptr{GObject},), instance)
         ret2 = convert(Nothing, ret)
         ret2
+    end
+    function can_poll(instance::GMemoryOutputStream)
+        can_poll(GPollableOutputStream(instance))
+    end
+    function create_source(instance::GMemoryOutputStream, _cancellable::Maybe(GCancellable))
+        create_source(GPollableOutputStream(instance), _cancellable)
+    end
+    function is_writable(instance::GMemoryOutputStream)
+        is_writable(GPollableOutputStream(instance))
+    end
+    function write_nonblocking(instance::GMemoryOutputStream, _buffer, _cancellable::Maybe(GCancellable))
+        write_nonblocking(GPollableOutputStream(instance), _buffer, _cancellable)
+    end
+    function writev_nonblocking(instance::GMemoryOutputStream, _vectors, _cancellable::Maybe(GCancellable))
+        writev_nonblocking(GPollableOutputStream(instance), _vectors, _cancellable)
+    end
+    function can_seek(instance::GMemoryOutputStream)
+        can_seek(GSeekable(instance))
+    end
+    function can_truncate(instance::GMemoryOutputStream)
+        can_truncate(GSeekable(instance))
+    end
+    function seek(instance::GMemoryOutputStream, _offset::Integer, _type, _cancellable::Maybe(GCancellable))
+        seek(GSeekable(instance), _offset, _type, _cancellable)
+    end
+    function tell(instance::GMemoryOutputStream)
+        tell(GSeekable(instance))
+    end
+    function truncate(instance::GMemoryOutputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
+        truncate(GSeekable(instance), _offset, _cancellable)
     end
     function Menu_new()
         ret = ccall(("g_menu_new", libgio), Ptr{GObject}, ())
@@ -3110,6 +3638,15 @@ $(Expr(:toplevel, quote
         ret2 = GNativeSocketAddressLeaf(ret, true)
         ret2
     end
+    function enumerate(instance::GNativeSocketAddress)
+        enumerate(GSocketConnectable(instance))
+    end
+    function proxy_enumerate(instance::GNativeSocketAddress)
+        proxy_enumerate(GSocketConnectable(instance))
+    end
+    function to_string(instance::GNativeSocketAddress)
+        to_string(GSocketConnectable(instance))
+    end
     function NetworkAddress_new(_hostname::Union{AbstractString, Symbol}, _port::Integer)
         ret = ccall(("g_network_address_new", libgio), Ptr{GObject}, (Cstring, UInt16), _hostname, _port)
         ret2 = GNetworkAddressLeaf(ret, true)
@@ -3148,6 +3685,15 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, false)
         ret2
     end
+    function enumerate(instance::GNetworkAddress)
+        enumerate(GSocketConnectable(instance))
+    end
+    function proxy_enumerate(instance::GNetworkAddress)
+        proxy_enumerate(GSocketConnectable(instance))
+    end
+    function to_string(instance::GNetworkAddress)
+        to_string(GSocketConnectable(instance))
+    end
     function NetworkService_new(_service::Union{AbstractString, Symbol}, _protocol::Union{AbstractString, Symbol}, _domain::Union{AbstractString, Symbol})
         ret = ccall(("g_network_service_new", libgio), Ptr{GObject}, (Cstring, Cstring, Cstring), _service, _protocol, _domain)
         ret2 = GNetworkServiceLeaf(ret, true)
@@ -3176,6 +3722,15 @@ $(Expr(:toplevel, quote
     function set_scheme(instance::GNetworkService, _scheme::Union{AbstractString, Symbol})
         ret = ccall(("g_network_service_set_scheme", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _scheme)
         nothing
+    end
+    function enumerate(instance::GNetworkService)
+        enumerate(GSocketConnectable(instance))
+    end
+    function proxy_enumerate(instance::GNetworkService)
+        proxy_enumerate(GSocketConnectable(instance))
+    end
+    function to_string(instance::GNetworkService)
+        to_string(GSocketConnectable(instance))
     end
     function Notification_new(_title::Union{AbstractString, Symbol})
         ret = ccall(("g_notification_new", libgio), Ptr{GObject}, (Cstring,), _title)
@@ -3540,6 +4095,30 @@ $(Expr(:toplevel, quote
         ret2 = GPropertyActionLeaf(ret, true)
         ret2
     end
+    function activate(instance::GPropertyAction, _parameter::Maybe(GVariant))
+        activate(GAction(instance), _parameter)
+    end
+    function change_state(instance::GPropertyAction, _value::GVariant)
+        change_state(GAction(instance), _value)
+    end
+    function get_enabled(instance::GPropertyAction)
+        get_enabled(GAction(instance))
+    end
+    function get_name(instance::GPropertyAction)
+        get_name(GAction(instance))
+    end
+    function get_parameter_type(instance::GPropertyAction)
+        get_parameter_type(GAction(instance))
+    end
+    function get_state(instance::GPropertyAction)
+        get_state(GAction(instance))
+    end
+    function get_state_hint(instance::GPropertyAction)
+        get_state_hint(GAction(instance))
+    end
+    function get_state_type(instance::GPropertyAction)
+        get_state_type(GAction(instance))
+    end
     function ProxyAddress_new(_inetaddr::GInetAddress, _port::Integer, _protocol::Union{AbstractString, Symbol}, _dest_hostname::Union{AbstractString, Symbol}, _dest_port::Integer, _username::Maybe(Union{AbstractString, Symbol}), _password::Maybe(Union{AbstractString, Symbol}))
         _username_maybe = nothing_to_null(_username)
         _password_maybe = nothing_to_null(_password)
@@ -3580,6 +4159,15 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_proxy_address_get_username", libgio), Cstring, (Ptr{GObject},), instance)
         ret2 = string_or_nothing(ret, false)
         ret2
+    end
+    function enumerate(instance::GProxyAddress)
+        enumerate(GSocketConnectable(instance))
+    end
+    function proxy_enumerate(instance::GProxyAddress)
+        proxy_enumerate(GSocketConnectable(instance))
+    end
+    function to_string(instance::GProxyAddress)
+        to_string(GSocketConnectable(instance))
     end
     function lookup_by_address(instance::GResolver, _address::GInetAddress, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
@@ -3991,10 +4579,103 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_simple_action_set_state_hint", libgio), Nothing, (Ptr{GObject}, Ptr{GVariant}), instance, _state_hint_maybe)
         nothing
     end
+    function activate(instance::GSimpleAction, _parameter::Maybe(GVariant))
+        activate(GAction(instance), _parameter)
+    end
+    function change_state(instance::GSimpleAction, _value::GVariant)
+        change_state(GAction(instance), _value)
+    end
+    function get_enabled(instance::GSimpleAction)
+        get_enabled(GAction(instance))
+    end
+    function get_name(instance::GSimpleAction)
+        get_name(GAction(instance))
+    end
+    function get_parameter_type(instance::GSimpleAction)
+        get_parameter_type(GAction(instance))
+    end
+    function get_state(instance::GSimpleAction)
+        get_state(GAction(instance))
+    end
+    function get_state_hint(instance::GSimpleAction)
+        get_state_hint(GAction(instance))
+    end
+    function get_state_type(instance::GSimpleAction)
+        get_state_type(GAction(instance))
+    end
     function SimpleActionGroup_new()
         ret = ccall(("g_simple_action_group_new", libgio), Ptr{GObject}, ())
         ret2 = GSimpleActionGroupLeaf(ret, true)
         ret2
+    end
+    function action_added(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        action_added(GActionGroup(instance), _action_name)
+    end
+    function action_enabled_changed(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol}, _enabled::Bool)
+        action_enabled_changed(GActionGroup(instance), _action_name, _enabled)
+    end
+    function action_removed(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        action_removed(GActionGroup(instance), _action_name)
+    end
+    function action_state_changed(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol}, _state::GVariant)
+        action_state_changed(GActionGroup(instance), _action_name, _state)
+    end
+    function activate_action(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol}, _parameter::Maybe(GVariant))
+        activate_action(GActionGroup(instance), _action_name, _parameter)
+    end
+    function change_action_state(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol}, _value::GVariant)
+        change_action_state(GActionGroup(instance), _action_name, _value)
+    end
+    function get_action_enabled(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_enabled(GActionGroup(instance), _action_name)
+    end
+    function get_action_parameter_type(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_parameter_type(GActionGroup(instance), _action_name)
+    end
+    function get_action_state(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_state(GActionGroup(instance), _action_name)
+    end
+    function get_action_state_hint(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_state_hint(GActionGroup(instance), _action_name)
+    end
+    function get_action_state_type(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        get_action_state_type(GActionGroup(instance), _action_name)
+    end
+    function has_action(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        has_action(GActionGroup(instance), _action_name)
+    end
+    function list_actions(instance::GSimpleActionGroup)
+        list_actions(GActionGroup(instance))
+    end
+    function query_action(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        query_action(GActionGroup(instance), _action_name)
+    end
+    function add_action(instance::GSimpleActionGroup, _action::GAction)
+        add_action(GActionMap(instance), _action)
+    end
+    function add_action_entries(instance::GSimpleActionGroup, _entries, _user_data::Maybe(Nothing))
+        add_action_entries(GActionMap(instance), _entries, _user_data)
+    end
+    function lookup_action(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        lookup_action(GActionMap(instance), _action_name)
+    end
+    function remove_action(instance::GSimpleActionGroup, _action_name::Union{AbstractString, Symbol})
+        remove_action(GActionMap(instance), _action_name)
+    end
+    function remove_action_entries(instance::GSimpleActionGroup, _entries)
+        remove_action_entries(GActionMap(instance), _entries)
+    end
+    function get_source_object(instance::GSimpleAsyncResult)
+        get_source_object(GAsyncResult(instance))
+    end
+    function get_user_data(instance::GSimpleAsyncResult)
+        get_user_data(GAsyncResult(instance))
+    end
+    function is_tagged(instance::GSimpleAsyncResult, _source_tag::Maybe(Nothing))
+        is_tagged(GAsyncResult(instance), _source_tag)
+    end
+    function legacy_propagate_error(instance::GSimpleAsyncResult)
+        legacy_propagate_error(GAsyncResult(instance))
     end
     function SimpleIOStream_new(_input_stream::GInputStream, _output_stream::GOutputStream)
         ret = ccall(("g_simple_io_stream_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), _input_stream, _output_stream)
@@ -4357,6 +5038,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function create_source(instance::GSocket, _condition, _cancellable::Maybe(GCancellable))
+        create_source(GDatagramBased(instance), _condition, _cancellable)
+    end
+    function init(instance::GSocket, _cancellable::Maybe(GCancellable))
+        init(GInitable(instance), _cancellable)
+    end
     function SocketAddress_new_from_native(_native::Nothing, _len::Integer)
         ret = ccall(("g_socket_address_new_from_native", libgio), Ptr{GObject}, (Ptr{Nothing}, UInt64), _native, _len)
         ret2 = convert(GSocketAddress, ret, true)
@@ -4378,6 +5065,15 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function enumerate(instance::GSocketAddress)
+        enumerate(GSocketConnectable(instance))
+    end
+    function proxy_enumerate(instance::GSocketAddress)
+        proxy_enumerate(GSocketConnectable(instance))
+    end
+    function to_string(instance::GSocketAddress)
+        to_string(GSocketConnectable(instance))
     end
     function next(instance::GSocketAddressEnumerator, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
@@ -5002,6 +5698,9 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function init(instance::GSubprocess, _cancellable::Maybe(GCancellable))
+        init(GInitable(instance), _cancellable)
+    end
     function SubprocessLauncher_new(_flags)
         ret = ccall(("g_subprocess_launcher_new", libgio), Ptr{GObject}, (UInt32,), _flags)
         ret2 = GSubprocessLauncherLeaf(ret, true)
@@ -5159,6 +5858,18 @@ $(Expr(:toplevel, quote
     function prepend_name(instance::GThemedIcon, _iconname::Union{AbstractString, Symbol})
         ret = ccall(("g_themed_icon_prepend_name", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _iconname)
         nothing
+    end
+    function equal(instance::GThemedIcon, _icon2::Maybe(GIcon))
+        equal(GIcon(instance), _icon2)
+    end
+    function hash(instance::GThemedIcon)
+        hash(GIcon(instance))
+    end
+    function serialize(instance::GThemedIcon)
+        serialize(GIcon(instance))
+    end
+    function to_string(instance::GThemedIcon)
+        to_string(GIcon(instance))
     end
     function ThreadedSocketService_new(_max_threads::Integer)
         ret = ccall(("g_threaded_socket_service_new", libgio), Ptr{GObject}, (Int32,), _max_threads)
@@ -5774,6 +6485,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_zlib_compressor_set_file_info", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _file_info_maybe)
         nothing
     end
+    function convert(instance::GZlibCompressor, _inbuf, _outbuf, _flags)
+        convert(GConverter(instance), _inbuf, _outbuf, _flags)
+    end
+    function reset(instance::GZlibCompressor)
+        reset(GConverter(instance))
+    end
     function ZlibDecompressor_new(_format)
         ret = ccall(("g_zlib_decompressor_new", libgio), Ptr{GObject}, (UInt32,), _format)
         ret2 = GZlibDecompressorLeaf(ret, true)
@@ -5783,6 +6500,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_zlib_decompressor_get_file_info", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GFileInfo, ret, false)
         ret2
+    end
+    function convert(instance::GZlibDecompressor, _inbuf, _outbuf, _flags)
+        convert(GConverter(instance), _inbuf, _outbuf, _flags)
+    end
+    function reset(instance::GZlibDecompressor)
+        reset(GConverter(instance))
     end
     function name_is_valid(_action_name::Union{AbstractString, Symbol})
         ret = ccall(("g_action_name_is_valid", libgio), Cint, (Cstring,), _action_name)

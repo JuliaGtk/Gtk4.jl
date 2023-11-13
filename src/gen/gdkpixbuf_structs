@@ -230,8 +230,8 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function GdkPixbuf(_data, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer, _destroy_fn::Maybe(Function), _destroy_fn_data::Maybe(Nothing); kwargs...)
-        obj = G_.Pixbuf_new_from_data(_data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn, _destroy_fn_data)
+    function GdkPixbuf(_data, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer, _destroy_fn::Maybe(Function); kwargs...)
+        obj = G_.Pixbuf_new_from_data(_data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn)
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -307,7 +307,7 @@ $(Expr(:toplevel, quote
         f = data
         ret = f()
         begin
-            GLib.glib_ref(ret)
+            ret != C_NULL && GLib.glib_ref(ret)
             convert(Ptr{GObject}, GLib.get_pointer(ret))
         end
     end
