@@ -28,7 +28,7 @@ export add_action, add_stateful_action
 
 export get_gtk_property, set_gtk_property!, gtk_propertynames, bind_property, unbind_property
 export bytestring, nothing_to_null, setproperties!, string_or_nothing, convert_if_not_null
-export length_zt, err_buf, check_err
+export length_zt, err_buf, check_err, GErrorException
 export gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
        gtkdoc_func_url, gtkdoc_struc_url
 
