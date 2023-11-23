@@ -107,6 +107,7 @@ include("gl_area.jl")
 include("lists.jl")
 include("text.jl")
 include("tree.jl")
+include("deprecated.jl")
 include("basic_exports.jl")
 
 global const lib_version = VersionNumber(

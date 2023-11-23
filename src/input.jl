@@ -38,12 +38,9 @@ end
 
 GtkScaleButton(min::Real, max::Real, step::Real; kwargs...) = GtkScaleButton(min, max, step, nothing; kwargs...)
 GtkScaleButton(scale::AbstractRange; kwargs...) = GtkScaleButton(minimum(scale), maximum(scale), step(scale); kwargs...)
-GtkAdjustment(scale::GtkScaleButton) = G_.get_adjustment(scale)
 
 ## GtkAdjustment
 
-# GtkScale is a subclass of GtkRange
-GtkAdjustment(range::GtkRange) = G_.get_adjustment(range)
 
 """
     configure!(adj::GtkAdjustment; value = nothing, lower = nothing, upper = nothing, step_increment = nothing, page_increment = nothing, page_size = nothing)
@@ -78,8 +75,6 @@ end
 ## GtkSpinButton
 
 GtkSpinButton(scale::AbstractRange; kwargs...) = GtkSpinButton(minimum(scale), maximum(scale), step(scale); kwargs...)
-
-GtkAdjustment(spinButton::GtkSpinButton) = G_.get_adjustment(spinButton)
 
 """
     configure!(sb::GtkSpinButton; adj = nothing, climb_rate = nothing, digits = nothing)
