@@ -7,7 +7,7 @@ t_range = 0.0:0.1:10.0
 x = rand(length(t_range))
 arr() = sin.(t_range) .* Gtk4.value(s) .+ x
 
-canvas = GtkCanvas(; vexpand=true, hexpand=true)
+canvas = GtkCanvas(400, 200; vexpand=true, hexpand=true)
 b = push!(GtkBox(:v),canvas)
 w = GtkWindow(b,"CairoMakie example")
 s = GtkScale(:h,-5:5; draw_value = true)

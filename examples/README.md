@@ -6,8 +6,8 @@
 - `dialogs.jl` demonstrates various types of dialogs.
 
 ## Drawing
-- `canvas.jl` demonstrates use of `GtkCanvas`, which allows drawing with Cairo. Also shows how to change the cursor when it's over a certain widget.
-- `canvas_cairomakie.jl` shows how to draw a CairoMakie plot into a `GtkCanvas`.
+- `canvas.jl` demonstrates use of `GtkCanvas`, which allows drawing with [Cairo](https://github.com/JuliaGraphics/Cairo.jl). Also shows how to change the cursor when it's over a certain widget.
+- `canvas_cairomakie.jl` shows how to draw a [CairoMakie](https://github.com/MakieOrg/Makie.jl) plot into a `GtkCanvas`.
 - `glarea.jl` shows how to use the `GtkGLArea` widget to draw using OpenGL.
 
 ## Lists

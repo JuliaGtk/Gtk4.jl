@@ -1,6 +1,6 @@
 using Gtk4
 
-win = GtkWindow("Listview demo with filter")
+win = GtkWindow("Listview demo with filter", 300, 800)
 box = GtkBox(:v)
 entry = GtkSearchEntry()
 sw = GtkScrolledWindow()
