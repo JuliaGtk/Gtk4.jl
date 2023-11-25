@@ -46,6 +46,8 @@ function GtkShortcutController(widget::GtkWidget)
     g
 end
 
+push!(sc::GtkShortcutController, s::GtkShortcut) = (G_.add_shortcut(sc,s);sc)
+
 function GtkGestureClick(widget::GtkWidget,button=1)
     g = G_.GestureClick_new()
     button != 1 && G_.set_button(g, button)

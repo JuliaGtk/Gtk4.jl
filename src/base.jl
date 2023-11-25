@@ -113,6 +113,14 @@ Related GTK function: [`gtk_widget_grab_focus`()]($(gtkdoc_method_url("gtk4","Wi
 grab_focus(w::GtkWidget) = G_.grab_focus(w)
 
 """
+    isrealized(w::GtkWidget)
+
+Returns whether `w` is realized (that is, whether it has been associated with
+a drawing surface).
+"""
+isrealized(w::GtkWidget) = G_.get_realized(w)
+
+"""
     activate(w::GtkWidget)
 
 Activates widgets like buttons, menu items, etc. that support being activated. Returns `false` if the widget is not activatable.

@@ -40,6 +40,14 @@ Related GTK function: [`gtk_window_default_size`()]($(gtkdoc_method_url("gtk4","
 default_size(win::GtkWindow, w, h) = G_.set_default_size(win, w, h)
 
 """
+    isactive(win::GtkWindow)
+
+Returns whether `win` is the currently active toplevel. This is the window that
+receives keystrokes.
+"""
+isactive(win::GtkWindow) = G_.is_active(win)
+
+"""
     destroy(win::GtkWindow)
 
 Drop GTK's reference to `win`.
