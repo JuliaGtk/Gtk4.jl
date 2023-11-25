@@ -3422,8 +3422,8 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function GTask(_source_object::Maybe(GObject), _cancellable::Maybe(GCancellable), _callback::Maybe(Function), _callback_data::Maybe(Nothing); kwargs...)
-        obj = G_.Task_new(_source_object, _cancellable, _callback, _callback_data)
+    function GTask(_source_object::Maybe(GObject), _cancellable::Maybe(GCancellable), _callback::Maybe(Function); kwargs...)
+        obj = G_.Task_new(_source_object, _cancellable, _callback)
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -3664,7 +3664,7 @@ $(Expr(:toplevel, quote
         f = user_data
         ret = f(connection, sender, object_path, interface_name, property_name, error)
         begin
-            GLib.glib_ref(ret)
+            ret != C_NULL && GLib.glib_ref(ret)
             convert(Ptr{GVariant}, GLib.get_pointer(ret))
         end
     end
@@ -3698,7 +3698,7 @@ $(Expr(:toplevel, quote
         f = user_data
         ret = f(connection, message, incoming)
         begin
-            GLib.glib_ref(ret)
+            ret != C_NULL && GLib.glib_ref(ret)
             convert(Ptr{GObject}, GLib.get_pointer(ret))
         end
     end
@@ -3808,7 +3808,7 @@ $(Expr(:toplevel, quote
         f = user_data
         ret = f(value, expected_type)
         begin
-            GLib.glib_ref(ret)
+            ret != C_NULL && GLib.glib_ref(ret)
             convert(Ptr{GVariant}, GLib.get_pointer(ret))
         end
     end
@@ -3832,7 +3832,7 @@ $(Expr(:toplevel, quote
         f = user_data
         ret = f(vfs, identifier)
         begin
-            GLib.glib_ref(ret)
+            ret != C_NULL && GLib.glib_ref(ret)
             convert(Ptr{GObject}, GLib.get_pointer(ret))
         end
     end

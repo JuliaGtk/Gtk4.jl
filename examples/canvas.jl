@@ -26,7 +26,7 @@ end
 cursor(c, "crosshair")
 
 # add the canvas to a window
-win = GtkWindow("Canvas")
+win = GtkWindow("Canvas", 300, 300)
 win[] = c
 
 # add an event controller to handle mouse clicks

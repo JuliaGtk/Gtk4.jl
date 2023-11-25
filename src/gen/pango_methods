@@ -821,6 +821,18 @@ $(Expr(:toplevel, quote
         _n_faces = m_n_faces[]
         _faces
     end
+    function get_item_type(instance::PangoFontFamily)
+        get_item_type(GListModel(instance))
+    end
+    function get_n_items(instance::PangoFontFamily)
+        get_n_items(GListModel(instance))
+    end
+    function get_item(instance::PangoFontFamily, _position::Integer)
+        get_item(GListModel(instance), _position)
+    end
+    function items_changed(instance::PangoFontFamily, _position::Integer, _removed::Integer, _added::Integer)
+        items_changed(GListModel(instance), _position, _removed, _added)
+    end
     function changed(instance::PangoFontMap)
         ret = ccall(("pango_font_map_changed", libpango), Nothing, (Ptr{GObject},), instance)
         nothing
@@ -861,6 +873,18 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_font_map_load_fontset", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{PangoLanguage}), instance, _context, _desc, _language)
         ret2 = convert_if_not_null(PangoFontset, ret, true)
         ret2
+    end
+    function get_item_type(instance::PangoFontMap)
+        get_item_type(GListModel(instance))
+    end
+    function get_n_items(instance::PangoFontMap)
+        get_n_items(GListModel(instance))
+    end
+    function get_item(instance::PangoFontMap, _position::Integer)
+        get_item(GListModel(instance), _position)
+    end
+    function items_changed(instance::PangoFontMap, _position::Integer, _removed::Integer, _added::Integer)
+        items_changed(GListModel(instance), _position, _removed, _added)
     end
     function foreach(instance::PangoFontset, _func::Function)
         begin

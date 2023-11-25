@@ -66,7 +66,7 @@ end
 
 import .GLib: set_gtk_property!, get_gtk_property, run,
               signal_handler_is_connected, signalnames,
-              GListModel
+              GListModel, start_main_loop, stop_main_loop
 
 # define accessor methods in Gtk4
 
@@ -107,6 +107,7 @@ include("gl_area.jl")
 include("lists.jl")
 include("text.jl")
 include("tree.jl")
+include("deprecated.jl")
 include("basic_exports.jl")
 
 global const lib_version = VersionNumber(

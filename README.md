@@ -31,6 +31,10 @@ For auto-generated code, Gtk4.jl relies on GObject introspection data generated 
 
 Note that this package uses binaries for the GTK library and its dependencies that are built and packaged using [BinaryBuilder.jl](https://github.com/JuliaPackaging/BinaryBuilder.jl). On Linux it does **not** use the binaries that are packaged with your distribution. The build scripts for the binaries used by Gtk4.jl, including the library versions currently being used, can be found by perusing [Yggdrasil.jl](https://github.com/JuliaPackaging/Yggdrasil.jl).
 
+### Known incompatibilities
+
+Gtk4.jl interferes with some other packages, including [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl) and [GLMakie.jl](https://github.com/MakieOrg/Makie.jl). To use Gtk4 based packages with Makie, you can use [Gtk4Makie.jl](https://github.com/JuliaGtk/Gtk4Makie.jl).
+
 ## Enabling GTK4's EGL backend (Linux)
 On Wayland, a Cairo-based fallback backend will be used unless you tell `libglvnd_jll` where to find libEGL. This can be done by setting the environment variable __EGL_VENDOR_LIBRARY_DIRS. See [here](https://gitlab.freedesktop.org/glvnd/libglvnd/-/blob/master/src/EGL/icd_enumeration.md) for details.
 

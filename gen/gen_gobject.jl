@@ -60,7 +60,7 @@ skiplist=[
 :watch_closure,:add_interface,:register_enum,:register_flags,:register_type,
 :getv,:notify_by_pspec,:interface_find_property,:interface_install_property,:interface_list_properties]
 
-GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=[:BindingGroup,:SignalGroup])
+GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=[:BindingGroup,:SignalGroup], interface_helpers=false)
 
 GI.write_to_file(path,"gobject_methods",toplevel)
 

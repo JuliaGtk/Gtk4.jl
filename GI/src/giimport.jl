@@ -1086,6 +1086,20 @@ function get_constructors(info::Union{GIStructInfo,GIObjectInfo};skiplist=Symbol
     outs
 end
 
+function get_closure_args(info::GIFunctionInfo)
+    closure_args=Dict{Symbol,Int}()
+    for arg in get_args(info)
+        is_skip(arg) && continue
+        typ = extract_type(arg)
+        closure = get_closure(arg)
+        if typ.gitype == Function && closure > -1
+            aname = Symbol("_", get_name(arg))
+            closure_args[aname]=closure+1
+        end
+    end
+    closure_args
+end
+
 function get_jargs(info::GIFunctionInfo)
     flags = get_flags(info)
     args = get_args(info)
@@ -1097,13 +1111,15 @@ function get_jargs(info::GIFunctionInfo)
             push!(jargs, Arg(:instance, typeinfo.jtype))
         end
     end
-    for arg in args
+    # go through args and find the closure arguments for each function argument
+    closure_args=get_closure_args(info)
+    for (iarg,arg) in enumerate(args)
         is_skip(arg) && continue
         aname = Symbol("_$(get_name(arg))")
         typ = extract_type(arg)
         dir = get_direction(arg)
         if dir != GIDirection.OUT
-            push!(jargs, Arg( aname, typ.jtype))
+            !(iarg in values(closure_args)) && push!(jargs, Arg( aname, typ.jtype))
         end
     end
 
@@ -1127,6 +1143,32 @@ function constructor_name(info, mname)
     object !== nothing ? Symbol("$(get_name(object))_$mname") : mname
 end
 
+function create_interface_method(info::GIFunctionInfo, obj::GIObjectInfo, liboverride = nothing)
+    name = get_name(info)
+    flags = get_flags(info)
+    if flags & GIFunction.IS_METHOD == 0
+        return nothing
+    end
+    ms = get_methods(obj)
+    if findfirst(m->get_name(m)==name, ms) !== nothing  # there is a conflicting object method
+        return nothing
+    end
+    jargs = get_jargs(info)
+    jargsp = copy(jargs)
+    typeinfo = extract_type(InstanceType,obj)
+    # replace the first argument of the definition with our object
+    jargsp[1] = Arg(:instance, typeinfo.jtype)
+    # replace the first argument of the call
+    callargs = Any[n for n in names(jargs)]
+    ifacename = get_full_name(get_container(info))
+    callargs[1] = :($ifacename($(callargs[1])))
+    j_call = Expr(:call, name, jparams(jargsp)... )
+    blk = quote
+        $name($(callargs...))
+    end
+    Expr(:function, j_call, blk)
+end
+
 # with some partial-evaluation half-magic
 # (or maybe just jit-compile-time macros)
 # this could be simplified significantly
@@ -1138,12 +1180,11 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
     epilogue = Any[]
     retvals = Symbol[]
     cargs = Arg[]
-    jargs = Arg[]
+    jargs = get_jargs(info)
     if flags & GIFunction.IS_METHOD != 0
         object = get_container(info)
         if object !== nothing
             typeinfo = extract_type(InstanceType,object)
-            push!(jargs, Arg(:instance, typeinfo.jtype))
             push!(cargs, Arg(:instance, typeinfo.ctype))
         end
     end
@@ -1166,16 +1207,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         end
     end
     # go through args and find the closure arguments for each function argument
-    closure_args=Dict{Symbol,Int}()
-    for arg in args
-        is_skip(arg) && continue
-        typ = extract_type(arg)
-        closure = get_closure(arg)
-        if typ.gitype == Function && closure > -1
-            aname = Symbol("_", get_name(arg))
-            closure_args[aname]=closure+1
-        end
-    end
+    closure_args=get_closure_args(info)
     for (iarg,arg) in enumerate(args)
         is_skip(arg) && continue
         aname = Symbol("_$(get_name(arg))")
@@ -1183,7 +1215,6 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         dir = get_direction(arg)
         anametran = aname
         if dir != GIDirection.OUT
-            !(iarg in values(closure_args)) && push!(jargs, Arg( aname, typ.jtype))
             anametran, expr = convert_to_c(aname,arg,typ)
             if expr !== nothing && !(iarg in values(closure_args))
                 if typ.gitype == Function
@@ -1232,21 +1263,12 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         arrlen=get_array_length(typeinfo)
         if typ.gitype == GICArray && arrlen >= 0
             len_name=Symbol("_",get_name(args[arrlen+1]))
-            len_i=findfirst(a->(a.name === len_name),jargs)
+            len_i=findfirst(a->((Symbol("_$(get_name(a))") === len_name && get_direction(a) != GIDirection.OUT)),args)
             if len_i !== nothing
-                deleteat!(jargs,len_i)
                 push!(prologue, :($len_name = length($aname)))
             end
             len_i=findfirst(==(len_name),retvals)
             len_i !== nothing && deleteat!(retvals,len_i)
-        end
-        closure = get_closure(arg)
-        if typ.gitype == Function && closure > -1
-            closure_name=Symbol("_",get_name(args[closure+1]))
-            closure_i=findfirst(a->(a.name === closure_name),jargs)
-            if closure_i !== nothing
-                deleteat!(jargs,closure_i)  # could avoid this by using ignore_args to skip adding them to jargs
-            end
         end
     end
     if rettype.gitype == GICArray

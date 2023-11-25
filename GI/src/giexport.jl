@@ -279,7 +279,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     loaded
 end
 
-function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing, exclude_deprecated=true)
+function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing, exclude_deprecated=true, interface_helpers=true)
     not_implemented=0
     skipped=0
     created=0
@@ -308,6 +308,16 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
                 else
                     error("Error: $name, $(get_name(m))")
                     rethrow(e)
+                end
+            end
+        end
+        if interface_helpers
+            for i in get_interfaces(o)
+                printstyled("$(get_name(i))\n"; color=:blue)
+                for m in get_methods(i)
+                    printstyled("$(get_name(m))\n"; color=:green)
+                    fun = create_interface_method(m, o, liboverride)
+                    fun !== nothing && push!(exprs, fun)
                 end
             end
         end

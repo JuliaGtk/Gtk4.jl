@@ -28,7 +28,7 @@ for i=1:1
     @test GLib.G_.get_double(kf,"group","blah2")==9.44
     @test GLib.G_.get_double(kf,"group2","blah3")==9
 
-    @test_throws ErrorException GLib.G_.get_double(kf,"group3","blah")
+    @test_throws GErrorException GLib.G_.get_double(kf,"group3","blah")
 
     # test set_double_list, set_integer_list, etc. with perfectly prepared inputs
     bool_list = convert(Vector{Int32},[true,false,false,true])

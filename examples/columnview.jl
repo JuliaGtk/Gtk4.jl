@@ -83,7 +83,7 @@ end
 
 list = GtkColumnView(GtkSelectionModel(GtkSingleSelection(GListModel(filteredModel))); vexpand=true)
 factory1 = GtkSignalListItemFactory(setup_cb, bind_cb)
-col1 = GtkColumnViewColumn("name", factory1)
+col1 = GtkColumnViewColumn("name", factory1; expand=true)
 push!(list, col1)
 
 factory2 = GtkSignalListItemFactory(setup_cb, bind2_cb)

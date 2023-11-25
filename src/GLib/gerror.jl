@@ -3,6 +3,9 @@ struct GError
     code::Cint
     message::Ptr{UInt8}
 end
+
+message(err::GError) = bytestring(err.message)
+
 #@make_gvalue(GError, Ptr{GError}, :boxed, (:g_error, :libgobject))
 convert(::Type{GError}, err::Ptr{GError}) = GError(err)
 g_type(::Type{GError}) = ccall((:g_error_get_type, libgobject), GType, ())
@@ -14,13 +17,21 @@ function err_buf()
     err[] = Ptr{GError}(C_NULL)
     err
 end
+
+struct GErrorException <: Exception
+    domain::UInt32
+    code::Cint
+    message::String
+end
+
+GErrorException(err::GError) = GErrorException(err.domain, err.code, bytestring(err.message))
+
 function check_err(err::Base.RefValue{Ptr{GError}})
     if err[] != C_NULL
         gerror = GError(err[])
-        emsg = message(gerror)
+        ee = GErrorException(gerror)
         ccall((:g_clear_error,libglib),Nothing,(Ptr{Ptr{GError}},),err)
-        error(emsg)
+        throw(ee)
     end
 end
 
-message(err::GError) = bytestring(err.message)
