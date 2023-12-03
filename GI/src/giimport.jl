@@ -683,7 +683,7 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
             if elmtype.gitype == GObject
                 return :(arrtemp=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);arrtemp=convert.($(elmtype.jtype), arrtemp, false))
             elseif elmctype == :(Ptr{UInt8}) || elmctype == :(Cstring)
-                return :(bytestring.(unsafe_wrap(Vector{$elmctype}, $name, $lensymb[]),true))
+                return :(arrtemp=bytestring.(unsafe_wrap(Vector{$elmctype}, $name, $lensymb[]),false);GLib.g_free($name);arrtemp)
             else
                 return :(arrtemp=collect(unsafe_wrap(Vector{$elmctype}, $name,$lensymb[]));GLib.g_free($name);arrtemp)
             end
