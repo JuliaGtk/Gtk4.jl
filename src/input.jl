@@ -17,6 +17,12 @@ complete(completion::GtkEntryCompletion) = G_.complete(completion)
 
 ## GtkScale
 
+"""
+    GtkScale(orientation, [scale::AbstractRange]; kwargs...)
+
+Create a scale widget with horizontal (:h) or vertical (:v) orientation and an
+optional range. Keyword arguments can be used to set properties.
+"""
 GtkScale(orientation::Symbol; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), nothing; kwargs...)
 GtkScale(orientation::Symbol, adj::GtkAdjustment; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), adj; kwargs...)
 GtkScale(orientation::Symbol, min::Real, max::Real, step::Real; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), min, max, step; kwargs...)
@@ -40,7 +46,6 @@ GtkScaleButton(min::Real, max::Real, step::Real; kwargs...) = GtkScaleButton(min
 GtkScaleButton(scale::AbstractRange; kwargs...) = GtkScaleButton(minimum(scale), maximum(scale), step(scale); kwargs...)
 
 ## GtkAdjustment
-
 
 """
     configure!(adj::GtkAdjustment; value = nothing, lower = nothing, upper = nothing, step_increment = nothing, page_increment = nothing, page_size = nothing)

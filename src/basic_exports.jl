@@ -13,7 +13,7 @@ export width, height, set_child, get_child,
     pulse, fraction, pulse_step, widget, group, expand_to_path,
     buffer, cells, search, place_cursor, select_range, selection_bounds,
     create_mark, scroll_to, cursor, @load_builder,
-    queue_render, make_current, get_error
+    queue_render, make_current, get_error, adjustment
     #margin, padding, align
     #raise, focus, enabled
 
@@ -24,7 +24,7 @@ export info_dialog, ask_dialog, warn_dialog, error_dialog, input_dialog
 export color_dialog
 export response
 
-export GListModel, changed
+export GListModel, changed, model, selected_string, selected_string!
 
 # GLib-imported event handling
 export signal_connect, signal_handler_disconnect,

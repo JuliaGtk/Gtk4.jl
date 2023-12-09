@@ -27,16 +27,20 @@ win = GtkWindow("DropDown Example",400,200)
 push!(win, dd)
 ```
 
-A search entry can be added using `Gtk4.enable_search(dd, true)`.
+A search entry can be added using `Gtk4.enable_search(dd, true)`. You can set
+which item is selected using `selected_string!`.
 
-To change the list of options after the dropdown widget is created, you can use
+To change the list of options after the dropdown widget is created, you have to
+change its list of strings. The model holding this list can fetched using the
+`model` method and then the string list can be modified using the Julia array
+interface (`push!`, `pushfirst!`, `empty!`, etc.):
 ```julia
-new_options_list = Gtk4.GtkStringList(["one","two","three","four","five"])
-Gtk4.model(dd,GListModel(new_options_list))
+m = Gtk4.model(dd)
+push!(m, "five")
 ```
 
-More complex uses of `GtkDropDown` are possible and may be supported in future versions
-of Gtk4.jl.
+More complex uses of `GtkDropDown` are possible by using models other than
+`GtkStringList`. This may be supported in future versions of Gtk4.jl.
 
 ## GtkComboBox
 

@@ -41,13 +41,39 @@ eltype(::Type{GtkStringList}) = String
 
 ## GtkDropdown
 
+"""
+    GtkDropDown(; kwargs...)
+
+Create a dropdown widget with no model (and thus no options to selected). A
+model can be added using `model`. Keyword arguments set GObject properties.
+"""
 GtkDropDown(; kwargs...) = GtkDropDown(nothing, nothing; kwargs...)
+"""
+    GtkDropDown(a::AbstractArray; kwargs...)
+
+Create a dropdown widget with a `GtkStringList` as its model. The model will be
+populated with the elements of `a` converted to strings. Keyword arguments set
+GObject properties.
+"""
 function GtkDropDown(a::AbstractArray; kwargs...)
     dd = Gtk4.G_.DropDown_new_from_strings(string.(collect(a)))
     GLib.setproperties!(dd; kwargs...)
     dd
 end
+"""
+    selected_string(d::GtkDropDown)
+
+Get the currently selected item in a dropdown widget. This method assumes that
+the widget's model is a `GtkStringList` or that items in the model have a
+"string" property.
+"""
 selected_string(d::GtkDropDown) = G_.get_selected_item(d).string
+"""
+    selected_string!(d::GtkDropDown, s::AbstractString)
+
+Set the selected item in a dropdown widget. This method assumes that the
+widget's model is a `GtkStringList`.
+"""
 function selected_string!(d::GtkDropDown, s::AbstractString)
     sl = G_.get_model(d)
     isa(sl, GtkStringList) || error("This method only works if the model is a GtkStringList")
