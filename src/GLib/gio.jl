@@ -33,3 +33,5 @@ function getindex(fi::GFileInfo,att::AbstractString)
     end
 end
 
+cancel(c::GCancellable) = G_.cancel(c)
+iscancelled(c::GCancellable) = G_.is_cancelled(c)

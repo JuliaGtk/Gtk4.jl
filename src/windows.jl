@@ -575,3 +575,120 @@ function color_dialog(callback::Function, title::AbstractString, parent = nothin
     end
     return dlg
 end
+
+## New dialogs (new in GTK 4.10)
+
+function GtkAlertDialog(message::AbstractString)
+    ptr = ccall((:gtk_alert_dialog_new, libgtk4), Ptr{GObject}, (Ptr{UInt8},), message)
+    GtkAlertDialogLeaf(ptr, true)
+end
+
+show(dlg::GtkAlertDialog, parent=nothing) = G_.show(dlg, parent)
+
+function _path_finish(f, dlg, resobj)
+    gfile = f(dlg, Gtk4.GLib.GAsyncResult(resobj))
+    Gtk4.GLib.path(Gtk4.GLib.GFile(gfile))
+end
+
+function _path_multiple_finish(f, dlg, resobj)
+    gfiles = f(dlg, Gtk4.GLib.GAsyncResult(resobj))
+    [Gtk4.GLib.path(Gtk4.GLib.GFile(gfile)) for gfile in gfiles]
+end
+
+"""
+    GtkFileDialog(; kwargs...)
+
+# Selected keyword arguments
+
+- accept_label: the text to show on the dialog's accept button
+- default_filter: the `GtkFileFilter` initially active in the file dialog
+- filters: a GListModel of file filters
+- initial_name: the filename or directory that is initially selected in the file chooser dialog
+- title: the title of the dialog
+- modal: whether the dialog is modal
+""" GtkFileDialog(; kwargs...)
+
+"""
+    save(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+
+Open a dialog to save a file. The callback `cb` will be called when the user
+selects a file.
+"""
+function Graphics.save(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+    G_.save(dlg, parent, cancellable, cb)
+end
+
+"""
+    save_path(dlg, resobj)
+
+Get the path selected by the user in a save dialog.
+"""
+save_path(dlg, resobj) = _path_finish(Gtk4.G_.save_finish, dlg, resobj)
+
+"""
+    open(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+
+Open a dialog to open a file. The callback `cb` will be called when the user
+selects a file.
+"""
+function Base.open(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+    G_.open(dlg, parent, cancellable, cb)
+end
+
+"""
+    open_path(dlg, resobj)
+
+Get the path selected by the user in an open dialog.
+"""
+open_path(dlg, resobj) = _path_finish(Gtk4.G_.open_finish, dlg, resobj)
+
+"""
+    select_folder(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+
+Open a dialog to select a folder. The callback `cb` will be called when the user
+selects a folder.
+"""
+function select_folder(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+    G_.select_folder(dlg, parent, cancellable, cb)
+end
+
+"""
+    select_folder_path(dlg, resobj)
+
+Get the path selected by the user in a select folder dialog.
+"""
+select_folder_path(dlg, resobj) = _path_finish(Gtk4.G_.select_folder_finish, dlg, resobj)
+
+"""
+    open_multiple(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+
+Open a dialog to open multiple files. The callback `cb` will be called when the user
+is done selecting files.
+"""
+function open_multiple(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+    G_.open_multiple(dlg, parent, cancellable, cb)
+end
+
+"""
+    open_paths(dlg, resobj)
+
+Get the paths selected by the user in a "open multiple" dialog.
+"""
+open_paths(dlg, resobj) = _path_multiple_finish(Gtk4.G_.open_multiple_finish, dlg, resobj)
+
+"""
+    select_multiple_folders(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+
+Open a dialog to select multiple folders. The callback `cb` will be called when the user
+is done selecting folders.
+"""
+function select_multiple(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+    G_.select_multiple(dlg, parent, cancellable, cb)
+end
+
+"""
+    select_multiple_folder_paths(dlg, resobj)
+
+Get the paths selected by the user in a "select multiple folders" dialog.
+"""
+select_multiple_folder_paths(dlg, resobj) = _path_multiple_finish(Gtk4.G_.select_multiple_folders_finish, dlg, resobj)

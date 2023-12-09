@@ -84,7 +84,19 @@ end
 
 ## GtkListView and GtkGridView
 
+"""
+    GtkListView(model=nothing; kwargs...)
+
+Create a `GtkListView` widget, optionally with a model. Keyword arguments set
+GObject properties.
+"""
 GtkListView(model=nothing; kwargs...) = GtkListView(model, nothing; kwargs...)
+"""
+    GtkGridView(model=nothing; kwargs...)
+
+Create a `GtkGridView` widget, optionally with a model. Keyword arguments set
+GObject properties.
+"""
 GtkGridView(model=nothing; kwargs...) = GtkGridView(model, nothing; kwargs...)
 
 GtkColumnView(; kwargs...) = GtkColumnView(nothing; kwargs...)
