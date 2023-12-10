@@ -11,10 +11,10 @@ sp = GtkSpinner()
 ent = GtkEntry(;hexpand=true)
 label = GtkLabel("")
 
-ltp = Threads.threadpool()
-
 grid = GtkGrid()
-grid[1:2,1] = GtkLabel("The GTK loop is running in thread $(Threads.threadid()) ($ltp threadpool)")
+lab = GtkLabel("")
+grid[1:2,1] = lab
+@idle_add lab.label = "The GTK loop is running in thread $(Threads.threadid()) ($(Threads.threadpool()) threadpool)"
 grid[1,2] = btn
 grid[2,2] = sp
 grid[1:2,3] = ent

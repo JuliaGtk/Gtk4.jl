@@ -12,7 +12,7 @@ This package builds on Gtk.jl but uses GObject introspection to support more of 
 
 Most of the code for GLib support (`GType`, `GValue`, `GObject`, etc.) was copied with minor changes from [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl). This includes integration of the GLib main loop with Julia's event loop.
 
-Documentation for the master branch version of this package can be found [here](https://juliagtk.github.io/Gtk4.jl/dev/). Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
+Documentation for the master branch version of this package can be found [here](https://juliagtk.github.io/Gtk4.jl/dev/). Example code can be found [here](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples). Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
 
 ## Package scope and alternatives
 
