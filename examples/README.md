@@ -6,7 +6,7 @@
 - `dialogs.jl` demonstrates various types of dialogs.
 
 ## Drawing
-- `canvas.jl` demonstrates use of `GtkCanvas`, which allows drawing with [Cairo](https://github.com/JuliaGraphics/Cairo.jl). Also shows how to change the cursor when it's over a certain widget.
+- `canvas.jl` demonstrates use of `GtkCanvas`, which allows drawing with [Cairo](https://github.com/JuliaGraphics/Cairo.jl). Also shows how to change the cursor when it's over a certain widget. Adapted from an example in the Gtk.jl manual.
 - `canvas_cairomakie.jl` shows how to draw a [CairoMakie](https://github.com/MakieOrg/Makie.jl) plot into a `GtkCanvas`.
 - `glarea.jl` shows how to use the `GtkGLArea` widget to draw using OpenGL.
 
@@ -19,13 +19,13 @@
 - `listbox.jl` demonstrates `GtkListBox` to show a huge list of strings. This widget is a little easier to use than `GtkListView` but may be less performant.
 
 ## Multithreading
-
-- `thread.jl` is a basic example of doing work in a separate thread while maintaining a responsive UI.
+- `thread.jl` is a basic example of doing work in a separate thread while maintaining a responsive UI. Adapted from an example in the Gtk.jl manual.
 - `thread_timeout.jl` adds a label that updates during the task in the example above.
 
 ## Applications
-
 - `application.jl` is a simple example of using `GtkApplication` and `GAction`s.
 - `application2.jl` together with `application.jl` shows how to use remote actions with DBus. This probably only works on Linux.
 - The `ExampleApplication` subdirectory shows how to use Gtk4.jl with [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl).
 
+## Toys
+- `HDF5Viewer` is a more extended example that shows the contents of an HDF5 file. Uses `GtkBuilder`, `GtkColumnView`, and `GtkTextView` and does some work in a separate thread to keep the UI responsive.
