@@ -2,14 +2,14 @@
     g_timeout_add(f, interval, priority=PRIORITY_DEFAULT)
 
 Add a function `f` that will be called every `interval` milliseconds by the GTK
-main loop. The function is expected to return a `Cint`. If it returns a nonzero 
-value, the function will be called again after another `interval` milliseconds.
-Otherwise it will not be called again. The optional `priority` argument, which
-is an integer, sets the priority of the event source (smaller is higher priority).
-The GLib main loop uses this priority value to decide what sources to handle next.
+main loop. If the function returns `true`, it will be called again after
+another `interval` milliseconds. If it returns `false` it will not be called
+again. The optional `priority` argument, which is an integer, sets the priority
+of the event source (smaller is higher priority). The GLib main loop uses this
+priority value to decide what sources to handle next.
 
 This function returns an event source ID that can be used with `g_source_remove`
-to stop the timeout.
+to stop the timeout externally.
 
 Related GTK function: [`g_timeout_add`()]($(gtkdoc_func_url("glib","timeout_add")))
 """

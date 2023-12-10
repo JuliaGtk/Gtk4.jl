@@ -5,16 +5,22 @@ responsiveness either using multithreading or using separate processes. Use of a
 process includes slightly more overhead but also ensures user interface responsiveness more
 robustly.
 
+## Multithreading
+
+!!! note "Example"
+    The code below can be found in "thread.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
+
 Here is an example using [threads](https://docs.julialang.org/en/v1/manual/multi-threading/).
 Notice that this example will freeze the UI during computation unless Julia is run with two
-or more threads (`julia -t2` on the command line).
+or more threads, for example by calling `julia -t2` or `julia -t1,1` to use the interactive
+threadpool in recent versions of Julia.
 
 ```julia
 using Gtk4
 
 btn = GtkButton("Start")
 sp = GtkSpinner()
-ent = GtkEntry()
+ent = GtkEntry(;hexpand=true)
 
 grid = GtkGrid()
 grid[1,1] = btn
@@ -37,14 +43,17 @@ signal_connect(btn, "clicked") do widget
         Gtk4.GLib.g_idle_add() do
             stop(sp)
             ent.text = "I counted to $counter in a thread!"
-            Cint(false)
+            false
         end
     end
 end
 
-win = GtkWindow(grid, "Threads", 200, 200)
+win = GtkWindow(grid, "Threads", 300, 200)
 ```
 
+A modified version of this code that includes an updating counter can be found in "thread_timeout.jl" in the ["examples" subdirectory](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples).
+
+## Separate processes
 
 Here is an example using a separate process to offload the work. This toy example is
 fairly straightforward, but things can get more complex if the offloaded task is more

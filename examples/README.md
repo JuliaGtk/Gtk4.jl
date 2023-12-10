@@ -18,6 +18,11 @@
 - `filteredlistview_tree.jl` demonstrates using `GtkListView` to show a tree. Uses `GtkCustomFilter` to filter what's shown.
 - `listbox.jl` demonstrates `GtkListBox` to show a huge list of strings. This widget is a little easier to use than `GtkListView` but may be less performant.
 
+## Multithreading
+
+- `thread.jl` is a basic example of doing work in a separate thread while maintaining a responsive UI.
+- `thread_timeout.jl` adds a label that updates during the task in the example above.
+
 ## Applications
 
 - `application.jl` is a simple example of using `GtkApplication` and `GAction`s.
