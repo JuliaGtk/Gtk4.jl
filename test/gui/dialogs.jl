@@ -83,3 +83,77 @@ csvfilter4 = GtkFileFilter("*.csv", "text/csv")
 @test csvfilter4.name == "*.csv"
 end
 
+@testset "New dialogs" begin
+main_window = GtkWindow("New dialog example")
+fd=GtkFileDialog()
+
+c=GCancellable()
+save(fd, main_window, c) do dlg, resobj
+    try
+        x=save_path(dlg, resobj)
+    catch e
+        if !isa(e, Gtk4.GLib.GErrorException)
+            rethrow(e)
+        end
+    end
+end
+sleep(1.0)
+cancel(c)
+
+c=GCancellable()
+open_file(fd, main_window, c) do dlg, resobj
+    try
+        x=open_path(dlg, resobj)
+    catch e
+        if !isa(e, Gtk4.GLib.GErrorException)
+            rethrow(e)
+        end
+    end
+end
+sleep(1.0)
+cancel(c)
+
+c=GCancellable()
+select_folder(fd, main_window, c) do dlg, resobj
+    try
+        x=select_folder_path(dlg, resobj)
+    catch e
+        if !isa(e, Gtk4.GLib.GErrorException)
+            rethrow(e)
+        end
+    end
+end
+sleep(1.0)
+cancel(c)
+
+c=GCancellable()
+open_multiple(fd, main_window, c) do dlg, resobj
+    try
+        x=open_paths(dlg, resobj)
+    catch e
+        if !isa(e, Gtk4.GLib.GErrorException)
+            rethrow(e)
+        end
+    end
+end
+sleep(1.0)
+cancel(c)
+
+c=GCancellable()
+select_multiple_folders(fd, main_window, c) do dlg, resobj
+    try
+        x=select_multiple_folder_paths(dlg, resobj)
+    catch e
+        if !isa(e, Gtk4.GLib.GErrorException)
+            rethrow(e)
+        end
+    end
+end
+sleep(1.0)
+cancel(c)
+
+
+sleep(2.0)
+
+close(main_window)
+end

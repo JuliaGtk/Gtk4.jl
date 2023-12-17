@@ -23,13 +23,14 @@ export open_dialog, save_dialog
 export info_dialog, ask_dialog, warn_dialog, error_dialog, input_dialog
 export color_dialog
 export response
+export open_file, save_path, open_path, select_folder, select_folder_path, open_multiple, open_paths, select_multiple_folders, select_multiple_folder_paths
 
 export GListModel, changed, model, selected_string, selected_string!
 
 # GLib-imported event handling
 export signal_connect, signal_handler_disconnect,
     signal_handler_block, signal_handler_unblock, signal_handler_is_connected,
-    signal_emit, g_timeout_add, g_idle_add
+    signal_emit, g_timeout_add, g_idle_add, GCancellable, cancel
 export @guarded, @idle_add
 export start_main_loop, stop_main_loop
 
