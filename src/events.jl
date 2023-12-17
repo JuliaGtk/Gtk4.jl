@@ -20,7 +20,7 @@ penalty for creating a list of a widget's event controllers.
 Related GTK function: [`gtk_widget_observe_controllers`](https://docs.gtk.org/gtk4/method.Widget.observe_controllers.html))
 """
 function find_controller(w::GtkWidget, ::Type{T}) where T<: GtkEventController
-    list = GListModel(G_.observe_controllers(w))
+    list = observe_controllers(w)
     i=findfirst(c->isa(c,T), list)
     i!==nothing ? list[i] : nothing
 end
