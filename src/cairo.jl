@@ -16,9 +16,7 @@ function _init_canvas!(widget, w, h)
 end
 
 function _canvas_on_realize(::Ptr, canvas)
-    if canvas.is_sized
-        _canvas_on_resize(da,1,1)
-    end
+    canvas.is_sized && _canvas_on_resize(da,1,1)
     nothing
 end
 
@@ -120,9 +118,7 @@ end
 Return the CairoContext of the `CairoSurface` backing store of a `GtkCanvas`.
 """
 function getgc(c::GtkCanvas)
-    if !isdefined(c,:backcc)
-      error("GtkCanvas not yet initialized.")
-    end
+    isdefined(c,:backcc) || error("GtkCanvas not yet initialized.")
     return c.backcc
 end
 
@@ -132,8 +128,6 @@ end
 Return the image `CairoSurface` backing store for a `GtkCanvas`.
 """
 function cairo_surface(c::GtkCanvas)
-    if !isdefined(c,:back)
-      error("GtkCanvas not yet initialized.")
-    end
+    isdefined(c,:back) || error("GtkCanvas not yet initialized.")
     return c.back
 end

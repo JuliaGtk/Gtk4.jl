@@ -10,7 +10,7 @@ function GtkEntryBuffer(initial_text = nothing)
     G_.EntryBuffer_new(initial_text, -1)
 end
 
-setindex!(buffer::GtkEntryBuffer, content::String, ::Type{String}) =
+setindex!(buffer::GtkEntryBuffer, content::String) =
     G_.set_text(buffer, content, -1)
 
 complete(completion::GtkEntryCompletion) = G_.complete(completion)
