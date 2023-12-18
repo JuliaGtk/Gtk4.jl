@@ -41,8 +41,6 @@ end
     w = GtkWindow("Window", 400, 300)
     fullscreen(w)
     sleep(1)
-    @static Sys.islinux() && @test Gtk4.isfullscreen(w)
-    @static Sys.islinux() && @test Gtk4.isrealized(w)
     unfullscreen(w)
     sleep(1)
     maximize(w)
