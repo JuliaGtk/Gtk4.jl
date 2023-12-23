@@ -3,7 +3,7 @@ using Gtk4
 @testset "comboboxtext" begin
 
 @testset "populate with push!" begin
-    cbstr = GtkComboBoxText()
+    cbstr = GtkComboBoxText(false)
     push!(cbstr, "1", "abc")
     push!(cbstr, "2", "xyz")
 

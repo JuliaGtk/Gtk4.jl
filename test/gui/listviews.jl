@@ -77,6 +77,9 @@ listBox[1] = GtkLabel("widget 2")
 sw[] = listBox
 listBox.vexpand = true
 
+Gtk4.set_filter_func(listBox, nothing)
+Gtk4.set_sort_func(listBox, nothing)
+
 # while we're at it, test GtkExpression
 pe = GtkPropertyExpression(GtkWindow, "title")
 rgv=Ref(GLib.GValue())
@@ -121,6 +124,9 @@ listBox[1] = GtkLabel("widget 2")
 @test listBox[2].child != l
 sw[] = listBox
 listBox.vexpand = true
+
+Gtk4.set_filter_func(listBox, nothing)
+Gtk4.set_sort_func(listBox, nothing)
 
 destroy(win)
 
