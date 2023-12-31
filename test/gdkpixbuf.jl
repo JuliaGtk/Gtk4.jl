@@ -8,7 +8,7 @@ pb=GdkPixbufLib.G_.Pixbuf_new(0,false,8,300,300)
 @test 300 == width(pb)
 
 x=fill(GdkPixbufLib.RGB(0xff,0xff,0xff),(3,3))
-pb[1:3,1:3]=GdkPixbufLib.RGB(0xff,0xff,0xff)
+pb[1:3,1:3]=x
 @test pb[1,1] == GdkPixbufLib.RGB(0xff,0xff,0xff)
 @test pb[1,3] == GdkPixbufLib.RGB(0xff,0xff,0xff)
 @test pb[1,4] != GdkPixbufLib.RGB(0xff,0xff,0xff)
