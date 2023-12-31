@@ -20,7 +20,7 @@ export Maybe
 export GList, GSList, glist_iter, _GSList, _GList, GError, GVariant, GType, GBoxed
 export GObject, GInitiallyUnowned, GInterface, GTypeInterface, _GTypeInterface, GParam, GTypeInstance
 export GByteArray, GHashTable, GPtrArray
-export g_timeout_add, g_idle_add, @idle_add, @guarded, g_source_remove
+export g_timeout_add, g_idle_add, @idle_add, @guarded, g_source_remove, cancel
 export cfunction_, on_notify, signalnames, signal_return_type, signal_argument_types
 export gobject_ref, signal_connect, signal_emit, signal_handler_disconnect
 export signal_handler_block, signal_handler_unblock

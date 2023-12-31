@@ -51,6 +51,8 @@ end
     unmaximize(w)
     sleep(1)
     @test !G_.is_maximized(w)
+    ag = GSimpleActionGroup()
+    push!(w, GActionGroup(ag), "window")
     Gtk4.default_size(w, 200, 500)
     @test Gtk4.default_size(w) == (200, 500)
     destroy(w)

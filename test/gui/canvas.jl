@@ -1,6 +1,6 @@
 using Test, Gtk4, Cairo
 
-@testset "Canvas & AspectFrame" begin
+@testset "Canvas, AspectFrame, and event controllers" begin
 c = GtkCanvas(100,100)
 f = GtkAspectFrame(0.5, 1, 0.5, false)
 f[] = c
@@ -10,10 +10,16 @@ gs = GtkEventControllerScroll(Gtk4.EventControllerScrollFlags_VERTICAL,c)
 gk = GtkEventControllerKey(c)
 ggc = GtkGestureClick(c)
 ggd = GtkGestureDrag(c)
+gsc = GtkShortcutController(c)
 ggz = GtkGestureZoom(c)
 t = Gtk4.find_controller(c,GtkEventControllerMotion)
 @test t==gm
 @test widget(gm) == c
+
+delete!(c, gk)
+t = Gtk4.find_controller(c,GtkEventControllerKey)
+@test t===nothing
+
 drew = Ref(false)
 resized = Ref(false)
 c.draw = function(_)

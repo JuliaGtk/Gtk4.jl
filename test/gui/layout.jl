@@ -111,6 +111,8 @@ end
     l4 = GtkLabel("Named #2")
     s["named2"] = l4
     @test s["named2"] == l4
+    delete!(s,s["named2"])
+    empty!(s)
     destroy(w)
 end
 

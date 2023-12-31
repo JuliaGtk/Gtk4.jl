@@ -621,17 +621,18 @@ end
 """
     save_path(dlg, resobj)
 
-Get the path selected by the user in a save dialog.
+Get the path selected by the user in a save dialog. An exception will be thrown
+if the user cancelled the operation.
 """
 save_path(dlg, resobj) = _path_finish(Gtk4.G_.save_finish, dlg, resobj)
 
 """
-    open(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+    open_file(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
 
 Open a dialog to open a file. The callback `cb` will be called when the user
 selects a file.
 """
-function Base.open(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+function open_file(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
     G_.open(dlg, parent, cancellable, cb)
 end
 
@@ -682,8 +683,8 @@ open_paths(dlg, resobj) = _path_multiple_finish(Gtk4.G_.open_multiple_finish, dl
 Open a dialog to select multiple folders. The callback `cb` will be called when the user
 is done selecting folders.
 """
-function select_multiple(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
-    G_.select_multiple(dlg, parent, cancellable, cb)
+function select_multiple_folders(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
+    G_.select_multiple_folders(dlg, parent, cancellable, cb)
 end
 
 """

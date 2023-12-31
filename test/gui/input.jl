@@ -63,6 +63,8 @@ set_gtk_property!(e,:sensitive,false)
 b = GtkEntryBuffer("different")
 buffer(e, b)
 @test e.text == "different"
+b[] = "new text"
+@test e.text == "new text"
 
 @test fraction(e) == 0.0
 fraction(e, 1.0)

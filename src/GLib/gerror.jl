@@ -24,7 +24,7 @@ struct GErrorException <: Exception
     message::String
 end
 
-GErrorException(err::GError) = GErrorException(err.domain, err.code, bytestring(err.message))
+GErrorException(err::GError) = GErrorException(err.domain, err.code, message(err))
 
 function check_err(err::Base.RefValue{Ptr{GError}})
     if err[] != C_NULL
