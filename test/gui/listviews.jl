@@ -49,6 +49,13 @@ destroy(win)
 
 end
 
+function match(item)
+  label = item.child
+  return startswith(label.label, "widget")
+end
+
+alpha_compare(item1, item2) = isless(item1.child.label, item2.child.label) ? -1 : 1
+
 @testset "ListBox" begin
 win = GtkWindow("ListBox demo with filter")
 box = GtkBox(:v)
@@ -79,6 +86,7 @@ listBox.vexpand = true
 
 Gtk4.set_filter_func(listBox, nothing)
 Gtk4.set_sort_func(listBox, nothing)
+Gtk4.set_sort_func(listBox, alpha_compare)
 
 # while we're at it, test GtkExpression
 pe = GtkPropertyExpression(GtkWindow, "title")
@@ -128,7 +136,22 @@ listBox.vexpand = true
 Gtk4.set_filter_func(listBox, nothing)
 Gtk4.set_sort_func(listBox, nothing)
 
+Gtk4.set_filter_func(listBox, match)
+Gtk4.set_sort_func(listBox, alpha_compare)
+
 destroy(win)
 
 end
 
+@testset "CustomFilter and CustomSorter" begin
+filt = GtkCustomFilter(match)
+Gtk4.set_filter_func(filt,nothing)
+Gtk4.set_filter_func(filt,match)
+Gtk4.changed(filt)
+
+sorter = GtkCustomSorter(alpha_compare)
+Gtk4.set_sort_func(sorter,nothing)
+Gtk4.set_sort_func(sorter,alpha_compare)
+Gtk4.changed(sorter)
+
+end
