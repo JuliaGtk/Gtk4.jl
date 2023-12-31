@@ -201,9 +201,22 @@ end
 
 ## GtkFrame — A decorative frame and optional label
 
+"""
+    GtkFrame(label=nothing; kwargs...)
+
+Create a `GtkFrame`, a layout widget that can hold a single child widget, with
+an optional string `label`. Keyword arguments allow you to set GObject
+properties.
+"""
 GtkFrame(;kwargs...) = GtkFrame(nothing; kwargs...)
-function GtkFrame(w::GtkWidget; kwargs...)
-    f = GtkFrame(; kwargs...)
+"""
+    GtkFrame(w::GtkWidget, label=nothing; kwargs...)
+
+Create a `GtkFrame` with an optional string `label` and add `w` as its child.
+Keyword arguments allow you to set GObject properties.
+"""
+function GtkFrame(w::GtkWidget, label=nothing; kwargs...)
+    f = GtkFrame(label; kwargs...)
     f[] = w
     f
 end
@@ -269,6 +282,14 @@ function empty!(w::GtkNotebook)
 end
 
 ## GtkOverlay
+
+"""
+    GtkOverlay(w=nothing; kwargs...)
+
+Create a `GtkOverlay`, a layout widget that holds one main child and other
+child "overlay" widgets that are drawn on top of the main child. The main child
+can be set using the argument `w`.
+"""
 function GtkOverlay(w::GtkWidget; kwargs...)
     o = GtkOverlay(; kwargs...)
     o[] = w
