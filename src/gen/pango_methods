@@ -101,6 +101,246 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_attr_list_update", libpango), Nothing, (Ptr{PangoAttrList}, Int32, Int32, Int32), instance, _pos, _remove, _add)
         nothing
     end
+    function as_color(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_color", libpango), Ptr{_PangoAttrColor}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrColor, Ref{_PangoAttrColor}}, ret)
+        ret2
+    end
+    function as_float(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_float", libpango), Ptr{_PangoAttrFloat}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrFloat, Ref{_PangoAttrFloat}}, ret)
+        ret2
+    end
+    function as_font_desc(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_font_desc", libpango), Ptr{_PangoAttrFontDesc}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrFontDesc, Ref{_PangoAttrFontDesc}}, ret)
+        ret2
+    end
+    function as_font_features(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_font_features", libpango), Ptr{_PangoAttrFontFeatures}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrFontFeatures, Ref{_PangoAttrFontFeatures}}, ret)
+        ret2
+    end
+    function as_int(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_int", libpango), Ptr{_PangoAttrInt}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrInt, Ref{_PangoAttrInt}}, ret)
+        ret2
+    end
+    function as_language(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_language", libpango), Ptr{_PangoAttrLanguage}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrLanguage, Ref{_PangoAttrLanguage}}, ret)
+        ret2
+    end
+    function as_shape(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_shape", libpango), Ptr{_PangoAttrShape}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrShape, Ref{_PangoAttrShape}}, ret)
+        ret2
+    end
+    function as_size(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_size", libpango), Ptr{_PangoAttrSize}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrSize, Ref{_PangoAttrSize}}, ret)
+        ret2
+    end
+    function as_string(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_as_string", libpango), Ptr{_PangoAttrString}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttrString, Ref{_PangoAttrString}}, ret)
+        ret2
+    end
+    function copy(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_copy", libpango), Ptr{_PangoAttribute}, (Ptr{_PangoAttribute},), instance)
+        ret2 = convert(Union{PangoAttribute, Ref{_PangoAttribute}}, ret, true)
+        ret2
+    end
+    function destroy(instance::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_destroy", libpango), Nothing, (Ptr{_PangoAttribute},), instance)
+        nothing
+    end
+    function equal(instance::Union{PangoAttribute, Ref{_PangoAttribute}}, _attr2::Union{PangoAttribute, Ref{_PangoAttribute}})
+        ret = ccall(("pango_attribute_equal", libpango), Cint, (Ptr{_PangoAttribute}, Ptr{_PangoAttribute}), instance, _attr2)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function init(instance::Union{PangoAttribute, Ref{_PangoAttribute}}, _klass::Union{PangoAttrClass, Ref{_PangoAttrClass}})
+        ret = ccall(("pango_attribute_init", libpango), Nothing, (Ptr{_PangoAttribute}, Ptr{_PangoAttrClass}), instance, _klass)
+        nothing
+    end
+    function copy(instance::Union{PangoColor, Ref{_PangoColor}})
+        ret = ccall(("pango_color_copy", libpango), Ptr{_PangoColor}, (Ptr{_PangoColor},), instance)
+        ret2 = convert_if_not_null(PangoColor, ret, true)
+        ret2
+    end
+    function free(instance::Union{PangoColor, Ref{_PangoColor}})
+        ret = ccall(("pango_color_free", libpango), Nothing, (Ptr{_PangoColor},), instance)
+        nothing
+    end
+    function parse(instance::Union{PangoColor, Ref{_PangoColor}}, _spec::Union{AbstractString, Symbol})
+        ret = ccall(("pango_color_parse", libpango), Cint, (Ptr{_PangoColor}, Cstring), instance, _spec)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function parse_with_alpha(instance::Union{PangoColor, Ref{_PangoColor}}, _spec::Union{AbstractString, Symbol})
+        m_alpha = Ref{UInt16}()
+        ret = ccall(("pango_color_parse_with_alpha", libpango), Cint, (Ptr{_PangoColor}, Ptr{UInt16}, Cstring), instance, m_alpha, _spec)
+        ret2 = convert(Bool, ret)
+        _alpha = m_alpha[]
+        (ret2, _alpha)
+    end
+    function to_string(instance::Union{PangoColor, Ref{_PangoColor}})
+        ret = ccall(("pango_color_to_string", libpango), Cstring, (Ptr{_PangoColor},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function FontDescription_new()
+        ret = ccall(("pango_font_description_new", libpango), Ptr{PangoFontDescription}, ())
+        ret2 = convert(PangoFontDescription, ret, true)
+        ret2
+    end
+    function better_match(instance::PangoFontDescription, _old_match::Maybe(PangoFontDescription), _new_match::PangoFontDescription)
+        _old_match_maybe = nothing_to_null(_old_match)
+        ret = ccall(("pango_font_description_better_match", libpango), Cint, (Ptr{PangoFontDescription}, Ptr{PangoFontDescription}, Ptr{PangoFontDescription}), instance, _old_match_maybe, _new_match)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function copy(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_copy", libpango), Ptr{PangoFontDescription}, (Ptr{PangoFontDescription},), instance)
+        ret2 = convert_if_not_null(PangoFontDescription, ret, true)
+        ret2
+    end
+    function copy_static(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_copy_static", libpango), Ptr{PangoFontDescription}, (Ptr{PangoFontDescription},), instance)
+        ret2 = convert_if_not_null(PangoFontDescription, ret, true)
+        ret2
+    end
+    function equal(instance::PangoFontDescription, _desc2::PangoFontDescription)
+        ret = ccall(("pango_font_description_equal", libpango), Cint, (Ptr{PangoFontDescription}, Ptr{PangoFontDescription}), instance, _desc2)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function free(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_free", libpango), Nothing, (Ptr{PangoFontDescription},), instance)
+        nothing
+    end
+    function get_family(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_family", libpango), Cstring, (Ptr{PangoFontDescription},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_gravity(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_gravity", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
+        ret2 = Gravity(ret)
+        ret2
+    end
+    function get_set_fields(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_set_fields", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
+        ret2 = FontMask(ret)
+        ret2
+    end
+    function get_size(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_size", libpango), Int32, (Ptr{PangoFontDescription},), instance)
+        ret
+    end
+    function get_size_is_absolute(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_size_is_absolute", libpango), Cint, (Ptr{PangoFontDescription},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_stretch(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_stretch", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
+        ret2 = Stretch(ret)
+        ret2
+    end
+    function get_style(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_style", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
+        ret2 = Style(ret)
+        ret2
+    end
+    function get_variant(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_variant", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
+        ret2 = Variant(ret)
+        ret2
+    end
+    function get_variations(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_variations", libpango), Cstring, (Ptr{PangoFontDescription},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_weight(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_weight", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
+        ret2 = Weight(ret)
+        ret2
+    end
+    function hash(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_hash", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
+        ret
+    end
+    function merge(instance::PangoFontDescription, _desc_to_merge::Maybe(PangoFontDescription), _replace_existing::Bool)
+        _desc_to_merge_maybe = nothing_to_null(_desc_to_merge)
+        ret = ccall(("pango_font_description_merge", libpango), Nothing, (Ptr{PangoFontDescription}, Ptr{PangoFontDescription}, Cint), instance, _desc_to_merge_maybe, _replace_existing)
+        nothing
+    end
+    function merge_static(instance::PangoFontDescription, _desc_to_merge::PangoFontDescription, _replace_existing::Bool)
+        ret = ccall(("pango_font_description_merge_static", libpango), Nothing, (Ptr{PangoFontDescription}, Ptr{PangoFontDescription}, Cint), instance, _desc_to_merge, _replace_existing)
+        nothing
+    end
+    function set_absolute_size(instance::PangoFontDescription, _size::Real)
+        ret = ccall(("pango_font_description_set_absolute_size", libpango), Nothing, (Ptr{PangoFontDescription}, Float64), instance, _size)
+        nothing
+    end
+    function set_family(instance::PangoFontDescription, _family::Union{AbstractString, Symbol})
+        ret = ccall(("pango_font_description_set_family", libpango), Nothing, (Ptr{PangoFontDescription}, Cstring), instance, _family)
+        nothing
+    end
+    function set_family_static(instance::PangoFontDescription, _family::Union{AbstractString, Symbol})
+        ret = ccall(("pango_font_description_set_family_static", libpango), Nothing, (Ptr{PangoFontDescription}, Cstring), instance, _family)
+        nothing
+    end
+    function set_gravity(instance::PangoFontDescription, _gravity)
+        ret = ccall(("pango_font_description_set_gravity", libpango), Nothing, (Ptr{PangoFontDescription}, UInt32), instance, _gravity)
+        nothing
+    end
+    function set_size(instance::PangoFontDescription, _size::Integer)
+        ret = ccall(("pango_font_description_set_size", libpango), Nothing, (Ptr{PangoFontDescription}, Int32), instance, _size)
+        nothing
+    end
+    function set_stretch(instance::PangoFontDescription, _stretch)
+        ret = ccall(("pango_font_description_set_stretch", libpango), Nothing, (Ptr{PangoFontDescription}, UInt32), instance, _stretch)
+        nothing
+    end
+    function set_style(instance::PangoFontDescription, _style)
+        ret = ccall(("pango_font_description_set_style", libpango), Nothing, (Ptr{PangoFontDescription}, UInt32), instance, _style)
+        nothing
+    end
+    function set_variant(instance::PangoFontDescription, _variant)
+        ret = ccall(("pango_font_description_set_variant", libpango), Nothing, (Ptr{PangoFontDescription}, UInt32), instance, _variant)
+        nothing
+    end
+    function set_variations(instance::PangoFontDescription, _variations::Maybe(Union{AbstractString, Symbol}))
+        _variations_maybe = nothing_to_null(_variations)
+        ret = ccall(("pango_font_description_set_variations", libpango), Nothing, (Ptr{PangoFontDescription}, Cstring), instance, _variations_maybe)
+        nothing
+    end
+    function set_variations_static(instance::PangoFontDescription, _variations::Union{AbstractString, Symbol})
+        ret = ccall(("pango_font_description_set_variations_static", libpango), Nothing, (Ptr{PangoFontDescription}, Cstring), instance, _variations)
+        nothing
+    end
+    function set_weight(instance::PangoFontDescription, _weight)
+        ret = ccall(("pango_font_description_set_weight", libpango), Nothing, (Ptr{PangoFontDescription}, UInt32), instance, _weight)
+        nothing
+    end
+    function to_filename(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_to_filename", libpango), Cstring, (Ptr{PangoFontDescription},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function to_string(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_to_string", libpango), Cstring, (Ptr{PangoFontDescription},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function unset_fields(instance::PangoFontDescription, _to_unset)
+        ret = ccall(("pango_font_description_unset_fields", libpango), Nothing, (Ptr{PangoFontDescription}, UInt32), instance, _to_unset)
+        nothing
+    end
     function get_approximate_char_width(instance::Union{PangoFontMetrics, Ref{_PangoFontMetrics}})
         ret = ccall(("pango_font_metrics_get_approximate_char_width", libpango), Int32, (Ptr{_PangoFontMetrics},), instance)
         ret
@@ -146,6 +386,35 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_font_metrics_unref", libpango), Nothing, (Ptr{_PangoFontMetrics},), instance)
         nothing
     end
+    function apply_attrs(instance::Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, _text::Union{AbstractString, Symbol}, _list::PangoAttrList)
+        ret = ccall(("pango_glyph_item_apply_attrs", libpango), Ptr{GLib._GSList{_PangoGlyphItem}}, (Ptr{_PangoGlyphItem}, Cstring, Ptr{PangoAttrList}), instance, _text, _list)
+        ret2 = GLib.GList(ret, true)
+        ret2
+    end
+    function copy(instance::Union{PangoGlyphItem, Ref{_PangoGlyphItem}})
+        ret = ccall(("pango_glyph_item_copy", libpango), Ptr{_PangoGlyphItem}, (Ptr{_PangoGlyphItem},), instance)
+        ret2 = convert_if_not_null(PangoGlyphItem, ret, true)
+        ret2
+    end
+    function free(instance::Union{PangoGlyphItem, Ref{_PangoGlyphItem}})
+        ret = ccall(("pango_glyph_item_free", libpango), Nothing, (Ptr{_PangoGlyphItem},), instance)
+        nothing
+    end
+    function get_logical_widths(instance::Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, _text::Union{AbstractString, Symbol}, _logical_widths)
+        _logical_widths_arr = convert(Vector{Int32}, _logical_widths)
+        ret = ccall(("pango_glyph_item_get_logical_widths", libpango), Nothing, (Ptr{_PangoGlyphItem}, Cstring, Ptr{Int32}), instance, _text, _logical_widths_arr)
+        nothing
+    end
+    function letter_space(instance::Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, _text::Union{AbstractString, Symbol}, _log_attrs, _letter_spacing::Integer)
+        _log_attrs_arr = convert(Vector{_PangoLogAttr}, _log_attrs)
+        ret = ccall(("pango_glyph_item_letter_space", libpango), Nothing, (Ptr{_PangoGlyphItem}, Cstring, Ptr{_PangoLogAttr}, Int32), instance, _text, _log_attrs_arr, _letter_spacing)
+        nothing
+    end
+    function split(instance::Union{PangoGlyphItem, Ref{_PangoGlyphItem}}, _text::Union{AbstractString, Symbol}, _split_index::Integer)
+        ret = ccall(("pango_glyph_item_split", libpango), Ptr{_PangoGlyphItem}, (Ptr{_PangoGlyphItem}, Cstring, Int32), instance, _text, _split_index)
+        ret2 = convert_if_not_null(PangoGlyphItem, ret, true)
+        ret2
+    end
     function copy(instance::Union{PangoGlyphItemIter, Ref{_PangoGlyphItemIter}})
         ret = ccall(("pango_glyph_item_iter_copy", libpango), Ptr{_PangoGlyphItemIter}, (Ptr{_PangoGlyphItemIter},), instance)
         ret2 = convert_if_not_null(PangoGlyphItemIter, ret, true)
@@ -173,6 +442,124 @@ $(Expr(:toplevel, quote
     function prev_cluster(instance::Union{PangoGlyphItemIter, Ref{_PangoGlyphItemIter}})
         ret = ccall(("pango_glyph_item_iter_prev_cluster", libpango), Cint, (Ptr{_PangoGlyphItemIter},), instance)
         ret2 = convert(Bool, ret)
+        ret2
+    end
+    function GlyphString_new()
+        ret = ccall(("pango_glyph_string_new", libpango), Ptr{_PangoGlyphString}, ())
+        ret2 = convert(Union{PangoGlyphString, Ref{_PangoGlyphString}}, ret, true)
+        ret2
+    end
+    function copy(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}})
+        ret = ccall(("pango_glyph_string_copy", libpango), Ptr{_PangoGlyphString}, (Ptr{_PangoGlyphString},), instance)
+        ret2 = convert_if_not_null(PangoGlyphString, ret, true)
+        ret2
+    end
+    function extents(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _font::PangoFont)
+        m_ink_rect = Ref{_PangoRectangle}()
+        m_logical_rect = Ref{_PangoRectangle}()
+        ret = ccall(("pango_glyph_string_extents", libpango), Nothing, (Ptr{_PangoGlyphString}, Ptr{GObject}, Ptr{_PangoRectangle}, Ptr{_PangoRectangle}), instance, _font, m_ink_rect, m_logical_rect)
+        _ink_rect = m_ink_rect[]
+        _ink_rect = convert(_PangoRectangle, _ink_rect)
+        _logical_rect = m_logical_rect[]
+        _logical_rect = convert(_PangoRectangle, _logical_rect)
+        (_ink_rect, _logical_rect)
+    end
+    function extents_range(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _start::Integer, _end::Integer, _font::PangoFont)
+        m_ink_rect = Ref{_PangoRectangle}()
+        m_logical_rect = Ref{_PangoRectangle}()
+        ret = ccall(("pango_glyph_string_extents_range", libpango), Nothing, (Ptr{_PangoGlyphString}, Int32, Int32, Ptr{GObject}, Ptr{_PangoRectangle}, Ptr{_PangoRectangle}), instance, _start, _end, _font, m_ink_rect, m_logical_rect)
+        _ink_rect = m_ink_rect[]
+        _ink_rect = convert(_PangoRectangle, _ink_rect)
+        _logical_rect = m_logical_rect[]
+        _logical_rect = convert(_PangoRectangle, _logical_rect)
+        (_ink_rect, _logical_rect)
+    end
+    function free(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}})
+        ret = ccall(("pango_glyph_string_free", libpango), Nothing, (Ptr{_PangoGlyphString},), instance)
+        nothing
+    end
+    function get_logical_widths(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _text::Union{AbstractString, Symbol}, _length::Integer, _embedding_level::Integer, _logical_widths)
+        _logical_widths_arr = convert(Vector{Int32}, _logical_widths)
+        ret = ccall(("pango_glyph_string_get_logical_widths", libpango), Nothing, (Ptr{_PangoGlyphString}, Cstring, Int32, Int32, Ptr{Int32}), instance, _text, _length, _embedding_level, _logical_widths_arr)
+        nothing
+    end
+    function get_width(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}})
+        ret = ccall(("pango_glyph_string_get_width", libpango), Int32, (Ptr{_PangoGlyphString},), instance)
+        ret
+    end
+    function index_to_x(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _text::Union{AbstractString, Symbol}, _length::Integer, _analysis::Union{PangoAnalysis, Ref{_PangoAnalysis}}, _index_::Integer, _trailing::Bool)
+        m_x_pos = Ref{Int32}()
+        ret = ccall(("pango_glyph_string_index_to_x", libpango), Nothing, (Ptr{_PangoGlyphString}, Cstring, Int32, Ptr{_PangoAnalysis}, Int32, Cint, Ptr{Int32}), instance, _text, _length, _analysis, _index_, _trailing, m_x_pos)
+        _x_pos = m_x_pos[]
+        _x_pos
+    end
+    function index_to_x_full(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _text::Union{AbstractString, Symbol}, _length::Integer, _analysis::Union{PangoAnalysis, Ref{_PangoAnalysis}}, _attrs::Maybe(Union{PangoLogAttr, Ref{_PangoLogAttr}}), _index_::Integer, _trailing::Bool)
+        _attrs_maybe = nothing_to_null(_attrs)
+        m_x_pos = Ref{Int32}()
+        ret = ccall(("pango_glyph_string_index_to_x_full", libpango), Nothing, (Ptr{_PangoGlyphString}, Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoLogAttr}, Int32, Cint, Ptr{Int32}), instance, _text, _length, _analysis, _attrs_maybe, _index_, _trailing, m_x_pos)
+        _x_pos = m_x_pos[]
+        _x_pos
+    end
+    function set_size(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _new_len::Integer)
+        ret = ccall(("pango_glyph_string_set_size", libpango), Nothing, (Ptr{_PangoGlyphString}, Int32), instance, _new_len)
+        nothing
+    end
+    function x_to_index(instance::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _text::Union{AbstractString, Symbol}, _length::Integer, _analysis::Union{PangoAnalysis, Ref{_PangoAnalysis}}, _x_pos::Integer)
+        m_index_ = Ref{Int32}()
+        m_trailing = Ref{Int32}()
+        ret = ccall(("pango_glyph_string_x_to_index", libpango), Nothing, (Ptr{_PangoGlyphString}, Cstring, Int32, Ptr{_PangoAnalysis}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _text, _length, _analysis, _x_pos, m_index_, m_trailing)
+        _index_ = m_index_[]
+        _trailing = m_trailing[]
+        (_index_, _trailing)
+    end
+    function Item_new()
+        ret = ccall(("pango_item_new", libpango), Ptr{_PangoItem}, ())
+        ret2 = convert(Union{PangoItem, Ref{_PangoItem}}, ret, true)
+        ret2
+    end
+    function apply_attrs(instance::Union{PangoItem, Ref{_PangoItem}}, _iter::PangoAttrIterator)
+        ret = ccall(("pango_item_apply_attrs", libpango), Nothing, (Ptr{_PangoItem}, Ptr{PangoAttrIterator}), instance, _iter)
+        nothing
+    end
+    function copy(instance::Union{PangoItem, Ref{_PangoItem}})
+        ret = ccall(("pango_item_copy", libpango), Ptr{_PangoItem}, (Ptr{_PangoItem},), instance)
+        ret2 = convert_if_not_null(PangoItem, ret, true)
+        ret2
+    end
+    function free(instance::Union{PangoItem, Ref{_PangoItem}})
+        ret = ccall(("pango_item_free", libpango), Nothing, (Ptr{_PangoItem},), instance)
+        nothing
+    end
+    function split(instance::Union{PangoItem, Ref{_PangoItem}}, _split_index::Integer, _split_offset::Integer)
+        ret = ccall(("pango_item_split", libpango), Ptr{_PangoItem}, (Ptr{_PangoItem}, Int32, Int32), instance, _split_index, _split_offset)
+        ret2 = convert(Union{PangoItem, Ref{_PangoItem}}, ret, true)
+        ret2
+    end
+    function get_sample_string(instance::PangoLanguage)
+        ret = ccall(("pango_language_get_sample_string", libpango), Cstring, (Ptr{PangoLanguage},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_scripts(instance::PangoLanguage)
+        m_num_scripts = Ref{Int32}()
+        ret = ccall(("pango_language_get_scripts", libpango), Ptr{UInt32}, (Ptr{PangoLanguage}, Ptr{Int32}), instance, m_num_scripts)
+        ret2 = collect(unsafe_wrap(Vector{UInt32}, ret, m_num_scripts[]))
+        _num_scripts = m_num_scripts[]
+        ret2
+    end
+    function includes_script(instance::PangoLanguage, _script)
+        ret = ccall(("pango_language_includes_script", libpango), Cint, (Ptr{PangoLanguage}, UInt32), instance, _script)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function matches(instance::PangoLanguage, _range_list::Union{AbstractString, Symbol})
+        ret = ccall(("pango_language_matches", libpango), Cint, (Ptr{PangoLanguage}, Cstring), instance, _range_list)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function to_string(instance::PangoLanguage)
+        ret = ccall(("pango_language_to_string", libpango), Cstring, (Ptr{PangoLanguage},), instance)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function at_last_line(instance::PangoLayoutIter)

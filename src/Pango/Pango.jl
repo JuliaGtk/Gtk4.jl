@@ -70,6 +70,7 @@ eltype(::Type{PangoFontFamily}) = PangoFontFace
 Base.keys(ff::PangoFontFamily) = 1:length(ff)
 
 PangoFontDescription(s::AbstractString) = G_.font_description_from_string(s)
+Base.show(io::IO, pfd::PangoFontDescription) = print(io, "PangoFontDescription(" * G_.to_string(pfd) * ")")
 
 PangoLayout(cr::cairoContext) = G_.create_layout(cr)
 

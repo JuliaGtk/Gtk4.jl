@@ -22,15 +22,14 @@ GI.write_to_file(path,"pango_consts",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-struct_skiplist=Symbol[]
-
 first_list=[:Language,:Color,:AttrClass,:Rectangle,:FontDescription,:Attribute,:Analysis,:Item,:GlyphVisAttr,:GlyphGeometry,:GlyphInfo,:GlyphString,:GlyphItem]
 GI.struct_cache_expr!(exprs)
 GI.struct_exprs!(exprs,exports,ns,first_list)
 
-struct_skiplist=vcat(first_list,struct_skiplist)
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=first_list)
 
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist)
+# we want the methods from first_list
+struct_skiplist=Symbol[]
 
 ## objects
 
