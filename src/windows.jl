@@ -183,41 +183,6 @@ push!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_end(hb, w); hb)
 pushfirst!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_start(hb, w); hb)
 delete!(hb::GtkHeaderBar, w::GtkWidget) = (G_.remove(hb, w); hb)
 
-## GtkDialog
-
-function push!(d::GtkDialog, s::AbstractString, response)
-    G_.add_button(d, s, Int32(response))
-    d
-end
-
-function response(widget::GtkDialog, response_id)
-    G_.response(widget, Int32(response_id))
-end
-
-function GtkDialog(title::AbstractString, buttons, flags, parent = nothing; kwargs...)
-    parent = (parent === nothing ? C_NULL : parent)
-    w = GtkDialogLeaf(ccall((:gtk_dialog_new_with_buttons, libgtk4), Ptr{GObject},
-                (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
-                            title, parent, flags, C_NULL))
-    GLib.setproperties!(w; kwargs...)
-    for (k, v) in buttons
-        push!(w, k, v)
-    end
-    w
-end
-
-function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent = nothing; kwargs...)
-    parent = (parent === nothing ? C_NULL : parent)
-    w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
-        (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
-                                   parent, flags, typ, ButtonsType_NONE, message))
-    GLib.setproperties!(w; kwargs...)
-    for (k, v) in buttons
-        push!(w, k, v)
-    end
-    w
-end
-
 """
     ask_dialog(question::AbstractString, parent = nothing; timeout = -1)
 
@@ -242,21 +207,20 @@ function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing
 end
 
 function ask_dialog(callback::Function, message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
-    dlg = GtkMessageDialog(message, ((no_text, ResponseType_NO), (yes_text, ResponseType_YES)),
-            DialogFlags_DESTROY_WITH_PARENT, MessageType_QUESTION, parent)
-
-    function on_response(dlg, response_id)
-        callback(response_id == Int32(ResponseType_YES))
-        G_.set_transient_for(dlg, nothing)
-        destroy(dlg)
-    end
-
-    signal_connect(on_response, dlg, "response")
-    show(dlg)
-
-    if timeout > 0
-        emit(timer) = response(dlg, Gtk4.ResponseType_NO)
-        Timer(emit, timeout)
+    dlg = GtkAlertDialog(message)
+    G_.set_buttons(dlg, [no_text, yes_text])
+    
+    cancellable = GLib.cancel_after_delay(timeout)
+    choose(dlg, parent, cancellable) do dlg, resobj
+        res = try
+            Gtk4.choose_finish(dlg, resobj)
+        catch e
+            if !isa(e, Gtk4.GLib.GErrorException)
+                rethrow(e)
+            end
+            0
+        end
+        callback(Bool(res))
     end
     return dlg
 end
@@ -266,8 +230,7 @@ end
 
 Create a dialog with an informational message `message`. Returns when the dialog (or its
 parent window `parent`) is closed. The optional input `timeout` (disabled by default) can be
-used to set a time in seconds after which the dialog will close and `false` will be
-returned.
+used to set a time in seconds after which the dialog will close.
 """ info_dialog
 
 for (func, flag) in (
@@ -286,21 +249,21 @@ for (func, flag) in (
     end
 
     @eval function $func(callback::Function, message::AbstractString, parent = nothing; timeout = -1)
-        dlg = GtkMessageDialog(message, (("Close",0),), DialogFlags_DESTROY_WITH_PARENT, $flag, parent)
+        dlg = GtkAlertDialog(message)
 
-        function destroy_dialog(dlg, response_id)
+        function cb(dlg, resobj)
+            try
+                Gtk4.choose_finish(dlg, resobj)
+            catch e
+                if !isa(e, Gtk4.GLib.GErrorException)
+                    rethrow(e)
+                end
+            end
             callback()
-            G_.set_transient_for(dlg, nothing)
-            destroy(dlg)
         end
 
-        signal_connect(destroy_dialog, dlg, "response")
-        show(dlg)
-
-        if timeout > 0
-            emit(timer) = response(dlg, Gtk4.ResponseType_CANCEL)
-            Timer(emit, timeout)
-        end
+        cancellable = GLib.cancel_after_delay(timeout)
+        choose(cb, dlg, parent, cancellable)
 
         return dlg
     end
@@ -329,29 +292,42 @@ end
 
 function input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString,
                       buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
-    dlg = GtkMessageDialog(message, buttons, DialogFlags_DESTROY_WITH_PARENT, MessageType_INFO, parent)
-    box = content_area(dlg)
-    entry = GtkEntry()
+    dlg = GtkWindow()
+    box = GtkBox(:v)
+    push!(box, GtkLabel(message))
+    entry = GtkEntry(; activates_default = true)
     entry.text = entry_default
     push!(box, entry)
-
-    function on_response(dlg, response_id)
-        if response_id == 1
-            res = text(GtkEditable(entry))
-        else
-            res = ""
-        end
-        callback(res)
+    boxb = GtkBox(:h)
+    push!(box, boxb)
+    accept = GtkButton("Accept"; hexpand = true)
+    default_widget(dlg, accept)
+    cancel = GtkButton("Cancel"; hexpand = true)
+    push!(boxb, cancel)
+    push!(boxb, accept)
+    isnothing(parent) && (G_.set_transient_for(dlg, parent); G_.set_modal(dlg, true))
+    dlg[] = box
+    
+    signal_connect(cancel, "clicked") do b
+        callback(entry_default)
+        G_.set_transient_for(dlg, nothing)
+        destroy(dlg)
+    end
+    
+    signal_connect(accept, "clicked") do b
+        callback(text(GtkEditable(entry)))
         G_.set_transient_for(dlg, nothing)
         destroy(dlg)
     end
 
-    signal_connect(on_response, dlg, "response")
     show(dlg)
 
     if timeout > 0
-        emit(timer) = response(dlg, 0)
-        Timer(emit, timeout)
+        Timer(timeout) do timer
+            callback(entry_default)
+            G_.set_transient_for(dlg, nothing)
+            destroy(dlg)
+        end
     end
     return dlg
 end
@@ -584,6 +560,14 @@ function GtkAlertDialog(message::AbstractString)
 end
 
 show(dlg::GtkAlertDialog, parent=nothing) = G_.show(dlg, parent)
+function choose(cb, dlg::GtkAlertDialog, parent = nothing, cancellable = nothing)
+    G_.choose(dlg, parent, cancellable, cb)
+end
+function choose_finish(dlg, resobj)
+    G_.choose_finish(dlg, GAsyncResult(resobj))
+end
+
+### New file dialogs
 
 function _path_finish(f, dlg, resobj)
     gfile = f(dlg, Gtk4.GLib.GAsyncResult(resobj))
