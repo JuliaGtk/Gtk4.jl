@@ -278,6 +278,7 @@ or its parent window `parent` is closed. The optional input `timeout` (disabled 
 can be used to set a time in seconds after which the dialog will close and `entry_default`
 will be returned.
 """
+## TODO: remove buttons argument
 function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
     res = Ref{String}("")
     c = Condition()
@@ -290,6 +291,12 @@ function input_dialog(message::AbstractString, entry_default::AbstractString, bu
     return res[]
 end
 
+function _callback_and_destroy(dlg, callback, txt)
+    callback(txt)
+    G_.set_transient_for(dlg, nothing)
+    destroy(dlg)
+end
+
 function input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString,
                       buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
     dlg = GtkWindow()
@@ -300,33 +307,27 @@ function input_dialog(callback::Function, message::AbstractString, entry_default
     push!(box, entry)
     boxb = GtkBox(:h)
     push!(box, boxb)
-    accept = GtkButton("Accept"; hexpand = true)
+    accept = GtkButton(buttons[2][1]; hexpand = true)
     default_widget(dlg, accept)
-    cancel = GtkButton("Cancel"; hexpand = true)
+    cancel = GtkButton(buttons[1][1]; hexpand = true)
     push!(boxb, cancel)
     push!(boxb, accept)
     isnothing(parent) && (G_.set_transient_for(dlg, parent); G_.set_modal(dlg, true))
     dlg[] = box
     
     signal_connect(cancel, "clicked") do b
-        callback(entry_default)
-        G_.set_transient_for(dlg, nothing)
-        destroy(dlg)
+        _callback_and_destroy(dlg, callback, entry_default)
     end
     
     signal_connect(accept, "clicked") do b
-        callback(text(GtkEditable(entry)))
-        G_.set_transient_for(dlg, nothing)
-        destroy(dlg)
+        _callback_and_destroy(dlg, callback, text(GtkEditable(entry)))
     end
 
     show(dlg)
 
     if timeout > 0
         Timer(timeout) do timer
-            callback(entry_default)
-            G_.set_transient_for(dlg, nothing)
-            destroy(dlg)
+            _callback_and_destroy(dlg, callback, entry_default)
         end
     end
     return dlg
