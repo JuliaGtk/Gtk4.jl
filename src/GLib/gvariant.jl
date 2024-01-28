@@ -18,10 +18,12 @@ function GVariant(x::T) where T <: Tuple
     G_.Variant_new_tuple(vs)
 end
 function getindex(gv::GVariant, ::Type{T}) where T <: Tuple
-    n = G_.n_children(gv)
     t=fieldtypes(T)
-    @assert n==length(t)
-    vs = [G_.get_child_value(gv, i-1)[t[i]] for i=1:n]
+    if Sys.WORD_SIZE == 64  # GI method doesn't work on 32 bit CPU's -- should probably wrap the ccall by hand instead of this
+        n = G_.n_children(gv)
+        @assert n == length(t)
+    end
+    vs = [G_.get_child_value(gv, i-1)[t[i]] for i=1:length(t)]
     tuple(vs...)
 end
 
