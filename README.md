@@ -6,7 +6,7 @@
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliahub.com/docs/Gtk4)
 
 
-GUI building using [GTK](https://www.gtk.org) version 4. For a mature Julia package that supports GTK version 3, see [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl). **Note that Gtk.jl and Gtk4.jl cannot be imported in the same Julia session.**
+GUI building using [GTK](https://www.gtk.org) version 4. See [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl) for a Julia package that supports GTK version 3. **Note that Gtk.jl and Gtk4.jl cannot be imported in the same Julia session.**
 
 This package builds on Gtk.jl but uses GObject introspection to support more of the functionality of the GTK library and its dependencies. GObject introspection for Julia is implemented using [GI.jl](https://github.com/JuliaGtk/Gtk4.jl/tree/main/GI), which is also hosted in this repository.
 
@@ -25,6 +25,10 @@ Those seeking a more user friendly, well documented, curated GUI building experi
 Other registered packages extend the functionality of Gtk4.jl:
 - [GtkObservables.jl](https://github.com/JuliaGizmos/GtkObservables.jl): provides integration with [Observables.jl](https://github.com/JuliaGizmos/Observables.jl). This package can simplify making interactive GUI's with Gtk4.jl.
 - [Gtk4Makie.jl](https://github.com/JuliaGtk/Gtk4Makie.jl): provides integration with the popular plotting package [Makie.jl](https://github.com/MakieOrg/Makie.jl), specifically its interactive, high performance GLMakie backend.
+
+A port of [ProfileView](https://github.com/timholy/ProfileView.jl) based on Gtk4 is available.
+The registered version of ProfileView.jl uses Gtk.jl, which is incompatible with Gtk4.
+To use the Gtk4 port, enter `add https://github.com/jwahlstrand/ProfileView.jl#gtk4` in Julia's package mode.
 
 ## Current status
 For auto-generated code, Gtk4.jl relies on GObject introspection data generated on a Linux x86_64 machine, which may result in code that crashes on 32 bit computers. This seems to affect mostly obscure parts of GLib that are unlikely to be useful to Julia users, but 32 bit users should be aware of this.

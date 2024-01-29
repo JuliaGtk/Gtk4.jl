@@ -132,7 +132,7 @@ function empty!(list::GList{L}) where L <: _GSList
                 s = next_(list, s)[2]
             end
         end
-        ccall((:g_slist_free, libglib), Nothing, (Ptr{L},), list)
+        #ccall((:g_slist_free, libglib), Nothing, (Ptr{L},), list)
         list.handle = C_NULL
     end
     return list
