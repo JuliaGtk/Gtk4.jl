@@ -11,12 +11,12 @@ function enum_decl(enum)
         if match(r"^[a-zA-Z_]",string(name)) === nothing
             name = Symbol("_$name")
         end
-        push!(body.args, :(const $(uppercase(name)) = $val) )
+        push!(body.args, :(const $(symuppercase(name)) = $val) )
     end
     Expr(:toplevel, Expr(:module, false, Symbol(enumname), body))
 end
 
-enum_fullname(enumname,name) = Symbol(enumname,"_",uppercase(name))
+enum_fullname(enumname,name) = Symbol(enumname,"_",symuppercase(name))
 enum_name(enum) = Symbol(string(get_namespace(enum),get_name(enum)))
 
 function find_symbol(l,id)
@@ -710,7 +710,6 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
             return nothing
         end
     end
-    println("$owns")
     throw(NotImplementedError("Unknown array type"))
 end
 
@@ -948,7 +947,21 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
     end
 end
 
-function extract_type(typeinfo::TypeInfo, info::ObjectLike)
+# avoid method ambiguity
+function extract_type(typeinfo::GITypeInfo, info::ObjectLike)
+    if is_pointer(typeinfo)
+        if typename(info)===:GParam  # GParamSpec is a GTypeInstance but we handle it differently
+            throw(NotImplementedError("ObjectLike but not a GObject"))
+            #return TypeDesc(info,:GParamSpec,:(Ptr{GParamSpec}))
+        end
+        t = get_toplevel(info)
+        TypeDesc(info,typename(info),typename(info),:(Ptr{$t}))
+    else
+        # a GList has implicitly pointers to all elements
+        TypeDesc(info,:INVALID,:INVALID,:GObject)
+    end
+end
+function extract_type(typeinfo::Type{InstanceType}, info::ObjectLike)
     if is_pointer(typeinfo)
         if typename(info)===:GParam  # GParamSpec is a GTypeInstance but we handle it differently
             throw(NotImplementedError("ObjectLike but not a GObject"))
@@ -1010,7 +1023,7 @@ function jparams(args::Array{Arg})
 end
 
 # Map library names onto exports of *_jll
-libnames = Dict("libglib"=>:libglib, "libgobject"=>:libgobject,
+const libnames = Dict("libglib"=>:libglib, "libgobject"=>:libgobject,
                 "libgio"=>:libgio, "libcairo-gobject"=>:libcairo_gobject,
                 "libpangocairo"=>:libpangocairo, "libpangoft"=>:libpangoft,
                 "libpango"=>:libpango, "libatk"=>:libatk,

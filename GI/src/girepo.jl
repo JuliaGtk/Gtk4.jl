@@ -1,10 +1,12 @@
 # Julia wrapper for libgirepository
 
+# https://gi.readthedocs.io/en/latest/
+# https://gnome.pages.gitlab.gnome.org/gobject-introspection/girepository/
+
 abstract type GIRepository end
-
 abstract type GITypelib end
-
 abstract type GIBaseInfo end
+
 # a GIBaseInfo we own a reference to
 mutable struct GIInfo{Typeid}
     handle::Ptr{GIBaseInfo}
@@ -104,7 +106,7 @@ function show(io::IO, info::GICallbackInfo)
     show(io, get_return_type(info))
 end
 
-
+"""Represents a C library namespace, like "gtk" or "pango"."""
 struct GINamespace
     name::Symbol
     function GINamespace(namespace::Symbol, version = nothing)
@@ -149,10 +151,22 @@ Base.eltype(::Type{GINamespace}) = GIInfo
 
 getindex(ns::GINamespace, name::Symbol) = gi_find_by_name(ns, name)
 
+"""
+    prepend_search_path(s::AbstractString)
+
+Add a directory that contains *.typelib files to libgirepository's search
+path.
+"""
 function prepend_search_path(s::AbstractString)
     ccall((:g_irepository_prepend_search_path, libgi), Cvoid, (Cstring,), s)
 end
 
+"""
+    prepend_search_path(s::Module)
+
+For a JLL module that includes GObject introspection data, add the directory
+that contains *.typelib files to libgirepository's search path.
+"""
 function prepend_search_path(mod::Module)
     d = mod.find_artifact_dir()*"/lib/girepository-1.0"
     d === Missing && error("Artifact directory not found")
@@ -163,6 +177,12 @@ function get_all(ns::GINamespace, t::Type{T},exclude_deprecated=true) where {T<:
     [info for info=ns if isa(info,t) && (exclude_deprecated ? !is_deprecated(info) : true)]
 end
 
+"""
+    get_c_prefix(ns)
+
+Get the C prefix for a namespace, which, for example, is "G" for GLib and "Gtk"
+for GTK.
+"""
 function get_c_prefix(ns)
     ret = ccall((:g_irepository_get_c_prefix, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
     if ret != C_NULL
@@ -498,12 +518,10 @@ function show(io::IO,info::GITypeInfo)
     end
 end
 
-function get_constant_value(typ,info)
-    eval(quote
-        x = Ref{$typ}(0)
-        siz = ccall((:g_constant_info_get_value,libgi),Cint,(Ptr{GIBaseInfo}, Ref{$typ}), $info, x)
-        x[]
-    end)
+function get_constant_value(::Type{T}, info) where T
+    x=Ref{T}(0)
+    siz = ccall((:g_constant_info_get_value,libgi),Cint,(Ptr{GIBaseInfo}, Ref{T}), info, x)
+    x[]
 end
 
 function get_value(info::GIConstantInfo)
@@ -522,7 +540,7 @@ function get_value(info::GIConstantInfo)
         ccall((:g_constant_info_free_value,libgi), Nothing, (Ptr{GIBaseInfo}, Ptr{Nothing}), info, x)
         val
     else
-        nothing#unimplemented
+        throw(NotImplementedError("Constant with type $typ not supported"))
     end
 end
 

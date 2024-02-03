@@ -25,6 +25,18 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        struct _GTypeInterface
+            g_type::UInt64
+            g_instance_type::UInt64
+        end
+        mutable struct GTypeInterface
+            handle::Ptr{_GTypeInterface}
+        end
+        unsafe_convert(::Type{Ptr{_GTypeInterface}}, box::GTypeInterface) = begin
+                convert(Ptr{_GTypeInterface}, box.handle)
+            end
+    end
+    begin
         struct _GFlagsValue
             value::UInt32
             value_name::Cstring
@@ -82,6 +94,37 @@ $(Expr(:toplevel, quote
         end
         unsafe_convert(::Type{Ptr{_GFlagsClass}}, box::GFlagsClass) = begin
                 convert(Ptr{_GFlagsClass}, box.handle)
+            end
+    end
+    begin
+        struct _GInterfaceInfo
+            interface_init::Ptr{Cvoid}
+            interface_finalize::Ptr{Cvoid}
+            interface_data::Ptr{Nothing}
+        end
+        mutable struct GInterfaceInfo
+            handle::Ptr{_GInterfaceInfo}
+        end
+        unsafe_convert(::Type{Ptr{_GInterfaceInfo}}, box::GInterfaceInfo) = begin
+                convert(Ptr{_GInterfaceInfo}, box.handle)
+            end
+    end
+    begin
+        struct _GParamSpecTypeInfo
+            instance_size::UInt16
+            n_preallocs::UInt16
+            instance_init::Ptr{Cvoid}
+            value_type::UInt64
+            finalize::Ptr{Cvoid}
+            value_set_default::Ptr{Cvoid}
+            value_validate::Ptr{Cvoid}
+            values_cmp::Ptr{Cvoid}
+        end
+        mutable struct GParamSpecTypeInfo
+            handle::Ptr{_GParamSpecTypeInfo}
+        end
+        unsafe_convert(::Type{Ptr{_GParamSpecTypeInfo}}, box::GParamSpecTypeInfo) = begin
+                convert(Ptr{_GParamSpecTypeInfo}, box.handle)
             end
     end
     begin
@@ -204,6 +247,8 @@ $(Expr(:toplevel, quote
     end
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.EnumClass.html)." GEnumClass
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.FlagsClass.html)." GFlagsClass
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.InterfaceInfo.html)." GInterfaceInfo
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.ParamSpecTypeInfo.html)." GParamSpecTypeInfo
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.SignalInvocationHint.html)." GSignalInvocationHint
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.SignalQuery.html)." GSignalQuery
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeFundamentalInfo.html)." GTypeFundamentalInfo
@@ -378,6 +423,6 @@ $(Expr(:toplevel, quote
         ret = f(ihint, n_param_values, param_values)
         convert(Cint, ret)
     end
-    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GTypeValueTable, _GTypeValueTable, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypeInfo, _GTypeInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
+    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GTypeInterface, _GTypeInterface, GFlagsValue, _GFlagsValue, GTypeValueTable, _GTypeValueTable, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GInterfaceInfo, _GInterfaceInfo, GParamSpecTypeInfo, _GParamSpecTypeInfo, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypeInfo, _GTypeInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
 end))
 end

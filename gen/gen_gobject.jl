@@ -16,11 +16,10 @@ disguised = GI.read_disguised(d)
 special = [:Value]
 import_as_opaque = [:ObjectClass]
 struct_skiplist=vcat(disguised, special, [:CClosure,:Closure,:ClosureNotifyData,
-:InterfaceInfo,:ObjectConstructParam,:ParamSpecTypeInfo,:TypeInstance,
-:TypeInterface,:WeakRef])
+:ObjectConstructParam,:TypeInstance,:TypeInterface,:WeakRef])
 
 # these struct types are members in other structs, so we export them first
-first_list=[:EnumValue,:TypeClass,:FlagsValue,:TypeValueTable]
+first_list=[:EnumValue,:TypeClass,:TypeInterface,:FlagsValue,:TypeValueTable]
 GI.struct_exprs!(exprs,exports,ns,first_list)
 
 struct_skiplist=vcat(struct_skiplist,first_list)
@@ -76,7 +75,7 @@ skiplist=vcat(handled_list,[:enum_complete_type_info,:enum_register_static,:flag
 :signal_accumulator_true_handled,:signal_connect_closure,:signal_connect_closure_by_id,
 :signal_handler_find,:signal_handlers_block_matched,:signal_handlers_disconnect_matched,
 :signal_handlers_unblock_matched,:signal_override_class_closure,
-:source_set_closure,:source_set_dummy_callback,:type_add_interface_static,
+:source_set_closure,:source_set_dummy_callback,
 :type_check_instance,:type_check_instance_is_a,:type_check_instance_is_fundamentally_a,
 :type_default_interface_unref,:type_free_instance,
 :type_name_from_instance,:type_register_fundamental,

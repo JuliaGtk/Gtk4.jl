@@ -16,7 +16,8 @@ module GI
     import Base: convert, cconvert, show, length, getindex, setindex!, uppercase, unsafe_convert
     using Libdl
 
-    uppercase(s::Symbol) = Symbol(uppercase(string(s)))
+    symuppercase(s::Symbol) = Symbol(uppercase(string(s)))
+    symuppercase(s::AbstractString) = Symbol(uppercase(s))
 
     export GINamespace
     export const_expr

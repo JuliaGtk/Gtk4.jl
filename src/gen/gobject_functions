@@ -172,6 +172,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_type_add_interface_dynamic", libgobject), Nothing, (UInt64, UInt64, Ptr{GObject}), _instance_type, _interface_type, _plugin)
         nothing
     end
+    function type_add_interface_static(_instance_type::Integer, _interface_type::Integer, _info::Union{GInterfaceInfo, Ref{_GInterfaceInfo}})
+        ret = ccall(("g_type_add_interface_static", libgobject), Nothing, (UInt64, UInt64, Ptr{_GInterfaceInfo}), _instance_type, _interface_type, _info)
+        nothing
+    end
     function type_check_class_is_a(_g_class::Union{GTypeClass, Ref{_GTypeClass}}, _is_a_type::Integer)
         ret = ccall(("g_type_check_class_is_a", libgobject), Cint, (Ptr{_GTypeClass}, UInt64), _g_class, _is_a_type)
         ret2 = convert(Bool, ret)
