@@ -40,8 +40,8 @@ include("gui/input.jl")
 include("gui/layout.jl")
 include("gui/window.jl")
 include("gui/listviews.jl")
-include("gui/examples.jl")
-include("gui/application.jl")  # needs to be last because it messes with the main loop
+#include("gui/examples.jl")
+#include("gui/application.jl")  # needs to be last because it messes with the main loop
 end
 
 GC.gc()
