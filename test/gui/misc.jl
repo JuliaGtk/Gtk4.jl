@@ -157,8 +157,14 @@ destroy(win)
 b4 = GtkBuilder()
 push!(b4; filename="test.ui")
 
+win = b4["a_window"]
+destroy(win)
+
 b5 = GtkBuilder()
 Sys.WORD_SIZE == 64 && push!(b5; buffer=s)
+
+win = b5["a_window"]
+destroy(win)
 
 end
 
