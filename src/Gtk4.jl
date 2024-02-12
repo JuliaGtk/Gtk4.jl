@@ -64,7 +64,7 @@ end
 
 end
 
-import .GLib: set_gtk_property!, get_gtk_property, run,
+import .GLib: set_gtk_property!, get_gtk_property, run, activate,
               signal_handler_is_connected, signalnames,
               GListModel, start_main_loop, stop_main_loop
 

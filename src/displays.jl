@@ -5,7 +5,7 @@ Returns a tuple `(width,height)` that gives the primary monitor size for the
 display where `widget` is being displayed, or the default display if `widget` is
 unrealized or not given.
 """
-function screen_size(widget=nothing)
+function screen_size(widget=nothing)::Tuple{Int32,Int32}
     if widget!== nothing && G_.get_realized(widget)
         d=G_.get_display(widget)
     else
@@ -15,8 +15,10 @@ function screen_size(widget=nothing)
 
     m=G_.get_monitors(d)
     m===nothing && error("Unable to get list of monitors")
-    length(m)==0 && error("No monitors found")
-    size(m[1])
+    ml=m::GListStoreLeaf
+    length(ml)==0 && error("No monitors found")
+    m1=ml[1]::GdkMonitorLeaf
+    size(m1)
 end
 
 # GtkImage (for fixed-size images, such as icons)

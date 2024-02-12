@@ -6,7 +6,11 @@ let variant_fns = Expr(:block)
         (name, ctype, juliatype, g_value_fn, g_variant_fn) = fundamental_types[i]
         if g_variant_fn !== :error && juliatype != Union{}
             push!(variant_fns.args, :( GVariant(x::T) where {T <: $juliatype} = G_.$(Symbol("Variant_new_", g_variant_fn))(x)))
-            push!(variant_fns.args, :( getindex(gv::GVariant, ::Type{T}) where {T <: $juliatype} = G_.$(Symbol("get_", g_variant_fn))(gv)))
+            if g_variant_fn === :string
+                push!(variant_fns.args, :( getindex(gv::GVariant, ::Type{T}) where {T <: $juliatype} = G_.get_string(gv)[1]))
+            else
+                push!(variant_fns.args, :( getindex(gv::GVariant, ::Type{T}) where {T <: $juliatype} = G_.$(Symbol("get_", g_variant_fn))(gv)))
+            end
         end
     end
     Core.eval(GLib, variant_fns)

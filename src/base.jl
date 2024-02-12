@@ -152,10 +152,10 @@ Gets the `GdkMonitor` where `w` is displayed, or `nothing` if the widget is not
 part of a widget hierarchy.
 """
 function monitor(w::GtkWidget)
-    d = display(w)
+    d = display(w)::GdkDisplayLeaf
     tl = toplevel(w)
     tl === nothing && return nothing
-    s = G_.get_surface(GtkNative(tl))
+    s = G_.get_surface(GtkNative(tl))::GdkSurfaceLeaf
     # sometimes `get_monitor_at_surface` returns NULL when it shouldn't
     # should be unnecessary in a future version of GTK4_jll: https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4917
     try

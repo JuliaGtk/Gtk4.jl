@@ -13,7 +13,7 @@ function GdkRGBA(rgba::AbstractString)
    r=GdkRGBA(0,0,0,0)
    b=G_.parse(r,rgba)
    if !b
-      error("Unable to parse into a color")
+      error("Unable to parse $rgba into a GdkRGBA")
    end
    r
 end

@@ -222,6 +222,10 @@ gv2 = GLib.GVariant(UInt8,2)
 @test gv2 > gv1
 @test gv2 >= gv1
 
+# test string
+gvs = GVariant("test")
+@test gvs[String] == "test"
+
 # test tuples
 gvt = GLib.GVariant((true,3,6.5))
 @test GLib.GVariantType(Tuple{Bool,Int,Float64}) == GLib.G_.get_type(gvt)

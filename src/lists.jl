@@ -76,6 +76,7 @@ widget's model is a `GtkStringList`.
 """
 function selected_string!(d::GtkDropDown, s::AbstractString)
     sl = G_.get_model(d)
+    isnothing(sl) && error("No model set in GtkDropDown")
     isa(sl, GtkStringList) || error("This method only works if the model is a GtkStringList")
     i = findfirst(==(s), sl)
     isnothing(i) && error("String not found in model")
@@ -120,7 +121,7 @@ function GtkTreeListModel(root, passthrough, autoexpand, create_func)
     ref, deref = GLib.gc_ref_closure(create_func)
     GLib.glib_ref(rootlm)
     ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), rootlm, passthrough, autoexpand, create_cfunc, ref, deref)
-    convert(GtkTreeListModel, ret, true)
+    GtkTreeListModelLeaf(ret, true)
 end
 
 """

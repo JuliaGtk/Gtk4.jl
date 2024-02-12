@@ -155,13 +155,14 @@ end
 """
     pause_main_loop(f)
 
-Pauses the GLib eventloop around a function. Restores the original state of the eventloop after
-calling the function.
+Pauses the GLib event loop around a function. Restores the original state of the event loop after calling the function. This function does not pause the event loop if it is being run by a `GApplication`.
 """
 function pause_main_loop(f)
     was_running = is_loop_running()
     if was_running && g_main_running[] == false
-        error("Main loop is running, but not via `glib_main`. Pausing the main loop inside a GApplication is not currently supported.")
+        warn("GLib main loop is running, but not via `glib_main`. Pausing the main loop inside a GApplication is not currently supported, so the function will be called without pausing.")
+        f()
+        return
     end
     was_running && stop_main_loop(true)
     try
