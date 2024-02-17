@@ -1835,7 +1835,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_desktop_app_info_launch_action", libgio), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}), instance, _action_name, _launch_context_maybe)
         nothing
     end
-    function launch_uris_as_manager(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{Cstring}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _pid_callback::Maybe(Function))
+    function launch_uris_as_manager(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{String}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _pid_callback::Maybe(Function))
         _launch_context_maybe = nothing_to_null(_launch_context)
         if _user_setup === nothing
             _user_setup_cfunc = C_NULL
@@ -1855,12 +1855,12 @@ $(Expr(:toplevel, quote
             end
         end
         err = err_buf()
-        ret = ccall(("g_desktop_app_info_launch_uris_as_manager", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{Cstring}}, Ptr{GObject}, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _uris, _launch_context_maybe, _spawn_flags, _user_setup_cfunc, _user_setup_closure, _pid_callback_cfunc, _pid_callback_closure, err)
+        ret = ccall(("g_desktop_app_info_launch_uris_as_manager", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{String}}, Ptr{GObject}, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _uris, _launch_context_maybe, _spawn_flags, _user_setup_cfunc, _user_setup_closure, _pid_callback_cfunc, _pid_callback_closure, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function launch_uris_as_manager_with_fds(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{Cstring}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _pid_callback::Maybe(Function), _stdin_fd::Integer, _stdout_fd::Integer, _stderr_fd::Integer)
+    function launch_uris_as_manager_with_fds(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{String}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _pid_callback::Maybe(Function), _stdin_fd::Integer, _stdout_fd::Integer, _stderr_fd::Integer)
         _launch_context_maybe = nothing_to_null(_launch_context)
         if _user_setup === nothing
             _user_setup_cfunc = C_NULL
@@ -1880,7 +1880,7 @@ $(Expr(:toplevel, quote
             end
         end
         err = err_buf()
-        ret = ccall(("g_desktop_app_info_launch_uris_as_manager_with_fds", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{Cstring}}, Ptr{GObject}, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}, Int32, Int32, Int32, Ptr{Ptr{GError}}), instance, _uris, _launch_context_maybe, _spawn_flags, _user_setup_cfunc, _user_setup_closure, _pid_callback_cfunc, _pid_callback_closure, _stdin_fd, _stdout_fd, _stderr_fd, err)
+        ret = ccall(("g_desktop_app_info_launch_uris_as_manager_with_fds", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{String}}, Ptr{GObject}, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}, Int32, Int32, Int32, Ptr{Ptr{GError}}), instance, _uris, _launch_context_maybe, _spawn_flags, _user_setup_cfunc, _user_setup_closure, _pid_callback_cfunc, _pid_callback_closure, _stdin_fd, _stdout_fd, _stderr_fd, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -1939,10 +1939,10 @@ $(Expr(:toplevel, quote
     function launch(instance::GDesktopAppInfo, _files::Maybe(GLib.LList{GLib._GList{Ptr{GObject}}}), _context::Maybe(GAppLaunchContext))
         launch(GAppInfo(instance), _files, _context)
     end
-    function launch_uris(instance::GDesktopAppInfo, _uris::Maybe(GLib.LList{GLib._GList{Cstring}}), _context::Maybe(GAppLaunchContext))
+    function launch_uris(instance::GDesktopAppInfo, _uris::Maybe(GLib.LList{GLib._GList{String}}), _context::Maybe(GAppLaunchContext))
         launch_uris(GAppInfo(instance), _uris, _context)
     end
-    function launch_uris_async(instance::GDesktopAppInfo, _uris::Maybe(GLib.LList{GLib._GList{Cstring}}), _context::Maybe(GAppLaunchContext), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+    function launch_uris_async(instance::GDesktopAppInfo, _uris::Maybe(GLib.LList{GLib._GList{String}}), _context::Maybe(GAppLaunchContext), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
         launch_uris_async(GAppInfo(instance), _uris, _context, _cancellable, _callback)
     end
     function launch_uris_finish(instance::GDesktopAppInfo, _result::GAsyncResult)

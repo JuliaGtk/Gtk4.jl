@@ -758,6 +758,9 @@ function extract_type(typeinfo::GITypeInfo,listtype::Type{T}) where {T<:GLib._LL
     @assert is_pointer(typeinfo)
     elm = get_param_type(typeinfo,0)
     elmtype = extract_type(elm).ctype
+    if elmtype === :(Cstring)
+        elmtype = :(String)
+    end
     lt = listtype == GLib._GSList ? :(GLib._GSList) : :(GLib._GList)
     TypeDesc{Type{GList}}(GList, :(GLib.LList{$lt{$elmtype}}),:(GLib.LList{$lt{$elmtype}}), :(Ptr{$lt{$elmtype}}))
 end
