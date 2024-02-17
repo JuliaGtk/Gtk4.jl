@@ -1,4 +1,4 @@
-using Test, Gtk4, Gtk4.G_
+using Test, Gtk4, Gtk4.G_, Gtk4.GLib
 
 @testset "get/set property and binding" begin
     w = GtkWindow("Window", 400, 300)
@@ -50,6 +50,24 @@ using Test, Gtk4, Gtk4.G_
 
     destroy(w)
     destroy(w2)
+end
+
+@testset "SizeGroup" begin
+    sg = GtkSizeGroup(Gtk4.SizeGroupMode_BOTH)
+    b = GtkLabel("#1")
+    b2 = GtkLabel("#2")
+    push!(sg, b)
+    push!(sg, b2)
+
+    widgets = Gtk4.widgets(sg)
+    @test length(widgets) == 2
+
+    @test Gtk4.size_request(b) == Gtk4.size_request(b2)
+
+    delete!(sg, b2)
+
+    widgets = Gtk4.widgets(sg)
+    @test length(widgets) == 1
 end
 
 @testset "Iteration and toplevel" begin

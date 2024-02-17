@@ -136,6 +136,9 @@ Returns a GListModel of all toplevel widgets (i.e. windows) known to GTK4.
 """
 toplevels() = G_.get_toplevels()
 
+push!(sg::GtkSizeGroup, w::GtkWidget) = (G_.add_widget(sg, w); sg)
+delete!(sg::GtkSizeGroup, w::GtkWidget) = (G_.remove_widget(sg, w); sg)
+
 @doc """
     display(w::GtkWidget)
 
