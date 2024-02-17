@@ -762,11 +762,15 @@ function extract_type(typeinfo::GITypeInfo,listtype::Type{T}) where {T<:GLib._LL
     TypeDesc{Type{GList}}(GList, :(GLib.LList{$lt{$elmtype}}),:(GLib.LList{$lt{$elmtype}}), :(Ptr{$lt{$elmtype}}))
 end
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{Type{GList}})
-    owns = (get_ownership_transfer(arginfo) == GITransfer.EVERYTHING)
-    if get_ownership_transfer(arginfo) == GITransfer.NOTHING
-          nothing  # just return the pointer
+    ot = get_ownership_transfer(arginfo)
+    if ot == GITransfer.NOTHING
+        :( GLib.GList($name, false, false) )
+    elseif ot == GITransfer.CONTAINER
+        :( GLib.GList($name, false) )
+    elseif ot == GITransfer.EVERYTHING
+        :( GLib.GList($name, true) )
     else
-        :( GLib.GList($name, $owns) )
+        error("Unknown transfer type for GList")
     end
 end
 

@@ -1311,7 +1311,8 @@ $(Expr(:toplevel, quote
     end
     function get_windows(instance::GtkApplication)
         ret = ccall(("gtk_application_get_windows", libgtk4), Ptr{GLib._GList{Ptr{GObject}}}, (Ptr{GObject},), instance)
-        ret
+        ret2 = GLib.GList(ret, false, false)
+        ret2
     end
     function inhibit(instance::GtkApplication, _window::Maybe(GtkWindow), _flags, _reason::Maybe(Union{AbstractString, Symbol}))
         _window_maybe = nothing_to_null(_window)
@@ -1400,6 +1401,9 @@ $(Expr(:toplevel, quote
     function remove_action(instance::GtkApplication, _action_name::Union{AbstractString, Symbol})
         remove_action(GActionMap(instance), _action_name)
     end
+    function remove_action_entries(instance::GtkApplication, _entries)
+        remove_action_entries(GActionMap(instance), _entries)
+    end
     function ApplicationWindow_new(_application::GtkApplication)
         ret = ccall(("gtk_application_window_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _application)
         ret2 = GtkApplicationWindowLeaf(ret, false)
@@ -1481,6 +1485,9 @@ $(Expr(:toplevel, quote
     end
     function remove_action(instance::GtkApplicationWindow, _action_name::Union{AbstractString, Symbol})
         remove_action(GActionMap(instance), _action_name)
+    end
+    function remove_action_entries(instance::GtkApplicationWindow, _entries)
+        remove_action_entries(GActionMap(instance), _entries)
     end
     function get_accessible_parent(instance::GtkApplicationWindow)
         get_accessible_parent(GtkAccessible(instance))
@@ -2569,7 +2576,8 @@ $(Expr(:toplevel, quote
     end
     function get_focus_siblings(instance::GtkCellArea, _renderer::GtkCellRenderer)
         ret = ccall(("gtk_cell_area_get_focus_siblings", libgtk4), Ptr{GLib._GList{Ptr{GObject}}}, (Ptr{GObject}, Ptr{GObject}), instance, _renderer)
-        ret
+        ret2 = GLib.GList(ret, false, false)
+        ret2
     end
     function get_preferred_height(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget)
         m_minimum_height = Ref{Int32}()
@@ -15856,7 +15864,8 @@ $(Expr(:toplevel, quote
     end
     function get_widgets(instance::GtkSizeGroup)
         ret = ccall(("gtk_size_group_get_widgets", libgtk4), Ptr{GLib._GSList{Ptr{GObject}}}, (Ptr{GObject},), instance)
-        ret
+        ret2 = GLib.GList(ret, false, false)
+        ret2
     end
     function remove_widget(instance::GtkSizeGroup, _widget::GtkWidget)
         ret = ccall(("gtk_size_group_remove_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget)

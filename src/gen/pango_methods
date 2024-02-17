@@ -1445,11 +1445,13 @@ $(Expr(:toplevel, quote
     end
     function get_lines(instance::PangoLayout)
         ret = ccall(("pango_layout_get_lines", libpango), Ptr{GLib._GSList{_PangoLayoutLine}}, (Ptr{GObject},), instance)
-        ret
+        ret2 = GLib.GList(ret, false, false)
+        ret2
     end
     function get_lines_readonly(instance::PangoLayout)
         ret = ccall(("pango_layout_get_lines_readonly", libpango), Ptr{GLib._GSList{_PangoLayoutLine}}, (Ptr{GObject},), instance)
-        ret
+        ret2 = GLib.GList(ret, false, false)
+        ret2
     end
     function get_log_attrs(instance::PangoLayout)
         m_attrs = Ref{Ptr{_PangoLogAttr}}()
