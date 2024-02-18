@@ -19,6 +19,7 @@ Gtk4.visible
 Gtk4.display
 Gtk4.monitor
 Gtk4.size_request
+Gtk4.isrealized
 ```
 
 ## Windows
@@ -31,6 +32,7 @@ Gtk4.default_size
 Gtk4.fullscreen
 Gtk4.unfullscreen
 Gtk4.isfullscreen
+Gtk4.isactive
 Gtk4.maximize
 Gtk4.unmaximize
 Gtk4.present
@@ -73,6 +75,7 @@ Gtk4.queue_render
 ```@docs
 Gtk4.find_controller
 Gtk4.widget
+Gtk4.add_action_shortcut
 ```
 
 ## GtkTextView
