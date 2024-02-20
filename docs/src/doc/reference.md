@@ -20,6 +20,9 @@ Gtk4.display
 Gtk4.monitor
 Gtk4.size_request
 Gtk4.isrealized
+Gtk4.add_css_class
+Gtk4.remove_css_class
+Gtk4.css_classes
 ```
 
 ## Windows

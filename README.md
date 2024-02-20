@@ -6,11 +6,9 @@
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliahub.com/docs/Gtk4)
 
 
-GUI building using [GTK](https://www.gtk.org) version 4. See [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl) for a Julia package that supports GTK version 3. **Note that Gtk.jl and Gtk4.jl cannot be imported in the same Julia session.**
+GUI building using [GTK](https://www.gtk.org) version 4. See [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl) for an unmaintained Julia package that wraps GTK version 3. **Note that Gtk.jl and Gtk4.jl cannot be imported in the same Julia session.**
 
-This package builds on Gtk.jl but uses GObject introspection to support more of the functionality of the GTK library and its dependencies. GObject introspection for Julia is implemented using [GI.jl](https://github.com/JuliaGtk/Gtk4.jl/tree/main/GI), which is also hosted in this repository.
-
-Most of the code for GLib support (`GType`, `GValue`, `GObject`, etc.) was copied with minor changes from [Gtk.jl](https://github.com/JuliaGraphics/Gtk.jl). This includes integration of the GLib main loop with Julia's event loop.
+This package builds on Gtk.jl but uses GObject introspection to support more of the functionality of the GTK library and its dependencies. Libraries that are wrapped by this package include [libglib](https://docs.gtk.org/glib/), [libgobject](https://docs.gtk.org/gobject/), and [libgio](https://docs.gtk.org/gio/) (all in the `GLib` submodule), [libpango](https://docs.gtk.org/Pango/) (in the `Pango` submodule), [libgdkpixbuf](https://docs.gtk.org/gdk-pixbuf/) (in the `GdkPixbufLib` submodule), and [libgdk4](https://docs.gtk.org/gdk4/), [libgsk4](https://docs.gtk.org/gsk4/), and [libgtk4](https://docs.gtk.org/gtk4/) (in the main `Gtk4` module). GObject introspection for Julia is implemented using [GI.jl](https://github.com/JuliaGtk/Gtk4.jl/tree/main/GI), which is also hosted in this repository.
 
 Documentation for the master branch version of this package can be found [here](https://juliagtk.github.io/Gtk4.jl/dev/). Example code can be found [here](https://github.com/JuliaGtk/Gtk4.jl/tree/main/examples). Complete GTK documentation is available at [https://www.gtk.org/docs](https://www.gtk.org/docs).
 
@@ -27,7 +25,7 @@ Other registered packages extend the functionality of Gtk4.jl:
 - [Gtk4Makie.jl](https://github.com/JuliaGtk/Gtk4Makie.jl): provides integration with the popular plotting package [Makie.jl](https://github.com/MakieOrg/Makie.jl), specifically its interactive, high performance GLMakie backend.
 
 A port of [ProfileView](https://github.com/timholy/ProfileView.jl) based on Gtk4 is available.
-The registered version of ProfileView.jl uses Gtk.jl, which is incompatible with Gtk4.
+The registered version of ProfileView.jl uses Gtk.jl and thus cannot be used to profile Gtk4-based code.
 To use the Gtk4 port, enter `add https://github.com/jwahlstrand/ProfileView.jl#gtk4` in Julia's package mode.
 
 ## Current status
@@ -37,7 +35,8 @@ Note that this package uses binaries for the GTK library and its dependencies th
 
 ### Known incompatibilities
 
-Gtk4.jl is known to interfere with some other packages, including [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl) and [GLMakie.jl](https://github.com/MakieOrg/Makie.jl). To use Gtk4 based packages with Makie, you can use [Gtk4Makie.jl](https://github.com/JuliaGtk/Gtk4Makie.jl).
+Gtk4.jl can interfere with [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl). Calling Gtk4 functions before PyPlot functions seems to work better, and changing the PyPlot backend to one that does not involve GTK (any version) may prevent issues.
+Gtk4.jl has also been reported to interfere with [GLMakie.jl](https://github.com/MakieOrg/Makie.jl), though this doesn't always seem to happen. To use Gtk4 based packages with Makie, you can use [Gtk4Makie.jl](https://github.com/JuliaGtk/Gtk4Makie.jl).
 
 ## Enabling GTK4's EGL backend (Linux)
 On Wayland, a Cairo-based fallback backend will be used unless you tell `libglvnd_jll` where to find libEGL. This can be done by setting the environment variable __EGL_VENDOR_LIBRARY_DIRS. See [here](https://gitlab.freedesktop.org/glvnd/libglvnd/-/blob/master/src/EGL/icd_enumeration.md) for details.

@@ -247,6 +247,36 @@ function delete!(display::GdkDisplay, provider)
     display
 end
 
+"""
+    add_css_class(w::GtkWidget, c::AbstractString)
+
+Add a CSS class to a widget.
+
+See also [`remove_css_class`](@ref).
+
+Related GTK function: [`gtk_widget_add_css_class`()]($(gtkdoc_method_url("gtk4","GtkWidget","add_css_class")))
+"""
+add_css_class(w::GtkWidget, c::AbstractString) = G_.add_css_class(w, c)
+
+"""
+    remove_css_class(w::GtkWidget, c::AbstractString)
+
+Remove a CSS class from a widget.
+
+See also [`add_css_class`](@ref).
+
+Related GTK function: [`gtk_widget_add_css_class`()]($(gtkdoc_method_url("gtk4","GtkWidget","add_css_class")))
+"""
+remove_css_class(w::GtkWidget, c::AbstractString) = G_.remove_css_class(w, c)
+
+@doc """
+    css_classes(w::GtkWidget, c::Vector{AbstractString})
+
+Sets the CSS style classes for a widget, replacing the previously set classes.
+
+Related GTK function: [`gtk_widget_set_css_classes`()]($(gtkdoc_method_url("gtk4","Widget","set_css_classes")))
+""" css_classes
+
 # because of a name collision this is annoying to generate using GI
 """
     GtkIconTheme(d::GdkDisplay)
