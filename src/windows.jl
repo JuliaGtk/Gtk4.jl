@@ -153,6 +153,20 @@ push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
 setindex!(w::GtkWindow, widget::Union{Nothing,GtkWidget}) = G_.set_child(w, widget)
 getindex(w::GtkWindow) = G_.get_child(w)
 
+# totally ugly hack to salvage this Gtk.jl legacy function for its original purpose
+function GLib.waitforsignal(obj::GtkWindow,signal)
+    if signal === :close_request || signal == "close-request"
+        c = Condition()
+        signal_connect(obj, signal) do w
+            notify(c)
+            return false
+        end
+        wait(c)
+    else
+        invoke(GLib.waitforsignal, Tuple{GObject,Any}, obj, signal)
+    end
+end
+
 function push!(wg::GtkWindowGroup, w::GtkWindow)
     G_.add_window(wg,w)
     wg
