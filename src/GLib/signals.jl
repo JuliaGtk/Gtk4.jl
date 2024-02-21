@@ -418,6 +418,7 @@ function waitforsignal(obj::GObject,signal)
   c = Condition()
   signal_connect(obj, signal) do w
       notify(c)
+      return false
   end
   wait(c)
 end
