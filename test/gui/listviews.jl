@@ -8,6 +8,7 @@ push!(win, sw)
 slist0 = GtkStringList()
 @test length(slist0) == 0
 show(IOBuffer(), slist0)
+show(IOBuffer(), GListModel(slist0))
 
 slist = GtkStringList(["Apple","Orange","Kiwi"])
 show(IOBuffer(), slist)

@@ -7,6 +7,7 @@ using Librsvg_jll
 using JLLWrappers
 using Scratch
 using ColorTypes
+import FixedPointNumbers: N0f8
 
 import Base: convert, size, eltype, getindex, setindex!
 import CEnum: @cenum
@@ -69,8 +70,10 @@ struct RGB
 end
 convert(::Type{RGB}, x::Unsigned) = RGB(UInt8(x), UInt8(x >> 8), UInt8(x >> 16))
 convert(::Type{U}, x::RGB) where {U <: Unsigned} = convert(U, (x.r) | (x.g >> 8) | (x.b >> 16))
-
-convert(::Type{RGB}, x::Colorant) = RGB(reinterpret(UInt8,red(x)),reinterpret(UInt8,green(x)),reinterpret(UInt8,blue(x)))
+function convert(::Type{RGB}, x::Colorant)
+    c = ColorTypes.RGB{N0f8}(x)
+    RGB(reinterpret(UInt8,red(c)),reinterpret(UInt8,green(c)),reinterpret(UInt8,blue(c)))
+end
 
 struct RGBA
     r::UInt8; g::UInt8; b::UInt8; a::UInt8
@@ -78,6 +81,10 @@ struct RGBA
 end
 convert(::Type{RGBA}, x::Unsigned) = RGBA(UInt8(x), UInt8(x >> 8), UInt8(x >> 16), UInt8(x >> 24))
 convert(::Type{U}, x::RGBA) where {U <: Unsigned} = convert(U, (x.r) | (x.g >> 8) | (x.b >> 16) | (x.a >> 24))
+function convert(::Type{RGBA}, x::Colorant)
+    c = ColorTypes.RGBA{N0f8}(x)     
+    RGBA(reinterpret(UInt8,red(c)),reinterpret(UInt8,green(c)),reinterpret(UInt8,blue(c)),reinterpret(UInt8,alpha(c)))
+end
 
 # Example constructors:
 #MatrixStrided(width = 10, height = 20)
