@@ -44,7 +44,6 @@ function show(io::IO, sl::GtkStringList)
     l=length(sl)
     if l>0
         screenheight = GLib._get_screenheight(io)
-        halfheight = div(screenheight,2)
         print(io, l)
         println(io, "-element GtkStringList:")
         if l <= screenheight
@@ -56,6 +55,7 @@ function show(io::IO, sl::GtkStringList)
                 end
             end
         else
+            halfheight = div(screenheight,2)
             for i in 1:halfheight-1
                 print(io," ")
                 println(IOContext(io, :compact=>true), repr(sl[i]))
