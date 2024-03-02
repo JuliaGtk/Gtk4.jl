@@ -35,9 +35,44 @@ deleteat!(sl::GtkStringList, i::Integer) = (G_.remove(sl, i-1); sl)
 empty!(sl::GtkStringList) = (G_.splice(sl, 0, length(sl), nothing); sl)
 length(sl::GtkStringList) = length(GListModel(sl))
 Base.keys(sl::GtkStringList) = Base.OneTo(length(sl))
+Base.lastindex(sl::GtkStringList) = length(sl)
 iterate(ls::GtkStringList, i=0) = (i==length(ls) ? nothing : (getindex(ls, i+1),i+1))
 getindex(sl::GtkStringList, i::Integer) = G_.get_string(sl, i - 1)
 eltype(::Type{GtkStringList}) = String
+
+function show(io::IO, sl::GtkStringList)
+    l=length(sl)
+    if l>0
+        screenheight = GLib._get_screenheight(io)
+        halfheight = div(screenheight,2)
+        print(io, l)
+        println(io, "-element GtkStringList:")
+        if l <= screenheight
+            for i in 1:l
+                print(" ")
+                print(IOContext(io, :compact=>true), repr(sl[i]))
+                if i<l
+                    println(io)
+                end
+            end
+        else
+            for i in 1:halfheight-1
+                print(" ")
+                println(IOContext(io, :compact=>true), repr(sl[i]))
+            end
+            println(" \u22ee")
+            for i in l - halfheight+1:l
+                print(" ")
+                print(IOContext(io, :compact=>true), repr(sl[i]))
+                if i!=l
+                    println(io)
+                end
+            end
+        end
+    else
+        println(io, "0-element GtkStringList")
+    end
+end
 
 ## GtkDropdown
 

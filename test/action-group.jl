@@ -16,6 +16,18 @@ signames = signalnames(GSimpleAction)
 
 end
 
+@testset "waitforsignal" begin
+
+a=GSimpleAction("do-something",nothing)
+a.enabled=false
+
+g_timeout_add(500) do
+    a.enabled=true
+end
+GLib.waitforsignal(a,"notify::enabled")
+
+end
+
 # GSimpleAction is an object with properties
 
 @testset "simple action" begin
@@ -119,7 +131,12 @@ function cb(ac,va)
     nothing
 end
 
-add_action(GActionMap(g), "new-action", cb)
+@test g["new-action"] === nothing
+
+ac = add_action(GActionMap(g), "new-action", cb)
+
+@test g["new-action"] == ac
+
 add_action(GActionMap(g), "new-action-with-parameter", Bool, cb)
 
 end

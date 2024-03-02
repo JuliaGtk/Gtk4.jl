@@ -32,32 +32,37 @@ function show(io::IO, w::GObject)
     props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
         (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
     v = gvalue(String)
-    first = true
-    for i = 1:n[]
-        param = unsafe_load(unsafe_load(props, i))
-        if !first
-            print(io, ", ")
-        else
-            first = false
-        end
-        print(io, bytestring(param.name))
-        if (ParamFlags(param.flags) & ParamFlags_READABLE) != 0 &&
-           (param.flags & DEPRECATED) == 0 &&
-           (ccall((:g_value_type_transformable, libgobject), Cint,
-                (Int, Int), param.value_type, g_type(AbstractString)) != 0)
-            ccall((:g_object_get_property, libgobject), Nothing,
-                (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, param.name, v)
-            str = ccall((:g_value_get_string, libgobject), Ptr{UInt8}, (Ptr{GValue},), v)
-            value = gvalue_string_convert(str)
-            if param.value_type == g_type(AbstractString) && str != C_NULL
-                print(io, "=\"", value, '"')
+    if get(io, :compact, false)::Bool
+        print(io, getfield(w,:handle)) # show pointer
+    else # show properties
+        first = true
+        for i = 1:n[]
+            param = unsafe_load(unsafe_load(props, i))
+            if !first
+                print(io, ", ")
             else
-                print(io, '=', value)
+                first = false
+            end
+            print(io, bytestring(param.name))
+            if (ParamFlags(param.flags) & ParamFlags_READABLE) != 0 &&
+                (param.flags & DEPRECATED) == 0 &&
+                (ccall((:g_value_type_transformable, libgobject), Cint,
+                       (Int, Int), param.value_type, g_type(AbstractString)) != 0)
+                ccall((:g_object_get_property, libgobject), Nothing,
+                      (Ptr{GObject}, Ptr{UInt8}, Ptr{GValue}), w, param.name, v)
+                str = ccall((:g_value_get_string, libgobject), Ptr{UInt8}, (Ptr{GValue},), v)
+                value = gvalue_string_convert(str)
+                if param.value_type == g_type(AbstractString) && str != C_NULL
+                    print(io, "=\"", value, '"')
+                else
+                    print(io, '=', value)
+                end
             end
         end
     end
     print(io, ')')
     ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), v)
+    nothing
 end
 
 """
@@ -92,8 +97,10 @@ function propertyinfo(w::GObject, name::AbstractString)
     end
     print("\n")
     blurb = ccall((:g_param_spec_get_blurb, libgobject), Ptr{UInt8}, (Ptr{GParamSpec},), p)
-    printstyled("Description: "; bold = true)
-    println(bytestring(blurb))
+    if blurb != C_NULL
+        printstyled("Description: "; bold = true)
+        println(bytestring(blurb))
+    end
 
     if ccall((:g_value_type_transformable, libgobject), Cint,
         (Int, Int), param.value_type, g_type(AbstractString)) != 0
