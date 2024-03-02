@@ -11,8 +11,10 @@ show(IOBuffer(), slist0)
 
 slist = GtkStringList(["Apple","Orange","Kiwi"])
 show(IOBuffer(), slist)
+show(IOContext(IOBuffer(),:limit=>true,:displaysize=>(5,80)),slist)
 model = GLib.GListModel(slist)
 show(IOBuffer(), model)
+show(IOContext(IOBuffer(),:limit=>true,:displaysize=>(5,80)),model)
 push!(slist, "Mango")
 factory = GtkSignalListItemFactory()
 

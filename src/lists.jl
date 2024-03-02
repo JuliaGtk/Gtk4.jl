@@ -49,7 +49,7 @@ function show(io::IO, sl::GtkStringList)
         println(io, "-element GtkStringList:")
         if l <= screenheight
             for i in 1:l
-                print(" ")
+                print(io," ")
                 print(IOContext(io, :compact=>true), repr(sl[i]))
                 if i<l
                     println(io)
@@ -57,12 +57,12 @@ function show(io::IO, sl::GtkStringList)
             end
         else
             for i in 1:halfheight-1
-                print(" ")
+                print(io," ")
                 println(IOContext(io, :compact=>true), repr(sl[i]))
             end
-            println(" \u22ee")
+            println(io," \u22ee")
             for i in l - halfheight+1:l
-                print(" ")
+                print(io," ")
                 print(IOContext(io, :compact=>true), repr(sl[i]))
                 if i!=l
                     println(io)

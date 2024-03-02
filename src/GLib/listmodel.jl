@@ -45,7 +45,7 @@ function show(io::IO, lm::GListModel, t = GListModel)
         println(io, "-element $t:")
         if l<= screenheight
             for el in lm
-                print(" ")
+                print(io," ")
                 print(IOContext(io, :compact=>true), el)
                 if el != last(lm)
                     println(io)
@@ -53,12 +53,12 @@ function show(io::IO, lm::GListModel, t = GListModel)
             end
         else
             for i in 1:halfheight-1
-                print(" ")
+                print(io," ")
                 println(IOContext(io, :compact=>true), lm[i])
             end
-            println(" \u22ee")
+            println(io," \u22ee")
             for i in l - halfheight+1:l
-                print(" ")
+                print(io," ")
                 print(IOContext(io, :compact=>true), lm[i])
                 if i!=l
                     println(io)
