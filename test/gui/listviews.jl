@@ -7,9 +7,12 @@ push!(win, sw)
 
 slist0 = GtkStringList()
 @test length(slist0) == 0
+show(IOBuffer(), slist0)
 
 slist = GtkStringList(["Apple","Orange","Kiwi"])
+show(IOBuffer(), slist)
 model = GLib.GListModel(slist)
+show(IOBuffer(), model)
 push!(slist, "Mango")
 factory = GtkSignalListItemFactory()
 
