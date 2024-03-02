@@ -412,11 +412,12 @@ end
     waitforsignal(obj::GObject, signal)
 
 Returns when a GObject's signal is emitted. Can be used to wait for a window to
-be closed. This function should only be used for signals that return nothing, with one exception: the "close-request" signal of GtkWindow.
+be closed. This function should only be used for signals that return nothing, with one
+exception: the "close-request" signal of GtkWindow.
 """
 function waitforsignal(obj::GObject,signal)
   c = Condition()
-  signal_connect(obj, signal) do w
+  signal_connect(obj, signal) do args...
       notify(c)
   end
   wait(c)

@@ -1,4 +1,4 @@
-using Test, Gtk4.GdkPixbufLib
+using Test, Gtk4.GdkPixbufLib, Colors
 
 @testset "pixbuf" begin
 
@@ -15,6 +15,9 @@ pb[1:3,1:3]=x
 @test pb[3,1] == GdkPixbufLib.RGB(0xff,0xff,0xff)
 @test pb[4,1] != GdkPixbufLib.RGB(0xff,0xff,0xff)
 
+pb[1,1]=colorant"blue"
+@test pb[1,1] == GdkPixbufLib.RGB(0,0,0xff)
+
 end
 
 @testset "Transparent pixbuf" begin
@@ -23,5 +26,8 @@ fill!(icon, GdkPixbufLib.RGBA(0,0xff,0, 0xff))
 icon[5:end-5, 3:end-3] .= Ref(GdkPixbufLib.RGBA(0,0,0xff,0x80))
 pb=GdkPixbuf(icon, true)
 @test eltype(pb) == GdkPixbufLib.RGBA
+
+icon[1,1] = colorant"red"
+@test icon[1,1] == GdkPixbufLib.RGBA(0xff,0,0,0xff)
 end
 
