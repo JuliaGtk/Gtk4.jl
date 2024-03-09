@@ -317,3 +317,13 @@ function push!(widget::GtkWidget, group::GActionGroup, name::AbstractString)
     G_.insert_action_group(widget, name, group)
     widget
 end
+
+function inhibit(app::GtkApplication, win::GtkWindow, flags, reason)
+    cookie = G_.inhibit(app, win, flags, reason)
+    if cookie == 0
+        error("GtkApplication inhibit failed")
+    end
+    cookie
+end
+
+uninhibit(app::GtkApplication, cookie) = G_.uninhibit(app, cookie)

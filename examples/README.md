@@ -4,6 +4,7 @@
 - `calculator4.jl` demonstrates a simple GUI with lots of buttons. Adapted from an example in Gtk.jl by Nand Vinchhi.
 - `css.jl` demonstrates widget styling using CSS.
 - `dialogs.jl` demonstrates various types of dialogs.
+- `show_image.jl` demonstrates how to show a static image using `GtkPicture`.
 
 ## Drawing
 - `canvas.jl` demonstrates use of `GtkCanvas`, which allows drawing with [Cairo](https://github.com/JuliaGraphics/Cairo.jl). Also shows how to change the cursor when it's over a certain widget. Adapted from an example in the Gtk.jl manual.
