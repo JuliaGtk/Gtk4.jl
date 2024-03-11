@@ -71,6 +71,10 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function drag_surface_size_get_type()
+        ret = ccall(("gdk_drag_surface_size_get_type", libgtk4), UInt64, ())
+        ret
+    end
     function gl_error_quark()
         ret = ccall(("gdk_gl_error_quark", libgtk4), UInt32, ())
         ret
@@ -125,16 +129,6 @@ $(Expr(:toplevel, quote
                 leaftype = GLib.find_leaf_type(ret)
                 convert(leaftype, ret, true)
             end
-        ret2
-    end
-    function pixbuf_get_from_surface(_surface::cairoSurface, _src_x::Integer, _src_y::Integer, _width::Integer, _height::Integer)
-        ret = ccall(("gdk_pixbuf_get_from_surface", libgtk4), Ptr{GObject}, (Ptr{cairoSurface}, Int32, Int32, Int32, Int32), _surface, _src_x, _src_y, _width, _height)
-        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-        ret2
-    end
-    function pixbuf_get_from_texture(_texture::GdkTexture)
-        ret = ccall(("gdk_pixbuf_get_from_texture", libgtk4), Ptr{GObject}, (Ptr{GObject},), _texture)
-        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function set_allowed_backends(_backends::Union{AbstractString, Symbol})
