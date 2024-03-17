@@ -26,6 +26,8 @@ export response
 export open_file, save_path, open_path, select_folder, select_folder_path, open_multiple, open_paths, select_multiple_folders, select_multiple_folder_paths
 export css_classes, add_css_class, remove_css_class
 
+export undo!, redo!
+
 export GListModel, changed, model, selected_string, selected_string!
 
 # GLib-imported event handling

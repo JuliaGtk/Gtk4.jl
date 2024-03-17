@@ -1036,7 +1036,8 @@ const libnames = Dict("libglib"=>:libglib, "libgobject"=>:libgobject,
                 "libpango"=>:libpango, "libatk"=>:libatk,
                 "libgdk_pixbuf"=>:libgdkpixbuf, "libgdk-3"=>:libgdk3,
                 "libgtk-3"=>:libgtk3, "libgraphene"=>:libgraphene,
-                 "libgtk-4"=>:libgtk4, "libaravis"=>:libaravis, "libadwaita"=>:libadwaita)
+                 "libgtk-4"=>:libgtk4, "libaravis"=>:libaravis,
+                 "libadwaita"=>:libadwaita, "libgtksourceview-5"=>:libgtksourceview)
 function symbol_from_lib(libname)
     ks = collect(keys(libnames))
     k=findfirst(n->occursin(n, libname), ks)
