@@ -1,8 +1,8 @@
-using Gtk4.GLib, Gtk4, Test
+using GObjects, Test
 
 @testset "mainloop" begin
 
-GLib.start_main_loop(true)
+GObjects.start_main_loop(true)
 
 x = Ref{Int}(1)
 
@@ -58,18 +58,18 @@ g_source_remove(id)
 sleep(0.5)
 @test x[] == 1
 
-@test GLib.get_uv_loop_integration() in ["auto","enabled","disabled"]
+@test GObjects.get_uv_loop_integration() in ["auto","enabled","disabled"]
 
 # pausing the loop
 
 x[] = 1 # reset
 
-GLib.pause_main_loop() do
-    @test GLib.is_loop_running() == false
+GObjects.pause_main_loop() do
+    @test GObjects.is_loop_running() == false
     x[] = 2
 end
 
-@test GLib.is_loop_running() == true
+@test GObjects.is_loop_running() == true
 @test x[] == 2
 
 end
@@ -104,7 +104,7 @@ end
 
 @testset "preferences" begin
 
-GLib.set_uv_loop_integration("auto")
-check = GLib.is_uv_loop_integration_enabled()
+GObjects.set_uv_loop_integration("auto")
+check = GObjects.is_uv_loop_integration_enabled()
 
 end

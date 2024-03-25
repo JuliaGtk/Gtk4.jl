@@ -1,6 +1,7 @@
 module Cairo
 
-using ..GLib
+using GObjects
+const GLib = GObjects
 
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag

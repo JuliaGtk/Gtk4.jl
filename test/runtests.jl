@@ -1,23 +1,7 @@
 module Gtk4TestModule
-using Test
+using Test, Gtk4, Gtk4.GLib
 
-@testset "GLib" begin
-if Sys.WORD_SIZE == 64
-    include("keyfile.jl")
-    include("misc.jl")
-end
-#include("date.jl")
-include("datetime.jl")
-#include("gstring.jl")
-include("mainloop.jl")
-include("list.jl")
-
-include("gvalue.jl")
-
-include("gfile.jl")
-include("gmenu.jl")
-include("action-group.jl")
-end
+GLib.start_main_loop()
 
 @testset "Pango" begin
 include("pango.jl")
@@ -40,6 +24,7 @@ include("gui/input.jl")
 include("gui/layout.jl")
 include("gui/window.jl")
 include("gui/listviews.jl")
+
 #include("gui/examples.jl")
 #include("gui/application.jl")  # needs to be last because it messes with the main loop
 end

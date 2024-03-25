@@ -1,4 +1,4 @@
-module GLib
+module GObjects
 
 if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@optlevel"))
     @eval Base.Experimental.@optlevel 1
@@ -151,7 +151,9 @@ end
 include("glist.jl")
 include("gtype.jl")
 
-eval(include("../gen/glib_consts"))
+const GLib = GObjects
+
+eval(include("gen/glib_consts"))
 
 global const lib_version = VersionNumber(
       MAJOR_VERSION,
@@ -160,7 +162,7 @@ global const lib_version = VersionNumber(
 
 include("gvalues.jl")
 
-eval(include("../gen/glib_structs"))
+eval(include("gen/glib_structs"))
 
 include("gvariant.jl")
 include("gerror.jl")
@@ -169,23 +171,25 @@ include("hashtable.jl")
 
 include("signals.jl")
 
-eval(include("../gen/gobject_structs"))
-eval(include("../gen/gio_structs"))
+eval(include("gen/gobject_structs"))
+eval(include("gen/gio_structs"))
 
 module G_
 
 using Glib_jll
 
-using ..GLib
+using ..GObjects
+
+const GLib = GObjects
 
 import Base: convert, copy, run
 
-eval(include("../gen/glib_methods"))
-eval(include("../gen/glib_functions"))
-eval(include("../gen/gobject_methods"))
-eval(include("../gen/gobject_functions"))
-eval(include("../gen/gio_methods"))
-eval(include("../gen/gio_functions"))
+eval(include("gen/glib_methods"))
+eval(include("gen/glib_functions"))
+eval(include("gen/gobject_methods"))
+eval(include("gen/gobject_functions"))
+eval(include("gen/gio_methods"))
+eval(include("gen/gio_functions"))
 
 end
 

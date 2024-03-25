@@ -1,4 +1,4 @@
-using Gtk4.GLib
+using GObjects
 using Test
 
 @testset "signal basics" begin
@@ -24,7 +24,7 @@ a.enabled=false
 g_timeout_add(500) do
     a.enabled=true
 end
-GLib.waitforsignal(a,"notify::enabled")
+GObjects.waitforsignal(a,"notify::enabled")
 
 end
 
@@ -32,11 +32,11 @@ end
 
 @testset "simple action" begin
 
-a=GLib.G_.SimpleAction_new("do-something",nothing)
-@test "do-something" == GLib.G_.get_name(GAction(a))
+a=GObjects.G_.SimpleAction_new("do-something",nothing)
+@test "do-something" == GObjects.G_.get_name(GAction(a))
 @test a.name == "do-something"
 
-@test nothing == GLib.G_.get_parameter_type(GAction(a))
+@test nothing == GObjects.G_.get_parameter_type(GAction(a))
 @test a.parameter_type == nothing
 @test a.state == nothing
 @test a.state_type == nothing
@@ -58,8 +58,8 @@ propnames = propertynames(a)
 @test :enabled in propnames
 @test :handle in propnames
 
-GLib.propertyinfo(a,:name)
-@test_throws ErrorException GLib.propertyinfo(a,:serial_number)
+GObjects.propertyinfo(a,:name)
+@test_throws ErrorException GObjects.propertyinfo(a,:serial_number)
 
 # test keyword constructor
 
@@ -72,11 +72,11 @@ a3 = GSimpleAction("do-something-again";enabled=true)
 end
 
 @testset "simple action group" begin
-a=GLib.G_.SimpleAction_new("do-something",nothing)
-g=GLib.G_.SimpleActionGroup_new()
+a=GObjects.G_.SimpleAction_new("do-something",nothing)
+g=GObjects.G_.SimpleActionGroup_new()
 
 @test isa(g,GSimpleActionGroup)
-@test [] == GLib.list_actions(GActionGroup(g))
+@test [] == GObjects.list_actions(GActionGroup(g))
 
 enabled_changed = Ref(false)
 
@@ -113,18 +113,18 @@ id = signal_connect(action_added_cb, g, "action_added")
 push!(g,a)
 @test action_added[] == true
 
-@test GLib.signal_handler_is_connected(g, id)
-GLib.signal_handler_disconnect(g, id)
-@test !GLib.signal_handler_is_connected(g, id)
+@test GObjects.signal_handler_is_connected(g, id)
+GObjects.signal_handler_disconnect(g, id)
+@test !GObjects.signal_handler_is_connected(g, id)
 
-@test ["do-something"] == GLib.list_actions(GActionGroup(g))
+@test ["do-something"] == GObjects.list_actions(GActionGroup(g))
 
 delete!(g, "do-something")
 
 end
 
 @testset "add action" begin
-g=GLib.G_.SimpleActionGroup_new()
+g=GObjects.G_.SimpleActionGroup_new()
 extra_arg_ref=Ref(0)
 
 function cb(ac,va)
@@ -142,7 +142,7 @@ add_action(GActionMap(g), "new-action-with-parameter", Bool, cb)
 end
 
 @testset "add action cfunction" begin
-g=GLib.G_.SimpleActionGroup_new()
+g=GObjects.G_.SimpleActionGroup_new()
 extra_arg_ref=Ref(0)
 
 action_added = Ref(false)
@@ -154,13 +154,13 @@ function action_added_cb2(action_group, action_name, extra_arg)
 end
 
 # test the more sophisticated `signal_connect`
-GLib.on_action_added(action_added_cb2, g, 3)
+GObjects.on_action_added(action_added_cb2, g, 3)
 
 end
 
 @testset "add stateful action" begin
 
-g=GLib.G_.SimpleActionGroup_new()
+g=GObjects.G_.SimpleActionGroup_new()
 
 function cb(ac,va)
     nothing
@@ -168,7 +168,7 @@ end
 
 a5 = add_stateful_action(GActionMap(g), "new-action3", true, cb)
 @test a5.state == GVariant(true)
-GLib.set_state(a5, GVariant(false))
+GObjects.set_state(a5, GVariant(false))
 @test a5.state == GVariant(false)
 
 a5 = add_stateful_action(GActionMap(g), "new-action3-par", Bool, true, cb)
@@ -177,7 +177,7 @@ end
 
 @testset "add stateful action cfunction" begin
 
-g=GLib.G_.SimpleActionGroup_new()
+g=GObjects.G_.SimpleActionGroup_new()
 
 function cb2(a,v,user_data)
     nothing
@@ -190,7 +190,7 @@ end
 
 @testset "GListStore" begin
 
-a=GLib.G_.SimpleAction_new("do-something",nothing)
+a=GObjects.G_.SimpleAction_new("do-something",nothing)
 l = GListStore(:GSimpleAction)
 @test length(l)==0
 push!(l, a)
@@ -198,7 +198,7 @@ push!(l, a)
 @test l[1]==a
 @test l[2]==nothing
 
-push!(l, GLib.G_.SimpleAction_new("do-something",nothing))
+push!(l, GObjects.G_.SimpleAction_new("do-something",nothing))
 
 l2=[i for i in l]
 @test length(l2)==2
@@ -209,11 +209,11 @@ deleteat!(l,1)
 empty!(l)
 @test length(l)==0
 
-push!(l, GLib.GSimpleAction("do-something-else"))
-    pushfirst!(l, GLib.GSimpleAction("do-something"))
+push!(l, GObjects.GSimpleAction("do-something-else"))
+    pushfirst!(l, GObjects.GSimpleAction("do-something"))
     @test l[1].name == "do-something"
     @test length(l)==2
-    insert!(l, 2, GLib.GSimpleAction("do-yet-another-thing"))
+    insert!(l, 2, GObjects.GSimpleAction("do-yet-another-thing"))
     @test l[2].name == "do-yet-another-thing"
     @test length(l)==3
 end
@@ -224,14 +224,14 @@ types=[UInt8,Int16,UInt16,Int32,UInt32,Int64,UInt64,Float64,Bool]
 
 for t=types
     r=rand(t)
-    gv=GLib.GVariant(t,r)
+    gv=GObjects.GVariant(t,r)
 
     @test gv[t]==r
-    @test GLib.GVariantType(t) == GLib.G_.get_type(gv)
+    @test GObjects.GVariantType(t) == GObjects.G_.get_type(gv)
 end
 
-gv1 = GLib.GVariant(UInt8,1)
-gv2 = GLib.GVariant(UInt8,2)
+gv1 = GObjects.GVariant(UInt8,1)
+gv2 = GObjects.GVariant(UInt8,2)
 
 @test gv1 != gv2
 @test gv1 < gv2
@@ -244,8 +244,8 @@ gvs = GVariant("test")
 @test gvs[String] == "test"
 
 # test tuples
-gvt = GLib.GVariant((true,3,6.5))
-@test GLib.GVariantType(Tuple{Bool,Int,Float64}) == GLib.G_.get_type(gvt)
+gvt = GObjects.GVariant((true,3,6.5))
+@test GObjects.GVariantType(Tuple{Bool,Int,Float64}) == GObjects.G_.get_type(gvt)
 @test gvt[Tuple{Bool,Int,Float64}] == (true,3,6.5)
 
 end

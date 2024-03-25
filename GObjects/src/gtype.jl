@@ -75,7 +75,7 @@ let jtypes = Expr(:block, :( g_type(::Type{Nothing}) = $(g_type_from_name(:void)
             push!(jtypes.args, :( g_type(::Type{T}) where {T <: $juliatype} = convert(GType, $(fundamental_ids[i])) ))
         end
     end
-    Core.eval(GLib, jtypes)
+    Core.eval(GObjects, jtypes)
 end
 
 G_TYPE_FROM_CLASS(w::Ptr{Nothing}) = unsafe_load(convert(Ptr{GType}, w))

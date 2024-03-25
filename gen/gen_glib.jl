@@ -6,7 +6,7 @@ printstyled("Generating constants for GLib, GObject, and Gio\n";bold=true)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-path="../src/gen"
+path="../GObjects/src/gen"
 mkpath(path)
 
 ns = GINamespace(:GLib, "2.0")

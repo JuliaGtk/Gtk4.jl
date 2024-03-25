@@ -1,6 +1,7 @@
 module Graphene
 
-using ..GLib
+using GObjects
+const GLib = GObjects
 using Graphene_jll
 
 import CEnum: @cenum, CEnum

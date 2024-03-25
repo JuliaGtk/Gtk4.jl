@@ -13,13 +13,13 @@ import BitFlags: @bitflag
 import ColorTypes
 import ColorTypes: Colorant, RGBA, red, green, blue, alpha
 import FixedPointNumbers: N0f8, N0f16
+using GObjects
+import GObjects as GLib
+export GLib
 
-include("GLib/GLib.jl")
 include("Pango/Pango.jl")
 include("GdkPixbufLib.jl")
 include("Graphene.jl")
-
-using ..GLib
 
 using GTK4_jll, Glib_jll
 using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
@@ -46,7 +46,8 @@ module G_
 
 using GTK4_jll, Glib_jll
 
-using ..GLib
+using GObjects
+const GLib = GObjects
 using ..Pango
 using ..Pango.Cairo
 using ..Graphene

@@ -4,7 +4,7 @@ printstyled("Generating code for Gio\n";bold=true)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-path="../src/gen"
+path="../GObjects/src/gen"
 
 ns = GINamespace(:Gio,"2.0")
 d = GI.read_gir(gobject_introspection_jll, ns)

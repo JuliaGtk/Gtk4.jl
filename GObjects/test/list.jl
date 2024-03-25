@@ -1,4 +1,4 @@
-using Gtk4.GLib, Test
+using GObjects, Test
 
 @testset "glist" begin
 
@@ -8,7 +8,7 @@ g = GList(Ptr{GKeyFile})
 
 @test_throws UndefRefError g[1]
 
-kf=GLib.G_.KeyFile_new()
+kf=GObjects.G_.KeyFile_new()
 push!(g,kf.handle)
 
 @test isa(g[1],Ptr{GKeyFile})

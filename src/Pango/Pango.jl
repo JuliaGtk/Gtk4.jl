@@ -1,6 +1,7 @@
 module Pango
 
-using ..GLib
+using GObjects
+const GLib = GObjects
 using Glib_jll
 using Pango_jll
 
@@ -21,7 +22,8 @@ import Base: copy
 
 using Pango_jll, Glib_jll
 
-using ..GLib
+using GObjects
+const GLib = GObjects
 using ..Pango
 using ..Pango.Cairo
 

@@ -1,6 +1,7 @@
 module GdkPixbufLib
 
-using ..GLib
+using GObjects
+const GLib = GObjects
 using Glib_jll
 using gdk_pixbuf_jll
 using Librsvg_jll
@@ -26,7 +27,8 @@ module G_
 
 using gdk_pixbuf_jll
 
-using ..GLib
+using GObjects
+const GLib = GObjects
 using ..GdkPixbufLib
 
 import Base: convert, copy
