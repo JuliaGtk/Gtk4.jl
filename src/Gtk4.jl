@@ -150,7 +150,7 @@ function __init__()
             ENV["__EGL_VENDOR_LIBRARY_DIRS"] = d
         end
     end
-
+    
     success = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
     success || error("gtk_init_check() failed.")
 

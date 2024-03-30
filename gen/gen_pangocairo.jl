@@ -5,6 +5,19 @@ toplevel, exprs, exports = GI.output_exprs()
 ns = GINamespace(:PangoCairo,"1.0")
 path="../src/gen"
 
+toplevel, exprs, exports = GI.output_exprs()
+GI.all_interfaces!(exprs,exports,ns)
+
+push!(exprs,exports)
+
+GI.write_to_file(path,"pangocairo_structs",toplevel)
+
+toplevel, exprs, exports = GI.output_exprs()
+
+GI.all_interface_methods!(exprs,ns)
+
+GI.write_to_file(path,"pangocairo_methods",toplevel)
+
 ## functions
 
 toplevel, exprs, exports = GI.output_exprs()
