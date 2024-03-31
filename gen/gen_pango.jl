@@ -1,22 +1,9 @@
 using GI
 
-toplevel, exprs, exports = GI.output_exprs()
-
 ns = GINamespace(:Pango,"1.0")
 path="../src/gen"
 
-## constants, enums, and flags, put in a "Constants" submodule
-
-const_mod = Expr(:block)
-
-const_exports = Expr(:export)
-
-GI.all_const_exprs!(const_mod, const_exports, ns)
-
-push!(exprs, const_mod)
-
-## export constants, enums, and flags code
-GI.write_to_file(path,"pango_consts",toplevel)
+GI.export_consts!(ns, path, "pango"; export_constants = false)
 
 ## structs
 

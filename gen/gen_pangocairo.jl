@@ -1,7 +1,5 @@
 using GI
 
-toplevel, exprs, exports = GI.output_exprs()
-
 ns = GINamespace(:PangoCairo,"1.0")
 path="../src/gen"
 

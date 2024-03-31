@@ -2,25 +2,11 @@ using GI
 
 printstyled("Generating code for GdkPixbuf\n";bold=true)
 
-toplevel, exprs, exports = GI.output_exprs()
-
 ns = GINamespace(:GdkPixbuf,"2.0")
 d = GI.read_gir(gdk_pixbuf_jll, ns)
 path="../src/gen"
 
-## constants, enums, and flags, put in a "Constants" submodule
-
-const_mod = Expr(:block)
-
-const_exports = Expr(:export)
-
-c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=[:PixbufFormatFlags])
-GI.append_const_docs!(const_mod.args, "gdk-pixbuf", d, c)
-
-push!(exprs, const_mod)
-
-## export constants, enums, and flags code
-GI.write_to_file(path,"gdkpixbuf_consts",toplevel)
+GI.export_consts!(ns, path, "gdkpixbuf", [:PixbufFormatFlags]; doc_prefix = "gdk-pixbuf", doc_xml = d, export_constants = false)
 
 ## structs
 

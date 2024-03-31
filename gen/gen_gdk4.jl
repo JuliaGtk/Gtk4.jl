@@ -1,26 +1,11 @@
 using GI
 
-toplevel, exprs, exports = GI.output_exprs()
-
 path="../src/gen"
 
 ns = GINamespace(:Gdk,"4.0")
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
-## constants, enums, and flags, put in a "Constants" submodule
-
-const_mod = Expr(:block)
-
-const_exports = Expr(:export)
-
-c = GI.all_const_exprs!(const_mod, const_exports, ns)
-GI.append_const_docs!(const_mod.args, "gdk4", d, c)
-push!(const_mod.args, const_exports)
-
-push!(exprs, const_mod)
-
-## export constants, enums, and flags code
-GI.write_to_file(path,"gdk4_consts",toplevel)
+GI.export_consts!(ns, path, "gdk4"; doc_xml = d)
 
 ## structs
 

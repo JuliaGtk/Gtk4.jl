@@ -1,26 +1,11 @@
 using GI
 
-toplevel, exprs, exports = GI.output_exprs()
-
 path="../src/gen"
 
 ns = GINamespace(:Gtk,"4.0")
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
-## constants, enums, and flags, put in a "Constants" submodule
-
-const_mod = Expr(:block)
-
-const_exports = Expr(:export)
-
-c = GI.all_const_exprs!(const_mod, const_exports, ns; skiplist= [:CssParserError,:CssParserWarning])
-GI.append_const_docs!(const_mod.args, "gtk4", d, c)
-push!(const_mod.args, const_exports)
-
-push!(exprs, const_mod)
-
-## export constants, enums, and flags code
-GI.write_to_file(path,"gtk4_consts",toplevel)
+GI.export_consts!(ns, path, "gtk4", [:CssParserError,:CssParserWarning]; doc_xml = d)
 
 ## structs
 

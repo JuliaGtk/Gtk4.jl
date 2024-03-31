@@ -49,18 +49,14 @@ function decl(enum::GIEnumInfo, incl_typeinit=true)
     enumname=get_name(enum)
     vals = get_enum_values(enum)
     typ = typetag_primitive[get_storage_type(enum)]
-    body = Expr(:macrocall)
-    push!(body.args, Symbol("@cenum"))
-    push!(body.args, Symbol("nothing"))
-    push!(body.args, :($enumname::$typ))
+    body = Expr(:macrocall, Symbol("@cenum"), Symbol("nothing"), :($enumname::$typ))
     for (name,val) in vals
         val=unsafe_trunc(typ,val)  # sometimes the value returned by GI is outside the range of the enum's type
         fullname=enum_fullname(enumname,name)
         push!(body.args, :($fullname = $val) )
     end
-    bloc = Expr(:block)
-    push!(bloc.args,unblock(body))
-    # if this enum has a GType we need to define GLib.g_type() to support storing this in GValue
+    bloc = Expr(:block, unblock(body))
+    # if this enum has a GType we define GLib.g_type() to support storing this in GValue
     if incl_typeinit
         gtypeinit = typeinit_def(enum)
         gtypeinit !== nothing && push!(bloc.args,unblock(gtypeinit))
@@ -73,10 +69,7 @@ function decl(enum::GIFlagsInfo, incl_typeinit=true)
     enumname=get_name(enum)
     vals = get_enum_values(enum)
     typ = typetag_primitive[get_storage_type(enum)]
-    body = Expr(:macrocall)
-    push!(body.args, Symbol("@bitflag"))
-    push!(body.args, Symbol("nothing"))
-    push!(body.args, :($enumname::UInt32))
+    body = Expr(:macrocall, Symbol("@bitflag"), Symbol("nothing"), :($enumname::UInt32))
     seen=UInt32[]
     for (name,val) in vals
         val=unsafe_trunc(typ,val)  # sometimes the value returned by GI is outside the range of the enum's type
@@ -90,8 +83,7 @@ function decl(enum::GIFlagsInfo, incl_typeinit=true)
         fullname=enum_fullname(enumname,"NONE")
         push!(body.args, :($fullname = 0))
     end
-    bloc = Expr(:block)
-    push!(bloc.args,body)
+    bloc = Expr(:block, body)
     if incl_typeinit
         gtypeinit = typeinit_def(enum)
         push!(bloc.args,unblock(gtypeinit))
@@ -410,7 +402,6 @@ end
 ## Callback output
 function decl(callbackinfo::GICallbackInfo)
     name = get_full_name(callbackinfo)
-    fargs = Symbol[]
     args=get_args(callbackinfo)
     rettypeinfo=get_return_type(callbackinfo)
     rettype = extract_type(rettypeinfo)
@@ -434,9 +425,8 @@ function decl(callbackinfo::GICallbackInfo)
     end
     
     input_conversion=[]
-    for arg in args
+    fargs = map(args) do arg
         argname = get_name(arg)
-        push!(fargs, argname)
         if argname != closure_name
             typ = extract_type(arg)
             expr = convert_from_c(argname,arg,typ)
@@ -444,6 +434,7 @@ function decl(callbackinfo::GICallbackInfo)
                 push!(input_conversion,:($argname = $expr))
             end
         end
+        return argname
     end
     d = quote
         function $name($(fargs...))
@@ -462,13 +453,10 @@ function get_ret_type(signalinfo::GISignalInfo)
 end
 
 function get_arg_types(signalinfo::GISignalInfo)
-    args=get_args(signalinfo)
-    argctypes_arr=[]
-    for arg in args
+    map(get_args(signalinfo)) do arg
         argtype = extract_type(arg)
-        push!(argctypes_arr, argtype.ctype)
+        argtype.ctype
     end
-    argctypes_arr
 end
 
 ## Signal output
