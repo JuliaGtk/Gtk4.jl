@@ -15,23 +15,9 @@ toplevel, exprs, exports = GI.output_exprs()
 disguised = Symbol[]
 struct_skiplist=vcat(disguised, [:ToplevelSize,:TextureDownloader])
 
-GI.struct_cache_expr!(exprs)
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:TimeCoord])
-GI.append_struc_docs!(exprs, "gdk4", d, c, ns)
-
-## objects
-
 object_skiplist=Symbol[]
 
-c = GI.all_objects!(exprs,exports,ns,skiplist=object_skiplist;print_summary=true,constructor_skiplist=[:new_from_resource])
-GI.append_object_docs!(exprs, "gdk4", d, c, ns)
-GI.all_interfaces!(exprs,exports,ns)
-GI.all_callbacks!(exprs, exports, ns)
-GI.all_object_signals!(exprs,ns;skiplist=skiplist,object_skiplist=object_skiplist)
-
-push!(exprs,exports)
-
-GI.write_to_file(path,"gdk4_structs",toplevel)
+GI.export_struct_exprs!(ns,path, "gdk4", struct_skiplist, [:TimeCoord]; object_constructor_skiplist=[:new_from_resource],doc_xml = d)
 
 ## struct methods
 

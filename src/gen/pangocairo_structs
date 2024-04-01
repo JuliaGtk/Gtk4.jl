@@ -14,6 +14,14 @@ $(Expr(:toplevel, quote
                 new(unsafe_convert(Ptr{GObject}, x), x)
             end
     end
-    export PangoCairoFont, PangoCairoFontMap
+    function PangoCairoShapeRendererFunc(cr, attr, do_path, data)
+        cr = convert(cairoContext, cr, false)
+        attr = convert(Union{PangoAttrShape, Ref{_PangoAttrShape}}, attr)
+        do_path = convert(Bool, do_path)
+        f = data
+        ret = f(cr, attr, do_path)
+        nothing
+    end
+    export PangoCairoFont, PangoCairoFontMap, PangoCairoShapeRendererFunc
 end))
 end

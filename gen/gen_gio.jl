@@ -11,8 +11,6 @@ d = GI.read_gir(gobject_introspection_jll, ns)
 
 ## structs
 
-toplevel, exprs, exports = GI.output_exprs()
-
 disguised = GI.read_disguised(d)
 struct_skiplist=vcat(disguised, [:ActionEntry,:DBusAnnotationInfo,:DBusArgInfo,:DBusInterfaceInfo,
 :DBusInterfaceVTable,:DBusMethodInfo,:DBusPropertyInfo,:DBusSignalInfo,:DBusSubtreeVTable,
@@ -21,21 +19,15 @@ struct_skiplist=vcat(disguised, [:ActionEntry,:DBusAnnotationInfo,:DBusArgInfo,:
 :XdpDocumentsSkeletonClass,:XdpOpenURIProxy,:XdpOpenURIProxyClass,:XdpOpenURISkeletonClass,
 :XdpProxyResolverProxy,:XdpProxyResolverProxyClass,:XdpProxyResolverSkeleton,:XdpProxyResolverSkeletonClass,:XdpTrashProxy,:XdpTrashProxyClass,:XdpTrashSkeleton,:XdpTrashSkeletonClass,:_FreedesktopDBusProxyClass,:_FreedesktopDBusSkeletonClass])
 
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,output_cache_init=false)
-GI.append_struc_docs!(exprs, "gio", d, c, ns)
-
 ## objects
 
 obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus]
-GI.all_interfaces!(exprs,exports,ns;skiplist=[:XdpProxyResolverIface])
-c = GI.all_objects!(exprs,exports,ns;skiplist=obj_skiplist,constructor_skiplist=[:new_for_bus_sync,:new_sync,:new_with_fd_list,:new_for_address_finish,:new_for_bus_finish,:new_for_bus_finish,:new_from_filename,:new_loopback,:new_section,:new_with_default_fallbacks,:new_from_file_with_password],output_cache_define=false,output_cache_init=false)
-GI.append_object_docs!(exprs, "gio", d, c, ns)
-GI.all_callbacks!(exprs, exports, ns)
-GI.all_object_signals!(exprs,ns;object_skiplist=vcat(obj_skiplist,[:AppInfoMonitor,:DBusConnection,:DBusMenuModel,:DBusProxy,:DBusMethodInvocation,:IOModule,:SimpleProxyResolver,:UnixMountMonitor,:Task]))
 
-push!(exprs,exports)
+obj_constructor_skiplist = [:new_for_bus_sync,:new_sync,:new_with_fd_list,:new_for_address_finish,:new_for_bus_finish,:new_for_bus_finish,:new_from_filename,:new_loopback,:new_section,:new_with_default_fallbacks,:new_from_file_with_password]
 
-GI.write_to_file(path,"gio_structs",toplevel)
+#GI.all_object_signals!(exprs,ns;object_skiplist=vcat(obj_skiplist,[:AppInfoMonitor,:DBusConnection,:DBusMenuModel,:DBusProxy,:DBusMethodInvocation,:IOModule,:SimpleProxyResolver,:UnixMountMonitor,:Task]))
+
+struct_skiplist = GI.export_struct_exprs!(ns,path, "gio", struct_skiplist, import_as_opaque; doc_xml = d, output_boxed_cache_init = false, output_object_cache_init = false, object_skiplist = obj_skiplist, object_constructor_skiplist = obj_constructor_skiplist, interface_skiplist = [:XdpProxyResolverIface], output_object_cache_define = false, output_boxed_types_def = false)
 
 ## struct methods
 

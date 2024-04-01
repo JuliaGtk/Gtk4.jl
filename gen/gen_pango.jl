@@ -10,24 +10,10 @@ GI.export_consts!(ns, path, "pango"; export_constants = false)
 toplevel, exprs, exports = GI.output_exprs()
 
 first_list=[:Language,:Color,:AttrClass,:Rectangle,:FontDescription,:Attribute,:Analysis,:Item,:GlyphVisAttr,:GlyphGeometry,:GlyphInfo,:GlyphString,:GlyphItem]
-GI.struct_cache_expr!(exprs)
-GI.struct_exprs!(exprs,exports,ns,first_list)
 
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=first_list)
+struct_skiplist = []
 
-# we want the methods from first_list
-struct_skiplist=Symbol[]
-
-## objects
-
-GI.all_objects!(exprs,exports,ns)
-GI.all_interfaces!(exprs,exports,ns)
-GI.all_callbacks!(exprs, exports, ns)
-GI.all_object_signals!(exprs,ns)
-
-push!(exprs,exports)
-
-GI.write_to_file(path,"pango_structs",toplevel)
+GI.export_struct_exprs!(ns,path, "pango", [], []; first_list = first_list)
 
 ## struct methods
 

@@ -8,28 +8,11 @@ GI.export_consts!(ns, path, "graphene"; export_constants = false)
 
 ## structs
 
-toplevel, exprs, exports = GI.output_exprs()
-
-# These are marked as "disguised" and what this means is not documentated AFAICT.
 disguised = Symbol[]
 struct_skiplist=vcat(disguised, Symbol[])
-
 first_list=[:Simd4F,:Vec3,:Simd4X4F,:Size]
-GI.struct_cache_expr!(exprs)
-GI.struct_exprs!(exprs,exports,ns,first_list)
 
-struct_skiplist=vcat(struct_skiplist,first_list)
-
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=[:Frustum,:Quad])
-
-## objects
-
-GI.all_objects!(exprs,exports,ns)
-GI.all_interfaces!(exprs,exports,ns)
-
-push!(exprs,exports)
-
-GI.write_to_file(path,"graphene_structs",toplevel)
+struct_skiplist = GI.export_struct_exprs!(ns,path, "graphene", struct_skiplist, [:Frustum,:Quad]; first_list = first_list)
 
 ## struct methods
 

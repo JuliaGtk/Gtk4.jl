@@ -7,32 +7,14 @@ d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 GI.export_consts!(ns, path, "gtk4", [:CssParserError,:CssParserWarning]; doc_xml = d)
 
-## structs
-
-toplevel, exprs, exports = GI.output_exprs()
-
-# These are marked as "disguised" and what this means is not documentated AFAICT.
 disguised = Symbol[]
 struct_skiplist=vcat(disguised, [:PageRange,:TreeRowReference])
 constructor_skiplist=[:new_first]
 
-GI.struct_cache_expr!(exprs)
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,constructor_skiplist=constructor_skiplist,import_as_opaque=[:BitsetIter,:BuildableParser],output_cache_init=false, exclude_deprecated=false)
-GI.append_struc_docs!(exprs, "gtk4", d, c, ns)
-
-## objects
-
 object_skiplist=[:CClosureExpression,:ClosureExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
+obj_constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name]
 
-GI.all_interfaces!(exprs,exports,ns;exclude_deprecated=false)
-c = GI.all_objects!(exprs,exports,ns,exclude_deprecated=false,skiplist=object_skiplist,constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name],output_cache_define=false,output_cache_init=false)
-GI.append_object_docs!(exprs, "gtk4", d, c, ns; skiplist=[:Builder])
-GI.all_callbacks!(exprs, exports, ns)
-GI.all_object_signals!(exprs,ns;skiplist=skiplist,object_skiplist=object_skiplist,exclude_deprecated=false)
-
-push!(exprs,exports)
-
-GI.write_to_file(path,"gtk4_structs",toplevel)
+GI.export_struct_exprs!(ns,path, "gtk4", struct_skiplist, [:BitsetIter,:BuildableParser]; doc_xml = d, object_skiplist = object_skiplist, constructor_skiplist = constructor_skiplist, output_boxed_cache_init = false, output_object_cache_define = false, output_object_cache_init = false, object_constructor_skiplist = obj_constructor_skiplist, doc_skiplist = [:Builder], exclude_deprecated = false)
 
 ## struct methods
 

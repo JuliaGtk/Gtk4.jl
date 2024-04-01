@@ -3,12 +3,7 @@ using GI
 ns = GINamespace(:PangoCairo,"1.0")
 path="../src/gen"
 
-toplevel, exprs, exports = GI.output_exprs()
-GI.all_interfaces!(exprs,exports,ns)
-
-push!(exprs,exports)
-
-GI.write_to_file(path,"pangocairo_structs",toplevel)
+struct_skiplist = GI.export_struct_exprs!(ns,path, "pangocairo", struct_skiplist, []; output_boxed_types_def = false, output_boxed_cache_init = false, output_object_cache_define = false, output_object_cache_init = false)
 
 toplevel, exprs, exports = GI.output_exprs()
 

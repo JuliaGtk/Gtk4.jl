@@ -202,6 +202,38 @@ function all_callbacks!(exprs, exports, ns)
     nothing
 end
 
+function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque; doc_xml = nothing, doc_prefix = prefix, constructor_skiplist = [], first_list = [], output_boxed_cache_init = true, output_object_cache_init = true, output_object_cache_define = true, object_skiplist = [], object_constructor_skiplist = [], interface_skiplist = [], signal_skiplist = [], expr_init = nothing, output_gtype_wrapper_cache_def = false, output_boxed_types_def = true, output_callbacks = true, exclude_deprecated = true, doc_skiplist = [])
+    toplevel, exprs, exports = GI.output_exprs()
+
+    if output_boxed_types_def
+        struct_cache_expr!(exprs)
+    end
+
+    if !isempty(first_list)
+        GI.struct_exprs!(exprs,exports,ns,first_list)
+        struct_skiplist = vcat(struct_skiplist,first_list)
+    end
+    struct_skiplist, c = all_struct_exprs!(exprs,exports,ns;constructor_skiplist=constructor_skiplist,excludelist=struct_skiplist,import_as_opaque=import_as_opaque, output_cache_init = output_boxed_cache_init, exclude_deprecated=exclude_deprecated)
+    if doc_xml !== nothing
+        append_struc_docs!(exprs, doc_prefix, doc_xml, c, ns)
+    end
+    all_interfaces!(exprs,exports,ns; skiplist = interface_skiplist, exclude_deprecated = exclude_deprecated)
+    c = all_objects!(exprs,exports,ns;handled=[:Object],skiplist=object_skiplist,output_cache_init = output_object_cache_init, output_cache_define = output_object_cache_define, constructor_skiplist = object_constructor_skiplist,exclude_deprecated=exclude_deprecated)
+    if doc_xml !== nothing
+        append_object_docs!(exprs, doc_prefix, doc_xml, c, ns; skiplist = doc_skiplist)
+    end
+    if expr_init !== nothing
+        push!(exprs,expr_init)
+    end
+    all_object_signals!(exprs, ns;skiplist=signal_skiplist,object_skiplist=object_skiplist, exclude_deprecated = exclude_deprecated)
+    if output_callbacks
+        all_callbacks!(exprs, exports, ns)
+    end
+    push!(exprs,exports)
+    write_to_file(path,"$(prefix)_structs",toplevel)
+    struct_skiplist
+end
+
 function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,skiplist=Symbol[], struct_skiplist=Symbol[], liboverride=nothing,exclude_deprecated=true)
     structs=get_structs(ns,exclude_deprecated)
     handled_symbols=Symbol[]
