@@ -505,6 +505,12 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
     end
 end
 
+function export_functions!(ns,path,prefix;skiplist = Symbol[], exclude_deprecated = true)
+    toplevel, exprs, exports = GI.output_exprs()
+    all_functions!(exprs,ns; skiplist = skiplist, exclude_deprecated = exclude_deprecated)
+    write_to_file(path,"$(prefix)_functions",toplevel)
+end
+
 function write_to_file(filename,toplevel)
     open(filename,"w") do f
         Base.println(f,"quote")

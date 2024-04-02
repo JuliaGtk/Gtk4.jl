@@ -29,10 +29,4 @@ GI.all_interface_methods!(exprs,ns)
 
 GI.write_to_file(path,"gsk4_methods",toplevel)
 
-## functions
-
-toplevel, exprs, exports = GI.output_exprs()
-
-GI.all_functions!(exprs,ns)
-
-GI.write_to_file(path,"gsk4_functions",toplevel)
+GI.export_functions!(ns,path,"gsk4")

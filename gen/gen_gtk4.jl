@@ -37,12 +37,6 @@ GI.all_interface_methods!(exprs,ns;skiplist=skiplist,interface_skiplist=[:PrintO
 
 GI.write_to_file(path,"gtk4_methods",toplevel)
 
-## functions
-
-toplevel, exprs, exports = GI.output_exprs()
-
 skiplist=[:editable_install_properties,:ordering_from_cmpfunc,:value_set_expression,:value_take_expression]
 
-GI.all_functions!(exprs,ns,skiplist=skiplist,exclude_deprecated=false)
-
-GI.write_to_file(path,"gtk4_functions",toplevel)
+GI.export_functions!(ns,path,"gtk4"; skiplist = skiplist, exclude_deprecated=false)

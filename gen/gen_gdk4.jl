@@ -39,12 +39,6 @@ GI.all_interface_methods!(exprs,ns;skiplist=skiplist)
 
 GI.write_to_file(path,"gdk4_methods",toplevel)
 
-## functions
-
-toplevel, exprs, exports = GI.output_exprs()
-
 skiplist=[:events_get_angle,:events_get_center,:events_get_distance]
 
-GI.all_functions!(exprs,ns,skiplist=skiplist)
-
-GI.write_to_file(path,"gdk4_functions",toplevel)
+GI.export_functions!(ns,path,"gdk4"; skiplist = skiplist)

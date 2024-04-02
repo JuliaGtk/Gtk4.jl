@@ -33,10 +33,4 @@ GI.all_object_methods!(exprs,ns;skiplist=skiplist)
 
 GI.write_to_file(path,"gdkpixbuf_methods",toplevel)
 
-## functions
-
-toplevel, exprs, exports = GI.output_exprs()
-
-GI.all_functions!(exprs,ns)
-
-GI.write_to_file(path,"gdkpixbuf_functions",toplevel)
+GI.export_functions!(ns,path,"gdkpixbuf")

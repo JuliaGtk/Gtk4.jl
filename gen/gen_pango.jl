@@ -35,10 +35,5 @@ GI.all_interface_methods!(exprs,ns)
 
 GI.write_to_file(path,"pango_methods",toplevel)
 
-## functions
+GI.export_functions!(ns,path,"pango")
 
-toplevel, exprs, exports = GI.output_exprs()
-
-GI.all_functions!(exprs,ns)
-
-GI.write_to_file(path,"pango_functions",toplevel)
