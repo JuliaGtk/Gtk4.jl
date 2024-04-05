@@ -430,6 +430,16 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
     end
 end
 
+function export_methods!(ns,path,prefix;struct_method_skiplist = Symbol[], object_method_skiplist = Symbol[],interface_method_skiplist = Symbol[], struct_skiplist = Symbol[], interface_skiplist = Symbol[], object_skiplist = Symbol[], exclude_deprecated = true)
+    toplevel, exprs, exports = GI.output_exprs()
+
+    all_struct_methods!(exprs,ns, struct_skiplist = struct_skiplist, skiplist = struct_method_skiplist, exclude_deprecated = exclude_deprecated)
+    all_object_methods!(exprs,ns; skiplist = object_method_skiplist, object_skiplist = object_skiplist, exclude_deprecated = exclude_deprecated)
+    all_interface_methods!(exprs,ns; skiplist = interface_method_skiplist, interface_skiplist = interface_skiplist, exclude_deprecated = exclude_deprecated)
+    
+    write_to_file(path,"$(prefix)_methods",toplevel)
+end
+
 function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_skiplist=Symbol[], liboverride=nothing,exclude_deprecated=true)
     j=0
     skipped=0

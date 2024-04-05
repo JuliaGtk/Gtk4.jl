@@ -19,18 +19,7 @@ obj_constructor_skiplist=[:new_from_resource,:new_with_mime_type,:new_from_resou
 
 struct_skiplist = GI.export_struct_exprs!(ns,path, "gdkpixbuf", struct_skiplist, []; doc_xml = d, expr_init = :(gboxed_types = Any[]), object_skiplist = obj_skiplist, object_constructor_skiplist = obj_constructor_skiplist, interface_skiplist = [:XdpProxyResolverIface], first_list = first_list, doc_prefix = "gdk-pixbuf")
 
-## struct methods
+object_method_skiplist=[:get_iter,:advance,:get_file_info_finish,:new_from_stream_async]
 
-toplevel, exprs, exports = GI.output_exprs()
-
-GI.all_struct_methods!(exprs,ns,struct_skiplist=struct_skiplist)
-
-## object methods
-
-skiplist=[:get_iter,:advance,:get_file_info_finish,:new_from_stream_async]
-
-GI.all_object_methods!(exprs,ns;skiplist=skiplist)
-
-GI.write_to_file(path,"gdkpixbuf_methods",toplevel)
-
+GI.export_methods!(ns,path,"gdkpixbuf"; object_method_skiplist = object_method_skiplist, struct_skiplist = struct_skiplist)
 GI.export_functions!(ns,path,"gdkpixbuf")
