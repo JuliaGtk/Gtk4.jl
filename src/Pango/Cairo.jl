@@ -3,6 +3,7 @@ module Cairo
 using GObjects
 const GLib = GObjects
 
+import Base: convert, unsafe_convert
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag
 

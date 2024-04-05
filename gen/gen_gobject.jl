@@ -2,8 +2,6 @@ using GI
 
 printstyled("Generating code for GObject\n";bold=true)
 
-toplevel, exprs, exports = GI.output_exprs()
-
 path="../GObjects/src/gen"
 
 ns = GINamespace(:GObject,"2.0")
@@ -20,25 +18,9 @@ struct_skiplist=vcat(disguised, special, [:CClosure,:Closure,:ClosureNotifyData,
 
 # these struct types are members in other structs, so we export them first
 first_list=[:EnumValue,:TypeClass,:TypeInterface,:FlagsValue,:TypeValueTable]
-GI.struct_exprs!(exprs,exports,ns,first_list)
+expr_init = :(gtype_wrapper_cache[:GObject] = GObjectLeaf)
 
-struct_skiplist=vcat(struct_skiplist,first_list)
-
-struct_skiplist, c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist,import_as_opaque=import_as_opaque,output_cache_init=false)
-GI.append_struc_docs!(exprs, "gobject", d, c, ns)
-
-## objects and interfaces
-
-c = GI.all_objects!(exprs,exports,ns;handled=[:Object],skiplist=[:SignalGroup])
-GI.append_object_docs!(exprs, "gobject", d, c, ns)
-push!(exprs,:(gtype_wrapper_cache[:GObject] = GObjectLeaf))
-GI.all_interfaces!(exprs,exports,ns)
-GI.all_callbacks!(exprs, exports, ns)
-GI.all_object_signals!(exprs, ns;skiplist=skiplist,object_skiplist=[:BindingGroup,:SignalGroup,:Object])
-
-push!(exprs,exports)
-
-GI.write_to_file(path,"gobject_structs",toplevel)
+struct_skiplist = GI.export_struct_exprs!(ns,path, "gobject", struct_skiplist, import_as_opaque; doc_xml = d, output_boxed_cache_init = false, expr_init = expr_init, object_skiplist = [:BindingGroup,:SignalGroup,:Object], first_list = first_list, output_boxed_types_def = false)
 
 ## struct methods
 

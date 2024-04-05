@@ -5,7 +5,7 @@ const GLib = GObjects
 using Glib_jll
 using Pango_jll
 
-import Base: convert, copy, length, getindex, iterate
+import Base: convert, copy, length, getindex, iterate, unsafe_convert
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag
 
@@ -13,6 +13,8 @@ eval(include("../gen/pango_consts"))
 eval(include("../gen/pango_structs"))
 
 include("Cairo.jl")
+
+eval(include("../gen/pangocairo_structs"))
 
 using .Cairo
 
@@ -30,6 +32,7 @@ using ..Pango.Cairo
 eval(include("../gen/pango_methods"))
 eval(include("../gen/pango_functions"))
 
+eval(include("../gen/pangocairo_methods"))
 eval(include("../gen/pangocairo_functions"))
 
 end

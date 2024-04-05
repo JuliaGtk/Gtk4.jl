@@ -243,6 +243,41 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.Rectangle.html)." GdkRectangle
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.TimeCoord.html)." GdkTimeCoord
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ToplevelLayout.html)." GdkToplevelLayout
+    struct GdkDevicePad <: GInterface
+        handle::Ptr{GObject}
+        gc::Any
+        GdkDevicePad(x::GObject) = begin
+                new(unsafe_convert(Ptr{GObject}, x), x)
+            end
+    end
+    struct GdkDragSurface <: GInterface
+        handle::Ptr{GObject}
+        gc::Any
+        GdkDragSurface(x::GObject) = begin
+                new(unsafe_convert(Ptr{GObject}, x), x)
+            end
+    end
+    struct GdkPaintable <: GInterface
+        handle::Ptr{GObject}
+        gc::Any
+        GdkPaintable(x::GObject) = begin
+                new(unsafe_convert(Ptr{GObject}, x), x)
+            end
+    end
+    struct GdkPopup <: GInterface
+        handle::Ptr{GObject}
+        gc::Any
+        GdkPopup(x::GObject) = begin
+                new(unsafe_convert(Ptr{GObject}, x), x)
+            end
+    end
+    struct GdkToplevel <: GInterface
+        handle::Ptr{GObject}
+        gc::Any
+        GdkToplevel(x::GObject) = begin
+                new(unsafe_convert(Ptr{GObject}, x), x)
+            end
+    end
     const gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type GdkAppLaunchContext <: GAppLaunchContext end
@@ -503,7 +538,7 @@ $(Expr(:toplevel, quote
         function GLib.signalnames(::Type{GdkDevice})
             vcat([:changed, :tool_changed], signalnames(supertype(GdkDevice)))
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :tool_changed => (:Nothing, Any[:(Ptr{GObject})]), :changed => (:Nothing, Any[]))
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :tool_changed => (:Nothing, Expr[:(Ptr{GObject})]), :changed => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDevice
                 eval((d[name])[1])
             end
@@ -555,7 +590,7 @@ $(Expr(:toplevel, quote
         function GLib.signalnames(::Type{GdkDisplay})
             vcat([:closed, :opened, :seat_added, :seat_removed, :setting_changed], signalnames(supertype(GdkDisplay)))
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :opened => (:Nothing, Any[]), :setting_changed => (:Nothing, Any[:Cstring]), :seat_removed => (:Nothing, Any[:(Ptr{GObject})]), :seat_added => (:Nothing, Any[:(Ptr{GObject})]), :closed => (:Nothing, Any[:Cint]))
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :opened => (:Nothing, Any[]), :setting_changed => (:Nothing, [:Cstring]), :seat_removed => (:Nothing, Expr[:(Ptr{GObject})]), :seat_added => (:Nothing, Expr[:(Ptr{GObject})]), :closed => (:Nothing, [:Cint]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDisplay
                 eval((d[name])[1])
             end
@@ -585,7 +620,7 @@ $(Expr(:toplevel, quote
         function GLib.signalnames(::Type{GdkDisplayManager})
             vcat([:display_opened], signalnames(supertype(GdkDisplayManager)))
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :display_opened => (:Nothing, Any[:(Ptr{GObject})]))
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :display_opened => (:Nothing, Expr[:(Ptr{GObject})]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDisplayManager
                 eval((d[name])[1])
             end
@@ -615,7 +650,7 @@ $(Expr(:toplevel, quote
         function GLib.signalnames(::Type{GdkDrag})
             vcat([:cancel, :dnd_finished, :drop_performed], signalnames(supertype(GdkDrag)))
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :dnd_finished => (:Nothing, Any[]), :cancel => (:Nothing, Any[:UInt32]), :drop_performed => (:Nothing, Any[]))
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :dnd_finished => (:Nothing, Any[]), :cancel => (:Nothing, [:UInt32]), :drop_performed => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDrag
                 eval((d[name])[1])
             end
@@ -917,7 +952,7 @@ $(Expr(:toplevel, quote
         function GLib.signalnames(::Type{GdkSeat})
             vcat([:device_added, :device_removed, :tool_added, :tool_removed], signalnames(supertype(GdkSeat)))
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :tool_removed => (:Nothing, Any[:(Ptr{GObject})]), :device_added => (:Nothing, Any[:(Ptr{GObject})]), :tool_added => (:Nothing, Any[:(Ptr{GObject})]), :device_removed => (:Nothing, Any[:(Ptr{GObject})]))
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :tool_removed => (:Nothing, Expr[:(Ptr{GObject})]), :device_added => (:Nothing, Expr[:(Ptr{GObject})]), :tool_added => (:Nothing, Expr[:(Ptr{GObject})]), :device_removed => (:Nothing, Expr[:(Ptr{GObject})]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkSeat
                 eval((d[name])[1])
             end
@@ -969,7 +1004,7 @@ $(Expr(:toplevel, quote
         function GLib.signalnames(::Type{GdkSurface})
             vcat([:enter_monitor, :event, :layout, :leave_monitor, :render], signalnames(supertype(GdkSurface)))
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :event => (:Cint, Any[:(Ptr{GdkEvent})]), :render => (:Cint, Any[:cairoRegion]), :layout => (:Nothing, Any[:Int32, :Int32]), :enter_monitor => (:Nothing, Any[:(Ptr{GObject})]), :leave_monitor => (:Nothing, Any[:(Ptr{GObject})]))
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :event => (:Cint, Expr[:(Ptr{GdkEvent})]), :render => (:Cint, [:cairoRegion]), :layout => (:Nothing, [:Int32, :Int32]), :enter_monitor => (:Nothing, Expr[:(Ptr{GObject})]), :leave_monitor => (:Nothing, Expr[:(Ptr{GObject})]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkSurface
                 eval((d[name])[1])
             end
@@ -1131,41 +1166,6 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.TouchEvent.html)." GdkTouchEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.TouchpadEvent.html)." GdkTouchpadEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.VulkanContext.html)." GdkVulkanContext
-    struct GdkDevicePad <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkDevicePad(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GdkDragSurface <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkDragSurface(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GdkPaintable <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkPaintable(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GdkPopup <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkPopup(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GdkToplevel <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkToplevel(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
     function on_changed(f, object::GdkClipboard, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
     end
@@ -1277,6 +1277,6 @@ $(Expr(:toplevel, quote
     function on_images_updated(f, object::GdkVulkanContext, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "images-updated", Nothing, (), after, user_data)
     end
-    export GdkContentFormats, GdkContentFormatsBuilder, GdkDragSurfaceSize, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, _GdkRGBA, GdkRectangle, _GdkRectangle, GdkTimeCoord, _GdkTimeCoord, GdkToplevelLayout, GdkAppLaunchContext, GdkAppLaunchContextLeaf, GdkButtonEvent, GdkButtonEventLeaf, GdkCairoContext, GdkClipboard, GdkClipboardLeaf, GdkContentDeserializer, GdkContentDeserializerLeaf, GdkContentProvider, GdkContentProviderLeaf, GdkContentSerializer, GdkContentSerializerLeaf, GdkCrossingEvent, GdkCrossingEventLeaf, GdkCursor, GdkCursorLeaf, GdkDNDEvent, GdkDNDEventLeaf, GdkDeleteEvent, GdkDeleteEventLeaf, GdkDevice, GdkDeviceTool, GdkDeviceToolLeaf, GdkDisplay, GdkDisplayLeaf, GdkDisplayManager, GdkDisplayManagerLeaf, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFocusEventLeaf, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGLTextureLeaf, GdkGLTextureBuilder, GdkGLTextureBuilderLeaf, GdkGrabBrokenEvent, GdkGrabBrokenEventLeaf, GdkKeyEvent, GdkKeyEventLeaf, GdkMemoryTexture, GdkMemoryTextureLeaf, GdkMonitor, GdkMonitorLeaf, GdkMotionEvent, GdkMotionEventLeaf, GdkPadEvent, GdkPadEventLeaf, GdkProximityEvent, GdkProximityEventLeaf, GdkScrollEvent, GdkScrollEventLeaf, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchEventLeaf, GdkTouchpadEvent, GdkTouchpadEventLeaf, GdkVulkanContext, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel
+    export GdkContentFormats, GdkContentFormatsBuilder, GdkDragSurfaceSize, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, _GdkRGBA, GdkRectangle, _GdkRectangle, GdkTimeCoord, _GdkTimeCoord, GdkToplevelLayout, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel, GdkAppLaunchContext, GdkAppLaunchContextLeaf, GdkButtonEvent, GdkButtonEventLeaf, GdkCairoContext, GdkClipboard, GdkClipboardLeaf, GdkContentDeserializer, GdkContentDeserializerLeaf, GdkContentProvider, GdkContentProviderLeaf, GdkContentSerializer, GdkContentSerializerLeaf, GdkCrossingEvent, GdkCrossingEventLeaf, GdkCursor, GdkCursorLeaf, GdkDNDEvent, GdkDNDEventLeaf, GdkDeleteEvent, GdkDeleteEventLeaf, GdkDevice, GdkDeviceTool, GdkDeviceToolLeaf, GdkDisplay, GdkDisplayLeaf, GdkDisplayManager, GdkDisplayManagerLeaf, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFocusEventLeaf, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGLTextureLeaf, GdkGLTextureBuilder, GdkGLTextureBuilderLeaf, GdkGrabBrokenEvent, GdkGrabBrokenEventLeaf, GdkKeyEvent, GdkKeyEventLeaf, GdkMemoryTexture, GdkMemoryTextureLeaf, GdkMonitor, GdkMonitorLeaf, GdkMotionEvent, GdkMotionEventLeaf, GdkPadEvent, GdkPadEventLeaf, GdkProximityEvent, GdkProximityEventLeaf, GdkScrollEvent, GdkScrollEventLeaf, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchEventLeaf, GdkTouchpadEvent, GdkTouchpadEventLeaf, GdkVulkanContext
 end))
 end
