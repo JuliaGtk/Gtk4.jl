@@ -1,4 +1,9 @@
 using GI, EzXML
+
+# Generates code for libraries where we use introspection data outside JLL's
+# This code is typically run on a recent version of Fedora where the library
+# version is the same or close to what's present in Yggdrasil.
+
 GI.prepend_search_path("/usr/lib64/girepository-1.0")
 include("gen_pango.jl")
 include("gen_pangocairo.jl")
