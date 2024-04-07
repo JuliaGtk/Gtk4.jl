@@ -1,21 +1,6 @@
 # use libgirepository to produce Julia declarations and methods
 
 const_expr(name,val) =  :(const $(Symbol(name)) = $(val))
-
-# export enum using a baremodule, as is done in Gtk.jl
-function enum_decl(enum)
-    enumname=get_name(enum)
-    vals = get_enum_values(enum)
-    body = Expr(:block)
-    for (name,val) in vals
-        if match(r"^[a-zA-Z_]",string(name)) === nothing
-            name = Symbol("_$name")
-        end
-        push!(body.args, :(const $(symuppercase(name)) = $val) )
-    end
-    Expr(:toplevel, Expr(:module, false, Symbol(enumname), body))
-end
-
 enum_fullname(enumname,name) = Symbol(enumname,"_",symuppercase(name))
 enum_name(enum) = Symbol(string(get_namespace(enum),get_name(enum)))
 
@@ -28,23 +13,26 @@ end
 
 find_symbol(id) = Base.Fix2(find_symbol, id)
 
-function typeinit_def(info)
-    name=get_name(info)
-    ti = get_type_init(info)
-    if ti === :nothing
-        return nothing
-    end
-    type_init = String(ti)
+function typeinit_def(info, gstructname = get_name(info))
+    type_init = String(get_type_init(info))
     libs=get_shlibs(GINamespace(get_namespace(info)))
     lib=libs[findfirst(find_symbol(type_init),libs)]
-    slib=symbol_from_lib(lib)
-    gtypeinit = quote
-        GLib.g_type(::Type{T}) where {T <: $name} =
-              ccall(($type_init, $slib), GType, ())
+    quote
+        GLib.g_type(::Type{T}) where {T <: $gstructname} =
+            ccall(($type_init, $(symbol_from_lib(lib))), GType, ())
     end
 end
 
-# export as a Julia enum type
+function append_type_init(body, enum, incl_typeinit)
+    bloc = Expr(:block, unblock(body))
+    # if this enum has a GType we define GLib.g_type() to support storing this in GValue
+    if incl_typeinit && get_type_init(enum) !== :nothing
+        push!(bloc.args,unblock(typeinit_def(enum)))
+    end
+    unblock(bloc)
+end
+
+# export as a Cenum type
 function decl(enum::GIEnumInfo, incl_typeinit=true)
     enumname=get_name(enum)
     vals = get_enum_values(enum)
@@ -55,13 +43,7 @@ function decl(enum::GIEnumInfo, incl_typeinit=true)
         fullname=enum_fullname(enumname,name)
         push!(body.args, :($fullname = $val) )
     end
-    bloc = Expr(:block, unblock(body))
-    # if this enum has a GType we define GLib.g_type() to support storing this in GValue
-    if incl_typeinit
-        gtypeinit = typeinit_def(enum)
-        gtypeinit !== nothing && push!(bloc.args,unblock(gtypeinit))
-    end
-    unblock(bloc)
+    append_type_init(body, enum, incl_typeinit)
 end
 
 # use BitFlags.jl
@@ -83,12 +65,7 @@ function decl(enum::GIFlagsInfo, incl_typeinit=true)
         fullname=enum_fullname(enumname,"NONE")
         push!(body.args, :($fullname = 0))
     end
-    bloc = Expr(:block, body)
-    if incl_typeinit
-        gtypeinit = typeinit_def(enum)
-        push!(bloc.args,unblock(gtypeinit))
-    end
-    unblock(bloc)
+    append_type_init(body, enum, incl_typeinit)
 end
 
 ## Struct output
@@ -111,13 +88,8 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
     isboxed = GLib.g_isa(gtype,GLib.g_type(GBoxed))
     exprs=Expr[]
     if isboxed
-        type_init = String(get_type_init(structinfo))
-        libs=get_shlibs(GINamespace(get_namespace(structinfo)))
-        lib=libs[findfirst(find_symbol(type_init),libs)]
-        slib=symbol_from_lib(lib)
         fin = quote
-            GLib.g_type(::Type{T}) where {T <: $gstructname} =
-                      ccall(($type_init, $slib), GType, ())
+            $(unblock(typeinit_def(structinfo,gstructname)))
             function $gstructname(ref::Ptr{T}, own::Bool = false) where {T <: GBoxed}
                 #println("constructing ",$(QuoteNode(gstructname)), " ",own)
                 x = new(ref)
@@ -184,42 +156,6 @@ end
 
 ## GObject/GTypeInstance output
 
-# extract properties for a particular GObject type
-# Most property info is available in real time from libgobject, so it turns out there is no
-# point in using this beyond gaining type stability for properties, and it's not clear that
-# is worth the trouble. There has been discussion of connecting properties to getter/setter
-# functions in the introspection data. So it might be worth revisiting this someday.
-
-function prop_dict(info)
-    properties=get_properties(info)
-    d=Dict{Symbol,Tuple{Any,Int32,Int32}}()
-    for p in properties
-        # whether the property is readable, writable, other stuff
-        flags=get_flags(p)
-
-        # in practice it looks like this is never set to anything but TRANSFER_NONE, so we could omit it
-        tran=get_ownership_transfer(p)
-
-        typ=get_type(p)
-        btyp=get_base_type(typ)
-        ptyp=extract_type(typ,btyp)
-        name=Symbol(replace(String(get_name(p)),"-"=>"_"))
-        d[name]=(ptyp.jstype,tran,flags)
-    end
-    d
-end
-
-# extract properties for a particular GObject type and all its parents
-function prop_dict_incl_parents(objectinfo::GIObjectInfo)
-    d=prop_dict(objectinfo)
-    parentinfo=get_parent(objectinfo)
-    if parentinfo!==nothing
-        return merge(prop_dict_incl_parents(parentinfo),d)
-    else
-        return d
-    end
-end
-
 function signal_dict(info)
     signals=get_signals(info)
     d=Dict{Symbol,Tuple{Any,Any}}()
@@ -276,11 +212,6 @@ function gobject_decl(objectinfo)
         println("get_g_type returns void -- not in library? : ", get_name(objectinfo))
     end
     
-    type_init = String(get_type_init(objectinfo))
-    libs=get_shlibs(GINamespace(get_namespace(objectinfo)))
-    lib=libs[findfirst(find_symbol(type_init),libs)]
-    slib=symbol_from_lib(lib)
-
     exprs=Expr[]
     decl=quote
         abstract type $oname <: $pname end
@@ -295,8 +226,7 @@ function gobject_decl(objectinfo)
             end
         end
         gtype_wrapper_cache[$(QuoteNode(oname))] = $leafname
-        GLib.g_type(::Type{T}) where {T <: $oname} =
-                      ccall(($type_init, $slib), GType, ())
+        $(unblock(typeinit_def(objectinfo, oname)))
     end
     push!(exprs, decl)
     # if there are signals, add "signal_return_type" method, and "signal_arg_types" method
