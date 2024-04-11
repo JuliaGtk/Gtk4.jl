@@ -252,6 +252,11 @@ function getindex(gv::Base.Ref{GValue}, ::Type{Any})
 end
 #end
 
+"""
+    get_gtk_property(w::GObject, name::AbstractString, ::Type{T})
+
+Get a GObject property's value as type `T`.
+"""
 get_gtk_property(w::GObject, name::AbstractString, ::Type{T}) where T = get_gtk_property(w, String(name)::String, T)
 get_gtk_property(w::GObject, name::Symbol, ::Type{T}) where T = get_gtk_property(w, String(name), T)
 function get_gtk_property(w::GObject, name::String, ::Type{T}) where T
@@ -265,6 +270,16 @@ function get_gtk_property(w::GObject, name::String, ::Type{T}) where T
     end
     return val
 end
+
+"""
+    get_gtk_property(w::GObject, name::AbstractString)
+
+Get a GObject property's value. The type of the returned value depends on the property, so this function's output is type unstable.
+
+GObject properties are mapped onto Julia instance properties, so this function is equivalent to the syntax `w.name`.
+
+See also [`set_gtk_property!`](@ref).
+"""
 get_gtk_property(w::GObject, name::AbstractString) = get_gtk_property(w, String(name)::String)
 get_gtk_property(w::GObject, name::Symbol) = get_gtk_property(w, String(name))
 function get_gtk_property(w::GObject, name::String)
@@ -279,7 +294,22 @@ function get_gtk_property(w::GObject, name::String)
     return val
 end
 
+"""
+    set_gtk_property!(w::GObject, name, ::Type{T}, value)
+
+Set a GObject property `name` (which can be a string or symbol) to `value` converted to type `T`.
+"""
 set_gtk_property!(w::GObject, name, ::Type{T}, value) where T = set_gtk_property!(w, name, convert(T, value))
+
+"""
+    set_gtk_property!(w::GObject, name, value)
+
+Set a GObject property `name` (which can be a string or symbol) to `value`. The type of `value` will be converted to match the property type, if possible.
+
+GObject properties are mapped onto Julia instance properties, so note that this function is equivalent to the more convenient syntax `w.name = value`.
+
+See also [`get_gtk_property`](@ref).
+"""
 set_gtk_property!(w::GObject, name::AbstractString, value) = set_gtk_property!(w::GObject, String(name)::String, value)
 set_gtk_property!(w::GObject, name::Symbol, value) = set_gtk_property!(w::GObject, String(name), value)
 function set_gtk_property!(w::GObject, name::String, value)

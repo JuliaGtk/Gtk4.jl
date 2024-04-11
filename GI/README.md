@@ -5,27 +5,23 @@ Julia bindings using libgobject-introspection.
 
 This builds on https://github.com/bfredl/GI.jl
 
-The goal is to output code that simplifies the creation of Julia packages that wrap GObject-based libraries.
-It outputs constants (including enums and flags types), struct definitions, and function definitions that wrap `ccall`'s of GObject based libraries.
-In function definitions, it uses [annotations](https://gi.readthedocs.io/en/latest/annotations/giannotations.html) to determine whether return values
-should be freed, whether pointer arguments can be optionally NULL, whether list
-outputs are NULL-terminated, which argument corresponds to the length of array
-inputs, which arguments are outputs and which are inputs, and more.
+## Scope
+
+This package outputs code that simplifies the creation of Julia packages that wrap GObject-based libraries.
+It outputs constants (including enums and flags types), struct definitions, callback definitions, and function definitions that wrap `ccall`'s of GObject based libraries.
+In function definitions, it uses [annotations](https://gi.readthedocs.io/en/latest/annotations/giannotations.html) to determine whether return values should be freed, whether pointer arguments can be optionally NULL, whether list outputs are NULL-terminated, which argument corresponds to the length of array inputs, which arguments are outputs and which are inputs, and more.
 The primary advantage over manually writing `ccall`'s (as is done in Gtk.jl) is that it can rapidly cover an entire library, saving a lot of tedious work.
 As new functionality is added to libraries, you just have to run GI.jl again and new code is generated.
-Disadvantages include: the current implementation only extracts GI information on Linux, leading to potential bugs on other platforms, and annotations are inaccurate in some libraries.
+The advantage over using Clang to generate wrappers is the fact that annotations provide important information, like whether outputs are "owned" or not, which arguments are closures or array lengths, and so on.
+Disadvantages: the current implementation only extracts GI information on Linux, leading to potential bugs on other platforms.
 
-This package is currently unregistered, and it only works on Linux because it uses [gobject_introspection_jll](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/gobject_introspection), which is currently only available for Linux. However, most generated code works on other platforms.
+This package is unregistered and it only works on Linux because it uses [gobject_introspection_jll](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/gobject_introspection), which is currently only available for Linux. However, most generated code works on other platforms.
 
 ## Status
 
 Most of libgirepository is wrapped.
 This allows information like lists of structs, methods, and functions to be extracted, as well as argument types, struct fields, etc.
 Using this information, GI.jl produces Julia code.
-
-Parts that are still very rough:
-
-* Anything to do with callbacks and signals - there is probably a smart way to use the information from introspection for these, but it hasn't been a priority yet.
 
 ## Generated code
 

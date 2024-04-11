@@ -25,6 +25,18 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        struct _GTypeInterface
+            g_type::UInt64
+            g_instance_type::UInt64
+        end
+        mutable struct GTypeInterface
+            handle::Ptr{_GTypeInterface}
+        end
+        unsafe_convert(::Type{Ptr{_GTypeInterface}}, box::GTypeInterface) = begin
+                convert(Ptr{_GTypeInterface}, box.handle)
+            end
+    end
+    begin
         struct _GFlagsValue
             value::UInt32
             value_name::Cstring
@@ -82,6 +94,37 @@ $(Expr(:toplevel, quote
         end
         unsafe_convert(::Type{Ptr{_GFlagsClass}}, box::GFlagsClass) = begin
                 convert(Ptr{_GFlagsClass}, box.handle)
+            end
+    end
+    begin
+        struct _GInterfaceInfo
+            interface_init::Ptr{Cvoid}
+            interface_finalize::Ptr{Cvoid}
+            interface_data::Ptr{Nothing}
+        end
+        mutable struct GInterfaceInfo
+            handle::Ptr{_GInterfaceInfo}
+        end
+        unsafe_convert(::Type{Ptr{_GInterfaceInfo}}, box::GInterfaceInfo) = begin
+                convert(Ptr{_GInterfaceInfo}, box.handle)
+            end
+    end
+    begin
+        struct _GParamSpecTypeInfo
+            instance_size::UInt16
+            n_preallocs::UInt16
+            instance_init::Ptr{Cvoid}
+            value_type::UInt64
+            finalize::Ptr{Cvoid}
+            value_set_default::Ptr{Cvoid}
+            value_validate::Ptr{Cvoid}
+            values_cmp::Ptr{Cvoid}
+        end
+        mutable struct GParamSpecTypeInfo
+            handle::Ptr{_GParamSpecTypeInfo}
+        end
+        unsafe_convert(::Type{Ptr{_GParamSpecTypeInfo}}, box::GParamSpecTypeInfo) = begin
+                convert(Ptr{_GParamSpecTypeInfo}, box.handle)
             end
     end
     begin
@@ -204,6 +247,8 @@ $(Expr(:toplevel, quote
     end
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.EnumClass.html)." GEnumClass
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.FlagsClass.html)." GFlagsClass
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.InterfaceInfo.html)." GInterfaceInfo
+    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.ParamSpecTypeInfo.html)." GParamSpecTypeInfo
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.SignalInvocationHint.html)." GSignalInvocationHint
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.SignalQuery.html)." GSignalQuery
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeFundamentalInfo.html)." GTypeFundamentalInfo
@@ -211,6 +256,13 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypePluginClass.html)." GTypePluginClass
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.ValueArray.html)." GValueArray
+    struct GTypePlugin <: GInterface
+        handle::Ptr{GObject}
+        gc::Any
+        GTypePlugin(x::GObject) = begin
+                new(unsafe_convert(Ptr{GObject}, x), x)
+            end
+    end
     const gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type GBinding <: GObject end
@@ -232,28 +284,6 @@ $(Expr(:toplevel, quote
     begin
         function GLib.signalnames(::Type{GBinding})
             signalnames(supertype(GBinding))
-        end
-    end
-    begin
-        abstract type GBindingGroup <: GObject end
-        mutable struct GBindingGroupLeaf <: GBindingGroup
-            handle::Ptr{GObject}
-            function GBindingGroupLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GBindingGroupLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GBindingGroup] = GBindingGroupLeaf
-        (GLib.g_type(::Type{T}) where T <: GBindingGroup) = begin
-                ccall(("g_binding_group_get_type", libgobject), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GBindingGroup})
-            signalnames(supertype(GBindingGroup))
         end
     end
     begin
@@ -305,23 +335,10 @@ $(Expr(:toplevel, quote
                 merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
             end
     end
-    function GBindingGroup(; kwargs...)
-        obj = G_.BindingGroup_new()
-        GLib.setproperties!(obj; kwargs...)
-        obj
-    end
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.Binding.html)." GBinding
-    @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.BindingGroup.html)." GBindingGroup
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.InitiallyUnowned.html)." GInitiallyUnowned
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.TypeModule.html)." GTypeModule
     gtype_wrapper_cache[:GObject] = GObjectLeaf
-    struct GTypePlugin <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GTypePlugin(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
     function GBindingTransformFunc(binding, from_value, to_value, user_data)
         binding = convert(GBinding, binding, false)
         from_value = convert(Union{GValue, Ref{_GValue}}, from_value, false)
@@ -378,6 +395,6 @@ $(Expr(:toplevel, quote
         ret = f(ihint, n_param_values, param_values)
         convert(Cint, ret)
     end
-    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GFlagsValue, _GFlagsValue, GTypeValueTable, _GTypeValueTable, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypeInfo, _GTypeInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GBinding, GBindingLeaf, GBindingGroup, GBindingGroupLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GTypePlugin, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
+    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GTypeInterface, _GTypeInterface, GFlagsValue, _GFlagsValue, GTypeValueTable, _GTypeValueTable, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GInterfaceInfo, _GInterfaceInfo, GParamSpecTypeInfo, _GParamSpecTypeInfo, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypeInfo, _GTypeInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GTypePlugin, GBinding, GBindingLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
 end))
 end

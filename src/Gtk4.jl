@@ -10,7 +10,9 @@ end
 
 import CEnum: @cenum
 import BitFlags: @bitflag
+import ColorTypes
 import ColorTypes: Colorant, RGBA, red, green, blue, alpha
+import FixedPointNumbers: N0f8, N0f16
 
 include("GLib/GLib.jl")
 include("Pango/Pango.jl")
@@ -64,7 +66,7 @@ end
 
 end
 
-import .GLib: set_gtk_property!, get_gtk_property, run,
+import .GLib: set_gtk_property!, get_gtk_property, run, activate,
               signal_handler_is_connected, signalnames,
               GListModel, start_main_loop, stop_main_loop
 
@@ -159,6 +161,8 @@ function __init__()
 
     #@debug("Gtk4 initialized.")
 end
+
+isinitialized() = G_.is_initialized()
 
 include("precompile.jl")
 _precompile_()

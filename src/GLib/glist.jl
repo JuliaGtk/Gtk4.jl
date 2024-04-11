@@ -1,4 +1,4 @@
-# Gtk linked list
+# GLib linked list
 
 ## Type hierarchy information
 
@@ -21,19 +21,21 @@ eltype(::Type{L}) where {L <: _LList} = eltype(supertype(L))
 mutable struct GList{L <: _LList, T} <: AbstractVector{T}
     handle::Ptr{L}
     transfer_full::Bool
-    function GList{L,T}(handle, transfer_full::Bool) where {L<:_LList,T}
-        # if transfer_full == true, then also free the elements when finalizing the list
+    transfer_container::Bool
+    function GList{L,T}(handle, transfer_elements::Bool, transfer_container::Bool=true) where {L<:_LList,T}
+        # if transfer_elements == true, then also free the elements when finalizing the list
+        # if transfer_container == false, then do not call `g_list_free` when emptying
         # this function assumes the caller will take care of holding a pointer to the returned object
         # until it wants to be garbage collected
         @assert T == eltype(L)
-        l = new{L,T}(handle, transfer_full)
+        l = new{L,T}(handle, transfer_elements, transfer_container)
         finalizer(empty!, l)
         return l
     end
 end
 GList(list::Type{T}) where {T} = GList(convert(Ptr{_GList{T}}, C_NULL), true)
 GSList(list::Type{T}) where {T} = GList(convert(Ptr{_GSList{T}}, C_NULL), true)
-GList(list::Ptr{L}, transfer_full::Bool = false) where {L <: _LList} = GList{L, eltype(L)}(list, transfer_full)
+GList(list::Ptr{L}, transfer_full::Bool = false, transfer_container::Bool = true) where {L <: _LList} = GList{L, eltype(L)}(list, transfer_full, transfer_container)
 
 const  LList{L <: _LList} = Union{Ptr{L}, GList{L}}
 eltype(::LList{L}) where {L <: _LList} = eltype(L)
@@ -132,7 +134,9 @@ function empty!(list::GList{L}) where L <: _GSList
                 s = next_(list, s)[2]
             end
         end
-        ccall((:g_slist_free, libglib), Nothing, (Ptr{L},), list)
+        if list.transfer_container
+            ccall((:g_slist_free, libglib), Nothing, (Ptr{L},), list)
+        end
         list.handle = C_NULL
     end
     return list
@@ -146,7 +150,9 @@ function empty!(list::GList{L}) where L <: _GList
                 s = next_(list, s)[2]
             end
         end
-        ccall((:g_list_free, libglib), Nothing, (Ptr{L},), list)
+        if list.transfer_container
+            ccall((:g_list_free, libglib), Nothing, (Ptr{L},), list)
+        end
         list.handle = C_NULL
     end
     return list

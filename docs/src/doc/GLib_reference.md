@@ -37,6 +37,8 @@ Gtk4.GLib.on_notify
 Gtk4.GLib.bind_property
 Gtk4.GLib.unbind_property
 Gtk4.GLib.setproperties!
+Gtk4.GLib.set_gtk_property!
+Gtk4.GLib.get_gtk_property
 ```
 
 ## Signals
@@ -45,7 +47,16 @@ Gtk4.GLib.signal_handler_is_connected
 Gtk4.GLib.signal_handler_disconnect
 Gtk4.GLib.signal_handler_block
 Gtk4.GLib.signal_handler_unblock
+Gtk4.GLib.signal_emit
 Gtk4.GLib.waitforsignal
+```
+
+## Actions and action groups
+```@docs
+Gtk4.GLib.GSimpleAction
+Gtk4.GLib.add_action
+Gtk4.GLib.add_stateful_action
+Gtk4.GLib.set_state
 ```
 
 ## GObject type system
@@ -53,4 +64,3 @@ Gtk4.GLib.waitforsignal
 Gtk4.GLib.g_type
 Gtk4.GLib.find_leaf_type
 ```
-

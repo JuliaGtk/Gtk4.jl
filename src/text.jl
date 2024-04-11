@@ -551,6 +551,20 @@ create_mark(buffer::GtkTextBuffer, mark_name, it::TI, left_gravity::Bool)  =
 
 create_mark(buffer::GtkTextBuffer, it::TI)  = create_mark(buffer, C_NULL, it, false)
 
+"""
+    undo!(buffer::GtkTextBuffer)
+
+Implements `gtk_text_buffer_undo`.
+"""
+undo!(buffer::GtkTextBuffer) = G_.undo(buffer)
+
+"""
+    redo!(buffer::GtkTextBuffer)
+
+Implements `gtk_text_buffer_redo`.
+"""
+redo!(buffer::GtkTextBuffer)
+
 #####  GtkTextView  #####
 #TODO: scrolling/views, child overlays
 

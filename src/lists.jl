@@ -35,9 +35,44 @@ deleteat!(sl::GtkStringList, i::Integer) = (G_.remove(sl, i-1); sl)
 empty!(sl::GtkStringList) = (G_.splice(sl, 0, length(sl), nothing); sl)
 length(sl::GtkStringList) = length(GListModel(sl))
 Base.keys(sl::GtkStringList) = Base.OneTo(length(sl))
+Base.lastindex(sl::GtkStringList) = length(sl)
 iterate(ls::GtkStringList, i=0) = (i==length(ls) ? nothing : (getindex(ls, i+1),i+1))
 getindex(sl::GtkStringList, i::Integer) = G_.get_string(sl, i - 1)
 eltype(::Type{GtkStringList}) = String
+
+function show(io::IO, sl::GtkStringList)
+    l=length(sl)
+    if l>0
+        screenheight = GLib._get_screenheight(io)
+        print(io, l)
+        println(io, "-element GtkStringList:")
+        if l <= screenheight
+            for i in 1:l
+                print(io," ")
+                print(IOContext(io, :compact=>true), repr(sl[i]))
+                if i<l
+                    println(io)
+                end
+            end
+        else
+            halfheight = div(screenheight,2)
+            for i in 1:halfheight-1
+                print(io," ")
+                println(IOContext(io, :compact=>true), repr(sl[i]))
+            end
+            println(io," \u22ee")
+            for i in l - halfheight+1:l
+                print(io," ")
+                print(IOContext(io, :compact=>true), repr(sl[i]))
+                if i!=l
+                    println(io)
+                end
+            end
+        end
+    else
+        println(io, "0-element GtkStringList")
+    end
+end
 
 ## GtkDropdown
 
@@ -76,6 +111,7 @@ widget's model is a `GtkStringList`.
 """
 function selected_string!(d::GtkDropDown, s::AbstractString)
     sl = G_.get_model(d)
+    isnothing(sl) && error("No model set in GtkDropDown")
     isa(sl, GtkStringList) || error("This method only works if the model is a GtkStringList")
     i = findfirst(==(s), sl)
     isnothing(i) && error("String not found in model")
@@ -120,7 +156,7 @@ function GtkTreeListModel(root, passthrough, autoexpand, create_func)
     ref, deref = GLib.gc_ref_closure(create_func)
     GLib.glib_ref(rootlm)
     ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), rootlm, passthrough, autoexpand, create_cfunc, ref, deref)
-    convert(GtkTreeListModel, ret, true)
+    GtkTreeListModelLeaf(ret, true)
 end
 
 """

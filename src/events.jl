@@ -46,6 +46,21 @@ function GtkShortcutController(widget::GtkWidget)
     g
 end
 
+"""
+    add_action_shortcut(scc::GtkShortcutController,trigger::AbstractString,action::AbstractString)
+
+Adds a shortcut specified by a string like "<Control>S" for an action (such as
+"app.save") to a `GtkShortcutController`.
+"""
+function add_action_shortcut(scc::GtkShortcutController,trigger::AbstractString,action::AbstractString)
+    t = GtkShortcutTrigger(trigger)
+    t === nothing && error("unable to parse $trigger into a GtkShortcutTrigger")
+    a = GtkShortcutAction("action($action)")
+    a === nothing && error("unable to parse action($action) into a GtkShortcutAction")
+    sc = GtkShortcut(t,a)
+    Gtk4.G_.add_shortcut(scc,sc)
+end
+
 push!(sc::GtkShortcutController, s::GtkShortcut) = (G_.add_shortcut(sc,s);sc)
 
 function GtkGestureClick(widget::GtkWidget,button=1)

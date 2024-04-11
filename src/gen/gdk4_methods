@@ -31,6 +31,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_content_formats_builder_unref", libgtk4), Nothing, (Ptr{GdkContentFormatsBuilder},), instance)
         nothing
     end
+    function set_size(instance::GdkDragSurfaceSize, _width::Integer, _height::Integer)
+        ret = ccall(("gdk_drag_surface_size_set_size", libgtk4), Nothing, (Ptr{GdkDragSurfaceSize}, Int32, Int32), instance, _width, _height)
+        nothing
+    end
     function FileList_new_from_array(_files)
         _files_arr = convert(Vector{Ptr{GObject}}, _files)
         _n_files = length(_files)
@@ -961,8 +965,9 @@ $(Expr(:toplevel, quote
         ret2 = GLib.GList(ret, false)
         ret2
     end
-    function open_display(instance::GdkDisplayManager, _name::Union{AbstractString, Symbol})
-        ret = ccall(("gdk_display_manager_open_display", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _name)
+    function open_display(instance::GdkDisplayManager, _name::Maybe(Union{AbstractString, Symbol}))
+        _name_maybe = nothing_to_null(_name)
+        ret = ccall(("gdk_display_manager_open_display", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _name_maybe)
         ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
@@ -1454,6 +1459,93 @@ $(Expr(:toplevel, quote
     function load_finish(instance::GdkGLTexture, _res::GAsyncResult)
         load_finish(GLoadableIcon(instance), _res)
     end
+    function GLTextureBuilder_new()
+        ret = ccall(("gdk_gl_texture_builder_new", libgtk4), Ptr{GObject}, ())
+        ret2 = GdkGLTextureBuilderLeaf(ret, true)
+        ret2
+    end
+    function get_context(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_context", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkGLContext, ret, false)
+        ret2
+    end
+    function get_format(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_format", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = MemoryFormat(ret)
+        ret2
+    end
+    function get_has_mipmap(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_has_mipmap", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_height(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_height", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_id(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_id", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_sync(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_sync", libgtk4), Ptr{Nothing}, (Ptr{GObject},), instance)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function get_update_region(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_update_region", libgtk4), Ptr{cairoRegion}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(cairoRegion, ret, false)
+        ret2
+    end
+    function get_update_texture(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_update_texture", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkTexture, ret, false)
+        ret2
+    end
+    function get_width(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_width", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function set_context(instance::GdkGLTextureBuilder, _context::Maybe(GdkGLContext))
+        _context_maybe = nothing_to_null(_context)
+        ret = ccall(("gdk_gl_texture_builder_set_context", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _context_maybe)
+        nothing
+    end
+    function set_format(instance::GdkGLTextureBuilder, _format)
+        ret = ccall(("gdk_gl_texture_builder_set_format", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _format)
+        nothing
+    end
+    function set_has_mipmap(instance::GdkGLTextureBuilder, _has_mipmap::Bool)
+        ret = ccall(("gdk_gl_texture_builder_set_has_mipmap", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _has_mipmap)
+        nothing
+    end
+    function set_height(instance::GdkGLTextureBuilder, _height::Integer)
+        ret = ccall(("gdk_gl_texture_builder_set_height", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _height)
+        nothing
+    end
+    function set_id(instance::GdkGLTextureBuilder, _id::Integer)
+        ret = ccall(("gdk_gl_texture_builder_set_id", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _id)
+        nothing
+    end
+    function set_sync(instance::GdkGLTextureBuilder, _sync::Maybe(Nothing))
+        _sync_maybe = nothing_to_null(_sync)
+        ret = ccall(("gdk_gl_texture_builder_set_sync", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}), instance, _sync_maybe)
+        nothing
+    end
+    function set_update_region(instance::GdkGLTextureBuilder, _region::Maybe(cairoRegion))
+        _region_maybe = nothing_to_null(_region)
+        ret = ccall(("gdk_gl_texture_builder_set_update_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region_maybe)
+        nothing
+    end
+    function set_update_texture(instance::GdkGLTextureBuilder, _texture::Maybe(GdkTexture))
+        _texture_maybe = nothing_to_null(_texture)
+        ret = ccall(("gdk_gl_texture_builder_set_update_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _texture_maybe)
+        nothing
+    end
+    function set_width(instance::GdkGLTextureBuilder, _width::Integer)
+        ret = ccall(("gdk_gl_texture_builder_set_width", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _width)
+        nothing
+    end
     function get_grab_surface(instance::GdkGrabBrokenEvent)
         ret = ccall(("gdk_grab_broken_event_get_grab_surface", libgtk4), Ptr{GObject}, (Ptr{GdkEvent},), instance)
         ret2 = convert(GdkSurface, ret, false)
@@ -1714,11 +1806,6 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkGLContext, ret, true)
         ret2
     end
-    function create_similar_surface(instance::GdkSurface, _content, _width::Integer, _height::Integer)
-        ret = ccall(("gdk_surface_create_similar_surface", libgtk4), Ptr{cairoSurface}, (Ptr{GObject}, UInt32, Int32, Int32), instance, _content, _width, _height)
-        ret2 = convert(cairoSurface, ret, true)
-        ret2
-    end
     function create_vulkan_context(instance::GdkSurface)
         err = err_buf()
         ret = ccall(("gdk_surface_create_vulkan_context", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
@@ -1770,6 +1857,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_surface_get_mapped", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function get_scale(instance::GdkSurface)
+        ret = ccall(("gdk_surface_get_scale", libgtk4), Float64, (Ptr{GObject},), instance)
+        ret
     end
     function get_scale_factor(instance::GdkSurface)
         ret = ccall(("gdk_surface_get_scale_factor", libgtk4), Int32, (Ptr{GObject},), instance)

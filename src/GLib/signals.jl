@@ -159,6 +159,11 @@ the given `id`.
 signal_handler_is_connected(w::GObject, handler_id::Culong) =
     ccall((:g_signal_handler_is_connected, libgobject), Cint, (Ptr{GObject}, Culong), w, handler_id) == 1
 
+"""
+    signal_emit(w::GObject, sig::AbstractStringLike, ::Type{RT}, args...) where RT
+
+Cause an object signal to be emitted. The return type `RT` and the correct number of arguments (of the correct type) must be provided. The argument list should exclude the `user_data` argument.
+"""
 function signal_emit(w::GObject, sig::AbstractStringLike, ::Type{RT}, args...) where RT
     i = isa(sig, AbstractString) ? something(findfirst("::", sig), 0:-1) : (0:-1)
     if !isempty(i)
@@ -407,11 +412,12 @@ end
     waitforsignal(obj::GObject, signal)
 
 Returns when a GObject's signal is emitted. Can be used to wait for a window to
-be closed.
+be closed. This function should only be used for signals that return nothing, with one
+exception: the "close-request" signal of GtkWindow.
 """
 function waitforsignal(obj::GObject,signal)
   c = Condition()
-  signal_connect(obj, signal) do w
+  signal_connect(obj, signal) do args...
       notify(c)
   end
   wait(c)
@@ -422,7 +428,7 @@ end
 
 Connect a callback `f` to the object's "notify::property" signal that will be
 called whenever the property changes. The callback signature should be
-`f(::Ptr, param::Ptr{GParamSpec}, user_data)` and should return `nothing`.
+`f(::Ptr, param::Ptr{GParamSpec}, user_data)` and the function should return `nothing`.
 """
 function on_notify(f, object::GObject, property::AbstractString, user_data = object, after = false)
     signal_connect_generic(f, object, "notify::$property", Nothing, (Ptr{GParamSpec},), after, user_data)

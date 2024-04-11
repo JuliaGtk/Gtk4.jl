@@ -1,4 +1,4 @@
-using Test, Gtk4, Gtk4.G_
+using Test, Gtk4, Gtk4.G_, Gtk4.GLib
 
 @testset "Window" begin
 
@@ -31,8 +31,14 @@ end
 hide(w)
 show(w)
 grab_focus(w)
-close(w)
-sleep(0.2)
+
+g_timeout_add(500) do
+    close(w)
+    false
+end
+Gtk4.GLib.waitforsignal(w,"close-request")
+
+sleep(1.0)
 destroy(w)
 
 end

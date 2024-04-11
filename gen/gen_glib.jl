@@ -46,8 +46,6 @@ printstyled("Generating code for GLib\n";bold=true)
 
 ## structs
 
-toplevel, exprs, exports = GI.output_exprs()
-
 # Some structs are marked as "disguised" in the XML and what this means is not clear to me,
 # but they look like they are of no use to us.
 disguised = GI.read_disguised(dglib)
@@ -64,14 +62,9 @@ struct_skiplist=vcat(disguised, special, [:Cond,:HashTableIter,:Hook,
     :RecMutex,:Scanner,
     :TestLogBuffer,:TestLogMsg,:Thread,:ThreadPool,:Tree,:UriParamsIter])
 
-constructor_skiplist=[:new,:new_from_unix_utc,:new_now_utc,:new_utc,:new_maybe]
+constructor_skiplist=[:new,:new_take,:new_from_unix_utc,:new_now_utc,:new_utc,:new_maybe]
 
-_, c = GI.all_struct_exprs!(exprs,exports,ns;constructor_skiplist=constructor_skiplist,excludelist=struct_skiplist,import_as_opaque=import_as_opaque)
-GI.append_struc_docs!(exprs, "glib", dglib, c, ns)
-GI.all_callbacks!(exprs, exports, ns)
-
-push!(exprs,exports)
-GI.write_to_file(path,"glib_structs",toplevel)
+GI.export_struct_exprs!(ns,path, "glib", struct_skiplist, import_as_opaque; doc_xml = dglib, constructor_skiplist = constructor_skiplist, output_object_cache_init = false, output_object_cache_define = false, output_boxed_types_def = false)
 
 ## struct methods
 

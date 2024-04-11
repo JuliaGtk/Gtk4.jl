@@ -1,4 +1,4 @@
-using Gtk4.GLib
+using Gtk4.GLib, Test
 
 @testset "glist" begin
 

@@ -140,7 +140,7 @@ $(Expr(:toplevel, quote
         function GLib.signalnames(::Type{GdkPixbufLoader})
             vcat([:area_prepared, :area_updated, :closed, :size_prepared], signalnames(supertype(GdkPixbufLoader)))
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :area_prepared => (:Nothing, Any[]), :area_updated => (:Nothing, Any[:Int32, :Int32, :Int32, :Int32]), :size_prepared => (:Nothing, Any[:Int32, :Int32]), :closed => (:Nothing, Any[]))
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :area_prepared => (:Nothing, Any[]), :area_updated => (:Nothing, [:Int32, :Int32, :Int32, :Int32]), :size_prepared => (:Nothing, [:Int32, :Int32]), :closed => (:Nothing, Any[]))
             function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkPixbufLoader
                 eval((d[name])[1])
             end
@@ -298,6 +298,19 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.PixbufAnimationIter.html)." GdkPixbufAnimationIter
     @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.PixbufLoader.html)." GdkPixbufLoader
     @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.PixbufSimpleAnim.html)." GdkPixbufSimpleAnim
+    gboxed_types = Any[]
+    function on_area_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "area-prepared", Nothing, (), after, user_data)
+    end
+    function on_area_updated(f, object::GdkPixbufLoader, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "area-updated", Nothing, (Int32, Int32, Int32, Int32), after, user_data)
+    end
+    function on_closed(f, object::GdkPixbufLoader, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "closed", Nothing, (), after, user_data)
+    end
+    function on_size_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "size-prepared", Nothing, (Int32, Int32), after, user_data)
+    end
     function GdkPixbufDestroyNotify(pixels, data)
         f = data
         ret = f(pixels)
@@ -336,18 +349,6 @@ $(Expr(:toplevel, quote
         f = data
         ret = f(buf, count, error)
         convert(Cint, ret)
-    end
-    function on_area_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "area-prepared", Nothing, (), after, user_data)
-    end
-    function on_area_updated(f, object::GdkPixbufLoader, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "area-updated", Nothing, (Int32, Int32, Int32, Int32), after, user_data)
-    end
-    function on_closed(f, object::GdkPixbufLoader, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "closed", Nothing, (), after, user_data)
-    end
-    function on_size_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "size-prepared", Nothing, (Int32, Int32), after, user_data)
     end
     export GdkPixbufModulePattern, _GdkPixbufModulePattern, GdkPixbufFormat, _GdkPixbufFormat, GdkPixbuf, GdkPixbufLeaf, GdkPixbufAnimation, GdkPixbufAnimationLeaf, GdkPixbufAnimationIter, GdkPixbufAnimationIterLeaf, GdkPixbufLoader, GdkPixbufLoaderLeaf, GdkPixbufNonAnim, GdkPixbufNonAnimLeaf, GdkPixbufSimpleAnim, GdkPixbufSimpleAnimLeaf, GdkPixbufSimpleAnimIter, GdkPixbufSimpleAnimIterLeaf, GdkPixbufDestroyNotify, GdkPixbufModuleLoadXpmDataFunc, GdkPixbufModulePreparedFunc, GdkPixbufModuleSizeFunc, GdkPixbufModuleUpdatedFunc, GdkPixbufSaveFunc
 end))

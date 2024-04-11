@@ -16,6 +16,18 @@ signames = signalnames(GSimpleAction)
 
 end
 
+@testset "waitforsignal" begin
+
+a=GSimpleAction("do-something",nothing)
+a.enabled=false
+
+g_timeout_add(500) do
+    a.enabled=true
+end
+GLib.waitforsignal(a,"notify::enabled")
+
+end
+
 # GSimpleAction is an object with properties
 
 @testset "simple action" begin
@@ -119,7 +131,13 @@ function cb(ac,va)
     nothing
 end
 
-add_action(GActionMap(g), "new-action", cb)
+@test g["new-action"] === nothing
+
+ac = add_action(GActionMap(g), "new-action", cb)
+
+@test g["new-action"] == ac
+
+add_action(GActionMap(g), "new-action-with-parameter", Bool, cb)
 
 end
 
@@ -152,6 +170,8 @@ a5 = add_stateful_action(GActionMap(g), "new-action3", true, cb)
 @test a5.state == GVariant(true)
 GLib.set_state(a5, GVariant(false))
 @test a5.state == GVariant(false)
+
+a5 = add_stateful_action(GActionMap(g), "new-action3-par", Bool, true, cb)
 
 end
 
@@ -218,5 +238,14 @@ gv2 = GLib.GVariant(UInt8,2)
 @test gv1 <= gv2
 @test gv2 > gv1
 @test gv2 >= gv1
+
+# test string
+gvs = GVariant("test")
+@test gvs[String] == "test"
+
+# test tuples
+gvt = GLib.GVariant((true,3,6.5))
+@test GLib.GVariantType(Tuple{Bool,Int,Float64}) == GLib.G_.get_type(gvt)
+@test gvt[Tuple{Bool,Int,Float64}] == (true,3,6.5)
 
 end

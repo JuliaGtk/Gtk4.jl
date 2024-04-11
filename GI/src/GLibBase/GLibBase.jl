@@ -12,10 +12,9 @@ import Base: convert, size, length, getindex, setindex!, get,
              getindex, setindex!
 
 export GInterface, GType, GObject, GBoxed, GTypeInstance
-export GEnum, GError, GValue, gvalue, g_type
+export GEnum, GError, GValue, g_type
 export GHashTable, GByteArray, GArray, GPtrArray
-export GList, glist_iter, _GSList, _GList
-export GConnectFlags
+export GList, _GSList, _GList
 export cfunction_
 
 

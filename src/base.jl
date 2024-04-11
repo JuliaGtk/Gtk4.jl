@@ -136,6 +136,9 @@ Returns a GListModel of all toplevel widgets (i.e. windows) known to GTK4.
 """
 toplevels() = G_.get_toplevels()
 
+push!(sg::GtkSizeGroup, w::GtkWidget) = (G_.add_widget(sg, w); sg)
+delete!(sg::GtkSizeGroup, w::GtkWidget) = (G_.remove_widget(sg, w); sg)
+
 @doc """
     display(w::GtkWidget)
 
@@ -152,10 +155,10 @@ Gets the `GdkMonitor` where `w` is displayed, or `nothing` if the widget is not
 part of a widget hierarchy.
 """
 function monitor(w::GtkWidget)
-    d = display(w)
+    d = display(w)::GdkDisplayLeaf
     tl = toplevel(w)
     tl === nothing && return nothing
-    s = G_.get_surface(GtkNative(tl))
+    s = G_.get_surface(GtkNative(tl))::GdkSurfaceLeaf
     # sometimes `get_monitor_at_surface` returns NULL when it shouldn't
     # should be unnecessary in a future version of GTK4_jll: https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/4917
     try
@@ -244,6 +247,36 @@ function delete!(display::GdkDisplay, provider)
     display
 end
 
+"""
+    add_css_class(w::GtkWidget, c::AbstractString)
+
+Add a CSS class to a widget.
+
+See also [`remove_css_class`](@ref).
+
+Related GTK function: [`gtk_widget_add_css_class`()]($(gtkdoc_method_url("gtk4","GtkWidget","add_css_class")))
+"""
+add_css_class(w::GtkWidget, c::AbstractString) = G_.add_css_class(w, c)
+
+"""
+    remove_css_class(w::GtkWidget, c::AbstractString)
+
+Remove a CSS class from a widget.
+
+See also [`add_css_class`](@ref).
+
+Related GTK function: [`gtk_widget_add_css_class`()]($(gtkdoc_method_url("gtk4","GtkWidget","add_css_class")))
+"""
+remove_css_class(w::GtkWidget, c::AbstractString) = G_.remove_css_class(w, c)
+
+@doc """
+    css_classes(w::GtkWidget, c::Vector{AbstractString})
+
+Sets the CSS style classes for a widget, replacing the previously set classes.
+
+Related GTK function: [`gtk_widget_set_css_classes`()]($(gtkdoc_method_url("gtk4","Widget","set_css_classes")))
+""" css_classes
+
 # because of a name collision this is annoying to generate using GI
 """
     GtkIconTheme(d::GdkDisplay)
@@ -284,3 +317,13 @@ function push!(widget::GtkWidget, group::GActionGroup, name::AbstractString)
     G_.insert_action_group(widget, name, group)
     widget
 end
+
+function inhibit(app::GtkApplication, win::GtkWindow, flags, reason)
+    cookie = G_.inhibit(app, win, flags, reason)
+    if cookie == 0
+        error("GtkApplication inhibit failed")
+    end
+    cookie
+end
+
+uninhibit(app::GtkApplication, cookie) = G_.uninhibit(app, cookie)

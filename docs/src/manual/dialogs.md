@@ -5,6 +5,9 @@ Dialogs are transient windows that show information or ask the user for informat
 !!! note "Example"
     Some of the code on this page can be found in "dialogs.jl" in the "example" subdirectory.
 
+!!! tip "Creating dialogs in callbacks"
+    When creating dialogs in signal or action callbacks, you have to use the methods that take a function as the first argument (equivalently the `do` syntax).
+
 ## Message dialogs
 
 Gtk4.jl supports `GtkMessageDialog` and provides several convenience functions:  `info_dialog`, `ask_dialog`, `warn_dialog`, and `error_dialog`.  Each takes a string for a message to show and an optional parent container, and returns nothing, except for `ask_dialog` which returns `true` if the user clicks the button corresponding to yes.
@@ -18,7 +21,7 @@ warn_dialog("Oops!... I did it again")
 ```
 These take an optional argument `timeout` (in seconds) that can be used to make the dialog disappear after a certain time.
 
-In callbacks (for example when a user clicks a button in a GUI), you can use a different form, which takes a callback as the first argument that will be called when the user closes the dialog. A full example:
+In callbacks (for example when a user clicks a button in a GUI), you _must_ use a different form, which takes a callback as the first argument that will be called when the user closes the dialog. A full example:
 ```julia
 b = GtkButton("Click me")
 win = GtkWindow(b,"Info dialog example")

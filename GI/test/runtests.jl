@@ -20,9 +20,6 @@ e=ns[:Application]
 
 show(e)
 
-d = GI.prop_dict(e)
-@test length(d)==length(GI.get_properties(e))
-
 a=ns[:Action]
 @test length(GI.get_properties(a))==5
 

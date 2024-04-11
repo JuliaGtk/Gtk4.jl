@@ -8,7 +8,7 @@ There is an alternative way to design user interfaces that strictly separates th
 from the code. This is done by an XML based file format that allows for describing any arrangement of widgets.
 In order to use the interface in your Julia Gtk4 application you will need `GtkBuilder`.
 
-For GTK version 3 and earlier, Glade is often used as a GUI tool for creating GtkBuilder XML files in a WYSIWYG (what you see is what you get) manner, but Glade wasn't ported to GTK version 4. Instead [Cambalache](https://flathub.org/apps/details/ar.xjuan.Cambalache) can be used (or the XML can be created by hand).
+For GTK version 3 and earlier, Glade is often used as a GUI tool for creating GtkBuilder XML files in a WYSIWYG (what you see is what you get) manner, but Glade wasn't ported to GTK version 4. Instead [Cambalache](https://flathub.org/apps/details/ar.xjuan.Cambalache) can be used or the XML can be created in an editor.
 
 Once we have created the XML interface the result can be stored in an XML file that usually has
 the extension `.ui`. Let's assume we have created a file `myapp.ui` that looks like
@@ -36,6 +36,12 @@ connector between the XML definition and our Julia code.
 ```julia
 b = GtkBuilder("path/to/myapp.ui")
 ```
+
+!!! note
+    If you are developing the code in a package you can get the package directory using the `@__DIR__` macro.
+    For instance, if your UI file is located at `MyPackage/src/builder/myuifile.ui`, you can get the full path using
+    `uifile = joinpath(@__DIR__, "builder", "myuifile.ui")`.
+
 Alternatively, if we store the above XML definition in a Julia string `myapp` we can initialize
 the builder by
 ```julia
@@ -53,9 +59,9 @@ to be loaded. You can thus see your builder as a kind of a widget store that you
 when you need access to your widgets.
 
 !!! note
-    If you are developing the code in a package you can get the package directory using the `@__DIR__` macro.
-    For instance, if your UI file is located at `MyPackage/src/builder/myuifile.ui`, you can get the full path using
-    `uifile = joinpath(@__DIR__, "builder", "myuifile.ui")`.
+    Fetching an object from `GtkBuilder` is type unstable since the Julia compiler has no way of knowing the type of the object.
+    A type assertion can be used to set a concrete type (ending in "Leaf") and potentially improve performance.
+    In the example above, the correct assertion would be `win = b["window1"]::GtkWindowLeaf`.
 
 In Gtk4.jl a macro `@load_builder` is defined that iterates over the `GtkWidget`s in
 a `GtkBuilder` object and automatically assigns them to Julia variables with the same id. For
@@ -77,3 +83,4 @@ Note that this only works for `GtkWidget`s that implement the interface `GtkBuil
 The XML file lets us only describe the visual structure of our widgets and not their behavior when the using
 is interacting with it. For this reason, we will have to add callbacks to the widgets which we do in Julia code
 as it was described in [Signals and Callbacks](@ref).
+Alternatively you can use [Actions](@ref), which are described in the next section.
