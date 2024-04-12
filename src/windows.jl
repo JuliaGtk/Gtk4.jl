@@ -247,39 +247,34 @@ parent window `parent`) is closed. The optional input `timeout` (disabled by def
 used to set a time in seconds after which the dialog will close.
 """ info_dialog
 
-for (func, flag) in (
-        (:info_dialog, :(MessageType_INFO)),
-        (:warn_dialog, :(MessageType_WARNING)),
-        (:error_dialog, :(MessageType_ERROR)))
-    @eval function $func(message::AbstractString, parent = nothing; timeout = -1)
-        c = Condition()
-
-        $func(message, parent; timeout) do
-            notify(c)
-        end
-        wait(c)
-        return
+function info_dialog(message::AbstractString, parent = nothing; timeout = -1)
+    c = Condition()
+    
+    info_dialog(message, parent; timeout) do
+        notify(c)
     end
+    wait(c)
+    return
+end
 
-    @eval function $func(callback::Function, message::AbstractString, parent = nothing; timeout = -1)
-        dlg = GtkAlertDialog(message)
-
-        function cb(dlg, resobj)
-            try
-                Gtk4.choose_finish(dlg, resobj)
-            catch e
-                if !isa(e, Gtk4.GLib.GErrorException)
-                    rethrow(e)
-                end
+function info_dialog(callback::Function, message::AbstractString, parent = nothing; timeout = -1)
+    dlg = GtkAlertDialog(message)
+    
+    function cb(dlg, resobj)
+        try
+            Gtk4.choose_finish(dlg, resobj)
+        catch e
+            if !isa(e, Gtk4.GLib.GErrorException)
+                rethrow(e)
             end
-            callback()
         end
-
-        cancellable = GLib.cancel_after_delay(timeout)
-        choose(cb, dlg, parent, cancellable)
-
-        return dlg
+        callback()
     end
+    
+    cancellable = GLib.cancel_after_delay(timeout)
+    choose(cb, dlg, parent, cancellable)
+    
+    return dlg
 end
 
 """

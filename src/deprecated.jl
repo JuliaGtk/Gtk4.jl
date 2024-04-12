@@ -40,3 +40,8 @@ function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent =
     w
 end
 
+warn_dialog(callback::Function, message::AbstractString, parent = nothing; timeout = -1) = info_dialog(callback, message, parent; timeout = -1)
+error_dialog(callback::Function, message::AbstractString, parent = nothing; timeout = -1) = info_dialog(callback, message, parent; timeout = -1)
+
+@deprecate warn_dialog info_dialog
+@deprecate error_dialog info_dialog
