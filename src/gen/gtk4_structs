@@ -53,7 +53,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GtkBorder) = begin
                         ccall(("gtk_border_get_type", libgtk4), GType, ())
                     end
-                function GtkBorder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GtkBorder(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GtkBorder}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -65,9 +65,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GtkBorder)
             end
         end
-        unsafe_convert(::Type{Ptr{_GtkBorder}}, box::GtkBorder) = begin
-                convert(Ptr{_GtkBorder}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GtkBorder}}, box::GtkBorder) = begin
+                    convert(Ptr{_GtkBorder}, box.handle)
+                end
+            convert(::Type{GtkBorder}, p::Ptr{_GtkBorder}, owns = false) = begin
+                    GtkBorder(p, owns)
+                end
+        end
     end
     mutable struct GtkBuildableParseContext
         handle::Ptr{GtkBuildableParseContext}
@@ -89,9 +94,14 @@ $(Expr(:toplevel, quote
         mutable struct GtkCssLocation
             handle::Ptr{_GtkCssLocation}
         end
-        unsafe_convert(::Type{Ptr{_GtkCssLocation}}, box::GtkCssLocation) = begin
-                convert(Ptr{_GtkCssLocation}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GtkCssLocation}}, box::GtkCssLocation) = begin
+                    convert(Ptr{_GtkCssLocation}, box.handle)
+                end
+            convert(::Type{GtkCssLocation}, p::Ptr{_GtkCssLocation}, owns = false) = begin
+                    GtkCssLocation(p, owns)
+                end
+        end
     end
     mutable struct GtkCssSection <: GBoxed
         handle::Ptr{GtkCssSection}
@@ -143,9 +153,14 @@ $(Expr(:toplevel, quote
         mutable struct GtkPadActionEntry
             handle::Ptr{_GtkPadActionEntry}
         end
-        unsafe_convert(::Type{Ptr{_GtkPadActionEntry}}, box::GtkPadActionEntry) = begin
-                convert(Ptr{_GtkPadActionEntry}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GtkPadActionEntry}}, box::GtkPadActionEntry) = begin
+                    convert(Ptr{_GtkPadActionEntry}, box.handle)
+                end
+            convert(::Type{GtkPadActionEntry}, p::Ptr{_GtkPadActionEntry}, owns = false) = begin
+                    GtkPadActionEntry(p, owns)
+                end
+        end
     end
     mutable struct GtkPaperSize <: GBoxed
         handle::Ptr{GtkPaperSize}
@@ -181,9 +196,14 @@ $(Expr(:toplevel, quote
         mutable struct GtkRecentData
             handle::Ptr{_GtkRecentData}
         end
-        unsafe_convert(::Type{Ptr{_GtkRecentData}}, box::GtkRecentData) = begin
-                convert(Ptr{_GtkRecentData}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GtkRecentData}}, box::GtkRecentData) = begin
+                    convert(Ptr{_GtkRecentData}, box.handle)
+                end
+            convert(::Type{GtkRecentData}, p::Ptr{_GtkRecentData}, owns = false) = begin
+                    GtkRecentData(p, owns)
+                end
+        end
     end
     mutable struct GtkRecentInfo <: GBoxed
         handle::Ptr{GtkRecentInfo}
@@ -212,9 +232,14 @@ $(Expr(:toplevel, quote
         mutable struct GtkRequestedSize
             handle::Ptr{_GtkRequestedSize}
         end
-        unsafe_convert(::Type{Ptr{_GtkRequestedSize}}, box::GtkRequestedSize) = begin
-                convert(Ptr{_GtkRequestedSize}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GtkRequestedSize}}, box::GtkRequestedSize) = begin
+                    convert(Ptr{_GtkRequestedSize}, box.handle)
+                end
+            convert(::Type{GtkRequestedSize}, p::Ptr{_GtkRequestedSize}, owns = false) = begin
+                    GtkRequestedSize(p, owns)
+                end
+        end
     end
     begin
         struct _GtkRequisition
@@ -227,7 +252,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GtkRequisition) = begin
                         ccall(("gtk_requisition_get_type", libgtk4), GType, ())
                     end
-                function GtkRequisition(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GtkRequisition(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GtkRequisition}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -239,9 +264,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GtkRequisition)
             end
         end
-        unsafe_convert(::Type{Ptr{_GtkRequisition}}, box::GtkRequisition) = begin
-                convert(Ptr{_GtkRequisition}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GtkRequisition}}, box::GtkRequisition) = begin
+                    convert(Ptr{_GtkRequisition}, box.handle)
+                end
+            convert(::Type{GtkRequisition}, p::Ptr{_GtkRequisition}, owns = false) = begin
+                    GtkRequisition(p, owns)
+                end
+        end
     end
     mutable struct GtkScrollInfo <: GBoxed
         handle::Ptr{GtkScrollInfo}
@@ -284,7 +314,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GtkTextIter) = begin
                         ccall(("gtk_text_iter_get_type", libgtk4), GType, ())
                     end
-                function GtkTextIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GtkTextIter(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GtkTextIter}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -296,9 +326,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GtkTextIter)
             end
         end
-        unsafe_convert(::Type{Ptr{_GtkTextIter}}, box::GtkTextIter) = begin
-                convert(Ptr{_GtkTextIter}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GtkTextIter}}, box::GtkTextIter) = begin
+                    convert(Ptr{_GtkTextIter}, box.handle)
+                end
+            convert(::Type{GtkTextIter}, p::Ptr{_GtkTextIter}, owns = false) = begin
+                    GtkTextIter(p, owns)
+                end
+        end
     end
     begin
         struct _GtkTreeIter
@@ -313,7 +348,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GtkTreeIter) = begin
                         ccall(("gtk_tree_iter_get_type", libgtk4), GType, ())
                     end
-                function GtkTreeIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GtkTreeIter(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GtkTreeIter}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -325,9 +360,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GtkTreeIter)
             end
         end
-        unsafe_convert(::Type{Ptr{_GtkTreeIter}}, box::GtkTreeIter) = begin
-                convert(Ptr{_GtkTreeIter}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GtkTreeIter}}, box::GtkTreeIter) = begin
+                    convert(Ptr{_GtkTreeIter}, box.handle)
+                end
+            convert(::Type{GtkTreeIter}, p::Ptr{_GtkTreeIter}, owns = false) = begin
+                    GtkTreeIter(p, owns)
+                end
+        end
     end
     mutable struct GtkTreePath <: GBoxed
         handle::Ptr{GtkTreePath}

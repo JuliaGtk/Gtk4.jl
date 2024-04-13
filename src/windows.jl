@@ -536,28 +536,25 @@ function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
     return color[]
 end
 
-function color_dialog(callback::Function, title::AbstractString, parent = nothing; timeout=-1)
-    dlg = GtkColorChooserDialog(title, parent)
+function color_dialog(callback::Function, title::AbstractString, parent = nothing; timeout=-1, initial_color = nothing)
+    dlg = GtkColorDialog()
+    G_.set_title(dlg, title)
 
-    function on_response(dlg, response_id)
-        dlgp = GtkColorChooser(dlg)
-        if unsafe_trunc(UInt16, response_id) == ResponseType_OK
-            res = G_.get_rgba(dlgp)
-        else
-            res = nothing
+    function cb(dlg, resobj)
+        rgba = try
+            Gtk4.G_.choose_rgba_finish(dlg, GAsyncResult(resobj))
+        catch e
+            if !isa(e, Gtk4.GLib.GErrorException)
+                rethrow(e)
+            end
+            nothing
         end
-        callback(res)
-        G_.set_transient_for(dlg, nothing)
-        destroy(dlg)
+        callback(rgba)
     end
 
-    signal_connect(on_response, dlg, "response")
-    show(dlg)
+    cancellable = GLib.cancel_after_delay(timeout)
+    G_.choose_rgba(dlg, parent, initial_color, cancellable, cb)
 
-    if timeout > 0
-        emit(timer) = response(dlg, Gtk4.ResponseType_CANCEL)
-        Timer(emit, timeout)
-    end
     return dlg
 end
 

@@ -5,7 +5,7 @@ keyval(name::AbstractString) = G_.keyval_from_name(name)
 
 function GdkRGBA(r,g,b,a = 1.0)
    s=_GdkRGBA(r,g,b,a)
-   r=ccall((:gdk_rgba_copy, libgtk4), Ptr{GdkRGBA}, (Ptr{_GdkRGBA},), Ref(s))
+   r=ccall((:gdk_rgba_copy, libgtk4), Ptr{_GdkRGBA}, (Ptr{_GdkRGBA},), Ref(s))
    GdkRGBA(r)
 end
 

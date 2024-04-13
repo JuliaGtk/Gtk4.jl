@@ -164,7 +164,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: cairoRectangle) = begin
                         ccall(("cairo_gobject_rectangle_get_type", libcairo_gobject), GType, ())
                     end
-                function cairoRectangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function cairoRectangle(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _cairoRectangle}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -176,9 +176,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, cairoRectangle)
             end
         end
-        unsafe_convert(::Type{Ptr{_cairoRectangle}}, box::cairoRectangle) = begin
-                convert(Ptr{_cairoRectangle}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_cairoRectangle}}, box::cairoRectangle) = begin
+                    convert(Ptr{_cairoRectangle}, box.handle)
+                end
+            convert(::Type{cairoRectangle}, p::Ptr{_cairoRectangle}, owns = false) = begin
+                    cairoRectangle(p, owns)
+                end
+        end
     end
     begin
         struct _cairoRectangleInt
@@ -193,7 +198,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: cairoRectangleInt) = begin
                         ccall(("cairo_gobject_rectangle_int_get_type", libcairo_gobject), GType, ())
                     end
-                function cairoRectangleInt(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function cairoRectangleInt(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _cairoRectangleInt}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -205,9 +210,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, cairoRectangleInt)
             end
         end
-        unsafe_convert(::Type{Ptr{_cairoRectangleInt}}, box::cairoRectangleInt) = begin
-                convert(Ptr{_cairoRectangleInt}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_cairoRectangleInt}}, box::cairoRectangleInt) = begin
+                    convert(Ptr{_cairoRectangleInt}, box.handle)
+                end
+            convert(::Type{cairoRectangleInt}, p::Ptr{_cairoRectangleInt}, owns = false) = begin
+                    cairoRectangleInt(p, owns)
+                end
+        end
     end
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)

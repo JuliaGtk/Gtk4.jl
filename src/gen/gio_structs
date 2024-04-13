@@ -8,9 +8,14 @@ $(Expr(:toplevel, quote
         mutable struct GDBusErrorEntry
             handle::Ptr{_GDBusErrorEntry}
         end
-        unsafe_convert(::Type{Ptr{_GDBusErrorEntry}}, box::GDBusErrorEntry) = begin
-                convert(Ptr{_GDBusErrorEntry}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GDBusErrorEntry}}, box::GDBusErrorEntry) = begin
+                    convert(Ptr{_GDBusErrorEntry}, box.handle)
+                end
+            convert(::Type{GDBusErrorEntry}, p::Ptr{_GDBusErrorEntry}, owns = false) = begin
+                    GDBusErrorEntry(p, owns)
+                end
+        end
     end
     begin
         struct _GFileAttributeInfo
@@ -21,9 +26,14 @@ $(Expr(:toplevel, quote
         mutable struct GFileAttributeInfo
             handle::Ptr{_GFileAttributeInfo}
         end
-        unsafe_convert(::Type{Ptr{_GFileAttributeInfo}}, box::GFileAttributeInfo) = begin
-                convert(Ptr{_GFileAttributeInfo}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GFileAttributeInfo}}, box::GFileAttributeInfo) = begin
+                    convert(Ptr{_GFileAttributeInfo}, box.handle)
+                end
+            convert(::Type{GFileAttributeInfo}, p::Ptr{_GFileAttributeInfo}, owns = false) = begin
+                    GFileAttributeInfo(p, owns)
+                end
+        end
     end
     begin
         struct _GFileAttributeInfoList
@@ -36,7 +46,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GFileAttributeInfoList) = begin
                         ccall(("g_file_attribute_info_list_get_type", libgio), GType, ())
                     end
-                function GFileAttributeInfoList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GFileAttributeInfoList(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GFileAttributeInfoList}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -48,9 +58,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GFileAttributeInfoList)
             end
         end
-        unsafe_convert(::Type{Ptr{_GFileAttributeInfoList}}, box::GFileAttributeInfoList) = begin
-                convert(Ptr{_GFileAttributeInfoList}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GFileAttributeInfoList}}, box::GFileAttributeInfoList) = begin
+                    convert(Ptr{_GFileAttributeInfoList}, box.handle)
+                end
+            convert(::Type{GFileAttributeInfoList}, p::Ptr{_GFileAttributeInfoList}, owns = false) = begin
+                    GFileAttributeInfoList(p, owns)
+                end
+        end
     end
     mutable struct GFileAttributeMatcher <: GBoxed
         handle::Ptr{GFileAttributeMatcher}
@@ -78,9 +93,14 @@ $(Expr(:toplevel, quote
         mutable struct GInputVector
             handle::Ptr{_GInputVector}
         end
-        unsafe_convert(::Type{Ptr{_GInputVector}}, box::GInputVector) = begin
-                convert(Ptr{_GInputVector}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GInputVector}}, box::GInputVector) = begin
+                    convert(Ptr{_GInputVector}, box.handle)
+                end
+            convert(::Type{GInputVector}, p::Ptr{_GInputVector}, owns = false) = begin
+                    GInputVector(p, owns)
+                end
+        end
     end
     begin
         struct _GOutputVector
@@ -90,9 +110,14 @@ $(Expr(:toplevel, quote
         mutable struct GOutputVector
             handle::Ptr{_GOutputVector}
         end
-        unsafe_convert(::Type{Ptr{_GOutputVector}}, box::GOutputVector) = begin
-                convert(Ptr{_GOutputVector}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GOutputVector}}, box::GOutputVector) = begin
+                    convert(Ptr{_GOutputVector}, box.handle)
+                end
+            convert(::Type{GOutputVector}, p::Ptr{_GOutputVector}, owns = false) = begin
+                    GOutputVector(p, owns)
+                end
+        end
     end
     mutable struct GResource <: GBoxed
         handle::Ptr{GResource}
@@ -203,9 +228,14 @@ $(Expr(:toplevel, quote
         mutable struct GXdpDocumentsIface
             handle::Ptr{_GXdpDocumentsIface}
         end
-        unsafe_convert(::Type{Ptr{_GXdpDocumentsIface}}, box::GXdpDocumentsIface) = begin
-                convert(Ptr{_GXdpDocumentsIface}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GXdpDocumentsIface}}, box::GXdpDocumentsIface) = begin
+                    convert(Ptr{_GXdpDocumentsIface}, box.handle)
+                end
+            convert(::Type{GXdpDocumentsIface}, p::Ptr{_GXdpDocumentsIface}, owns = false) = begin
+                    GXdpDocumentsIface(p, owns)
+                end
+        end
     end
     begin
         struct _GXdpOpenURIIface
@@ -218,9 +248,14 @@ $(Expr(:toplevel, quote
         mutable struct GXdpOpenURIIface
             handle::Ptr{_GXdpOpenURIIface}
         end
-        unsafe_convert(::Type{Ptr{_GXdpOpenURIIface}}, box::GXdpOpenURIIface) = begin
-                convert(Ptr{_GXdpOpenURIIface}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GXdpOpenURIIface}}, box::GXdpOpenURIIface) = begin
+                    convert(Ptr{_GXdpOpenURIIface}, box.handle)
+                end
+            convert(::Type{GXdpOpenURIIface}, p::Ptr{_GXdpOpenURIIface}, owns = false) = begin
+                    GXdpOpenURIIface(p, owns)
+                end
+        end
     end
     begin
         struct _GXdpProxyResolverIface
@@ -231,9 +266,14 @@ $(Expr(:toplevel, quote
         mutable struct GXdpProxyResolverIface
             handle::Ptr{_GXdpProxyResolverIface}
         end
-        unsafe_convert(::Type{Ptr{_GXdpProxyResolverIface}}, box::GXdpProxyResolverIface) = begin
-                convert(Ptr{_GXdpProxyResolverIface}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GXdpProxyResolverIface}}, box::GXdpProxyResolverIface) = begin
+                    convert(Ptr{_GXdpProxyResolverIface}, box.handle)
+                end
+            convert(::Type{GXdpProxyResolverIface}, p::Ptr{_GXdpProxyResolverIface}, owns = false) = begin
+                    GXdpProxyResolverIface(p, owns)
+                end
+        end
     end
     begin
         struct _GXdpTrashIface
@@ -244,9 +284,14 @@ $(Expr(:toplevel, quote
         mutable struct GXdpTrashIface
             handle::Ptr{_GXdpTrashIface}
         end
-        unsafe_convert(::Type{Ptr{_GXdpTrashIface}}, box::GXdpTrashIface) = begin
-                convert(Ptr{_GXdpTrashIface}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GXdpTrashIface}}, box::GXdpTrashIface) = begin
+                    convert(Ptr{_GXdpTrashIface}, box.handle)
+                end
+            convert(::Type{GXdpTrashIface}, p::Ptr{_GXdpTrashIface}, owns = false) = begin
+                    GXdpTrashIface(p, owns)
+                end
+        end
     end
     begin
         struct _G_FreedesktopDBusIface
@@ -275,9 +320,14 @@ $(Expr(:toplevel, quote
         mutable struct G_FreedesktopDBusIface
             handle::Ptr{_G_FreedesktopDBusIface}
         end
-        unsafe_convert(::Type{Ptr{_G_FreedesktopDBusIface}}, box::G_FreedesktopDBusIface) = begin
-                convert(Ptr{_G_FreedesktopDBusIface}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_G_FreedesktopDBusIface}}, box::G_FreedesktopDBusIface) = begin
+                    convert(Ptr{_G_FreedesktopDBusIface}, box.handle)
+                end
+            convert(::Type{G_FreedesktopDBusIface}, p::Ptr{_G_FreedesktopDBusIface}, owns = false) = begin
+                    G_FreedesktopDBusIface(p, owns)
+                end
+        end
     end
     begin
         struct _G_FreedesktopDBusProxy
@@ -287,9 +337,14 @@ $(Expr(:toplevel, quote
         mutable struct G_FreedesktopDBusProxy
             handle::Ptr{_G_FreedesktopDBusProxy}
         end
-        unsafe_convert(::Type{Ptr{_G_FreedesktopDBusProxy}}, box::G_FreedesktopDBusProxy) = begin
-                convert(Ptr{_G_FreedesktopDBusProxy}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_G_FreedesktopDBusProxy}}, box::G_FreedesktopDBusProxy) = begin
+                    convert(Ptr{_G_FreedesktopDBusProxy}, box.handle)
+                end
+            convert(::Type{G_FreedesktopDBusProxy}, p::Ptr{_G_FreedesktopDBusProxy}, owns = false) = begin
+                    G_FreedesktopDBusProxy(p, owns)
+                end
+        end
     end
     begin
         struct _G_FreedesktopDBusSkeleton
@@ -299,9 +354,14 @@ $(Expr(:toplevel, quote
         mutable struct G_FreedesktopDBusSkeleton
             handle::Ptr{_G_FreedesktopDBusSkeleton}
         end
-        unsafe_convert(::Type{Ptr{_G_FreedesktopDBusSkeleton}}, box::G_FreedesktopDBusSkeleton) = begin
-                convert(Ptr{_G_FreedesktopDBusSkeleton}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_G_FreedesktopDBusSkeleton}}, box::G_FreedesktopDBusSkeleton) = begin
+                    convert(Ptr{_G_FreedesktopDBusSkeleton}, box.handle)
+                end
+            convert(::Type{G_FreedesktopDBusSkeleton}, p::Ptr{_G_FreedesktopDBusSkeleton}, owns = false) = begin
+                    G_FreedesktopDBusSkeleton(p, owns)
+                end
+        end
     end
     function GFileAttributeInfoList()
         G_.FileAttributeInfoList_new()
