@@ -330,7 +330,7 @@ c1 = GtkTreeViewColumn("Name", rTxt, Dict([("text",0)]), sort_column_id=0)
 c2 = GtkTreeViewColumn("Age", rTxt, Dict([("text",1)]), sort_column_id=1)
 
 tmFiltered = GtkTreeModelFilter(ls)
-Gtk4.visible_column(tmFiltered,2)
+Gtk4.visible_column(tmFiltered,3)
 tv = GtkTreeView(GtkTreeModel(tmFiltered))
 push!(tv, c1, c2)
 
@@ -340,7 +340,7 @@ signal_connect(selection, "changed") do widget
   if hasselection(selection)
     currentIt = selected(selection)
 
-    println("Name: ", GtkTreeModel(tmFiltered)[currentIt,1],
+    println("Name: ", GtkTreeModel(tmFiltered)[currentIt,0],
             " Age: ", GtkTreeModel(tmFiltered)[currentIt,1])
   end
 end

@@ -21,10 +21,8 @@ the extension `.ui`. Let's assume we have created a file `myapp.ui` that looks l
     <property name="child">
       <object class="GtkButton" id="button1">
         <property name="label" translatable="yes">button</property>
-        <property name="use_action_appearance">False</property>
         <property name="focusable">1</property>
         <property name="receives_default">1</property>
-        <property name="use_action_appearance">False</property>
       </object>
     </property>
   </object>
