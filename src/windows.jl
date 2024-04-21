@@ -278,7 +278,7 @@ function info_dialog(callback::Function, message::AbstractString, parent = nothi
 end
 
 """
-    input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
+    input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing; timeout = -1)
 
 Create a dialog with a message `message` and a text entry. Returns the string in the entry
 when the "Accept" button is pressed, or `entry_default` if "Cancel" is pressed or the dialog
@@ -286,12 +286,11 @@ or its parent window `parent` is closed. The optional input `timeout` (disabled 
 can be used to set a time in seconds after which the dialog will close and `entry_default`
 will be returned.
 """
-## TODO: remove buttons argument
-function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
+function input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing; timeout = -1)
     res = Ref{String}("")
     c = Condition()
 
-    input_dialog(message, entry_default, buttons, parent; timeout) do res_
+    input_dialog(message, entry_default, parent; timeout) do res_
         res[] = res_
         notify(c)
     end
@@ -306,7 +305,7 @@ function _callback_and_destroy(dlg, callback, txt)
 end
 
 function input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString,
-                      buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
+                      parent = nothing; timeout = -1)
     dlg = GtkWindow()
     box = GtkBox(:v)
     push!(box, GtkLabel(message))
@@ -315,9 +314,9 @@ function input_dialog(callback::Function, message::AbstractString, entry_default
     push!(box, entry)
     boxb = GtkBox(:h)
     push!(box, boxb)
-    accept = GtkButton(buttons[2][1]; hexpand = true)
+    accept = GtkButton("Accept"; hexpand = true)
     default_widget(dlg, accept)
-    cancel = GtkButton(buttons[1][1]; hexpand = true)
+    cancel = GtkButton("Cancel"; hexpand = true)
     push!(boxb, cancel)
     push!(boxb, accept)
     isnothing(parent) && (G_.set_transient_for(dlg, parent); G_.set_modal(dlg, true))
@@ -525,7 +524,7 @@ end
 ## Other chooser dialogs
 
 function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
-    color = Ref{Union{Nothing,_GdkRGBA}}()
+    color = Ref{Union{Nothing,GdkRGBA}}()
     c = Condition()
 
     color_dialog(title, parent; timeout) do col
