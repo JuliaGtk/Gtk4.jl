@@ -30,6 +30,13 @@ end
 
 ## GdkDisplay
 
+"""
+    GdkDisplay()
+
+Get the default `GdkDisplay`.
+
+Related GDK function: [`gdk_display_get_default`()]($(gtkdoc_method_url("gdk4","Display","get_default")))
+"""
 GdkDisplay() = G_.get_default() # returns default display
 GdkDisplay(name) = G_.open(name)
 
@@ -45,6 +52,8 @@ end
 
 Returns a list of `GdkMonitor`s for the default `GdkDisplay`, or `nothing` if none
 are found.
+
+Related GDK function: [`gdk_display_get_monitors`()]($(gtkdoc_method_url("gdk4","Display","get_monitors")))
 """
 function monitors()
     d=GdkDisplay()
