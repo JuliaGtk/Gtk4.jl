@@ -46,7 +46,9 @@ end
 
 # GBytes
 
-function GBytes(data::AbstractArray)
+function GBytes(data::Array)
     ptr = ccall((:g_bytes_new, libglib), Ptr{GBytes}, (Ptr{Nothing}, Csize_t), data, sizeof(data))
     convert(GBytes, ptr, true)
 end
+
+GBytes(data::AbstractArray) = GBytes(collect(data))

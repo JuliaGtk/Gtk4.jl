@@ -51,6 +51,10 @@ function monitors()
     G_.get_monitors(d)
 end
 
+## GdkTexture
+
+size(t::GdkTexture) = (G_.get_width(t),G_.get_height(t))
+
 const color_formats = Dict(ColorTypes.RGB{N0f8}=>Gtk4.MemoryFormat_R8G8B8,
                            ColorTypes.BGR{N0f8}=>Gtk4.MemoryFormat_B8G8R8,
                            ColorTypes.RGBA{N0f8}=>Gtk4.MemoryFormat_R8G8B8A8,
@@ -59,23 +63,33 @@ const color_formats = Dict(ColorTypes.RGB{N0f8}=>Gtk4.MemoryFormat_R8G8B8,
                            ColorTypes.BGRA{N0f8}=>Gtk4.MemoryFormat_B8G8R8A8,
                            ColorTypes.RGB{N0f16}=>Gtk4.MemoryFormat_R16G16B16,
                            ColorTypes.RGBA{N0f16}=>Gtk4.MemoryFormat_R16G16B16A16,
+                           # Available since GTK 4.12
+                           ColorTypes.Gray{N0f8}=>Gtk4.MemoryFormat_G8,
+                           ColorTypes.Gray{N0f16}=>Gtk4.MemoryFormat_G16,
+                           ColorTypes.GrayA{N0f8}=>Gtk4.MemoryFormat_G8A8,
+                           ColorTypes.GrayA{N0f16}=>Gtk4.MemoryFormat_G16A16,
                           )
 
-"""
-    GdkMemoryTexture(img::Array)
+imgformatsupported(img) = eltype(img) in keys(color_formats)
 
-Creates a `GdkMemoryTexture`, copying an image array.
 """
-function GdkMemoryTexture(img::Array)
-    b=Gtk4.GLib.GBytes(img)
-    f = if eltype(img) in keys(color_formats)
+    GdkMemoryTexture(img::Array, tp = true)
+
+Creates a `GdkMemoryTexture`, copying an image array. If `tp` is set to true,
+the image will be transposed before copying so that the texture's orientation
+when displayed by GTK widgets like `GtkPicture` will match how the image is
+displayed in Julia apps like ImageShow.
+"""
+function GdkMemoryTexture(img::AbstractArray, tp = true)
+    f = if imgformatsupported(img)
         color_formats[eltype(img)]
     else
         error("format not supported") # could also convert the image
     end
+    img = tp ? img' : img
+    b=Gtk4.GLib.GBytes(img)
     GdkMemoryTexture(size(img)[1], size(img)[2], f, b, sizeof(eltype(img))*size(img)[1])
 end
-GdkMemoryTexture(img::AbstractArray) = GdkMemoryTexture(collect(img))
 
 function glib_ref(x::Ptr{GdkEvent})
     ccall((:gdk_event_ref, libgtk4), Nothing, (Ptr{GdkEvent},), x)
