@@ -133,6 +133,13 @@ function __init__()
          Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
      ]), Sys.iswindows() ? ";" : ":")
 
+    # Help GTK find modules for printing, media, and input backends
+    # May have consequences for GTK3 programs spawned by Julia
+    ENV["GTK_PATH"] = joinpath(dirname(GTK4_jll.libgtk4_path::String),"gtk-4.0")
+
+    # Following also works for finding the printing backends (and also may affect GTK3 programs)
+    #ENV["GTK_EXE_PREFIX"] = GTK4_jll.artifact_dir
+
     gtype_wrapper_cache_init()
     gboxed_cache_init()
 
