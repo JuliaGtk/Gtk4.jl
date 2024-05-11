@@ -4,46 +4,38 @@ GtkTextMark(left_gravity::Bool = false) = G_.TextMark_new(nothing, left_gravity)
 
 GtkTextTag() = G_.TextTag_new(nothing)
 
-const TI = Union{Ref{_GtkTextIter}, _GtkTextIter}
+const TI = Union{Ref{_GtkTextIter}, GtkTextIter}
 zero(::Type{_GtkTextIter}) = _GtkTextIter()
 copy(ti::_GtkTextIter) = Ref(ti)
 copy(ti::Ref{_GtkTextIter}) = Ref(ti[])
 
 """
-    _GtkTextIter(text::GtkTextBuffer, char_offset::Integer)
+    GtkTextIter(text::GtkTextBuffer, char_offset::Integer)
 
-Creates a `_GtkTextIter` with offset `char_offset` (one-based index).
+Creates a `GtkTextIter` with offset `char_offset` (one-based index).
 """
-function _GtkTextIter(text::GtkTextBuffer, char_offset::Integer)
-    iter = Ref{_GtkTextIter}()
-    ccall((:gtk_text_buffer_get_iter_at_offset, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Cint), text, iter, char_offset - 1)
-    iter[]
+function GtkTextIter(text::GtkTextBuffer, char_offset::Integer)
+    i = G_.get_iter_at_offset(text, char_offset - 1)
+    Ref(i)
 end
-function _GtkTextIter(text::GtkTextBuffer, line::Integer, char_offset::Integer)
-    iter = Ref{_GtkTextIter}()
-    ccall((:gtk_text_buffer_get_iter_at_line_offset, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Cint, Cint), text, iter, line - 1, char_offset - 1)
-    iter[]
+function GtkTextIter(text::GtkTextBuffer, line::Integer, char_offset::Integer)
+    i = G_.get_iter_at_line_offset(text, line - 1, char_offset - 1)
+    Ref(i)
 end
-function _GtkTextIter(text::GtkTextBuffer)
-    iter = Ref{_GtkTextIter}()
-    ccall((:gtk_text_buffer_get_start_iter, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{_GtkTextIter}), text, iter)
-    iter[]
+function GtkTextIter(text::GtkTextBuffer)
+    i = G_.get_start_iter(text)
+    Ref(i)
 end
-function _GtkTextIter(text::GtkTextBuffer, mark::GtkTextMark)
-    iter = Ref{_GtkTextIter}()
-    ccall((:gtk_text_buffer_get_iter_at_mark, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{GObject}), text, iter, mark)
-    iter[]
+function GtkTextIter(text::GtkTextBuffer, mark::GtkTextMark)
+    i = G_.get_iter_at_mark(text, mark)
+    Ref(i)
 end
 
 show(io::IO, iter::_GtkTextIter) = println("_GtkTextIter($(iter.offset) ))")
 
 
 """
-    buffer(iter::Union{Ref{_GtkTextIter}, _GtkTextIter})
+    buffer(iter::Union{Ref{_GtkTextIter}, GtkTextIter})
 
 Returns the buffer associated with `iter`.
 """
@@ -52,7 +44,7 @@ buffer(iter::TI) = convert(GtkTextBuffer,
 )
 
 """
-    char_offset(iter::Union{Ref{_GtkTextIter}, _GtkTextIter})
+    char_offset(iter::Union{Ref{_GtkTextIter}, GtkTextIter})
 
 Returns the offset of `iter` (one-based index).
 """
@@ -60,7 +52,7 @@ char_offset(iter::TI) = iter.offset+1
 
 Base.cconvert(::Type{Ref{_GtkTextIter}}, it::_GtkTextIter) = Ref(it)
 Base.cconvert(::Type{Ref{_GtkTextIter}}, it::Ref{_GtkTextIter}) = Ref(it[])
-Base.convert(::Type{_GtkTextIter}, it::Ref{_GtkTextIter}) = _GtkTextIter(buffer(it), char_offset(it))#there's a -1 in the constructor
+Base.convert(::Type{_GtkTextIter}, it::Ref{_GtkTextIter}) = GtkTextIter(buffer(it), char_offset(it))#there's a -1 in the constructor
 
 struct GtkTextRange <: AbstractRange{Char}
     a::Base.RefValue{_GtkTextIter}
@@ -68,17 +60,10 @@ struct GtkTextRange <: AbstractRange{Char}
     GtkTextRange(a, b) = new(copy(a), copy(b))
 end
 
-#type GtkClipboard
-#TODO
-#end
-
 #####  _GtkTextIter  #####
 #TODO: search
 function getproperty(text::TI, key::Symbol)
     Base.in(key, fieldnames(typeof(text))) && return getfield(text, key)
-    if isa(text,_GtkTextIter)
-		text = Ref(text)
-	end
     if     key === :offset
         ccall((:gtk_text_iter_get_offset, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
     elseif key === :line
@@ -144,7 +129,7 @@ function getproperty(text::TI, key::Symbol)
     end
 end
 
-function setproperty!(text::Ref{_GtkTextIter}, key::Symbol, value)
+function setproperty!(text::TI, key::Symbol, value)
     Base.in(key, fieldnames(typeof(text))) && return setfield!(text, key, value)
     if     key === :offset
         ccall((:gtk_text_iter_set_offset, libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), text, value)
@@ -188,7 +173,7 @@ Base.:-(iter::TI, count::Integer) = (iter = copy(iter); skip(iter, -count); iter
 Moves `iter` `count` characters. Returns a Bool indicating if the move was
 successful.
 """
-Base.skip(iter::Ref{_GtkTextIter}, count::Integer) =
+Base.skip(iter::TI, count::Integer) =
     Bool(ccall((:gtk_text_iter_forward_chars, libgtk4), Cint,
         (Ptr{_GtkTextIter}, Cint), iter, count))
 
@@ -206,7 +191,7 @@ Operations are :
 * `:backward_sentence_start` (`gtk_text_iter_backward_sentence_start`)
 * `:forward_sentence_end` (`gtk_text_iter_forward_sentence_end`)
 """
-function Base.skip(iter::Ref{_GtkTextIter}, what::Symbol)
+function Base.skip(iter::TI, what::Symbol)
     if     what === :backward_line
         Bool(ccall((:gtk_text_iter_backward_line, libgtk4), Cint,
             (Ptr{_GtkTextIter},), iter))
@@ -252,7 +237,7 @@ Operations are :
 * `:visible_lines` (`gtk_text_iter_forward_visible_lines`)
 * `:line_ends` (`gtk_text_iter_forward_visible_lines`)
 """
-function Base.skip(iter::Ref{_GtkTextIter}, count::Integer, what::Symbol)
+function Base.skip(iter::TI, count::Integer, what::Symbol)
     if     what === :char || what === :chars
         Bool(ccall((:gtk_text_iter_forward_chars, libgtk4), Cint,
             (Ptr{_GtkTextIter}, Cint), iter, count))
@@ -308,7 +293,7 @@ end
 
 Implements `gtk_text_iter_forward_search`.
 """
-function forward_search(iter::Ref{_GtkTextIter},
+function forward_search(iter::TI,
     str::AbstractString, start::Ref{_GtkTextIter},
     stop::Ref{_GtkTextIter}, limit::Ref{_GtkTextIter}, flag)
 
@@ -326,7 +311,7 @@ end
 
 Implements `gtk_text_iter_backward_search`.
 """
-function backward_search(iter::Ref{_GtkTextIter},
+function backward_search(iter::TI,
     str::AbstractString, start::Ref{_GtkTextIter},
     stop::Ref{_GtkTextIter}, limit::Ref{_GtkTextIter}, flag)
 
@@ -350,15 +335,15 @@ was successful and `start` and `stop` are _GtkTextIters containing the location 
 function search(buffer::GtkTextBuffer, str::AbstractString, direction = :forward,
     flag = Gtk4.TextSearchFlags_TEXT_ONLY)
 
-    start = Ref(_GtkTextIter(buffer))
-    stop  = Ref(_GtkTextIter(buffer))
-    iter  = Ref(_GtkTextIter(buffer, buffer.cursor_position))
+    start = GtkTextIter(buffer)
+    stop  = GtkTextIter(buffer)
+    iter  = GtkTextIter(buffer, buffer.cursor_position)
 
     if direction == :forward
-        limit = Ref(_GtkTextIter(buffer, length(buffer)+1))
+        limit = GtkTextIter(buffer, length(buffer)+1)
         found = forward_search( iter, str, start, stop, limit, flag)
     elseif direction == :backward
-        limit = Ref(_GtkTextIter(buffer, 1))
+        limit = GtkTextIter(buffer, 1)
         found = backward_search(iter, str, start, stop, limit, flag)
     else
         error("Search direction must be :forward or :backward.")
@@ -399,7 +384,7 @@ function next_(r::GtkTextRange, i)
 	skip(i, 1)
 	(c,i)
 end
-done_(r::GtkTextRange, i) = i[] == last(r)
+done_(r::GtkTextRange, i) = i == last(r)
 iterate(r::GtkTextRange, i=start_(r)) = done_(r,i) ? nothing : next_(r, i)
 
 function getproperty(text::GtkTextRange, key::Symbol)
@@ -421,24 +406,22 @@ function getproperty(text::GtkTextRange, key::Symbol)
     end
 end
 function splice!(text::GtkTextBuffer, index::GtkTextRange)
-    ccall((:gtk_text_buffer_delete, libgtk4), Nothing,
-        (Ptr{GObject}, Ref{_GtkTextIter}, Ref{_GtkTextIter}), text, first(index), last(index))
+    G_.delete(text, first(index), last(index))
     text
 end
 in(x::TI, r::GtkTextRange) = Bool(ccall((:gtk_text_iter_in_range, libgtk4), Cint,
-    (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), Ref(x), first(r), last(r)))
+    (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), x, first(r), last(r)))
 
 
 #####  GtkTextBuffer  #####
 #TODO: tags, marks
 #TODO: clipboard, selection/cursor, user_action_groups
 
-iterate(text::GtkTextBuffer, iter=start_(_GtkTextIter(text))) = iterate(iter, iter)
+iterate(text::GtkTextBuffer, iter=start_(GtkTextIter(text))) = iterate(iter, iter)
 length(text::GtkTextBuffer) = G_.get_char_count(text)
 #get_line_count(text::GtkTextBuffer) = ccall((:gtk_text_buffer_get_line_count, libgtk4), Cint, (Ptr{GObject},), text)
 function insert!(text::GtkTextBuffer, index::TI, str::AbstractString)
-    ccall((:gtk_text_buffer_insert, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{UInt8}, Cint), text, Ref(index), bytestring(str), sizeof(str))
+    G_.insert(text, index, str, sizeof(str))
     text
 end
 function insert!(text::GtkTextBuffer, str::AbstractString)
@@ -446,8 +429,7 @@ function insert!(text::GtkTextBuffer, str::AbstractString)
     text
 end
 function splice!(text::GtkTextBuffer, index::TI)
-    ccall((:gtk_text_buffer_backspace, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Cint, Cint), text, Ref(index), false, true)
+    G_.backspace(text, index, false, true)
     text
 end
 function splice!(text::GtkTextBuffer)
@@ -467,23 +449,20 @@ the selected text.
 Implements `gtk_text_buffer_get_selection_bounds`.
 """
 function selection_bounds(buffer::GtkTextBuffer)
-    start = Ref(_GtkTextIter(buffer))
-    stop  = Ref(_GtkTextIter(buffer))
-    selected = Bool(ccall((:gtk_text_buffer_get_selection_bounds,libgtk4), Cint,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), buffer, start, stop))
-    return (selected, start, stop)
+    selected, start, stop = G_.get_selection_bounds(buffer) # returns the _GtkTextIter, not refs to it
+    return (selected, Ref(start), Ref(stop))
 end
 
 """
     select_range(buffer::GtkTextBuffer, ins::TI, bound::TI)
     select_range(buffer::GtkTextBuffer, range::GtkTextRange)
 
-Select the text in `buffer` accorind to _GtkTextIter `ins` and `bound`.
+Select the text in `buffer` according to _GtkTextIter `ins` and `bound`.
 
 Implements `gtk_text_buffer_select_range`.
 """
 function select_range(buffer::GtkTextBuffer, ins::TI, bound::TI)
-    ccall((:gtk_text_buffer_select_range, libgtk4), Cvoid, (Ptr{GObject}, Ref{_GtkTextIter}, Ref{_GtkTextIter}), buffer, ins, bound)
+    G_.select_range(buffer, ins, bound)
 end
 select_range(buffer::GtkTextBuffer, range::GtkTextRange) = select_range(buffer, range.a, range.b)
 
@@ -493,10 +472,8 @@ select_range(buffer::GtkTextBuffer, range::GtkTextRange) = select_range(buffer, 
 
 Place the cursor at indicated position.
 """
-place_cursor(buffer::GtkTextBuffer, it::_GtkTextIter)  =
-    ccall((:gtk_text_buffer_place_cursor, libgtk4), Cvoid, (Ptr{GObject}, Ref{_GtkTextIter}), buffer, it)
-place_cursor(buffer::GtkTextBuffer, pos::Int) = place_cursor(buffer, _GtkTextIter(buffer, pos))
-place_cursor(buffer::GtkTextBuffer, it::Ref{_GtkTextIter}) = place_cursor(buffer, it[])
+place_cursor(buffer::GtkTextBuffer, pos::Int) = place_cursor(buffer, GtkTextIter(buffer, pos))
+place_cursor(buffer::GtkTextBuffer, it::TI) = G_.place_cursor(buffer, it)
 
 begin_user_action(buffer::GtkTextBuffer) = G_.begin_user_action(buffer)
 end_user_action(buffer::GtkTextBuffer) = G_.end_user_action(buffer)
@@ -522,21 +499,15 @@ function create_tag(buffer::GtkTextBuffer, tag_name::AbstractString; properties.
 end
 
 function apply_tag(buffer::GtkTextBuffer, name::AbstractString, itstart::TI, itend::TI)
-    ccall((:gtk_text_buffer_apply_tag_by_name, libgtk4), Nothing,
-         (Ptr{GObject}, Ptr{UInt8}, Ref{_GtkTextIter}, Ref{_GtkTextIter}),
-         buffer, bytestring(name), itstart, itend)
+    G_.apply_tag_by_name(buffer, name, itstart, itend)
 end
 
 function remove_tag(buffer::GtkTextBuffer, name::AbstractString, itstart::TI, itend::TI)
-    ccall((:gtk_text_buffer_remove_tag_by_name, libgtk4), Nothing,
-         (Ptr{GObject}, Ptr{UInt8}, Ref{_GtkTextIter}, Ref{_GtkTextIter}),
-         buffer, bytestring(name), itstart, itend)
+    G_.remove_tag_by_name(buffer, name, itstart, itend)
 end
 
 function remove_all_tags(buffer::GtkTextBuffer, itstart::TI, itend::TI)
-    ccall((:gtk_text_buffer_remove_all_tags, libgtk4), Nothing,
-         (Ptr{GObject}, Ref{_GtkTextIter}, Ref{_GtkTextIter}),
-         buffer, itstart, itend)
+    G_.remove_all_tags(buffer, itstart, itend)
 end
 
 """
@@ -578,18 +549,13 @@ function getindex(text::GtkTextView, sym::Symbol, ::Type{Bool})
 end
 
 function insert!(text::GtkTextView, index::TI, child::GtkWidget)
-    index = Ref(index)
-    anchor = ccall((:gtk_text_buffer_create_child_anchor, libgtk4), Ptr{Nothing},
-        (Ptr{GObject}, Ptr{_GtkTextIter}), G_.get_buffer(text), index)
-    ccall((:gtk_text_view_add_child_at_anchor, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTextIter}), text, index, anchor)
+    anchor = G_.create_child_anchor(G_.get_buffer(text), index)
+    G_.add_child_at_anchor(text, child, anchor)
     text
 end
 
 function insert!(text::GtkTextView, index::TI, str::AbstractString)
-    Bool(ccall((:gtk_text_buffer_insert_interactive, libgtk4), Cint,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{UInt8}, Cint, Cint),
-        G_.get_buffer(text), index, bytestring(str), sizeof(str), G_.get_editable(text)))
+    G_.insert_interactive(G_.get_buffer(text), index, str, sizeof(str), G_.get_editable(text))
     text
 end
 function insert!(text::GtkTextView, str::AbstractString)
@@ -597,9 +563,7 @@ function insert!(text::GtkTextView, str::AbstractString)
     text
 end
 function splice!(text::GtkTextView, index::TI)
-    ccall((:gtk_text_buffer_backspace, libgtk4), Nothing,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Cint, Cint),
-        G_.get_buffer(text), Ref(index), true, G_.get_editable(text))
+    G_.backspace(G_.get_buffer(text), index, true, G_.get_editable(text))
     text
 end
 function splice!(text::GtkTextView)
@@ -623,9 +587,8 @@ end
 
 function scroll_to(view::GtkTextView, iter::TI, within_margin::Real,
                    use_align::Bool, xalign::Real, yalign::Real)
-    ccall((:gtk_text_view_scroll_to_iter, libgtk4), Nothing,
-    (Ptr{GObject}, Ptr{_GtkTextIter}, Cdouble, Cint, Cdouble, Cdouble),
-    view, iter, within_margin, use_align, xalign, yalign)
+    G_.scroll_to_iter(view, iter, within_margin, use_align, xalign, yalign)
+    nothing
 end
 
 
@@ -635,7 +598,7 @@ end
 Implements `gtk_text_view_buffer_to_window_coords`.
 """
 function buffer_to_window_coords(view::GtkTextView, buffer_x::Integer, buffer_y::Integer, wintype = TextWindowType_WIDGET)
-	G_.buffer_to_window_coords(view, wintype, buffer_x, buffer_y)
+    G_.buffer_to_window_coords(view, wintype, buffer_x, buffer_y)
 end
 
 """
@@ -654,29 +617,27 @@ Implements `gtk_text_view_get_iter_at_position`.
 """
 function text_iter_at_position(view::GtkTextView, x::Integer, y::Integer)
     buffer = view.buffer
-    iter = Ref(_GtkTextIter(buffer))
-    text_iter_at_position(view, iter, C_NULL, Int32(x), Int32(y))
-    return _GtkTextIter(buffer, char_offset(iter))
+    iter = GtkTextIter(buffer)
+    text_iter_at_position(view, iter, nothing, Int32(x), Int32(y))
+    return GtkTextIter(buffer, char_offset(iter))
 end
 
-text_iter_at_position(view::GtkTextView, iter::Ref{_GtkTextIter}, trailing, x::Int32, y::Int32) = ccall(
-    (:gtk_text_view_get_iter_at_position, libgtk4), Cvoid,
-    (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{Cint}, Cint, Cint),
-    view, iter, trailing, x, y
-)
+function text_iter_at_position(view::GtkTextView, iter::Ref{_GtkTextIter}, trailing, x::Int32, y::Int32)
+    ret, iter_ret, trailing_ret = G_.get_iter_at_position(view, x, y)
+    iter[] = iter_ret
+    if trailing !== nothing
+        trailing[] = trailing_ret
+    end
+end
 
 function cursor_locations(view::GtkTextView)
     weak = Ref{_GdkRectangle}()
     strong = Ref{_GdkRectangle}()
     buffer = view.buffer
-    iter = Ref(_GtkTextIter(buffer, buffer.cursor_position))
+    iter = GtkTextIter(buffer, buffer.cursor_position)
 
-    ccall(
-        (:gtk_text_view_get_cursor_locations, libgtk4), Cvoid,
-        (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}),
-        view, iter, strong, weak
-    )
-    return (iter, strong[], weak[])
+    string, weak = G_.get_cursor_locations(view, iter)
+    return (iter, strong, weak)
 end
 
 ####  GtkTextMark  ####
