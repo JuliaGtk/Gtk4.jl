@@ -5773,6 +5773,181 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_subprocess_launcher_unsetenv", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _variable)
         nothing
     end
+    function Task_new(_source_object::Maybe(GObject), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _source_object_maybe = nothing_to_null(_source_object)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("g_task_new", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _source_object_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        ret2 = GTaskLeaf(ret, true)
+        ret2
+    end
+    function is_valid(_result::GAsyncResult, _source_object::Maybe(GObject))
+        _source_object_maybe = nothing_to_null(_source_object)
+        ret = ccall(("g_task_is_valid", libgio), Cint, (Ptr{GObject}, Ptr{GObject}), _result, _source_object_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function report_error(_source_object::Maybe(GObject), _callback::Maybe(Function), _source_tag::Maybe(Nothing), _error)
+        _source_object_maybe = nothing_to_null(_source_object)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        _source_tag_maybe = nothing_to_null(_source_tag)
+        ret = ccall(("g_task_report_error", libgio), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Nothing}, Ptr{GError}), _source_object_maybe, _callback_cfunc, _callback_closure, _source_tag_maybe, _error)
+        nothing
+    end
+    function get_cancellable(instance::GTask)
+        ret = ccall(("g_task_get_cancellable", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GCancellable, ret, false)
+        ret2
+    end
+    function get_check_cancellable(instance::GTask)
+        ret = ccall(("g_task_get_check_cancellable", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_completed(instance::GTask)
+        ret = ccall(("g_task_get_completed", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_context(instance::GTask)
+        ret = ccall(("g_task_get_context", libgio), Ptr{GMainContext}, (Ptr{GObject},), instance)
+        ret2 = convert(GMainContext, ret, false)
+        ret2
+    end
+    function get_name(instance::GTask)
+        ret = ccall(("g_task_get_name", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_priority(instance::GTask)
+        ret = ccall(("g_task_get_priority", libgio), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_return_on_cancel(instance::GTask)
+        ret = ccall(("g_task_get_return_on_cancel", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_source_object(instance::GTask)
+        ret = ccall(("g_task_get_source_object", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GObject, ret, false)
+        ret2
+    end
+    function get_source_tag(instance::GTask)
+        ret = ccall(("g_task_get_source_tag", libgio), Ptr{Nothing}, (Ptr{GObject},), instance)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function get_task_data(instance::GTask)
+        ret = ccall(("g_task_get_task_data", libgio), Ptr{Nothing}, (Ptr{GObject},), instance)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function had_error(instance::GTask)
+        ret = ccall(("g_task_had_error", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function propagate_boolean(instance::GTask)
+        err = err_buf()
+        ret = ccall(("g_task_propagate_boolean", libgio), Cint, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function propagate_int(instance::GTask)
+        err = err_buf()
+        ret = ccall(("g_task_propagate_int", libgio), Int64, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
+        check_err(err)
+        ret
+    end
+    function propagate_pointer(instance::GTask)
+        err = err_buf()
+        ret = ccall(("g_task_propagate_pointer", libgio), Ptr{Nothing}, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
+        check_err(err)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function propagate_value(instance::GTask)
+        m_value = Ref{_GValue}()
+        err = err_buf()
+        ret = ccall(("g_task_propagate_value", libgio), Cint, (Ptr{GObject}, Ptr{_GValue}, Ptr{Ptr{GError}}), instance, m_value, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        _value = m_value[]
+        (ret2, _value)
+    end
+    function return_boolean(instance::GTask, _result::Bool)
+        ret = ccall(("g_task_return_boolean", libgio), Nothing, (Ptr{GObject}, Cint), instance, _result)
+        nothing
+    end
+    function return_error(instance::GTask, _error)
+        ret = ccall(("g_task_return_error", libgio), Nothing, (Ptr{GObject}, Ptr{GError}), instance, _error)
+        nothing
+    end
+    function return_error_if_cancelled(instance::GTask)
+        ret = ccall(("g_task_return_error_if_cancelled", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function return_int(instance::GTask, _result::Integer)
+        ret = ccall(("g_task_return_int", libgio), Nothing, (Ptr{GObject}, Int64), instance, _result)
+        nothing
+    end
+    function return_value(instance::GTask, _result::Maybe(Union{GValue, Ref{_GValue}}))
+        _result_maybe = nothing_to_null(_result)
+        ret = ccall(("g_task_return_value", libgio), Nothing, (Ptr{GObject}, Ptr{_GValue}), instance, _result_maybe)
+        nothing
+    end
+    function set_check_cancellable(instance::GTask, _check_cancellable::Bool)
+        ret = ccall(("g_task_set_check_cancellable", libgio), Nothing, (Ptr{GObject}, Cint), instance, _check_cancellable)
+        nothing
+    end
+    function set_name(instance::GTask, _name::Maybe(Union{AbstractString, Symbol}))
+        _name_maybe = nothing_to_null(_name)
+        ret = ccall(("g_task_set_name", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _name_maybe)
+        nothing
+    end
+    function set_priority(instance::GTask, _priority::Integer)
+        ret = ccall(("g_task_set_priority", libgio), Nothing, (Ptr{GObject}, Int32), instance, _priority)
+        nothing
+    end
+    function set_return_on_cancel(instance::GTask, _return_on_cancel::Bool)
+        ret = ccall(("g_task_set_return_on_cancel", libgio), Cint, (Ptr{GObject}, Cint), instance, _return_on_cancel)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_source_tag(instance::GTask, _source_tag::Maybe(Nothing))
+        _source_tag_maybe = nothing_to_null(_source_tag)
+        ret = ccall(("g_task_set_source_tag", libgio), Nothing, (Ptr{GObject}, Ptr{Nothing}), instance, _source_tag_maybe)
+        nothing
+    end
+    function set_static_name(instance::GTask, _name::Maybe(Union{AbstractString, Symbol}))
+        _name_maybe = nothing_to_null(_name)
+        ret = ccall(("g_task_set_static_name", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _name_maybe)
+        nothing
+    end
+    function get_user_data(instance::GTask)
+        get_user_data(GAsyncResult(instance))
+    end
+    function is_tagged(instance::GTask, _source_tag::Maybe(Nothing))
+        is_tagged(GAsyncResult(instance), _source_tag)
+    end
+    function legacy_propagate_error(instance::GTask)
+        legacy_propagate_error(GAsyncResult(instance))
+    end
     function get_graceful_disconnect(instance::GTcpConnection)
         ret = ccall(("g_tcp_connection_get_graceful_disconnect", libgio), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
