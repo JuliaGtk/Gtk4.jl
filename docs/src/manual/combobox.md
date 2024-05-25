@@ -3,7 +3,7 @@
 One often needs a widget to allow a user to select something from a few options. There are
 two easy ways to do this in Gtk4.jl.
 
-## GtkDropDown
+## [GtkDropDown](https://docs.gtk.org/gtk4/class.DropDown.html)
 
 A simple option that was introduced in GTK version 4 is `GtkDropDown`. An example is shown below.
 
@@ -42,13 +42,13 @@ push!(m, "five")
 More complex uses of `GtkDropDown` are possible by using models other than
 `GtkStringList`. This may be supported in future versions of Gtk4.jl.
 
-## GtkComboBox
+## [GtkComboBox](https://docs.gtk.org/gtk4/class.ComboBox.html)
 
 The older API for dropdown menu functionality is `GtkComboBox`.
 The full, generic `GtkComboBox` widget is powerful but harder to use and won't be covered
 here. The simpler `GtkComboBoxText` subtype allows the user to select from text options.
 
-### GtkComboBoxText
+### [GtkComboBoxText](https://docs.gtk.org/gtk4/class.ComboBoxText.html)
 
 The following example shows how to fill a `GtkComboBoxText` with elements and
 listen on the `changed` event (this example is functionally equivalent to the example above for `GtkDropDown`):

@@ -5,7 +5,7 @@ Gtk4 provides many layout widgets for arranging widgets in a window.
 !!! note
     For larger projects it might be a good idea to create the layout using Cambalache in combination with `GtkBuilder`. See [Builder](@ref).
 
-## GtkBox
+## [GtkBox](https://docs.gtk.org/gtk4/class.Box.html)
 
 The layout widget used most often is `GtkBox`. It is one-dimensional and can be either be horizontally or vertical aligned.
 ```julia
@@ -49,7 +49,7 @@ Julia interface methods defined for `GtkBox`:
 | `delete!(b::GtkBox, w::GtkWidget)` | Removes a widget from the box |
 | `empty!(b::GtkBox)` | Removes all widgets from the box |
 
-## GtkGrid
+## [GtkGrid](https://docs.gtk.org/gtk4/class.Grid.html)
 
 To create two-dimensional (tabular) layouts of widgets, you can use `GtkGrid`:
 ```julia
@@ -94,7 +94,7 @@ Julia interface methods defined for `GtkGrid`:
 | `delete!(g::GtkGrid, w::GtkWidget)` | Removes a widget from the grid |
 | `empty!(g::GtkGrid)` | Removes all widgets from the grid |
 
-## GtkCenterBox
+## [GtkCenterBox](https://docs.gtk.org/gtk4/class.CenterBox.html)
 
 The `GtkCenterBox` widget can hold 3 widgets in a line, either horizontally or
 vertically oriented. It keeps the middle widget centered. Child widgets can be set and accessed like this:
@@ -114,7 +114,7 @@ Julia interface methods defined for `GtkCenterBox`:
 | `getindex(b::GtkCenterBox, pos::Symbol)` or `b[pos]` | Gets a widget, where `pos` is `:start`, `:center`, or `:end` |
 | `setindex!(b::GtkCenterBox, w::GtkWidget, pos::Symbol)` or `b[pos] = w` | Sets a widget |
 
-## GtkPaned
+## [GtkPaned](https://docs.gtk.org/gtk4/class.Paned.html)
 
 The `GtkPaned` widget creates two slots separated by a movable divider. Like `GtkBox` and `GtkCenterBox`, it can
 be oriented either vertically or horizontally. To add child widgets, you can use
@@ -131,7 +131,7 @@ Julia interface methods defined for `GtkPaned`:
 | `getindex(b::GtkPaned, i::Integer)` or `b[i]` | Gets a widget, where `i` is 1 or 2 |
 | `setindex!(b::GtkPaned, w::GtkWidget, i::Integer)` or `b[i] = w` | Sets a widget |
 
-## GtkNotebook
+## [GtkNotebook](https://docs.gtk.org/gtk4/class.Notebook.html)
 
 The `GtkNotebook` widget places child widgets in tabs like a browser window.
 Child widgets can be inserted with a label like this:
@@ -154,7 +154,7 @@ Julia interface methods defined for `GtkNotebook`:
 | `deleteat!(n::GtkNotebook, x::GtkWidget)` | Removes a widget from the notebook |
 | `empty!(n::GtkNotebook)` | Removes all widgets from the notebook |
 
-## GtkStack
+## [GtkStack](https://docs.gtk.org/gtk4/class.Stack.html)
 
 The `GtkStack` widget is a lot like `GtkNotebook`, but a separate widget `GtkStackSwitcher` controls what page is shown.
 An interface very similar to `GtkNotebook` is defined:
@@ -183,7 +183,7 @@ Julia interface methods defined for `GtkStack`:
 | `delete!(s::GtkStack, x::GtkWidget)` | Removes a widget from the stack |
 | `empty!(s::GtkStack)` | Removes all widgets from the stack |
 
-## GtkFrame, GtkAspectFrame, and GtkExpander
+## [GtkFrame](https://docs.gtk.org/gtk4/class.Frame.html), [GtkAspectFrame](https://docs.gtk.org/gtk4/class.AspectFrame.html), and [GtkExpander](https://docs.gtk.org/gtk4/class.Expander.html)
 
 These widgets hold one child widget. `GtkFrame` and `GtkAspectFrame` display them in a decorative frame with an optional label. `GtkExpander` allows the user to hide the child.
 

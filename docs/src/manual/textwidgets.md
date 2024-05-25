@@ -3,7 +3,7 @@
 There are two basic widgets available for rendering simple text: `GtkLabel` is for
 displaying non-editable text and `GtkEntry` is for editable text.
 
-## GtkLabel
+## [GtkLabel](https://docs.gtk.org/gtk4/class.Label.html)
 
 A `GtkLabel` is the most basic text widget and has already been used behind the
 scenes in any previous example involving a `GtkButton`.
@@ -43,7 +43,7 @@ Gtk4.wrap(label,true)
 ```
 Note that wrapping will only occur if the size of the widget is limited by layout constraints.
 
-## GtkEntry
+## [GtkEntry](https://docs.gtk.org/gtk4/class.Entry.html)
 
 The entry widget allows the user to enter text. The entered text can be read and written using
 ```julia
@@ -67,7 +67,7 @@ ent.visibility = false
 ```
 To get notified by changes to the entry one can listen to the "changed" event.
 
-## Search Entry
+## [GtkSearchEntry](https://docs.gtk.org/gtk4/class.SearchEntry.html)
 
 A special variant of the entry that can be used as a search box is `GtkSearchEntry`. It is equipped
 with a button to clear the entry.
