@@ -543,7 +543,7 @@ end
     create_mark(buffer::GtkTextBuffer, mark_name, it::TI, left_gravity::Bool)
     create_mark(buffer::GtkTextBuffer, it::TI)
 
-Impements `gtk_text_buffer_create_mark`.
+Implements `gtk_text_buffer_create_mark`.
 """
 create_mark(buffer::GtkTextBuffer, mark_name, it::TI, left_gravity::Bool)  =
     GtkTextMarkLeaf(ccall((:gtk_text_buffer_create_mark, libgtk4), Ptr{GObject},
@@ -563,7 +563,7 @@ undo!(buffer::GtkTextBuffer) = G_.undo(buffer)
 
 Implements `gtk_text_buffer_redo`.
 """
-redo!(buffer::GtkTextBuffer)
+redo!(buffer::GtkTextBuffer) = G_.redo(buffer)
 
 #####  GtkTextView  #####
 #TODO: scrolling/views, child overlays

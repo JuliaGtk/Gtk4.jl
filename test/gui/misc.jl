@@ -188,6 +188,11 @@ end
 
 end
 
+@testset "GBoxed properties in Gtk4" begin
+    c=GtkColorButton()
+    @test c.rgba isa GdkRGBA
+end
+
 @testset "CssProviderLeaf(filename=\"...\")" begin
     style_file = joinpath(dirname(@__FILE__), "style_test.css")
 
