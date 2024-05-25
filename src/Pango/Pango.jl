@@ -55,8 +55,13 @@ for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
 end
 
 function __init__()
-   gtype_wrapper_cache_init()
-   gboxed_cache_init()
+    # check that libpango is compatible with what the GI generated code expects
+    vercheck = G_.version_check(VERSION_MAJOR,VERSION_MINOR,0)
+    if vercheck !== nothing
+        @warn "Pango version check failed: $vercheck"
+    end
+    gtype_wrapper_cache_init()
+    gboxed_cache_init()
 end
 
 default_font_map() = G_.font_map_get_default()

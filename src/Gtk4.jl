@@ -125,6 +125,12 @@ end
 function __init__()
     in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
 
+    # check that GTK is compatible with what the GI generated code expects
+    vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
+    if vercheck !== nothing
+        @warn "Gtk4 version check failed: $vercheck"
+    end
+
     # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
     ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
         dirname(adwaita_icons_dir),
