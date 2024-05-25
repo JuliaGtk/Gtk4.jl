@@ -61,7 +61,7 @@ end
 
 function struct_cache_expr!(exprs)
     gboxed_types_list = quote
-        gboxed_types = Any[]
+        const gboxed_types = Any[]
     end
     push!(exprs,unblock(gboxed_types_list))
 end
