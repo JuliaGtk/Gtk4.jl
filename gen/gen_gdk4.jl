@@ -13,15 +13,13 @@ toplevel, exprs, exports = GI.output_exprs()
 
 # These are marked as "disguised" and what this means is not documented AFAICT.
 disguised = Symbol[]
-struct_skiplist=vcat(disguised, [:ToplevelSize,:TextureDownloader])
+struct_skiplist=vcat(disguised, [:ToplevelSize])
 
 object_skiplist=Symbol[]
 
 GI.export_struct_exprs!(ns,path, "gdk4", struct_skiplist, [:TimeCoord]; object_constructor_skiplist=[:new_from_resource],doc_xml = d)
 
-push!(struct_skiplist,:ContentFormats)
-
-object_method_skiplist=[:begin,:put_event]
+object_method_skiplist=[:begin,:put_event,:download]
 interface_method_skiplist=[:inhibit_system_shortcuts,:show_window_menu]
 
 GI.export_methods!(ns,path,"gdk4"; interface_method_skiplist = interface_method_skiplist, object_method_skiplist = object_method_skiplist, object_skiplist = object_skiplist, struct_skiplist = struct_skiplist)

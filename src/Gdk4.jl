@@ -77,7 +77,16 @@ const color_formats = Dict(ColorTypes.RGB{N0f8}=>Gtk4.MemoryFormat_R8G8B8,
                            ColorTypes.Gray{N0f16}=>Gtk4.MemoryFormat_G16,
                            ColorTypes.GrayA{N0f8}=>Gtk4.MemoryFormat_G8A8,
                            ColorTypes.GrayA{N0f16}=>Gtk4.MemoryFormat_G16A16,
-                          )
+                           )
+
+const color_formats_premultiplied = Dict(ColorTypes.RGBA{N0f8}=>Gtk4.MemoryFormat_R8G8B8A8_PREMULTIPLIED,
+                           ColorTypes.ARGB{N0f8}=>Gtk4.MemoryFormat_A8R8G8B8_PREMULTIPLIED,
+                           ColorTypes.BGRA{N0f8}=>Gtk4.MemoryFormat_B8G8R8A8_PREMULTIPLIED,
+                           ColorTypes.RGBA{N0f16}=>Gtk4.MemoryFormat_R16G16B16A16_PREMULTIPLIED,
+                           # Available since GTK 4.12
+                           ColorTypes.GrayA{N0f8}=>Gtk4.MemoryFormat_G8A8_PREMULTIPLIED,
+                           ColorTypes.GrayA{N0f16}=>Gtk4.MemoryFormat_G16A16_PREMULTIPLIED,
+)
 
 imgformatsupported(img) = eltype(img) in keys(color_formats)
 
@@ -98,6 +107,29 @@ function GdkMemoryTexture(img::AbstractArray, tp = true)
     img = tp ? img' : img
     b=Gtk4.GLib.GBytes(img)
     GdkMemoryTexture(size(img)[1], size(img)[2], f, b, sizeof(eltype(img))*size(img)[1])
+end
+
+function toarray(::Type{T}, t::GdkTexture, td::GdkTextureDownloader) where T
+    ua = Vector{UInt8}(undef,sizeof(T)*size(t)[1]*size(t)[2])
+    G_.download_into(td,ua,sizeof(T)*size(t)[1])
+    arr = collect(reshape(reinterpret(T, ua),reverse(size(t))))
+    arr'
+end
+
+function toarray(t::GdkTexture)
+    td = GdkTextureDownloader(t)
+    f = G_.get_format(td)
+    for (k,v) in color_formats
+        if v == f
+            return toarray(k,t,td)
+        end
+    end
+    for (k,v) in color_formats_premultiplied
+        if v == f
+            return toarray(k,t,td)
+        end
+    end
+    error("no suitable format found")
 end
 
 function glib_ref(x::Ptr{GdkEvent})
