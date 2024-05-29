@@ -327,11 +327,11 @@ function run_delayed_finalizers()
     while !isempty(await_finalize)
         x = pop!(await_finalize)
         finalize_gc_unref(x)
+        # prevents empty WeakRefs from filling gc_preserve_glib
+        gc_preserve_glib_lock[] = true
+        filter!(x->!(isa(x.first,WeakRef) && x.first.value === nothing),gc_preserve_glib)
+        gc_preserve_glib_lock[] = false
     end
-    # prevents empty WeakRefs from filling gc_preserve_glib
-    gc_preserve_glib_lock[] = true
-    filter!(x->!(isa(x.first,WeakRef) && x.first.value === nothing),gc_preserve_glib)
-    gc_preserve_glib_lock[] = false
     topfinalizer[] = true
 end
 

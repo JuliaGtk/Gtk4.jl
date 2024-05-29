@@ -112,7 +112,7 @@ include("tree.jl")
 include("deprecated.jl")
 include("basic_exports.jl")
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
     G_.get_major_version(),
     G_.get_minor_version(),
     G_.get_micro_version())

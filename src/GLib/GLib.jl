@@ -153,7 +153,7 @@ include("gtype.jl")
 
 eval(include("../gen/glib_consts"))
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
       MAJOR_VERSION,
       MINOR_VERSION,
       MICRO_VERSION)

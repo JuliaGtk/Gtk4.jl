@@ -34,4 +34,3 @@ function check_err(err::Base.RefValue{Ptr{GError}})
         throw(ee)
     end
 end
-
