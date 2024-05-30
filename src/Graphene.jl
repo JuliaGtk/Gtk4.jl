@@ -13,6 +13,8 @@ export _GrapheneRect, _GraphenePoint, _GrapheneMatrix, _GrapheneVec4, _GrapheneV
 #eval(include("gen/graphene_methods"))
 #eval(include("gen/graphene_functions"))
 
+_GrapheneRect(x::Number,y::Number,w::Number,h::Number) = _GrapheneRect(_GraphenePoint(x,y),_GrapheneSize(w,h))
+
 function __init__()
    gtype_wrapper_cache_init()
    gboxed_cache_init()
