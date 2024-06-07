@@ -242,6 +242,7 @@ function glib_ref_sink(x::Ptr{GObject})
 end
 const gc_preserve_glib = Dict{Union{WeakRef, GObject}, Bool}() # glib objects
 const gc_preserve_glib_lock = Ref(false) # to satisfy this lock, must never decrement a ref counter while it is held
+const await_lock = ReentrantLock()
 const topfinalizer = Ref(true) # keep recursion to a minimum by only iterating from the top
 const await_finalize = Set{Any}()
 
@@ -271,7 +272,12 @@ function delref(@nospecialize(x::GObject))
     # internal helper function
     exiting[] && return # unnecessary to cleanup if we are about to die anyways
     if gc_preserve_glib_lock[] || g_yielded[]
-        push!(await_finalize, x)
+        lock(await_lock)
+        try
+            push!(await_finalize, x)
+        finally
+            unlock(await_lock)
+        end
         return # avoid running finalizers at random times
     end
     finalize_gc_unref(x)
@@ -296,7 +302,12 @@ function gobject_ref(x::T) where T <: GObject
         if ccall((:g_object_get_qdata, libgobject), Ptr{Cvoid},
                  (Ptr{GObject}, UInt32), x, jlref_quark::UInt32) != C_NULL
             # have set up metadata for this before, but its weakref has been cleared. restore the ref.
-            delete!(await_finalize, x)
+            lock(await_lock)
+            try
+                delete!(await_finalize, x)
+            finally
+                unlock(await_lock)
+            end
             finalizer(delref, x)
             gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
         else
@@ -324,13 +335,20 @@ function run_delayed_finalizers()
     exiting[] && return # unnecessary to cleanup if we are about to die anyways
     g_yielded[] && return # can't run them right now
     topfinalizer[] = false
-    while !isempty(await_finalize)
-        x = pop!(await_finalize)
-        finalize_gc_unref(x)
+    if !isempty(await_finalize) # only do this once when we're doing GC stuff
         # prevents empty WeakRefs from filling gc_preserve_glib
         gc_preserve_glib_lock[] = true
         filter!(x->!(isa(x.first,WeakRef) && x.first.value === nothing),gc_preserve_glib)
         gc_preserve_glib_lock[] = false
+    end
+    lock(await_lock)
+    try
+        while !isempty(await_finalize)
+            x = pop!(await_finalize)
+            finalize_gc_unref(x)
+        end
+    finally
+        unlock(await_lock)
     end
     topfinalizer[] = true
 end

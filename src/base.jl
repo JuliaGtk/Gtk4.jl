@@ -327,3 +327,50 @@ function inhibit(app::GtkApplication, win::GtkWindow, flags, reason)
 end
 
 uninhibit(app::GtkApplication, cookie) = G_.uninhibit(app, cookie)
+
+mutable struct _GtkWidgetClass
+    g_type_class::_GTypeClass
+    construct_properties::Ptr{GLib._GSList{Ptr{Nothing}}}
+    constructor::Ptr{Nothing}
+    set_property::Ptr{Cvoid}
+    get_property::Ptr{Cvoid}
+    dispose::Ptr{Cvoid}
+    finalize::Ptr{Cvoid}
+    dispatch_properties_changed::Ptr{Cvoid}
+    notify::Ptr{Cvoid}
+    constructed::Ptr{Cvoid}
+    flags::Csize_t
+    n_construct_properties::Csize_t
+    pspecs::Ptr{Nothing}
+    n_pspecs::Csize_t
+    pdummy1::Ptr{Nothing}
+    pdummy2::Ptr{Nothing}
+    pdummy3::Ptr{Nothing}
+    show::Ptr{Cvoid}
+    hide::Ptr{Cvoid}
+    map::Ptr{Cvoid}
+    unmap::Ptr{Cvoid}
+    realize::Ptr{Cvoid}
+    unrealize::Ptr{Cvoid}
+    root::Ptr{Cvoid}
+    unroot::Ptr{Cvoid}
+    size_allocate::Ptr{Cvoid}
+    state_flags_changed::Ptr{Cvoid}
+    direction_changed::Ptr{Cvoid}
+    get_request_mode::Ptr{Cvoid}
+    measure::Ptr{Cvoid}
+    mnemonic_activate::Ptr{Cvoid}
+    grab_focus::Ptr{Cvoid}
+    focus::Ptr{Cvoid}
+    set_focus_child::Ptr{Cvoid}
+    move_focus::Ptr{Cvoid}
+    keynav_failed::Ptr{Cvoid}
+    query_tooltip::Ptr{Cvoid}
+    compute_expand::Ptr{Cvoid}
+    css_changed::Ptr{Cvoid}
+    system_setting_changed::Ptr{Cvoid}
+    snapshot::Ptr{Cvoid}
+    contains::Ptr{Cvoid}
+    priv::Ptr{Nothing}
+    padding::Ptr{Ptr{Nothing}}
+end

@@ -1,12 +1,11 @@
 module HDF5Viewer
 
 using Gtk4, HDF5, Gtk4.GLib
-
-if Threads.nthreads() == 1 && Threads.nthreads(:interactive) < 1
-    @warn("For a more responsive UI, run with multiple threads enabled.")
-end
+using PrecompileTools
 
 export hdf5view
+
+const rprogbar = Ref{GtkProgressBarLeaf}()
 
 # This is really just a toy at this point, but it is a less trivial example of
 # using a ListView to show a tree and it uses a second thread to keep the UI
@@ -48,14 +47,19 @@ end
 lmm(g,k) = GtkStringList([join([k,b],'/') for b in keys(g)])
 lmm(d::HDF5.Dataset,k) = nothing
 
-function create_tree_model(filename)
-    h5open(filename,"r") do h
+function create_tree_model(filename, pwin)
+    treemodel = h5open(filename,"r") do h
+        ks = keys(h)
+        rootmodel = GtkStringList(ks)
         function create_model(pp)
-            k=pp.string::String
+            k=Gtk4.G_.get_string(pp)
             return lmm(h[k],k)
         end
-        rootmodel = GtkStringList(keys(h))
         GtkTreeListModel(GLib.GListModel(rootmodel),false, true, create_model)
+    end
+    @idle_add begin
+        Gtk4.destroy(pwin)
+        _create_gui(filename, treemodel)
     end
 end
 
@@ -93,55 +97,30 @@ function match_string(row, entrytext)
     return false
 end
 
+_render_type(d) = "Array{$(string(HDF5.get_jl_type(d)))}"
+_render_type(d::HDF5.Group) = "Group"
+_render_size(d) = repr(size(d))
+_render_size(d::HDF5.Group) = length(d)!=1 ? "$(length(d)) objects" : "1 object"
+
 function hdf5view(filename::AbstractString)
     ispath(filename) || error("Path $filename does not exist")
     isfile(filename) || error("File not found")
     HDF5.ishdf5(filename) || error("File is not HDF5")
-    b = GtkBuilder(joinpath(@__DIR__, "HDF5Viewer.ui"))
-    w = b["win"]::GtkWindowLeaf
-    Gtk4.title(w, "HDF5 Viewer: $filename")
-    treemodel = create_tree_model(filename)
-
-    factory = GtkSignalListItemFactory(setup_cb, bind_cb)
-
-    # bind callback for the type ColumnView
-    function type_bind_cb(f, li)
-        label = get_child(li)
-        row = li[]
-        k=Gtk4.get_item(row).string
-        h5open(filename,"r") do h
-            d=h[k]
-            if isa(d,HDF5.Group)
-                Gtk4.label(label, "Group")
-            else
-                eltyp=string(HDF5.get_jl_type(d))
-                Gtk4.label(label, "Array{$eltyp}")
-            end
-        end
+    pwin = GtkWindow("Opening $filename",600,100)
+    rprogbar[] = GtkProgressBar()
+    b=GtkBox(:v)
+    push!(b, GtkLabel("Please wait..."))
+    pwin[] = push!(b,rprogbar[])
+    t = Threads.@spawn create_tree_model(filename, pwin)
+    g_timeout_add(100) do
+        Gtk4.pulse(rprogbar[])
+        return !istaskdone(t)
     end
+    nothing
+end
 
-    # bind callback for the size ColumnView
-    function size_bind_cb(f, li)
-        label = get_child(li)
-        row = li[]
-        k=Gtk4.get_item(row).string
-        h5open(filename,"r") do h
-            d=h[k]
-            if isa(d,HDF5.Group)
-                n=length(d)
-                label.label = n!=1 ? "$n objects" : "1 object"
-            else
-                label.label = repr(size(d))
-            end
-        end
-    end
-
-    type_factory = GtkSignalListItemFactory(list_setup_cb, type_bind_cb)
-    size_factory = GtkSignalListItemFactory(list_setup_cb, size_bind_cb)
-    
+function _create_filter(b)
     search_entry = b["search_entry"]::GtkSearchEntryLeaf  # controls the filter
-    spinner = b["spinner"]::GtkSpinnerLeaf  # spins during possibly long render operations
-    
     function match(row::GtkTreeListRow)
         entrytext = Gtk4.text(GtkEditable(search_entry))
         if entrytext == "" || entrytext === nothing
@@ -149,8 +128,47 @@ function hdf5view(filename::AbstractString)
         end
         match_string(row, entrytext)
     end
-    
+
     filt = GtkCustomFilter(match)
+    signal_connect(search_entry, "search-changed") do widget
+        @idle_add changed(filt, Gtk4.FilterChange_DIFFERENT)
+    end
+    filt
+end
+
+function _create_gui(filename, treemodel)
+    b = GtkBuilder(joinpath(@__DIR__, "HDF5Viewer.ui"))
+    w = b["win"]::GtkWindowLeaf
+    Gtk4.title(w, "HDF5 Viewer: $filename")
+    
+    factory = GtkSignalListItemFactory(setup_cb, bind_cb)
+
+    # bind callback for the type ColumnView
+    function type_bind_cb(f, li)
+        label = get_child(li)::GtkLabelLeaf
+        row = li[]::GtkTreeListRowLeaf
+        k=Gtk4.G_.get_string(Gtk4.get_item(row))
+        h5open(filename,"r") do h
+            Gtk4.label(label, _render_type(h[k]))
+        end
+    end
+
+    # bind callback for the size ColumnView
+    function size_bind_cb(f, li)
+        label = get_child(li)::GtkLabelLeaf
+        row = li[]::GtkTreeListRowLeaf
+        k=Gtk4.G_.get_string(Gtk4.get_item(row))
+        h5open(filename,"r") do h
+            Gtk4.label(label, _render_size(h[k]))
+        end
+    end
+
+    type_factory = GtkSignalListItemFactory(list_setup_cb, type_bind_cb)
+    size_factory = GtkSignalListItemFactory(list_setup_cb, size_bind_cb)
+    
+    spinner = b["spinner"]::GtkSpinnerLeaf  # spins during possibly long render operations
+    
+    filt = _create_filter(b)
     filteredModel = GtkFilterListModel(GListModel(treemodel), filt)
 
     single_sel = GtkSingleSelection(GLib.GListModel(filteredModel))
@@ -174,7 +192,7 @@ function hdf5view(filename::AbstractString)
         position = Gtk4.G_.get_selected(selection)
         row = Gtk4.G_.get_row(treemodel,position)
         row!==nothing || return
-        p = Gtk4.get_item(row).string
+        p = Gtk4.G_.get_string(Gtk4.get_item(row))
         start(spinner)
         Threads.@spawn h5open(filename,"r") do h
             d=h[p]
@@ -201,14 +219,27 @@ function hdf5view(filename::AbstractString)
 
     signal_connect(on_selected_changed,sel,"selection_changed")
 
-    signal_connect(search_entry, "search-changed") do widget
-        @idle_add changed(filt, Gtk4.FilterChange_DIFFERENT)
-    end
     show(w)
     
     @idle_add on_selected_changed(single_sel, 0, 1)
 
     nothing
+end
+
+function __init__()
+    if Threads.nthreads() == 1 && Threads.nthreads(:interactive) < 1
+        @warn("For a more responsive UI, run with multiple threads enabled.")
+    end
+end
+
+let
+    @setup_workload begin
+        @compile_workload begin
+            b = GtkBuilder(joinpath(@__DIR__, "HDF5Viewer.ui"))
+            factory = GtkSignalListItemFactory(setup_cb, bind_cb)
+            _create_filter(b)
+        end
+    end
 end
 
 end # module

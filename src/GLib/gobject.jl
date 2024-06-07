@@ -151,3 +151,23 @@ See also [`bind_property`](@ref).
 Related GTK function: [`g_binding_unbind`](https://docs.gtk.org/gobject/method.Binding.unbind.html)
 """
 unbind_property(b::GBinding) = G_.unbind(b)
+
+mutable struct _GObjectClass
+    g_type_class::_GTypeClass
+    construct_properties::Ptr{GLib._GSList{Ptr{Nothing}}}
+    constructor::Ptr{Nothing}
+    set_property::Ptr{Cvoid}
+    get_property::Ptr{Cvoid}
+    dispose::Ptr{Cvoid}
+    finalize::Ptr{Cvoid}
+    dispatch_properties_changed::Ptr{Cvoid}
+    notify::Ptr{Cvoid}
+    constructed::Ptr{Cvoid}
+    flags::UInt64
+    n_construct_properties::UInt64
+    pspecs::Ptr{Nothing}
+    n_pspecs::UInt64
+    pdummy1::Ptr{Nothing}
+    pdummy2::Ptr{Nothing}
+    pdummy3::Ptr{Nothing}
+end

@@ -31,3 +31,7 @@
 
 ## Toys
 - `HDF5Viewer` is a more extended example that shows the contents of an HDF5 file. Uses `GtkBuilder`, `GtkColumnView`, and `GtkTextView` and does some work in a separate thread to keep the UI responsive.
+
+## Experimental
+
+- `custom_widget` shows how to define a custom GtkWidget with its own "snapshot" callback

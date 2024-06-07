@@ -391,12 +391,12 @@ function __init__gmainloop__()
     ccall((:g_source_set_callback, libglib), Nothing, (Ptr{Nothing}, Ptr{Nothing}, UInt, Ptr{Nothing}),
         src, @cfunction(g_yield, Cint, (UInt,)), 1, C_NULL)
 
-    uv_int_setting = @load_preference("uv_loop_integration", "auto")
+    uv_int_setting = @load_preference("uv_loop_integration", "auto")::String
     if uv_int_setting == "enabled"
         uv_int_enabled[] = true
     elseif uv_int_setting == "disabled"
         uv_int_enabled[] = false
-    elseif uv_int_setting == "auto"
+    else # "auto" or anything else
         # enabled by default only on Macs in an interactive session, where it prevents REPL lag
         uv_int_enabled[] = Sys.isapple() && isinteractive()
     end

@@ -1,3 +1,10 @@
+"""
+    GListStore(t)
+
+Create a GListStore, which is an array of GObjects that implements the
+GListModel interface. The argument `t` can be a Julia type corresponding to a
+GObject type (such as `GtkWidget`) or a symbol (such as :GtkWidget).
+"""
 function GListStore(t)
     t = g_type_from_name(Symbol(t))
     t == 0 && error("Invalid GType")
