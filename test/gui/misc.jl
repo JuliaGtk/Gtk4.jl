@@ -254,6 +254,7 @@ push!(filemenu, quit)
 GLib.submenu(menubar,"File",filemenu)
 
 mb = GtkPopoverMenuBar(menubar)
+@test Gtk4.menu_model(mb) == menubar
 b = GtkBox(:h)
 push!(b,mb)
 win = GtkWindow(b, "Menus", 200, 40)
