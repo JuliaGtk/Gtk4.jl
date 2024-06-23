@@ -86,6 +86,8 @@ end
     push!(nb, four, "tab _four")
     @test pagenumber(nb, four) == 4
     @test length(nb) == 4
+    deleteat!(nb, 3)
+    @test length(nb) == 3
     empty!(nb)
     @test length(nb) == 0
     destroy(w)
