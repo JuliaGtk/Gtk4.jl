@@ -198,21 +198,21 @@ pushfirst!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_start(hb, w); hb)
 delete!(hb::GtkHeaderBar, w::GtkWidget) = (G_.remove(hb, w); hb)
 
 """
-    ask_dialog(question::AbstractString, parent = nothing; timeout = -1)
+    ask_dialog(callback::Function, question::AbstractString, parent = nothing)
+    ask_dialog(question::AbstractString, parent = nothing)
 
-Create a dialog with a message `question` and two buttons "No" and "Yes". Returns `true` if
-"Yes" is selected and `false` if "No" is selected or the dialog (or its parent window
-`parent`) is closed. The optional input `timeout` (disabled by default) can be used to set
-a time in seconds after which the dialog will close and `false` will be returned.
+Create a dialog with a `question` and two buttons "No" and "Yes". The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should take a single boolean argument. This function is called with `true` if "Yes" is selected and `false` if "No" is selected or the dialog is closed.
+
+Keyword arguments:
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `no_text = "No"` to change the text for the response that produces `false`.
+- `yes_text = "Yes"` to change the text for the response that produces `true`.
 """
-ask_dialog(question::AbstractString, parent = nothing; timeout = -1) =
-        ask_dialog(question, "No", "Yes", parent; timeout = timeout)
-
-function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
+function ask_dialog(question::AbstractString, parent = nothing; timeout = -1, no_text = "No", yes_text = "Yes")
     res = Ref{Bool}(false)
     c = Condition()
 
-    ask_dialog(message, no_text, yes_text, parent; timeout) do res_
+    ask_dialog(question, parent; timeout, no_text, yes_text) do res_
         res[] = res_
         notify(c)
     end
@@ -220,8 +220,8 @@ function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing
     return res[]
 end
 
-function ask_dialog(callback::Function, message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
-    dlg = GtkAlertDialog(message)
+function ask_dialog(callback::Function, question::AbstractString, parent = nothing; timeout = -1, no_text = "No", yes_text = "Yes")
+    dlg = GtkAlertDialog(question)
     G_.set_buttons(dlg, [no_text, yes_text])
     
     cancellable = GLib.cancel_after_delay(timeout)
@@ -240,11 +240,13 @@ function ask_dialog(callback::Function, message::AbstractString, no_text, yes_te
 end
 
 """
-    info_dialog(message::AbstractString, parent = nothing; timeout = -1)
+    info_dialog(callback::Function, message::AbstractString, parent = nothing)
+    info_dialog(message::AbstractString, parent = nothing)
 
-Create a dialog with an informational message `message`. Returns when the dialog (or its
-parent window `parent`) is closed. The optional input `timeout` (disabled by default) can be
-used to set a time in seconds after which the dialog will close.
+Create a dialog that displays an informational `message`. The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should take no arguments. This function is called when the user closes the dialog. If `callback` is not provided, this function returns when the dialog is closed.
+
+Keyword arguments:
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
 """ info_dialog
 
 function info_dialog(message::AbstractString, parent = nothing; timeout = -1)
@@ -278,13 +280,13 @@ function info_dialog(callback::Function, message::AbstractString, parent = nothi
 end
 
 """
-    input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing; timeout = -1)
+    input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString, parent = nothing)
+    input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing)
 
-Create a dialog with a message `message` and a text entry. Returns the string in the entry
-when the "Accept" button is pressed, or `entry_default` if "Cancel" is pressed or the dialog
-or its parent window `parent` is closed. The optional input `timeout` (disabled by default)
-can be used to set a time in seconds after which the dialog will close and `entry_default`
-will be returned.
+Create a dialog with a `message` and a text entry. The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should be a function that takes a single `String` argument. When the "Accept" button is pressed, the callback function is called with the user's input text. If "Cancel" is pressed (or the dialog or its parent window `parent` is closed), `entry_default` will be passed to the callback. If no callback function is provided, the string from the dialog is returned.
+
+Keyword arguments:
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
 """
 function input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing; timeout = -1)
     res = Ref{String}("")
@@ -415,14 +417,16 @@ hide(d::GtkNativeDialog) = G_.hide(d)
 destroy(d::GtkNativeDialog) = G_.destroy(d)
 
 """
-    open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, start_folder = "")
+    open_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
+    open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
 
-Create a dialog for choosing a file or folder to be opened. Returns the path chosen by the user, or "" if "Cancel" is pressed or the dialog or its parent window `parent` is closed. The dialog title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
+Create a dialog for choosing a file or folder to be opened. The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should be a function that takes a single `String` argument (or a vector of strings if `multiple` is set to true). The `callback` is called with the file path chosen by the user or "" if "Cancel" is pressed. The dialog title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
 
 Keyword arguments:
-`timeout`: The optional input `timeout` (disabled by default) can be used to set a time in seconds after which the dialog will close and "" will be returned.
-`multiple`: if `true`, multiple files can be selected, and a list of file paths is returned rather than a single path.
-`start_folder`: if set, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `multiple = false`: if `true`, multiple files can be selected, and an array of file paths is returned rather than a single path.
+- `select_folder = false`: set to `true` to allow the user to select a folder rather than a file.  
+- `start_folder = ""`: if set to a path, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
 """
 function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, select_folder = false, start_folder = "")
     res = Ref{String}("")
@@ -468,13 +472,14 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
 end
 
 """
-    save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, start_folder = "")
+    save_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
+    save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
 
-Create a dialog for choosing a file to be saved to. Returns the path chosen by the user, or "" if "Cancel" is pressed or the dialog or its parent window `parent` is closed. The window title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
+Create a dialog for choosing a file to be saved to. The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should be a function that takes a single `String` argument. The `callback` is called with the file path chosen by the user or "" if "Cancel" is pressed. The window title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
 
 Keyword arguments:
-`timeout`: The optional input `timeout` (disabled by default) can be used to set a time in seconds after which the dialog will close and "" will be returned.
-`start_folder`: if set, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `start_folder = ""`: if set, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
 """
 function save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, start_folder = "")
     res = Ref{String}("")
