@@ -1,10 +1,11 @@
 @doc """
     GtkWindow(title::Union{Nothing, AbstractString}, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
 
-Create an empty `GtkWindow` with a title. A default width and height can be
-provided with `w` and `h`.  If `resizable` is false, the window will have a
-fixed size `w` and `h`. If `show_window` is false, the window will be initially
-invisible.
+Create an empty `GtkWindow` with a title. A default width and height can be provided with
+`w` and `h`.  If `resizable` is false, the window will have a fixed size `w` and `h`. If
+`show_window` is false, the window will be initially invisible.
+
+GTK docs: [`GtkWindow`]($(gtkdoc_struc_url("gtk4","Window")))
 """
 function GtkWindow(title::Union{Nothing, AbstractString}, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
     win = G_.Window_new()
@@ -42,8 +43,10 @@ default_size(win::GtkWindow, w, h) = G_.set_default_size(win, w, h)
 """
     isactive(win::GtkWindow)
 
-Returns whether `win` is the currently active toplevel. This is the window that
-receives keystrokes.
+Returns whether `win` is the currently active toplevel. This is the window that receives
+keystrokes.
+
+Related GTK function: [`gtk_window_is_active`()]($(gtkdoc_method_url("gtk4","Window","is_active")))
 """
 isactive(win::GtkWindow) = G_.is_active(win)
 
@@ -61,34 +64,23 @@ end
 """
     close(win::GtkWindow)
 
-Request that `win` is closed.
+Request that `win` be closed.
 
 Related GTK function: [`gtk_window_close`()]($(gtkdoc_method_url("gtk4","Window","close")))
 """
 close(w::GtkWindow) = G_.close(w)
 
 """
-    fullscreen(win::GtkWindow)
+    fullscreen(win::GtkWindow [, mon::GdkMonitor])
 
-Set `win` to fullscreen mode.
+Set `win` to fullscreen mode, optionally on a particular monitor `mon.` The windowing
+system (outside GTK's control) may not allow this, so it may not work on some platforms.
 
 See also [`unfullscreen`](@ref).
 
-Related GTK function: [`gtk_window_fullscreen`()]($(gtkdoc_method_url("gtk4","Window","fullscreen")))
+Related GTK functions: [`gtk_window_fullscreen`()]($(gtkdoc_method_url("gtk4","Window","fullscreen"))), [`gtk_window_fullscreen_on_monitor`()]($(gtkdoc_method_url("gtk4","Window","fullscreen_on_monitor")))
 """
 fullscreen(win::GtkWindow) = G_.fullscreen(win)
-
-"""
-    fullscreen(win::GtkWindow, mon::GdkMonitor)
-
-Set `win` to fullscreen mode on a particular monitor `mon.` The windowing
-system (outside GTK's control) may not allow this, so it may not work on some
-platforms.
-
-See also [`unfullscreen`](@ref).
-
-Related GTK function: [`gtk_window_fullscreen_on_monitor`()]($(gtkdoc_method_url("gtk4","Window","fullscreen_on_monitor")))
-"""
 fullscreen(win::GtkWindow, mon::GdkMonitor) = G_.fullscreen_on_monitor(win, mon)
 
 """
@@ -136,12 +128,11 @@ Related GTK function: [`gtk_window_unmaximize`()]($(gtkdoc_method_url("gtk4","Wi
 unmaximize(win::GtkWindow) = G_.unmaximize(win)
 
 """
-    present(win::GtkWindow)
-    present(win::GtkWindow, timestamp)
+    present(win::GtkWindow [, timestamp])
 
-Presents a window to the user. Usually means move it to the front. According to
-the GTK docs, this function "should not be used" without including a timestamp
-for the user's request.
+Presents a window to the user. Usually means move it to the front. According to the GTK
+docs, this function "should not be used" without including a timestamp for the user's
+request. However, it's not clear from the GTK docs what the timestamp is exactly.
 
 Related GTK function: [`gtk_window_present`()]($(gtkdoc_method_url("gtk4","Window","present")))
 Related GTK function: [`gtk_window_present_with_time`()]($(gtkdoc_method_url("gtk4","Window","present_with_time")))
@@ -181,6 +172,8 @@ end
 
 Create an empty `GtkApplicationWindow` for a `GtkApplication` app and a title.
 Keyword arguments can be used to set GObject properties.
+
+GTK docs: [`GtkApplicationWindow`]($(gtkdoc_struc_url("gtk4","ApplicationWindow")))
 """
 function GtkApplicationWindow(app::GtkApplication, title::AbstractString; kwargs...)
     win = GtkApplicationWindow(app; kwargs...)
@@ -201,12 +194,18 @@ delete!(hb::GtkHeaderBar, w::GtkWidget) = (G_.remove(hb, w); hb)
     ask_dialog(callback::Function, question::AbstractString, parent = nothing)
     ask_dialog(question::AbstractString, parent = nothing)
 
-Create a dialog with a `question` and two buttons "No" and "Yes". The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should take a single boolean argument. This function is called with `true` if "Yes" is selected and `false` if "No" is selected or the dialog is closed.
+Create a dialog with a `question` and two buttons "No" and "Yes". The form with a
+`callback` function argument is intended for use in GUI callbacks, while the form without
+`callback` is only useful in interactive scripts. If `callback` is provided, it should take
+a single boolean argument. This function is called with `true` if "Yes" is selected and
+`false` if "No" is selected or the dialog is closed. Passing in a `parent` window is
+strongly recommended. The dialog will appear in front of the parent window by default.
 
 Keyword arguments:
 - `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
 - `no_text = "No"` to change the text for the response that produces `false`.
 - `yes_text = "Yes"` to change the text for the response that produces `true`.
+- `modal = true` sets whether the dialog is modal (i.e. stays on top of its parent window)
 """
 function ask_dialog(question::AbstractString, parent = nothing; timeout = -1, no_text = "No", yes_text = "Yes")
     res = Ref{Bool}(false)
@@ -220,8 +219,8 @@ function ask_dialog(question::AbstractString, parent = nothing; timeout = -1, no
     return res[]
 end
 
-function ask_dialog(callback::Function, question::AbstractString, parent = nothing; timeout = -1, no_text = "No", yes_text = "Yes")
-    dlg = GtkAlertDialog(question)
+function ask_dialog(callback::Function, question::AbstractString, parent = nothing; timeout = -1, no_text = "No", yes_text = "Yes", modal = true)
+    dlg = GtkAlertDialog(question; modal = modal)
     G_.set_buttons(dlg, [no_text, yes_text])
     
     cancellable = GLib.cancel_after_delay(timeout)
@@ -243,10 +242,16 @@ end
     info_dialog(callback::Function, message::AbstractString, parent = nothing)
     info_dialog(message::AbstractString, parent = nothing)
 
-Create a dialog that displays an informational `message`. The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should take no arguments. This function is called when the user closes the dialog. If `callback` is not provided, this function returns when the dialog is closed.
+Create a dialog that displays an informational `message`. The form with a `callback`
+function argument is intended for use in GUI callbacks, while the form without `callback`
+is only useful in interactive scripts. If `callback` is provided, it should take no
+arguments. This function is called when the user closes the dialog. If `callback` is not
+provided, this function returns when the dialog is closed. Passing in a `parent` window
+is strongly recommended. The dialog will appear in front of the parent window by default.
 
 Keyword arguments:
 - `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `modal = true` sets whether the dialog is modal (i.e. stays on top of its parent window)
 """ info_dialog
 
 function info_dialog(message::AbstractString, parent = nothing; timeout = -1)
@@ -259,8 +264,8 @@ function info_dialog(message::AbstractString, parent = nothing; timeout = -1)
     return
 end
 
-function info_dialog(callback::Function, message::AbstractString, parent = nothing; timeout = -1)
-    dlg = GtkAlertDialog(message)
+function info_dialog(callback::Function, message::AbstractString, parent = nothing; timeout = -1, modal = true)
+    dlg = GtkAlertDialog(message; modal = modal)
     
     function cb(dlg, resobj)
         try
@@ -283,7 +288,15 @@ end
     input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString, parent = nothing)
     input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing)
 
-Create a dialog with a `message` and a text entry. The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should be a function that takes a single `String` argument. When the "Accept" button is pressed, the callback function is called with the user's input text. If "Cancel" is pressed (or the dialog or its parent window `parent` is closed), `entry_default` will be passed to the callback. If no callback function is provided, the string from the dialog is returned.
+Create a dialog with a `message` and a text entry. The form with a `callback` function
+argument is intended for use in GUI callbacks, while the form without `callback` is only
+useful in interactive scripts. If `callback` is provided, it should be a function that
+takes a single `String` argument. When the "Accept" button is pressed, the callback
+function is called with the user's input text. If "Cancel" is pressed (or the dialog or its
+parent window `parent` is closed), `entry_default` will be passed to the callback. If no
+callback function is provided, the string from the dialog is returned. Passing in a
+`parent` window is strongly recommended. The dialog will appear in front of the parent
+window by default.
 
 Keyword arguments:
 - `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
@@ -420,7 +433,14 @@ destroy(d::GtkNativeDialog) = G_.destroy(d)
     open_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
     open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
 
-Create a dialog for choosing a file or folder to be opened. The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should be a function that takes a single `String` argument (or a vector of strings if `multiple` is set to true). The `callback` is called with the file path chosen by the user or "" if "Cancel" is pressed. The dialog title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
+Create a dialog for choosing a file or folder to be opened. The form with a `callback`
+function argument is intended for use in GUI callbacks, while the form without `callback`
+is only useful in interactive scripts. If `callback` is provided, it should be a function
+that takes a single `String` argument (or a vector of strings if `multiple` is set to
+true). The `callback` is called with the file path chosen by the user or "" if "Cancel" is
+pressed. The dialog title is set using `title`. Passing in a `parent` window is strongly
+recommended. The dialog will appear in front of the parent window by default. The argument
+`filters` can be used to show only directory contents that match certain file extensions.
 
 Keyword arguments:
 - `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
@@ -475,7 +495,14 @@ end
     save_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
     save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
 
-Create a dialog for choosing a file to be saved to. The form with a `callback` function argument is intended for use in GUI callbacks, while the form without `callback` is only useful in interactive scripts. If `callback` is provided, it should be a function that takes a single `String` argument. The `callback` is called with the file path chosen by the user or "" if "Cancel" is pressed. The window title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
+Create a dialog for choosing a file to be saved to. The form with a `callback` function
+argument is intended for use in GUI callbacks, while the form without `callback` is only
+useful in interactive scripts. If `callback` is provided, it should be a function that
+takes a single `String` argument. The `callback` is called with the file path chosen by the
+user or "" if "Cancel" is pressed. The window title is set using `title`. Passing in a
+`parent` window is strongly recommended. The dialog will appear in front of the parent
+window by default. The argument `filters` can be used to show only directory contents that
+match certain file extensions.
 
 Keyword arguments:
 - `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
@@ -564,9 +591,11 @@ end
 
 ## New dialogs (new in GTK 4.10)
 
-function GtkAlertDialog(message::AbstractString)
+function GtkAlertDialog(message::AbstractString; kwargs...)
     ptr = ccall((:gtk_alert_dialog_new, libgtk4), Ptr{GObject}, (Ptr{UInt8},), message)
-    GtkAlertDialogLeaf(ptr, true)
+    d = GtkAlertDialogLeaf(ptr, true)
+    GLib.setproperties!(d; kwargs...)
+    d
 end
 
 show(dlg::GtkAlertDialog, parent=nothing) = G_.show(dlg, parent)

@@ -42,7 +42,7 @@ color_dialog("What is your favorite color?", main_window; timeout = 0.25)
 
 sleep(1.0)
 
-input_dialog("What is the meaning of life, the universe, and everything?", "42", (("Cancel", 0), ("Accept", 1)), main_window; timeout = 0.25)
+input_dialog("Whadya know?", "Not much, you?", main_window; timeout = 0.25)
 
 sleep(1.0)
 
