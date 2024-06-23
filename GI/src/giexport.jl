@@ -61,7 +61,7 @@ end
 
 function struct_cache_expr!(exprs)
     gboxed_types_list = quote
-        gboxed_types = Any[]
+        const gboxed_types = Any[]
     end
     push!(exprs,unblock(gboxed_types_list))
 end
@@ -89,10 +89,12 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         fields=get_fields(ssi)
         if only_opaque && length(fields)>0 && !in(name,import_as_opaque)
             imported-=1
+            push!(struct_skiplist,name)
             continue
         end
         if occursin("Private",String(name))
             imported-=1
+            push!(struct_skiplist,name)
             continue
         end
         if is_gtype_struct(ssi) # these are "class structures" and according to the documentation we probably don't need them in bindings
@@ -120,19 +122,24 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         length(fields)>0 && push!(exports.args,get_struct_name(ssi,false))
     end
 
-    for ss in structs
+    if print_summary
+        printstyled("Generated ",imported," structs out of ",length(structs),"\n";color=:green)
+    end
+
+    struct_skiplist
+end
+
+function struct_constructor_exprs!(exprs,ns;constructor_skiplist=[], struct_skiplist=[], exclude_deprecated=true,first_list=[])
+    s=get_non_skipped(ns,GIStructInfo,struct_skiplist,exclude_deprecated)
+    structs = get_name.(s)
+    for ss in vcat(first_list, structs)
+        println("struct constructor: ",ss)
         ssi=gi_find_by_name(ns,ss)
         constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
         if !isempty(constructors)
             append!(exprs,constructors)
         end
     end
-
-    if print_summary
-        printstyled("Generated ",imported," structs out of ",length(structs),"\n";color=:green)
-    end
-
-    struct_skiplist
 end
 
 function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false,exclude_deprecated=true)
@@ -171,13 +178,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
         end
         push!(exprs,unblock(gboxed_types_init))
     end
-
     
-    for ssi in ss
-        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
-        isempty(constructors) || append!(exprs,constructors)
-    end
-
     if print_summary
         printstyled("Generated ",imported," structs out of ",length(ss),"\n";color=:green)
     end
@@ -219,6 +220,7 @@ function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque;
     end
     all_interfaces!(exprs,exports,ns; skiplist = interface_skiplist, exclude_deprecated = exclude_deprecated)
     c = all_objects!(exprs,exports,ns;handled=[:Object],skiplist=object_skiplist,output_cache_init = output_object_cache_init, output_cache_define = output_object_cache_define, constructor_skiplist = object_constructor_skiplist,exclude_deprecated=exclude_deprecated)
+    struct_constructor_exprs!(exprs,ns;constructor_skiplist=constructor_skiplist,exclude_deprecated=exclude_deprecated,struct_skiplist=struct_skiplist,first_list=first_list)
     if doc_xml !== nothing
         append_object_docs!(exprs, doc_prefix, doc_xml, c, ns; skiplist = doc_skiplist)
     end

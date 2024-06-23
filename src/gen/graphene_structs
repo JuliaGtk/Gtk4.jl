@@ -1,6 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    gboxed_types = Any[]
+    const gboxed_types = Any[]
     begin
         struct _GrapheneSimd4F
             x::Float32
@@ -101,12 +101,6 @@ $(Expr(:toplevel, quote
                     GrapheneSize(p, owns)
                 end
         end
-    end
-    function GrapheneVec3()
-        G_.Vec3_alloc()
-    end
-    function GrapheneSize()
-        G_.Size_alloc()
     end
     begin
         struct _GrapheneBox
@@ -570,6 +564,18 @@ $(Expr(:toplevel, quote
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
+    const gtype_wrapper_cache = Dict{Symbol, Type}()
+    begin
+        gtype_wrapper_cache_init() = begin
+                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+            end
+    end
+    function GrapheneVec3()
+        G_.Vec3_alloc()
+    end
+    function GrapheneSize()
+        G_.Size_alloc()
+    end
     function GrapheneBox()
         G_.Box_alloc()
     end
@@ -611,12 +617,6 @@ $(Expr(:toplevel, quote
     end
     function GrapheneVec4()
         G_.Vec4_alloc()
-    end
-    const gtype_wrapper_cache = Dict{Symbol, Type}()
-    begin
-        gtype_wrapper_cache_init() = begin
-                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
-            end
     end
     export GrapheneSimd4F, _GrapheneSimd4F, GrapheneVec3, _GrapheneVec3, GrapheneSimd4X4F, _GrapheneSimd4X4F, GrapheneSize, _GrapheneSize, GrapheneBox, _GrapheneBox, GrapheneEuler, _GrapheneEuler, GrapheneFrustum, _GrapheneFrustum, GrapheneMatrix, _GrapheneMatrix, GraphenePlane, _GraphenePlane, GraphenePoint, _GraphenePoint, GraphenePoint3D, _GraphenePoint3D, GrapheneQuad, _GrapheneQuad, GrapheneQuaternion, _GrapheneQuaternion, GrapheneRay, _GrapheneRay, GrapheneRect, _GrapheneRect, GrapheneSphere, _GrapheneSphere, GrapheneTriangle, _GrapheneTriangle, GrapheneVec2, _GrapheneVec2, GrapheneVec4, _GrapheneVec4
 end))

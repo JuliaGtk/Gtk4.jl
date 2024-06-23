@@ -1,6 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    gboxed_types = Any[]
+    const gboxed_types = Any[]
     mutable struct PangoLanguage <: GBoxed
         handle::Ptr{PangoLanguage}
         begin
@@ -320,15 +320,6 @@ $(Expr(:toplevel, quote
                     PangoGlyphItem(p, owns)
                 end
         end
-    end
-    function PangoFontDescription()
-        G_.FontDescription_new()
-    end
-    function PangoItem()
-        G_.Item_new()
-    end
-    function PangoGlyphString()
-        G_.GlyphString_new()
     end
     begin
         struct _PangoAttrColor
@@ -762,15 +753,6 @@ $(Expr(:toplevel, quote
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
-    function PangoAttrList()
-        G_.AttrList_new()
-    end
-    function PangoScriptIter(_text::Union{AbstractString, Symbol}, _length::Integer)
-        G_.ScriptIter_new(_text, _length)
-    end
-    function PangoTabArray(_initial_size::Integer, _positions_in_pixels::Bool)
-        G_.TabArray_new(_initial_size, _positions_in_pixels)
-    end
     const gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type PangoContext <: GObject end
@@ -1024,6 +1006,24 @@ $(Expr(:toplevel, quote
     end
     function PangoLayout(_context::PangoContext)
         G_.Layout_new(_context)
+    end
+    function PangoFontDescription()
+        G_.FontDescription_new()
+    end
+    function PangoItem()
+        G_.Item_new()
+    end
+    function PangoGlyphString()
+        G_.GlyphString_new()
+    end
+    function PangoAttrList()
+        G_.AttrList_new()
+    end
+    function PangoScriptIter(_text::Union{AbstractString, Symbol}, _length::Integer)
+        G_.ScriptIter_new(_text, _length)
+    end
+    function PangoTabArray(_initial_size::Integer, _positions_in_pixels::Bool)
+        G_.TabArray_new(_initial_size, _positions_in_pixels)
     end
     function on_items_changed(f, object::PangoFontFamily, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)

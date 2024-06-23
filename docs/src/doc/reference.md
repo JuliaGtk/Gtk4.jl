@@ -46,6 +46,8 @@ Gtk4.toplevels
 
 ```@docs
 Gtk4.configure!
+Gtk4.selected_string!
+Gtk4.selected_string
 ```
 
 ## Dialogs
@@ -85,6 +87,8 @@ Gtk4.add_action_shortcut
 
 ```@docs
 Gtk4.buffer
+Gtk4.undo!
+Gtk4.redo!
 Gtk4.create_mark
 Gtk4.place_cursor
 Gtk4.scroll_to

@@ -1,5 +1,98 @@
 quote
 $(Expr(:toplevel, quote
+    function ContentFormats_new(_mime_types)
+        _mime_types_maybe = nothing_to_null(_mime_types)
+        _n_mime_types = length(_mime_types)
+        ret = ccall(("gdk_content_formats_new", libgtk4), Ptr{GdkContentFormats}, (Ptr{Cstring}, UInt32), _mime_types_maybe, _n_mime_types)
+        ret2 = convert(GdkContentFormats, ret, true)
+        ret2
+    end
+    function ContentFormats_new_for_gtype(_type::Integer)
+        ret = ccall(("gdk_content_formats_new_for_gtype", libgtk4), Ptr{GdkContentFormats}, (UInt64,), _type)
+        ret2 = convert(GdkContentFormats, ret, true)
+        ret2
+    end
+    function contain_gtype(instance::GdkContentFormats, _type::Integer)
+        ret = ccall(("gdk_content_formats_contain_gtype", libgtk4), Cint, (Ptr{GdkContentFormats}, UInt64), instance, _type)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function contain_mime_type(instance::GdkContentFormats, _mime_type::Union{AbstractString, Symbol})
+        ret = ccall(("gdk_content_formats_contain_mime_type", libgtk4), Cint, (Ptr{GdkContentFormats}, Cstring), instance, _mime_type)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_gtypes(instance::GdkContentFormats)
+        m_n_gtypes = Ref{UInt64}()
+        ret = ccall(("gdk_content_formats_get_gtypes", libgtk4), Ptr{UInt64}, (Ptr{GdkContentFormats}, Ptr{UInt64}), instance, m_n_gtypes)
+        ret2 = collect(unsafe_wrap(Vector{UInt64}, ret, m_n_gtypes[]))
+        _n_gtypes = m_n_gtypes[]
+        ret2
+    end
+    function get_mime_types(instance::GdkContentFormats)
+        m_n_mime_types = Ref{UInt64}()
+        ret = ccall(("gdk_content_formats_get_mime_types", libgtk4), Ptr{Cstring}, (Ptr{GdkContentFormats}, Ptr{UInt64}), instance, m_n_mime_types)
+        ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_n_mime_types[]))
+        _n_mime_types = m_n_mime_types[]
+        ret2
+    end
+    function match(instance::GdkContentFormats, _second::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_match", libgtk4), Cint, (Ptr{GdkContentFormats}, Ptr{GdkContentFormats}), instance, _second)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function match_gtype(instance::GdkContentFormats, _second::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_match_gtype", libgtk4), UInt64, (Ptr{GdkContentFormats}, Ptr{GdkContentFormats}), instance, _second)
+        ret
+    end
+    function match_mime_type(instance::GdkContentFormats, _second::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_match_mime_type", libgtk4), Cstring, (Ptr{GdkContentFormats}, Ptr{GdkContentFormats}), instance, _second)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function print(instance::GdkContentFormats, _string::Union{GString, Ref{_GString}})
+        ret = ccall(("gdk_content_formats_print", libgtk4), Nothing, (Ptr{GdkContentFormats}, Ptr{_GString}), instance, _string)
+        nothing
+    end
+    function ref(instance::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_ref", libgtk4), Ptr{GdkContentFormats}, (Ptr{GdkContentFormats},), instance)
+        ret2 = convert(GdkContentFormats, ret, true)
+        ret2
+    end
+    function to_string(instance::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_to_string", libgtk4), Cstring, (Ptr{GdkContentFormats},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function union(instance::GdkContentFormats, _second::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_union", libgtk4), Ptr{GdkContentFormats}, (Ptr{GdkContentFormats}, Ptr{GdkContentFormats}), instance, _second)
+        ret2 = convert(GdkContentFormats, ret, true)
+        ret2
+    end
+    function union_deserialize_gtypes(instance::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_union_deserialize_gtypes", libgtk4), Ptr{GdkContentFormats}, (Ptr{GdkContentFormats},), instance)
+        ret2 = convert(GdkContentFormats, ret, true)
+        ret2
+    end
+    function union_deserialize_mime_types(instance::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_union_deserialize_mime_types", libgtk4), Ptr{GdkContentFormats}, (Ptr{GdkContentFormats},), instance)
+        ret2 = convert(GdkContentFormats, ret, true)
+        ret2
+    end
+    function union_serialize_gtypes(instance::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_union_serialize_gtypes", libgtk4), Ptr{GdkContentFormats}, (Ptr{GdkContentFormats},), instance)
+        ret2 = convert(GdkContentFormats, ret, true)
+        ret2
+    end
+    function union_serialize_mime_types(instance::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_union_serialize_mime_types", libgtk4), Ptr{GdkContentFormats}, (Ptr{GdkContentFormats},), instance)
+        ret2 = convert(GdkContentFormats, ret, true)
+        ret2
+    end
+    function unref(instance::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_unref", libgtk4), Nothing, (Ptr{GdkContentFormats},), instance)
+        nothing
+    end
     function ContentFormatsBuilder_new()
         ret = ccall(("gdk_content_formats_builder_new", libgtk4), Ptr{GdkContentFormatsBuilder}, ())
         ret2 = convert(GdkContentFormatsBuilder, ret, true)
@@ -234,6 +327,50 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_rectangle_union", libgtk4), Nothing, (Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _src2, m_dest)
         _dest = m_dest[]
         _dest
+    end
+    function TextureDownloader_new(_texture::GdkTexture)
+        ret = ccall(("gdk_texture_downloader_new", libgtk4), Ptr{GdkTextureDownloader}, (Ptr{GObject},), _texture)
+        ret2 = convert(GdkTextureDownloader, ret, true)
+        ret2
+    end
+    function copy(instance::GdkTextureDownloader)
+        ret = ccall(("gdk_texture_downloader_copy", libgtk4), Ptr{GdkTextureDownloader}, (Ptr{GdkTextureDownloader},), instance)
+        ret2 = convert(GdkTextureDownloader, ret, true)
+        ret2
+    end
+    function download_bytes(instance::GdkTextureDownloader)
+        m_out_stride = Ref{UInt64}()
+        ret = ccall(("gdk_texture_downloader_download_bytes", libgtk4), Ptr{GBytes}, (Ptr{GdkTextureDownloader}, Ptr{UInt64}), instance, m_out_stride)
+        ret2 = convert(GBytes, ret, true)
+        _out_stride = m_out_stride[]
+        (ret2, _out_stride)
+    end
+    function download_into(instance::GdkTextureDownloader, _data, _stride::Integer)
+        _data_arr = convert(Vector{UInt8}, _data)
+        ret = ccall(("gdk_texture_downloader_download_into", libgtk4), Nothing, (Ptr{GdkTextureDownloader}, Ptr{UInt8}, UInt64), instance, _data_arr, _stride)
+        nothing
+    end
+    function free(instance::GdkTextureDownloader)
+        ret = ccall(("gdk_texture_downloader_free", libgtk4), Nothing, (Ptr{GdkTextureDownloader},), instance)
+        nothing
+    end
+    function get_format(instance::GdkTextureDownloader)
+        ret = ccall(("gdk_texture_downloader_get_format", libgtk4), UInt32, (Ptr{GdkTextureDownloader},), instance)
+        ret2 = MemoryFormat(ret)
+        ret2
+    end
+    function get_texture(instance::GdkTextureDownloader)
+        ret = ccall(("gdk_texture_downloader_get_texture", libgtk4), Ptr{GObject}, (Ptr{GdkTextureDownloader},), instance)
+        ret2 = convert(GdkTexture, ret, false)
+        ret2
+    end
+    function set_format(instance::GdkTextureDownloader, _format)
+        ret = ccall(("gdk_texture_downloader_set_format", libgtk4), Nothing, (Ptr{GdkTextureDownloader}, UInt32), instance, _format)
+        nothing
+    end
+    function set_texture(instance::GdkTextureDownloader, _texture::GdkTexture)
+        ret = ccall(("gdk_texture_downloader_set_texture", libgtk4), Nothing, (Ptr{GdkTextureDownloader}, Ptr{GObject}), instance, _texture)
+        nothing
     end
     function ToplevelLayout_new()
         ret = ccall(("gdk_toplevel_layout_new", libgtk4), Ptr{GdkToplevelLayout}, ())
@@ -1946,11 +2083,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_texture_new_from_resource", libgtk4), Ptr{GObject}, (Cstring,), _resource_path)
         ret2 = convert(GdkTexture, ret, true)
         ret2
-    end
-    function download(instance::GdkTexture, _data, _stride::Integer)
-        _data_arr = convert(Vector{UInt8}, _data)
-        ret = ccall(("gdk_texture_download", libgtk4), Nothing, (Ptr{GObject}, Ptr{UInt8}, UInt64), instance, _data_arr, _stride)
-        nothing
     end
     function get_format(instance::GdkTexture)
         ret = ccall(("gdk_texture_get_format", libgtk4), UInt32, (Ptr{GObject},), instance)
