@@ -16,8 +16,8 @@ v = GtkTextView(b)
 
 push!(w, v)
 
-its = _GtkTextIter(b, 1)
-ite = _GtkTextIter(b, 2)
+its = GtkTextIter(b, 1)
+ite = GtkTextIter(b, 2)
 
 @test buffer(its) == b
 @test (its:ite).text == "t"
@@ -25,10 +25,10 @@ ite = _GtkTextIter(b, 2)
 splice!(b, its:ite)
 @test b.text == "est"
 
-insert!(b, _GtkTextIter(b, 1), "t")
+insert!(b, GtkTextIter(b, 1), "t")
 @test b.text == "test"
 
-it = _GtkTextIter(b)
+it = GtkTextIter(b)
 @test it.line == 0 #lines are 0-based
 @test it.starts_line == true
 @test it.ends_line == false
@@ -40,7 +40,7 @@ it = _GtkTextIter(b)
 @test it.ends_sentence == false
 
 b.text = "line1\nline2"
-it = Ref(_GtkTextIter(b))
+it = GtkTextIter(b)
 it.line = 1
 @test it.line == 1
 
@@ -58,18 +58,18 @@ it.visible_line_index = 0
 
 @test it.can_insert
 
-it1 = _GtkTextIter(b, 1)
-it2 = _GtkTextIter(b, 1)
+it1 = GtkTextIter(b, 1)
+it2 = GtkTextIter(b, 1)
 @test it1 == it2
-it2 = _GtkTextIter(b, 2)
+it2 = GtkTextIter(b, 2)
 @test (it1 == it2) == false
 @test it1 < it2
 @test it1 <= it2
 @test it2 > it1
 it2 -= 1
-@test Ref(it1) == it2
+@test it1 == it2
 
-it3 = _GtkTextIter(b, 2, 1)
+it3 = GtkTextIter(b, 2, 1)
 m = GtkTextMark()
 #it4 = _GtkTextIter(b, m)
 
@@ -80,17 +80,16 @@ show(m)
 # tags
 Gtk4.create_tag(b, "big"; size_points = 24)
 Gtk4.create_tag(b, "red"; foreground = "red")
-f(buffer)=Gtk4.apply_tag(buffer, "big", _GtkTextIter(b, 1), _GtkTextIter(b, 6))
+f(buffer)=Gtk4.apply_tag(buffer, "big", GtkTextIter(b, 1), GtkTextIter(b, 6))
 user_action(f, b)
-Gtk4.apply_tag(b, "red", _GtkTextIter(b, 1), _GtkTextIter(b, 6))
-Gtk4.remove_tag(b, "red", _GtkTextIter(b, 1), _GtkTextIter(b, 3))
-Gtk4.remove_all_tags(b, _GtkTextIter(b, 4), _GtkTextIter(b, 6))
+Gtk4.apply_tag(b, "red", GtkTextIter(b, 1), GtkTextIter(b, 6))
+Gtk4.remove_tag(b, "red", GtkTextIter(b, 1), GtkTextIter(b, 3))
+Gtk4.remove_all_tags(b, GtkTextIter(b, 4), GtkTextIter(b, 6))
 
 # getproperty
 @test it1.offset == 0 #Gtk indices are zero based
 @test it2.offset == 0
 
-it1 = Ref(it1)
 it1.offset = 1
 @test it1.offset == 1
 
@@ -106,8 +105,8 @@ skip(it2, :backward_line)
 skip(it2, :forward_line)
 @test it2.line == 1
 skip(it2, :forward_to_line_end)
-it1 = Ref(_GtkTextIter(b, it2.offset-1))
-(it1[]:it2[]).text == "2"
+it1 = GtkTextIter(b, it2.offset-1)
+(it1:it2).text == "2"
 
 whats = [:forward_word_end, :backward_word_start, :backward_sentence_start, :forward_sentence_end]
 for what in whats
@@ -176,15 +175,15 @@ tv.buffer = b
 
 insert!(b, "text")
 
-splice!(b, _GtkTextIter(b, 5))
+splice!(b, GtkTextIter(b, 5))
 
 @test b.text == "tex"
 
 b[String] = "text"
 
-st=_GtkTextIter(b, 1)
-mi=_GtkTextIter(b, 3)
-en=_GtkTextIter(b, 5)
+st=GtkTextIter(b, 1)
+mi=GtkTextIter(b, 3)
+en=GtkTextIter(b, 5)
 
 @test in(mi, st:en)
 
@@ -195,12 +194,12 @@ splice!(tv)
 @test b.text == ""
 
 b.text = "new"
-st = _GtkTextIter(b, 4)
+st = GtkTextIter(b, 4)
 place_cursor(b, st)
 insert!(tv, " text")
 @test b.text == "new text"
 
-en = _GtkTextIter(b, 9)
+en = GtkTextIter(b, 9)
 splice!(tv, en)
 @test b.text == "new tex"
 
