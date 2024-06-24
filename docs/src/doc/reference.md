@@ -52,8 +52,8 @@ Gtk4.selected_string
 
 ## Dialogs
 ```@docs
-Gtk4.ask_dialog
 Gtk4.info_dialog
+Gtk4.ask_dialog
 Gtk4.input_dialog
 Gtk4.open_dialog
 Gtk4.save_dialog

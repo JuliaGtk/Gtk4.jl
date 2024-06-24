@@ -112,7 +112,7 @@ include("tree.jl")
 include("deprecated.jl")
 include("basic_exports.jl")
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
     G_.get_major_version(),
     G_.get_minor_version(),
     G_.get_micro_version())
@@ -125,6 +125,12 @@ end
 function __init__()
     in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
 
+    # check that GTK is compatible with what the GI generated code expects
+    vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
+    if vercheck !== nothing
+        @warn "Gtk4 version check failed: $vercheck"
+    end
+
     # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
     ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
         dirname(adwaita_icons_dir),
@@ -132,6 +138,15 @@ function __init__()
         joinpath(dirname(GTK4_jll.libgtk4_path::String), "..", "share"),
          Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
      ]), Sys.iswindows() ? ";" : ":")
+
+    if !Sys.iswindows()
+        # Help GTK find modules for printing, media, and input backends
+        # May have consequences for GTK3 programs spawned by Julia
+        ENV["GTK_PATH"] = joinpath(dirname(GTK4_jll.libgtk4_path::String),"gtk-4.0")
+        
+        # Following also works for finding the printing backends (and also may affect GTK3 programs)
+        #ENV["GTK_EXE_PREFIX"] = GTK4_jll.artifact_dir
+    end
 
     gtype_wrapper_cache_init()
     gboxed_cache_init()

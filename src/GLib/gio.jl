@@ -36,3 +36,17 @@ end
 cancel(c::GCancellable) = G_.cancel(c)
 iscancelled(c::GCancellable) = G_.is_cancelled(c)
 
+"""
+    cancel_after_delay(timeout)
+
+Creates and returns a `GCancellable` and after `timeout` seconds, cancels it.
+"""
+function cancel_after_delay(timeout)
+    cancellable = GCancellable()
+    if timeout > 0
+        Timer(timeout) do timer
+            cancel(cancellable)
+        end
+    end
+    cancellable
+end

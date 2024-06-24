@@ -14,7 +14,7 @@ constructor_skiplist=[:new_first]
 object_skiplist=[:CClosureExpression,:ClosureExpression,:ParamSpecExpression,:PrintUnixDialog,:PageSetupUnixDialog]
 obj_constructor_skiplist=[:new_from_resource,:new_with_mnemonic,:new_with_text,:new_with_entry,:new_with_model_and_entry,:new_for_resource,:new_from_icon_name]
 
-GI.export_struct_exprs!(ns,path, "gtk4", struct_skiplist, [:BitsetIter,:BuildableParser]; doc_xml = d, object_skiplist = object_skiplist, constructor_skiplist = constructor_skiplist, output_boxed_cache_init = false, output_object_cache_define = false, output_object_cache_init = false, object_constructor_skiplist = obj_constructor_skiplist, doc_skiplist = [:Builder], exclude_deprecated = false)
+GI.export_struct_exprs!(ns,path, "gtk4", struct_skiplist, [:BitsetIter,:BuildableParser]; doc_xml = d, object_skiplist = object_skiplist, constructor_skiplist = constructor_skiplist, output_boxed_cache_init = false, output_boxed_types_def = false, output_object_cache_define = false, output_object_cache_init = false, object_constructor_skiplist = obj_constructor_skiplist, doc_skiplist = [:Builder], exclude_deprecated = false)
 
 ## object methods
 skiplist=[:create_closure,:activate_cell,:event,:start_editing,:filter_keypress,:append_node,:im_context_filter_keypress,:get_backlog,:get,:get_default,:get_for_display,:get_current_event_state,:get_axes]

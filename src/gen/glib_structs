@@ -101,9 +101,14 @@ $(Expr(:toplevel, quote
         mutable struct GDebugKey
             handle::Ptr{_GDebugKey}
         end
-        unsafe_convert(::Type{Ptr{_GDebugKey}}, box::GDebugKey) = begin
-                convert(Ptr{_GDebugKey}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GDebugKey}}, box::GDebugKey) = begin
+                    convert(Ptr{_GDebugKey}, box.handle)
+                end
+            convert(::Type{GDebugKey}, p::Ptr{_GDebugKey}, owns = false) = begin
+                    GDebugKey(p, owns)
+                end
+        end
     end
     mutable struct GKeyFile <: GBoxed
         handle::Ptr{GKeyFile}
@@ -132,9 +137,14 @@ $(Expr(:toplevel, quote
         mutable struct GLogField
             handle::Ptr{_GLogField}
         end
-        unsafe_convert(::Type{Ptr{_GLogField}}, box::GLogField) = begin
-                convert(Ptr{_GLogField}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GLogField}}, box::GLogField) = begin
+                    convert(Ptr{_GLogField}, box.handle)
+                end
+            convert(::Type{GLogField}, p::Ptr{_GLogField}, owns = false) = begin
+                    GLogField(p, owns)
+                end
+        end
     end
     mutable struct GMainContext <: GBoxed
         handle::Ptr{GMainContext}
@@ -239,9 +249,14 @@ $(Expr(:toplevel, quote
         mutable struct GOptionEntry
             handle::Ptr{_GOptionEntry}
         end
-        unsafe_convert(::Type{Ptr{_GOptionEntry}}, box::GOptionEntry) = begin
-                convert(Ptr{_GOptionEntry}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GOptionEntry}}, box::GOptionEntry) = begin
+                    convert(Ptr{_GOptionEntry}, box.handle)
+                end
+            convert(::Type{GOptionEntry}, p::Ptr{_GOptionEntry}, owns = false) = begin
+                    GOptionEntry(p, owns)
+                end
+        end
     end
     mutable struct GPatternSpec <: GBoxed
         handle::Ptr{GPatternSpec}
@@ -312,9 +327,14 @@ $(Expr(:toplevel, quote
         mutable struct GScannerConfig
             handle::Ptr{_GScannerConfig}
         end
-        unsafe_convert(::Type{Ptr{_GScannerConfig}}, box::GScannerConfig) = begin
-                convert(Ptr{_GScannerConfig}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GScannerConfig}}, box::GScannerConfig) = begin
+                    convert(Ptr{_GScannerConfig}, box.handle)
+                end
+            convert(::Type{GScannerConfig}, p::Ptr{_GScannerConfig}, owns = false) = begin
+                    GScannerConfig(p, owns)
+                end
+        end
     end
     begin
         mutable struct GSource <: GBoxed
@@ -346,9 +366,14 @@ $(Expr(:toplevel, quote
         mutable struct GSourceCallbackFuncs
             handle::Ptr{_GSourceCallbackFuncs}
         end
-        unsafe_convert(::Type{Ptr{_GSourceCallbackFuncs}}, box::GSourceCallbackFuncs) = begin
-                convert(Ptr{_GSourceCallbackFuncs}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GSourceCallbackFuncs}}, box::GSourceCallbackFuncs) = begin
+                    convert(Ptr{_GSourceCallbackFuncs}, box.handle)
+                end
+            convert(::Type{GSourceCallbackFuncs}, p::Ptr{_GSourceCallbackFuncs}, owns = false) = begin
+                    GSourceCallbackFuncs(p, owns)
+                end
+        end
     end
     begin
         struct _GString
@@ -362,7 +387,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GString) = begin
                         ccall(("g_gstring_get_type", libgobject), GType, ())
                     end
-                function GString(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GString(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GString}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -374,9 +399,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GString)
             end
         end
-        unsafe_convert(::Type{Ptr{_GString}}, box::GString) = begin
-                convert(Ptr{_GString}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GString}}, box::GString) = begin
+                    convert(Ptr{_GString}, box.handle)
+                end
+            convert(::Type{GString}, p::Ptr{_GString}, owns = false) = begin
+                    GString(p, owns)
+                end
+        end
     end
     begin
         struct _GTestConfig
@@ -390,9 +420,14 @@ $(Expr(:toplevel, quote
         mutable struct GTestConfig
             handle::Ptr{_GTestConfig}
         end
-        unsafe_convert(::Type{Ptr{_GTestConfig}}, box::GTestConfig) = begin
-                convert(Ptr{_GTestConfig}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GTestConfig}}, box::GTestConfig) = begin
+                    convert(Ptr{_GTestConfig}, box.handle)
+                end
+            convert(::Type{GTestConfig}, p::Ptr{_GTestConfig}, owns = false) = begin
+                    GTestConfig(p, owns)
+                end
+        end
     end
     mutable struct GTimeZone <: GBoxed
         handle::Ptr{GTimeZone}
@@ -487,6 +522,31 @@ $(Expr(:toplevel, quote
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.BookmarkFile.html)." GBookmarkFile
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Bytes.html)." GBytes
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Checksum.html)." GChecksum
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Date.html)." GDate
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.DateTime.html)." GDateTime
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.DebugKey.html)." GDebugKey
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.KeyFile.html)." GKeyFile
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.LogField.html)." GLogField
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MainContext.html)." GMainContext
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MainLoop.html)." GMainLoop
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MappedFile.html)." GMappedFile
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MarkupParseContext.html)." GMarkupParseContext
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MatchInfo.html)." GMatchInfo
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.OptionEntry.html)." GOptionEntry
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.PatternSpec.html)." GPatternSpec
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Regex.html)." GRegex
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.ScannerConfig.html)." GScannerConfig
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Source.html)." GSource
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.SourceCallbackFuncs.html)." GSourceCallbackFuncs
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.String.html)." GString
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.TimeZone.html)." GTimeZone
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Uri.html)." GUri
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantBuilder.html)." GVariantBuilder
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantDict.html)." GVariantDict
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantType.html)." GVariantType
     function GDate(_day::Integer, _month, _year::Integer)
         G_.Date_new_dmy(_day, _month, _year)
     end
@@ -538,31 +598,6 @@ $(Expr(:toplevel, quote
     function GVariantType(_items)
         G_.VariantType_new_tuple(_items)
     end
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.BookmarkFile.html)." GBookmarkFile
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Bytes.html)." GBytes
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Checksum.html)." GChecksum
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Date.html)." GDate
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.DateTime.html)." GDateTime
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.DebugKey.html)." GDebugKey
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.KeyFile.html)." GKeyFile
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.LogField.html)." GLogField
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MainContext.html)." GMainContext
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MainLoop.html)." GMainLoop
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MappedFile.html)." GMappedFile
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MarkupParseContext.html)." GMarkupParseContext
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MatchInfo.html)." GMatchInfo
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.OptionEntry.html)." GOptionEntry
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.PatternSpec.html)." GPatternSpec
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Regex.html)." GRegex
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.ScannerConfig.html)." GScannerConfig
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Source.html)." GSource
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.SourceCallbackFuncs.html)." GSourceCallbackFuncs
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.String.html)." GString
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.TimeZone.html)." GTimeZone
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Uri.html)." GUri
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantBuilder.html)." GVariantBuilder
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantDict.html)." GVariantDict
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantType.html)." GVariantType
     function GChildWatchFunc(pid, wait_status, user_data)
         f = user_data
         ret = f(pid, wait_status)

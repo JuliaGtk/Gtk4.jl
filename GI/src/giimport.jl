@@ -86,11 +86,14 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
     gstructname = get_full_name(structinfo)
     gtype=get_g_type(structinfo)
     isboxed = GLib.g_isa(gtype,GLib.g_type(GBoxed))
+    ustructname=get_struct_name(structinfo,force_opaque)
+    opaque = force_opaque || isopaque(structinfo)
+    ctypename = opaque ? :GBoxed : :(Union{GBoxed,$ustructname})
     exprs=Expr[]
     if isboxed
         fin = quote
             $(unblock(typeinit_def(structinfo,gstructname)))
-            function $gstructname(ref::Ptr{T}, own::Bool = false) where {T <: GBoxed}
+            function $gstructname(ref::Ptr{T}, own::Bool = false) where {T <: $ctypename}
                 #println("constructing ",$(QuoteNode(gstructname)), " ",own)
                 x = new(ref)
                 if own
@@ -105,8 +108,6 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
         end
     end
     conv=nothing
-    opaque = force_opaque || isopaque(structinfo)
-    ustructname=get_struct_name(structinfo,force_opaque)
     if !opaque
         fieldsexpr=Expr[]
         for field in get_fields(structinfo)
@@ -123,6 +124,7 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
         push!(exprs,ustruc)
         conv = quote
             unsafe_convert(::Type{Ptr{$ustructname}}, box::$gstructname) = convert(Ptr{$ustructname}, box.handle)
+            convert(::Type{$gstructname}, p::Ptr{$ustructname},  owns = false) = $gstructname(p, owns)
         end
     end
     decl = isboxed ? :($gstructname <: GBoxed) : gstructname

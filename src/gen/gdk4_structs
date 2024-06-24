@@ -1,6 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    gboxed_types = Any[]
+    const gboxed_types = Any[]
     mutable struct GdkContentFormats <: GBoxed
         handle::Ptr{GdkContentFormats}
         begin
@@ -103,9 +103,14 @@ $(Expr(:toplevel, quote
         mutable struct GdkKeymapKey
             handle::Ptr{_GdkKeymapKey}
         end
-        unsafe_convert(::Type{Ptr{_GdkKeymapKey}}, box::GdkKeymapKey) = begin
-                convert(Ptr{_GdkKeymapKey}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GdkKeymapKey}}, box::GdkKeymapKey) = begin
+                    convert(Ptr{_GdkKeymapKey}, box.handle)
+                end
+            convert(::Type{GdkKeymapKey}, p::Ptr{_GdkKeymapKey}, owns = false) = begin
+                    GdkKeymapKey(p, owns)
+                end
+        end
     end
     mutable struct GdkPopupLayout <: GBoxed
         handle::Ptr{GdkPopupLayout}
@@ -138,7 +143,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkRGBA) = begin
                         ccall(("gdk_rgba_get_type", libgtk4), GType, ())
                     end
-                function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkRGBA}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -150,9 +155,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GdkRGBA)
             end
         end
-        unsafe_convert(::Type{Ptr{_GdkRGBA}}, box::GdkRGBA) = begin
-                convert(Ptr{_GdkRGBA}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GdkRGBA}}, box::GdkRGBA) = begin
+                    convert(Ptr{_GdkRGBA}, box.handle)
+                end
+            convert(::Type{GdkRGBA}, p::Ptr{_GdkRGBA}, owns = false) = begin
+                    GdkRGBA(p, owns)
+                end
+        end
     end
     begin
         struct _GdkRectangle
@@ -167,7 +177,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkRectangle) = begin
                         ccall(("gdk_rectangle_get_type", libgtk4), GType, ())
                     end
-                function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkRectangle}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -179,9 +189,32 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GdkRectangle)
             end
         end
-        unsafe_convert(::Type{Ptr{_GdkRectangle}}, box::GdkRectangle) = begin
-                convert(Ptr{_GdkRectangle}, box.handle)
+        begin
+            unsafe_convert(::Type{Ptr{_GdkRectangle}}, box::GdkRectangle) = begin
+                    convert(Ptr{_GdkRectangle}, box.handle)
+                end
+            convert(::Type{GdkRectangle}, p::Ptr{_GdkRectangle}, owns = false) = begin
+                    GdkRectangle(p, owns)
+                end
+        end
+    end
+    mutable struct GdkTextureDownloader <: GBoxed
+        handle::Ptr{GdkTextureDownloader}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GdkTextureDownloader) = begin
+                    ccall(("gdk_texture_downloader_get_type", libgtk4), GType, ())
+                end
+            function GdkTextureDownloader(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
             end
+            push!(gboxed_types, GdkTextureDownloader)
+        end
     end
     begin
         mutable struct GdkTimeCoord
@@ -210,27 +243,6 @@ $(Expr(:toplevel, quote
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
-    function GdkContentFormats(_mime_types)
-        G_.ContentFormats_new(_mime_types)
-    end
-    function GdkContentFormats(_type::Integer)
-        G_.ContentFormats_new_for_gtype(_type)
-    end
-    function GdkContentFormatsBuilder()
-        G_.ContentFormatsBuilder_new()
-    end
-    function GdkFileList(_files)
-        G_.FileList_new_from_array(_files)
-    end
-    function GdkFileList(_files::GLib.LList{GLib._GSList{Ptr{GObject}}})
-        G_.FileList_new_from_list(_files)
-    end
-    function GdkPopupLayout(_anchor_rect::Union{GdkRectangle, Ref{_GdkRectangle}}, _rect_anchor, _surface_anchor)
-        G_.PopupLayout_new(_anchor_rect, _rect_anchor, _surface_anchor)
-    end
-    function GdkToplevelLayout()
-        G_.ToplevelLayout_new()
-    end
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ContentFormats.html)." GdkContentFormats
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ContentFormatsBuilder.html)." GdkContentFormatsBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.DragSurfaceSize.html)." GdkDragSurfaceSize
@@ -241,6 +253,7 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.PopupLayout.html)." GdkPopupLayout
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.RGBA.html)." GdkRGBA
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.Rectangle.html)." GdkRectangle
+    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.TextureDownloader.html)." GdkTextureDownloader
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.TimeCoord.html)." GdkTimeCoord
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ToplevelLayout.html)." GdkToplevelLayout
     struct GdkDevicePad <: GInterface
@@ -1127,6 +1140,30 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GdkContentFormats(_mime_types)
+        G_.ContentFormats_new(_mime_types)
+    end
+    function GdkContentFormats(_type::Integer)
+        G_.ContentFormats_new_for_gtype(_type)
+    end
+    function GdkContentFormatsBuilder()
+        G_.ContentFormatsBuilder_new()
+    end
+    function GdkFileList(_files)
+        G_.FileList_new_from_array(_files)
+    end
+    function GdkFileList(_files::GLib.LList{GLib._GSList{Ptr{GObject}}})
+        G_.FileList_new_from_list(_files)
+    end
+    function GdkPopupLayout(_anchor_rect::Union{GdkRectangle, Ref{_GdkRectangle}}, _rect_anchor, _surface_anchor)
+        G_.PopupLayout_new(_anchor_rect, _rect_anchor, _surface_anchor)
+    end
+    function GdkTextureDownloader(_texture::GdkTexture)
+        G_.TextureDownloader_new(_texture)
+    end
+    function GdkToplevelLayout()
+        G_.ToplevelLayout_new()
+    end
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.AppLaunchContext.html)." GdkAppLaunchContext
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.ButtonEvent.html)." GdkButtonEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.CairoContext.html)." GdkCairoContext
@@ -1277,6 +1314,6 @@ $(Expr(:toplevel, quote
     function on_images_updated(f, object::GdkVulkanContext, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "images-updated", Nothing, (), after, user_data)
     end
-    export GdkContentFormats, GdkContentFormatsBuilder, GdkDragSurfaceSize, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, _GdkRGBA, GdkRectangle, _GdkRectangle, GdkTimeCoord, _GdkTimeCoord, GdkToplevelLayout, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel, GdkAppLaunchContext, GdkAppLaunchContextLeaf, GdkButtonEvent, GdkButtonEventLeaf, GdkCairoContext, GdkClipboard, GdkClipboardLeaf, GdkContentDeserializer, GdkContentDeserializerLeaf, GdkContentProvider, GdkContentProviderLeaf, GdkContentSerializer, GdkContentSerializerLeaf, GdkCrossingEvent, GdkCrossingEventLeaf, GdkCursor, GdkCursorLeaf, GdkDNDEvent, GdkDNDEventLeaf, GdkDeleteEvent, GdkDeleteEventLeaf, GdkDevice, GdkDeviceTool, GdkDeviceToolLeaf, GdkDisplay, GdkDisplayLeaf, GdkDisplayManager, GdkDisplayManagerLeaf, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFocusEventLeaf, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGLTextureLeaf, GdkGLTextureBuilder, GdkGLTextureBuilderLeaf, GdkGrabBrokenEvent, GdkGrabBrokenEventLeaf, GdkKeyEvent, GdkKeyEventLeaf, GdkMemoryTexture, GdkMemoryTextureLeaf, GdkMonitor, GdkMonitorLeaf, GdkMotionEvent, GdkMotionEventLeaf, GdkPadEvent, GdkPadEventLeaf, GdkProximityEvent, GdkProximityEventLeaf, GdkScrollEvent, GdkScrollEventLeaf, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchEventLeaf, GdkTouchpadEvent, GdkTouchpadEventLeaf, GdkVulkanContext
+    export GdkContentFormats, GdkContentFormatsBuilder, GdkDragSurfaceSize, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, _GdkRGBA, GdkRectangle, _GdkRectangle, GdkTextureDownloader, GdkTimeCoord, _GdkTimeCoord, GdkToplevelLayout, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel, GdkAppLaunchContext, GdkAppLaunchContextLeaf, GdkButtonEvent, GdkButtonEventLeaf, GdkCairoContext, GdkClipboard, GdkClipboardLeaf, GdkContentDeserializer, GdkContentDeserializerLeaf, GdkContentProvider, GdkContentProviderLeaf, GdkContentSerializer, GdkContentSerializerLeaf, GdkCrossingEvent, GdkCrossingEventLeaf, GdkCursor, GdkCursorLeaf, GdkDNDEvent, GdkDNDEventLeaf, GdkDeleteEvent, GdkDeleteEventLeaf, GdkDevice, GdkDeviceTool, GdkDeviceToolLeaf, GdkDisplay, GdkDisplayLeaf, GdkDisplayManager, GdkDisplayManagerLeaf, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFocusEventLeaf, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGLTextureLeaf, GdkGLTextureBuilder, GdkGLTextureBuilderLeaf, GdkGrabBrokenEvent, GdkGrabBrokenEventLeaf, GdkKeyEvent, GdkKeyEventLeaf, GdkMemoryTexture, GdkMemoryTextureLeaf, GdkMonitor, GdkMonitorLeaf, GdkMotionEvent, GdkMotionEventLeaf, GdkPadEvent, GdkPadEventLeaf, GdkProximityEvent, GdkProximityEventLeaf, GdkScrollEvent, GdkScrollEventLeaf, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchEventLeaf, GdkTouchpadEvent, GdkTouchpadEventLeaf, GdkVulkanContext
 end))
 end

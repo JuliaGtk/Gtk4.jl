@@ -1,25 +1,25 @@
 # Dialogs
 
-Dialogs are transient windows that show information or ask the user for information.
+Dialogs are transient windows that show messages or ask the user for information.
 
 !!! note "Example"
     Some of the code on this page can be found in "dialogs.jl" in the "example" subdirectory.
 
 !!! tip "Creating dialogs in callbacks"
-    When creating dialogs in signal or action callbacks, you have to use the methods that take a function as the first argument (equivalently the `do` syntax).
+    When creating dialogs in signal or action callbacks, you must use the methods that take a function as the first argument (equivalently the `do` syntax).
 
 ## Message dialogs
 
-Gtk4.jl supports `GtkMessageDialog` and provides several convenience functions:  `info_dialog`, `ask_dialog`, `warn_dialog`, and `error_dialog`.  Each takes a string for a message to show and an optional parent container, and returns nothing, except for `ask_dialog` which returns `true` if the user clicks the button corresponding to yes.
+Gtk4.jl supports `GtkAlertDialog` and wraps it in convenience functions  `info_dialog` and `ask_dialog`.
+Each takes a string for a message to show and an optional parent container.
 
 For all dialog convenience functions, there are two ways of using them. For use in the REPL or an interactive script, the following forms can be used:
 
 ```julia
 info_dialog("Julia rocks!")
 ask_dialog("Do you like chocolate ice cream?", "Not at all", "I like it") && println("That's my favorite too.")
-warn_dialog("Oops!... I did it again")
 ```
-These take an optional argument `timeout` (in seconds) that can be used to make the dialog disappear after a certain time.
+Note that `ask_dialog` returns `true` if the user clicks the button corresponding to yes. These functions take an optional argument `timeout` (in seconds) that can be used to make the dialog disappear after a certain time.
 
 In callbacks (for example when a user clicks a button in a GUI), you _must_ use a different form, which takes a callback as the first argument that will be called when the user closes the dialog. A full example:
 ```julia
@@ -31,9 +31,9 @@ function on_click(b)
 end
 signal_connect(on_click, b, "clicked")
 ```
-If you are using these functions in the context of a GUI, you should set the third argument of `info_dialog`, `parent`, to be the top-level window. Otherwise, for standalone usage in scripts, do not set it.
+If you are using these functions in the context of a GUI, you should set the third argument of `info_dialog`, `parent`, to be the top-level window.
 
-The callback can alternatively be constructed using Julia's `do` syntax:
+The callback function can alternatively be constructed using Julia's `do` syntax:
 ```julia
 info_dialog("Julia rocks!", win) do
    println("message received")
@@ -76,18 +76,7 @@ open_dialog(f, "Pick a file to open", parent; start_folder = "/data")
 ```
 The same syntax works for `save_dialog`.
 
-### Filters
-Filters can be used to limit the type of files that the user can pick. Filters can be specified as a Tuple or Vector.
-A filter can be specified as a string, in which case it specifies a globbing pattern, for example `"*.png"`.
-You can specify multiple match types for a single filter by separating the patterns with a comma, for example `"*.png,*.jpg"`.
-You can alternatively specify MIME types, or if no specification is provided it defaults to types supported by `GdkPixbuf`.
-The generic specification of a filter is
-```julia
-GtkFileFilter(pattern = "", mimetype = "")
-```
-A human-readable name can optionally be provided using a keyword argument.
-
-If on the other hand you want to choose a folder instead of a file, use `select_folder = true` in `open_dialog`:
+If you want to choose a folder instead of a file, use `select_folder = true` in `open_dialog`:
 ```julia
 dir=Ref{String}()
 open_dialog("Select Dataset Folder"; select_folder = true) do name
@@ -99,6 +88,13 @@ if isdir(dir[])
 end
 ```
 
-## Custom dialogs
-
-TODO
+### Filters
+Filters can be used to limit the type of files that the user can pick. Filters can be specified as a Tuple or Vector.
+A filter can be specified as a string, in which case it specifies a globbing pattern, for example `"*.png"`.
+You can specify multiple match types for a single filter by separating the patterns with a comma, for example `"*.png,*.jpg"`.
+You can alternatively specify MIME types, or if no specification is provided it defaults to types supported by `GdkPixbuf`.
+The generic specification of a filter is
+```julia
+GtkFileFilter(pattern = "", mimetype = "")
+```
+A human-readable name can optionally be provided using a keyword argument.

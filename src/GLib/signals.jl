@@ -290,6 +290,8 @@ mutable struct _GPollFD
   _GPollFD(fd, ev) = new(fd, ev, 0)
 end
 
+uv_pollfd::_GPollFD = _GPollFD(0,0)
+
 mutable struct _GSourceFuncs
     prepare::Ptr{Nothing}
     check::Ptr{Nothing}
@@ -308,7 +310,7 @@ function new_gsource(source_funcs::_GSourceFuncs)
     gsource
 end
 
-expiration = UInt64(0)
+expiration::UInt64 = UInt64(0)
 _isempty_workqueue() = isempty(Base.Workqueue)
 uv_loop_alive(evt) = ccall(:uv_loop_alive, Cint, (Ptr{Nothing},), evt) != 0
 
@@ -361,7 +363,8 @@ function uv_dispatch(src::Ptr{Nothing}, callback::Ptr{Nothing}, data)
     return ccall(callback, Cint, (UInt,), data)
 end
 
-sizeof_gclosure = 0
+sizeof_gclosure::Int = 0
+jlref_quark::UInt32 = 0
 function __init__gtype__()
     global jlref_quark = quark"julia_ref"
     global sizeof_gclosure = Sys.WORD_SIZE
@@ -388,12 +391,12 @@ function __init__gmainloop__()
     ccall((:g_source_set_callback, libglib), Nothing, (Ptr{Nothing}, Ptr{Nothing}, UInt, Ptr{Nothing}),
         src, @cfunction(g_yield, Cint, (UInt,)), 1, C_NULL)
 
-    uv_int_setting = @load_preference("uv_loop_integration", "auto")
+    uv_int_setting = @load_preference("uv_loop_integration", "auto")::String
     if uv_int_setting == "enabled"
         uv_int_enabled[] = true
     elseif uv_int_setting == "disabled"
         uv_int_enabled[] = false
-    elseif uv_int_setting == "auto"
+    else # "auto" or anything else
         # enabled by default only on Macs in an interactive session, where it prevents REPL lag
         uv_int_enabled[] = Sys.isapple() && isinteractive()
     end

@@ -153,7 +153,7 @@ include("gtype.jl")
 
 eval(include("../gen/glib_consts"))
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
       MAJOR_VERSION,
       MINOR_VERSION,
       MICRO_VERSION)
@@ -202,6 +202,11 @@ include("gio.jl")
 
 const exiting = Ref(false)
 function __init__()
+    # check that libglib is compatible with what the GI generated code expects
+    vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
+    if vercheck !== nothing
+        @warn "GLib version check failed: $vercheck"
+    end
     global JuliaClosureMarshal = @cfunction(GClosureMarshal, Nothing,
         (Ptr{Nothing}, Ptr{GValue}, Cuint, Ptr{GValue}, Ptr{Nothing}, Ptr{Nothing}))
     exiting[] = false

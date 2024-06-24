@@ -1,6 +1,6 @@
 # Actions
 
-Actions are another way of associating callbacks with widgets. While they are a bit more complicated to set up, they have a few advantages over connecting to widget signals such as "clicked".
+[Actions](https://docs.gtk.org/gtk4/actions.html) are another way of associating callbacks with widgets. While they are a bit more complicated to set up, they have a few advantages over connecting to widget signals such as "clicked".
 
 Actions are based on an interface `GAction`, the most straightforward implementation of which is `GSimpleAction`. Actions have a property "name" which must be a non-empty string consisting of alphanumeric characters, dashes ('-'), and dots ('.'). Actions also have a method `activate` that takes an optional parameter argument (more on those later).
 
