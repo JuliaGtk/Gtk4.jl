@@ -103,9 +103,14 @@ $(Expr(:toplevel, quote
         mutable struct GdkKeymapKey
             handle::Ptr{_GdkKeymapKey}
         end
-        unsafe_convert(::Type{Ptr{_GdkKeymapKey}}, box::GdkKeymapKey) = begin
-                convert(Ptr{_GdkKeymapKey}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GdkKeymapKey}}, box::GdkKeymapKey) = begin
+                    convert(Ptr{_GdkKeymapKey}, box.handle)
+                end
+            convert(::Type{GdkKeymapKey}, p::Ptr{_GdkKeymapKey}, owns = false) = begin
+                    GdkKeymapKey(p, owns)
+                end
+        end
     end
     mutable struct GdkPopupLayout <: GBoxed
         handle::Ptr{GdkPopupLayout}
@@ -138,7 +143,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkRGBA) = begin
                         ccall(("gdk_rgba_get_type", libgtk4), GType, ())
                     end
-                function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkRGBA}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -150,9 +155,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GdkRGBA)
             end
         end
-        unsafe_convert(::Type{Ptr{_GdkRGBA}}, box::GdkRGBA) = begin
-                convert(Ptr{_GdkRGBA}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GdkRGBA}}, box::GdkRGBA) = begin
+                    convert(Ptr{_GdkRGBA}, box.handle)
+                end
+            convert(::Type{GdkRGBA}, p::Ptr{_GdkRGBA}, owns = false) = begin
+                    GdkRGBA(p, owns)
+                end
+        end
     end
     begin
         struct _GdkRectangle
@@ -167,7 +177,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkRectangle) = begin
                         ccall(("gdk_rectangle_get_type", libgtk4), GType, ())
                     end
-                function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkRectangle}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -179,9 +189,14 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GdkRectangle)
             end
         end
-        unsafe_convert(::Type{Ptr{_GdkRectangle}}, box::GdkRectangle) = begin
-                convert(Ptr{_GdkRectangle}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GdkRectangle}}, box::GdkRectangle) = begin
+                    convert(Ptr{_GdkRectangle}, box.handle)
+                end
+            convert(::Type{GdkRectangle}, p::Ptr{_GdkRectangle}, owns = false) = begin
+                    GdkRectangle(p, owns)
+                end
+        end
     end
     mutable struct GdkTextureDownloader <: GBoxed
         handle::Ptr{GdkTextureDownloader}
