@@ -4,6 +4,7 @@ struct GValue
     field3::UInt64
     GValue() = new(0, 0, 0)
 end
+const GValueLike = Union{Ref{GValue},GValue}
 # This should be a subtype of GBoxed and the above struct should be renamed to _GValue to be consistent with other boxed types
 const _GValue = GValue
 Base.zero(::Type{GValue}) = GValue()

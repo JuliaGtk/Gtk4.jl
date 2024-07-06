@@ -1,6 +1,6 @@
 quote
 $(Expr(:toplevel, quote
-    function cairo_rectangle(_cr::cairoContext, _rectangle::Union{GdkRectangle, Ref{_GdkRectangle}})
+    function cairo_rectangle(_cr::cairoContext, _rectangle::GdkRectangleLike)
         ret = ccall(("gdk_cairo_rectangle", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRectangle}), _cr, _rectangle)
         nothing
     end
@@ -17,7 +17,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_cairo_set_source_pixbuf", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{GObject}, Float64, Float64), _cr, _pixbuf, _pixbuf_x, _pixbuf_y)
         nothing
     end
-    function cairo_set_source_rgba(_cr::cairoContext, _rgba::Union{GdkRGBA, Ref{_GdkRGBA}})
+    function cairo_set_source_rgba(_cr::cairoContext, _rgba::GdkRGBALike)
         ret = ccall(("gdk_cairo_set_source_rgba", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRGBA}), _cr, _rgba)
         nothing
     end
@@ -47,7 +47,7 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GdkContentFormats, ret, true)
         ret2
     end
-    function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}}, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+    function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::GValueLike, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
         _cancellable_maybe = nothing_to_null(_cancellable)
         if _callback === nothing
             _callback_cfunc = C_NULL

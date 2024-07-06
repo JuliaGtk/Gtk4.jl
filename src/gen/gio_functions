@@ -353,7 +353,7 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
-    function dbus_gvalue_to_gvariant(_gvalue::Union{GValue, Ref{_GValue}}, _type::GVariantType)
+    function dbus_gvalue_to_gvariant(_gvalue::GValueLike, _type::GVariantType)
         ret = ccall(("g_dbus_gvalue_to_gvariant", libgio), Ptr{GVariant}, (Ptr{_GValue}, Ptr{GVariantType}), _gvalue, _type)
         ret2 = convert(GVariant, ret)
         ret2
@@ -601,14 +601,14 @@ $(Expr(:toplevel, quote
     end
     function pollable_source_new(_pollable_stream::GObject)
         ret = ccall(("g_pollable_source_new", libgio), Ptr{_GSource}, (Ptr{GObject},), _pollable_stream)
-        ret2 = convert(Union{GSource, Ref{_GSource}}, ret, true)
+        ret2 = convert(GSourceLike, ret, true)
         ret2
     end
-    function pollable_source_new_full(_pollable_stream::GObject, _child_source::Maybe(Union{GSource, Ref{_GSource}}), _cancellable::Maybe(GCancellable))
+    function pollable_source_new_full(_pollable_stream::GObject, _child_source::Maybe(GSourceLike), _cancellable::Maybe(GCancellable))
         _child_source_maybe = nothing_to_null(_child_source)
         _cancellable_maybe = nothing_to_null(_cancellable)
         ret = ccall(("g_pollable_source_new_full", libgio), Ptr{_GSource}, (Ptr{GObject}, Ptr{_GSource}, Ptr{GObject}), _pollable_stream, _child_source_maybe, _cancellable_maybe)
-        ret2 = convert(Union{GSource, Ref{_GSource}}, ret, true)
+        ret2 = convert(GSourceLike, ret, true)
         ret2
     end
     function pollable_stream_read(_stream::GInputStream, _buffer, _blocking::Bool, _cancellable::Maybe(GCancellable))

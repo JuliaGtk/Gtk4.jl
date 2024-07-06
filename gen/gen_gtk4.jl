@@ -21,7 +21,7 @@ skiplist=[:create_closure,:activate_cell,:event,:start_editing,:filter_keypress,
 
 object_skiplist=vcat(object_skiplist,[:CellRenderer,:MnemonicAction,:NeverTrigger,:NothingAction,:PrintJob,:PrintSettings,:RecentManager])
 
-GI.export_methods!(ns,path,"gtk4"; exclude_deprecated = false, object_method_skiplist = skiplist, object_skiplist = object_skiplist, interface_method_skiplist = [:start_editing, :install_properties], interface_skiplist = [:PrintOperationPreview], struct_skiplist = vcat(struct_skiplist,[:Bitset,:BitsetIter,:BuildableParseContext,:CssSection,:TextIter]))
+GI.export_methods!(ns,path,"gtk4"; exclude_deprecated = false, object_method_skiplist = skiplist, object_skiplist = object_skiplist, interface_method_skiplist = [:start_editing, :install_properties], interface_skiplist = [:PrintOperationPreview], struct_skiplist = vcat(struct_skiplist,[:Bitset,:BitsetIter,:BuildableParseContext,:CssSection]))
 
 skiplist=[:editable_install_properties,:ordering_from_cmpfunc,:value_set_expression,:value_take_expression]
 

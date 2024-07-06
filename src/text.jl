@@ -34,14 +34,11 @@ end
 show(io::IO, iter::_GtkTextIter) = println("_GtkTextIter($(iter.offset) ))")
 
 
-"""
-    buffer(iter::Union{Ref{_GtkTextIter}, GtkTextIter})
-
-Returns the buffer associated with `iter`.
-"""
-buffer(iter::TI) = convert(GtkTextBuffer,
-    ccall((:gtk_text_iter_get_buffer, libgtk4),Ptr{GtkTextBuffer},(Ref{_GtkTextIter},),iter)
-)
+#"""
+#    buffer(iter::Union{Ref{_GtkTextIter}, GtkTextIter})
+#
+#Returns the buffer associated with `iter`.
+#"""
 
 """
     char_offset(iter::Union{Ref{_GtkTextIter}, GtkTextIter})
@@ -65,49 +62,49 @@ end
 function getproperty(text::TI, key::Symbol)
     Base.in(key, fieldnames(typeof(text))) && return getfield(text, key)
     if     key === :offset
-        ccall((:gtk_text_iter_get_offset, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
+        G_.get_offset(text)
     elseif key === :line
-        ccall((:gtk_text_iter_get_line, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
+        G_.get_line(text)
     elseif key === :line_offset
-        ccall((:gtk_text_iter_get_line_offset, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
+        G_.get_line_offset(text)
     elseif key === :line_index
-        ccall((:gtk_text_iter_get_line_index, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
+        G_.get_line_index(text)
     elseif key === :visible_line_index
-        ccall((:gtk_text_iter_get_visible_line_index, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
+        G_.get_visible_line_index(text)
     elseif key === :visible_line_offset
-        ccall((:gtk_text_iter_get_visible_line_offset, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
+        G_.get_visible_line_offset(text)
     elseif key === :marks
-        ccall((:gtk_text_iter_get_marks, libgtk4), Ptr{_GSList{GtkTextMark}}, (Ptr{_GtkTextIter},), text) # GtkTextMark iter
+        G_.get_marks(text)
     elseif key === :toggled_on_tags
-        ccall((:gtk_text_iter_get_toggled_tags, libgtk4), Ptr{_GSList{GtkTextTag}}, (Ptr{_GtkTextIter}, Cint), text, true) # GtkTextTag iter
+        G_.get_toggled_tags(text, true)
     elseif key === :toggled_off_tags
-        ccall((:gtk_text_iter_get_toggled_tags, libgtk4), Ptr{_GSList{GtkTextTag}}, (Ptr{_GtkTextIter}, Cint), text, false) # GtkTextTag iter
+        G_.get_toggled_tags(text, false)
 #    elseif key === :child_anchor
 #        convert(GtkTextChildAnchor, ccall((:gtk_text_iter_get_child_anchor, libgtk4), Ptr{GtkTextChildAnchor}, (Ptr{_GtkTextIter}, Cint), text, false))
     elseif key === :can_insert
-        Bool(ccall((:gtk_text_iter_can_insert, libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), text, true))
+        G_.can_insert(text, true)
     elseif key === :starts_word
-        Bool(ccall((:gtk_text_iter_starts_word, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.starts_word(text)
     elseif key === :ends_word
-        Bool(ccall((:gtk_text_iter_ends_word, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.ends_word(text)
     elseif key === :inside_word
-        Bool(ccall((:gtk_text_iter_inside_word, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.inside_word(text)
     elseif key === :starts_line
-        Bool(ccall((:gtk_text_iter_starts_line, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.starts_line(text)
     elseif key === :ends_line
-        Bool(ccall((:gtk_text_iter_ends_line, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.ends_line(text)
     elseif key === :starts_sentence
-        Bool(ccall((:gtk_text_iter_starts_sentence, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.starts_sentence(text)
     elseif key === :ends_sentence
-        Bool(ccall((:gtk_text_iter_ends_sentence, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.ends_sentence(text)
     elseif key === :inside_sentence
-        Bool(ccall((:gtk_text_iter_inside_sentence, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.inside_sentence(text)
     elseif key === :is_cursor_position
-        Bool(ccall((:gtk_text_iter_is_cursor_position, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.is_cursor_position(text)
     elseif key === :chars_in_line
-        ccall((:gtk_text_iter_get_chars_in_line, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
+        G_.get_chars_in_line(text)
     elseif key === :bytes_in_line
-        ccall((:gtk_text_iter_get_bytes_in_line, libgtk4), Cint, (Ptr{_GtkTextIter},), text)
+        G_.get_bytes_in_line(text)
 #    elseif key === :attributes
 #        view = get_gtk_property(text, :view)::GtkTextView
 #        attrs = get_gtk_property(view, :default_attributes)::GtkTextAttributes
@@ -116,9 +113,9 @@ function getproperty(text::TI, key::Symbol)
 #    elseif key === :language
 #        ccall((:gtk_text_iter_get_language, libgtk4), Ptr{PangoLanguage}, (Ptr{_GtkTextIter}, Ptr{GtkTextAttributes}), text)
     elseif key === :is_end
-        Bool(ccall((:gtk_text_iter_is_end, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.is_end(text)
     elseif key === :is_start
-        Bool(ccall((:gtk_text_iter_is_start, libgtk4), Cint, (Ptr{_GtkTextIter},), text))
+        G_.is_start(text)
     elseif key === :char
         convert(Char, ccall((:gtk_text_iter_get_char, libgtk4), UInt32, (Ptr{_GtkTextIter},), text))
     elseif key === :pixbuf
@@ -132,17 +129,17 @@ end
 function setproperty!(text::TI, key::Symbol, value)
     Base.in(key, fieldnames(typeof(text))) && return setfield!(text, key, value)
     if     key === :offset
-        ccall((:gtk_text_iter_set_offset, libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), text, value)
+        G_.set_offset(text, value)
     elseif key === :line
-        ccall((:gtk_text_iter_set_line, libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), text, value)
+        G_.set_line(text, value)
     elseif key === :line_offset
-        ccall((:gtk_text_iter_set_line_offset, libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), text, value)
+        G_.set_line_offset(text, value)
     elseif key === :line_index
-        ccall((:gtk_text_iter_set_line_index, libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), text, value)
+        G_.set_line_index(text, value)
     elseif key === :visible_line_index
-        ccall((:gtk_text_iter_set_visible_line_index, libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), text, value)
+        G_.set_visible_line_index(text, value)
     elseif key === :visible_line_offset
-        ccall((:gtk_text_iter_set_visible_line_offset, libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), text, value)
+        G_.set_visible_line_offset(text, value)
     else
         @warn "_GtkTextIter doesn't have attribute with key $key"
         false
@@ -150,16 +147,11 @@ function setproperty!(text::TI, key::Symbol, value)
     return text
 end
 
-Base.:(==)(lhs::TI, rhs::TI) = Bool(ccall((:gtk_text_iter_equal, libgtk4),
-    Cint, (Ref{_GtkTextIter}, Ref{_GtkTextIter}), lhs, rhs))
-Base.:(<)(lhs::TI, rhs::TI) = ccall((:gtk_text_iter_compare, libgtk4), Cint,
-    (Ref{_GtkTextIter}, Ref{_GtkTextIter}), lhs, rhs) < 0
-Base.:(<=)(lhs::TI, rhs::TI) = ccall((:gtk_text_iter_compare, libgtk4), Cint,
-    (Ref{_GtkTextIter}, Ref{_GtkTextIter}), lhs, rhs) <= 0
-Base.:(>)(lhs::TI, rhs::TI) = ccall((:gtk_text_iter_compare, libgtk4), Cint,
-    (Ref{_GtkTextIter}, Ref{_GtkTextIter}), lhs, rhs) > 0
-Base.:(>=)(lhs::TI, rhs::TI) = ccall((:gtk_text_iter_compare, libgtk4), Cint,
-    (Ref{_GtkTextIter}, Ref{_GtkTextIter}), lhs, rhs) >= 0
+Base.:(==)(lhs::TI, rhs::TI) = G_.equal(lhs, rhs)
+Base.:(<)(lhs::TI, rhs::TI) = G_.compare(lhs, rhs) < 0
+Base.:(<=)(lhs::TI, rhs::TI) = G_.compare(lhs, rhs) <= 0
+Base.:(>)(lhs::TI, rhs::TI) = G_.compare(lhs, rhs) > 0
+Base.:(>=)(lhs::TI, rhs::TI) = G_.compare(lhs, rhs) >= 0
 
 start_(iter::TI) = Ref(iter)
 iterate(::TI, iter=start_(iter)) = iter.is_end ? nothing : (iter.char, iter + 1)
@@ -173,9 +165,7 @@ Base.:-(iter::TI, count::Integer) = (iter = copy(iter); skip(iter, -count); iter
 Moves `iter` `count` characters. Returns a Bool indicating if the move was
 successful.
 """
-Base.skip(iter::TI, count::Integer) =
-    Bool(ccall((:gtk_text_iter_forward_chars, libgtk4), Cint,
-        (Ptr{_GtkTextIter}, Cint), iter, count))
+Base.skip(iter::TI, count::Integer) = G_.forward_chars(iter, count)
 
 """
     skip(iter::Ref{_GtkTextIter}, what::Symbol)
@@ -193,26 +183,19 @@ Operations are :
 """
 function Base.skip(iter::TI, what::Symbol)
     if     what === :backward_line
-        Bool(ccall((:gtk_text_iter_backward_line, libgtk4), Cint,
-            (Ptr{_GtkTextIter},), iter))
+        G_.backward_line(iter)
     elseif what === :forward_line
-        Bool(ccall((:gtk_text_iter_forward_line, libgtk4), Cint,
-            (Ptr{_GtkTextIter},), iter))
+        G_.forward_line(iter)
     elseif what === :forward_to_line_end
-        Bool(ccall((:gtk_text_iter_forward_to_line_end, libgtk4), Cint,
-            (Ptr{_GtkTextIter},), iter))
+        G_.forward_to_line_end(iter)
     elseif what === :forward_word_end
-        Bool(ccall((:gtk_text_iter_forward_word_end, libgtk4), Cint,
-            (Ptr{_GtkTextIter},), iter))
+        G_.forward_word_end(iter)
     elseif what === :backward_word_start
-        Bool(ccall((:gtk_text_iter_backward_word_start, libgtk4), Cint,
-            (Ptr{_GtkTextIter},), iter))
+        G_.backward_word_start(iter)
     elseif what === :backward_sentence_start
-        Bool(ccall((:gtk_text_iter_backward_sentence_start, libgtk4), Cint,
-            (Ptr{_GtkTextIter},), iter))
+        G_.backward_sentence_start(iter)
     elseif what === :forward_sentence_end
-        Bool(ccall((:gtk_text_iter_forward_sentence_end, libgtk4), Cint,
-            (Ptr{_GtkTextIter},), iter))
+        G_.forward_sentence_end(iter)
     else
         @warn "_GtkTextIter doesn't have iterator of type $what"
         false
@@ -239,34 +222,25 @@ Operations are :
 """
 function Base.skip(iter::TI, count::Integer, what::Symbol)
     if     what === :char || what === :chars
-        Bool(ccall((:gtk_text_iter_forward_chars, libgtk4), Cint,
-            (Ptr{_GtkTextIter}, Cint), iter, count))
+        G_.forward_chars(iter, count)
     elseif what === :line || what === :lines
-        Bool(ccall((:gtk_text_iter_forward_lines, libgtk4), Cint,
-            (Ptr{_GtkTextIter}, Cint), iter, count))
+        G_.forward_lines(iter, count)
     elseif what === :word || what === :words
-        Bool(ccall((:gtk_text_iter_forward_word_ends, libgtk4), Cint,
-            (Ptr{_GtkTextIter}, Cint), iter, count))
+        G_.forward_word_ends(iter, count)
     elseif what === :word_cursor_position || what === :word_cursor_positions
-        Bool(ccall((:gtk_text_iter_forward_cursor_positions, libgtk4), Cint,
-            (Ptr{_GtkTextIter}, Cint), iter, count))
+        G_.forward_cursor_positions(iter, count)
     elseif what === :sentence || what === :sentences
-        Bool(ccall((:gtk_text_iter_forward_sentence_ends, libgtk4), Cint,
-            (Ptr{_GtkTextIter}, Cint), iter, count))
+        G_.forward_sentence_ends(iter, count)
     elseif what === :visible_word || what === :visible_words
-        Bool(ccall((:gtk_text_iter_forward_visible_word_ends, libgtk4), Cint,
-            (Ptr{_GtkTextIter}, Cint), iter, count))
+        G_.forward_visible_word_ends(iter, count)
     elseif what === :visible_cursor_position || what === :visible_cursor_positions
-        Bool(ccall((:gtk_text_iter_forward_visible_cursor_positions, libgtk4), Cint,
-            (Ptr{_GtkTextIter}, Cint), iter, count))
+        G_.forward_visible_cursor_positions(iter, count)
     elseif what === :visible_line || what === :visible_lines
-        Bool(ccall((:gtk_text_iter_forward_visible_lines, libgtk4), Cint,
-            (Ptr{_GtkTextIter}, Cint), iter, count))
+        G_.forward_visible_lines(iter, count)
     elseif what === :line_end || what === :line_ends
         count >= 0 || error("_GtkTextIter cannot iterate line_ends backwards")
         for i = 1:count
-            if !Bool(ccall((:gtk_text_iter_forward_visible_lines, libgtk4), Cint,
-                    (Ptr{_GtkTextIter}, Cint), iter, count))
+            if !G_.forward_visible_lines(iter,count)
                 return false
             end
         end
@@ -297,11 +271,11 @@ function forward_search(iter::TI,
     str::AbstractString, start::Ref{_GtkTextIter},
     stop::Ref{_GtkTextIter}, limit::Ref{_GtkTextIter}, flag)
 
-    Bool(ccall((:gtk_text_iter_forward_search, libgtk4),
-        Cint,
-        (Ptr{_GtkTextIter}, Ptr{UInt8}, Cuint, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}),
-        iter, string(str), flag, start, stop, limit
-    ))
+    found, start_out, stop_out = G_.forward_search(iter, str, flag, limit)
+
+    start[] = start_out
+    stop[] = stop_out
+    found
 end
 
 """
@@ -315,11 +289,11 @@ function backward_search(iter::TI,
     str::AbstractString, start::Ref{_GtkTextIter},
     stop::Ref{_GtkTextIter}, limit::Ref{_GtkTextIter}, flag)
 
-    Bool(ccall((:gtk_text_iter_backward_search, libgtk4),
-        Cint,
-        (Ptr{_GtkTextIter}, Ptr{UInt8}, Cuint, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}),
-        iter, string(str), flag, start, stop, limit
-    ))
+    found, start_out, stop_out = G_.backward_search(iter, str, flag, limit)
+
+    start[] = start_out
+    stop[] = stop_out
+    found
 end
 
 """
@@ -392,25 +366,20 @@ function getproperty(text::GtkTextRange, key::Symbol)
     starttext = first(text)
     endtext = last(text)
     if key === :slice
-        bytestring(ccall((:gtk_text_iter_get_slice, libgtk4), Ptr{UInt8},
-            (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), starttext, endtext))
+        G_.get_slice(starttext, endtext)
     elseif key === :visible_slice
-        bytestring(ccall((:gtk_text_iter_get_visible_slice, libgtk4), Ptr{UInt8},
-            (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), starttext, endtext))
+        G_.get_visible_slice(starttext, endtext)
     elseif key === :text
-        bytestring(ccall((:gtk_text_iter_get_text, libgtk4), Ptr{UInt8},
-            (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), starttext, endtext))
+        G_.get_text(starttext, endtext)
     elseif key === :visible_text
-        bytestring(ccall((:gtk_text_iter_get_visible_text, libgtk4), Ptr{UInt8},
-            (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), starttext, endtext))
+        G_.get_visible_text(starttext, endtext)
     end
 end
 function splice!(text::GtkTextBuffer, index::GtkTextRange)
     G_.delete(text, first(index), last(index))
     text
 end
-in(x::TI, r::GtkTextRange) = Bool(ccall((:gtk_text_iter_in_range, libgtk4), Cint,
-    (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), x, first(r), last(r)))
+in(x::TI, r::GtkTextRange) = G_.in_range(x, first(r), last(r))
 
 
 #####  GtkTextBuffer  #####
