@@ -26,6 +26,8 @@ end
 
 GErrorException(err::GError) = GErrorException(err.domain, err.code, message(err))
 
+GError(e::GErrorException) = GError(e.domain, e.code, Base.unsafe_convert(Cstring,e.message))
+
 function check_err(err::Base.RefValue{Ptr{GError}})
     if err[] != C_NULL
         gerror = GError(err[])

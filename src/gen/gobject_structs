@@ -16,6 +16,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GEnumValue}, p::Ptr{_GEnumValue}, owns = false) = begin
                     GEnumValue(p, owns)
                 end
+            const GEnumValueLike = Union{Ref{_GEnumValue}, GEnumValue}
         end
     end
     begin
@@ -32,6 +33,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GTypeClass}, p::Ptr{_GTypeClass}, owns = false) = begin
                     GTypeClass(p, owns)
                 end
+            const GTypeClassLike = Union{Ref{_GTypeClass}, GTypeClass}
         end
     end
     begin
@@ -49,6 +51,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GTypeInterface}, p::Ptr{_GTypeInterface}, owns = false) = begin
                     GTypeInterface(p, owns)
                 end
+            const GTypeInterfaceLike = Union{Ref{_GTypeInterface}, GTypeInterface}
         end
     end
     begin
@@ -67,6 +70,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GFlagsValue}, p::Ptr{_GFlagsValue}, owns = false) = begin
                     GFlagsValue(p, owns)
                 end
+            const GFlagsValueLike = Union{Ref{_GFlagsValue}, GFlagsValue}
         end
     end
     begin
@@ -90,6 +94,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GTypeValueTable}, p::Ptr{_GTypeValueTable}, owns = false) = begin
                     GTypeValueTable(p, owns)
                 end
+            const GTypeValueTableLike = Union{Ref{_GTypeValueTable}, GTypeValueTable}
         end
     end
     begin
@@ -110,6 +115,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GEnumClass}, p::Ptr{_GEnumClass}, owns = false) = begin
                     GEnumClass(p, owns)
                 end
+            const GEnumClassLike = Union{Ref{_GEnumClass}, GEnumClass}
         end
     end
     begin
@@ -129,6 +135,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GFlagsClass}, p::Ptr{_GFlagsClass}, owns = false) = begin
                     GFlagsClass(p, owns)
                 end
+            const GFlagsClassLike = Union{Ref{_GFlagsClass}, GFlagsClass}
         end
     end
     begin
@@ -147,6 +154,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GInterfaceInfo}, p::Ptr{_GInterfaceInfo}, owns = false) = begin
                     GInterfaceInfo(p, owns)
                 end
+            const GInterfaceInfoLike = Union{Ref{_GInterfaceInfo}, GInterfaceInfo}
         end
     end
     begin
@@ -170,6 +178,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GParamSpecTypeInfo}, p::Ptr{_GParamSpecTypeInfo}, owns = false) = begin
                     GParamSpecTypeInfo(p, owns)
                 end
+            const GParamSpecTypeInfoLike = Union{Ref{_GParamSpecTypeInfo}, GParamSpecTypeInfo}
         end
     end
     begin
@@ -188,6 +197,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GSignalInvocationHint}, p::Ptr{_GSignalInvocationHint}, owns = false) = begin
                     GSignalInvocationHint(p, owns)
                 end
+            const GSignalInvocationHintLike = Union{Ref{_GSignalInvocationHint}, GSignalInvocationHint}
         end
     end
     begin
@@ -210,6 +220,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GSignalQuery}, p::Ptr{_GSignalQuery}, owns = false) = begin
                     GSignalQuery(p, owns)
                 end
+            const GSignalQueryLike = Union{Ref{_GSignalQuery}, GSignalQuery}
         end
     end
     begin
@@ -226,6 +237,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GTypeFundamentalInfo}, p::Ptr{_GTypeFundamentalInfo}, owns = false) = begin
                     GTypeFundamentalInfo(p, owns)
                 end
+            const GTypeFundamentalInfoLike = Union{Ref{_GTypeFundamentalInfo}, GTypeFundamentalInfo}
         end
     end
     begin
@@ -251,6 +263,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GTypeInfo}, p::Ptr{_GTypeInfo}, owns = false) = begin
                     GTypeInfo(p, owns)
                 end
+            const GTypeInfoLike = Union{Ref{_GTypeInfo}, GTypeInfo}
         end
     end
     begin
@@ -271,6 +284,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GTypePluginClass}, p::Ptr{_GTypePluginClass}, owns = false) = begin
                     GTypePluginClass(p, owns)
                 end
+            const GTypePluginClassLike = Union{Ref{_GTypePluginClass}, GTypePluginClass}
         end
     end
     begin
@@ -290,6 +304,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GTypeQuery}, p::Ptr{_GTypeQuery}, owns = false) = begin
                     GTypeQuery(p, owns)
                 end
+            const GTypeQueryLike = Union{Ref{_GTypeQuery}, GTypeQuery}
         end
     end
     begin
@@ -323,6 +338,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GValueArray}, p::Ptr{_GValueArray}, owns = false) = begin
                     GValueArray(p, owns)
                 end
+            const GValueArrayLike = Union{Ref{_GValueArray}, GValueArray}
         end
     end
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.EnumClass.html)." GEnumClass
@@ -421,27 +437,27 @@ $(Expr(:toplevel, quote
     gtype_wrapper_cache[:GObject] = GObjectLeaf
     function GBindingTransformFunc(binding, from_value, to_value, user_data)
         binding = convert(GBinding, binding, false)
-        from_value = convert(Union{GValue, Ref{_GValue}}, from_value, false)
-        to_value = convert(Union{GValue, Ref{_GValue}}, to_value, false)
+        from_value = convert(GValueLike, from_value, false)
+        to_value = convert(GValueLike, to_value, false)
         f = user_data
         ret = f(binding, from_value, to_value)
         convert(Cint, ret)
     end
     function GClassFinalizeFunc(g_class, class_data)
-        g_class = convert(Union{GTypeClass, Ref{_GTypeClass}}, g_class)
+        g_class = convert(GTypeClassLike, g_class)
         f = class_data
         ret = f(g_class)
         nothing
     end
     function GClassInitFunc(g_class, class_data)
-        g_class = convert(Union{GTypeClass, Ref{_GTypeClass}}, g_class)
+        g_class = convert(GTypeClassLike, g_class)
         f = class_data
         ret = f(g_class)
         nothing
     end
     function GClosureMarshal(closure, return_value, n_param_values, param_values, invocation_hint, marshal_data)
-        closure = convert(Union{GClosure, Ref{_GClosure}}, closure, false)
-        return_value = convert_if_not_null(Union{GValue, Ref{_GValue}}, return_value, false)
+        closure = convert(GClosureLike, closure, false)
+        return_value = convert_if_not_null(GValueLike, return_value, false)
         param_values = collect(unsafe_wrap(Vector{_GValue}, param_values, m_n_param_values[]))
         invocation_hint = convert(Maybe(Nothing), invocation_hint)
         f = marshal_data
@@ -449,32 +465,32 @@ $(Expr(:toplevel, quote
         nothing
     end
     function GInterfaceFinalizeFunc(g_iface, iface_data)
-        g_iface = convert(Union{GTypeInterface, Ref{_GTypeInterface}}, g_iface)
+        g_iface = convert(GTypeInterfaceLike, g_iface)
         f = iface_data
         ret = f(g_iface)
         nothing
     end
     function GInterfaceInitFunc(g_iface, iface_data)
-        g_iface = convert(Union{GTypeInterface, Ref{_GTypeInterface}}, g_iface)
+        g_iface = convert(GTypeInterfaceLike, g_iface)
         f = iface_data
         ret = f(g_iface)
         nothing
     end
     function GSignalAccumulator(ihint, return_accu, handler_return, data)
-        ihint = convert(Union{GSignalInvocationHint, Ref{_GSignalInvocationHint}}, ihint)
-        return_accu = convert(Union{GValue, Ref{_GValue}}, return_accu, false)
-        handler_return = convert(Union{GValue, Ref{_GValue}}, handler_return, false)
+        ihint = convert(GSignalInvocationHintLike, ihint)
+        return_accu = convert(GValueLike, return_accu, false)
+        handler_return = convert(GValueLike, handler_return, false)
         f = data
         ret = f(ihint, return_accu, handler_return)
         convert(Cint, ret)
     end
     function GSignalEmissionHook(ihint, n_param_values, param_values, data)
-        ihint = convert(Union{GSignalInvocationHint, Ref{_GSignalInvocationHint}}, ihint)
+        ihint = convert(GSignalInvocationHintLike, ihint)
         param_values = collect(unsafe_wrap(Vector{_GValue}, param_values, m_n_param_values[]))
         f = data
         ret = f(ihint, n_param_values, param_values)
         convert(Cint, ret)
     end
-    export GEnumValue, _GEnumValue, GTypeClass, _GTypeClass, GTypeInterface, _GTypeInterface, GFlagsValue, _GFlagsValue, GTypeValueTable, _GTypeValueTable, GEnumClass, _GEnumClass, GFlagsClass, _GFlagsClass, GInterfaceInfo, _GInterfaceInfo, GParamSpecTypeInfo, _GParamSpecTypeInfo, GSignalInvocationHint, _GSignalInvocationHint, GSignalQuery, _GSignalQuery, GTypeFundamentalInfo, _GTypeFundamentalInfo, GTypeInfo, _GTypeInfo, GTypePluginClass, _GTypePluginClass, GTypeQuery, _GTypeQuery, GValueArray, _GValueArray, GTypePlugin, GBinding, GBindingLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
+    export GEnumValue, _GEnumValue, GEnumValueLike, GTypeClass, _GTypeClass, GTypeClassLike, GTypeInterface, _GTypeInterface, GTypeInterfaceLike, GFlagsValue, _GFlagsValue, GFlagsValueLike, GTypeValueTable, _GTypeValueTable, GTypeValueTableLike, GEnumClass, GEnumClassLike, _GEnumClass, GFlagsClass, GFlagsClassLike, _GFlagsClass, GInterfaceInfo, GInterfaceInfoLike, _GInterfaceInfo, GParamSpecTypeInfo, GParamSpecTypeInfoLike, _GParamSpecTypeInfo, GSignalInvocationHint, GSignalInvocationHintLike, _GSignalInvocationHint, GSignalQuery, GSignalQueryLike, _GSignalQuery, GTypeFundamentalInfo, GTypeFundamentalInfoLike, _GTypeFundamentalInfo, GTypeInfo, GTypeInfoLike, _GTypeInfo, GTypePluginClass, GTypePluginClassLike, _GTypePluginClass, GTypeQuery, GTypeQueryLike, _GTypeQuery, GValueArray, GValueArrayLike, _GValueArray, GTypePlugin, GBinding, GBindingLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
 end))
 end

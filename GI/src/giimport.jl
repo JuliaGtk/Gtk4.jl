@@ -108,6 +108,7 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
         end
     end
     conv=nothing
+    structlike = Symbol(gstructname,:Like)
     if !opaque
         fieldsexpr=Expr[]
         for field in get_fields(structinfo)
@@ -125,6 +126,11 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
         conv = quote
             unsafe_convert(::Type{Ptr{$ustructname}}, box::$gstructname) = convert(Ptr{$ustructname}, box.handle)
             convert(::Type{$gstructname}, p::Ptr{$ustructname},  owns = false) = $gstructname(p, owns)
+            const $structlike = Union{Ref{$ustructname},$gstructname}
+        end
+    else
+        conv = quote
+            const $structlike = $gstructname
         end
     end
     decl = isboxed ? :($gstructname <: GBoxed) : gstructname
@@ -501,12 +507,13 @@ function typename(info::GIStructInfo)
         Symbol(GLib.g_type_name(g_type))
     end
 end
+structptrlike(info::GIStructInfo) = Symbol(get_full_name(info),:Like)
 function extract_type(typeinfo::GITypeInfo, info::GIStructInfo)
     name = typename(info)
     sname = get_struct_name(info)
     if is_pointer(typeinfo)
         fname = get_full_name(info)
-        tname = isopaque(info) ? fname : :(Union{$fname,Ref{$sname}})
+        tname = isopaque(info) ? fname : structptrlike(info)
         TypeDesc(info,tname,typename(info),:(Ptr{$sname}))
     else
         TypeDesc(info,sname,sname,sname)
@@ -517,7 +524,7 @@ function extract_type(typeinfo::Type{InstanceType}, info::GIStructInfo)
     sname = get_struct_name(info)
     if is_pointer(typeinfo)
         fname = get_full_name(info)
-        tname = isopaque(info) ? fname : :(Union{$fname,Ref{$sname}})
+        tname = isopaque(info) ? fname : structptrlike(info)
         TypeDesc(info,tname,typename(info),:(Ptr{$sname}))
     else
         TypeDesc(info,sname,sname,sname)
@@ -801,7 +808,7 @@ function extract_type(typeinfo::GITypeInfo, basetype::Type{T}) where {T<:GBoxed}
     name = get_full_name(interf_info)
     sname = get_struct_name(interf_info)
     p = is_pointer(typeinfo)
-    jarg = (name != sname ? :(Union{$name,Ref{$sname}}) : name)
+    jarg = (name != sname ? structptrlike(interf_info) : name)
     ctype = is_pointer(typeinfo) ? :(Ptr{$sname}) : sname
     TypeDesc{Type{GBoxed}}(GBoxed, jarg, name, ctype)
 end

@@ -120,6 +120,9 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         end
         push!(exports.args, get_full_name(ssi))
         length(fields)>0 && push!(exports.args,get_struct_name(ssi,false))
+        if length(fields)>0 && !in(name, import_as_opaque)
+            push!(exports.args, structptrlike(ssi))
+        end
     end
 
     if print_summary
@@ -168,6 +171,9 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
 
         push!(exprs, decl(ssi,in(name,import_as_opaque)))
         push!(exports.args, get_full_name(ssi))
+        if length(fields)>0
+            push!(exports.args, structptrlike(ssi))
+        end
         push!(loaded, name)
         length(fields)>0 && push!(exports.args,get_struct_name(ssi,false))
     end

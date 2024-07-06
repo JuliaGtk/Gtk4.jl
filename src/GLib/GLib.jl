@@ -33,7 +33,7 @@ export gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
        gtkdoc_func_url, gtkdoc_struc_url
 
 export gtype_wrappers, GVariantDict, GBytes, GVariantType
-export GValue, GParamSpec, GTypeModule, _GValue
+export GValue, GParamSpec, GTypeModule, _GValue, GValueLike
 
 Maybe(T) = Union{T,Nothing}
 

@@ -2,19 +2,19 @@ quote
 $(Expr(:toplevel, quote
     function Border_new()
         ret = ccall(("gtk_border_new", libgtk4), Ptr{_GtkBorder}, ())
-        ret2 = convert(Union{GtkBorder, Ref{_GtkBorder}}, ret, true)
+        ret2 = convert(GtkBorderLike, ret, true)
         ret2
     end
-    function copy(instance::Union{GtkBorder, Ref{_GtkBorder}})
+    function copy(instance::GtkBorderLike)
         ret = ccall(("gtk_border_copy", libgtk4), Ptr{_GtkBorder}, (Ptr{_GtkBorder},), instance)
-        ret2 = convert(Union{GtkBorder, Ref{_GtkBorder}}, ret, true)
+        ret2 = convert(GtkBorderLike, ret, true)
         ret2
     end
-    function free(instance::Union{GtkBorder, Ref{_GtkBorder}})
+    function free(instance::GtkBorderLike)
         ret = ccall(("gtk_border_free", libgtk4), Nothing, (Ptr{_GtkBorder},), instance)
         nothing
     end
-    function evaluate(instance::GtkExpressionWatch, _value::Union{GValue, Ref{_GValue}})
+    function evaluate(instance::GtkExpressionWatch, _value::GValueLike)
         ret = ccall(("gtk_expression_watch_evaluate", libgtk4), Cint, (Ptr{GtkExpressionWatch}, Ptr{_GValue}), instance, _value)
         ret2 = convert(Bool, ret)
         ret2
@@ -287,15 +287,15 @@ $(Expr(:toplevel, quote
     end
     function Requisition_new()
         ret = ccall(("gtk_requisition_new", libgtk4), Ptr{_GtkRequisition}, ())
-        ret2 = convert(Union{GtkRequisition, Ref{_GtkRequisition}}, ret, true)
+        ret2 = convert(GtkRequisitionLike, ret, true)
         ret2
     end
-    function copy(instance::Union{GtkRequisition, Ref{_GtkRequisition}})
+    function copy(instance::GtkRequisitionLike)
         ret = ccall(("gtk_requisition_copy", libgtk4), Ptr{_GtkRequisition}, (Ptr{_GtkRequisition},), instance)
-        ret2 = convert(Union{GtkRequisition, Ref{_GtkRequisition}}, ret, true)
+        ret2 = convert(GtkRequisitionLike, ret, true)
         ret2
     end
-    function free(instance::Union{GtkRequisition, Ref{_GtkRequisition}})
+    function free(instance::GtkRequisitionLike)
         ret = ccall(("gtk_requisition_free", libgtk4), Nothing, (Ptr{_GtkRequisition},), instance)
         nothing
     end
@@ -331,12 +331,473 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_scroll_info_unref", libgtk4), Nothing, (Ptr{GtkScrollInfo},), instance)
         nothing
     end
-    function copy(instance::Union{GtkTreeIter, Ref{_GtkTreeIter}})
-        ret = ccall(("gtk_tree_iter_copy", libgtk4), Ptr{_GtkTreeIter}, (Ptr{_GtkTreeIter},), instance)
-        ret2 = convert(Union{GtkTreeIter, Ref{_GtkTreeIter}}, ret, true)
+    function assign(instance::GtkTextIterLike, _other::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_assign", libgtk4), Nothing, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _other)
+        nothing
+    end
+    function backward_char(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_backward_char", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function backward_chars(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_backward_chars", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_cursor_position(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_backward_cursor_position", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_cursor_positions(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_backward_cursor_positions", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_find_char(instance::GtkTextIterLike, _pred::Function, _limit::Maybe(GtkTextIterLike))
+        begin
+            _pred_cfunc = @cfunction(GtkTextCharPredicate, Cint, (Nothing, Ref{Function}))
+            begin
+                ref = Ref{Any}(_pred)
+                _pred_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        _limit_maybe = nothing_to_null(_limit)
+        ret = ccall(("gtk_text_iter_backward_find_char", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{_GtkTextIter}), instance, _pred_cfunc, _pred_closure, _limit_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_backward_line", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_lines(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_backward_lines", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_search(instance::GtkTextIterLike, _str::Union{AbstractString, Symbol}, _flags, _limit::Maybe(GtkTextIterLike))
+        m_match_start = Ref{_GtkTextIter}()
+        m_match_end = Ref{_GtkTextIter}()
+        _limit_maybe = nothing_to_null(_limit)
+        ret = ccall(("gtk_text_iter_backward_search", libgtk4), Cint, (Ptr{_GtkTextIter}, Cstring, UInt32, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _str, _flags, m_match_start, m_match_end, _limit_maybe)
+        ret2 = convert(Bool, ret)
+        _match_start = m_match_start[]
+        _match_end = m_match_end[]
+        (ret2, _match_start, _match_end)
+    end
+    function backward_sentence_start(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_backward_sentence_start", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_sentence_starts(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_backward_sentence_starts", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_to_tag_toggle(instance::GtkTextIterLike, _tag::Maybe(GtkTextTag))
+        _tag_maybe = nothing_to_null(_tag)
+        ret = ccall(("gtk_text_iter_backward_to_tag_toggle", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{GObject}), instance, _tag_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_visible_cursor_position(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_backward_visible_cursor_position", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_visible_cursor_positions(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_backward_visible_cursor_positions", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_visible_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_backward_visible_line", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_visible_lines(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_backward_visible_lines", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_visible_word_start(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_backward_visible_word_start", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_visible_word_starts(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_backward_visible_word_starts", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_word_start(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_backward_word_start", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function backward_word_starts(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_backward_word_starts", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function can_insert(instance::GtkTextIterLike, _default_editability::Bool)
+        ret = ccall(("gtk_text_iter_can_insert", libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), instance, _default_editability)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function compare(instance::GtkTextIterLike, _rhs::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_compare", libgtk4), Int32, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _rhs)
+        ret
+    end
+    function copy(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_copy", libgtk4), Ptr{_GtkTextIter}, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(GtkTextIterLike, ret, true)
+        ret2
+    end
+    function editable(instance::GtkTextIterLike, _default_setting::Bool)
+        ret = ccall(("gtk_text_iter_editable", libgtk4), Cint, (Ptr{_GtkTextIter}, Cint), instance, _default_setting)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function ends_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_ends_line", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function ends_sentence(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_ends_sentence", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function ends_tag(instance::GtkTextIterLike, _tag::Maybe(GtkTextTag))
+        _tag_maybe = nothing_to_null(_tag)
+        ret = ccall(("gtk_text_iter_ends_tag", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{GObject}), instance, _tag_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function ends_word(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_ends_word", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function equal(instance::GtkTextIterLike, _rhs::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_equal", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _rhs)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_char(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_char", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_chars(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_forward_chars", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_cursor_position(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_cursor_position", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_cursor_positions(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_forward_cursor_positions", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_find_char(instance::GtkTextIterLike, _pred::Function, _limit::Maybe(GtkTextIterLike))
+        begin
+            _pred_cfunc = @cfunction(GtkTextCharPredicate, Cint, (Nothing, Ref{Function}))
+            begin
+                ref = Ref{Any}(_pred)
+                _pred_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        _limit_maybe = nothing_to_null(_limit)
+        ret = ccall(("gtk_text_iter_forward_find_char", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{_GtkTextIter}), instance, _pred_cfunc, _pred_closure, _limit_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_line", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_lines(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_forward_lines", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_search(instance::GtkTextIterLike, _str::Union{AbstractString, Symbol}, _flags, _limit::Maybe(GtkTextIterLike))
+        m_match_start = Ref{_GtkTextIter}()
+        m_match_end = Ref{_GtkTextIter}()
+        _limit_maybe = nothing_to_null(_limit)
+        ret = ccall(("gtk_text_iter_forward_search", libgtk4), Cint, (Ptr{_GtkTextIter}, Cstring, UInt32, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _str, _flags, m_match_start, m_match_end, _limit_maybe)
+        ret2 = convert(Bool, ret)
+        _match_start = m_match_start[]
+        _match_end = m_match_end[]
+        (ret2, _match_start, _match_end)
+    end
+    function forward_sentence_end(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_sentence_end", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_sentence_ends(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_forward_sentence_ends", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_to_end(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_to_end", libgtk4), Nothing, (Ptr{_GtkTextIter},), instance)
+        nothing
+    end
+    function forward_to_line_end(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_to_line_end", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_to_tag_toggle(instance::GtkTextIterLike, _tag::Maybe(GtkTextTag))
+        _tag_maybe = nothing_to_null(_tag)
+        ret = ccall(("gtk_text_iter_forward_to_tag_toggle", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{GObject}), instance, _tag_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_visible_cursor_position(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_visible_cursor_position", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_visible_cursor_positions(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_forward_visible_cursor_positions", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_visible_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_visible_line", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_visible_lines(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_forward_visible_lines", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_visible_word_end(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_visible_word_end", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_visible_word_ends(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_forward_visible_word_ends", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_word_end(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_forward_word_end", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function forward_word_ends(instance::GtkTextIterLike, _count::Integer)
+        ret = ccall(("gtk_text_iter_forward_word_ends", libgtk4), Cint, (Ptr{_GtkTextIter}, Int32), instance, _count)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function free(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_free", libgtk4), Nothing, (Ptr{_GtkTextIter},), instance)
+        nothing
+    end
+    function get_buffer(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_buffer", libgtk4), Ptr{GObject}, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(GtkTextBuffer, ret, false)
+        ret2
+    end
+    function get_bytes_in_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_bytes_in_line", libgtk4), Int32, (Ptr{_GtkTextIter},), instance)
+        ret
+    end
+    function get_char(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_char", libgtk4), Nothing, (Ptr{_GtkTextIter},), instance)
+        nothing
+    end
+    function get_chars_in_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_chars_in_line", libgtk4), Int32, (Ptr{_GtkTextIter},), instance)
+        ret
+    end
+    function get_child_anchor(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_child_anchor", libgtk4), Ptr{GObject}, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert_if_not_null(GtkTextChildAnchor, ret, false)
+        ret2
+    end
+    function get_language(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_language", libgtk4), Ptr{PangoLanguage}, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(PangoLanguage, ret, true)
+        ret2
+    end
+    function get_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_line", libgtk4), Int32, (Ptr{_GtkTextIter},), instance)
+        ret
+    end
+    function get_line_index(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_line_index", libgtk4), Int32, (Ptr{_GtkTextIter},), instance)
+        ret
+    end
+    function get_line_offset(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_line_offset", libgtk4), Int32, (Ptr{_GtkTextIter},), instance)
+        ret
+    end
+    function get_marks(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_marks", libgtk4), Ptr{GLib._GSList{Ptr{GObject}}}, (Ptr{_GtkTextIter},), instance)
+        ret2 = GLib.GList(ret, false)
+        ret2
+    end
+    function get_offset(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_offset", libgtk4), Int32, (Ptr{_GtkTextIter},), instance)
+        ret
+    end
+    function get_paintable(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_paintable", libgtk4), Ptr{GObject}, (Ptr{_GtkTextIter},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, false)
+        ret2
+    end
+    function get_slice(instance::GtkTextIterLike, _end::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_slice", libgtk4), Cstring, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _end)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function get_tags(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_tags", libgtk4), Ptr{GLib._GSList{Ptr{GObject}}}, (Ptr{_GtkTextIter},), instance)
+        ret2 = GLib.GList(ret, false)
+        ret2
+    end
+    function get_text(instance::GtkTextIterLike, _end::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_text", libgtk4), Cstring, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _end)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function get_toggled_tags(instance::GtkTextIterLike, _toggled_on::Bool)
+        ret = ccall(("gtk_text_iter_get_toggled_tags", libgtk4), Ptr{GLib._GSList{Ptr{GObject}}}, (Ptr{_GtkTextIter}, Cint), instance, _toggled_on)
+        ret2 = GLib.GList(ret, false)
+        ret2
+    end
+    function get_visible_line_index(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_visible_line_index", libgtk4), Int32, (Ptr{_GtkTextIter},), instance)
+        ret
+    end
+    function get_visible_line_offset(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_visible_line_offset", libgtk4), Int32, (Ptr{_GtkTextIter},), instance)
+        ret
+    end
+    function get_visible_slice(instance::GtkTextIterLike, _end::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_visible_slice", libgtk4), Cstring, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _end)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function get_visible_text(instance::GtkTextIterLike, _end::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_get_visible_text", libgtk4), Cstring, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _end)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function has_tag(instance::GtkTextIterLike, _tag::GtkTextTag)
+        ret = ccall(("gtk_text_iter_has_tag", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{GObject}), instance, _tag)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function in_range(instance::GtkTextIterLike, _start::GtkTextIterLike, _end::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_in_range", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _start, _end)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function inside_sentence(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_inside_sentence", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function inside_word(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_inside_word", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_cursor_position(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_is_cursor_position", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_end(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_is_end", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_start(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_is_start", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function order(instance::GtkTextIterLike, _second::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_order", libgtk4), Nothing, (Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _second)
+        nothing
+    end
+    function set_line(instance::GtkTextIterLike, _line_number::Integer)
+        ret = ccall(("gtk_text_iter_set_line", libgtk4), Nothing, (Ptr{_GtkTextIter}, Int32), instance, _line_number)
+        nothing
+    end
+    function set_line_index(instance::GtkTextIterLike, _byte_on_line::Integer)
+        ret = ccall(("gtk_text_iter_set_line_index", libgtk4), Nothing, (Ptr{_GtkTextIter}, Int32), instance, _byte_on_line)
+        nothing
+    end
+    function set_line_offset(instance::GtkTextIterLike, _char_on_line::Integer)
+        ret = ccall(("gtk_text_iter_set_line_offset", libgtk4), Nothing, (Ptr{_GtkTextIter}, Int32), instance, _char_on_line)
+        nothing
+    end
+    function set_offset(instance::GtkTextIterLike, _char_offset::Integer)
+        ret = ccall(("gtk_text_iter_set_offset", libgtk4), Nothing, (Ptr{_GtkTextIter}, Int32), instance, _char_offset)
+        nothing
+    end
+    function set_visible_line_index(instance::GtkTextIterLike, _byte_on_line::Integer)
+        ret = ccall(("gtk_text_iter_set_visible_line_index", libgtk4), Nothing, (Ptr{_GtkTextIter}, Int32), instance, _byte_on_line)
+        nothing
+    end
+    function set_visible_line_offset(instance::GtkTextIterLike, _char_on_line::Integer)
+        ret = ccall(("gtk_text_iter_set_visible_line_offset", libgtk4), Nothing, (Ptr{_GtkTextIter}, Int32), instance, _char_on_line)
+        nothing
+    end
+    function starts_line(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_starts_line", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function starts_sentence(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_starts_sentence", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function starts_tag(instance::GtkTextIterLike, _tag::Maybe(GtkTextTag))
+        _tag_maybe = nothing_to_null(_tag)
+        ret = ccall(("gtk_text_iter_starts_tag", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{GObject}), instance, _tag_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function starts_word(instance::GtkTextIterLike)
+        ret = ccall(("gtk_text_iter_starts_word", libgtk4), Cint, (Ptr{_GtkTextIter},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function toggles_tag(instance::GtkTextIterLike, _tag::Maybe(GtkTextTag))
+        _tag_maybe = nothing_to_null(_tag)
+        ret = ccall(("gtk_text_iter_toggles_tag", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{GObject}), instance, _tag_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function copy(instance::GtkTreeIterLike)
+        ret = ccall(("gtk_tree_iter_copy", libgtk4), Ptr{_GtkTreeIter}, (Ptr{_GtkTreeIter},), instance)
+        ret2 = convert(GtkTreeIterLike, ret, true)
+        ret2
+    end
+    function free(instance::GtkTreeIterLike)
         ret = ccall(("gtk_tree_iter_free", libgtk4), Nothing, (Ptr{_GtkTreeIter},), instance)
         nothing
     end
@@ -2519,7 +2980,7 @@ $(Expr(:toplevel, quote
     function get_buildable_id(instance::GtkCalendar)
         get_buildable_id(GtkBuildable(instance))
     end
-    function activate(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::Union{GdkRectangle, Ref{_GdkRectangle}}, _flags, _edit_only::Bool)
+    function activate(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::GdkRectangleLike, _flags, _edit_only::Bool)
         ret = ccall(("gtk_cell_area_activate", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, UInt32, Cint), instance, _context, _widget, _cell_area, _flags, _edit_only)
         ret2 = convert(Bool, ret)
         ret2
@@ -2532,7 +2993,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_area_add_focus_sibling", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), instance, _renderer, _sibling)
         nothing
     end
-    function apply_attributes(instance::GtkCellArea, _tree_model::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _is_expander::Bool, _is_expanded::Bool)
+    function apply_attributes(instance::GtkCellArea, _tree_model::GtkTreeModel, _iter::GtkTreeIterLike, _is_expander::Bool, _is_expanded::Bool)
         ret = ccall(("gtk_cell_area_apply_attributes", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTreeIter}, Cint, Cint), instance, _tree_model, _iter, _is_expander, _is_expanded)
         nothing
     end
@@ -2548,11 +3009,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_area_attribute_get_column", libgtk4), Int32, (Ptr{GObject}, Ptr{GObject}, Cstring), instance, _renderer, _attribute)
         ret
     end
-    function cell_get_property(instance::GtkCellArea, _renderer::GtkCellRenderer, _property_name::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}})
+    function cell_get_property(instance::GtkCellArea, _renderer::GtkCellRenderer, _property_name::Union{AbstractString, Symbol}, _value::GValueLike)
         ret = ccall(("gtk_cell_area_cell_get_property", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _renderer, _property_name, _value)
         nothing
     end
-    function cell_set_property(instance::GtkCellArea, _renderer::GtkCellRenderer, _property_name::Union{AbstractString, Symbol}, _value::Union{GValue, Ref{_GValue}})
+    function cell_set_property(instance::GtkCellArea, _renderer::GtkCellRenderer, _property_name::Union{AbstractString, Symbol}, _value::GValueLike)
         ret = ccall(("gtk_cell_area_cell_set_property", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _renderer, _property_name, _value)
         nothing
     end
@@ -2582,7 +3043,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_area_foreach", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _callback_cfunc, _callback_closure)
         nothing
     end
-    function foreach_alloc(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::Union{GdkRectangle, Ref{_GdkRectangle}}, _background_area::Union{GdkRectangle, Ref{_GdkRectangle}}, _callback::Function)
+    function foreach_alloc(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::GdkRectangleLike, _background_area::GdkRectangleLike, _callback::Function)
         begin
             _callback_cfunc = @cfunction(GtkCellAllocCallback, Cint, (Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ref{Function}))
             begin
@@ -2593,13 +3054,13 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_area_foreach_alloc", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ptr{Cvoid}, Ptr{Nothing}), instance, _context, _widget, _cell_area, _background_area, _callback_cfunc, _callback_closure)
         nothing
     end
-    function get_cell_allocation(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _renderer::GtkCellRenderer, _cell_area::Union{GdkRectangle, Ref{_GdkRectangle}})
+    function get_cell_allocation(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _renderer::GtkCellRenderer, _cell_area::GdkRectangleLike)
         m_allocation = Ref{_GdkRectangle}()
         ret = ccall(("gtk_cell_area_get_cell_allocation", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _context, _widget, _renderer, _cell_area, m_allocation)
         _allocation = m_allocation[]
         _allocation
     end
-    function get_cell_at_position(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::Union{GdkRectangle, Ref{_GdkRectangle}}, _x::Integer, _y::Integer)
+    function get_cell_at_position(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::GdkRectangleLike, _x::Integer, _y::Integer)
         m_alloc_area = Ref{_GdkRectangle}()
         ret = ccall(("gtk_cell_area_get_cell_at_position", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Int32, Int32, Ptr{_GdkRectangle}), instance, _context, _widget, _cell_area, _x, _y, m_alloc_area)
         ret2 = convert(GtkCellRenderer, ret, false)
@@ -2678,7 +3139,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function inner_cell_area(instance::GtkCellArea, _widget::GtkWidget, _cell_area::Union{GdkRectangle, Ref{_GdkRectangle}})
+    function inner_cell_area(instance::GtkCellArea, _widget::GtkWidget, _cell_area::GdkRectangleLike)
         m_inner_area = Ref{_GdkRectangle}()
         ret = ccall(("gtk_cell_area_inner_cell_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _widget, _cell_area, m_inner_area)
         _inner_area = m_inner_area[]
@@ -2715,7 +3176,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_area_set_focus_cell", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _renderer_maybe)
         nothing
     end
-    function snapshot(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _snapshot::GtkSnapshot, _background_area::Union{GdkRectangle, Ref{_GdkRectangle}}, _cell_area::Union{GdkRectangle, Ref{_GdkRectangle}}, _flags, _paint_focus::Bool)
+    function snapshot(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _snapshot::GtkSnapshot, _background_area::GdkRectangleLike, _cell_area::GdkRectangleLike, _flags, _paint_focus::Bool)
         ret = ccall(("gtk_cell_area_snapshot", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, UInt32, Cint), instance, _context, _widget, _snapshot, _background_area, _cell_area, _flags, _paint_focus)
         nothing
     end
@@ -3392,7 +3853,7 @@ $(Expr(:toplevel, quote
         ret2 = GtkColorButtonLeaf(ret, false)
         ret2
     end
-    function ColorButton_new_with_rgba(_rgba::Union{GdkRGBA, Ref{_GdkRGBA}})
+    function ColorButton_new_with_rgba(_rgba::GdkRGBALike)
         ret = ccall(("gtk_color_button_new_with_rgba", libgtk4), Ptr{GObject}, (Ptr{_GdkRGBA},), _rgba)
         ret2 = GtkColorButtonLeaf(ret, false)
         ret2
@@ -3472,7 +3933,7 @@ $(Expr(:toplevel, quote
     function get_use_alpha(instance::GtkColorButton)
         get_use_alpha(GtkColorChooser(instance))
     end
-    function set_rgba(instance::GtkColorButton, _color::Union{GdkRGBA, Ref{_GdkRGBA}})
+    function set_rgba(instance::GtkColorButton, _color::GdkRGBALike)
         set_rgba(GtkColorChooser(instance), _color)
     end
     function set_use_alpha(instance::GtkColorButton, _use_alpha::Bool)
@@ -3542,7 +4003,7 @@ $(Expr(:toplevel, quote
     function get_use_alpha(instance::GtkColorChooserDialog)
         get_use_alpha(GtkColorChooser(instance))
     end
-    function set_rgba(instance::GtkColorChooserDialog, _color::Union{GdkRGBA, Ref{_GdkRGBA}})
+    function set_rgba(instance::GtkColorChooserDialog, _color::GdkRGBALike)
         set_rgba(GtkColorChooser(instance), _color)
     end
     function set_use_alpha(instance::GtkColorChooserDialog, _use_alpha::Bool)
@@ -3634,7 +4095,7 @@ $(Expr(:toplevel, quote
     function get_use_alpha(instance::GtkColorChooserWidget)
         get_use_alpha(GtkColorChooser(instance))
     end
-    function set_rgba(instance::GtkColorChooserWidget, _color::Union{GdkRGBA, Ref{_GdkRGBA}})
+    function set_rgba(instance::GtkColorChooserWidget, _color::GdkRGBALike)
         set_rgba(GtkColorChooser(instance), _color)
     end
     function set_use_alpha(instance::GtkColorChooserWidget, _use_alpha::Bool)
@@ -3645,7 +4106,7 @@ $(Expr(:toplevel, quote
         ret2 = GtkColorDialogLeaf(ret, true)
         ret2
     end
-    function choose_rgba(instance::GtkColorDialog, _parent::Maybe(GtkWindow), _initial_color::Maybe(Union{GdkRGBA, Ref{_GdkRGBA}}), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+    function choose_rgba(instance::GtkColorDialog, _parent::Maybe(GtkWindow), _initial_color::Maybe(GdkRGBALike), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
         _parent_maybe = nothing_to_null(_parent)
         _initial_color_maybe = nothing_to_null(_initial_color)
         _cancellable_maybe = nothing_to_null(_cancellable)
@@ -3711,14 +4172,14 @@ $(Expr(:toplevel, quote
     end
     function get_rgba(instance::GtkColorDialogButton)
         ret = ccall(("gtk_color_dialog_button_get_rgba", libgtk4), Ptr{_GdkRGBA}, (Ptr{GObject},), instance)
-        ret2 = convert(Union{GdkRGBA, Ref{_GdkRGBA}}, ret, false)
+        ret2 = convert(GdkRGBALike, ret, false)
         ret2
     end
     function set_dialog(instance::GtkColorDialogButton, _dialog::GtkColorDialog)
         ret = ccall(("gtk_color_dialog_button_set_dialog", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _dialog)
         nothing
     end
-    function set_rgba(instance::GtkColorDialogButton, _color::Union{GdkRGBA, Ref{_GdkRGBA}})
+    function set_rgba(instance::GtkColorDialogButton, _color::GdkRGBALike)
         ret = ccall(("gtk_color_dialog_button_set_rgba", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRGBA}), instance, _color)
         nothing
     end
@@ -4283,7 +4744,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_active_iter(instance::GtkComboBox, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function set_active_iter(instance::GtkComboBox, _iter::Maybe(GtkTreeIterLike))
         _iter_maybe = nothing_to_null(_iter)
         ret = ccall(("gtk_combo_box_set_active_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter_maybe)
         nothing
@@ -4532,14 +4993,14 @@ $(Expr(:toplevel, quote
     function set_cell_data_func(instance::GtkComboBoxText, _cell::GtkCellRenderer, _func::Maybe(Function), _destroy::Function)
         set_cell_data_func(GtkCellLayout(instance), _cell, _func, _destroy)
     end
-    function ConstantExpression_new_for_value(_value::Union{GValue, Ref{_GValue}})
+    function ConstantExpression_new_for_value(_value::GValueLike)
         ret = ccall(("gtk_constant_expression_new_for_value", libgtk4), Ptr{GtkExpression}, (Ptr{_GValue},), _value)
         ret2 = convert(GtkExpression, ret)
         ret2
     end
     function get_value(instance::GtkConstantExpression)
         ret = ccall(("gtk_constant_expression_get_value", libgtk4), Ptr{_GValue}, (Ptr{GtkExpression},), instance)
-        ret2 = convert(Union{GValue, Ref{_GValue}}, ret, false)
+        ret2 = convert(GValueLike, ret, false)
         ret2
     end
     function Constraint_new(_target::Maybe(GtkConstraintTarget), _target_attribute, _relation, _source::Maybe(GtkConstraintTarget), _source_attribute, _multiplier::Real, _constant::Real, _strength::Integer)
@@ -4942,7 +5403,7 @@ $(Expr(:toplevel, quote
     function items_changed(instance::GtkDirectoryList, _position::Integer, _removed::Integer, _added::Integer)
         items_changed(GListModel(instance), _position, _removed, _added)
     end
-    function create_widget_for_value(_value::Union{GValue, Ref{_GValue}})
+    function create_widget_for_value(_value::GValueLike)
         ret = ccall(("gtk_drag_icon_create_widget_for_value", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
         ret2 = convert_if_not_null(GtkWidget, ret, true)
         ret2
@@ -6475,7 +6936,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkExpressionWatch, ret, false)
         ret2
     end
-    function evaluate(instance::GtkExpression, _this_::Maybe(GObject), _value::Union{GValue, Ref{_GValue}})
+    function evaluate(instance::GtkExpression, _this_::Maybe(GObject), _value::GValueLike)
         _this__maybe = nothing_to_null(_this_)
         ret = ccall(("gtk_expression_evaluate", libgtk4), Cint, (Ptr{GtkExpression}, Ptr{GObject}, Ptr{_GValue}), instance, _this__maybe, _value)
         ret2 = convert(Bool, ret)
@@ -9386,7 +9847,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_im_context_set_client_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget_maybe)
         nothing
     end
-    function set_cursor_location(instance::GtkIMContext, _area::Union{GdkRectangle, Ref{_GdkRectangle}})
+    function set_cursor_location(instance::GtkIMContext, _area::GdkRectangleLike)
         ret = ccall(("gtk_im_context_set_cursor_location", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, _area)
         nothing
     end
@@ -11468,14 +11929,14 @@ $(Expr(:toplevel, quote
         _iter = m_iter[]
         _iter
     end
-    function insert_after(instance::GtkListStore, _sibling::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function insert_after(instance::GtkListStore, _sibling::Maybe(GtkTreeIterLike))
         m_iter = Ref{_GtkTreeIter}()
         _sibling_maybe = nothing_to_null(_sibling)
         ret = ccall(("gtk_list_store_insert_after", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_iter, _sibling_maybe)
         _iter = m_iter[]
         _iter
     end
-    function insert_before(instance::GtkListStore, _sibling::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function insert_before(instance::GtkListStore, _sibling::Maybe(GtkTreeIterLike))
         m_iter = Ref{_GtkTreeIter}()
         _sibling_maybe = nothing_to_null(_sibling)
         ret = ccall(("gtk_list_store_insert_before", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_iter, _sibling_maybe)
@@ -11492,17 +11953,17 @@ $(Expr(:toplevel, quote
         _iter = m_iter[]
         _iter
     end
-    function iter_is_valid(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_is_valid(instance::GtkListStore, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_list_store_iter_is_valid", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function move_after(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _position::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function move_after(instance::GtkListStore, _iter::GtkTreeIterLike, _position::Maybe(GtkTreeIterLike))
         _position_maybe = nothing_to_null(_position)
         ret = ccall(("gtk_list_store_move_after", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _iter, _position_maybe)
         nothing
     end
-    function move_before(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _position::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function move_before(instance::GtkListStore, _iter::GtkTreeIterLike, _position::Maybe(GtkTreeIterLike))
         _position_maybe = nothing_to_null(_position)
         ret = ccall(("gtk_list_store_move_before", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _iter, _position_maybe)
         nothing
@@ -11513,7 +11974,7 @@ $(Expr(:toplevel, quote
         _iter = m_iter[]
         _iter
     end
-    function remove(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function remove(instance::GtkListStore, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_list_store_remove", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
@@ -11529,11 +11990,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_list_store_set_column_types", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{UInt64}), instance, _n_columns, _types_arr)
         nothing
     end
-    function set_value(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _column::Integer, _value::Union{GValue, Ref{_GValue}})
+    function set_value(instance::GtkListStore, _iter::GtkTreeIterLike, _column::Integer, _value::GValueLike)
         ret = ccall(("gtk_list_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), instance, _iter, _column, _value)
         nothing
     end
-    function set(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _columns, _values)
+    function set(instance::GtkListStore, _iter::GtkTreeIterLike, _columns, _values)
         _columns_arr = convert(Vector{Int32}, _columns)
         _values_arr = convert(Vector{_GValue}, _values)
         _n_values = length(_columns)
@@ -11541,17 +12002,17 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_list_store_set_valuesv", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{Int32}, Ptr{_GValue}, Int32), instance, _iter, _columns_arr, _values_arr, _n_values)
         nothing
     end
-    function swap(instance::GtkListStore, _a::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _b::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function swap(instance::GtkListStore, _a::GtkTreeIterLike, _b::GtkTreeIterLike)
         ret = ccall(("gtk_list_store_swap", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _a, _b)
         nothing
     end
     function get_buildable_id(instance::GtkListStore)
         get_buildable_id(GtkBuildable(instance))
     end
-    function drag_data_received(instance::GtkListStore, _dest::GtkTreePath, _value::Union{GValue, Ref{_GValue}})
+    function drag_data_received(instance::GtkListStore, _dest::GtkTreePath, _value::GValueLike)
         drag_data_received(GtkTreeDragDest(instance), _dest, _value)
     end
-    function row_drop_possible(instance::GtkListStore, _dest_path::GtkTreePath, _value::Union{GValue, Ref{_GValue}})
+    function row_drop_possible(instance::GtkListStore, _dest_path::GtkTreePath, _value::GValueLike)
         row_drop_possible(GtkTreeDragDest(instance), _dest_path, _value)
     end
     function drag_data_delete(instance::GtkListStore, _path::GtkTreePath)
@@ -11587,55 +12048,55 @@ $(Expr(:toplevel, quote
     function get_n_columns(instance::GtkListStore)
         get_n_columns(GtkTreeModel(instance))
     end
-    function get_path(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_path(instance::GtkListStore, _iter::GtkTreeIterLike)
         get_path(GtkTreeModel(instance), _iter)
     end
-    function get_string_from_iter(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_string_from_iter(instance::GtkListStore, _iter::GtkTreeIterLike)
         get_string_from_iter(GtkTreeModel(instance), _iter)
     end
-    function get_value(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _column::Integer)
+    function get_value(instance::GtkListStore, _iter::GtkTreeIterLike, _column::Integer)
         get_value(GtkTreeModel(instance), _iter, _column)
     end
-    function iter_children(instance::GtkListStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_children(instance::GtkListStore, _parent::Maybe(GtkTreeIterLike))
         iter_children(GtkTreeModel(instance), _parent)
     end
-    function iter_has_child(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_has_child(instance::GtkListStore, _iter::GtkTreeIterLike)
         iter_has_child(GtkTreeModel(instance), _iter)
     end
-    function iter_n_children(instance::GtkListStore, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_n_children(instance::GtkListStore, _iter::Maybe(GtkTreeIterLike))
         iter_n_children(GtkTreeModel(instance), _iter)
     end
-    function iter_next(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_next(instance::GtkListStore, _iter::GtkTreeIterLike)
         iter_next(GtkTreeModel(instance), _iter)
     end
-    function iter_nth_child(instance::GtkListStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _n::Integer)
+    function iter_nth_child(instance::GtkListStore, _parent::Maybe(GtkTreeIterLike), _n::Integer)
         iter_nth_child(GtkTreeModel(instance), _parent, _n)
     end
-    function iter_parent(instance::GtkListStore, _child::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_parent(instance::GtkListStore, _child::GtkTreeIterLike)
         iter_parent(GtkTreeModel(instance), _child)
     end
-    function iter_previous(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_previous(instance::GtkListStore, _iter::GtkTreeIterLike)
         iter_previous(GtkTreeModel(instance), _iter)
     end
-    function ref_node(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function ref_node(instance::GtkListStore, _iter::GtkTreeIterLike)
         ref_node(GtkTreeModel(instance), _iter)
     end
-    function row_changed(instance::GtkListStore, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_changed(instance::GtkListStore, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_changed(GtkTreeModel(instance), _path, _iter)
     end
     function row_deleted(instance::GtkListStore, _path::GtkTreePath)
         row_deleted(GtkTreeModel(instance), _path)
     end
-    function row_has_child_toggled(instance::GtkListStore, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_has_child_toggled(instance::GtkListStore, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_has_child_toggled(GtkTreeModel(instance), _path, _iter)
     end
-    function row_inserted(instance::GtkListStore, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_inserted(instance::GtkListStore, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_inserted(GtkTreeModel(instance), _path, _iter)
     end
-    function rows_reordered(instance::GtkListStore, _path::GtkTreePath, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _new_order)
+    function rows_reordered(instance::GtkListStore, _path::GtkTreePath, _iter::Maybe(GtkTreeIterLike), _new_order)
         rows_reordered(GtkTreeModel(instance), _path, _iter, _new_order)
     end
-    function unref_node(instance::GtkListStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function unref_node(instance::GtkListStore, _iter::GtkTreeIterLike)
         unref_node(GtkTreeModel(instance), _iter)
     end
     function get_sort_column_id(instance::GtkListStore)
@@ -13870,7 +14331,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_popover_set_offset", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32), instance, _x_offset, _y_offset)
         nothing
     end
-    function set_pointing_to(instance::GtkPopover, _rect::Maybe(Union{GdkRectangle, Ref{_GdkRectangle}}))
+    function set_pointing_to(instance::GtkPopover, _rect::Maybe(GdkRectangleLike))
         _rect_maybe = nothing_to_null(_rect)
         ret = ccall(("gtk_popover_set_pointing_to", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, _rect_maybe)
         nothing
@@ -15726,7 +16187,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function print(instance::GtkShortcutAction, _string::Union{GString, Ref{_GString}})
+    function print(instance::GtkShortcutAction, _string::GStringLike)
         ret = ccall(("gtk_shortcut_action_print", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GString}), instance, _string)
         nothing
     end
@@ -15876,11 +16337,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_shortcut_trigger_hash", libgtk4), UInt32, (Ptr{GObject},), instance)
         ret
     end
-    function print(instance::GtkShortcutTrigger, _string::Union{GString, Ref{_GString}})
+    function print(instance::GtkShortcutTrigger, _string::GStringLike)
         ret = ccall(("gtk_shortcut_trigger_print", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GString}), instance, _string)
         nothing
     end
-    function print_label(instance::GtkShortcutTrigger, _display::GdkDisplay, _string::Union{GString, Ref{_GString}})
+    function print_label(instance::GtkShortcutTrigger, _display::GdkDisplay, _string::GStringLike)
         ret = ccall(("gtk_shortcut_trigger_print_label", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{_GString}), instance, _display, _string)
         ret2 = convert(Bool, ret)
         ret2
@@ -16336,68 +16797,68 @@ $(Expr(:toplevel, quote
         ret2 = GtkSnapshotLeaf(ret, true)
         ret2
     end
-    function append_border(instance::GtkSnapshot, _outline::Union{GskRoundedRect, Ref{_GskRoundedRect}}, _border_width, _border_color)
+    function append_border(instance::GtkSnapshot, _outline::GskRoundedRectLike, _border_width, _border_color)
         _border_width_arr = convert(Vector{Float32}, _border_width)
         _border_color_arr = convert(Vector{_GdkRGBA}, _border_color)
         ret = ccall(("gtk_snapshot_append_border", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}, Ptr{Float32}, Ptr{_GdkRGBA}), instance, _outline, _border_width_arr, _border_color_arr)
         nothing
     end
-    function append_cairo(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function append_cairo(instance::GtkSnapshot, _bounds::GrapheneRectLike)
         ret = ccall(("gtk_snapshot_append_cairo", libgtk4), Ptr{cairoContext}, (Ptr{GObject}, Ptr{_GrapheneRect}), instance, _bounds)
         ret2 = convert(cairoContext, ret, true)
         ret2
     end
-    function append_color(instance::GtkSnapshot, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function append_color(instance::GtkSnapshot, _color::GdkRGBALike, _bounds::GrapheneRectLike)
         ret = ccall(("gtk_snapshot_append_color", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRGBA}, Ptr{_GrapheneRect}), instance, _color, _bounds)
         nothing
     end
-    function append_conic_gradient(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _rotation::Real, _stops)
+    function append_conic_gradient(instance::GtkSnapshot, _bounds::GrapheneRectLike, _center::GraphenePointLike, _rotation::Real, _stops)
         _stops_arr = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
         ret = ccall(("gtk_snapshot_append_conic_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _rotation, _stops_arr, _n_stops)
         nothing
     end
-    function append_inset_shadow(instance::GtkSnapshot, _outline::Union{GskRoundedRect, Ref{_GskRoundedRect}}, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
+    function append_inset_shadow(instance::GtkSnapshot, _outline::GskRoundedRectLike, _color::GdkRGBALike, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
         ret = ccall(("gtk_snapshot_append_inset_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}, Ptr{_GdkRGBA}, Float32, Float32, Float32, Float32), instance, _outline, _color, _dx, _dy, _spread, _blur_radius)
         nothing
     end
-    function append_layout(instance::GtkSnapshot, _layout::PangoLayout, _color::Union{GdkRGBA, Ref{_GdkRGBA}})
+    function append_layout(instance::GtkSnapshot, _layout::PangoLayout, _color::GdkRGBALike)
         ret = ccall(("gtk_snapshot_append_layout", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRGBA}), instance, _layout, _color)
         nothing
     end
-    function append_linear_gradient(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _start_point::Union{GraphenePoint, Ref{_GraphenePoint}}, _end_point::Union{GraphenePoint, Ref{_GraphenePoint}}, _stops)
+    function append_linear_gradient(instance::GtkSnapshot, _bounds::GrapheneRectLike, _start_point::GraphenePointLike, _end_point::GraphenePointLike, _stops)
         _stops_arr = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
         ret = ccall(("gtk_snapshot_append_linear_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), instance, _bounds, _start_point, _end_point, _stops_arr, _n_stops)
         nothing
     end
-    function append_outset_shadow(instance::GtkSnapshot, _outline::Union{GskRoundedRect, Ref{_GskRoundedRect}}, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
+    function append_outset_shadow(instance::GtkSnapshot, _outline::GskRoundedRectLike, _color::GdkRGBALike, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
         ret = ccall(("gtk_snapshot_append_outset_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}, Ptr{_GdkRGBA}, Float32, Float32, Float32, Float32), instance, _outline, _color, _dx, _dy, _spread, _blur_radius)
         nothing
     end
-    function append_radial_gradient(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _stops)
+    function append_radial_gradient(instance::GtkSnapshot, _bounds::GrapheneRectLike, _center::GraphenePointLike, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _stops)
         _stops_arr = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
         ret = ccall(("gtk_snapshot_append_radial_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _hradius, _vradius, _start, _end, _stops_arr, _n_stops)
         nothing
     end
-    function append_repeating_linear_gradient(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _start_point::Union{GraphenePoint, Ref{_GraphenePoint}}, _end_point::Union{GraphenePoint, Ref{_GraphenePoint}}, _stops)
+    function append_repeating_linear_gradient(instance::GtkSnapshot, _bounds::GrapheneRectLike, _start_point::GraphenePointLike, _end_point::GraphenePointLike, _stops)
         _stops_arr = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
         ret = ccall(("gtk_snapshot_append_repeating_linear_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GskColorStop}, UInt64), instance, _bounds, _start_point, _end_point, _stops_arr, _n_stops)
         nothing
     end
-    function append_repeating_radial_gradient(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _stops)
+    function append_repeating_radial_gradient(instance::GtkSnapshot, _bounds::GrapheneRectLike, _center::GraphenePointLike, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _stops)
         _stops_arr = convert(Vector{_GskColorStop}, _stops)
         _n_stops = length(_stops)
         ret = ccall(("gtk_snapshot_append_repeating_radial_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Float32, Float32, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _hradius, _vradius, _start, _end, _stops_arr, _n_stops)
         nothing
     end
-    function append_scaled_texture(instance::GtkSnapshot, _texture::GdkTexture, _filter, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function append_scaled_texture(instance::GtkSnapshot, _texture::GdkTexture, _filter, _bounds::GrapheneRectLike)
         ret = ccall(("gtk_snapshot_append_scaled_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{_GrapheneRect}), instance, _texture, _filter, _bounds)
         nothing
     end
-    function append_texture(instance::GtkSnapshot, _texture::GdkTexture, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function append_texture(instance::GtkSnapshot, _texture::GdkTexture, _bounds::GrapheneRectLike)
         ret = ccall(("gtk_snapshot_append_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}), instance, _texture, _bounds)
         nothing
     end
@@ -16421,11 +16882,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_push_blur", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _radius)
         nothing
     end
-    function push_clip(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function push_clip(instance::GtkSnapshot, _bounds::GrapheneRectLike)
         ret = ccall(("gtk_snapshot_push_clip", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}), instance, _bounds)
         nothing
     end
-    function push_color_matrix(instance::GtkSnapshot, _color_matrix::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _color_offset::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function push_color_matrix(instance::GtkSnapshot, _color_matrix::GrapheneMatrixLike, _color_offset::GrapheneVec4Like)
         ret = ccall(("gtk_snapshot_push_color_matrix", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneMatrix}, Ptr{_GrapheneVec4}), instance, _color_matrix, _color_offset)
         nothing
     end
@@ -16433,7 +16894,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_push_cross_fade", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _progress)
         nothing
     end
-    function push_gl_shader(instance::GtkSnapshot, _shader::GskGLShader, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _take_args::GBytes)
+    function push_gl_shader(instance::GtkSnapshot, _shader::GskGLShader, _bounds::GrapheneRectLike, _take_args::GBytes)
         ret = ccall(("gtk_snapshot_push_gl_shader", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{GBytes}), instance, _shader, _bounds, _take_args)
         nothing
     end
@@ -16445,12 +16906,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_push_opacity", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _opacity)
         nothing
     end
-    function push_repeat(instance::GtkSnapshot, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _child_bounds::Maybe(Union{GrapheneRect, Ref{_GrapheneRect}}))
+    function push_repeat(instance::GtkSnapshot, _bounds::GrapheneRectLike, _child_bounds::Maybe(GrapheneRectLike))
         _child_bounds_maybe = nothing_to_null(_child_bounds)
         ret = ccall(("gtk_snapshot_push_repeat", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _bounds, _child_bounds_maybe)
         nothing
     end
-    function push_rounded_clip(instance::GtkSnapshot, _bounds::Union{GskRoundedRect, Ref{_GskRoundedRect}})
+    function push_rounded_clip(instance::GtkSnapshot, _bounds::GskRoundedRectLike)
         ret = ccall(("gtk_snapshot_push_rounded_clip", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}), instance, _bounds)
         nothing
     end
@@ -16488,7 +16949,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_rotate", libgtk4), Nothing, (Ptr{GObject}, Float32), instance, _angle)
         nothing
     end
-    function rotate_3d(instance::GtkSnapshot, _angle::Real, _axis::Union{GrapheneVec3, Ref{_GrapheneVec3}})
+    function rotate_3d(instance::GtkSnapshot, _angle::Real, _axis::GrapheneVec3Like)
         ret = ccall(("gtk_snapshot_rotate_3d", libgtk4), Nothing, (Ptr{GObject}, Float32, Ptr{_GrapheneVec3}), instance, _angle, _axis)
         nothing
     end
@@ -16509,7 +16970,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GskRenderNode, ret)
         ret2
     end
-    function to_paintable(instance::GtkSnapshot, _size::Maybe(Union{GrapheneSize, Ref{_GrapheneSize}}))
+    function to_paintable(instance::GtkSnapshot, _size::Maybe(GrapheneSizeLike))
         _size_maybe = nothing_to_null(_size)
         ret = ccall(("gtk_snapshot_to_paintable", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{_GrapheneSize}), instance, _size_maybe)
         ret2 = GLib.find_leaf_type_if_not_null(ret, true)
@@ -16520,15 +16981,15 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_transform", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskTransform}), instance, _transform_maybe)
         nothing
     end
-    function transform_matrix(instance::GtkSnapshot, _matrix::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function transform_matrix(instance::GtkSnapshot, _matrix::GrapheneMatrixLike)
         ret = ccall(("gtk_snapshot_transform_matrix", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneMatrix}), instance, _matrix)
         nothing
     end
-    function translate(instance::GtkSnapshot, _point::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function translate(instance::GtkSnapshot, _point::GraphenePointLike)
         ret = ccall(("gtk_snapshot_translate", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GraphenePoint}), instance, _point)
         nothing
     end
-    function translate_3d(instance::GtkSnapshot, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function translate_3d(instance::GtkSnapshot, _point::GraphenePoint3DLike)
         ret = ccall(("gtk_snapshot_translate_3d", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GraphenePoint3D}), instance, _point)
         nothing
     end
@@ -18031,7 +18492,7 @@ $(Expr(:toplevel, quote
         ret2 = GtkTextBufferLeaf(ret, true)
         ret2
     end
-    function add_mark(instance::GtkTextBuffer, _mark::GtkTextMark, _where::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function add_mark(instance::GtkTextBuffer, _mark::GtkTextMark, _where::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_add_mark", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTextIter}), instance, _mark, _where)
         nothing
     end
@@ -18039,15 +18500,15 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_buffer_add_selection_clipboard", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _clipboard)
         nothing
     end
-    function apply_tag(instance::GtkTextBuffer, _tag::GtkTextTag, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function apply_tag(instance::GtkTextBuffer, _tag::GtkTextTag, _start::GtkTextIterLike, _end::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_apply_tag", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _tag, _start, _end)
         nothing
     end
-    function apply_tag_by_name(instance::GtkTextBuffer, _name::Union{AbstractString, Symbol}, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function apply_tag_by_name(instance::GtkTextBuffer, _name::Union{AbstractString, Symbol}, _start::GtkTextIterLike, _end::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_apply_tag_by_name", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _name, _start, _end)
         nothing
     end
-    function backspace(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _interactive::Bool, _default_editable::Bool)
+    function backspace(instance::GtkTextBuffer, _iter::GtkTextIterLike, _interactive::Bool, _default_editable::Bool)
         ret = ccall(("gtk_text_buffer_backspace", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Cint, Cint), instance, _iter, _interactive, _default_editable)
         ret2 = convert(Bool, ret)
         ret2
@@ -18064,12 +18525,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_buffer_copy_clipboard", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _clipboard)
         nothing
     end
-    function create_child_anchor(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function create_child_anchor(instance::GtkTextBuffer, _iter::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_create_child_anchor", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, _iter)
         ret2 = convert(GtkTextChildAnchor, ret, false)
         ret2
     end
-    function create_mark(instance::GtkTextBuffer, _mark_name::Maybe(Union{AbstractString, Symbol}), _where::Union{GtkTextIter, Ref{_GtkTextIter}}, _left_gravity::Bool)
+    function create_mark(instance::GtkTextBuffer, _mark_name::Maybe(Union{AbstractString, Symbol}), _where::GtkTextIterLike, _left_gravity::Bool)
         _mark_name_maybe = nothing_to_null(_mark_name)
         ret = ccall(("gtk_text_buffer_create_mark", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cstring, Ptr{_GtkTextIter}, Cint), instance, _mark_name_maybe, _where, _left_gravity)
         ret2 = convert(GtkTextMark, ret, false)
@@ -18079,11 +18540,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_buffer_cut_clipboard", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cint), instance, _clipboard, _default_editable)
         nothing
     end
-    function delete(instance::GtkTextBuffer, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function delete(instance::GtkTextBuffer, _start::GtkTextIterLike, _end::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_delete", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _start, _end)
         nothing
     end
-    function delete_interactive(instance::GtkTextBuffer, _start_iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _end_iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _default_editable::Bool)
+    function delete_interactive(instance::GtkTextBuffer, _start_iter::GtkTextIterLike, _end_iter::GtkTextIterLike, _default_editable::Bool)
         ret = ccall(("gtk_text_buffer_delete_interactive", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Cint), instance, _start_iter, _end_iter, _default_editable)
         ret2 = convert(Bool, ret)
         ret2
@@ -18228,7 +18689,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkContentProvider, ret, true)
         ret2
     end
-    function get_slice(instance::GtkTextBuffer, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}}, _include_hidden_chars::Bool)
+    function get_slice(instance::GtkTextBuffer, _start::GtkTextIterLike, _end::GtkTextIterLike, _include_hidden_chars::Bool)
         ret = ccall(("gtk_text_buffer_get_slice", libgtk4), Cstring, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Cint), instance, _start, _end, _include_hidden_chars)
         ret2 = string_or_nothing(ret, true)
         ret2
@@ -18244,12 +18705,12 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkTextTagTable, ret, false)
         ret2
     end
-    function get_text(instance::GtkTextBuffer, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}}, _include_hidden_chars::Bool)
+    function get_text(instance::GtkTextBuffer, _start::GtkTextIterLike, _end::GtkTextIterLike, _include_hidden_chars::Bool)
         ret = ccall(("gtk_text_buffer_get_text", libgtk4), Cstring, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Cint), instance, _start, _end, _include_hidden_chars)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
-    function insert(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _text::Union{AbstractString, Symbol}, _len::Integer)
+    function insert(instance::GtkTextBuffer, _iter::GtkTextIterLike, _text::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("gtk_text_buffer_insert", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Cstring, Int32), instance, _iter, _text, _len)
         nothing
     end
@@ -18257,11 +18718,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_buffer_insert_at_cursor", libgtk4), Nothing, (Ptr{GObject}, Cstring, Int32), instance, _text, _len)
         nothing
     end
-    function insert_child_anchor(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _anchor::GtkTextChildAnchor)
+    function insert_child_anchor(instance::GtkTextBuffer, _iter::GtkTextIterLike, _anchor::GtkTextChildAnchor)
         ret = ccall(("gtk_text_buffer_insert_child_anchor", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{GObject}), instance, _iter, _anchor)
         nothing
     end
-    function insert_interactive(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _text::Union{AbstractString, Symbol}, _len::Integer, _default_editable::Bool)
+    function insert_interactive(instance::GtkTextBuffer, _iter::GtkTextIterLike, _text::Union{AbstractString, Symbol}, _len::Integer, _default_editable::Bool)
         ret = ccall(("gtk_text_buffer_insert_interactive", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Cstring, Int32, Cint), instance, _iter, _text, _len, _default_editable)
         ret2 = convert(Bool, ret)
         ret2
@@ -18271,37 +18732,37 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function insert_markup(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _markup::Union{AbstractString, Symbol}, _len::Integer)
+    function insert_markup(instance::GtkTextBuffer, _iter::GtkTextIterLike, _markup::Union{AbstractString, Symbol}, _len::Integer)
         ret = ccall(("gtk_text_buffer_insert_markup", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Cstring, Int32), instance, _iter, _markup, _len)
         nothing
     end
-    function insert_paintable(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _paintable::GdkPaintable)
+    function insert_paintable(instance::GtkTextBuffer, _iter::GtkTextIterLike, _paintable::GdkPaintable)
         ret = ccall(("gtk_text_buffer_insert_paintable", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{GObject}), instance, _iter, _paintable)
         nothing
     end
-    function insert_range(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function insert_range(instance::GtkTextBuffer, _iter::GtkTextIterLike, _start::GtkTextIterLike, _end::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_insert_range", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _iter, _start, _end)
         nothing
     end
-    function insert_range_interactive(instance::GtkTextBuffer, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}}, _default_editable::Bool)
+    function insert_range_interactive(instance::GtkTextBuffer, _iter::GtkTextIterLike, _start::GtkTextIterLike, _end::GtkTextIterLike, _default_editable::Bool)
         ret = ccall(("gtk_text_buffer_insert_range_interactive", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}, Cint), instance, _iter, _start, _end, _default_editable)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function move_mark(instance::GtkTextBuffer, _mark::GtkTextMark, _where::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function move_mark(instance::GtkTextBuffer, _mark::GtkTextMark, _where::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_move_mark", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTextIter}), instance, _mark, _where)
         nothing
     end
-    function move_mark_by_name(instance::GtkTextBuffer, _name::Union{AbstractString, Symbol}, _where::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function move_mark_by_name(instance::GtkTextBuffer, _name::Union{AbstractString, Symbol}, _where::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_move_mark_by_name", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{_GtkTextIter}), instance, _name, _where)
         nothing
     end
-    function paste_clipboard(instance::GtkTextBuffer, _clipboard::GdkClipboard, _override_location::Maybe(Union{GtkTextIter, Ref{_GtkTextIter}}), _default_editable::Bool)
+    function paste_clipboard(instance::GtkTextBuffer, _clipboard::GdkClipboard, _override_location::Maybe(GtkTextIterLike), _default_editable::Bool)
         _override_location_maybe = nothing_to_null(_override_location)
         ret = ccall(("gtk_text_buffer_paste_clipboard", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTextIter}, Cint), instance, _clipboard, _override_location_maybe, _default_editable)
         nothing
     end
-    function place_cursor(instance::GtkTextBuffer, _where::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function place_cursor(instance::GtkTextBuffer, _where::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_place_cursor", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, _where)
         nothing
     end
@@ -18309,7 +18770,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_buffer_redo", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function remove_all_tags(instance::GtkTextBuffer, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function remove_all_tags(instance::GtkTextBuffer, _start::GtkTextIterLike, _end::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_remove_all_tags", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _start, _end)
         nothing
     end
@@ -18317,15 +18778,15 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_buffer_remove_selection_clipboard", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _clipboard)
         nothing
     end
-    function remove_tag(instance::GtkTextBuffer, _tag::GtkTextTag, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function remove_tag(instance::GtkTextBuffer, _tag::GtkTextTag, _start::GtkTextIterLike, _end::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_remove_tag", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _tag, _start, _end)
         nothing
     end
-    function remove_tag_by_name(instance::GtkTextBuffer, _name::Union{AbstractString, Symbol}, _start::Union{GtkTextIter, Ref{_GtkTextIter}}, _end::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function remove_tag_by_name(instance::GtkTextBuffer, _name::Union{AbstractString, Symbol}, _start::GtkTextIterLike, _end::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_remove_tag_by_name", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _name, _start, _end)
         nothing
     end
-    function select_range(instance::GtkTextBuffer, _ins::Union{GtkTextIter, Ref{_GtkTextIter}}, _bound::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function select_range(instance::GtkTextBuffer, _ins::GtkTextIterLike, _bound::GtkTextIterLike)
         ret = ccall(("gtk_text_buffer_select_range", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _ins, _bound)
         nothing
     end
@@ -18483,12 +18944,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_view_add_overlay", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32), instance, _child, _xpos, _ypos)
         nothing
     end
-    function backward_display_line(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function backward_display_line(instance::GtkTextView, _iter::GtkTextIterLike)
         ret = ccall(("gtk_text_view_backward_display_line", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function backward_display_line_start(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function backward_display_line_start(instance::GtkTextView, _iter::GtkTextIterLike)
         ret = ccall(("gtk_text_view_backward_display_line_start", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
@@ -18501,12 +18962,12 @@ $(Expr(:toplevel, quote
         _window_y = m_window_y[]
         (_window_x, _window_y)
     end
-    function forward_display_line(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function forward_display_line(instance::GtkTextView, _iter::GtkTextIterLike)
         ret = ccall(("gtk_text_view_forward_display_line", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function forward_display_line_end(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function forward_display_line_end(instance::GtkTextView, _iter::GtkTextIterLike)
         ret = ccall(("gtk_text_view_forward_display_line_end", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
@@ -18525,7 +18986,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkTextBuffer, ret, false)
         ret2
     end
-    function get_cursor_locations(instance::GtkTextView, _iter::Maybe(Union{GtkTextIter, Ref{_GtkTextIter}}))
+    function get_cursor_locations(instance::GtkTextView, _iter::Maybe(GtkTextIterLike))
         _iter_maybe = nothing_to_null(_iter)
         m_strong = Ref{_GdkRectangle}()
         m_weak = Ref{_GdkRectangle}()
@@ -18584,7 +19045,7 @@ $(Expr(:toplevel, quote
         _trailing = m_trailing[]
         (ret2, _iter, _trailing)
     end
-    function get_iter_location(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function get_iter_location(instance::GtkTextView, _iter::GtkTextIterLike)
         m_location = Ref{_GdkRectangle}()
         ret = ccall(("gtk_text_view_get_iter_location", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GdkRectangle}), instance, _iter, m_location)
         _location = m_location[]
@@ -18607,7 +19068,7 @@ $(Expr(:toplevel, quote
         _line_top = m_line_top[]
         (_target_iter, _line_top)
     end
-    function get_line_yrange(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function get_line_yrange(instance::GtkTextView, _iter::GtkTextIterLike)
         m_y = Ref{Int32}()
         m_height = Ref{Int32}()
         ret = ccall(("gtk_text_view_get_line_yrange", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{Int32}, Ptr{Int32}), instance, _iter, m_y, m_height)
@@ -18680,7 +19141,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_view_move_overlay", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32), instance, _child, _xpos, _ypos)
         nothing
     end
-    function move_visually(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _count::Integer)
+    function move_visually(instance::GtkTextView, _iter::GtkTextIterLike, _count::Integer)
         ret = ccall(("gtk_text_view_move_visually", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Int32), instance, _iter, _count)
         ret2 = convert(Bool, ret)
         ret2
@@ -18706,7 +19167,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_view_scroll_mark_onscreen", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _mark)
         nothing
     end
-    function scroll_to_iter(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}}, _within_margin::Real, _use_align::Bool, _xalign::Real, _yalign::Real)
+    function scroll_to_iter(instance::GtkTextView, _iter::GtkTextIterLike, _within_margin::Real, _use_align::Bool, _xalign::Real, _yalign::Real)
         ret = ccall(("gtk_text_view_scroll_to_iter", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}, Float64, Cint, Float64, Float64), instance, _iter, _within_margin, _use_align, _xalign, _yalign)
         ret2 = convert(Bool, ret)
         ret2
@@ -18802,7 +19263,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_view_set_wrap_mode", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _wrap_mode)
         nothing
     end
-    function starts_display_line(instance::GtkTextView, _iter::Union{GtkTextIter, Ref{_GtkTextIter}})
+    function starts_display_line(instance::GtkTextView, _iter::GtkTextIterLike)
         ret = ccall(("gtk_text_view_starts_display_line", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTextIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
@@ -19016,7 +19477,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tooltip_set_text", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _text_maybe)
         nothing
     end
-    function set_tip_area(instance::GtkTooltip, _rect::Union{GdkRectangle, Ref{_GdkRectangle}})
+    function set_tip_area(instance::GtkTooltip, _rect::GdkRectangleLike)
         ret = ccall(("gtk_tooltip_set_tip_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, _rect)
         nothing
     end
@@ -19236,7 +19697,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_model_filter_clear_cache", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function convert_child_iter_to_iter(instance::GtkTreeModelFilter, _child_iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function convert_child_iter_to_iter(instance::GtkTreeModelFilter, _child_iter::GtkTreeIterLike)
         m_filter_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_filter_convert_child_iter_to_iter", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_filter_iter, _child_iter)
         ret2 = convert(Bool, ret)
@@ -19248,7 +19709,7 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GtkTreePath, ret, true)
         ret2
     end
-    function convert_iter_to_child_iter(instance::GtkTreeModelFilter, _filter_iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function convert_iter_to_child_iter(instance::GtkTreeModelFilter, _filter_iter::GtkTreeIterLike)
         m_child_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_filter_convert_iter_to_child_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_child_iter, _filter_iter)
         _child_iter = m_child_iter[]
@@ -19308,55 +19769,55 @@ $(Expr(:toplevel, quote
     function get_n_columns(instance::GtkTreeModelFilter)
         get_n_columns(GtkTreeModel(instance))
     end
-    function get_path(instance::GtkTreeModelFilter, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_path(instance::GtkTreeModelFilter, _iter::GtkTreeIterLike)
         get_path(GtkTreeModel(instance), _iter)
     end
-    function get_string_from_iter(instance::GtkTreeModelFilter, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_string_from_iter(instance::GtkTreeModelFilter, _iter::GtkTreeIterLike)
         get_string_from_iter(GtkTreeModel(instance), _iter)
     end
-    function get_value(instance::GtkTreeModelFilter, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _column::Integer)
+    function get_value(instance::GtkTreeModelFilter, _iter::GtkTreeIterLike, _column::Integer)
         get_value(GtkTreeModel(instance), _iter, _column)
     end
-    function iter_children(instance::GtkTreeModelFilter, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_children(instance::GtkTreeModelFilter, _parent::Maybe(GtkTreeIterLike))
         iter_children(GtkTreeModel(instance), _parent)
     end
-    function iter_has_child(instance::GtkTreeModelFilter, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_has_child(instance::GtkTreeModelFilter, _iter::GtkTreeIterLike)
         iter_has_child(GtkTreeModel(instance), _iter)
     end
-    function iter_n_children(instance::GtkTreeModelFilter, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_n_children(instance::GtkTreeModelFilter, _iter::Maybe(GtkTreeIterLike))
         iter_n_children(GtkTreeModel(instance), _iter)
     end
-    function iter_next(instance::GtkTreeModelFilter, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_next(instance::GtkTreeModelFilter, _iter::GtkTreeIterLike)
         iter_next(GtkTreeModel(instance), _iter)
     end
-    function iter_nth_child(instance::GtkTreeModelFilter, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _n::Integer)
+    function iter_nth_child(instance::GtkTreeModelFilter, _parent::Maybe(GtkTreeIterLike), _n::Integer)
         iter_nth_child(GtkTreeModel(instance), _parent, _n)
     end
-    function iter_parent(instance::GtkTreeModelFilter, _child::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_parent(instance::GtkTreeModelFilter, _child::GtkTreeIterLike)
         iter_parent(GtkTreeModel(instance), _child)
     end
-    function iter_previous(instance::GtkTreeModelFilter, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_previous(instance::GtkTreeModelFilter, _iter::GtkTreeIterLike)
         iter_previous(GtkTreeModel(instance), _iter)
     end
-    function ref_node(instance::GtkTreeModelFilter, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function ref_node(instance::GtkTreeModelFilter, _iter::GtkTreeIterLike)
         ref_node(GtkTreeModel(instance), _iter)
     end
-    function row_changed(instance::GtkTreeModelFilter, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_changed(instance::GtkTreeModelFilter, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_changed(GtkTreeModel(instance), _path, _iter)
     end
     function row_deleted(instance::GtkTreeModelFilter, _path::GtkTreePath)
         row_deleted(GtkTreeModel(instance), _path)
     end
-    function row_has_child_toggled(instance::GtkTreeModelFilter, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_has_child_toggled(instance::GtkTreeModelFilter, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_has_child_toggled(GtkTreeModel(instance), _path, _iter)
     end
-    function row_inserted(instance::GtkTreeModelFilter, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_inserted(instance::GtkTreeModelFilter, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_inserted(GtkTreeModel(instance), _path, _iter)
     end
-    function rows_reordered(instance::GtkTreeModelFilter, _path::GtkTreePath, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _new_order)
+    function rows_reordered(instance::GtkTreeModelFilter, _path::GtkTreePath, _iter::Maybe(GtkTreeIterLike), _new_order)
         rows_reordered(GtkTreeModel(instance), _path, _iter, _new_order)
     end
-    function unref_node(instance::GtkTreeModelFilter, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function unref_node(instance::GtkTreeModelFilter, _iter::GtkTreeIterLike)
         unref_node(GtkTreeModel(instance), _iter)
     end
     function TreeModelSort_new_with_model(_child_model::GtkTreeModel)
@@ -19368,7 +19829,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_model_sort_clear_cache", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function convert_child_iter_to_iter(instance::GtkTreeModelSort, _child_iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function convert_child_iter_to_iter(instance::GtkTreeModelSort, _child_iter::GtkTreeIterLike)
         m_sort_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_sort_convert_child_iter_to_iter", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_sort_iter, _child_iter)
         ret2 = convert(Bool, ret)
@@ -19380,7 +19841,7 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GtkTreePath, ret, true)
         ret2
     end
-    function convert_iter_to_child_iter(instance::GtkTreeModelSort, _sorted_iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function convert_iter_to_child_iter(instance::GtkTreeModelSort, _sorted_iter::GtkTreeIterLike)
         m_child_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_sort_convert_iter_to_child_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_child_iter, _sorted_iter)
         _child_iter = m_child_iter[]
@@ -19399,7 +19860,7 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function iter_is_valid(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_is_valid(instance::GtkTreeModelSort, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_sort_iter_is_valid", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
@@ -19441,55 +19902,55 @@ $(Expr(:toplevel, quote
     function get_n_columns(instance::GtkTreeModelSort)
         get_n_columns(GtkTreeModel(instance))
     end
-    function get_path(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_path(instance::GtkTreeModelSort, _iter::GtkTreeIterLike)
         get_path(GtkTreeModel(instance), _iter)
     end
-    function get_string_from_iter(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_string_from_iter(instance::GtkTreeModelSort, _iter::GtkTreeIterLike)
         get_string_from_iter(GtkTreeModel(instance), _iter)
     end
-    function get_value(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _column::Integer)
+    function get_value(instance::GtkTreeModelSort, _iter::GtkTreeIterLike, _column::Integer)
         get_value(GtkTreeModel(instance), _iter, _column)
     end
-    function iter_children(instance::GtkTreeModelSort, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_children(instance::GtkTreeModelSort, _parent::Maybe(GtkTreeIterLike))
         iter_children(GtkTreeModel(instance), _parent)
     end
-    function iter_has_child(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_has_child(instance::GtkTreeModelSort, _iter::GtkTreeIterLike)
         iter_has_child(GtkTreeModel(instance), _iter)
     end
-    function iter_n_children(instance::GtkTreeModelSort, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_n_children(instance::GtkTreeModelSort, _iter::Maybe(GtkTreeIterLike))
         iter_n_children(GtkTreeModel(instance), _iter)
     end
-    function iter_next(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_next(instance::GtkTreeModelSort, _iter::GtkTreeIterLike)
         iter_next(GtkTreeModel(instance), _iter)
     end
-    function iter_nth_child(instance::GtkTreeModelSort, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _n::Integer)
+    function iter_nth_child(instance::GtkTreeModelSort, _parent::Maybe(GtkTreeIterLike), _n::Integer)
         iter_nth_child(GtkTreeModel(instance), _parent, _n)
     end
-    function iter_parent(instance::GtkTreeModelSort, _child::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_parent(instance::GtkTreeModelSort, _child::GtkTreeIterLike)
         iter_parent(GtkTreeModel(instance), _child)
     end
-    function iter_previous(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_previous(instance::GtkTreeModelSort, _iter::GtkTreeIterLike)
         iter_previous(GtkTreeModel(instance), _iter)
     end
-    function ref_node(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function ref_node(instance::GtkTreeModelSort, _iter::GtkTreeIterLike)
         ref_node(GtkTreeModel(instance), _iter)
     end
-    function row_changed(instance::GtkTreeModelSort, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_changed(instance::GtkTreeModelSort, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_changed(GtkTreeModel(instance), _path, _iter)
     end
     function row_deleted(instance::GtkTreeModelSort, _path::GtkTreePath)
         row_deleted(GtkTreeModel(instance), _path)
     end
-    function row_has_child_toggled(instance::GtkTreeModelSort, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_has_child_toggled(instance::GtkTreeModelSort, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_has_child_toggled(GtkTreeModel(instance), _path, _iter)
     end
-    function row_inserted(instance::GtkTreeModelSort, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_inserted(instance::GtkTreeModelSort, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_inserted(GtkTreeModel(instance), _path, _iter)
     end
-    function rows_reordered(instance::GtkTreeModelSort, _path::GtkTreePath, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _new_order)
+    function rows_reordered(instance::GtkTreeModelSort, _path::GtkTreePath, _iter::Maybe(GtkTreeIterLike), _new_order)
         rows_reordered(GtkTreeModel(instance), _path, _iter, _new_order)
     end
-    function unref_node(instance::GtkTreeModelSort, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function unref_node(instance::GtkTreeModelSort, _iter::GtkTreeIterLike)
         unref_node(GtkTreeModel(instance), _iter)
     end
     function get_sort_column_id(instance::GtkTreeModelSort)
@@ -19548,7 +20009,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkTreeView, ret, false)
         ret2
     end
-    function iter_is_selected(instance::GtkTreeSelection, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_is_selected(instance::GtkTreeSelection, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_selection_iter_is_selected", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
@@ -19562,7 +20023,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_selection_select_all", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function select_iter(instance::GtkTreeSelection, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function select_iter(instance::GtkTreeSelection, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_selection_select_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         nothing
     end
@@ -19593,7 +20054,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_selection_unselect_all", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function unselect_iter(instance::GtkTreeSelection, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function unselect_iter(instance::GtkTreeSelection, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_selection_unselect_iter", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         nothing
     end
@@ -19612,7 +20073,7 @@ $(Expr(:toplevel, quote
         ret2 = GtkTreeStoreLeaf(ret, true)
         ret2
     end
-    function append(instance::GtkTreeStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function append(instance::GtkTreeStore, _parent::Maybe(GtkTreeIterLike))
         m_iter = Ref{_GtkTreeIter}()
         _parent_maybe = nothing_to_null(_parent)
         ret = ccall(("gtk_tree_store_append", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_iter, _parent_maybe)
@@ -19623,14 +20084,14 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_store_clear", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function insert(instance::GtkTreeStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _position::Integer)
+    function insert(instance::GtkTreeStore, _parent::Maybe(GtkTreeIterLike), _position::Integer)
         m_iter = Ref{_GtkTreeIter}()
         _parent_maybe = nothing_to_null(_parent)
         ret = ccall(("gtk_tree_store_insert", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}, Int32), instance, m_iter, _parent_maybe, _position)
         _iter = m_iter[]
         _iter
     end
-    function insert_after(instance::GtkTreeStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _sibling::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function insert_after(instance::GtkTreeStore, _parent::Maybe(GtkTreeIterLike), _sibling::Maybe(GtkTreeIterLike))
         m_iter = Ref{_GtkTreeIter}()
         _parent_maybe = nothing_to_null(_parent)
         _sibling_maybe = nothing_to_null(_sibling)
@@ -19638,7 +20099,7 @@ $(Expr(:toplevel, quote
         _iter = m_iter[]
         _iter
     end
-    function insert_before(instance::GtkTreeStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _sibling::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function insert_before(instance::GtkTreeStore, _parent::Maybe(GtkTreeIterLike), _sibling::Maybe(GtkTreeIterLike))
         m_iter = Ref{_GtkTreeIter}()
         _parent_maybe = nothing_to_null(_parent)
         _sibling_maybe = nothing_to_null(_sibling)
@@ -19646,7 +20107,7 @@ $(Expr(:toplevel, quote
         _iter = m_iter[]
         _iter
     end
-    function insert_with_values(instance::GtkTreeStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _position::Integer, _columns, _values)
+    function insert_with_values(instance::GtkTreeStore, _parent::Maybe(GtkTreeIterLike), _position::Integer, _columns, _values)
         m_iter = Ref{_GtkTreeIter}()
         _parent_maybe = nothing_to_null(_parent)
         _columns_arr = convert(Vector{Int32}, _columns)
@@ -19657,38 +20118,38 @@ $(Expr(:toplevel, quote
         _iter = m_iter[]
         _iter
     end
-    function is_ancestor(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _descendant::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function is_ancestor(instance::GtkTreeStore, _iter::GtkTreeIterLike, _descendant::GtkTreeIterLike)
         ret = ccall(("gtk_tree_store_is_ancestor", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _iter, _descendant)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function iter_depth(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_depth(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_store_iter_depth", libgtk4), Int32, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret
     end
-    function iter_is_valid(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_is_valid(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_store_iter_is_valid", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function move_after(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _position::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function move_after(instance::GtkTreeStore, _iter::GtkTreeIterLike, _position::Maybe(GtkTreeIterLike))
         _position_maybe = nothing_to_null(_position)
         ret = ccall(("gtk_tree_store_move_after", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _iter, _position_maybe)
         nothing
     end
-    function move_before(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _position::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function move_before(instance::GtkTreeStore, _iter::GtkTreeIterLike, _position::Maybe(GtkTreeIterLike))
         _position_maybe = nothing_to_null(_position)
         ret = ccall(("gtk_tree_store_move_before", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _iter, _position_maybe)
         nothing
     end
-    function prepend(instance::GtkTreeStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function prepend(instance::GtkTreeStore, _parent::Maybe(GtkTreeIterLike))
         m_iter = Ref{_GtkTreeIter}()
         _parent_maybe = nothing_to_null(_parent)
         ret = ccall(("gtk_tree_store_prepend", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_iter, _parent_maybe)
         _iter = m_iter[]
         _iter
     end
-    function remove(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function remove(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_store_remove", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
@@ -19699,11 +20160,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_store_set_column_types", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{UInt64}), instance, _n_columns, _types_arr)
         nothing
     end
-    function set_value(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _column::Integer, _value::Union{GValue, Ref{_GValue}})
+    function set_value(instance::GtkTreeStore, _iter::GtkTreeIterLike, _column::Integer, _value::GValueLike)
         ret = ccall(("gtk_tree_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), instance, _iter, _column, _value)
         nothing
     end
-    function set(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _columns, _values)
+    function set(instance::GtkTreeStore, _iter::GtkTreeIterLike, _columns, _values)
         _columns_arr = convert(Vector{Int32}, _columns)
         _values_arr = convert(Vector{_GValue}, _values)
         _n_values = length(_columns)
@@ -19711,17 +20172,17 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_store_set_valuesv", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{Int32}, Ptr{_GValue}, Int32), instance, _iter, _columns_arr, _values_arr, _n_values)
         nothing
     end
-    function swap(instance::GtkTreeStore, _a::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _b::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function swap(instance::GtkTreeStore, _a::GtkTreeIterLike, _b::GtkTreeIterLike)
         ret = ccall(("gtk_tree_store_swap", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, _a, _b)
         nothing
     end
     function get_buildable_id(instance::GtkTreeStore)
         get_buildable_id(GtkBuildable(instance))
     end
-    function drag_data_received(instance::GtkTreeStore, _dest::GtkTreePath, _value::Union{GValue, Ref{_GValue}})
+    function drag_data_received(instance::GtkTreeStore, _dest::GtkTreePath, _value::GValueLike)
         drag_data_received(GtkTreeDragDest(instance), _dest, _value)
     end
-    function row_drop_possible(instance::GtkTreeStore, _dest_path::GtkTreePath, _value::Union{GValue, Ref{_GValue}})
+    function row_drop_possible(instance::GtkTreeStore, _dest_path::GtkTreePath, _value::GValueLike)
         row_drop_possible(GtkTreeDragDest(instance), _dest_path, _value)
     end
     function drag_data_delete(instance::GtkTreeStore, _path::GtkTreePath)
@@ -19757,55 +20218,55 @@ $(Expr(:toplevel, quote
     function get_n_columns(instance::GtkTreeStore)
         get_n_columns(GtkTreeModel(instance))
     end
-    function get_path(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_path(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         get_path(GtkTreeModel(instance), _iter)
     end
-    function get_string_from_iter(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_string_from_iter(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         get_string_from_iter(GtkTreeModel(instance), _iter)
     end
-    function get_value(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _column::Integer)
+    function get_value(instance::GtkTreeStore, _iter::GtkTreeIterLike, _column::Integer)
         get_value(GtkTreeModel(instance), _iter, _column)
     end
-    function iter_children(instance::GtkTreeStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_children(instance::GtkTreeStore, _parent::Maybe(GtkTreeIterLike))
         iter_children(GtkTreeModel(instance), _parent)
     end
-    function iter_has_child(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_has_child(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         iter_has_child(GtkTreeModel(instance), _iter)
     end
-    function iter_n_children(instance::GtkTreeStore, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_n_children(instance::GtkTreeStore, _iter::Maybe(GtkTreeIterLike))
         iter_n_children(GtkTreeModel(instance), _iter)
     end
-    function iter_next(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_next(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         iter_next(GtkTreeModel(instance), _iter)
     end
-    function iter_nth_child(instance::GtkTreeStore, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _n::Integer)
+    function iter_nth_child(instance::GtkTreeStore, _parent::Maybe(GtkTreeIterLike), _n::Integer)
         iter_nth_child(GtkTreeModel(instance), _parent, _n)
     end
-    function iter_parent(instance::GtkTreeStore, _child::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_parent(instance::GtkTreeStore, _child::GtkTreeIterLike)
         iter_parent(GtkTreeModel(instance), _child)
     end
-    function iter_previous(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_previous(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         iter_previous(GtkTreeModel(instance), _iter)
     end
-    function ref_node(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function ref_node(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         ref_node(GtkTreeModel(instance), _iter)
     end
-    function row_changed(instance::GtkTreeStore, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_changed(instance::GtkTreeStore, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_changed(GtkTreeModel(instance), _path, _iter)
     end
     function row_deleted(instance::GtkTreeStore, _path::GtkTreePath)
         row_deleted(GtkTreeModel(instance), _path)
     end
-    function row_has_child_toggled(instance::GtkTreeStore, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_has_child_toggled(instance::GtkTreeStore, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_has_child_toggled(GtkTreeModel(instance), _path, _iter)
     end
-    function row_inserted(instance::GtkTreeStore, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_inserted(instance::GtkTreeStore, _path::GtkTreePath, _iter::GtkTreeIterLike)
         row_inserted(GtkTreeModel(instance), _path, _iter)
     end
-    function rows_reordered(instance::GtkTreeStore, _path::GtkTreePath, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _new_order)
+    function rows_reordered(instance::GtkTreeStore, _path::GtkTreePath, _iter::Maybe(GtkTreeIterLike), _new_order)
         rows_reordered(GtkTreeModel(instance), _path, _iter, _new_order)
     end
-    function unref_node(instance::GtkTreeStore, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function unref_node(instance::GtkTreeStore, _iter::GtkTreeIterLike)
         unref_node(GtkTreeModel(instance), _iter)
     end
     function get_sort_column_id(instance::GtkTreeStore)
@@ -20414,7 +20875,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function cell_set_cell_data(instance::GtkTreeViewColumn, _tree_model::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _is_expander::Bool, _is_expanded::Bool)
+    function cell_set_cell_data(instance::GtkTreeViewColumn, _tree_model::GtkTreeModel, _iter::GtkTreeIterLike, _is_expander::Bool, _is_expanded::Bool)
         ret = ccall(("gtk_tree_view_column_cell_set_cell_data", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTreeIter}, Cint, Cint), instance, _tree_model, _iter, _is_expander, _is_expanded)
         nothing
     end
@@ -21004,7 +21465,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function compute_point(instance::GtkWidget, _target::GtkWidget, _point::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function compute_point(instance::GtkWidget, _target::GtkWidget, _point::GraphenePointLike)
         m_out_point = Ref{_GraphenePoint}()
         ret = ccall(("gtk_widget_compute_point", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _target, _point, m_out_point)
         ret2 = convert(Bool, ret)
@@ -21691,7 +22152,7 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_widget_show", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function size_allocate(instance::GtkWidget, _allocation::Union{GdkRectangle, Ref{_GdkRectangle}}, _baseline::Integer)
+    function size_allocate(instance::GtkWidget, _allocation::GdkRectangleLike, _baseline::Integer)
         ret = ccall(("gtk_widget_size_allocate", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}, Int32), instance, _allocation, _baseline)
         nothing
     end
@@ -22525,7 +22986,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function set_rgba(instance::GtkColorChooser, _color::Union{GdkRGBA, Ref{_GdkRGBA}})
+    function set_rgba(instance::GtkColorChooser, _color::GdkRGBALike)
         ret = ccall(("gtk_color_chooser_set_rgba", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRGBA}), instance, _color)
         nothing
     end
@@ -22533,12 +22994,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_color_chooser_set_use_alpha", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_alpha)
         nothing
     end
-    function delegate_get_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
+    function delegate_get_property(_object::GObject, _prop_id::Integer, _value::GValueLike, _pspec::GParam)
         ret = ccall(("gtk_editable_delegate_get_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function delegate_set_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
+    function delegate_set_property(_object::GObject, _prop_id::Integer, _value::GValueLike, _pspec::GParam)
         ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
@@ -23043,12 +23504,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_symbolic_paintable_snapshot_symbolic", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Float64, Float64, Ptr{_GdkRGBA}, UInt64), instance, _snapshot, _width, _height, _colors_arr, _n_colors)
         nothing
     end
-    function drag_data_received(instance::GtkTreeDragDest, _dest::GtkTreePath, _value::Union{GValue, Ref{_GValue}})
+    function drag_data_received(instance::GtkTreeDragDest, _dest::GtkTreePath, _value::GValueLike)
         ret = ccall(("gtk_tree_drag_dest_drag_data_received", libgtk4), Cint, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GValue}), instance, _dest, _value)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function row_drop_possible(instance::GtkTreeDragDest, _dest_path::GtkTreePath, _value::Union{GValue, Ref{_GValue}})
+    function row_drop_possible(instance::GtkTreeDragDest, _dest_path::GtkTreePath, _value::GValueLike)
         ret = ccall(("gtk_tree_drag_dest_row_drop_possible", libgtk4), Cint, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GValue}), instance, _dest_path, _value)
         ret2 = convert(Bool, ret)
         ret2
@@ -23122,23 +23583,23 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_model_get_n_columns", libgtk4), Int32, (Ptr{GObject},), instance)
         ret
     end
-    function get_path(instance::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_path(instance::GtkTreeModel, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_get_path", libgtk4), Ptr{GtkTreePath}, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(GtkTreePath, ret, true)
         ret2
     end
-    function get_string_from_iter(instance::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function get_string_from_iter(instance::GtkTreeModel, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_get_string_from_iter", libgtk4), Cstring, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
-    function get_value(instance::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}}, _column::Integer)
+    function get_value(instance::GtkTreeModel, _iter::GtkTreeIterLike, _column::Integer)
         m_value = Ref{_GValue}()
         ret = ccall(("gtk_tree_model_get_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), instance, _iter, _column, m_value)
         _value = m_value[]
         _value
     end
-    function iter_children(instance::GtkTreeModel, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_children(instance::GtkTreeModel, _parent::Maybe(GtkTreeIterLike))
         m_iter = Ref{_GtkTreeIter}()
         _parent_maybe = nothing_to_null(_parent)
         ret = ccall(("gtk_tree_model_iter_children", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_iter, _parent_maybe)
@@ -23146,22 +23607,22 @@ $(Expr(:toplevel, quote
         _iter = m_iter[]
         (ret2, _iter)
     end
-    function iter_has_child(instance::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_has_child(instance::GtkTreeModel, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_iter_has_child", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function iter_n_children(instance::GtkTreeModel, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}))
+    function iter_n_children(instance::GtkTreeModel, _iter::Maybe(GtkTreeIterLike))
         _iter_maybe = nothing_to_null(_iter)
         ret = ccall(("gtk_tree_model_iter_n_children", libgtk4), Int32, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter_maybe)
         ret
     end
-    function iter_next(instance::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_next(instance::GtkTreeModel, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_iter_next", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function iter_nth_child(instance::GtkTreeModel, _parent::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _n::Integer)
+    function iter_nth_child(instance::GtkTreeModel, _parent::Maybe(GtkTreeIterLike), _n::Integer)
         m_iter = Ref{_GtkTreeIter}()
         _parent_maybe = nothing_to_null(_parent)
         ret = ccall(("gtk_tree_model_iter_nth_child", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}, Int32), instance, m_iter, _parent_maybe, _n)
@@ -23169,23 +23630,23 @@ $(Expr(:toplevel, quote
         _iter = m_iter[]
         (ret2, _iter)
     end
-    function iter_parent(instance::GtkTreeModel, _child::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_parent(instance::GtkTreeModel, _child::GtkTreeIterLike)
         m_iter = Ref{_GtkTreeIter}()
         ret = ccall(("gtk_tree_model_iter_parent", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}, Ptr{_GtkTreeIter}), instance, m_iter, _child)
         ret2 = convert(Bool, ret)
         _iter = m_iter[]
         (ret2, _iter)
     end
-    function iter_previous(instance::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function iter_previous(instance::GtkTreeModel, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_iter_previous", libgtk4), Cint, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function ref_node(instance::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function ref_node(instance::GtkTreeModel, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_ref_node", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         nothing
     end
-    function row_changed(instance::GtkTreeModel, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_changed(instance::GtkTreeModel, _path::GtkTreePath, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_row_changed", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GtkTreeIter}), instance, _path, _iter)
         nothing
     end
@@ -23193,22 +23654,22 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_model_row_deleted", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}), instance, _path)
         nothing
     end
-    function row_has_child_toggled(instance::GtkTreeModel, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_has_child_toggled(instance::GtkTreeModel, _path::GtkTreePath, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_row_has_child_toggled", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GtkTreeIter}), instance, _path, _iter)
         nothing
     end
-    function row_inserted(instance::GtkTreeModel, _path::GtkTreePath, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function row_inserted(instance::GtkTreeModel, _path::GtkTreePath, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_row_inserted", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GtkTreeIter}), instance, _path, _iter)
         nothing
     end
-    function rows_reordered(instance::GtkTreeModel, _path::GtkTreePath, _iter::Maybe(Union{GtkTreeIter, Ref{_GtkTreeIter}}), _new_order)
+    function rows_reordered(instance::GtkTreeModel, _path::GtkTreePath, _iter::Maybe(GtkTreeIterLike), _new_order)
         _iter_maybe = nothing_to_null(_iter)
         _new_order_arr = convert(Vector{Int32}, _new_order)
         _length = length(_new_order)
         ret = ccall(("gtk_tree_model_rows_reordered_with_length", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GtkTreeIter}, Ptr{Int32}, Int32), instance, _path, _iter_maybe, _new_order_arr, _length)
         nothing
     end
-    function unref_node(instance::GtkTreeModel, _iter::Union{GtkTreeIter, Ref{_GtkTreeIter}})
+    function unref_node(instance::GtkTreeModel, _iter::GtkTreeIterLike)
         ret = ccall(("gtk_tree_model_unref_node", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}), instance, _iter)
         nothing
     end

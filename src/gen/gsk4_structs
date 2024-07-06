@@ -15,6 +15,7 @@ $(Expr(:toplevel, quote
             convert(::Type{GskColorStop}, p::Ptr{_GskColorStop}, owns = false) = begin
                     GskColorStop(p, owns)
                 end
+            const GskColorStopLike = Union{Ref{_GskColorStop}, GskColorStop}
         end
     end
     begin
@@ -35,31 +36,36 @@ $(Expr(:toplevel, quote
             convert(::Type{GskParseLocation}, p::Ptr{_GskParseLocation}, owns = false) = begin
                     GskParseLocation(p, owns)
                 end
+            const GskParseLocationLike = Union{Ref{_GskParseLocation}, GskParseLocation}
         end
     end
     begin
         mutable struct GskRoundedRect
             handle::Ptr{GskRoundedRect}
         end
+        const GskRoundedRectLike = GskRoundedRect
         const _GskRoundedRect = GskRoundedRect
     end
-    mutable struct GskShaderArgsBuilder <: GBoxed
-        handle::Ptr{GskShaderArgsBuilder}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = begin
-                    ccall(("gsk_shader_args_builder_get_type", libgtk4), GType, ())
-                end
-            function GskShaderArgsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GskShaderArgsBuilder <: GBoxed
+            handle::Ptr{GskShaderArgsBuilder}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = begin
+                        ccall(("gsk_shader_args_builder_get_type", libgtk4), GType, ())
                     end
+                function GskShaderArgsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GskShaderArgsBuilder)
             end
-            push!(gboxed_types, GskShaderArgsBuilder)
         end
+        const GskShaderArgsBuilderLike = GskShaderArgsBuilder
     end
     begin
         struct _GskShadow
@@ -78,25 +84,29 @@ $(Expr(:toplevel, quote
             convert(::Type{GskShadow}, p::Ptr{_GskShadow}, owns = false) = begin
                     GskShadow(p, owns)
                 end
+            const GskShadowLike = Union{Ref{_GskShadow}, GskShadow}
         end
     end
-    mutable struct GskTransform <: GBoxed
-        handle::Ptr{GskTransform}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GskTransform) = begin
-                    ccall(("gsk_transform_get_type", libgtk4), GType, ())
-                end
-            function GskTransform(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GskTransform <: GBoxed
+            handle::Ptr{GskTransform}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GskTransform) = begin
+                        ccall(("gsk_transform_get_type", libgtk4), GType, ())
                     end
+                function GskTransform(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GskTransform)
             end
-            push!(gboxed_types, GskTransform)
         end
+        const GskTransformLike = GskTransform
     end
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ColorStop.html)." GskColorStop
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ParseLocation.html)." GskParseLocation
@@ -472,28 +482,28 @@ $(Expr(:toplevel, quote
     function GskBlurNode(_child::GskRenderNode, _radius::Real)
         G_.BlurNode_new(_child, _radius)
     end
-    function GskBorderNode(_outline::Union{GskRoundedRect, Ref{_GskRoundedRect}}, _border_width, _border_color)
+    function GskBorderNode(_outline::GskRoundedRectLike, _border_width, _border_color)
         G_.BorderNode_new(_outline, _border_width, _border_color)
     end
     function GskBroadwayRenderer()
         G_.BroadwayRenderer_new()
     end
-    function GskCairoNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function GskCairoNode(_bounds::GrapheneRectLike)
         G_.CairoNode_new(_bounds)
     end
     function GskCairoRenderer()
         G_.CairoRenderer_new()
     end
-    function GskClipNode(_child::GskRenderNode, _clip::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function GskClipNode(_child::GskRenderNode, _clip::GrapheneRectLike)
         G_.ClipNode_new(_child, _clip)
     end
-    function GskColorMatrixNode(_child::GskRenderNode, _color_matrix::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _color_offset::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function GskColorMatrixNode(_child::GskRenderNode, _color_matrix::GrapheneMatrixLike, _color_offset::GrapheneVec4Like)
         G_.ColorMatrixNode_new(_child, _color_matrix, _color_offset)
     end
-    function GskColorNode(_rgba::Union{GdkRGBA, Ref{_GdkRGBA}}, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function GskColorNode(_rgba::GdkRGBALike, _bounds::GrapheneRectLike)
         G_.ColorNode_new(_rgba, _bounds)
     end
-    function GskConicGradientNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _rotation::Real, _color_stops)
+    function GskConicGradientNode(_bounds::GrapheneRectLike, _center::GraphenePointLike, _rotation::Real, _color_stops)
         G_.ConicGradientNode_new(_bounds, _center, _rotation, _color_stops)
     end
     function GskContainerNode(_children)
@@ -518,13 +528,13 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function GskGLShaderNode(_shader::GskGLShader, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _args::GBytes, _children)
+    function GskGLShaderNode(_shader::GskGLShader, _bounds::GrapheneRectLike, _args::GBytes, _children)
         G_.GLShaderNode_new(_shader, _bounds, _args, _children)
     end
-    function GskInsetShadowNode(_outline::Union{GskRoundedRect, Ref{_GskRoundedRect}}, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
+    function GskInsetShadowNode(_outline::GskRoundedRectLike, _color::GdkRGBALike, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
         G_.InsetShadowNode_new(_outline, _color, _dx, _dy, _spread, _blur_radius)
     end
-    function GskLinearGradientNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _start::Union{GraphenePoint, Ref{_GraphenePoint}}, _end::Union{GraphenePoint, Ref{_GraphenePoint}}, _color_stops)
+    function GskLinearGradientNode(_bounds::GrapheneRectLike, _start::GraphenePointLike, _end::GraphenePointLike, _color_stops)
         G_.LinearGradientNode_new(_bounds, _start, _end, _color_stops)
     end
     function GskMaskNode(_source::GskRenderNode, _mask::GskRenderNode, _mask_mode)
@@ -533,10 +543,10 @@ $(Expr(:toplevel, quote
     function GskOpacityNode(_child::GskRenderNode, _opacity::Real)
         G_.OpacityNode_new(_child, _opacity)
     end
-    function GskOutsetShadowNode(_outline::Union{GskRoundedRect, Ref{_GskRoundedRect}}, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
+    function GskOutsetShadowNode(_outline::GskRoundedRectLike, _color::GdkRGBALike, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
         G_.OutsetShadowNode_new(_outline, _color, _dx, _dy, _spread, _blur_radius)
     end
-    function GskRadialGradientNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _color_stops)
+    function GskRadialGradientNode(_bounds::GrapheneRectLike, _center::GraphenePointLike, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _color_stops)
         G_.RadialGradientNode_new(_bounds, _center, _hradius, _vradius, _start, _end, _color_stops)
     end
     function GskRenderer(_surface::GdkSurface; kwargs...)
@@ -544,28 +554,28 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function GskRepeatNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _child::GskRenderNode, _child_bounds::Maybe(Union{GrapheneRect, Ref{_GrapheneRect}}))
+    function GskRepeatNode(_bounds::GrapheneRectLike, _child::GskRenderNode, _child_bounds::Maybe(GrapheneRectLike))
         G_.RepeatNode_new(_bounds, _child, _child_bounds)
     end
-    function GskRepeatingLinearGradientNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _start::Union{GraphenePoint, Ref{_GraphenePoint}}, _end::Union{GraphenePoint, Ref{_GraphenePoint}}, _color_stops)
+    function GskRepeatingLinearGradientNode(_bounds::GrapheneRectLike, _start::GraphenePointLike, _end::GraphenePointLike, _color_stops)
         G_.RepeatingLinearGradientNode_new(_bounds, _start, _end, _color_stops)
     end
-    function GskRepeatingRadialGradientNode(_bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _center::Union{GraphenePoint, Ref{_GraphenePoint}}, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _color_stops)
+    function GskRepeatingRadialGradientNode(_bounds::GrapheneRectLike, _center::GraphenePointLike, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _color_stops)
         G_.RepeatingRadialGradientNode_new(_bounds, _center, _hradius, _vradius, _start, _end, _color_stops)
     end
-    function GskRoundedClipNode(_child::GskRenderNode, _clip::Union{GskRoundedRect, Ref{_GskRoundedRect}})
+    function GskRoundedClipNode(_child::GskRenderNode, _clip::GskRoundedRectLike)
         G_.RoundedClipNode_new(_child, _clip)
     end
     function GskShadowNode(_child::GskRenderNode, _shadows)
         G_.ShadowNode_new(_child, _shadows)
     end
-    function GskTextNode(_font::PangoFont, _glyphs::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _offset::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function GskTextNode(_font::PangoFont, _glyphs::PangoGlyphStringLike, _color::GdkRGBALike, _offset::GraphenePointLike)
         G_.TextNode_new(_font, _glyphs, _color, _offset)
     end
-    function GskTextureNode(_texture::GdkTexture, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function GskTextureNode(_texture::GdkTexture, _bounds::GrapheneRectLike)
         G_.TextureNode_new(_texture, _bounds)
     end
-    function GskTextureScaleNode(_texture::GdkTexture, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}}, _filter)
+    function GskTextureScaleNode(_texture::GdkTexture, _bounds::GrapheneRectLike, _filter)
         G_.TextureScaleNode_new(_texture, _bounds, _filter)
     end
     function GskTransformNode(_child::GskRenderNode, _transform::GskTransform)
@@ -608,6 +618,6 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TextureNode.html)." GskTextureNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TextureScaleNode.html)." GskTextureScaleNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TransformNode.html)." GskTransformNode
-    export GskColorStop, _GskColorStop, GskParseLocation, _GskParseLocation, GskRoundedRect, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, _GskShadow, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorMatrixNode, GskColorMatrixNodeLeaf, GskColorNode, GskColorNodeLeaf, GskConicGradientNode, GskConicGradientNodeLeaf, GskContainerNode, GskContainerNodeLeaf, GskCrossFadeNode, GskCrossFadeNodeLeaf, GskDebugNode, GskDebugNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskGLShaderNode, GskGLShaderNodeLeaf, GskInsetShadowNode, GskInsetShadowNodeLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskMaskNode, GskMaskNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskOutsetShadowNode, GskOutsetShadowNodeLeaf, GskRadialGradientNode, GskRadialGradientNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRepeatingLinearGradientNode, GskRepeatingLinearGradientNodeLeaf, GskRepeatingRadialGradientNode, GskRepeatingRadialGradientNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTextureScaleNode, GskTextureScaleNodeLeaf, GskTransformNode, GskTransformNodeLeaf
+    export GskColorStop, GskColorStopLike, _GskColorStop, GskParseLocation, GskParseLocationLike, _GskParseLocation, GskRoundedRect, GskRoundedRectLike, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, GskShadowLike, _GskShadow, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorMatrixNode, GskColorMatrixNodeLeaf, GskColorNode, GskColorNodeLeaf, GskConicGradientNode, GskConicGradientNodeLeaf, GskContainerNode, GskContainerNodeLeaf, GskCrossFadeNode, GskCrossFadeNodeLeaf, GskDebugNode, GskDebugNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskGLShaderNode, GskGLShaderNodeLeaf, GskInsetShadowNode, GskInsetShadowNodeLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskMaskNode, GskMaskNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskOutsetShadowNode, GskOutsetShadowNodeLeaf, GskRadialGradientNode, GskRadialGradientNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRepeatingLinearGradientNode, GskRepeatingLinearGradientNodeLeaf, GskRepeatingRadialGradientNode, GskRepeatingRadialGradientNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTextureScaleNode, GskTextureScaleNodeLeaf, GskTransformNode, GskTransformNodeLeaf
 end))
 end
