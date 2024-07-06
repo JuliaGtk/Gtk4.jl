@@ -1,8 +1,8 @@
-GtkTextBuffer() = G_.TextBuffer_new(nothing)
+GtkTextBuffer(; kwargs...) = GtkTextBuffer(nothing; kwargs...)
 
-GtkTextMark(left_gravity::Bool = false) = G_.TextMark_new(nothing, left_gravity)
+GtkTextMark(left_gravity::Bool = false; kwargs...) = GtkTextMark(nothing, left_gravity; kwargs...)
 
-GtkTextTag() = G_.TextTag_new(nothing)
+GtkTextTag(; kwargs...) = GtkTextTag(nothing; kwargs...)
 
 const TI = Union{Ref{_GtkTextIter}, GtkTextIter}
 zero(::Type{_GtkTextIter}) = _GtkTextIter()
@@ -639,6 +639,35 @@ function cursor_locations(view::GtkTextView)
     string, weak = G_.get_cursor_locations(view, iter)
     return (iter, strong, weak)
 end
+
+function convert(::Type{Gtk4.TextWindowType}, x::Symbol)
+    if x === :left
+        Gtk4.TextWindowType_LEFT
+    elseif x === :right
+        Gtk4.TextWindowType_RIGHT
+    elseif x === :top
+        Gtk4.TextWindowType_TOP
+    elseif x === :bottom
+        Gtk4.TextWindowType_BOTTOM
+    elseif x === :widget
+        Gtk4.TextWindowType_WIDGET
+    elseif x === :text
+        Gtk4.TextWindowType_TEXT
+    else
+        error("can't convert $x to GtkTextWindowType")
+    end
+end
+
+function gutter(view::GtkTextView, type::TextWindowType, widget::GtkWidget)
+    G_.set_gutter(view, type, widget)
+end
+
+function gutter(view::GtkTextView, type::Symbol, widget::GtkWidget)
+    G_.set_gutter(view, convert(TextWindowType, type), widget)
+end
+
+gutter(view::GtkTextView, type::TextWindowType) = G_.get_gutter(view, type)
+gutter(view::GtkTextView, type::Symbol) = G_.get_gutter(view, type)
 
 ####  GtkTextMark  ####
 
