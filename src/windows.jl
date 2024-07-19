@@ -226,7 +226,7 @@ function ask_dialog(callback::Function, question::AbstractString, parent = nothi
     cancellable = GLib.cancel_after_delay(timeout)
     choose(dlg, parent, cancellable) do dlg, resobj
         res = try
-            Gtk4.choose_finish(dlg, resobj)
+            choose_finish(dlg, resobj)
         catch e
             if !isa(e, Gtk4.GLib.GErrorException)
                 rethrow(e)
@@ -485,7 +485,7 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
     show(dlg)
 
     if timeout > 0
-        emit(timer) = on_response(dlg, Int32(Gtk4.ResponseType_CANCEL))
+        emit(timer) = on_response(dlg, Int32(ResponseType_CANCEL))
         Timer(emit, timeout)
     end
     return dlg

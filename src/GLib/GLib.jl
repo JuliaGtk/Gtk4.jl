@@ -5,9 +5,9 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@optle
 end
 
 import Base: convert, copy, run, show, size, length, getindex, setindex!, get,
-             iterate, eltype, isempty, ndims, stride, strides, popfirst!,
+             iterate, eltype, isempty, popfirst!,
              empty!, append!, reverse!, pushfirst!, pop!, push!, splice!, insert!, deleteat!, delete!,
-             sigatomic_begin, sigatomic_end, unsafe_convert,
+             unsafe_convert,
              getproperty, setproperty!, propertynames, getindex, setindex!, print, replace
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag

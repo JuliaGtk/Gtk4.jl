@@ -23,16 +23,16 @@ complete(completion::GtkEntryCompletion) = G_.complete(completion)
 Create a scale widget with horizontal (:h) or vertical (:v) orientation and an
 optional range. Keyword arguments can be used to set properties.
 """
-GtkScale(orientation::Symbol; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), nothing; kwargs...)
-GtkScale(orientation::Symbol, adj::GtkAdjustment; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), adj; kwargs...)
-GtkScale(orientation::Symbol, min::Real, max::Real, step::Real; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), min, max, step; kwargs...)
-GtkScale(orientation, scale::AbstractRange; kwargs...) = GtkScale(convert(Gtk4.Orientation,orientation), minimum(scale), maximum(scale), step(scale); kwargs...)
+GtkScale(orientation::Symbol; kwargs...) = GtkScale(convert(Orientation,orientation), nothing; kwargs...)
+GtkScale(orientation::Symbol, adj::GtkAdjustment; kwargs...) = GtkScale(convert(Orientation,orientation), adj; kwargs...)
+GtkScale(orientation::Symbol, min::Real, max::Real, step::Real; kwargs...) = GtkScale(convert(Orientation,orientation), min, max, step; kwargs...)
+GtkScale(orientation, scale::AbstractRange; kwargs...) = GtkScale(convert(Orientation,orientation), minimum(scale), maximum(scale), step(scale); kwargs...)
 function push!(scale::GtkScale, value, position, markup::AbstractString)
-    G_.add_mark(scale, value, convert(Gtk4.PositionType,position), markup)
+    G_.add_mark(scale, value, convert(PositionType,position), markup)
     scale
 end
 function push!(scale::GtkScale, value::Real, position)
-    G_.add_mark(scale, value, convert(Gtk4.PositionType,position), nothing)
+    G_.add_mark(scale, value, convert(PositionType,position), nothing)
     scale
 end
 function empty!(scale::GtkScale)

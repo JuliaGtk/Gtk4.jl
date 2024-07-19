@@ -33,7 +33,7 @@ using Preferences
 using Reexport
 @reexport using Graphics
 import .Graphics: width, height, getgc, scale
-import Cairo: destroy, show_text, text, status
+import Cairo: destroy, text, status
 
 eval(include("gen/gdk4_consts"))
 eval(include("gen/gdk4_structs"))
@@ -66,7 +66,7 @@ end
 
 end
 
-import .GLib: set_gtk_property!, get_gtk_property, run, activate,
+import .GLib: set_gtk_property!, get_gtk_property, activate,
               signal_handler_is_connected, signalnames,
               GListModel, start_main_loop, stop_main_loop
 
