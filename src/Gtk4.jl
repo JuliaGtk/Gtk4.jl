@@ -2,11 +2,8 @@ module Gtk4
 
 import Base: unsafe_convert, length, size, parent, push!, pushfirst!, insert!,
              pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
-             convert, empty!, string, popfirst!, size, delete!, in, close,
+             convert, empty!, string, popfirst!, size, delete!, in, close, stack
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
-@static if VERSION >= v"1.9"
-    import Base: stack
-end
 
 import CEnum: @cenum
 import BitFlags: @bitflag
