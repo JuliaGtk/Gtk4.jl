@@ -2,7 +2,7 @@ module Gtk4
 
 import Base: unsafe_convert, length, size, parent, push!, pushfirst!, insert!,
              pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
-             convert, empty!, string, popfirst!, size, delete!, in, close, stack
+             convert, empty!, string, popfirst!, size, delete!, in, close, stack,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
 
 import CEnum: @cenum
