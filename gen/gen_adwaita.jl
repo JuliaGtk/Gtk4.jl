@@ -22,7 +22,7 @@ GI.write_to_file(path,"adw_consts",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-struct_skiplist=Symbol[]
+struct_skiplist=[:BreakpointCondition]
 
 first_list=[]
 GI.struct_cache_expr!(exprs)
@@ -30,12 +30,13 @@ GI.struct_exprs!(exprs,exports,ns,first_list)
 
 struct_skiplist=vcat(first_list,struct_skiplist)
 
-struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist, constructor_skiplist=[:new_full])
+struct_skiplist,c = GI.all_struct_exprs!(exprs,exports,ns;excludelist=struct_skiplist, constructor_skiplist=[:new_full], exclude_deprecated=false)
 
 ## objects
 
 GI.all_interfaces!(exprs,exports,ns)
-GI.all_objects!(exprs,exports,ns)
+obj_skiplist=[:Breakpoint]
+GI.all_objects!(exprs,exports,ns; skiplist=obj_skiplist, exclude_deprecated=false)
 
 push!(exprs,exports)
 
@@ -51,10 +52,10 @@ GI.all_struct_methods!(exprs,ns,print_detailed=true,skiplist=skiplist,struct_ski
 
 ## object methods
 
-skiplist=[:get_expression,:set_expression]
+skiplist=[:get_expression,:set_expression,:add_breakpoint,:get_current_breakpoint]
 
 # skips are to avoid method name collisions
-GI.all_object_methods!(exprs,ns;skiplist=skiplist)
+GI.all_object_methods!(exprs,ns;skiplist=skiplist,object_skiplist=obj_skiplist, exclude_deprecated=false)
 
 # skips are to avoid method name collisions
 GI.all_interface_methods!(exprs,ns)
@@ -65,6 +66,6 @@ GI.write_to_file(path,"adw_methods",toplevel)
 
 toplevel, exprs, exports = GI.output_exprs()
 
-GI.all_functions!(exprs,ns)
+GI.all_functions!(exprs,ns;skiplist=[:breakpoint_condition_parse])
 
 GI.write_to_file(path,"adw_functions",toplevel)

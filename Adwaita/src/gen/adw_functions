@@ -30,6 +30,16 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function length_unit_from_px(_unit, _value::Real, _settings::Maybe(GtkSettings))
+        _settings_maybe = nothing_to_null(_settings)
+        ret = ccall(("adw_length_unit_from_px", libadwaita), Float64, (UInt32, Float64, Ptr{GObject}), _unit, _value, _settings_maybe)
+        ret
+    end
+    function length_unit_to_px(_unit, _value::Real, _settings::Maybe(GtkSettings))
+        _settings_maybe = nothing_to_null(_settings)
+        ret = ccall(("adw_length_unit_to_px", libadwaita), Float64, (UInt32, Float64, Ptr{GObject}), _unit, _value, _settings_maybe)
+        ret
+    end
     function lerp(_a::Real, _b::Real, _t::Real)
         ret = ccall(("adw_lerp", libadwaita), Float64, (Float64, Float64, Float64), _a, _b, _t)
         ret
