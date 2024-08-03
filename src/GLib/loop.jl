@@ -210,7 +210,7 @@ GApplication(id = nothing) = G_.Application_new(id,ApplicationFlags_FLAGS_NONE)
 """
     run(app::GApplication)
 
-Calls `g_application_run`, starting the main loop. If the loop is already running, it will stop it before
+Calls `g_application_run`, starting the main loop. If the loop is already running, this function will stop it and emit a warning before
 starting the application loop.
 """
 function run(app::GApplication)

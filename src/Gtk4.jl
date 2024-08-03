@@ -172,6 +172,10 @@ function __init__()
         G_.set_default_icon_name("julia")
     end
 
+    # prevents warnings from being thrown when using file dialogs
+    GLib.G_.set_application_name("julia")
+    GLib.G_.set_prgname("julia")
+
     isinteractive() && GLib.start_main_loop()
 
     #@debug("Gtk4 initialized.")
