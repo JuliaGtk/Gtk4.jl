@@ -2313,6 +2313,12 @@ $(Expr(:toplevel, quote
                 end
         end
         begin
+            @cenum DmabufError::Int32 DmabufError_NOT_AVAILABLE = 0 DmabufError_UNSUPPORTED_FORMAT = 1 DmabufError_CREATION_FAILED = 2
+            (GLib.g_type(::Type{T}) where T <: DmabufError) = begin
+                    ccall(("gdk_dmabuf_error_get_type", libgtk4), GType, ())
+                end
+        end
+        begin
             @cenum DragCancelReason::Int32 DragCancelReason_NO_TARGET = 0 DragCancelReason_USER_CANCELLED = 1 DragCancelReason_ERROR = 2
             (GLib.g_type(::Type{T}) where T <: DragCancelReason) = begin
                     ccall(("gdk_drag_cancel_reason_get_type", libgtk4), GType, ())
@@ -2355,7 +2361,7 @@ $(Expr(:toplevel, quote
                 end
         end
         begin
-            @cenum MemoryFormat::Int32 MemoryFormat_B8G8R8A8_PREMULTIPLIED = 0 MemoryFormat_A8R8G8B8_PREMULTIPLIED = 1 MemoryFormat_R8G8B8A8_PREMULTIPLIED = 2 MemoryFormat_B8G8R8A8 = 3 MemoryFormat_A8R8G8B8 = 4 MemoryFormat_R8G8B8A8 = 5 MemoryFormat_A8B8G8R8 = 6 MemoryFormat_R8G8B8 = 7 MemoryFormat_B8G8R8 = 8 MemoryFormat_R16G16B16 = 9 MemoryFormat_R16G16B16A16_PREMULTIPLIED = 10 MemoryFormat_R16G16B16A16 = 11 MemoryFormat_R16G16B16_FLOAT = 12 MemoryFormat_R16G16B16A16_FLOAT_PREMULTIPLIED = 13 MemoryFormat_R16G16B16A16_FLOAT = 14 MemoryFormat_R32G32B32_FLOAT = 15 MemoryFormat_R32G32B32A32_FLOAT_PREMULTIPLIED = 16 MemoryFormat_R32G32B32A32_FLOAT = 17 MemoryFormat_G8A8_PREMULTIPLIED = 18 MemoryFormat_G8A8 = 19 MemoryFormat_G8 = 20 MemoryFormat_G16A16_PREMULTIPLIED = 21 MemoryFormat_G16A16 = 22 MemoryFormat_G16 = 23 MemoryFormat_A8 = 24 MemoryFormat_A16 = 25 MemoryFormat_A16_FLOAT = 26 MemoryFormat_A32_FLOAT = 27 MemoryFormat_N_FORMATS = 28
+            @cenum MemoryFormat::Int32 MemoryFormat_B8G8R8A8_PREMULTIPLIED = 0 MemoryFormat_A8R8G8B8_PREMULTIPLIED = 1 MemoryFormat_R8G8B8A8_PREMULTIPLIED = 2 MemoryFormat_B8G8R8A8 = 3 MemoryFormat_A8R8G8B8 = 4 MemoryFormat_R8G8B8A8 = 5 MemoryFormat_A8B8G8R8 = 6 MemoryFormat_R8G8B8 = 7 MemoryFormat_B8G8R8 = 8 MemoryFormat_R16G16B16 = 9 MemoryFormat_R16G16B16A16_PREMULTIPLIED = 10 MemoryFormat_R16G16B16A16 = 11 MemoryFormat_R16G16B16_FLOAT = 12 MemoryFormat_R16G16B16A16_FLOAT_PREMULTIPLIED = 13 MemoryFormat_R16G16B16A16_FLOAT = 14 MemoryFormat_R32G32B32_FLOAT = 15 MemoryFormat_R32G32B32A32_FLOAT_PREMULTIPLIED = 16 MemoryFormat_R32G32B32A32_FLOAT = 17 MemoryFormat_G8A8_PREMULTIPLIED = 18 MemoryFormat_G8A8 = 19 MemoryFormat_G8 = 20 MemoryFormat_G16A16_PREMULTIPLIED = 21 MemoryFormat_G16A16 = 22 MemoryFormat_G16 = 23 MemoryFormat_A8 = 24 MemoryFormat_A16 = 25 MemoryFormat_A16_FLOAT = 26 MemoryFormat_A32_FLOAT = 27 MemoryFormat_A8B8G8R8_PREMULTIPLIED = 28 MemoryFormat_B8G8R8X8 = 29 MemoryFormat_X8R8G8B8 = 30 MemoryFormat_R8G8B8X8 = 31 MemoryFormat_X8B8G8R8 = 32 MemoryFormat_N_FORMATS = 33
             (GLib.g_type(::Type{T}) where T <: MemoryFormat) = begin
                     ccall(("gdk_memory_format_get_type", libgtk4), GType, ())
                 end
@@ -2445,7 +2451,7 @@ $(Expr(:toplevel, quote
                 end
         end
         begin
-            @bitflag ModifierType::UInt32 ModifierType_SHIFT_MASK = 1 ModifierType_LOCK_MASK = 2 ModifierType_CONTROL_MASK = 4 ModifierType_ALT_MASK = 8 ModifierType_BUTTON1_MASK = 256 ModifierType_BUTTON2_MASK = 512 ModifierType_BUTTON3_MASK = 1024 ModifierType_BUTTON4_MASK = 2048 ModifierType_BUTTON5_MASK = 4096 ModifierType_SUPER_MASK = 67108864 ModifierType_HYPER_MASK = 134217728 ModifierType_META_MASK = 268435456 ModifierType_NONE = 0
+            @bitflag ModifierType::UInt32 ModifierType_NO_MODIFIER_MASK = 0 ModifierType_SHIFT_MASK = 1 ModifierType_LOCK_MASK = 2 ModifierType_CONTROL_MASK = 4 ModifierType_ALT_MASK = 8 ModifierType_BUTTON1_MASK = 256 ModifierType_BUTTON2_MASK = 512 ModifierType_BUTTON3_MASK = 1024 ModifierType_BUTTON4_MASK = 2048 ModifierType_BUTTON5_MASK = 4096 ModifierType_SUPER_MASK = 67108864 ModifierType_HYPER_MASK = 134217728 ModifierType_META_MASK = 268435456
             (GLib.g_type(::Type{T}) where T <: ModifierType) = begin
                     ccall(("gdk_modifier_type_get_type", libgtk4), GType, ())
                 end
@@ -2481,6 +2487,7 @@ $(Expr(:toplevel, quote
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/enum.CrossingMode.html)." CrossingMode
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/enum.DevicePadFeature.html)." DevicePadFeature
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/enum.DeviceToolType.html)." DeviceToolType
+        @doc "See the [GTK docs](https://docs.gtk.org/gdk4/enum.DmabufError.html)." DmabufError
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/enum.DragCancelReason.html)." DragCancelReason
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/enum.EventType.html)." EventType
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/enum.FullscreenMode.html)." FullscreenMode
@@ -2506,7 +2513,7 @@ $(Expr(:toplevel, quote
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/flags.PaintableFlags.html)." PaintableFlags
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/flags.SeatCapabilities.html)." SeatCapabilities
         @doc "See the [GTK docs](https://docs.gtk.org/gdk4/flags.ToplevelState.html)." ToplevelState
-        export AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, ScrollUnit, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState
+        export AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DmabufError, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, ScrollUnit, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState
     end
 end))
 end

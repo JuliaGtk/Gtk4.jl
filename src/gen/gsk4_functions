@@ -1,8 +1,20 @@
 quote
 $(Expr(:toplevel, quote
+    function path_parse(_string::Union{AbstractString, Symbol})
+        ret = ccall(("gsk_path_parse", libgtk4), Ptr{GskPath}, (Cstring,), _string)
+        ret2 = convert_if_not_null(GskPath, ret, true)
+        ret2
+    end
     function serialization_error_quark()
         ret = ccall(("gsk_serialization_error_quark", libgtk4), UInt32, ())
         ret
+    end
+    function stroke_equal(_stroke1::Maybe(Nothing), _stroke2::Maybe(Nothing))
+        _stroke1_maybe = nothing_to_null(_stroke1)
+        _stroke2_maybe = nothing_to_null(_stroke2)
+        ret = ccall(("gsk_stroke_equal", libgtk4), Cint, (Ptr{Nothing}, Ptr{Nothing}), _stroke1_maybe, _stroke2_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
     end
     function transform_parse(_string::Union{AbstractString, Symbol})
         m_out_transform = Ref{Ptr{GskTransform}}()

@@ -27,6 +27,78 @@ $(Expr(:toplevel, quote
                 convert(Ptr{_GskParseLocation}, box.handle)
             end
     end
+    mutable struct GskPath <: GBoxed
+        handle::Ptr{GskPath}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskPath) = begin
+                    ccall(("gsk_path_get_type", libgtk4), GType, ())
+                end
+            function GskPath(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskPath)
+        end
+    end
+    mutable struct GskPathBuilder <: GBoxed
+        handle::Ptr{GskPathBuilder}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskPathBuilder) = begin
+                    ccall(("gsk_path_builder_get_type", libgtk4), GType, ())
+                end
+            function GskPathBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskPathBuilder)
+        end
+    end
+    mutable struct GskPathMeasure <: GBoxed
+        handle::Ptr{GskPathMeasure}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskPathMeasure) = begin
+                    ccall(("gsk_path_measure_get_type", libgtk4), GType, ())
+                end
+            function GskPathMeasure(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskPathMeasure)
+        end
+    end
+    mutable struct GskPathPoint <: GBoxed
+        handle::Ptr{GskPathPoint}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskPathPoint) = begin
+                    ccall(("gsk_path_point_get_type", libgtk4), GType, ())
+                end
+            function GskPathPoint(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskPathPoint)
+        end
+    end
     begin
         mutable struct GskRoundedRect
             handle::Ptr{GskRoundedRect}
@@ -65,6 +137,24 @@ $(Expr(:toplevel, quote
                 convert(Ptr{_GskShadow}, box.handle)
             end
     end
+    mutable struct GskStroke <: GBoxed
+        handle::Ptr{GskStroke}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskStroke) = begin
+                    ccall(("gsk_stroke_get_type", libgtk4), GType, ())
+                end
+            function GskStroke(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskStroke)
+        end
+    end
     mutable struct GskTransform <: GBoxed
         handle::Ptr{GskTransform}
         begin
@@ -85,9 +175,14 @@ $(Expr(:toplevel, quote
     end
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ColorStop.html)." GskColorStop
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ParseLocation.html)." GskParseLocation
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Path.html)." GskPath
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathBuilder.html)." GskPathBuilder
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathMeasure.html)." GskPathMeasure
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathPoint.html)." GskPathPoint
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.RoundedRect.html)." GskRoundedRect
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ShaderArgsBuilder.html)." GskShaderArgsBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Shadow.html)." GskShadow
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Stroke.html)." GskStroke
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Transform.html)." GskTransform
     begin
         abstract type GskRenderNode <: GTypeInstance end
@@ -258,6 +353,14 @@ $(Expr(:toplevel, quote
         end
     end
     begin
+        abstract type GskFillNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskFillNodeLeaf <: GskFillNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
         abstract type GskGLRenderer <: GskRenderer end
         mutable struct GskGLRendererLeaf <: GskGLRenderer
             handle::Ptr{GObject}
@@ -420,6 +523,22 @@ $(Expr(:toplevel, quote
         end
     end
     begin
+        abstract type GskStrokeNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskStrokeNodeLeaf <: GskStrokeNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskSubsurfaceNode <: GskRenderNode end
+    end
+    begin
+        mutable struct GskSubsurfaceNodeLeaf <: GskSubsurfaceNode
+            handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
         abstract type GskTextNode <: GskRenderNode end
     end
     begin
@@ -449,6 +568,28 @@ $(Expr(:toplevel, quote
     begin
         mutable struct GskTransformNodeLeaf <: GskTransformNode
             handle::Ptr{GskRenderNode}
+        end
+    end
+    begin
+        abstract type GskVulkanRenderer <: GskRenderer end
+        mutable struct GskVulkanRendererLeaf <: GskVulkanRenderer
+            handle::Ptr{GObject}
+            function GskVulkanRendererLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GskVulkanRendererLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GskVulkanRenderer] = GskVulkanRendererLeaf
+        (GLib.g_type(::Type{T}) where T <: GskVulkanRenderer) = begin
+                ccall(("gsk_vulkan_renderer_get_type", libgtk4), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{GskVulkanRenderer})
+            signalnames(supertype(GskVulkanRenderer))
         end
     end
     function GskBlendNode(_bottom::GskRenderNode, _top::GskRenderNode, _blend_mode)
@@ -490,6 +631,9 @@ $(Expr(:toplevel, quote
     function GskDebugNode(_child::GskRenderNode, _message::Union{AbstractString, Symbol})
         G_.DebugNode_new(_child, _message)
     end
+    function GskFillNode(_child::GskRenderNode, _path::GskPath, _fill_rule)
+        G_.FillNode_new(_child, _path, _fill_rule)
+    end
     function GskGLRenderer()
         G_.GLRenderer_new()
     end
@@ -514,6 +658,9 @@ $(Expr(:toplevel, quote
     end
     function GskMaskNode(_source::GskRenderNode, _mask::GskRenderNode, _mask_mode)
         G_.MaskNode_new(_source, _mask, _mask_mode)
+    end
+    function GskNglRenderer()
+        G_.NglRenderer_new()
     end
     function GskOpacityNode(_child::GskRenderNode, _opacity::Real)
         G_.OpacityNode_new(_child, _opacity)
@@ -544,6 +691,9 @@ $(Expr(:toplevel, quote
     function GskShadowNode(_child::GskRenderNode, _shadows)
         G_.ShadowNode_new(_child, _shadows)
     end
+    function GskStrokeNode(_child::GskRenderNode, _path::GskPath, _stroke::GskStroke)
+        G_.StrokeNode_new(_child, _path, _stroke)
+    end
     function GskTextNode(_font::PangoFont, _glyphs::Union{PangoGlyphString, Ref{_PangoGlyphString}}, _color::Union{GdkRGBA, Ref{_GdkRGBA}}, _offset::Union{GraphenePoint, Ref{_GraphenePoint}})
         G_.TextNode_new(_font, _glyphs, _color, _offset)
     end
@@ -556,8 +706,23 @@ $(Expr(:toplevel, quote
     function GskTransformNode(_child::GskRenderNode, _transform::GskTransform)
         G_.TransformNode_new(_child, _transform)
     end
+    function GskVulkanRenderer()
+        G_.VulkanRenderer_new()
+    end
+    function GskPathBuilder()
+        G_.PathBuilder_new()
+    end
+    function GskPathMeasure(_path::GskPath)
+        G_.PathMeasure_new(_path)
+    end
+    function GskPathMeasure(_path::GskPath, _tolerance::Real)
+        G_.PathMeasure_new_with_tolerance(_path, _tolerance)
+    end
     function GskShaderArgsBuilder(_shader::GskGLShader, _initial_values::Maybe(GBytes))
         G_.ShaderArgsBuilder_new(_shader, _initial_values)
+    end
+    function GskStroke(_line_width::Real)
+        G_.Stroke_new(_line_width)
     end
     function GskTransform()
         G_.Transform_new()
@@ -574,6 +739,7 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.ContainerNode.html)." GskContainerNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.CrossFadeNode.html)." GskCrossFadeNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.DebugNode.html)." GskDebugNode
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.FillNode.html)." GskFillNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.GLShader.html)." GskGLShader
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.GLShaderNode.html)." GskGLShaderNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.InsetShadowNode.html)." GskInsetShadowNode
@@ -589,10 +755,13 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.RepeatingRadialGradientNode.html)." GskRepeatingRadialGradientNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.RoundedClipNode.html)." GskRoundedClipNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.ShadowNode.html)." GskShadowNode
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.StrokeNode.html)." GskStrokeNode
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.SubsurfaceNode.html)." GskSubsurfaceNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TextNode.html)." GskTextNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TextureNode.html)." GskTextureNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TextureScaleNode.html)." GskTextureScaleNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TransformNode.html)." GskTransformNode
-    export GskColorStop, _GskColorStop, GskParseLocation, _GskParseLocation, GskRoundedRect, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, _GskShadow, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorMatrixNode, GskColorMatrixNodeLeaf, GskColorNode, GskColorNodeLeaf, GskConicGradientNode, GskConicGradientNodeLeaf, GskContainerNode, GskContainerNodeLeaf, GskCrossFadeNode, GskCrossFadeNodeLeaf, GskDebugNode, GskDebugNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskGLShaderNode, GskGLShaderNodeLeaf, GskInsetShadowNode, GskInsetShadowNodeLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskMaskNode, GskMaskNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskOutsetShadowNode, GskOutsetShadowNodeLeaf, GskRadialGradientNode, GskRadialGradientNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRepeatingLinearGradientNode, GskRepeatingLinearGradientNodeLeaf, GskRepeatingRadialGradientNode, GskRepeatingRadialGradientNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTextureScaleNode, GskTextureScaleNodeLeaf, GskTransformNode, GskTransformNodeLeaf
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.VulkanRenderer.html)." GskVulkanRenderer
+    export GskColorStop, _GskColorStop, GskParseLocation, _GskParseLocation, GskPath, GskPathBuilder, GskPathMeasure, GskPathPoint, GskRoundedRect, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, _GskShadow, GskStroke, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorMatrixNode, GskColorMatrixNodeLeaf, GskColorNode, GskColorNodeLeaf, GskConicGradientNode, GskConicGradientNodeLeaf, GskContainerNode, GskContainerNodeLeaf, GskCrossFadeNode, GskCrossFadeNodeLeaf, GskDebugNode, GskDebugNodeLeaf, GskFillNode, GskFillNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskGLShaderNode, GskGLShaderNodeLeaf, GskInsetShadowNode, GskInsetShadowNodeLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskMaskNode, GskMaskNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskOutsetShadowNode, GskOutsetShadowNodeLeaf, GskRadialGradientNode, GskRadialGradientNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRepeatingLinearGradientNode, GskRepeatingLinearGradientNodeLeaf, GskRepeatingRadialGradientNode, GskRepeatingRadialGradientNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskStrokeNode, GskStrokeNodeLeaf, GskSubsurfaceNode, GskSubsurfaceNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTextureScaleNode, GskTextureScaleNodeLeaf, GskTransformNode, GskTransformNodeLeaf, GskVulkanRenderer, GskVulkanRendererLeaf
 end))
 end

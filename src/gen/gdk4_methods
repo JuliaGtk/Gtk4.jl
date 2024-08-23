@@ -124,6 +124,38 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_content_formats_builder_unref", libgtk4), Nothing, (Ptr{GdkContentFormatsBuilder},), instance)
         nothing
     end
+    function contains(instance::GdkDmabufFormats, _fourcc::Integer, _modifier::Integer)
+        ret = ccall(("gdk_dmabuf_formats_contains", libgtk4), Cint, (Ptr{GdkDmabufFormats}, UInt32, UInt64), instance, _fourcc, _modifier)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function equal(instance::GdkDmabufFormats, _formats2::Maybe(GdkDmabufFormats))
+        _formats2_maybe = nothing_to_null(_formats2)
+        ret = ccall(("gdk_dmabuf_formats_equal", libgtk4), Cint, (Ptr{GdkDmabufFormats}, Ptr{GdkDmabufFormats}), instance, _formats2_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_format(instance::GdkDmabufFormats, _idx::Integer)
+        m_fourcc = Ref{UInt32}()
+        m_modifier = Ref{UInt64}()
+        ret = ccall(("gdk_dmabuf_formats_get_format", libgtk4), Nothing, (Ptr{GdkDmabufFormats}, UInt64, Ptr{UInt32}, Ptr{UInt64}), instance, _idx, m_fourcc, m_modifier)
+        _fourcc = m_fourcc[]
+        _modifier = m_modifier[]
+        (_fourcc, _modifier)
+    end
+    function get_n_formats(instance::GdkDmabufFormats)
+        ret = ccall(("gdk_dmabuf_formats_get_n_formats", libgtk4), UInt64, (Ptr{GdkDmabufFormats},), instance)
+        ret
+    end
+    function ref(instance::GdkDmabufFormats)
+        ret = ccall(("gdk_dmabuf_formats_ref", libgtk4), Ptr{GdkDmabufFormats}, (Ptr{GdkDmabufFormats},), instance)
+        ret2 = convert(GdkDmabufFormats, ret, true)
+        ret2
+    end
+    function unref(instance::GdkDmabufFormats)
+        ret = ccall(("gdk_dmabuf_formats_unref", libgtk4), Nothing, (Ptr{GdkDmabufFormats},), instance)
+        nothing
+    end
     function set_size(instance::GdkDragSurfaceSize, _width::Integer, _height::Integer)
         ret = ccall(("gdk_drag_surface_size_set_size", libgtk4), Nothing, (Ptr{GdkDragSurfaceSize}, Int32, Int32), instance, _width, _height)
         nothing
@@ -974,6 +1006,11 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GdkSeat, ret, false)
         ret2
     end
+    function get_dmabuf_formats(instance::GdkDisplay)
+        ret = ccall(("gdk_display_get_dmabuf_formats", libgtk4), Ptr{GdkDmabufFormats}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkDmabufFormats, ret, false)
+        ret2
+    end
     function get_monitor_at_surface(instance::GdkDisplay, _surface::GdkSurface)
         ret = ccall(("gdk_display_get_monitor_at_surface", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), instance, _surface)
         ret2 = convert_if_not_null(GdkMonitor, ret, false)
@@ -1069,6 +1106,11 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function supports_shadow_width(instance::GdkDisplay)
+        ret = ccall(("gdk_display_supports_shadow_width", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function sync(instance::GdkDisplay)
         ret = ccall(("gdk_display_sync", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
@@ -1110,6 +1152,161 @@ $(Expr(:toplevel, quote
     end
     function set_default_display(instance::GdkDisplayManager, _display::GdkDisplay)
         ret = ccall(("gdk_display_manager_set_default_display", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _display)
+        nothing
+    end
+    function compute_concrete_size(instance::GdkDmabufTexture, _specified_width::Real, _specified_height::Real, _default_width::Real, _default_height::Real)
+        compute_concrete_size(GdkPaintable(instance), _specified_width, _specified_height, _default_width, _default_height)
+    end
+    function get_current_image(instance::GdkDmabufTexture)
+        get_current_image(GdkPaintable(instance))
+    end
+    function get_flags(instance::GdkDmabufTexture)
+        get_flags(GdkPaintable(instance))
+    end
+    function get_intrinsic_aspect_ratio(instance::GdkDmabufTexture)
+        get_intrinsic_aspect_ratio(GdkPaintable(instance))
+    end
+    function get_intrinsic_height(instance::GdkDmabufTexture)
+        get_intrinsic_height(GdkPaintable(instance))
+    end
+    function get_intrinsic_width(instance::GdkDmabufTexture)
+        get_intrinsic_width(GdkPaintable(instance))
+    end
+    function invalidate_contents(instance::GdkDmabufTexture)
+        invalidate_contents(GdkPaintable(instance))
+    end
+    function invalidate_size(instance::GdkDmabufTexture)
+        invalidate_size(GdkPaintable(instance))
+    end
+    function snapshot(instance::GdkDmabufTexture, _snapshot::GdkSnapshot, _width::Real, _height::Real)
+        snapshot(GdkPaintable(instance), _snapshot, _width, _height)
+    end
+    function equal(instance::GdkDmabufTexture, _icon2::Maybe(GIcon))
+        equal(GIcon(instance), _icon2)
+    end
+    function hash(instance::GdkDmabufTexture)
+        hash(GIcon(instance))
+    end
+    function serialize(instance::GdkDmabufTexture)
+        serialize(GIcon(instance))
+    end
+    function to_string(instance::GdkDmabufTexture)
+        to_string(GIcon(instance))
+    end
+    function load(instance::GdkDmabufTexture, _size::Integer, _cancellable::Maybe(GCancellable))
+        load(GLoadableIcon(instance), _size, _cancellable)
+    end
+    function load_async(instance::GdkDmabufTexture, _size::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        load_async(GLoadableIcon(instance), _size, _cancellable, _callback)
+    end
+    function load_finish(instance::GdkDmabufTexture, _res::GAsyncResult)
+        load_finish(GLoadableIcon(instance), _res)
+    end
+    function DmabufTextureBuilder_new()
+        ret = ccall(("gdk_dmabuf_texture_builder_new", libgtk4), Ptr{GObject}, ())
+        ret2 = GdkDmabufTextureBuilderLeaf(ret, true)
+        ret2
+    end
+    function get_display(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_display", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkDisplay, ret, false)
+        ret2
+    end
+    function get_fd(instance::GdkDmabufTextureBuilder, _plane::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_fd", libgtk4), Int32, (Ptr{GObject}, UInt32), instance, _plane)
+        ret
+    end
+    function get_fourcc(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_fourcc", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_height(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_height", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_modifier(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_modifier", libgtk4), UInt64, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_n_planes(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_n_planes", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_offset(instance::GdkDmabufTextureBuilder, _plane::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_offset", libgtk4), UInt32, (Ptr{GObject}, UInt32), instance, _plane)
+        ret
+    end
+    function get_premultiplied(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_premultiplied", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_stride(instance::GdkDmabufTextureBuilder, _plane::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_stride", libgtk4), UInt32, (Ptr{GObject}, UInt32), instance, _plane)
+        ret
+    end
+    function get_update_region(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_update_region", libgtk4), Ptr{cairoRegion}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(cairoRegion, ret, false)
+        ret2
+    end
+    function get_update_texture(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_update_texture", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkTexture, ret, false)
+        ret2
+    end
+    function get_width(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_width", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function set_display(instance::GdkDmabufTextureBuilder, _display::GdkDisplay)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_display", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _display)
+        nothing
+    end
+    function set_fd(instance::GdkDmabufTextureBuilder, _plane::Integer, _fd::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_fd", libgtk4), Nothing, (Ptr{GObject}, UInt32, Int32), instance, _plane, _fd)
+        nothing
+    end
+    function set_fourcc(instance::GdkDmabufTextureBuilder, _fourcc::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_fourcc", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _fourcc)
+        nothing
+    end
+    function set_height(instance::GdkDmabufTextureBuilder, _height::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_height", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _height)
+        nothing
+    end
+    function set_modifier(instance::GdkDmabufTextureBuilder, _modifier::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_modifier", libgtk4), Nothing, (Ptr{GObject}, UInt64), instance, _modifier)
+        nothing
+    end
+    function set_n_planes(instance::GdkDmabufTextureBuilder, _n_planes::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_n_planes", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _n_planes)
+        nothing
+    end
+    function set_offset(instance::GdkDmabufTextureBuilder, _plane::Integer, _offset::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_offset", libgtk4), Nothing, (Ptr{GObject}, UInt32, UInt32), instance, _plane, _offset)
+        nothing
+    end
+    function set_premultiplied(instance::GdkDmabufTextureBuilder, _premultiplied::Bool)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_premultiplied", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _premultiplied)
+        nothing
+    end
+    function set_stride(instance::GdkDmabufTextureBuilder, _plane::Integer, _stride::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_stride", libgtk4), Nothing, (Ptr{GObject}, UInt32, UInt32), instance, _plane, _stride)
+        nothing
+    end
+    function set_update_region(instance::GdkDmabufTextureBuilder, _region::Maybe(cairoRegion))
+        _region_maybe = nothing_to_null(_region)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_update_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region_maybe)
+        nothing
+    end
+    function set_update_texture(instance::GdkDmabufTextureBuilder, _texture::Maybe(GdkTexture))
+        _texture_maybe = nothing_to_null(_texture)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_update_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _texture_maybe)
+        nothing
+    end
+    function set_width(instance::GdkDmabufTextureBuilder, _width::Integer)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_width", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _width)
         nothing
     end
     function drop_done(instance::GdkDrag, _success::Bool)
@@ -1241,7 +1438,7 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert_if_not_null(GInputStream, ret, true)
         _out_mime_type = m_out_mime_type[]
-        _out_mime_type = string_or_nothing(_out_mime_type, true)
+        _out_mime_type = string_or_nothing(_out_mime_type, false)
         (ret2, _out_mime_type)
     end
     function read_value_async(instance::GdkDrop, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
@@ -1826,6 +2023,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_monitor_get_refresh_rate", libgtk4), Int32, (Ptr{GObject},), instance)
         ret
     end
+    function get_scale(instance::GdkMonitor)
+        ret = ccall(("gdk_monitor_get_scale", libgtk4), Float64, (Ptr{GObject},), instance)
+        ret
+    end
     function get_scale_factor(instance::GdkMonitor)
         ret = ccall(("gdk_monitor_get_scale_factor", libgtk4), Int32, (Ptr{GObject},), instance)
         ret
@@ -1941,13 +2142,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_surface_create_gl_context", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
         check_err(err)
         ret2 = convert(GdkGLContext, ret, true)
-        ret2
-    end
-    function create_vulkan_context(instance::GdkSurface)
-        err = err_buf()
-        ret = ccall(("gdk_surface_create_vulkan_context", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
-        check_err(err)
-        ret2 = convert(GdkVulkanContext, ret, true)
         ret2
     end
     function destroy(instance::GdkSurface)
