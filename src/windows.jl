@@ -114,6 +114,15 @@ Related GTK function: [`gtk_window_is_fullscreen`()]($(gtkdoc_method_url("gtk4",
 isfullscreen(win::GtkWindow) = G_.is_fullscreen(win)
 
 """
+    issuspended(win::GtkWindow)
+
+Get whether `win` is in a state where it's invisible to the user.
+
+Related GTK function: [`gtk_window_is_suspended`()]($(gtkdoc_method_url("gtk4","Window","is_suspended")))
+"""
+issuspended(win::GtkWindow) = G_.is_suspended(win)
+
+"""
     maximize(win::GtkWindow)
 
 Request that the window `win` be maximized.
@@ -139,9 +148,7 @@ unmaximize(win::GtkWindow) = G_.unmaximize(win)
     present(win::GtkWindow)
     present(win::GtkWindow, timestamp)
 
-Presents a window to the user. Usually means move it to the front. According to
-the GTK docs, this function "should not be used" without including a timestamp
-for the user's request.
+Presents a window to the user. Usually means move it to the front.
 
 Related GTK function: [`gtk_window_present`()]($(gtkdoc_method_url("gtk4","Window","present")))
 Related GTK function: [`gtk_window_present_with_time`()]($(gtkdoc_method_url("gtk4","Window","present_with_time")))

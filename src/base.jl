@@ -83,10 +83,10 @@ end
 
 Flag `w` to be displayed and return `w`.
 
-Related GTK function: [`gtk_widget_show`()]($(gtkdoc_method_url("gtk4","Widget","show")))
+Related GTK function: [`gtk_widget_set_visible`()]($(gtkdoc_method_url("gtk4","Widget","set_visible")))
 """
 function show(w::GtkWidget)
-    G_.show(w)
+    G_.set_visible(w, true)
     w
 end
 
@@ -95,10 +95,10 @@ end
 
 Flag `w` to be hidden and return `w`. This is the opposite of `show`.
 
-Related GTK function: [`gtk_widget_hide`()]($(gtkdoc_method_url("gtk4","Widget","hide")))
+Related GTK function: [`gtk_widget_set_visible`()]($(gtkdoc_method_url("gtk4","Widget","set_visible")))
 """
 function hide(w::GtkWidget)
-    G_.hide(w)
+    G_.set_visible(w, false)
     w
 end
 
