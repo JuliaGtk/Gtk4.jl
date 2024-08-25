@@ -135,7 +135,20 @@ GObject properties.
 """
 GtkGridView(model=nothing; kwargs...) = GtkGridView(model, nothing; kwargs...)
 
+function scroll_to(lv::Union{GtkListView,GtkGridView}, pos, flags = ListScrollFlags_NONE)
+    G_.scroll_to(lv, pos - 1, flags, nothing)
+end
+
 GtkColumnView(; kwargs...) = GtkColumnView(nothing; kwargs...)
+
+function scroll_to(cv::GtkColumnView, pos, flags::ListScrollFlags = ListScrollFlags_NONE)
+    G_.scroll_to(lv, pos - 1, nothing, flags, nothing)
+end
+
+function scroll_to(cv::GtkColumnView, pos, column::GtkColumnViewColumn, flags::ListScrollFlags = ListScrollFlags_NONE)
+    G_.scroll_to(lv, pos - 1, column, flags, nothing)
+end
+
 GtkColumnViewColumn(title=""; kwargs...) = GtkColumnViewColumn(title, nothing; kwargs...)
 push!(cv::GtkColumnView, cvc::GtkColumnViewColumn) = (G_.append_column(cv,cvc); cv)
 

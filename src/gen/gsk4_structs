@@ -123,6 +123,78 @@ $(Expr(:toplevel, quote
         end
         const GskPathPointLike = GskPathPoint
     end
+    mutable struct GskPath <: GBoxed
+        handle::Ptr{GskPath}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskPath) = begin
+                    ccall(("gsk_path_get_type", libgtk4), GType, ())
+                end
+            function GskPath(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskPath)
+        end
+    end
+    mutable struct GskPathBuilder <: GBoxed
+        handle::Ptr{GskPathBuilder}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskPathBuilder) = begin
+                    ccall(("gsk_path_builder_get_type", libgtk4), GType, ())
+                end
+            function GskPathBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskPathBuilder)
+        end
+    end
+    mutable struct GskPathMeasure <: GBoxed
+        handle::Ptr{GskPathMeasure}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskPathMeasure) = begin
+                    ccall(("gsk_path_measure_get_type", libgtk4), GType, ())
+                end
+            function GskPathMeasure(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskPathMeasure)
+        end
+    end
+    mutable struct GskPathPoint <: GBoxed
+        handle::Ptr{GskPathPoint}
+        begin
+            (GLib.g_type(::Type{T}) where T <: GskPathPoint) = begin
+                    ccall(("gsk_path_point_get_type", libgtk4), GType, ())
+                end
+            function GskPathPoint(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                x = new(ref)
+                if own
+                    finalizer(x) do x
+                        GLib.delboxed(x)
+                    end
+                end
+                x
+            end
+            push!(gboxed_types, GskPathPoint)
+        end
+    end
     begin
         mutable struct GskRoundedRect
             handle::Ptr{GskRoundedRect}

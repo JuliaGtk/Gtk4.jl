@@ -39,6 +39,8 @@ eval(include("gen/gsk4_structs"))
 eval(include("gen/gtk4_consts"))
 eval(include("gen/gtk4_structs"))
 
+const ModifierType_NONE = ModifierType_NO_MODIFIER_MASK
+
 module G_
 
 using GTK4_jll, Glib_jll
