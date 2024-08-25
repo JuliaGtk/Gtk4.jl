@@ -1,5 +1,22 @@
 quote
 $(Expr(:toplevel, quote
+    function AccessibleList_new_from_array(_accessibles)
+        _accessibles_arr = convert(Vector{Ptr{GObject}}, _accessibles)
+        _n_accessibles = length(_accessibles)
+        ret = ccall(("gtk_accessible_list_new_from_array", libgtk4), Ptr{GtkAccessibleList}, (Ptr{Ptr{GObject}}, UInt64), _accessibles_arr, _n_accessibles)
+        ret2 = convert(GtkAccessibleList, ret, true)
+        ret2
+    end
+    function AccessibleList_new_from_list(_list::GLib.LList{GLib._GList{Ptr{GObject}}})
+        ret = ccall(("gtk_accessible_list_new_from_list", libgtk4), Ptr{GtkAccessibleList}, (Ptr{GLib._GList{Ptr{GObject}}},), _list)
+        ret2 = convert(GtkAccessibleList, ret, true)
+        ret2
+    end
+    function get_objects(instance::GtkAccessibleList)
+        ret = ccall(("gtk_accessible_list_get_objects", libgtk4), Ptr{GLib._GList{Ptr{GObject}}}, (Ptr{GtkAccessibleList},), instance)
+        ret2 = GLib.GList(ret, false)
+        ret2
+    end
     function Border_new()
         ret = ccall(("gtk_border_new", libgtk4), Ptr{_GtkBorder}, ())
         ret2 = convert(GtkBorderLike, ret, true)
@@ -140,6 +157,25 @@ $(Expr(:toplevel, quote
     end
     function to_key_file(instance::GtkPaperSize, _key_file::GKeyFile, _group_name::Union{AbstractString, Symbol})
         ret = ccall(("gtk_paper_size_to_key_file", libgtk4), Nothing, (Ptr{GtkPaperSize}, Ptr{GKeyFile}, Cstring), instance, _key_file, _group_name)
+        nothing
+    end
+    function get_page_setup(instance::GtkPrintSetup)
+        ret = ccall(("gtk_print_setup_get_page_setup", libgtk4), Ptr{GObject}, (Ptr{GtkPrintSetup},), instance)
+        ret2 = convert_if_not_null(GtkPageSetup, ret, false)
+        ret2
+    end
+    function get_print_settings(instance::GtkPrintSetup)
+        ret = ccall(("gtk_print_setup_get_print_settings", libgtk4), Ptr{GObject}, (Ptr{GtkPrintSetup},), instance)
+        ret2 = convert_if_not_null(GtkPrintSettings, ret, false)
+        ret2
+    end
+    function ref(instance::GtkPrintSetup)
+        ret = ccall(("gtk_print_setup_ref", libgtk4), Ptr{GtkPrintSetup}, (Ptr{GtkPrintSetup},), instance)
+        ret2 = convert(GtkPrintSetup, ret, true)
+        ret2
+    end
+    function unref(instance::GtkPrintSetup)
+        ret = ccall(("gtk_print_setup_unref", libgtk4), Nothing, (Ptr{GtkPrintSetup},), instance)
         nothing
     end
     function create_app_info(instance::GtkRecentInfo, _app_name::Maybe(Union{AbstractString, Symbol}))
@@ -1081,6 +1117,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_about_dialog_set_wrap_license", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _wrap_license)
         nothing
     end
+    function announce(instance::GtkAboutDialog, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkAboutDialog)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -1188,6 +1227,9 @@ $(Expr(:toplevel, quote
     function set_revealed(instance::GtkActionBar, _revealed::Bool)
         ret = ccall(("gtk_action_bar_set_revealed", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _revealed)
         nothing
+    end
+    function announce(instance::GtkActionBar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkActionBar)
         get_accessible_parent(GtkAccessible(instance))
@@ -1472,6 +1514,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_app_chooser_button_set_show_dialog_item", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
+    function announce(instance::GtkAppChooserButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkAppChooserButton)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -1554,6 +1599,9 @@ $(Expr(:toplevel, quote
     function set_heading(instance::GtkAppChooserDialog, _heading::Union{AbstractString, Symbol})
         ret = ccall(("gtk_app_chooser_dialog_set_heading", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _heading)
         nothing
+    end
+    function announce(instance::GtkAppChooserDialog, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkAppChooserDialog)
         get_accessible_parent(GtkAccessible(instance))
@@ -1694,6 +1742,9 @@ $(Expr(:toplevel, quote
     function set_show_recommended(instance::GtkAppChooserWidget, _setting::Bool)
         ret = ccall(("gtk_app_chooser_widget_set_show_recommended", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
+    end
+    function announce(instance::GtkAppChooserWidget, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkAppChooserWidget)
         get_accessible_parent(GtkAccessible(instance))
@@ -1982,6 +2033,9 @@ $(Expr(:toplevel, quote
     function remove_action_entries(instance::GtkApplicationWindow, _entries)
         remove_action_entries(GActionMap(instance), _entries)
     end
+    function announce(instance::GtkApplicationWindow, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkApplicationWindow)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -2101,6 +2155,9 @@ $(Expr(:toplevel, quote
     function set_yalign(instance::GtkAspectFrame, _yalign::Real)
         ret = ccall(("gtk_aspect_frame_set_yalign", libgtk4), Nothing, (Ptr{GObject}, Float32), instance, _yalign)
         nothing
+    end
+    function announce(instance::GtkAspectFrame, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkAspectFrame)
         get_accessible_parent(GtkAccessible(instance))
@@ -2251,6 +2308,9 @@ $(Expr(:toplevel, quote
     function update_buttons_state(instance::GtkAssistant)
         ret = ccall(("gtk_assistant_update_buttons_state", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
+    end
+    function announce(instance::GtkAssistant, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkAssistant)
         get_accessible_parent(GtkAccessible(instance))
@@ -2466,6 +2526,9 @@ $(Expr(:toplevel, quote
     function set_spacing(instance::GtkBox, _spacing::Integer)
         ret = ccall(("gtk_box_set_spacing", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _spacing)
         nothing
+    end
+    function announce(instance::GtkBox, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkBox)
         get_accessible_parent(GtkAccessible(instance))
@@ -2811,6 +2874,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_button_set_use_underline", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_underline)
         nothing
     end
+    function announce(instance::GtkButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkButton)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -2888,10 +2954,18 @@ $(Expr(:toplevel, quote
         ret2 = convert(GDateTime, ret, true)
         ret2
     end
+    function get_day(instance::GtkCalendar)
+        ret = ccall(("gtk_calendar_get_day", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
     function get_day_is_marked(instance::GtkCalendar, _day::Integer)
         ret = ccall(("gtk_calendar_get_day_is_marked", libgtk4), Cint, (Ptr{GObject}, UInt32), instance, _day)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function get_month(instance::GtkCalendar)
+        ret = ccall(("gtk_calendar_get_month", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
     end
     function get_show_day_names(instance::GtkCalendar)
         ret = ccall(("gtk_calendar_get_show_day_names", libgtk4), Cint, (Ptr{GObject},), instance)
@@ -2908,12 +2982,24 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function get_year(instance::GtkCalendar)
+        ret = ccall(("gtk_calendar_get_year", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
     function mark_day(instance::GtkCalendar, _day::Integer)
         ret = ccall(("gtk_calendar_mark_day", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _day)
         nothing
     end
     function select_day(instance::GtkCalendar, _date::GDateTime)
         ret = ccall(("gtk_calendar_select_day", libgtk4), Nothing, (Ptr{GObject}, Ptr{GDateTime}), instance, _date)
+        nothing
+    end
+    function set_day(instance::GtkCalendar, _day::Integer)
+        ret = ccall(("gtk_calendar_set_day", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _day)
+        nothing
+    end
+    function set_month(instance::GtkCalendar, _month::Integer)
+        ret = ccall(("gtk_calendar_set_month", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _month)
         nothing
     end
     function set_show_day_names(instance::GtkCalendar, _value::Bool)
@@ -2928,9 +3014,16 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_calendar_set_show_week_numbers", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _value)
         nothing
     end
+    function set_year(instance::GtkCalendar, _year::Integer)
+        ret = ccall(("gtk_calendar_set_year", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _year)
+        nothing
+    end
     function unmark_day(instance::GtkCalendar, _day::Integer)
         ret = ccall(("gtk_calendar_unmark_day", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _day)
         nothing
+    end
+    function announce(instance::GtkCalendar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkCalendar)
         get_accessible_parent(GtkAccessible(instance))
@@ -3466,6 +3559,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_cell_view_set_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model_maybe)
         nothing
     end
+    function announce(instance::GtkCellView, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkCellView)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -3599,6 +3695,9 @@ $(Expr(:toplevel, quote
         _child_maybe = nothing_to_null(_child)
         ret = ccall(("gtk_center_box_set_start_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child_maybe)
         nothing
+    end
+    function announce(instance::GtkCenterBox, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkCenterBox)
         get_accessible_parent(GtkAccessible(instance))
@@ -3785,6 +3884,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_check_button_set_use_underline", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
+    function announce(instance::GtkCheckButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkCheckButton)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -3876,6 +3978,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_color_button_set_title", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _title)
         nothing
     end
+    function announce(instance::GtkColorButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkColorButton)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -3945,6 +4050,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_color_chooser_dialog_new", libgtk4), Ptr{GObject}, (Cstring, Ptr{GObject}), _title_maybe, _parent_maybe)
         ret2 = GtkColorChooserDialogLeaf(ret, false)
         ret2
+    end
+    function announce(instance::GtkColorChooserDialog, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkColorChooserDialog)
         get_accessible_parent(GtkAccessible(instance))
@@ -4037,6 +4145,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_color_chooser_widget_new", libgtk4), Ptr{GObject}, ())
         ret2 = GtkColorChooserWidgetLeaf(ret, false)
         ret2
+    end
+    function announce(instance::GtkColorChooserWidget, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkColorChooserWidget)
         get_accessible_parent(GtkAccessible(instance))
@@ -4182,6 +4293,9 @@ $(Expr(:toplevel, quote
     function set_rgba(instance::GtkColorDialogButton, _color::GdkRGBALike)
         ret = ccall(("gtk_color_dialog_button_set_rgba", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRGBA}), instance, _color)
         nothing
+    end
+    function announce(instance::GtkColorDialogButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkColorDialogButton)
         get_accessible_parent(GtkAccessible(instance))
@@ -4361,6 +4475,9 @@ $(Expr(:toplevel, quote
         _column_maybe = nothing_to_null(_column)
         ret = ccall(("gtk_column_view_sort_by_column", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32), instance, _column_maybe, _direction)
         nothing
+    end
+    function announce(instance::GtkColumnView, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkColumnView)
         get_accessible_parent(GtkAccessible(instance))
@@ -4775,6 +4892,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_combo_box_set_popup_fixed_width", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _fixed)
         nothing
     end
+    function announce(instance::GtkComboBox, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkComboBox)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -4908,6 +5028,9 @@ $(Expr(:toplevel, quote
     function remove_all(instance::GtkComboBoxText)
         ret = ccall(("gtk_combo_box_text_remove_all", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
+    end
+    function announce(instance::GtkComboBoxText, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkComboBoxText)
         get_accessible_parent(GtkAccessible(instance))
@@ -5266,6 +5389,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_dialog_set_response_sensitive", libgtk4), Nothing, (Ptr{GObject}, Int32, Cint), instance, _response_id, _setting)
         nothing
     end
+    function announce(instance::GtkDialog, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkDialog)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -5427,6 +5553,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_drag_icon_set_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child_maybe)
         nothing
     end
+    function announce(instance::GtkDragIcon, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkDragIcon)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -5557,6 +5686,9 @@ $(Expr(:toplevel, quote
     function set_content_width(instance::GtkDrawingArea, _width::Integer)
         ret = ccall(("gtk_drawing_area_set_content_width", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _width)
         nothing
+    end
+    function announce(instance::GtkDrawingArea, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkDrawingArea)
         get_accessible_parent(GtkAccessible(instance))
@@ -5733,6 +5865,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_drop_down_set_show_arrow", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _show_arrow)
         nothing
     end
+    function announce(instance::GtkDropDown, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkDropDown)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -5884,6 +6019,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_editable_label_stop_editing", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _commit)
         nothing
     end
+    function announce(instance::GtkEditableLabel, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkEditableLabel)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -6008,6 +6146,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_emoji_chooser_new", libgtk4), Ptr{GObject}, ())
         ret2 = GtkEmojiChooserLeaf(ret, false)
         ret2
+    end
+    function announce(instance::GtkEmojiChooser, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkEmojiChooser)
         get_accessible_parent(GtkAccessible(instance))
@@ -6345,6 +6486,9 @@ $(Expr(:toplevel, quote
     function unset_invisible_char(instance::GtkEntry)
         ret = ccall(("gtk_entry_unset_invisible_char", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
+    end
+    function announce(instance::GtkEntry, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkEntry)
         get_accessible_parent(GtkAccessible(instance))
@@ -6882,6 +7026,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_expander_set_use_underline", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_underline)
         nothing
     end
+    function announce(instance::GtkExpander, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkExpander)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -6959,6 +7106,9 @@ $(Expr(:toplevel, quote
     function unref(instance::GtkExpression)
         ret = ccall(("gtk_expression_unref", libgtk4), Nothing, (Ptr{GtkExpression},), instance)
         nothing
+    end
+    function announce(instance::GtkFileChooserDialog, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkFileChooserDialog)
         get_accessible_parent(GtkAccessible(instance))
@@ -7215,6 +7365,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_file_chooser_widget_new", libgtk4), Ptr{GObject}, (UInt32,), _action)
         ret2 = GtkFileChooserWidgetLeaf(ret, false)
         ret2
+    end
+    function announce(instance::GtkFileChooserWidget, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkFileChooserWidget)
         get_accessible_parent(GtkAccessible(instance))
@@ -7591,6 +7744,11 @@ $(Expr(:toplevel, quote
         ret2 = GLib.find_leaf_type_if_not_null(ret, false)
         ret2
     end
+    function get_writable(instance::GtkFileLauncher)
+        ret = ccall(("gtk_file_launcher_get_writable", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function launch(instance::GtkFileLauncher, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
         _parent_maybe = nothing_to_null(_parent)
         _cancellable_maybe = nothing_to_null(_cancellable)
@@ -7638,6 +7796,10 @@ $(Expr(:toplevel, quote
     function set_file(instance::GtkFileLauncher, _file::Maybe(GFile))
         _file_maybe = nothing_to_null(_file)
         ret = ccall(("gtk_file_launcher_set_file", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _file_maybe)
+        nothing
+    end
+    function set_writable(instance::GtkFileLauncher, _writable::Bool)
+        ret = ccall(("gtk_file_launcher_set_writable", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _writable)
         nothing
     end
     function changed(instance::GtkFilter, _change)
@@ -7756,6 +7918,9 @@ $(Expr(:toplevel, quote
         _transform_maybe = nothing_to_null(_transform)
         ret = ccall(("gtk_fixed_set_child_transform", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GskTransform}), instance, _widget, _transform_maybe)
         nothing
+    end
+    function announce(instance::GtkFixed, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkFixed)
         get_accessible_parent(GtkAccessible(instance))
@@ -8005,6 +8170,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_flow_box_unselect_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child)
         nothing
     end
+    function announce(instance::GtkFlowBox, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkFlowBox)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -8086,6 +8254,9 @@ $(Expr(:toplevel, quote
         _child_maybe = nothing_to_null(_child)
         ret = ccall(("gtk_flow_box_child_set_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child_maybe)
         nothing
+    end
+    function announce(instance::GtkFlowBoxChild, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkFlowBoxChild)
         get_accessible_parent(GtkAccessible(instance))
@@ -8180,6 +8351,9 @@ $(Expr(:toplevel, quote
     function set_use_size(instance::GtkFontButton, _use_size::Bool)
         ret = ccall(("gtk_font_button_set_use_size", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_size)
         nothing
+    end
+    function announce(instance::GtkFontButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkFontButton)
         get_accessible_parent(GtkAccessible(instance))
@@ -8292,6 +8466,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_font_chooser_dialog_new", libgtk4), Ptr{GObject}, (Cstring, Ptr{GObject}), _title_maybe, _parent_maybe)
         ret2 = GtkFontChooserDialogLeaf(ret, false)
         ret2
+    end
+    function announce(instance::GtkFontChooserDialog, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkFontChooserDialog)
         get_accessible_parent(GtkAccessible(instance))
@@ -8426,6 +8603,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_font_chooser_widget_new", libgtk4), Ptr{GObject}, ())
         ret2 = GtkFontChooserWidgetLeaf(ret, false)
         ret2
+    end
+    function announce(instance::GtkFontChooserWidget, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkFontChooserWidget)
         get_accessible_parent(GtkAccessible(instance))
@@ -8753,6 +8933,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_font_dialog_button_set_use_size", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_size)
         nothing
     end
+    function announce(instance::GtkFontDialogButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkFontDialogButton)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -8844,6 +9027,9 @@ $(Expr(:toplevel, quote
         _label_widget_maybe = nothing_to_null(_label_widget)
         ret = ccall(("gtk_frame_set_label_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _label_widget_maybe)
         nothing
+    end
+    function announce(instance::GtkFrame, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkFrame)
         get_accessible_parent(GtkAccessible(instance))
@@ -8985,6 +9171,9 @@ $(Expr(:toplevel, quote
     function set_use_es(instance::GtkGLArea, _use_es::Bool)
         ret = ccall(("gtk_gl_area_set_use_es", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_es)
         nothing
+    end
+    function announce(instance::GtkGLArea, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkGLArea)
         get_accessible_parent(GtkAccessible(instance))
@@ -9278,6 +9467,82 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_gesture_zoom_get_scale_delta", libgtk4), Float64, (Ptr{GObject},), instance)
         ret
     end
+    function GraphicsOffload_new(_child::Maybe(GtkWidget))
+        _child_maybe = nothing_to_null(_child)
+        ret = ccall(("gtk_graphics_offload_new", libgtk4), Ptr{GObject}, (Ptr{GObject},), _child_maybe)
+        ret2 = GtkGraphicsOffloadLeaf(ret, false)
+        ret2
+    end
+    function get_child(instance::GtkGraphicsOffload)
+        ret = ccall(("gtk_graphics_offload_get_child", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GtkWidget, ret, false)
+        ret2
+    end
+    function get_enabled(instance::GtkGraphicsOffload)
+        ret = ccall(("gtk_graphics_offload_get_enabled", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = GraphicsOffloadEnabled(ret)
+        ret2
+    end
+    function set_child(instance::GtkGraphicsOffload, _child::Maybe(GtkWidget))
+        _child_maybe = nothing_to_null(_child)
+        ret = ccall(("gtk_graphics_offload_set_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child_maybe)
+        nothing
+    end
+    function set_enabled(instance::GtkGraphicsOffload, _enabled)
+        ret = ccall(("gtk_graphics_offload_set_enabled", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _enabled)
+        nothing
+    end
+    function announce(instance::GtkGraphicsOffload, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
+    function get_accessible_parent(instance::GtkGraphicsOffload)
+        get_accessible_parent(GtkAccessible(instance))
+    end
+    function get_accessible_role(instance::GtkGraphicsOffload)
+        get_accessible_role(GtkAccessible(instance))
+    end
+    function get_at_context(instance::GtkGraphicsOffload)
+        get_at_context(GtkAccessible(instance))
+    end
+    function get_bounds(instance::GtkGraphicsOffload)
+        get_bounds(GtkAccessible(instance))
+    end
+    function get_first_accessible_child(instance::GtkGraphicsOffload)
+        get_first_accessible_child(GtkAccessible(instance))
+    end
+    function get_next_accessible_sibling(instance::GtkGraphicsOffload)
+        get_next_accessible_sibling(GtkAccessible(instance))
+    end
+    function get_platform_state(instance::GtkGraphicsOffload, _state)
+        get_platform_state(GtkAccessible(instance), _state)
+    end
+    function reset_property(instance::GtkGraphicsOffload, _property)
+        reset_property(GtkAccessible(instance), _property)
+    end
+    function reset_relation(instance::GtkGraphicsOffload, _relation)
+        reset_relation(GtkAccessible(instance), _relation)
+    end
+    function reset_state(instance::GtkGraphicsOffload, _state)
+        reset_state(GtkAccessible(instance), _state)
+    end
+    function set_accessible_parent(instance::GtkGraphicsOffload, _parent::Maybe(GtkAccessible), _next_sibling::Maybe(GtkAccessible))
+        set_accessible_parent(GtkAccessible(instance), _parent, _next_sibling)
+    end
+    function update_next_accessible_sibling(instance::GtkGraphicsOffload, _new_sibling::Maybe(GtkAccessible))
+        update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_property(instance::GtkGraphicsOffload, _properties, _values)
+        update_property(GtkAccessible(instance), _properties, _values)
+    end
+    function update_relation(instance::GtkGraphicsOffload, _relations, _values)
+        update_relation(GtkAccessible(instance), _relations, _values)
+    end
+    function update_state(instance::GtkGraphicsOffload, _states, _values)
+        update_state(GtkAccessible(instance), _states, _values)
+    end
+    function get_buildable_id(instance::GtkGraphicsOffload)
+        get_buildable_id(GtkBuildable(instance))
+    end
     function Grid_new()
         ret = ccall(("gtk_grid_new", libgtk4), Ptr{GObject}, ())
         ret2 = GtkGridLeaf(ret, false)
@@ -9383,6 +9648,9 @@ $(Expr(:toplevel, quote
     function set_row_spacing(instance::GtkGrid, _spacing::Integer)
         ret = ccall(("gtk_grid_set_row_spacing", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _spacing)
         nothing
+    end
+    function announce(instance::GtkGrid, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkGrid)
         get_accessible_parent(GtkAccessible(instance))
@@ -9611,6 +9879,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_grid_view_set_tab_behavior", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _tab_behavior)
         nothing
     end
+    function announce(instance::GtkGridView, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkGridView)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -9738,6 +10009,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_header_bar_set_title_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _title_widget_maybe)
         nothing
     end
+    function announce(instance::GtkHeaderBar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkHeaderBar)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -9785,6 +10059,12 @@ $(Expr(:toplevel, quote
     end
     function get_buildable_id(instance::GtkHeaderBar)
         get_buildable_id(GtkBuildable(instance))
+    end
+    function activate_osk(instance::GtkIMContext, _event::Maybe(GdkEvent))
+        _event_maybe = nothing_to_null(_event)
+        ret = ccall(("gtk_im_context_activate_osk", libgtk4), Cint, (Ptr{GObject}, Ptr{GdkEvent}), instance, _event_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
     end
     function delete_surrounding(instance::GtkIMContext, _offset::Integer, _n_chars::Integer)
         ret = ccall(("gtk_im_context_delete_surrounding", libgtk4), Cint, (Ptr{GObject}, Int32, Int32), instance, _offset, _n_chars)
@@ -10351,6 +10631,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_icon_view_unset_model_drag_source", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
+    function announce(instance::GtkIconView, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkIconView)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -10561,6 +10844,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_image_set_pixel_size", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _pixel_size)
         nothing
     end
+    function announce(instance::GtkImage, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkImage)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -10673,6 +10959,9 @@ $(Expr(:toplevel, quote
     function set_show_close_button(instance::GtkInfoBar, _setting::Bool)
         ret = ccall(("gtk_info_bar_set_show_close_button", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
+    end
+    function announce(instance::GtkInfoBar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkInfoBar)
         get_accessible_parent(GtkAccessible(instance))
@@ -10819,6 +11108,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_inscription_set_yalign", libgtk4), Nothing, (Ptr{GObject}, Float32), instance, _yalign)
         nothing
     end
+    function announce(instance::GtkInscription, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkInscription)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -10863,6 +11155,15 @@ $(Expr(:toplevel, quote
     end
     function update_state(instance::GtkInscription, _states, _values)
         update_state(GtkAccessible(instance), _states, _values)
+    end
+    function update_caret_position(instance::GtkInscription)
+        update_caret_position(GtkAccessibleText(instance))
+    end
+    function update_contents(instance::GtkInscription, _change, _start::Integer, _end::Integer)
+        update_contents(GtkAccessibleText(instance), _change, _start, _end)
+    end
+    function update_selection_bound(instance::GtkInscription)
+        update_selection_bound(GtkAccessibleText(instance))
     end
     function get_buildable_id(instance::GtkInscription)
         get_buildable_id(GtkBuildable(instance))
@@ -11119,6 +11420,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_label_set_yalign", libgtk4), Nothing, (Ptr{GObject}, Float32), instance, _yalign)
         nothing
     end
+    function announce(instance::GtkLabel, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkLabel)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -11163,6 +11467,15 @@ $(Expr(:toplevel, quote
     end
     function update_state(instance::GtkLabel, _states, _values)
         update_state(GtkAccessible(instance), _states, _values)
+    end
+    function update_caret_position(instance::GtkLabel)
+        update_caret_position(GtkAccessibleText(instance))
+    end
+    function update_contents(instance::GtkLabel, _change, _start::Integer, _end::Integer)
+        update_contents(GtkAccessibleText(instance), _change, _start, _end)
+    end
+    function update_selection_bound(instance::GtkLabel)
+        update_selection_bound(GtkAccessibleText(instance))
     end
     function get_buildable_id(instance::GtkLabel)
         get_buildable_id(GtkBuildable(instance))
@@ -11281,6 +11594,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_level_bar_set_value", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _value)
         nothing
     end
+    function announce(instance::GtkLevelBar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkLevelBar)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -11364,6 +11680,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_link_button_set_visited", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visited)
         nothing
     end
+    function announce(instance::GtkLinkButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkLinkButton)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -11426,6 +11745,9 @@ $(Expr(:toplevel, quote
     end
     function get_buildable_id(instance::GtkLinkButton)
         get_buildable_id(GtkBuildable(instance))
+    end
+    function announce(instance::GtkListBase, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkListBase)
         get_accessible_parent(GtkAccessible(instance))
@@ -11643,6 +11965,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_list_box_unselect_row", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _row)
         nothing
     end
+    function announce(instance::GtkListBox, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkListBox)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -11746,6 +12071,9 @@ $(Expr(:toplevel, quote
     function set_selectable(instance::GtkListBoxRow, _selectable::Bool)
         ret = ccall(("gtk_list_box_row_set_selectable", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _selectable)
         nothing
+    end
+    function announce(instance::GtkListBoxRow, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkListBoxRow)
         get_accessible_parent(GtkAccessible(instance))
@@ -12205,6 +12533,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_list_view_set_tab_behavior", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _tab_behavior)
         nothing
     end
+    function announce(instance::GtkListView, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkListView)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -12301,6 +12632,9 @@ $(Expr(:toplevel, quote
         _permission_maybe = nothing_to_null(_permission)
         ret = ccall(("gtk_lock_button_set_permission", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _permission_maybe)
         nothing
+    end
+    function announce(instance::GtkLockButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkLockButton)
         get_accessible_parent(GtkAccessible(instance))
@@ -12413,6 +12747,9 @@ $(Expr(:toplevel, quote
         _stream_maybe = nothing_to_null(_stream)
         ret = ccall(("gtk_media_controls_set_media_stream", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _stream_maybe)
         nothing
+    end
+    function announce(instance::GtkMediaControls, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkMediaControls)
         get_accessible_parent(GtkAccessible(instance))
@@ -12824,6 +13161,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_menu_button_set_use_underline", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _use_underline)
         nothing
     end
+    function announce(instance::GtkMenuButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkMenuButton)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -12880,6 +13220,9 @@ $(Expr(:toplevel, quote
     function set_markup(instance::GtkMessageDialog, _str::Union{AbstractString, Symbol})
         ret = ccall(("gtk_message_dialog_set_markup", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _str)
         nothing
+    end
+    function announce(instance::GtkMessageDialog, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkMessageDialog)
         get_accessible_parent(GtkAccessible(instance))
@@ -13455,6 +13798,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_notebook_set_tab_reorderable", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cint), instance, _child, _reorderable)
         nothing
     end
+    function announce(instance::GtkNotebook, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkNotebook)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -13583,6 +13929,9 @@ $(Expr(:toplevel, quote
     function set_measure_overlay(instance::GtkOverlay, _widget::GtkWidget, _measure::Bool)
         ret = ccall(("gtk_overlay_set_measure_overlay", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cint), instance, _widget, _measure)
         nothing
+    end
+    function announce(instance::GtkOverlay, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkOverlay)
         get_accessible_parent(GtkAccessible(instance))
@@ -13881,6 +14230,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_paned_set_wide_handle", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _wide)
         nothing
     end
+    function announce(instance::GtkPaned, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkPaned)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -13958,6 +14310,9 @@ $(Expr(:toplevel, quote
     function set_show_peek_icon(instance::GtkPasswordEntry, _show_peek_icon::Bool)
         ret = ccall(("gtk_password_entry_set_show_peek_icon", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _show_peek_icon)
         nothing
+    end
+    function announce(instance::GtkPasswordEntry, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkPasswordEntry)
         get_accessible_parent(GtkAccessible(instance))
@@ -14191,6 +14546,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_picture_set_resource", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _resource_path_maybe)
         nothing
     end
+    function announce(instance::GtkPicture, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkPicture)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -14340,6 +14698,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_popover_set_position", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _position)
         nothing
     end
+    function announce(instance::GtkPopover, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkPopover)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -14419,6 +14780,11 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function get_flags(instance::GtkPopoverMenu)
+        ret = ccall(("gtk_popover_menu_get_flags", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = PopoverMenuFlags(ret)
+        ret2
+    end
     function get_menu_model(instance::GtkPopoverMenu)
         ret = ccall(("gtk_popover_menu_get_menu_model", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GMenuModel, ret, false)
@@ -14429,10 +14795,17 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function set_flags(instance::GtkPopoverMenu, _flags)
+        ret = ccall(("gtk_popover_menu_set_flags", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _flags)
+        nothing
+    end
     function set_menu_model(instance::GtkPopoverMenu, _model::Maybe(GMenuModel))
         _model_maybe = nothing_to_null(_model)
         ret = ccall(("gtk_popover_menu_set_menu_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model_maybe)
         nothing
+    end
+    function announce(instance::GtkPopoverMenu, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkPopoverMenu)
         get_accessible_parent(GtkAccessible(instance))
@@ -14522,6 +14895,9 @@ $(Expr(:toplevel, quote
         _model_maybe = nothing_to_null(_model)
         ret = ccall(("gtk_popover_menu_bar_set_menu_model", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _model_maybe)
         nothing
+    end
+    function announce(instance::GtkPopoverMenuBar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkPopoverMenuBar)
         get_accessible_parent(GtkAccessible(instance))
@@ -14628,6 +15004,118 @@ $(Expr(:toplevel, quote
     function set_cairo_context(instance::GtkPrintContext, _cr::cairoContext, _dpi_x::Real, _dpi_y::Real)
         ret = ccall(("gtk_print_context_set_cairo_context", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoContext}, Float64, Float64), instance, _cr, _dpi_x, _dpi_y)
         nothing
+    end
+    function PrintDialog_new()
+        ret = ccall(("gtk_print_dialog_new", libgtk4), Ptr{GObject}, ())
+        ret2 = GtkPrintDialogLeaf(ret, true)
+        ret2
+    end
+    function get_accept_label(instance::GtkPrintDialog)
+        ret = ccall(("gtk_print_dialog_get_accept_label", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_modal(instance::GtkPrintDialog)
+        ret = ccall(("gtk_print_dialog_get_modal", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_page_setup(instance::GtkPrintDialog)
+        ret = ccall(("gtk_print_dialog_get_page_setup", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GtkPageSetup, ret, false)
+        ret2
+    end
+    function get_print_settings(instance::GtkPrintDialog)
+        ret = ccall(("gtk_print_dialog_get_print_settings", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GtkPrintSettings, ret, false)
+        ret2
+    end
+    function get_title(instance::GtkPrintDialog)
+        ret = ccall(("gtk_print_dialog_get_title", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function print(instance::GtkPrintDialog, _parent::Maybe(GtkWindow), _setup::Maybe(GtkPrintSetup), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _setup_maybe = nothing_to_null(_setup)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_print_dialog_print", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GtkPrintSetup}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _setup_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function print_file(instance::GtkPrintDialog, _parent::Maybe(GtkWindow), _setup::Maybe(GtkPrintSetup), _file::GFile, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _setup_maybe = nothing_to_null(_setup)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_print_dialog_print_file", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GtkPrintSetup}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _setup_maybe, _file, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function print_file_finish(instance::GtkPrintDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_print_dialog_print_file_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function print_finish(instance::GtkPrintDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_print_dialog_print_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GOutputStream, ret, true)
+        ret2
+    end
+    function set_accept_label(instance::GtkPrintDialog, _accept_label::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_print_dialog_set_accept_label", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _accept_label)
+        nothing
+    end
+    function set_modal(instance::GtkPrintDialog, _modal::Bool)
+        ret = ccall(("gtk_print_dialog_set_modal", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _modal)
+        nothing
+    end
+    function set_page_setup(instance::GtkPrintDialog, _page_setup::GtkPageSetup)
+        ret = ccall(("gtk_print_dialog_set_page_setup", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _page_setup)
+        nothing
+    end
+    function set_print_settings(instance::GtkPrintDialog, _print_settings::GtkPrintSettings)
+        ret = ccall(("gtk_print_dialog_set_print_settings", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _print_settings)
+        nothing
+    end
+    function set_title(instance::GtkPrintDialog, _title::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_print_dialog_set_title", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _title)
+        nothing
+    end
+    function setup(instance::GtkPrintDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_print_dialog_setup", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function setup_finish(instance::GtkPrintDialog, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gtk_print_dialog_setup_finish", libgtk4), Ptr{GtkPrintSetup}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GtkPrintSetup, ret, true)
+        ret2
     end
     function PrintOperation_new()
         ret = ccall(("gtk_print_operation_new", libgtk4), Ptr{GObject}, ())
@@ -14966,6 +15454,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_progress_bar_set_text", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _text_maybe)
         nothing
     end
+    function announce(instance::GtkProgressBar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkProgressBar)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -15142,6 +15633,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_range_set_value", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _value)
         nothing
     end
+    function announce(instance::GtkRange, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkRange)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -15241,6 +15735,9 @@ $(Expr(:toplevel, quote
     function set_transition_type(instance::GtkRevealer, _transition)
         ret = ccall(("gtk_revealer_set_transition_type", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _transition)
         nothing
+    end
+    function announce(instance::GtkRevealer, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkRevealer)
         get_accessible_parent(GtkAccessible(instance))
@@ -15358,6 +15855,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_scale_set_value_pos", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _pos)
         nothing
     end
+    function announce(instance::GtkScale, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkScale)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -15428,6 +15928,11 @@ $(Expr(:toplevel, quote
         ret2 = convert(GtkAdjustment, ret, false)
         ret2
     end
+    function get_has_frame(instance::GtkScaleButton)
+        ret = ccall(("gtk_scale_button_get_has_frame", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function get_minus_button(instance::GtkScaleButton)
         ret = ccall(("gtk_scale_button_get_minus_button", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GtkButton, ret, false)
@@ -15451,6 +15956,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_scale_button_set_adjustment", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _adjustment)
         nothing
     end
+    function set_has_frame(instance::GtkScaleButton, _has_frame::Bool)
+        ret = ccall(("gtk_scale_button_set_has_frame", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _has_frame)
+        nothing
+    end
     function set_icons(instance::GtkScaleButton, _icons)
         ret = ccall(("gtk_scale_button_set_icons", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cstring}), instance, _icons)
         nothing
@@ -15458,6 +15967,9 @@ $(Expr(:toplevel, quote
     function set_value(instance::GtkScaleButton, _value::Real)
         ret = ccall(("gtk_scale_button_set_value", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _value)
         nothing
+    end
+    function announce(instance::GtkScaleButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkScaleButton)
         get_accessible_parent(GtkAccessible(instance))
@@ -15528,6 +16040,9 @@ $(Expr(:toplevel, quote
         _adjustment_maybe = nothing_to_null(_adjustment)
         ret = ccall(("gtk_scrollbar_set_adjustment", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _adjustment_maybe)
         nothing
+    end
+    function announce(instance::GtkScrollbar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkScrollbar)
         get_accessible_parent(GtkAccessible(instance))
@@ -15732,6 +16247,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_scrolled_window_unset_placement", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
+    function announce(instance::GtkScrolledWindow, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkScrolledWindow)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -15827,6 +16345,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_search_bar_set_show_close_button", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visible)
         nothing
     end
+    function announce(instance::GtkSearchBar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkSearchBar)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -15880,6 +16401,16 @@ $(Expr(:toplevel, quote
         ret2 = GtkSearchEntryLeaf(ret, false)
         ret2
     end
+    function get_input_hints(instance::GtkSearchEntry)
+        ret = ccall(("gtk_search_entry_get_input_hints", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = InputHints(ret)
+        ret2
+    end
+    function get_input_purpose(instance::GtkSearchEntry)
+        ret = ccall(("gtk_search_entry_get_input_purpose", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = InputPurpose(ret)
+        ret2
+    end
     function get_key_capture_widget(instance::GtkSearchEntry)
         ret = ccall(("gtk_search_entry_get_key_capture_widget", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GtkWidget, ret, false)
@@ -15894,6 +16425,14 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_search_entry_get_search_delay", libgtk4), UInt32, (Ptr{GObject},), instance)
         ret
     end
+    function set_input_hints(instance::GtkSearchEntry, _hints)
+        ret = ccall(("gtk_search_entry_set_input_hints", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _hints)
+        nothing
+    end
+    function set_input_purpose(instance::GtkSearchEntry, _purpose)
+        ret = ccall(("gtk_search_entry_set_input_purpose", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _purpose)
+        nothing
+    end
     function set_key_capture_widget(instance::GtkSearchEntry, _widget::Maybe(GtkWidget))
         _widget_maybe = nothing_to_null(_widget)
         ret = ccall(("gtk_search_entry_set_key_capture_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _widget_maybe)
@@ -15907,6 +16446,9 @@ $(Expr(:toplevel, quote
     function set_search_delay(instance::GtkSearchEntry, _delay::Integer)
         ret = ccall(("gtk_search_entry_set_search_delay", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _delay)
         nothing
+    end
+    function announce(instance::GtkSearchEntry, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkSearchEntry)
         get_accessible_parent(GtkAccessible(instance))
@@ -16060,6 +16602,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_separator_new", libgtk4), Ptr{GObject}, (UInt32,), _orientation)
         ret2 = GtkSeparatorLeaf(ret, false)
         ret2
+    end
+    function announce(instance::GtkSeparator, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkSeparator)
         get_accessible_parent(GtkAccessible(instance))
@@ -16271,6 +16816,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_shortcut_label_set_disabled_text", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _disabled_text)
         nothing
     end
+    function announce(instance::GtkShortcutLabel, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkShortcutLabel)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -16361,6 +16909,13 @@ $(Expr(:toplevel, quote
         ret2 = KeyMatch(ret)
         ret2
     end
+    function add_shortcut(instance::GtkShortcutsGroup, _shortcut::GtkShortcutsShortcut)
+        ret = ccall(("gtk_shortcuts_group_add_shortcut", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _shortcut)
+        nothing
+    end
+    function announce(instance::GtkShortcutsGroup, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkShortcutsGroup)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -16414,6 +16969,13 @@ $(Expr(:toplevel, quote
     end
     function set_orientation(instance::GtkShortcutsGroup, _orientation)
         set_orientation(GtkOrientable(instance), _orientation)
+    end
+    function add_group(instance::GtkShortcutsSection, _group::GtkShortcutsGroup)
+        ret = ccall(("gtk_shortcuts_section_add_group", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _group)
+        nothing
+    end
+    function announce(instance::GtkShortcutsSection, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkShortcutsSection)
         get_accessible_parent(GtkAccessible(instance))
@@ -16469,6 +17031,9 @@ $(Expr(:toplevel, quote
     function set_orientation(instance::GtkShortcutsSection, _orientation)
         set_orientation(GtkOrientable(instance), _orientation)
     end
+    function announce(instance::GtkShortcutsShortcut, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkShortcutsShortcut)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -16516,6 +17081,13 @@ $(Expr(:toplevel, quote
     end
     function get_buildable_id(instance::GtkShortcutsShortcut)
         get_buildable_id(GtkBuildable(instance))
+    end
+    function add_section(instance::GtkShortcutsWindow, _section::GtkShortcutsSection)
+        ret = ccall(("gtk_shortcuts_window_add_section", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _section)
+        nothing
+    end
+    function announce(instance::GtkShortcutsWindow, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkShortcutsWindow)
         get_accessible_parent(GtkAccessible(instance))
@@ -16818,6 +17390,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_append_conic_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _rotation, _stops_arr, _n_stops)
         nothing
     end
+    function append_fill(instance::GtkSnapshot, _path::GskPath, _fill_rule, _color::GdkRGBALike)
+        ret = ccall(("gtk_snapshot_append_fill", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskPath}, UInt32, Ptr{_GdkRGBA}), instance, _path, _fill_rule, _color)
+        nothing
+    end
     function append_inset_shadow(instance::GtkSnapshot, _outline::GskRoundedRectLike, _color::GdkRGBALike, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
         ret = ccall(("gtk_snapshot_append_inset_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}, Ptr{_GdkRGBA}, Float32, Float32, Float32, Float32), instance, _outline, _color, _dx, _dy, _spread, _blur_radius)
         nothing
@@ -16858,6 +17434,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_append_scaled_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{_GrapheneRect}), instance, _texture, _filter, _bounds)
         nothing
     end
+    function append_stroke(instance::GtkSnapshot, _path::GskPath, _stroke::GskStroke, _color::GdkRGBALike)
+        ret = ccall(("gtk_snapshot_append_stroke", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskPath}, Ptr{GskStroke}, Ptr{_GdkRGBA}), instance, _path, _stroke, _color)
+        nothing
+    end
     function append_texture(instance::GtkSnapshot, _texture::GdkTexture, _bounds::GrapheneRectLike)
         ret = ccall(("gtk_snapshot_append_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}), instance, _texture, _bounds)
         nothing
@@ -16894,6 +17474,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_push_cross_fade", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _progress)
         nothing
     end
+    function push_fill(instance::GtkSnapshot, _path::GskPath, _fill_rule)
+        ret = ccall(("gtk_snapshot_push_fill", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskPath}, UInt32), instance, _path, _fill_rule)
+        nothing
+    end
     function push_gl_shader(instance::GtkSnapshot, _shader::GskGLShader, _bounds::GrapheneRectLike, _take_args::GBytes)
         ret = ccall(("gtk_snapshot_push_gl_shader", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{GBytes}), instance, _shader, _bounds, _take_args)
         nothing
@@ -16919,6 +17503,10 @@ $(Expr(:toplevel, quote
         _shadow_arr = convert(Vector{_GskShadow}, _shadow)
         _n_shadows = length(_shadow)
         ret = ccall(("gtk_snapshot_push_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskShadow}, UInt64), instance, _shadow_arr, _n_shadows)
+        nothing
+    end
+    function push_stroke(instance::GtkSnapshot, _path::GskPath, _stroke::GskStroke)
+        ret = ccall(("gtk_snapshot_push_stroke", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskPath}, Ptr{GskStroke}), instance, _path, _stroke)
         nothing
     end
     function render_background(instance::GtkSnapshot, _context::GtkStyleContext, _x::Real, _y::Real, _width::Real, _height::Real)
@@ -17101,6 +17689,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_spin_button_configure", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Float64, UInt32), instance, _adjustment_maybe, _climb_rate, _digits)
         nothing
     end
+    function get_activates_default(instance::GtkSpinButton)
+        ret = ccall(("gtk_spin_button_get_activates_default", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function get_adjustment(instance::GtkSpinButton)
         ret = ccall(("gtk_spin_button_get_adjustment", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GtkAdjustment, ret, false)
@@ -17158,6 +17751,10 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function set_activates_default(instance::GtkSpinButton, _activates_default::Bool)
+        ret = ccall(("gtk_spin_button_set_activates_default", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _activates_default)
+        nothing
+    end
     function set_adjustment(instance::GtkSpinButton, _adjustment::GtkAdjustment)
         ret = ccall(("gtk_spin_button_set_adjustment", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _adjustment)
         nothing
@@ -17205,6 +17802,9 @@ $(Expr(:toplevel, quote
     function update(instance::GtkSpinButton)
         ret = ccall(("gtk_spin_button_update", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
+    end
+    function announce(instance::GtkSpinButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkSpinButton)
         get_accessible_parent(GtkAccessible(instance))
@@ -17362,6 +17962,9 @@ $(Expr(:toplevel, quote
     function stop(instance::GtkSpinner)
         ret = ccall(("gtk_spinner_stop", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
+    end
+    function announce(instance::GtkSpinner, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkSpinner)
         get_accessible_parent(GtkAccessible(instance))
@@ -17526,6 +18129,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_stack_set_visible_child_name", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _name)
         nothing
     end
+    function announce(instance::GtkStack, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkStack)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -17633,6 +18239,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_stack_page_set_visible", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _visible)
         nothing
     end
+    function announce(instance::GtkStackPage, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkStackPage)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -17691,6 +18300,9 @@ $(Expr(:toplevel, quote
     function set_stack(instance::GtkStackSidebar, _stack::GtkStack)
         ret = ccall(("gtk_stack_sidebar_set_stack", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _stack)
         nothing
+    end
+    function announce(instance::GtkStackSidebar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkStackSidebar)
         get_accessible_parent(GtkAccessible(instance))
@@ -17754,6 +18366,9 @@ $(Expr(:toplevel, quote
         _stack_maybe = nothing_to_null(_stack)
         ret = ccall(("gtk_stack_switcher_set_stack", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _stack_maybe)
         nothing
+    end
+    function announce(instance::GtkStackSwitcher, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkStackSwitcher)
         get_accessible_parent(GtkAccessible(instance))
@@ -17833,6 +18448,9 @@ $(Expr(:toplevel, quote
     function remove_all(instance::GtkStatusbar, _context_id::Integer)
         ret = ccall(("gtk_statusbar_remove_all", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _context_id)
         nothing
+    end
+    function announce(instance::GtkStatusbar, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkStatusbar)
         get_accessible_parent(GtkAccessible(instance))
@@ -18135,6 +18753,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_switch_set_state", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _state)
         nothing
     end
+    function announce(instance::GtkSwitch, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkSwitch)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -18366,6 +18987,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_unset_invisible_char", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
+    function announce(instance::GtkText, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkText)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -18410,6 +19034,15 @@ $(Expr(:toplevel, quote
     end
     function update_state(instance::GtkText, _states, _values)
         update_state(GtkAccessible(instance), _states, _values)
+    end
+    function update_caret_position(instance::GtkText)
+        update_caret_position(GtkAccessibleText(instance))
+    end
+    function update_contents(instance::GtkText, _change, _start::Integer, _end::Integer)
+        update_contents(GtkAccessibleText(instance), _change, _start, _end)
+    end
+    function update_selection_bound(instance::GtkText)
+        update_selection_bound(GtkAccessibleText(instance))
     end
     function get_buildable_id(instance::GtkText)
         get_buildable_id(GtkBuildable(instance))
@@ -19276,6 +19909,9 @@ $(Expr(:toplevel, quote
         _buffer_y = m_buffer_y[]
         (_buffer_x, _buffer_y)
     end
+    function announce(instance::GtkTextView, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkTextView)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -19320,6 +19956,15 @@ $(Expr(:toplevel, quote
     end
     function update_state(instance::GtkTextView, _states, _values)
         update_state(GtkAccessible(instance), _states, _values)
+    end
+    function update_caret_position(instance::GtkTextView)
+        update_caret_position(GtkAccessibleText(instance))
+    end
+    function update_contents(instance::GtkTextView, _change, _start::Integer, _end::Integer)
+        update_contents(GtkAccessibleText(instance), _change, _start, _end)
+    end
+    function update_selection_bound(instance::GtkTextView)
+        update_selection_bound(GtkAccessibleText(instance))
     end
     function get_buildable_id(instance::GtkTextView)
         get_buildable_id(GtkBuildable(instance))
@@ -19383,6 +20028,9 @@ $(Expr(:toplevel, quote
     function toggled(instance::GtkToggleButton)
         ret = ccall(("gtk_toggle_button_toggled", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
+    end
+    function announce(instance::GtkToggleButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkToggleButton)
         get_accessible_parent(GtkAccessible(instance))
@@ -19537,6 +20185,9 @@ $(Expr(:toplevel, quote
         _list_row_maybe = nothing_to_null(_list_row)
         ret = ccall(("gtk_tree_expander_set_list_row", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _list_row_maybe)
         nothing
+    end
+    function announce(instance::GtkTreeExpander, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkTreeExpander)
         get_accessible_parent(GtkAccessible(instance))
@@ -20760,6 +21411,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_view_unset_rows_drag_source", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
+    function announce(instance::GtkTreeView, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkTreeView)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -21151,6 +21805,11 @@ $(Expr(:toplevel, quote
         ret2 = GLib.find_leaf_type_if_not_null(ret, false)
         ret2
     end
+    function get_graphics_offload(instance::GtkVideo)
+        ret = ccall(("gtk_video_get_graphics_offload", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = GraphicsOffloadEnabled(ret)
+        ret2
+    end
     function get_loop(instance::GtkVideo)
         ret = ccall(("gtk_video_get_loop", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -21175,6 +21834,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_video_set_filename", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _filename_maybe)
         nothing
     end
+    function set_graphics_offload(instance::GtkVideo, _enabled)
+        ret = ccall(("gtk_video_set_graphics_offload", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _enabled)
+        nothing
+    end
     function set_loop(instance::GtkVideo, _loop::Bool)
         ret = ccall(("gtk_video_set_loop", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _loop)
         nothing
@@ -21188,6 +21851,9 @@ $(Expr(:toplevel, quote
         _resource_path_maybe = nothing_to_null(_resource_path)
         ret = ccall(("gtk_video_set_resource", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _resource_path_maybe)
         nothing
+    end
+    function announce(instance::GtkVideo, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkVideo)
         get_accessible_parent(GtkAccessible(instance))
@@ -21268,6 +21934,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_viewport_set_scroll_to_focus", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _scroll_to_focus)
         nothing
     end
+    function announce(instance::GtkViewport, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkViewport)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -21347,6 +22016,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_volume_button_new", libgtk4), Ptr{GObject}, ())
         ret2 = GtkVolumeButtonLeaf(ret, false)
         ret2
+    end
+    function announce(instance::GtkVolumeButton, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
     end
     function get_accessible_parent(instance::GtkVolumeButton)
         get_accessible_parent(GtkAccessible(instance))
@@ -22189,6 +22861,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_widget_unset_state_flags", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _flags)
         nothing
     end
+    function announce(instance::GtkWidget, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkWidget)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -22570,6 +23245,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_window_unminimize", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
+    function announce(instance::GtkWindow, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkWindow)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -22665,6 +23343,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_window_controls_set_side", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _side)
         nothing
     end
+    function announce(instance::GtkWindowControls, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkWindowControls)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -22746,6 +23427,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_window_handle_set_child", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child_maybe)
         nothing
     end
+    function announce(instance::GtkWindowHandle, _message::Union{AbstractString, Symbol}, _priority)
+        announce(GtkAccessible(instance), _message, _priority)
+    end
     function get_accessible_parent(instance::GtkWindowHandle)
         get_accessible_parent(GtkAccessible(instance))
     end
@@ -22793,6 +23477,10 @@ $(Expr(:toplevel, quote
     end
     function get_buildable_id(instance::GtkWindowHandle)
         get_buildable_id(GtkBuildable(instance))
+    end
+    function announce(instance::GtkAccessible, _message::Union{AbstractString, Symbol}, _priority)
+        ret = ccall(("gtk_accessible_announce", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt32), instance, _message, _priority)
+        nothing
     end
     function get_accessible_parent(instance::GtkAccessible)
         ret = ccall(("gtk_accessible_get_accessible_parent", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
@@ -22882,6 +23570,18 @@ $(Expr(:toplevel, quote
         _n_states = length(_states)
         _n_states = length(_values)
         ret = ccall(("gtk_accessible_update_state_value", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{UInt32}, Ptr{_GValue}), instance, _n_states, _states_arr, _values_arr)
+        nothing
+    end
+    function update_caret_position(instance::GtkAccessibleText)
+        ret = ccall(("gtk_accessible_text_update_caret_position", libgtk4), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function update_contents(instance::GtkAccessibleText, _change, _start::Integer, _end::Integer)
+        ret = ccall(("gtk_accessible_text_update_contents", libgtk4), Nothing, (Ptr{GObject}, UInt32, UInt32, UInt32), instance, _change, _start, _end)
+        nothing
+    end
+    function update_selection_bound(instance::GtkAccessibleText)
+        ret = ccall(("gtk_accessible_text_update_selection_bound", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
     function get_action_name(instance::GtkActionable)
@@ -23339,12 +24039,12 @@ $(Expr(:toplevel, quote
     end
     function get_renderer(instance::GtkNative)
         ret = ccall(("gtk_native_get_renderer", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GskRenderer, ret, false)
+        ret2 = convert_if_not_null(GskRenderer, ret, false)
         ret2
     end
     function get_surface(instance::GtkNative)
         ret = ccall(("gtk_native_get_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GdkSurface, ret, false)
+        ret2 = convert_if_not_null(GdkSurface, ret, false)
         ret2
     end
     function get_surface_transform(instance::GtkNative)

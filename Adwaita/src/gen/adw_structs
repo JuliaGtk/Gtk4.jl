@@ -34,6 +34,66 @@ $(Expr(:toplevel, quote
     end
     const gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
+        abstract type AdwDialog <: GtkWidget end
+        mutable struct AdwDialogLeaf <: AdwDialog
+            handle::Ptr{GObject}
+            function AdwDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwDialog] = AdwDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwDialog) = begin
+                ccall(("adw_dialog_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwDialog})
+            vcat([:close_attempt, :closed], signalnames(supertype(AdwDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :closed => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :close_attempt => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwDialog
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwAboutDialog <: AdwDialog end
+        mutable struct AdwAboutDialogLeaf <: AdwAboutDialog
+            handle::Ptr{GObject}
+            function AdwAboutDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwAboutDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwAboutDialog] = AdwAboutDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwAboutDialog) = begin
+                ccall(("adw_about_dialog_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwAboutDialog})
+            vcat([:activate_link], signalnames(supertype(AdwAboutDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :activate_link => (:Cint, [:Cstring]), :unrealize => (:Nothing, Any[]), :closed => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :close_attempt => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwAboutDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwAboutDialog
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
         abstract type AdwWindow <: GtkWindow end
         mutable struct AdwWindowLeaf <: AdwWindow
             handle::Ptr{GObject}
@@ -133,6 +193,36 @@ $(Expr(:toplevel, quote
                 eval((d[name])[1])
             end
             function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwActionRow
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwAlertDialog <: AdwDialog end
+        mutable struct AdwAlertDialogLeaf <: AdwAlertDialog
+            handle::Ptr{GObject}
+            function AdwAlertDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwAlertDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwAlertDialog] = AdwAlertDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwAlertDialog) = begin
+                ccall(("adw_alert_dialog_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwAlertDialog})
+            vcat([:response], signalnames(supertype(AdwAlertDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :closed => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :close_attempt => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :response => (:Nothing, [:Cstring]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwAlertDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwAlertDialog
                 Tuple(eval.((d[name])[2]))
             end
         end
@@ -908,6 +998,28 @@ $(Expr(:toplevel, quote
         end
     end
     begin
+        abstract type AdwPreferencesDialog <: AdwDialog end
+        mutable struct AdwPreferencesDialogLeaf <: AdwPreferencesDialog
+            handle::Ptr{GObject}
+            function AdwPreferencesDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwPreferencesDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwPreferencesDialog] = AdwPreferencesDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwPreferencesDialog) = begin
+                ccall(("adw_preferences_dialog_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwPreferencesDialog})
+            signalnames(supertype(AdwPreferencesDialog))
+        end
+    end
+    begin
         abstract type AdwPreferencesGroup <: GtkWidget end
         mutable struct AdwPreferencesGroupLeaf <: AdwPreferencesGroup
             handle::Ptr{GObject}
@@ -1622,6 +1734,16 @@ $(Expr(:toplevel, quote
                 merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
             end
     end
+    function AdwAboutDialog(; kwargs...)
+        obj = G_.AboutDialog_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwAboutDialog(_resource_path::Union{AbstractString, Symbol}, _release_notes_version::Maybe(Union{AbstractString, Symbol}); kwargs...)
+        obj = G_.AboutDialog_new_from_appdata(_resource_path, _release_notes_version)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function AdwAboutWindow(; kwargs...)
         obj = G_.AboutWindow_new()
         GLib.setproperties!(obj; kwargs...)
@@ -1634,6 +1756,11 @@ $(Expr(:toplevel, quote
     end
     function AdwActionRow(; kwargs...)
         obj = G_.ActionRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwAlertDialog(_heading::Maybe(Union{AbstractString, Symbol}), _body::Maybe(Union{AbstractString, Symbol}); kwargs...)
+        obj = G_.AlertDialog_new(_heading, _body)
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -1710,6 +1837,11 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function AdwDialog(; kwargs...)
+        obj = G_.Dialog_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function AdwEntryRow(; kwargs...)
         obj = G_.EntryRow_new()
         GLib.setproperties!(obj; kwargs...)
@@ -1772,6 +1904,11 @@ $(Expr(:toplevel, quote
     end
     function AdwPasswordEntryRow()
         G_.PasswordEntryRow_new()
+    end
+    function AdwPreferencesDialog(; kwargs...)
+        obj = G_.PreferencesDialog_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
     end
     function AdwPreferencesGroup(; kwargs...)
         obj = G_.PreferencesGroup_new()
@@ -1913,6 +2050,6 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    export AdwSpringParams, AdwSwipeable, AdwAboutWindow, AdwAboutWindowLeaf, AdwActionRow, AdwActionRowLeaf, AdwAnimation, AdwAnimationTarget, AdwApplication, AdwApplicationLeaf, AdwApplicationWindow, AdwApplicationWindowLeaf, AdwAvatar, AdwAvatarLeaf, AdwBanner, AdwBannerLeaf, AdwBin, AdwBinLeaf, AdwBreakpointBin, AdwBreakpointBinLeaf, AdwButtonContent, AdwButtonContentLeaf, AdwCallbackAnimationTarget, AdwCallbackAnimationTargetLeaf, AdwCarousel, AdwCarouselLeaf, AdwCarouselIndicatorDots, AdwCarouselIndicatorDotsLeaf, AdwCarouselIndicatorLines, AdwCarouselIndicatorLinesLeaf, AdwClamp, AdwClampLeaf, AdwClampLayout, AdwClampLayoutLeaf, AdwClampScrollable, AdwClampScrollableLeaf, AdwComboRow, AdwComboRowLeaf, AdwEntryRow, AdwEntryRowLeaf, AdwEnumListItem, AdwEnumListItemLeaf, AdwEnumListModel, AdwEnumListModelLeaf, AdwExpanderRow, AdwExpanderRowLeaf, AdwFlap, AdwFlapLeaf, AdwHeaderBar, AdwHeaderBarLeaf, AdwLeaflet, AdwLeafletLeaf, AdwLeafletPage, AdwLeafletPageLeaf, AdwMessageDialog, AdwMessageDialogLeaf, AdwNavigationPage, AdwNavigationPageLeaf, AdwNavigationSplitView, AdwNavigationSplitViewLeaf, AdwNavigationView, AdwNavigationViewLeaf, AdwOverlaySplitView, AdwOverlaySplitViewLeaf, AdwPasswordEntryRow, AdwPasswordEntryRowLeaf, AdwPreferencesGroup, AdwPreferencesGroupLeaf, AdwPreferencesPage, AdwPreferencesPageLeaf, AdwPreferencesRow, AdwPreferencesRowLeaf, AdwPreferencesWindow, AdwPreferencesWindowLeaf, AdwPropertyAnimationTarget, AdwPropertyAnimationTargetLeaf, AdwSpinRow, AdwSpinRowLeaf, AdwSplitButton, AdwSplitButtonLeaf, AdwSpringAnimation, AdwSpringAnimationLeaf, AdwSqueezer, AdwSqueezerLeaf, AdwSqueezerPage, AdwSqueezerPageLeaf, AdwStatusPage, AdwStatusPageLeaf, AdwStyleManager, AdwStyleManagerLeaf, AdwSwipeTracker, AdwSwipeTrackerLeaf, AdwSwitchRow, AdwSwitchRowLeaf, AdwTabBar, AdwTabBarLeaf, AdwTabButton, AdwTabButtonLeaf, AdwTabOverview, AdwTabOverviewLeaf, AdwTabPage, AdwTabPageLeaf, AdwTabView, AdwTabViewLeaf, AdwTimedAnimation, AdwTimedAnimationLeaf, AdwToast, AdwToastLeaf, AdwToastOverlay, AdwToastOverlayLeaf, AdwToolbarView, AdwToolbarViewLeaf, AdwViewStack, AdwViewStackLeaf, AdwViewStackPage, AdwViewStackPageLeaf, AdwViewStackPages, AdwViewStackPagesLeaf, AdwViewSwitcher, AdwViewSwitcherLeaf, AdwViewSwitcherBar, AdwViewSwitcherBarLeaf, AdwViewSwitcherTitle, AdwViewSwitcherTitleLeaf, AdwWindow, AdwWindowLeaf, AdwWindowTitle, AdwWindowTitleLeaf
+    export AdwSpringParams, AdwSwipeable, AdwAboutDialog, AdwAboutDialogLeaf, AdwAboutWindow, AdwAboutWindowLeaf, AdwActionRow, AdwActionRowLeaf, AdwAlertDialog, AdwAlertDialogLeaf, AdwAnimation, AdwAnimationTarget, AdwApplication, AdwApplicationLeaf, AdwApplicationWindow, AdwApplicationWindowLeaf, AdwAvatar, AdwAvatarLeaf, AdwBanner, AdwBannerLeaf, AdwBin, AdwBinLeaf, AdwBreakpointBin, AdwBreakpointBinLeaf, AdwButtonContent, AdwButtonContentLeaf, AdwCallbackAnimationTarget, AdwCallbackAnimationTargetLeaf, AdwCarousel, AdwCarouselLeaf, AdwCarouselIndicatorDots, AdwCarouselIndicatorDotsLeaf, AdwCarouselIndicatorLines, AdwCarouselIndicatorLinesLeaf, AdwClamp, AdwClampLeaf, AdwClampLayout, AdwClampLayoutLeaf, AdwClampScrollable, AdwClampScrollableLeaf, AdwComboRow, AdwComboRowLeaf, AdwDialog, AdwDialogLeaf, AdwEntryRow, AdwEntryRowLeaf, AdwEnumListItem, AdwEnumListItemLeaf, AdwEnumListModel, AdwEnumListModelLeaf, AdwExpanderRow, AdwExpanderRowLeaf, AdwFlap, AdwFlapLeaf, AdwHeaderBar, AdwHeaderBarLeaf, AdwLeaflet, AdwLeafletLeaf, AdwLeafletPage, AdwLeafletPageLeaf, AdwMessageDialog, AdwMessageDialogLeaf, AdwNavigationPage, AdwNavigationPageLeaf, AdwNavigationSplitView, AdwNavigationSplitViewLeaf, AdwNavigationView, AdwNavigationViewLeaf, AdwOverlaySplitView, AdwOverlaySplitViewLeaf, AdwPasswordEntryRow, AdwPasswordEntryRowLeaf, AdwPreferencesDialog, AdwPreferencesDialogLeaf, AdwPreferencesGroup, AdwPreferencesGroupLeaf, AdwPreferencesPage, AdwPreferencesPageLeaf, AdwPreferencesRow, AdwPreferencesRowLeaf, AdwPreferencesWindow, AdwPreferencesWindowLeaf, AdwPropertyAnimationTarget, AdwPropertyAnimationTargetLeaf, AdwSpinRow, AdwSpinRowLeaf, AdwSplitButton, AdwSplitButtonLeaf, AdwSpringAnimation, AdwSpringAnimationLeaf, AdwSqueezer, AdwSqueezerLeaf, AdwSqueezerPage, AdwSqueezerPageLeaf, AdwStatusPage, AdwStatusPageLeaf, AdwStyleManager, AdwStyleManagerLeaf, AdwSwipeTracker, AdwSwipeTrackerLeaf, AdwSwitchRow, AdwSwitchRowLeaf, AdwTabBar, AdwTabBarLeaf, AdwTabButton, AdwTabButtonLeaf, AdwTabOverview, AdwTabOverviewLeaf, AdwTabPage, AdwTabPageLeaf, AdwTabView, AdwTabViewLeaf, AdwTimedAnimation, AdwTimedAnimationLeaf, AdwToast, AdwToastLeaf, AdwToastOverlay, AdwToastOverlayLeaf, AdwToolbarView, AdwToolbarViewLeaf, AdwViewStack, AdwViewStackLeaf, AdwViewStackPage, AdwViewStackPageLeaf, AdwViewStackPages, AdwViewStackPagesLeaf, AdwViewSwitcher, AdwViewSwitcherLeaf, AdwViewSwitcherBar, AdwViewSwitcherBarLeaf, AdwViewSwitcherTitle, AdwViewSwitcherTitleLeaf, AdwWindow, AdwWindowLeaf, AdwWindowTitle, AdwWindowTitleLeaf
 end))
 end

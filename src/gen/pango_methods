@@ -530,6 +530,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("pango_item_free", libpango), Nothing, (Ptr{_PangoItem},), instance)
         nothing
     end
+    function get_char_offset(instance::PangoItemLike)
+        ret = ccall(("pango_item_get_char_offset", libpango), Int32, (Ptr{_PangoItem},), instance)
+        ret
+    end
     function split(instance::PangoItemLike, _split_index::Integer, _split_offset::Integer)
         ret = ccall(("pango_item_split", libpango), Ptr{_PangoItem}, (Ptr{_PangoItem}, Int32, Int32), instance, _split_index, _split_offset)
         ret2 = convert(PangoItemLike, ret, true)
@@ -1259,6 +1263,13 @@ $(Expr(:toplevel, quote
     function load_fontset(instance::PangoFontMap, _context::PangoContext, _desc::PangoFontDescription, _language::PangoLanguage)
         ret = ccall(("pango_font_map_load_fontset", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{PangoFontDescription}, Ptr{PangoLanguage}), instance, _context, _desc, _language)
         ret2 = convert_if_not_null(PangoFontset, ret, true)
+        ret2
+    end
+    function reload_font(instance::PangoFontMap, _font::PangoFont, _scale::Real, _context::Maybe(PangoContext), _variations::Maybe(Union{AbstractString, Symbol}))
+        _context_maybe = nothing_to_null(_context)
+        _variations_maybe = nothing_to_null(_variations)
+        ret = ccall(("pango_font_map_reload_font", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Float64, Ptr{GObject}, Cstring), instance, _font, _scale, _context_maybe, _variations_maybe)
+        ret2 = convert(PangoFont, ret, true)
         ret2
     end
     function get_item_type(instance::PangoFontMap)
