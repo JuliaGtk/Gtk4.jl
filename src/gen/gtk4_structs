@@ -268,24 +268,6 @@ $(Expr(:toplevel, quote
         end
         const GtkPrintSetupLike = GtkPrintSetup
     end
-    mutable struct GtkPrintSetup <: GBoxed
-        handle::Ptr{GtkPrintSetup}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GtkPrintSetup) = begin
-                    ccall(("gtk_print_setup_get_type", libgtk4), GType, ())
-                end
-            function GtkPrintSetup(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
-                    end
-                end
-                x
-            end
-            push!(gboxed_types, GtkPrintSetup)
-        end
-    end
     begin
         struct _GtkRecentData
             display_name::Cstring
