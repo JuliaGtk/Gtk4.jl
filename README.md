@@ -1,7 +1,6 @@
 # Julia interface to GTK version 4
 
 [![CI](https://github.com/JuliaGtk/Gtk4.jl/workflows/CI/badge.svg)](https://github.com/JuliaGtk/Gtk4.jl/actions?query=workflow%3ACI)
-[![codecov.io](https://codecov.io/github/JuliaGtk/Gtk4.jl/coverage.svg?branch=main)](https://app.codecov.io/gh/JuliaGtk/Gtk4.jl)
 [![](https://img.shields.io/badge/docs-main-blue.svg)](https://juliagtk.github.io/Gtk4.jl/dev/)
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliahub.com/docs/Gtk4)
 
