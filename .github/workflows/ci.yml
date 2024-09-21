@@ -38,7 +38,7 @@ jobs:
         with:
           version: ${{ matrix.julia-version }}
           arch: ${{ matrix.julia-arch }}
-      - uses: julia-actions/cache@v1
+      - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@latest
       - name: GObjectIntrospection tests
         shell: julia --project=@. --color=yes {0}
@@ -48,16 +48,6 @@ jobs:
       - uses: julia-actions/julia-runtest@latest
         with:
           prefix: ${{ matrix.prefix }}
-      - uses: julia-actions/julia-processcoverage@latest
-        if: startsWith(matrix.os, 'ubuntu')
-        with:
-          directories: GI/src,src
-      - uses: codecov/codecov-action@v4
-        if: startsWith(matrix.os, 'ubuntu')
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false  # or true if you want CI to fail when Codecov fails
-          file: lcov.info
 
   Documentation:
     runs-on: ubuntu-latest
