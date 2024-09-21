@@ -50,15 +50,15 @@ jobs:
           prefix: ${{ matrix.prefix }}
           coverage: ${{ matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.arch == 'x64' }}
       - uses: julia-actions/julia-processcoverage@latest
-        if: matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
         with:
           directories: GI/src,src
       - uses: codecov/codecov-action@v4
-        if: matrix.version == '1' && matrix.os == 'ubuntu-latest' && matrix.arch == 'x64'
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           file: lcov.info
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
+      - uses: julia-actions/julia-uploadcoveralls@v1.0
+        continue-on-error: true
 
   Documentation:
     runs-on: ubuntu-latest
