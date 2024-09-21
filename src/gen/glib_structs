@@ -1,58 +1,67 @@
 quote
 $(Expr(:toplevel, quote
-    mutable struct GBookmarkFile <: GBoxed
-        handle::Ptr{GBookmarkFile}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GBookmarkFile) = begin
-                    ccall(("g_bookmark_file_get_type", libgobject), GType, ())
-                end
-            function GBookmarkFile(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GBookmarkFile <: GBoxed
+            handle::Ptr{GBookmarkFile}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GBookmarkFile) = begin
+                        ccall(("g_bookmark_file_get_type", libgobject), GType, ())
                     end
+                function GBookmarkFile(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GBookmarkFile)
             end
-            push!(gboxed_types, GBookmarkFile)
         end
+        const GBookmarkFileLike = GBookmarkFile
     end
-    mutable struct GBytes <: GBoxed
-        handle::Ptr{GBytes}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GBytes) = begin
-                    ccall(("g_bytes_get_type", libgobject), GType, ())
-                end
-            function GBytes(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GBytes <: GBoxed
+            handle::Ptr{GBytes}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GBytes) = begin
+                        ccall(("g_bytes_get_type", libgobject), GType, ())
                     end
+                function GBytes(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GBytes)
             end
-            push!(gboxed_types, GBytes)
         end
+        const GBytesLike = GBytes
     end
-    mutable struct GChecksum <: GBoxed
-        handle::Ptr{GChecksum}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GChecksum) = begin
-                    ccall(("g_checksum_get_type", libgobject), GType, ())
-                end
-            function GChecksum(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GChecksum <: GBoxed
+            handle::Ptr{GChecksum}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GChecksum) = begin
+                        ccall(("g_checksum_get_type", libgobject), GType, ())
                     end
+                function GChecksum(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GChecksum)
             end
-            push!(gboxed_types, GChecksum)
         end
+        const GChecksumLike = GChecksum
     end
     begin
         mutable struct GDate <: GBoxed
@@ -73,25 +82,29 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GDate)
             end
         end
+        const GDateLike = GDate
         const _GDate = GDate
     end
-    mutable struct GDateTime <: GBoxed
-        handle::Ptr{GDateTime}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GDateTime) = begin
-                    ccall(("g_date_time_get_type", libgobject), GType, ())
-                end
-            function GDateTime(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GDateTime <: GBoxed
+            handle::Ptr{GDateTime}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GDateTime) = begin
+                        ccall(("g_date_time_get_type", libgobject), GType, ())
                     end
+                function GDateTime(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GDateTime)
             end
-            push!(gboxed_types, GDateTime)
         end
+        const GDateTimeLike = GDateTime
     end
     begin
         struct _GDebugKey
@@ -101,27 +114,36 @@ $(Expr(:toplevel, quote
         mutable struct GDebugKey
             handle::Ptr{_GDebugKey}
         end
-        unsafe_convert(::Type{Ptr{_GDebugKey}}, box::GDebugKey) = begin
-                convert(Ptr{_GDebugKey}, box.handle)
-            end
-    end
-    mutable struct GKeyFile <: GBoxed
-        handle::Ptr{GKeyFile}
         begin
-            (GLib.g_type(::Type{T}) where T <: GKeyFile) = begin
-                    ccall(("g_key_file_get_type", libgobject), GType, ())
+            unsafe_convert(::Type{Ptr{_GDebugKey}}, box::GDebugKey) = begin
+                    convert(Ptr{_GDebugKey}, box.handle)
                 end
-            function GKeyFile(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
-                    end
+            convert(::Type{GDebugKey}, p::Ptr{_GDebugKey}, owns = false) = begin
+                    GDebugKey(p, owns)
                 end
-                x
-            end
-            push!(gboxed_types, GKeyFile)
+            const GDebugKeyLike = Union{Ref{_GDebugKey}, GDebugKey}
         end
+    end
+    begin
+        mutable struct GKeyFile <: GBoxed
+            handle::Ptr{GKeyFile}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GKeyFile) = begin
+                        ccall(("g_key_file_get_type", libgobject), GType, ())
+                    end
+                function GKeyFile(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GKeyFile)
+            end
+        end
+        const GKeyFileLike = GKeyFile
     end
     begin
         struct _GLogField
@@ -132,99 +154,120 @@ $(Expr(:toplevel, quote
         mutable struct GLogField
             handle::Ptr{_GLogField}
         end
-        unsafe_convert(::Type{Ptr{_GLogField}}, box::GLogField) = begin
-                convert(Ptr{_GLogField}, box.handle)
-            end
-    end
-    mutable struct GMainContext <: GBoxed
-        handle::Ptr{GMainContext}
         begin
-            (GLib.g_type(::Type{T}) where T <: GMainContext) = begin
-                    ccall(("g_main_context_get_type", libgobject), GType, ())
+            unsafe_convert(::Type{Ptr{_GLogField}}, box::GLogField) = begin
+                    convert(Ptr{_GLogField}, box.handle)
                 end
-            function GMainContext(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
-                    end
+            convert(::Type{GLogField}, p::Ptr{_GLogField}, owns = false) = begin
+                    GLogField(p, owns)
                 end
-                x
-            end
-            push!(gboxed_types, GMainContext)
+            const GLogFieldLike = Union{Ref{_GLogField}, GLogField}
         end
     end
-    mutable struct GMainLoop <: GBoxed
-        handle::Ptr{GMainLoop}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GMainLoop) = begin
-                    ccall(("g_main_loop_get_type", libgobject), GType, ())
-                end
-            function GMainLoop(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GMainContext <: GBoxed
+            handle::Ptr{GMainContext}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GMainContext) = begin
+                        ccall(("g_main_context_get_type", libgobject), GType, ())
                     end
+                function GMainContext(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GMainContext)
             end
-            push!(gboxed_types, GMainLoop)
         end
+        const GMainContextLike = GMainContext
     end
-    mutable struct GMappedFile <: GBoxed
-        handle::Ptr{GMappedFile}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GMappedFile) = begin
-                    ccall(("g_mapped_file_get_type", libgobject), GType, ())
-                end
-            function GMappedFile(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GMainLoop <: GBoxed
+            handle::Ptr{GMainLoop}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GMainLoop) = begin
+                        ccall(("g_main_loop_get_type", libgobject), GType, ())
                     end
+                function GMainLoop(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GMainLoop)
             end
-            push!(gboxed_types, GMappedFile)
         end
+        const GMainLoopLike = GMainLoop
     end
-    mutable struct GMarkupParseContext <: GBoxed
-        handle::Ptr{GMarkupParseContext}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GMarkupParseContext) = begin
-                    ccall(("g_markup_parse_context_get_type", libgobject), GType, ())
-                end
-            function GMarkupParseContext(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GMappedFile <: GBoxed
+            handle::Ptr{GMappedFile}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GMappedFile) = begin
+                        ccall(("g_mapped_file_get_type", libgobject), GType, ())
                     end
+                function GMappedFile(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GMappedFile)
             end
-            push!(gboxed_types, GMarkupParseContext)
         end
+        const GMappedFileLike = GMappedFile
     end
-    mutable struct GMatchInfo <: GBoxed
-        handle::Ptr{GMatchInfo}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GMatchInfo) = begin
-                    ccall(("g_match_info_get_type", libgobject), GType, ())
-                end
-            function GMatchInfo(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GMarkupParseContext <: GBoxed
+            handle::Ptr{GMarkupParseContext}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GMarkupParseContext) = begin
+                        ccall(("g_markup_parse_context_get_type", libgobject), GType, ())
                     end
+                function GMarkupParseContext(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GMarkupParseContext)
             end
-            push!(gboxed_types, GMatchInfo)
         end
+        const GMarkupParseContextLike = GMarkupParseContext
+    end
+    begin
+        mutable struct GMatchInfo <: GBoxed
+            handle::Ptr{GMatchInfo}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GMatchInfo) = begin
+                        ccall(("g_match_info_get_type", libgobject), GType, ())
+                    end
+                function GMatchInfo(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GMatchInfo)
+            end
+        end
+        const GMatchInfoLike = GMatchInfo
     end
     begin
         struct _GOptionEntry
@@ -239,45 +282,57 @@ $(Expr(:toplevel, quote
         mutable struct GOptionEntry
             handle::Ptr{_GOptionEntry}
         end
-        unsafe_convert(::Type{Ptr{_GOptionEntry}}, box::GOptionEntry) = begin
-                convert(Ptr{_GOptionEntry}, box.handle)
-            end
-    end
-    mutable struct GPatternSpec <: GBoxed
-        handle::Ptr{GPatternSpec}
         begin
-            (GLib.g_type(::Type{T}) where T <: GPatternSpec) = begin
-                    ccall(("g_pattern_spec_get_type", libgobject), GType, ())
+            unsafe_convert(::Type{Ptr{_GOptionEntry}}, box::GOptionEntry) = begin
+                    convert(Ptr{_GOptionEntry}, box.handle)
                 end
-            function GPatternSpec(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
-                    end
+            convert(::Type{GOptionEntry}, p::Ptr{_GOptionEntry}, owns = false) = begin
+                    GOptionEntry(p, owns)
                 end
-                x
-            end
-            push!(gboxed_types, GPatternSpec)
+            const GOptionEntryLike = Union{Ref{_GOptionEntry}, GOptionEntry}
         end
     end
-    mutable struct GRegex <: GBoxed
-        handle::Ptr{GRegex}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GRegex) = begin
-                    ccall(("g_regex_get_type", libgobject), GType, ())
-                end
-            function GRegex(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GPatternSpec <: GBoxed
+            handle::Ptr{GPatternSpec}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GPatternSpec) = begin
+                        ccall(("g_pattern_spec_get_type", libgobject), GType, ())
                     end
+                function GPatternSpec(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GPatternSpec)
             end
-            push!(gboxed_types, GRegex)
         end
+        const GPatternSpecLike = GPatternSpec
+    end
+    begin
+        mutable struct GRegex <: GBoxed
+            handle::Ptr{GRegex}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GRegex) = begin
+                        ccall(("g_regex_get_type", libgobject), GType, ())
+                    end
+                function GRegex(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GRegex)
+            end
+        end
+        const GRegexLike = GRegex
     end
     begin
         struct _GScannerConfig
@@ -312,9 +367,15 @@ $(Expr(:toplevel, quote
         mutable struct GScannerConfig
             handle::Ptr{_GScannerConfig}
         end
-        unsafe_convert(::Type{Ptr{_GScannerConfig}}, box::GScannerConfig) = begin
-                convert(Ptr{_GScannerConfig}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GScannerConfig}}, box::GScannerConfig) = begin
+                    convert(Ptr{_GScannerConfig}, box.handle)
+                end
+            convert(::Type{GScannerConfig}, p::Ptr{_GScannerConfig}, owns = false) = begin
+                    GScannerConfig(p, owns)
+                end
+            const GScannerConfigLike = Union{Ref{_GScannerConfig}, GScannerConfig}
+        end
     end
     begin
         mutable struct GSource <: GBoxed
@@ -335,6 +396,7 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GSource)
             end
         end
+        const GSourceLike = GSource
         const _GSource = GSource
     end
     begin
@@ -346,9 +408,15 @@ $(Expr(:toplevel, quote
         mutable struct GSourceCallbackFuncs
             handle::Ptr{_GSourceCallbackFuncs}
         end
-        unsafe_convert(::Type{Ptr{_GSourceCallbackFuncs}}, box::GSourceCallbackFuncs) = begin
-                convert(Ptr{_GSourceCallbackFuncs}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GSourceCallbackFuncs}}, box::GSourceCallbackFuncs) = begin
+                    convert(Ptr{_GSourceCallbackFuncs}, box.handle)
+                end
+            convert(::Type{GSourceCallbackFuncs}, p::Ptr{_GSourceCallbackFuncs}, owns = false) = begin
+                    GSourceCallbackFuncs(p, owns)
+                end
+            const GSourceCallbackFuncsLike = Union{Ref{_GSourceCallbackFuncs}, GSourceCallbackFuncs}
+        end
     end
     begin
         struct _GString
@@ -362,7 +430,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GString) = begin
                         ccall(("g_gstring_get_type", libgobject), GType, ())
                     end
-                function GString(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GString(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GString}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -374,9 +442,15 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GString)
             end
         end
-        unsafe_convert(::Type{Ptr{_GString}}, box::GString) = begin
-                convert(Ptr{_GString}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GString}}, box::GString) = begin
+                    convert(Ptr{_GString}, box.handle)
+                end
+            convert(::Type{GString}, p::Ptr{_GString}, owns = false) = begin
+                    GString(p, owns)
+                end
+            const GStringLike = Union{Ref{_GString}, GString}
+        end
     end
     begin
         struct _GTestConfig
@@ -390,99 +464,120 @@ $(Expr(:toplevel, quote
         mutable struct GTestConfig
             handle::Ptr{_GTestConfig}
         end
-        unsafe_convert(::Type{Ptr{_GTestConfig}}, box::GTestConfig) = begin
-                convert(Ptr{_GTestConfig}, box.handle)
-            end
-    end
-    mutable struct GTimeZone <: GBoxed
-        handle::Ptr{GTimeZone}
         begin
-            (GLib.g_type(::Type{T}) where T <: GTimeZone) = begin
-                    ccall(("g_time_zone_get_type", libgobject), GType, ())
+            unsafe_convert(::Type{Ptr{_GTestConfig}}, box::GTestConfig) = begin
+                    convert(Ptr{_GTestConfig}, box.handle)
                 end
-            function GTimeZone(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
-                    end
+            convert(::Type{GTestConfig}, p::Ptr{_GTestConfig}, owns = false) = begin
+                    GTestConfig(p, owns)
                 end
-                x
-            end
-            push!(gboxed_types, GTimeZone)
+            const GTestConfigLike = Union{Ref{_GTestConfig}, GTestConfig}
         end
     end
-    mutable struct GUri <: GBoxed
-        handle::Ptr{GUri}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GUri) = begin
-                    ccall(("g_uri_get_type", libgobject), GType, ())
-                end
-            function GUri(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GTimeZone <: GBoxed
+            handle::Ptr{GTimeZone}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GTimeZone) = begin
+                        ccall(("g_time_zone_get_type", libgobject), GType, ())
                     end
+                function GTimeZone(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GTimeZone)
             end
-            push!(gboxed_types, GUri)
         end
+        const GTimeZoneLike = GTimeZone
     end
-    mutable struct GVariantBuilder <: GBoxed
-        handle::Ptr{GVariantBuilder}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GVariantBuilder) = begin
-                    ccall(("g_variant_builder_get_type", libgobject), GType, ())
-                end
-            function GVariantBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GUri <: GBoxed
+            handle::Ptr{GUri}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GUri) = begin
+                        ccall(("g_uri_get_type", libgobject), GType, ())
                     end
+                function GUri(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GUri)
             end
-            push!(gboxed_types, GVariantBuilder)
         end
+        const GUriLike = GUri
     end
-    mutable struct GVariantDict <: GBoxed
-        handle::Ptr{GVariantDict}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GVariantDict) = begin
-                    ccall(("g_variant_dict_get_type", libgobject), GType, ())
-                end
-            function GVariantDict(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GVariantBuilder <: GBoxed
+            handle::Ptr{GVariantBuilder}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GVariantBuilder) = begin
+                        ccall(("g_variant_builder_get_type", libgobject), GType, ())
                     end
+                function GVariantBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GVariantBuilder)
             end
-            push!(gboxed_types, GVariantDict)
         end
+        const GVariantBuilderLike = GVariantBuilder
     end
-    mutable struct GVariantType <: GBoxed
-        handle::Ptr{GVariantType}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GVariantType) = begin
-                    ccall(("g_variant_type_get_gtype", libgobject), GType, ())
-                end
-            function GVariantType(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GVariantDict <: GBoxed
+            handle::Ptr{GVariantDict}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GVariantDict) = begin
+                        ccall(("g_variant_dict_get_type", libgobject), GType, ())
                     end
+                function GVariantDict(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GVariantDict)
             end
-            push!(gboxed_types, GVariantType)
         end
+        const GVariantDictLike = GVariantDict
+    end
+    begin
+        mutable struct GVariantType <: GBoxed
+            handle::Ptr{GVariantType}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GVariantType) = begin
+                        ccall(("g_variant_type_get_gtype", libgobject), GType, ())
+                    end
+                function GVariantType(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GVariantType)
+            end
+        end
+        const GVariantTypeLike = GVariantType
     end
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
@@ -636,13 +731,13 @@ $(Expr(:toplevel, quote
         convert(Cint, ret)
     end
     function GHookCheckMarshaller(hook, marshal_data)
-        hook = convert(Union{GHook, Ref{_GHook}}, hook)
+        hook = convert(GHookLike, hook)
         f = marshal_data
         ret = f(hook)
         convert(Cint, ret)
     end
     function GHookFindFunc(hook, data)
-        hook = convert(Union{GHook, Ref{_GHook}}, hook)
+        hook = convert(GHookLike, hook)
         f = data
         ret = f(hook)
         convert(Cint, ret)
@@ -653,13 +748,13 @@ $(Expr(:toplevel, quote
         nothing
     end
     function GHookMarshaller(hook, marshal_data)
-        hook = convert(Union{GHook, Ref{_GHook}}, hook)
+        hook = convert(GHookLike, hook)
         f = marshal_data
         ret = f(hook)
         nothing
     end
     function GIOFunc(source, condition, data)
-        source = convert(Union{GIOChannel, Ref{_GIOChannel}}, source, false)
+        source = convert(GIOChannelLike, source, false)
         condition = IOCondition(condition)
         f = data
         ret = f(source, condition)
@@ -681,13 +776,13 @@ $(Expr(:toplevel, quote
         convert(UInt32, ret)
     end
     function GNodeForeachFunc(node, data)
-        node = convert(Union{GNode, Ref{_GNode}}, node)
+        node = convert(GNodeLike, node)
         f = data
         ret = f(node)
         nothing
     end
     function GNodeTraverseFunc(node, data)
-        node = convert(Union{GNode, Ref{_GNode}}, node)
+        node = convert(GNodeLike, node)
         f = data
         ret = f(node)
         convert(Cint, ret)
@@ -715,7 +810,7 @@ $(Expr(:toplevel, quote
     end
     function GRegexEvalCallback(match_info, result, user_data)
         match_info = convert(GMatchInfo, match_info, false)
-        result = convert(Union{GString, Ref{_GString}}, result, false)
+        result = convert(GStringLike, result, false)
         f = user_data
         ret = f(match_info, result)
         convert(Cint, ret)
@@ -791,6 +886,6 @@ $(Expr(:toplevel, quote
         ret = f(fd, condition)
         convert(Cint, ret)
     end
-    export GBookmarkFile, GBytes, GChecksum, GDate, _GDate, GDateTime, GDebugKey, _GDebugKey, GKeyFile, GLogField, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, _GOptionEntry, GPatternSpec, GRegex, GScannerConfig, _GScannerConfig, GSource, _GSource, GSourceCallbackFuncs, _GSourceCallbackFuncs, GString, _GString, GTestConfig, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDestroyNotify, GDuplicateFunc, GEqualFuncFull, GFreeFunc, GFunc, GHFunc, GHRFunc, GHookCheckFunc, GHookCheckMarshaller, GHookFindFunc, GHookFunc, GHookMarshaller, GIOFunc, GLogFunc, GLogWriterFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc, GUnixFDSourceFunc
+    export GBookmarkFile, GBytes, GChecksum, GDate, GDateLike, _GDate, GDateTime, GDebugKey, GDebugKeyLike, _GDebugKey, GKeyFile, GLogField, GLogFieldLike, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, GOptionEntryLike, _GOptionEntry, GPatternSpec, GRegex, GScannerConfig, GScannerConfigLike, _GScannerConfig, GSource, GSourceLike, _GSource, GSourceCallbackFuncs, GSourceCallbackFuncsLike, _GSourceCallbackFuncs, GString, GStringLike, _GString, GTestConfig, GTestConfigLike, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDestroyNotify, GDuplicateFunc, GEqualFuncFull, GFreeFunc, GFunc, GHFunc, GHRFunc, GHookCheckFunc, GHookCheckMarshaller, GHookFindFunc, GHookFunc, GHookMarshaller, GIOFunc, GLogFunc, GLogWriterFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc, GUnixFDSourceFunc
 end))
 end

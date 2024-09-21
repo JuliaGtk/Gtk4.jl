@@ -1,5 +1,9 @@
 using Test, Gtk4, Gtk4.G_, Gtk4.GLib
 
+@testset "Initialization" begin
+    @test Gtk4.isinitialized()
+end
+
 @testset "get/set property and binding" begin
     w = GtkWindow("Window", 400, 300)
     @test w.title == "Window"
@@ -125,6 +129,9 @@ Gtk4.child(w,f)
 l = GtkLabel("label"); push!(f,l)
 b = GtkButton("button"); push!(f,b)
 
+add_css_class(b,"error")
+remove_css_class(b,"error")
+
 counter = 0
 id = signal_connect(b, "activate") do widget
     counter::Int += 1
@@ -151,7 +158,7 @@ destroy(w)
 end
 
 @testset "Builder" begin
-b=GtkBuilder("test.ui")
+b=GtkBuilder(joinpath(dirname(@__FILE__), "test.ui"))
 widgets = [w for w in b]
 @test length(widgets)==length(b)
 @test length(b)==6
@@ -165,7 +172,9 @@ destroy(a_window)
 
 @test button == b["a_button"]
 
-s = open("test.ui","r") do f
+testui = joinpath(dirname(@__FILE__), "test.ui")
+    
+s = open(testui,"r") do f
     read(f,String)
 end
 b3 = GtkBuilder(s,-1)
@@ -173,7 +182,7 @@ win = b3["a_window"]
 destroy(win)
 
 b4 = GtkBuilder()
-push!(b4; filename="test.ui")
+push!(b4; filename=testui)
 
 win = b4["a_window"]
 destroy(win)
@@ -206,7 +215,7 @@ end
     w = GtkWindow(l)
     show(w)
 
-    ### add css tests here
+    delete!(sc, provider)
 
     destroy(w)
 end
@@ -215,9 +224,15 @@ end
 @test keyval("H") == Gtk4.KEY_H
 end
 
-@testset "IconTheme" begin
-    i = GtkIconTheme(GdkDisplay())
+@testset "IconTheme and CSS for GdkDisplay" begin
+    d = GdkDisplay()
+    i = GtkIconTheme(d)
     Gtk4.icon_theme_add_search_path(i, ".")
+
+    css = "GtkLabel { color: blue; }"
+    provider = GtkCssProvider(css)
+    push!(d, provider, 500)
+    delete!(d, provider)
 end
 
 @testset "Menus" begin
@@ -239,6 +254,7 @@ push!(filemenu, quit)
 GLib.submenu(menubar,"File",filemenu)
 
 mb = GtkPopoverMenuBar(menubar)
+@test Gtk4.menu_model(mb) == menubar
 b = GtkBox(:h)
 push!(b,mb)
 win = GtkWindow(b, "Menus", 200, 40)

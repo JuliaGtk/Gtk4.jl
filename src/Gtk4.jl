@@ -2,11 +2,8 @@ module Gtk4
 
 import Base: unsafe_convert, length, size, parent, push!, pushfirst!, insert!,
              pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
-             convert, empty!, string, popfirst!, size, delete!, in, close,
+             convert, empty!, string, popfirst!, size, delete!, in, close, stack,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
-@static if VERSION >= v"1.9"
-    import Base: stack
-end
 
 import CEnum: @cenum
 import BitFlags: @bitflag
@@ -33,7 +30,7 @@ using Preferences
 using Reexport
 @reexport using Graphics
 import .Graphics: width, height, getgc, scale
-import Cairo: destroy, show_text, text, status
+import Cairo: destroy, text, status
 
 eval(include("gen/gdk4_consts"))
 eval(include("gen/gdk4_structs"))
@@ -68,7 +65,7 @@ end
 
 end
 
-import .GLib: set_gtk_property!, get_gtk_property, run, activate,
+import .GLib: set_gtk_property!, get_gtk_property, activate,
               signal_handler_is_connected, signalnames,
               GListModel, start_main_loop, stop_main_loop
 
@@ -114,7 +111,7 @@ include("tree.jl")
 include("deprecated.jl")
 include("basic_exports.jl")
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
     G_.get_major_version(),
     G_.get_minor_version(),
     G_.get_micro_version())

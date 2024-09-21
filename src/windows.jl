@@ -1,10 +1,11 @@
 @doc """
     GtkWindow(title::Union{Nothing, AbstractString}, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
 
-Create an empty `GtkWindow` with a title. A default width and height can be
-provided with `w` and `h`.  If `resizable` is false, the window will have a
-fixed size `w` and `h`. If `show_window` is false, the window will be initially
-invisible.
+Create an empty `GtkWindow` with a title. A default width and height can be provided with
+`w` and `h`.  If `resizable` is false, the window will have a fixed size `w` and `h`. If
+`show_window` is false, the window will be initially invisible.
+
+GTK docs: [`GtkWindow`]($(gtkdoc_struc_url("gtk4","Window")))
 """
 function GtkWindow(title::Union{Nothing, AbstractString}, w::Real = -1, h::Real = -1, resizable::Bool = true, show_window::Bool = true)
     win = G_.Window_new()
@@ -42,8 +43,10 @@ default_size(win::GtkWindow, w, h) = G_.set_default_size(win, w, h)
 """
     isactive(win::GtkWindow)
 
-Returns whether `win` is the currently active toplevel. This is the window that
-receives keystrokes.
+Returns whether `win` is the currently active toplevel. This is the window that receives
+keystrokes.
+
+Related GTK function: [`gtk_window_is_active`()]($(gtkdoc_method_url("gtk4","Window","is_active")))
 """
 isactive(win::GtkWindow) = G_.is_active(win)
 
@@ -61,34 +64,23 @@ end
 """
     close(win::GtkWindow)
 
-Request that `win` is closed.
+Request that `win` be closed.
 
 Related GTK function: [`gtk_window_close`()]($(gtkdoc_method_url("gtk4","Window","close")))
 """
 close(w::GtkWindow) = G_.close(w)
 
 """
-    fullscreen(win::GtkWindow)
+    fullscreen(win::GtkWindow [, mon::GdkMonitor])
 
-Set `win` to fullscreen mode.
+Set `win` to fullscreen mode, optionally on a particular monitor `mon.` The windowing
+system (outside GTK's control) may not allow this, so it may not work on some platforms.
 
 See also [`unfullscreen`](@ref).
 
-Related GTK function: [`gtk_window_fullscreen`()]($(gtkdoc_method_url("gtk4","Window","fullscreen")))
+Related GTK functions: [`gtk_window_fullscreen`()]($(gtkdoc_method_url("gtk4","Window","fullscreen"))), [`gtk_window_fullscreen_on_monitor`()]($(gtkdoc_method_url("gtk4","Window","fullscreen_on_monitor")))
 """
 fullscreen(win::GtkWindow) = G_.fullscreen(win)
-
-"""
-    fullscreen(win::GtkWindow, mon::GdkMonitor)
-
-Set `win` to fullscreen mode on a particular monitor `mon.` The windowing
-system (outside GTK's control) may not allow this, so it may not work on some
-platforms.
-
-See also [`unfullscreen`](@ref).
-
-Related GTK function: [`gtk_window_fullscreen_on_monitor`()]($(gtkdoc_method_url("gtk4","Window","fullscreen_on_monitor")))
-"""
 fullscreen(win::GtkWindow, mon::GdkMonitor) = G_.fullscreen_on_monitor(win, mon)
 
 """
@@ -145,8 +137,7 @@ Related GTK function: [`gtk_window_unmaximize`()]($(gtkdoc_method_url("gtk4","Wi
 unmaximize(win::GtkWindow) = G_.unmaximize(win)
 
 """
-    present(win::GtkWindow)
-    present(win::GtkWindow, timestamp)
+    present(win::GtkWindow [, timestamp])
 
 Presents a window to the user. Usually means move it to the front.
 
@@ -188,6 +179,8 @@ end
 
 Create an empty `GtkApplicationWindow` for a `GtkApplication` app and a title.
 Keyword arguments can be used to set GObject properties.
+
+GTK docs: [`GtkApplicationWindow`]($(gtkdoc_struc_url("gtk4","ApplicationWindow")))
 """
 function GtkApplicationWindow(app::GtkApplication, title::AbstractString; kwargs...)
     win = GtkApplicationWindow(app; kwargs...)
@@ -204,57 +197,28 @@ push!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_end(hb, w); hb)
 pushfirst!(hb::GtkHeaderBar, w::GtkWidget) = (G_.pack_start(hb, w); hb)
 delete!(hb::GtkHeaderBar, w::GtkWidget) = (G_.remove(hb, w); hb)
 
-## GtkDialog
-
-function push!(d::GtkDialog, s::AbstractString, response)
-    G_.add_button(d, s, Int32(response))
-    d
-end
-
-function response(widget::GtkDialog, response_id)
-    G_.response(widget, Int32(response_id))
-end
-
-function GtkDialog(title::AbstractString, buttons, flags, parent = nothing; kwargs...)
-    parent = (parent === nothing ? C_NULL : parent)
-    w = GtkDialogLeaf(ccall((:gtk_dialog_new_with_buttons, libgtk4), Ptr{GObject},
-                (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
-                            title, parent, flags, C_NULL))
-    GLib.setproperties!(w; kwargs...)
-    for (k, v) in buttons
-        push!(w, k, v)
-    end
-    w
-end
-
-function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent = nothing; kwargs...)
-    parent = (parent === nothing ? C_NULL : parent)
-    w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
-        (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
-                                   parent, flags, typ, ButtonsType_NONE, message))
-    GLib.setproperties!(w; kwargs...)
-    for (k, v) in buttons
-        push!(w, k, v)
-    end
-    w
-end
-
 """
-    ask_dialog(question::AbstractString, parent = nothing; timeout = -1)
+    ask_dialog(callback::Function, question::AbstractString, parent = nothing)
+    ask_dialog(question::AbstractString, parent = nothing)
 
-Create a dialog with a message `question` and two buttons "No" and "Yes". Returns `true` if
-"Yes" is selected and `false` if "No" is selected or the dialog (or its parent window
-`parent`) is closed. The optional input `timeout` (disabled by default) can be used to set
-a time in seconds after which the dialog will close and `false` will be returned.
+Create a dialog with a `question` and two buttons "No" and "Yes". The form with a
+`callback` function argument is intended for use in GUI callbacks, while the form without
+`callback` is only useful in interactive scripts. If `callback` is provided, it should take
+a single boolean argument. This function is called with `true` if "Yes" is selected and
+`false` if "No" is selected or the dialog is closed. Passing in a `parent` window is
+strongly recommended. The dialog will appear in front of the parent window by default.
+
+Keyword arguments:
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `no_text = "No"` to change the text for the response that produces `false`.
+- `yes_text = "Yes"` to change the text for the response that produces `true`.
+- `modal = true` sets whether the dialog is modal (i.e. stays on top of its parent window)
 """
-ask_dialog(question::AbstractString, parent = nothing; timeout = -1) =
-        ask_dialog(question, "No", "Yes", parent; timeout = timeout)
-
-function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
+function ask_dialog(question::AbstractString, parent = nothing; timeout = -1, no_text = "No", yes_text = "Yes")
     res = Ref{Bool}(false)
     c = Condition()
 
-    ask_dialog(message, no_text, yes_text, parent; timeout) do res_
+    ask_dialog(question, parent; timeout, no_text, yes_text) do res_
         res[] = res_
         notify(c)
     end
@@ -262,85 +226,93 @@ function ask_dialog(message::AbstractString, no_text, yes_text, parent = nothing
     return res[]
 end
 
-function ask_dialog(callback::Function, message::AbstractString, no_text, yes_text, parent = nothing; timeout = -1)
-    dlg = GtkMessageDialog(message, ((no_text, ResponseType_NO), (yes_text, ResponseType_YES)),
-            DialogFlags_DESTROY_WITH_PARENT, MessageType_QUESTION, parent)
-
-    function on_response(dlg, response_id)
-        callback(response_id == Int32(ResponseType_YES))
-        G_.set_transient_for(dlg, nothing)
-        destroy(dlg)
-    end
-
-    signal_connect(on_response, dlg, "response")
-    show(dlg)
-
-    if timeout > 0
-        emit(timer) = response(dlg, Gtk4.ResponseType_NO)
-        Timer(emit, timeout)
+function ask_dialog(callback::Function, question::AbstractString, parent = nothing; timeout = -1, no_text = "No", yes_text = "Yes", modal = true)
+    dlg = GtkAlertDialog(question; modal = modal)
+    G_.set_buttons(dlg, [no_text, yes_text])
+    
+    cancellable = GLib.cancel_after_delay(timeout)
+    choose(dlg, parent, cancellable) do dlg, resobj
+        res = try
+            choose_finish(dlg, resobj)
+        catch e
+            if !isa(e, Gtk4.GLib.GErrorException)
+                rethrow(e)
+            end
+            0
+        end
+        callback(Bool(res))
     end
     return dlg
 end
 
 """
-    info_dialog(message::AbstractString, parent = nothing; timeout = -1)
+    info_dialog(callback::Function, message::AbstractString, parent = nothing)
+    info_dialog(message::AbstractString, parent = nothing)
 
-Create a dialog with an informational message `message`. Returns when the dialog (or its
-parent window `parent`) is closed. The optional input `timeout` (disabled by default) can be
-used to set a time in seconds after which the dialog will close and `false` will be
-returned.
+Create a dialog that displays an informational `message`. The form with a `callback`
+function argument is intended for use in GUI callbacks, while the form without `callback`
+is only useful in interactive scripts. If `callback` is provided, it should take no
+arguments. This function is called when the user closes the dialog. If `callback` is not
+provided, this function returns when the dialog is closed. Passing in a `parent` window
+is strongly recommended. The dialog will appear in front of the parent window by default.
+
+Keyword arguments:
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `modal = true` sets whether the dialog is modal (i.e. stays on top of its parent window)
 """ info_dialog
 
-for (func, flag) in (
-        (:info_dialog, :(MessageType_INFO)),
-        (:warn_dialog, :(MessageType_WARNING)),
-        (:error_dialog, :(MessageType_ERROR)))
-    @eval function $func(message::AbstractString, parent = nothing; timeout = -1)
-        res = Ref{String}("")
-        c = Condition()
-
-        $func(message, parent; timeout) do
-            notify(c)
-        end
-        wait(c)
-        return
+function info_dialog(message::AbstractString, parent = nothing; timeout = -1)
+    c = Condition()
+    
+    info_dialog(message, parent; timeout) do
+        notify(c)
     end
+    wait(c)
+    return
+end
 
-    @eval function $func(callback::Function, message::AbstractString, parent = nothing; timeout = -1)
-        dlg = GtkMessageDialog(message, (("Close",0),), DialogFlags_DESTROY_WITH_PARENT, $flag, parent)
-
-        function destroy_dialog(dlg, response_id)
-            callback()
-            G_.set_transient_for(dlg, nothing)
-            destroy(dlg)
+function info_dialog(callback::Function, message::AbstractString, parent = nothing; timeout = -1, modal = true)
+    dlg = GtkAlertDialog(message; modal = modal)
+    
+    function cb(dlg, resobj)
+        try
+            Gtk4.choose_finish(dlg, resobj)
+        catch e
+            if !isa(e, Gtk4.GLib.GErrorException)
+                rethrow(e)
+            end
         end
-
-        signal_connect(destroy_dialog, dlg, "response")
-        show(dlg)
-
-        if timeout > 0
-            emit(timer) = response(dlg, Gtk4.ResponseType_CANCEL)
-            Timer(emit, timeout)
-        end
-
-        return dlg
+        callback()
     end
+    
+    cancellable = GLib.cancel_after_delay(timeout)
+    choose(cb, dlg, parent, cancellable)
+    
+    return dlg
 end
 
 """
-    input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
+    input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString, parent = nothing)
+    input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing)
 
-Create a dialog with a message `message` and a text entry. Returns the string in the entry
-when the "Accept" button is pressed, or `entry_default` if "Cancel" is pressed or the dialog
-or its parent window `parent` is closed. The optional input `timeout` (disabled by default)
-can be used to set a time in seconds after which the dialog will close and `entry_default`
-will be returned.
+Create a dialog with a `message` and a text entry. The form with a `callback` function
+argument is intended for use in GUI callbacks, while the form without `callback` is only
+useful in interactive scripts. If `callback` is provided, it should be a function that
+takes a single `String` argument. When the "Accept" button is pressed, the callback
+function is called with the user's input text. If "Cancel" is pressed (or the dialog or its
+parent window `parent` is closed), `entry_default` will be passed to the callback. If no
+callback function is provided, the string from the dialog is returned. Passing in a
+`parent` window is strongly recommended. The dialog will appear in front of the parent
+window by default.
+
+Keyword arguments:
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
 """
-function input_dialog(message::AbstractString, entry_default::AbstractString, buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
+function input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing; timeout = -1)
     res = Ref{String}("")
     c = Condition()
 
-    input_dialog(message, entry_default, buttons, parent; timeout) do res_
+    input_dialog(message, entry_default, parent; timeout) do res_
         res[] = res_
         notify(c)
     end
@@ -348,31 +320,44 @@ function input_dialog(message::AbstractString, entry_default::AbstractString, bu
     return res[]
 end
 
+function _callback_and_destroy(dlg, callback, txt)
+    callback(txt)
+    G_.set_transient_for(dlg, nothing)
+    destroy(dlg)
+end
+
 function input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString,
-                      buttons = (("Cancel", 0), ("Accept", 1)), parent = nothing; timeout = -1)
-    dlg = GtkMessageDialog(message, buttons, DialogFlags_DESTROY_WITH_PARENT, MessageType_INFO, parent)
-    box = content_area(dlg)
-    entry = GtkEntry()
+                      parent = nothing; timeout = -1)
+    dlg = GtkWindow()
+    box = GtkBox(:v)
+    push!(box, GtkLabel(message))
+    entry = GtkEntry(; activates_default = true)
     entry.text = entry_default
     push!(box, entry)
-
-    function on_response(dlg, response_id)
-        if response_id == 1
-            res = text(GtkEditable(entry))
-        else
-            res = ""
-        end
-        callback(res)
-        G_.set_transient_for(dlg, nothing)
-        destroy(dlg)
+    boxb = GtkBox(:h)
+    push!(box, boxb)
+    accept = GtkButton("Accept"; hexpand = true)
+    default_widget(dlg, accept)
+    cancel = GtkButton("Cancel"; hexpand = true)
+    push!(boxb, cancel)
+    push!(boxb, accept)
+    isnothing(parent) && (G_.set_transient_for(dlg, parent); G_.set_modal(dlg, true))
+    dlg[] = box
+    
+    signal_connect(cancel, "clicked") do b
+        _callback_and_destroy(dlg, callback, entry_default)
+    end
+    
+    signal_connect(accept, "clicked") do b
+        _callback_and_destroy(dlg, callback, text(GtkEditable(entry)))
     end
 
-    signal_connect(on_response, dlg, "response")
     show(dlg)
 
     if timeout > 0
-        emit(timer) = response(dlg, 0)
-        Timer(emit, timeout)
+        Timer(timeout) do timer
+            _callback_and_destroy(dlg, callback, entry_default)
+        end
     end
     return dlg
 end
@@ -452,14 +437,23 @@ hide(d::GtkNativeDialog) = G_.hide(d)
 destroy(d::GtkNativeDialog) = G_.destroy(d)
 
 """
-    open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, start_folder = "")
+    open_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
+    open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
 
-Create a dialog for choosing a file or folder to be opened. Returns the path chosen by the user, or "" if "Cancel" is pressed or the dialog or its parent window `parent` is closed. The dialog title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
+Create a dialog for choosing a file or folder to be opened. The form with a `callback`
+function argument is intended for use in GUI callbacks, while the form without `callback`
+is only useful in interactive scripts. If `callback` is provided, it should be a function
+that takes a single `String` argument (or a vector of strings if `multiple` is set to
+true). The `callback` is called with the file path chosen by the user or "" if "Cancel" is
+pressed. The dialog title is set using `title`. Passing in a `parent` window is strongly
+recommended. The dialog will appear in front of the parent window by default. The argument
+`filters` can be used to show only directory contents that match certain file extensions.
 
 Keyword arguments:
-`timeout`: The optional input `timeout` (disabled by default) can be used to set a time in seconds after which the dialog will close and "" will be returned.
-`multiple`: if `true`, multiple files can be selected, and a list of file paths is returned rather than a single path.
-`start_folder`: if set, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `multiple = false`: if `true`, multiple files can be selected, and an array of file paths is returned rather than a single path.
+- `select_folder = false`: set to `true` to allow the user to select a folder rather than a file.  
+- `start_folder = ""`: if set to a path, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
 """
 function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, select_folder = false, start_folder = "")
     res = Ref{String}("")
@@ -498,20 +492,28 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
     show(dlg)
 
     if timeout > 0
-        emit(timer) = on_response(dlg, Int32(Gtk4.ResponseType_CANCEL))
+        emit(timer) = on_response(dlg, Int32(ResponseType_CANCEL))
         Timer(emit, timeout)
     end
     return dlg
 end
 
 """
-    save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, start_folder = "")
+    save_dialog(callback::Function, title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
+    save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[])
 
-Create a dialog for choosing a file to be saved to. Returns the path chosen by the user, or "" if "Cancel" is pressed or the dialog or its parent window `parent` is closed. The window title is set using `title`. The argument `filters` can be used to show only directory contents that match certain file extensions.
+Create a dialog for choosing a file to be saved to. The form with a `callback` function
+argument is intended for use in GUI callbacks, while the form without `callback` is only
+useful in interactive scripts. If `callback` is provided, it should be a function that
+takes a single `String` argument. The `callback` is called with the file path chosen by the
+user or "" if "Cancel" is pressed. The window title is set using `title`. Passing in a
+`parent` window is strongly recommended. The dialog will appear in front of the parent
+window by default. The argument `filters` can be used to show only directory contents that
+match certain file extensions.
 
 Keyword arguments:
-`timeout`: The optional input `timeout` (disabled by default) can be used to set a time in seconds after which the dialog will close and "" will be returned.
-`start_folder`: if set, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
+- `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `start_folder = ""`: if set, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
 """
 function save_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, start_folder = "")
     res = Ref{String}("")
@@ -561,7 +563,7 @@ end
 ## Other chooser dialogs
 
 function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
-    color = Ref{Union{Nothing,_GdkRGBA}}()
+    color = Ref{Union{Nothing,GdkRGBA}}()
     c = Condition()
 
     color_dialog(title, parent; timeout) do col
@@ -572,39 +574,46 @@ function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
     return color[]
 end
 
-function color_dialog(callback::Function, title::AbstractString, parent = nothing; timeout=-1)
-    dlg = GtkColorChooserDialog(title, parent)
+function color_dialog(callback::Function, title::AbstractString, parent = nothing; timeout=-1, initial_color = nothing)
+    dlg = GtkColorDialog()
+    G_.set_title(dlg, title)
 
-    function on_response(dlg, response_id)
-        dlgp = GtkColorChooser(dlg)
-        if unsafe_trunc(UInt16, response_id) == ResponseType_OK
-            res = G_.get_rgba(dlgp)
-        else
-            res = nothing
+    function cb(dlg, resobj)
+        rgba = try
+            Gtk4.G_.choose_rgba_finish(dlg, GAsyncResult(resobj))
+        catch e
+            if !isa(e, Gtk4.GLib.GErrorException)
+                rethrow(e)
+            end
+            nothing
         end
-        callback(res)
-        G_.set_transient_for(dlg, nothing)
-        destroy(dlg)
+        callback(rgba)
     end
 
-    signal_connect(on_response, dlg, "response")
-    show(dlg)
+    cancellable = GLib.cancel_after_delay(timeout)
+    G_.choose_rgba(dlg, parent, initial_color, cancellable, cb)
 
-    if timeout > 0
-        emit(timer) = response(dlg, Gtk4.ResponseType_CANCEL)
-        Timer(emit, timeout)
-    end
     return dlg
 end
 
 ## New dialogs (new in GTK 4.10)
 
-function GtkAlertDialog(message::AbstractString)
+function GtkAlertDialog(message::AbstractString; kwargs...)
     ptr = ccall((:gtk_alert_dialog_new, libgtk4), Ptr{GObject}, (Ptr{UInt8},), message)
-    GtkAlertDialogLeaf(ptr, true)
+    d = GtkAlertDialogLeaf(ptr, true)
+    GLib.setproperties!(d; kwargs...)
+    d
 end
 
 show(dlg::GtkAlertDialog, parent=nothing) = G_.show(dlg, parent)
+function choose(cb, dlg::GtkAlertDialog, parent = nothing, cancellable = nothing)
+    G_.choose(dlg, parent, cancellable, cb)
+end
+function choose_finish(dlg, resobj)
+    G_.choose_finish(dlg, GAsyncResult(resobj))
+end
+
+### New file dialogs
 
 function _path_finish(f, dlg, resobj)
     gfile = f(dlg, Gtk4.GLib.GAsyncResult(resobj))

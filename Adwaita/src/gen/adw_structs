@@ -1,30 +1,30 @@
 quote
 $(Expr(:toplevel, quote
-    gboxed_types = Any[]
-    mutable struct AdwSpringParams <: GBoxed
-        handle::Ptr{AdwSpringParams}
-        begin
-            (GLib.g_type(::Type{T}) where T <: AdwSpringParams) = begin
-                    ccall(("adw_spring_params_get_type", libadwaita), GType, ())
-                end
-            function AdwSpringParams(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    const gboxed_types = Any[]
+    begin
+        mutable struct AdwSpringParams <: GBoxed
+            handle::Ptr{AdwSpringParams}
+            begin
+                (GLib.g_type(::Type{T}) where T <: AdwSpringParams) = begin
+                        ccall(("adw_spring_params_get_type", libadwaita), GType, ())
                     end
+                function AdwSpringParams(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, AdwSpringParams)
             end
-            push!(gboxed_types, AdwSpringParams)
         end
+        const AdwSpringParamsLike = AdwSpringParams
     end
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
-    function AdwSpringParams(_damping_ratio::Real, _mass::Real, _stiffness::Real)
-        G_.SpringParams_new(_damping_ratio, _mass, _stiffness)
-    end
     struct AdwSwipeable <: GInterface
         handle::Ptr{GObject}
         gc::Any
@@ -32,7 +32,67 @@ $(Expr(:toplevel, quote
                 new(unsafe_convert(Ptr{GObject}, x), x)
             end
     end
-    gtype_wrapper_cache = Dict{Symbol, Type}()
+    const gtype_wrapper_cache = Dict{Symbol, Type}()
+    begin
+        abstract type AdwDialog <: GtkWidget end
+        mutable struct AdwDialogLeaf <: AdwDialog
+            handle::Ptr{GObject}
+            function AdwDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwDialog] = AdwDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwDialog) = begin
+                ccall(("adw_dialog_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwDialog})
+            vcat([:close_attempt, :closed], signalnames(supertype(AdwDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :closed => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :close_attempt => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwDialog
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwAboutDialog <: AdwDialog end
+        mutable struct AdwAboutDialogLeaf <: AdwAboutDialog
+            handle::Ptr{GObject}
+            function AdwAboutDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwAboutDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwAboutDialog] = AdwAboutDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwAboutDialog) = begin
+                ccall(("adw_about_dialog_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwAboutDialog})
+            vcat([:activate_link], signalnames(supertype(AdwAboutDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :activate_link => (:Cint, [:Cstring]), :unrealize => (:Nothing, Any[]), :closed => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :close_attempt => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwAboutDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwAboutDialog
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
     begin
         abstract type AdwWindow <: GtkWindow end
         mutable struct AdwWindowLeaf <: AdwWindow
@@ -49,6 +109,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwWindow) = begin
                 ccall(("adw_window_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwWindow})
+            signalnames(supertype(AdwWindow))
+        end
     end
     begin
         abstract type AdwAboutWindow <: AdwWindow end
@@ -68,6 +133,19 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwAboutWindow})
+            vcat([:activate_link], signalnames(supertype(AdwAboutWindow)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :activate_link => (:Cint, [:Cstring]), :keys_changed => (:Nothing, Any[]), :close_request => (:Cint, Any[]), :enable_debugging => (:Cint, [:Cint]), :unrealize => (:Nothing, Any[]), :activate_focus => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :activate_default => (:Nothing, Any[]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwAboutWindow
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwAboutWindow
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
         abstract type AdwPreferencesRow <: GtkListBoxRow end
         mutable struct AdwPreferencesRowLeaf <: AdwPreferencesRow
             handle::Ptr{GObject}
@@ -83,6 +161,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwPreferencesRow) = begin
                 ccall(("adw_preferences_row_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwPreferencesRow})
+            signalnames(supertype(AdwPreferencesRow))
+        end
     end
     begin
         abstract type AdwActionRow <: AdwPreferencesRow end
@@ -102,6 +185,49 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwActionRow})
+            vcat([:activated], signalnames(supertype(AdwActionRow)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :activated => (:Nothing, Any[]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwActionRow
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwActionRow
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwAlertDialog <: AdwDialog end
+        mutable struct AdwAlertDialogLeaf <: AdwAlertDialog
+            handle::Ptr{GObject}
+            function AdwAlertDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwAlertDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwAlertDialog] = AdwAlertDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwAlertDialog) = begin
+                ccall(("adw_alert_dialog_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwAlertDialog})
+            vcat([:response], signalnames(supertype(AdwAlertDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :closed => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :close_attempt => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :response => (:Nothing, [:Cstring]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwAlertDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwAlertDialog
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
         abstract type AdwAnimation <: GObject end
         mutable struct AdwAnimationLeaf <: AdwAnimation
             handle::Ptr{GObject}
@@ -117,6 +243,19 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwAnimation) = begin
                 ccall(("adw_animation_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwAnimation})
+            vcat([:done], signalnames(supertype(AdwAnimation)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :done => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwAnimation
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwAnimation
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type AdwAnimationTarget <: GObject end
@@ -136,6 +275,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwAnimationTarget})
+            signalnames(supertype(AdwAnimationTarget))
+        end
+    end
+    begin
         abstract type AdwApplication <: GtkApplication end
         mutable struct AdwApplicationLeaf <: AdwApplication
             handle::Ptr{GObject}
@@ -151,6 +295,19 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwApplication) = begin
                 ccall(("adw_application_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwApplication})
+            vcat([:action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(AdwApplication)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :startup => (:Nothing, Any[]), :command_line => (:Int32, Expr[:(Ptr{GObject})]), :open => (:Nothing, Any[:(Ptr{Ptr{GObject}}), :Int32, :Cstring]), :window_removed => (:Nothing, Expr[:(Ptr{GObject})]), :shutdown => (:Nothing, Any[]), :name_lost => (:Cint, Any[]), :window_added => (:Nothing, Expr[:(Ptr{GObject})]), :activate => (:Nothing, Any[]), :handle_local_options => (:Int32, [:GVariantDict]), :query_end => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwApplication
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwApplication
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type AdwApplicationWindow <: GtkApplicationWindow end
@@ -170,6 +327,19 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwApplicationWindow})
+            vcat([:action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(AdwApplicationWindow)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :keys_changed => (:Nothing, Any[]), :close_request => (:Cint, Any[]), :enable_debugging => (:Cint, [:Cint]), :unrealize => (:Nothing, Any[]), :activate_focus => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :activate_default => (:Nothing, Any[]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwApplicationWindow
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwApplicationWindow
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
         abstract type AdwAvatar <: GtkWidget end
         mutable struct AdwAvatarLeaf <: AdwAvatar
             handle::Ptr{GObject}
@@ -185,6 +355,41 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwAvatar) = begin
                 ccall(("adw_avatar_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwAvatar})
+            signalnames(supertype(AdwAvatar))
+        end
+    end
+    begin
+        abstract type AdwBanner <: GtkWidget end
+        mutable struct AdwBannerLeaf <: AdwBanner
+            handle::Ptr{GObject}
+            function AdwBannerLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwBannerLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwBanner] = AdwBannerLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwBanner) = begin
+                ccall(("adw_banner_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwBanner})
+            vcat([:button_clicked], signalnames(supertype(AdwBanner)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :button_clicked => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwBanner
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwBanner
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type AdwBin <: GtkWidget end
@@ -204,6 +409,33 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwBin})
+            signalnames(supertype(AdwBin))
+        end
+    end
+    begin
+        abstract type AdwBreakpointBin <: GtkWidget end
+        mutable struct AdwBreakpointBinLeaf <: AdwBreakpointBin
+            handle::Ptr{GObject}
+            function AdwBreakpointBinLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwBreakpointBinLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwBreakpointBin] = AdwBreakpointBinLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwBreakpointBin) = begin
+                ccall(("adw_breakpoint_bin_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwBreakpointBin})
+            signalnames(supertype(AdwBreakpointBin))
+        end
+    end
+    begin
         abstract type AdwButtonContent <: GtkWidget end
         mutable struct AdwButtonContentLeaf <: AdwButtonContent
             handle::Ptr{GObject}
@@ -219,6 +451,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwButtonContent) = begin
                 ccall(("adw_button_content_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwButtonContent})
+            signalnames(supertype(AdwButtonContent))
+        end
     end
     begin
         abstract type AdwCallbackAnimationTarget <: AdwAnimationTarget end
@@ -238,6 +475,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwCallbackAnimationTarget})
+            signalnames(supertype(AdwCallbackAnimationTarget))
+        end
+    end
+    begin
         abstract type AdwCarousel <: GtkWidget end
         mutable struct AdwCarouselLeaf <: AdwCarousel
             handle::Ptr{GObject}
@@ -253,6 +495,19 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwCarousel) = begin
                 ccall(("adw_carousel_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwCarousel})
+            vcat([:page_changed], signalnames(supertype(AdwCarousel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :page_changed => (:Nothing, [:UInt32]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwCarousel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwCarousel
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type AdwCarouselIndicatorDots <: GtkWidget end
@@ -272,6 +527,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwCarouselIndicatorDots})
+            signalnames(supertype(AdwCarouselIndicatorDots))
+        end
+    end
+    begin
         abstract type AdwCarouselIndicatorLines <: GtkWidget end
         mutable struct AdwCarouselIndicatorLinesLeaf <: AdwCarouselIndicatorLines
             handle::Ptr{GObject}
@@ -287,6 +547,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwCarouselIndicatorLines) = begin
                 ccall(("adw_carousel_indicator_lines_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwCarouselIndicatorLines})
+            signalnames(supertype(AdwCarouselIndicatorLines))
+        end
     end
     begin
         abstract type AdwClamp <: GtkWidget end
@@ -306,6 +571,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwClamp})
+            signalnames(supertype(AdwClamp))
+        end
+    end
+    begin
         abstract type AdwClampLayout <: GtkLayoutManager end
         mutable struct AdwClampLayoutLeaf <: AdwClampLayout
             handle::Ptr{GObject}
@@ -321,6 +591,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwClampLayout) = begin
                 ccall(("adw_clamp_layout_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwClampLayout})
+            signalnames(supertype(AdwClampLayout))
+        end
     end
     begin
         abstract type AdwClampScrollable <: GtkWidget end
@@ -340,6 +615,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwClampScrollable})
+            signalnames(supertype(AdwClampScrollable))
+        end
+    end
+    begin
         abstract type AdwComboRow <: AdwActionRow end
         mutable struct AdwComboRowLeaf <: AdwComboRow
             handle::Ptr{GObject}
@@ -355,6 +635,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwComboRow) = begin
                 ccall(("adw_combo_row_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwComboRow})
+            signalnames(supertype(AdwComboRow))
+        end
     end
     begin
         abstract type AdwEntryRow <: AdwPreferencesRow end
@@ -374,6 +659,19 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwEntryRow})
+            vcat([:apply, :entry_activated, :changed, :delete_text, :insert_text], signalnames(supertype(AdwEntryRow)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :entry_activated => (:Nothing, Any[]), :apply => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwEntryRow
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwEntryRow
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
         abstract type AdwEnumListItem <: GObject end
         mutable struct AdwEnumListItemLeaf <: AdwEnumListItem
             handle::Ptr{GObject}
@@ -389,6 +687,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwEnumListItem) = begin
                 ccall(("adw_enum_list_item_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwEnumListItem})
+            signalnames(supertype(AdwEnumListItem))
+        end
     end
     begin
         abstract type AdwEnumListModel <: GObject end
@@ -408,6 +711,19 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwEnumListModel})
+            vcat([:items_changed], signalnames(supertype(AdwEnumListModel)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwEnumListModel
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwEnumListModel
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
         abstract type AdwExpanderRow <: AdwPreferencesRow end
         mutable struct AdwExpanderRowLeaf <: AdwExpanderRow
             handle::Ptr{GObject}
@@ -423,6 +739,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwExpanderRow) = begin
                 ccall(("adw_expander_row_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwExpanderRow})
+            signalnames(supertype(AdwExpanderRow))
+        end
     end
     begin
         abstract type AdwFlap <: GtkWidget end
@@ -442,6 +763,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwFlap})
+            signalnames(supertype(AdwFlap))
+        end
+    end
+    begin
         abstract type AdwHeaderBar <: GtkWidget end
         mutable struct AdwHeaderBarLeaf <: AdwHeaderBar
             handle::Ptr{GObject}
@@ -457,6 +783,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwHeaderBar) = begin
                 ccall(("adw_header_bar_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwHeaderBar})
+            signalnames(supertype(AdwHeaderBar))
+        end
     end
     begin
         abstract type AdwLeaflet <: GtkWidget end
@@ -476,6 +807,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwLeaflet})
+            signalnames(supertype(AdwLeaflet))
+        end
+    end
+    begin
         abstract type AdwLeafletPage <: GObject end
         mutable struct AdwLeafletPageLeaf <: AdwLeafletPage
             handle::Ptr{GObject}
@@ -491,6 +827,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwLeafletPage) = begin
                 ccall(("adw_leaflet_page_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwLeafletPage})
+            signalnames(supertype(AdwLeafletPage))
+        end
     end
     begin
         abstract type AdwMessageDialog <: GtkWindow end
@@ -510,6 +851,123 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwMessageDialog})
+            vcat([:response], signalnames(supertype(AdwMessageDialog)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :keys_changed => (:Nothing, Any[]), :close_request => (:Cint, Any[]), :enable_debugging => (:Cint, [:Cint]), :unrealize => (:Nothing, Any[]), :activate_focus => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :activate_default => (:Nothing, Any[]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :response => (:Nothing, [:Cstring]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwMessageDialog
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwMessageDialog
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwNavigationPage <: GtkWidget end
+        mutable struct AdwNavigationPageLeaf <: AdwNavigationPage
+            handle::Ptr{GObject}
+            function AdwNavigationPageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwNavigationPageLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwNavigationPage] = AdwNavigationPageLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwNavigationPage) = begin
+                ccall(("adw_navigation_page_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwNavigationPage})
+            vcat([:hidden, :hiding, :showing, :shown], signalnames(supertype(AdwNavigationPage)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :showing => (:Nothing, Any[]), :shown => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :hidden => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :hiding => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwNavigationPage
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwNavigationPage
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwNavigationSplitView <: GtkWidget end
+        mutable struct AdwNavigationSplitViewLeaf <: AdwNavigationSplitView
+            handle::Ptr{GObject}
+            function AdwNavigationSplitViewLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwNavigationSplitViewLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwNavigationSplitView] = AdwNavigationSplitViewLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwNavigationSplitView) = begin
+                ccall(("adw_navigation_split_view_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwNavigationSplitView})
+            signalnames(supertype(AdwNavigationSplitView))
+        end
+    end
+    begin
+        abstract type AdwNavigationView <: GtkWidget end
+        mutable struct AdwNavigationViewLeaf <: AdwNavigationView
+            handle::Ptr{GObject}
+            function AdwNavigationViewLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwNavigationViewLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwNavigationView] = AdwNavigationViewLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwNavigationView) = begin
+                ccall(("adw_navigation_view_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwNavigationView})
+            vcat([:get_next_page, :popped, :pushed, :replaced], signalnames(supertype(AdwNavigationView)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :pushed => (:Nothing, Any[]), :get_next_page => (:(Ptr{GObject}), Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :popped => (:Nothing, Expr[:(Ptr{GObject})]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :replaced => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwNavigationView
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwNavigationView
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwOverlaySplitView <: GtkWidget end
+        mutable struct AdwOverlaySplitViewLeaf <: AdwOverlaySplitView
+            handle::Ptr{GObject}
+            function AdwOverlaySplitViewLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwOverlaySplitViewLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwOverlaySplitView] = AdwOverlaySplitViewLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwOverlaySplitView) = begin
+                ccall(("adw_overlay_split_view_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwOverlaySplitView})
+            signalnames(supertype(AdwOverlaySplitView))
+        end
+    end
+    begin
         abstract type AdwPasswordEntryRow <: AdwEntryRow end
         mutable struct AdwPasswordEntryRowLeaf <: AdwPasswordEntryRow
             handle::Ptr{GObject}
@@ -525,6 +983,41 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwPasswordEntryRow) = begin
                 ccall(("adw_password_entry_row_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwPasswordEntryRow})
+            vcat([:changed, :delete_text, :insert_text], signalnames(supertype(AdwPasswordEntryRow)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :entry_activated => (:Nothing, Any[]), :apply => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwPasswordEntryRow
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwPasswordEntryRow
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwPreferencesDialog <: AdwDialog end
+        mutable struct AdwPreferencesDialogLeaf <: AdwPreferencesDialog
+            handle::Ptr{GObject}
+            function AdwPreferencesDialogLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwPreferencesDialogLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwPreferencesDialog] = AdwPreferencesDialogLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwPreferencesDialog) = begin
+                ccall(("adw_preferences_dialog_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwPreferencesDialog})
+            signalnames(supertype(AdwPreferencesDialog))
+        end
     end
     begin
         abstract type AdwPreferencesGroup <: GtkWidget end
@@ -544,6 +1037,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwPreferencesGroup})
+            signalnames(supertype(AdwPreferencesGroup))
+        end
+    end
+    begin
         abstract type AdwPreferencesPage <: GtkWidget end
         mutable struct AdwPreferencesPageLeaf <: AdwPreferencesPage
             handle::Ptr{GObject}
@@ -559,6 +1057,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwPreferencesPage) = begin
                 ccall(("adw_preferences_page_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwPreferencesPage})
+            signalnames(supertype(AdwPreferencesPage))
+        end
     end
     begin
         abstract type AdwPreferencesWindow <: AdwWindow end
@@ -578,6 +1081,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwPreferencesWindow})
+            signalnames(supertype(AdwPreferencesWindow))
+        end
+    end
+    begin
         abstract type AdwPropertyAnimationTarget <: AdwAnimationTarget end
         mutable struct AdwPropertyAnimationTargetLeaf <: AdwPropertyAnimationTarget
             handle::Ptr{GObject}
@@ -593,6 +1101,41 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwPropertyAnimationTarget) = begin
                 ccall(("adw_property_animation_target_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwPropertyAnimationTarget})
+            signalnames(supertype(AdwPropertyAnimationTarget))
+        end
+    end
+    begin
+        abstract type AdwSpinRow <: AdwActionRow end
+        mutable struct AdwSpinRowLeaf <: AdwSpinRow
+            handle::Ptr{GObject}
+            function AdwSpinRowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwSpinRowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwSpinRow] = AdwSpinRowLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwSpinRow) = begin
+                ccall(("adw_spin_row_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwSpinRow})
+            vcat([:input, :output, :wrapped, :changed, :delete_text, :insert_text], signalnames(supertype(AdwSpinRow)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :input => (:Int32, [:Float64]), :wrapped => (:Nothing, Any[]), :output => (:Cint, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :activated => (:Nothing, Any[]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwSpinRow
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwSpinRow
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type AdwSplitButton <: GtkWidget end
@@ -612,6 +1155,19 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwSplitButton})
+            vcat([:activate, :clicked], signalnames(supertype(AdwSplitButton)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :clicked => (:Nothing, Any[]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwSplitButton
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwSplitButton
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
         abstract type AdwSpringAnimation <: AdwAnimation end
         mutable struct AdwSpringAnimationLeaf <: AdwSpringAnimation
             handle::Ptr{GObject}
@@ -627,6 +1183,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwSpringAnimation) = begin
                 ccall(("adw_spring_animation_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwSpringAnimation})
+            signalnames(supertype(AdwSpringAnimation))
+        end
     end
     begin
         abstract type AdwSqueezer <: GtkWidget end
@@ -646,6 +1207,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwSqueezer})
+            signalnames(supertype(AdwSqueezer))
+        end
+    end
+    begin
         abstract type AdwSqueezerPage <: GObject end
         mutable struct AdwSqueezerPageLeaf <: AdwSqueezerPage
             handle::Ptr{GObject}
@@ -661,6 +1227,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwSqueezerPage) = begin
                 ccall(("adw_squeezer_page_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwSqueezerPage})
+            signalnames(supertype(AdwSqueezerPage))
+        end
     end
     begin
         abstract type AdwStatusPage <: GtkWidget end
@@ -680,6 +1251,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwStatusPage})
+            signalnames(supertype(AdwStatusPage))
+        end
+    end
+    begin
         abstract type AdwStyleManager <: GObject end
         mutable struct AdwStyleManagerLeaf <: AdwStyleManager
             handle::Ptr{GObject}
@@ -695,6 +1271,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwStyleManager) = begin
                 ccall(("adw_style_manager_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwStyleManager})
+            signalnames(supertype(AdwStyleManager))
+        end
     end
     begin
         abstract type AdwSwipeTracker <: GObject end
@@ -714,6 +1295,41 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwSwipeTracker})
+            vcat([:begin_swipe, :end_swipe, :prepare, :update_swipe], signalnames(supertype(AdwSwipeTracker)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :end_swipe => (:Nothing, [:Float64, :Float64]), :prepare => (:Nothing, [:UInt32]), :begin_swipe => (:Nothing, Any[]), :update_swipe => (:Nothing, [:Float64]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwSwipeTracker
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwSwipeTracker
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwSwitchRow <: AdwActionRow end
+        mutable struct AdwSwitchRowLeaf <: AdwSwitchRow
+            handle::Ptr{GObject}
+            function AdwSwitchRowLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwSwitchRowLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwSwitchRow] = AdwSwitchRowLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwSwitchRow) = begin
+                ccall(("adw_switch_row_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwSwitchRow})
+            signalnames(supertype(AdwSwitchRow))
+        end
+    end
+    begin
         abstract type AdwTabBar <: GtkWidget end
         mutable struct AdwTabBarLeaf <: AdwTabBar
             handle::Ptr{GObject}
@@ -729,6 +1345,79 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwTabBar) = begin
                 ccall(("adw_tab_bar_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwTabBar})
+            vcat([:extra_drag_drop, :extra_drag_value], signalnames(supertype(AdwTabBar)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :extra_drag_drop => (:Cint, Any[:(Ptr{GObject}), :_GValue]), :unrealize => (:Nothing, Any[]), :extra_drag_value => (:UInt32, Any[:(Ptr{GObject}), :_GValue]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwTabBar
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwTabBar
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwTabButton <: GtkWidget end
+        mutable struct AdwTabButtonLeaf <: AdwTabButton
+            handle::Ptr{GObject}
+            function AdwTabButtonLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwTabButtonLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwTabButton] = AdwTabButtonLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwTabButton) = begin
+                ccall(("adw_tab_button_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwTabButton})
+            vcat([:activate, :clicked], signalnames(supertype(AdwTabButton)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :unrealize => (:Nothing, Any[]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :clicked => (:Nothing, Any[]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :activate => (:Nothing, Any[]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwTabButton
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwTabButton
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
+        abstract type AdwTabOverview <: GtkWidget end
+        mutable struct AdwTabOverviewLeaf <: AdwTabOverview
+            handle::Ptr{GObject}
+            function AdwTabOverviewLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwTabOverviewLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwTabOverview] = AdwTabOverviewLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwTabOverview) = begin
+                ccall(("adw_tab_overview_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwTabOverview})
+            vcat([:create_tab, :extra_drag_drop, :extra_drag_value], signalnames(supertype(AdwTabOverview)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :extra_drag_drop => (:Cint, Any[:(Ptr{GObject}), :_GValue]), :create_tab => (:(Ptr{GObject}), Any[]), :unrealize => (:Nothing, Any[]), :extra_drag_value => (:UInt32, Any[:(Ptr{GObject}), :_GValue]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwTabOverview
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwTabOverview
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type AdwTabPage <: GObject end
@@ -748,6 +1437,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwTabPage})
+            signalnames(supertype(AdwTabPage))
+        end
+    end
+    begin
         abstract type AdwTabView <: GtkWidget end
         mutable struct AdwTabViewLeaf <: AdwTabView
             handle::Ptr{GObject}
@@ -763,6 +1457,19 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwTabView) = begin
                 ccall(("adw_tab_view_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwTabView})
+            vcat([:close_page, :create_window, :indicator_activated, :page_attached, :page_detached, :page_reordered, :setup_menu], signalnames(supertype(AdwTabView)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :state_flags_changed => (:Nothing, [:UInt32]), :map => (:Nothing, Any[]), :page_attached => (:Nothing, Any[:(Ptr{GObject}), :Int32]), :page_reordered => (:Nothing, Any[:(Ptr{GObject}), :Int32]), :page_detached => (:Nothing, Any[:(Ptr{GObject}), :Int32]), :unrealize => (:Nothing, Any[]), :create_window => (:(Ptr{GObject}), Any[]), :setup_menu => (:Nothing, Expr[:(Ptr{GObject})]), :show => (:Nothing, Any[]), :unmap => (:Nothing, Any[]), :indicator_activated => (:Nothing, Expr[:(Ptr{GObject})]), :hide => (:Nothing, Any[]), :query_tooltip => (:Cint, Any[:Int32, :Int32, :Cint, :(Ptr{GObject})]), :move_focus => (:Nothing, [:UInt32]), :mnemonic_activate => (:Cint, [:Cint]), :direction_changed => (:Nothing, [:UInt32]), :close_page => (:Cint, Expr[:(Ptr{GObject})]), :destroy => (:Nothing, Any[]), :keynav_failed => (:Cint, [:UInt32]), :realize => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwTabView
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwTabView
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type AdwTimedAnimation <: AdwAnimation end
@@ -782,6 +1489,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwTimedAnimation})
+            signalnames(supertype(AdwTimedAnimation))
+        end
+    end
+    begin
         abstract type AdwToast <: GObject end
         mutable struct AdwToastLeaf <: AdwToast
             handle::Ptr{GObject}
@@ -797,6 +1509,19 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwToast) = begin
                 ccall(("adw_toast_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwToast})
+            vcat([:button_clicked, :dismissed], signalnames(supertype(AdwToast)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :dismissed => (:Nothing, Any[]), :button_clicked => (:Nothing, Any[]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwToast
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwToast
+                Tuple(eval.((d[name])[2]))
+            end
+        end
     end
     begin
         abstract type AdwToastOverlay <: GtkWidget end
@@ -816,6 +1541,33 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwToastOverlay})
+            signalnames(supertype(AdwToastOverlay))
+        end
+    end
+    begin
+        abstract type AdwToolbarView <: GtkWidget end
+        mutable struct AdwToolbarViewLeaf <: AdwToolbarView
+            handle::Ptr{GObject}
+            function AdwToolbarViewLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwToolbarViewLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwToolbarView] = AdwToolbarViewLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwToolbarView) = begin
+                ccall(("adw_toolbar_view_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwToolbarView})
+            signalnames(supertype(AdwToolbarView))
+        end
+    end
+    begin
         abstract type AdwViewStack <: GtkWidget end
         mutable struct AdwViewStackLeaf <: AdwViewStack
             handle::Ptr{GObject}
@@ -831,6 +1583,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwViewStack) = begin
                 ccall(("adw_view_stack_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwViewStack})
+            signalnames(supertype(AdwViewStack))
+        end
     end
     begin
         abstract type AdwViewStackPage <: GObject end
@@ -850,6 +1607,41 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwViewStackPage})
+            signalnames(supertype(AdwViewStackPage))
+        end
+    end
+    begin
+        abstract type AdwViewStackPages <: GObject end
+        mutable struct AdwViewStackPagesLeaf <: AdwViewStackPages
+            handle::Ptr{GObject}
+            function AdwViewStackPagesLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct AdwViewStackPagesLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:AdwViewStackPages] = AdwViewStackPagesLeaf
+        (GLib.g_type(::Type{T}) where T <: AdwViewStackPages) = begin
+                ccall(("adw_view_stack_pages_get_type", libadwaita), GType, ())
+            end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwViewStackPages})
+            vcat([:items_changed, :selection_changed], signalnames(supertype(AdwViewStackPages)))
+        end
+        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
+            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: AdwViewStackPages
+                eval((d[name])[1])
+            end
+            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: AdwViewStackPages
+                Tuple(eval.((d[name])[2]))
+            end
+        end
+    end
+    begin
         abstract type AdwViewSwitcher <: GtkWidget end
         mutable struct AdwViewSwitcherLeaf <: AdwViewSwitcher
             handle::Ptr{GObject}
@@ -865,6 +1657,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwViewSwitcher) = begin
                 ccall(("adw_view_switcher_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwViewSwitcher})
+            signalnames(supertype(AdwViewSwitcher))
+        end
     end
     begin
         abstract type AdwViewSwitcherBar <: GtkWidget end
@@ -884,6 +1681,11 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwViewSwitcherBar})
+            signalnames(supertype(AdwViewSwitcherBar))
+        end
+    end
+    begin
         abstract type AdwViewSwitcherTitle <: GtkWidget end
         mutable struct AdwViewSwitcherTitleLeaf <: AdwViewSwitcherTitle
             handle::Ptr{GObject}
@@ -899,6 +1701,11 @@ $(Expr(:toplevel, quote
         (GLib.g_type(::Type{T}) where T <: AdwViewSwitcherTitle) = begin
                 ccall(("adw_view_switcher_title_get_type", libadwaita), GType, ())
             end
+    end
+    begin
+        function GLib.signalnames(::Type{AdwViewSwitcherTitle})
+            signalnames(supertype(AdwViewSwitcherTitle))
+        end
     end
     begin
         abstract type AdwWindowTitle <: GtkWidget end
@@ -918,17 +1725,42 @@ $(Expr(:toplevel, quote
             end
     end
     begin
+        function GLib.signalnames(::Type{AdwWindowTitle})
+            signalnames(supertype(AdwWindowTitle))
+        end
+    end
+    begin
         gtype_wrapper_cache_init() = begin
                 merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
             end
+    end
+    function AdwAboutDialog(; kwargs...)
+        obj = G_.AboutDialog_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwAboutDialog(_resource_path::Union{AbstractString, Symbol}, _release_notes_version::Maybe(Union{AbstractString, Symbol}); kwargs...)
+        obj = G_.AboutDialog_new_from_appdata(_resource_path, _release_notes_version)
+        GLib.setproperties!(obj; kwargs...)
+        obj
     end
     function AdwAboutWindow(; kwargs...)
         obj = G_.AboutWindow_new()
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function AdwAboutWindow(_resource_path::Union{AbstractString, Symbol}, _release_notes_version::Maybe(Union{AbstractString, Symbol}); kwargs...)
+        obj = G_.AboutWindow_new_from_appdata(_resource_path, _release_notes_version)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function AdwActionRow(; kwargs...)
         obj = G_.ActionRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwAlertDialog(_heading::Maybe(Union{AbstractString, Symbol}), _body::Maybe(Union{AbstractString, Symbol}); kwargs...)
+        obj = G_.AlertDialog_new(_heading, _body)
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -947,8 +1779,18 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function AdwBanner(_title::Union{AbstractString, Symbol}; kwargs...)
+        obj = G_.Banner_new(_title)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function AdwBin(; kwargs...)
         obj = G_.Bin_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwBreakpointBin(; kwargs...)
+        obj = G_.BreakpointBin_new()
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -957,8 +1799,8 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function AdwCallbackAnimationTarget(_callback::Function, _user_data::Maybe(Nothing), _destroy::Function)
-        G_.CallbackAnimationTarget_new(_callback, _user_data, _destroy)
+    function AdwCallbackAnimationTarget(_callback::Function, _destroy::Function)
+        G_.CallbackAnimationTarget_new(_callback, _destroy)
     end
     function AdwCarousel(; kwargs...)
         obj = G_.Carousel_new()
@@ -992,6 +1834,11 @@ $(Expr(:toplevel, quote
     end
     function AdwComboRow(; kwargs...)
         obj = G_.ComboRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwDialog(; kwargs...)
+        obj = G_.Dialog_new()
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -1030,8 +1877,38 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function AdwNavigationPage(_child::GtkWidget, _title::Union{AbstractString, Symbol}; kwargs...)
+        obj = G_.NavigationPage_new(_child, _title)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwNavigationPage(_child::GtkWidget, _title::Union{AbstractString, Symbol}, _tag::Union{AbstractString, Symbol}; kwargs...)
+        obj = G_.NavigationPage_new_with_tag(_child, _title, _tag)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwNavigationSplitView(; kwargs...)
+        obj = G_.NavigationSplitView_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwNavigationView(; kwargs...)
+        obj = G_.NavigationView_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwOverlaySplitView(; kwargs...)
+        obj = G_.OverlaySplitView_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function AdwPasswordEntryRow()
         G_.PasswordEntryRow_new()
+    end
+    function AdwPreferencesDialog(; kwargs...)
+        obj = G_.PreferencesDialog_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
     end
     function AdwPreferencesGroup(; kwargs...)
         obj = G_.PreferencesGroup_new()
@@ -1063,6 +1940,16 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function AdwSpinRow(_adjustment::Maybe(GtkAdjustment), _climb_rate::Real, _digits::Integer; kwargs...)
+        obj = G_.SpinRow_new(_adjustment, _climb_rate, _digits)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwSpinRow(_min::Real, _max::Real, _step::Real; kwargs...)
+        obj = G_.SpinRow_new_with_range(_min, _max, _step)
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function AdwSplitButton(; kwargs...)
         obj = G_.SplitButton_new()
         GLib.setproperties!(obj; kwargs...)
@@ -1088,8 +1975,23 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function AdwSwitchRow(; kwargs...)
+        obj = G_.SwitchRow_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function AdwTabBar(; kwargs...)
         obj = G_.TabBar_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwTabButton(; kwargs...)
+        obj = G_.TabButton_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwTabOverview(; kwargs...)
+        obj = G_.TabOverview_new()
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -1110,6 +2012,11 @@ $(Expr(:toplevel, quote
     end
     function AdwToastOverlay(; kwargs...)
         obj = G_.ToastOverlay_new()
+        GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function AdwToolbarView(; kwargs...)
+        obj = G_.ToolbarView_new()
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -1143,6 +2050,6 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    export AdwSpringParams, AdwSwipeable, AdwAboutWindow, AdwAboutWindowLeaf, AdwActionRow, AdwActionRowLeaf, AdwAnimation, AdwAnimationTarget, AdwApplication, AdwApplicationLeaf, AdwApplicationWindow, AdwApplicationWindowLeaf, AdwAvatar, AdwAvatarLeaf, AdwBin, AdwBinLeaf, AdwButtonContent, AdwButtonContentLeaf, AdwCallbackAnimationTarget, AdwCallbackAnimationTargetLeaf, AdwCarousel, AdwCarouselLeaf, AdwCarouselIndicatorDots, AdwCarouselIndicatorDotsLeaf, AdwCarouselIndicatorLines, AdwCarouselIndicatorLinesLeaf, AdwClamp, AdwClampLeaf, AdwClampLayout, AdwClampLayoutLeaf, AdwClampScrollable, AdwClampScrollableLeaf, AdwComboRow, AdwComboRowLeaf, AdwEntryRow, AdwEntryRowLeaf, AdwEnumListItem, AdwEnumListItemLeaf, AdwEnumListModel, AdwEnumListModelLeaf, AdwExpanderRow, AdwExpanderRowLeaf, AdwFlap, AdwFlapLeaf, AdwHeaderBar, AdwHeaderBarLeaf, AdwLeaflet, AdwLeafletLeaf, AdwLeafletPage, AdwLeafletPageLeaf, AdwMessageDialog, AdwMessageDialogLeaf, AdwPasswordEntryRow, AdwPasswordEntryRowLeaf, AdwPreferencesGroup, AdwPreferencesGroupLeaf, AdwPreferencesPage, AdwPreferencesPageLeaf, AdwPreferencesRow, AdwPreferencesRowLeaf, AdwPreferencesWindow, AdwPreferencesWindowLeaf, AdwPropertyAnimationTarget, AdwPropertyAnimationTargetLeaf, AdwSplitButton, AdwSplitButtonLeaf, AdwSpringAnimation, AdwSpringAnimationLeaf, AdwSqueezer, AdwSqueezerLeaf, AdwSqueezerPage, AdwSqueezerPageLeaf, AdwStatusPage, AdwStatusPageLeaf, AdwStyleManager, AdwStyleManagerLeaf, AdwSwipeTracker, AdwSwipeTrackerLeaf, AdwTabBar, AdwTabBarLeaf, AdwTabPage, AdwTabPageLeaf, AdwTabView, AdwTabViewLeaf, AdwTimedAnimation, AdwTimedAnimationLeaf, AdwToast, AdwToastLeaf, AdwToastOverlay, AdwToastOverlayLeaf, AdwViewStack, AdwViewStackLeaf, AdwViewStackPage, AdwViewStackPageLeaf, AdwViewSwitcher, AdwViewSwitcherLeaf, AdwViewSwitcherBar, AdwViewSwitcherBarLeaf, AdwViewSwitcherTitle, AdwViewSwitcherTitleLeaf, AdwWindow, AdwWindowLeaf, AdwWindowTitle, AdwWindowTitleLeaf
+    export AdwSpringParams, AdwSwipeable, AdwAboutDialog, AdwAboutDialogLeaf, AdwAboutWindow, AdwAboutWindowLeaf, AdwActionRow, AdwActionRowLeaf, AdwAlertDialog, AdwAlertDialogLeaf, AdwAnimation, AdwAnimationTarget, AdwApplication, AdwApplicationLeaf, AdwApplicationWindow, AdwApplicationWindowLeaf, AdwAvatar, AdwAvatarLeaf, AdwBanner, AdwBannerLeaf, AdwBin, AdwBinLeaf, AdwBreakpointBin, AdwBreakpointBinLeaf, AdwButtonContent, AdwButtonContentLeaf, AdwCallbackAnimationTarget, AdwCallbackAnimationTargetLeaf, AdwCarousel, AdwCarouselLeaf, AdwCarouselIndicatorDots, AdwCarouselIndicatorDotsLeaf, AdwCarouselIndicatorLines, AdwCarouselIndicatorLinesLeaf, AdwClamp, AdwClampLeaf, AdwClampLayout, AdwClampLayoutLeaf, AdwClampScrollable, AdwClampScrollableLeaf, AdwComboRow, AdwComboRowLeaf, AdwDialog, AdwDialogLeaf, AdwEntryRow, AdwEntryRowLeaf, AdwEnumListItem, AdwEnumListItemLeaf, AdwEnumListModel, AdwEnumListModelLeaf, AdwExpanderRow, AdwExpanderRowLeaf, AdwFlap, AdwFlapLeaf, AdwHeaderBar, AdwHeaderBarLeaf, AdwLeaflet, AdwLeafletLeaf, AdwLeafletPage, AdwLeafletPageLeaf, AdwMessageDialog, AdwMessageDialogLeaf, AdwNavigationPage, AdwNavigationPageLeaf, AdwNavigationSplitView, AdwNavigationSplitViewLeaf, AdwNavigationView, AdwNavigationViewLeaf, AdwOverlaySplitView, AdwOverlaySplitViewLeaf, AdwPasswordEntryRow, AdwPasswordEntryRowLeaf, AdwPreferencesDialog, AdwPreferencesDialogLeaf, AdwPreferencesGroup, AdwPreferencesGroupLeaf, AdwPreferencesPage, AdwPreferencesPageLeaf, AdwPreferencesRow, AdwPreferencesRowLeaf, AdwPreferencesWindow, AdwPreferencesWindowLeaf, AdwPropertyAnimationTarget, AdwPropertyAnimationTargetLeaf, AdwSpinRow, AdwSpinRowLeaf, AdwSplitButton, AdwSplitButtonLeaf, AdwSpringAnimation, AdwSpringAnimationLeaf, AdwSqueezer, AdwSqueezerLeaf, AdwSqueezerPage, AdwSqueezerPageLeaf, AdwStatusPage, AdwStatusPageLeaf, AdwStyleManager, AdwStyleManagerLeaf, AdwSwipeTracker, AdwSwipeTrackerLeaf, AdwSwitchRow, AdwSwitchRowLeaf, AdwTabBar, AdwTabBarLeaf, AdwTabButton, AdwTabButtonLeaf, AdwTabOverview, AdwTabOverviewLeaf, AdwTabPage, AdwTabPageLeaf, AdwTabView, AdwTabViewLeaf, AdwTimedAnimation, AdwTimedAnimationLeaf, AdwToast, AdwToastLeaf, AdwToastOverlay, AdwToastOverlayLeaf, AdwToolbarView, AdwToolbarViewLeaf, AdwViewStack, AdwViewStackLeaf, AdwViewStackPage, AdwViewStackPageLeaf, AdwViewStackPages, AdwViewStackPagesLeaf, AdwViewSwitcher, AdwViewSwitcherLeaf, AdwViewSwitcherBar, AdwViewSwitcherBarLeaf, AdwViewSwitcherTitle, AdwViewSwitcherTitleLeaf, AdwWindow, AdwWindowLeaf, AdwWindowTitle, AdwWindowTitleLeaf
 end))
 end

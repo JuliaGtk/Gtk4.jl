@@ -9,6 +9,8 @@ using Test, Gtk4, Gtk4.GdkPixbufLib, Colors, TestImages
 
     t2 = GdkMemoryTexture(img,false)
     @test size(t2) == size(img)
+    arr = Gtk4.toarray(t2)
+    @test size(arr) == size(img)
 end
 
 @testset "pixbuf" begin

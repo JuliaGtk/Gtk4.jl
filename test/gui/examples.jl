@@ -66,4 +66,13 @@ end
     destroy(main_window)
 end
 
+    @testset "Show Image" begin
+        include(joinpath(@__DIR__, "..", "..", "examples", "show_image.jl"))
+        destroy(win)
+    end
+
+    @testset "CSS Style" begin
+        include(joinpath(@__DIR__, "..", "..", "examples", "css-style.jl"))
+    end
+
 end

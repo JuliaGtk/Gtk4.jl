@@ -19,10 +19,6 @@ main_window = GtkWindow("Dialog example")
 
 info_dialog("Here's some information", main_window; timeout = 0.25)
 sleep(1.0)
-warn_dialog("Here's some alarming information", main_window; timeout = 0.25)
-sleep(1.0)
-error_dialog("Here's an error", main_window; timeout = 0.25)
-sleep(1.0)
 GC.gc()
 sleep(1.0)
 close(main_window)
@@ -46,7 +42,7 @@ color_dialog("What is your favorite color?", main_window; timeout = 0.25)
 
 sleep(1.0)
 
-input_dialog("What is the meaning of life, the universe, and everything?", "42", (("Cancel", 0), ("Accept", 1)), main_window; timeout = 0.25)
+input_dialog("Whadya know?", "Not much, you?", main_window; timeout = 0.25)
 
 sleep(1.0)
 

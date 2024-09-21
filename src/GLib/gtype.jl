@@ -224,7 +224,11 @@ _gc_unref(@nospecialize(x), ::Ptr{Nothing}) = gc_unref(x)
 gc_ref_closure(@nospecialize(cb::Function)) = (invoke(gc_ref, Tuple{Any}, cb), @cfunction(_gc_unref, Nothing, (Any, Ptr{Nothing})))
 gc_ref_closure(x::T) where {T} = (gc_ref(x), @cfunction(_gc_unref, Nothing, (Any, Ptr{Nothing})))
 
-# GLib ref/unref functions -- generally, you shouldn't be calling these
+"""
+    glib_ref(x::Ptr)
+
+Increments the reference count of a pointer managed by a GLib based library. Generally this function will just call a C function, e.g. `g_object_ref`. Most users will not ever need to use this function.
+"""
 function glib_ref(x::Ptr{GObject})
     ccall((:g_object_ref, libgobject), Nothing, (Ptr{GObject},), x)
 end
@@ -234,6 +238,12 @@ function glib_ref(x::GObject)
 end
 glib_ref(::Nothing) = nothing
 gc_unref(p::Ptr{GObject}) = glib_unref(p)
+
+"""
+    glib_unref(x::Ptr)
+
+Decrements the reference count of a pointer managed by a GLib based library. Generally this function will just call a C function, e.g. `g_object_unref`. Most users will not ever need to use this function.
+"""
 function glib_unref(x::Ptr{GObject})
     ccall((:g_object_unref, libgobject), Nothing, (Ptr{GObject},), x)
 end

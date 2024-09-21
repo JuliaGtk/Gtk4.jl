@@ -6,6 +6,7 @@
 - `css-style.jl` shows how to style individual widgets using CSS classes.
 - `dialogs.jl` demonstrates various types of dialogs.
 - `show_image.jl` demonstrates how to show a static image using `GtkPicture` and how to copy an image to the clipboard.
+- `word_counter.jl` is a minimal example using `GtkTextView`.
 
 ## Drawing
 - `canvas.jl` demonstrates use of `GtkCanvas`, which allows drawing with [Cairo](https://github.com/JuliaGraphics/Cairo.jl). Also shows how to change the cursor when it's over a certain widget. Adapted from an example in the Gtk.jl manual.

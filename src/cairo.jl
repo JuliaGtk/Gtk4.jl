@@ -22,7 +22,7 @@ end
 
 function _canvas_on_resize(::Ptr, width, height, canvas)
     canvas.is_sized = true
-    if G_.get_realized(canvas)
+    if isrealized(canvas)
         _init_canvas!(canvas, width, height)
 
         if isa(canvas.resize, Function)

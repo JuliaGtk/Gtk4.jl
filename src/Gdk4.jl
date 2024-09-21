@@ -5,7 +5,7 @@ keyval(name::AbstractString) = G_.keyval_from_name(name)
 
 function GdkRGBA(r,g,b,a = 1.0)
    s=_GdkRGBA(r,g,b,a)
-   r=ccall((:gdk_rgba_copy, libgtk4), Ptr{GdkRGBA}, (Ptr{_GdkRGBA},), Ref(s))
+   r=ccall((:gdk_rgba_copy, libgtk4), Ptr{_GdkRGBA}, (Ptr{_GdkRGBA},), Ref(s))
    GdkRGBA(r)
 end
 
@@ -18,8 +18,8 @@ function GdkRGBA(rgba::AbstractString)
    r
 end
 
-convert(::Type{RGBA}, gcolor::Gtk4._GdkRGBA) = RGBA(gcolor.red, gcolor.green, gcolor.blue, gcolor.alpha)
-convert(::Type{Gtk4.GdkRGBA}, color::Colorant) = Gtk4.GdkRGBA(red(color), green(color), blue(color), alpha(color))
+convert(::Type{RGBA}, gcolor::_GdkRGBA) = RGBA(gcolor.red, gcolor.green, gcolor.blue, gcolor.alpha)
+convert(::Type{GdkRGBA}, color::Colorant) = GdkRGBA(red(color), green(color), blue(color), alpha(color))
 
 ## GdkCursor
 
@@ -64,28 +64,28 @@ end
 
 size(t::GdkTexture) = (G_.get_width(t),G_.get_height(t))
 
-const color_formats = Dict(ColorTypes.RGB{N0f8}=>Gtk4.MemoryFormat_R8G8B8,
-                           ColorTypes.BGR{N0f8}=>Gtk4.MemoryFormat_B8G8R8,
-                           ColorTypes.RGBA{N0f8}=>Gtk4.MemoryFormat_R8G8B8A8,
-                           ColorTypes.ARGB{N0f8}=>Gtk4.MemoryFormat_A8R8G8B8,
-                           ColorTypes.ABGR{N0f8}=>Gtk4.MemoryFormat_A8B8G8R8,
-                           ColorTypes.BGRA{N0f8}=>Gtk4.MemoryFormat_B8G8R8A8,
-                           ColorTypes.RGB{N0f16}=>Gtk4.MemoryFormat_R16G16B16,
-                           ColorTypes.RGBA{N0f16}=>Gtk4.MemoryFormat_R16G16B16A16,
+const color_formats = Dict(ColorTypes.RGB{N0f8}=>MemoryFormat_R8G8B8,
+                           ColorTypes.BGR{N0f8}=>MemoryFormat_B8G8R8,
+                           ColorTypes.RGBA{N0f8}=>MemoryFormat_R8G8B8A8,
+                           ColorTypes.ARGB{N0f8}=>MemoryFormat_A8R8G8B8,
+                           ColorTypes.ABGR{N0f8}=>MemoryFormat_A8B8G8R8,
+                           ColorTypes.BGRA{N0f8}=>MemoryFormat_B8G8R8A8,
+                           ColorTypes.RGB{N0f16}=>MemoryFormat_R16G16B16,
+                           ColorTypes.RGBA{N0f16}=>MemoryFormat_R16G16B16A16,
                            # Available since GTK 4.12
-                           ColorTypes.Gray{N0f8}=>Gtk4.MemoryFormat_G8,
-                           ColorTypes.Gray{N0f16}=>Gtk4.MemoryFormat_G16,
-                           ColorTypes.GrayA{N0f8}=>Gtk4.MemoryFormat_G8A8,
-                           ColorTypes.GrayA{N0f16}=>Gtk4.MemoryFormat_G16A16,
+                           ColorTypes.Gray{N0f8}=>MemoryFormat_G8,
+                           ColorTypes.Gray{N0f16}=>MemoryFormat_G16,
+                           ColorTypes.GrayA{N0f8}=>MemoryFormat_G8A8,
+                           ColorTypes.GrayA{N0f16}=>MemoryFormat_G16A16,
                            )
 
-const color_formats_premultiplied = Dict(ColorTypes.RGBA{N0f8}=>Gtk4.MemoryFormat_R8G8B8A8_PREMULTIPLIED,
-                           ColorTypes.ARGB{N0f8}=>Gtk4.MemoryFormat_A8R8G8B8_PREMULTIPLIED,
-                           ColorTypes.BGRA{N0f8}=>Gtk4.MemoryFormat_B8G8R8A8_PREMULTIPLIED,
-                           ColorTypes.RGBA{N0f16}=>Gtk4.MemoryFormat_R16G16B16A16_PREMULTIPLIED,
+const color_formats_premultiplied = Dict(ColorTypes.RGBA{N0f8}=>MemoryFormat_R8G8B8A8_PREMULTIPLIED,
+                           ColorTypes.ARGB{N0f8}=>MemoryFormat_A8R8G8B8_PREMULTIPLIED,
+                           ColorTypes.BGRA{N0f8}=>MemoryFormat_B8G8R8A8_PREMULTIPLIED,
+                           ColorTypes.RGBA{N0f16}=>MemoryFormat_R16G16B16A16_PREMULTIPLIED,
                            # Available since GTK 4.12
-                           ColorTypes.GrayA{N0f8}=>Gtk4.MemoryFormat_G8A8_PREMULTIPLIED,
-                           ColorTypes.GrayA{N0f16}=>Gtk4.MemoryFormat_G16A16_PREMULTIPLIED,
+                           ColorTypes.GrayA{N0f8}=>MemoryFormat_G8A8_PREMULTIPLIED,
+                           ColorTypes.GrayA{N0f16}=>MemoryFormat_G16A16_PREMULTIPLIED,
 )
 
 imgformatsupported(img) = eltype(img) in keys(color_formats)
@@ -105,7 +105,7 @@ function GdkMemoryTexture(img::AbstractArray, tp = true)
         error("format not supported") # could also convert the image
     end
     img = tp ? img' : img
-    b=Gtk4.GLib.GBytes(img)
+    b=GLib.GBytes(img)
     GdkMemoryTexture(size(img)[1], size(img)[2], f, b, sizeof(eltype(img))*size(img)[1])
 end
 

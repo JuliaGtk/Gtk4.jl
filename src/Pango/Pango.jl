@@ -4,9 +4,9 @@ using ..GLib
 using Glib_jll
 using Pango_jll
 
-import Base: convert, copy, length, getindex, iterate, unsafe_convert
+import Base: convert, length, getindex, iterate, unsafe_convert
 import CEnum: @cenum, CEnum
-import BitFlags: @bitflag, BitFlag
+import BitFlags: @bitflag
 
 eval(include("../gen/pango_consts"))
 eval(include("../gen/pango_structs"))

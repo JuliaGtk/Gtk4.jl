@@ -10,9 +10,15 @@ $(Expr(:toplevel, quote
         mutable struct GdkPixbufModulePattern
             handle::Ptr{_GdkPixbufModulePattern}
         end
-        unsafe_convert(::Type{Ptr{_GdkPixbufModulePattern}}, box::GdkPixbufModulePattern) = begin
-                convert(Ptr{_GdkPixbufModulePattern}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GdkPixbufModulePattern}}, box::GdkPixbufModulePattern) = begin
+                    convert(Ptr{_GdkPixbufModulePattern}, box.handle)
+                end
+            convert(::Type{GdkPixbufModulePattern}, p::Ptr{_GdkPixbufModulePattern}, owns = false) = begin
+                    GdkPixbufModulePattern(p, owns)
+                end
+            const GdkPixbufModulePatternLike = Union{Ref{_GdkPixbufModulePattern}, GdkPixbufModulePattern}
+        end
     end
     begin
         struct _GdkPixbufFormat
@@ -32,7 +38,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GdkPixbufFormat) = begin
                         ccall(("gdk_pixbuf_format_get_type", libgdkpixbuf), GType, ())
                     end
-                function GdkPixbufFormat(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GdkPixbufFormat(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkPixbufFormat}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -44,9 +50,15 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GdkPixbufFormat)
             end
         end
-        unsafe_convert(::Type{Ptr{_GdkPixbufFormat}}, box::GdkPixbufFormat) = begin
-                convert(Ptr{_GdkPixbufFormat}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GdkPixbufFormat}}, box::GdkPixbufFormat) = begin
+                    convert(Ptr{_GdkPixbufFormat}, box.handle)
+                end
+            convert(::Type{GdkPixbufFormat}, p::Ptr{_GdkPixbufFormat}, owns = false) = begin
+                    GdkPixbufFormat(p, owns)
+                end
+            const GdkPixbufFormatLike = Union{Ref{_GdkPixbufFormat}, GdkPixbufFormat}
+        end
     end
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
@@ -349,6 +361,6 @@ $(Expr(:toplevel, quote
         ret = f(buf, count, error)
         convert(Cint, ret)
     end
-    export GdkPixbufModulePattern, _GdkPixbufModulePattern, GdkPixbufFormat, _GdkPixbufFormat, GdkPixbuf, GdkPixbufLeaf, GdkPixbufAnimation, GdkPixbufAnimationLeaf, GdkPixbufAnimationIter, GdkPixbufAnimationIterLeaf, GdkPixbufLoader, GdkPixbufLoaderLeaf, GdkPixbufNonAnim, GdkPixbufNonAnimLeaf, GdkPixbufSimpleAnim, GdkPixbufSimpleAnimLeaf, GdkPixbufSimpleAnimIter, GdkPixbufSimpleAnimIterLeaf, GdkPixbufDestroyNotify, GdkPixbufModuleLoadXpmDataFunc, GdkPixbufModulePreparedFunc, GdkPixbufModuleSizeFunc, GdkPixbufModuleUpdatedFunc, GdkPixbufSaveFunc
+    export GdkPixbufModulePattern, _GdkPixbufModulePattern, GdkPixbufModulePatternLike, GdkPixbufFormat, GdkPixbufFormatLike, _GdkPixbufFormat, GdkPixbuf, GdkPixbufLeaf, GdkPixbufAnimation, GdkPixbufAnimationLeaf, GdkPixbufAnimationIter, GdkPixbufAnimationIterLeaf, GdkPixbufLoader, GdkPixbufLoaderLeaf, GdkPixbufNonAnim, GdkPixbufNonAnimLeaf, GdkPixbufSimpleAnim, GdkPixbufSimpleAnimLeaf, GdkPixbufSimpleAnimIter, GdkPixbufSimpleAnimIterLeaf, GdkPixbufDestroyNotify, GdkPixbufModuleLoadXpmDataFunc, GdkPixbufModulePreparedFunc, GdkPixbufModuleSizeFunc, GdkPixbufModuleUpdatedFunc, GdkPixbufSaveFunc
 end))
 end

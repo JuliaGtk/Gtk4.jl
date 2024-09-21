@@ -5,9 +5,9 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@optle
 end
 
 import Base: convert, copy, run, show, size, length, getindex, setindex!, get,
-             iterate, eltype, isempty, ndims, stride, strides, popfirst!,
+             iterate, eltype, isempty, popfirst!,
              empty!, append!, reverse!, pushfirst!, pop!, push!, splice!, insert!, deleteat!, delete!,
-             sigatomic_begin, sigatomic_end, unsafe_convert,
+             unsafe_convert,
              getproperty, setproperty!, propertynames, getindex, setindex!, print, replace
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag
@@ -33,7 +33,7 @@ export gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
        gtkdoc_func_url, gtkdoc_struc_url
 
 export gtype_wrappers, GVariantDict, GBytes, GVariantType
-export GValue, GParamSpec, GTypeModule, _GValue
+export GValue, GParamSpec, GTypeModule, _GValue, GValueLike
 
 Maybe(T) = Union{T,Nothing}
 
@@ -153,7 +153,7 @@ include("gtype.jl")
 
 eval(include("../gen/glib_consts"))
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
       MAJOR_VERSION,
       MINOR_VERSION,
       MICRO_VERSION)

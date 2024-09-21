@@ -15,16 +15,6 @@ export GInterface, GType, GObject, GBoxed, GTypeInstance
 export GEnum, GError, GValue, g_type
 export GHashTable, GByteArray, GArray, GPtrArray
 export GList, _GSList, _GList
-export cfunction_
-
-
-cfunction_(@nospecialize(f), r, a::Tuple) = cfunction_(f, r, Tuple{a...})
-
-@generated function cfunction_(f, R::Type{rt}, A::Type{at}) where {rt, at<:Tuple}
-    quote
-        @cfunction($(Expr(:$,:f)), $rt, ($(at.parameters...),))
-    end
-end
 
 # local function, handles Symbol and makes UTF8-strings easier
 const  AbstractStringLike = Union{AbstractString, Symbol}
@@ -33,7 +23,6 @@ bytestring(s::Symbol) = s
 bytestring(s::Ptr{UInt8}) = s == C_NULL ? nothing : unsafe_string(s)
 # bytestring(s::Ptr{UInt8}, own::Bool=false) = unsafe_string(s)
 
-g_malloc(s::Integer) = ccall((:g_malloc, libglib), Ptr{Nothing}, (Csize_t,), s)
 g_free(p::Ptr) = ccall((:g_free, libglib), Nothing, (Ptr{Nothing},), p)
 
 gtkdoc_const_url(ns,name)="https://docs.gtk.org/$(ns)/const.$(name).html"

@@ -290,6 +290,8 @@ mutable struct _GPollFD
   _GPollFD(fd, ev) = new(fd, ev, 0)
 end
 
+uv_pollfd::_GPollFD = _GPollFD(0,0)
+
 mutable struct _GSourceFuncs
     prepare::Ptr{Nothing}
     check::Ptr{Nothing}
@@ -308,7 +310,7 @@ function new_gsource(source_funcs::_GSourceFuncs)
     gsource
 end
 
-expiration = UInt64(0)
+expiration::UInt64 = UInt64(0)
 _isempty_workqueue() = isempty(Base.Workqueue)
 uv_loop_alive(evt) = ccall(:uv_loop_alive, Cint, (Ptr{Nothing},), evt) != 0
 
@@ -361,7 +363,8 @@ function uv_dispatch(src::Ptr{Nothing}, callback::Ptr{Nothing}, data)
     return ccall(callback, Cint, (UInt,), data)
 end
 
-sizeof_gclosure = 0
+sizeof_gclosure::Int = 0
+jlref_quark::UInt32 = 0
 function __init__gtype__()
     global jlref_quark = quark"julia_ref"
     global sizeof_gclosure = Sys.WORD_SIZE

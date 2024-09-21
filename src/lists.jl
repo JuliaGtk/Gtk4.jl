@@ -274,7 +274,7 @@ function set_filter_func(cf::GtkCustomFilter, ::Nothing)
     ccall(("gtk_custom_filter_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
 end
 
-changed(cf::GtkCustomFilter, _change = Gtk4.FilterChange_DIFFERENT) = G_.changed(cf, _change)
+changed(cf::GtkCustomFilter, _change = FilterChange_DIFFERENT) = G_.changed(cf, _change)
 
 ## GtkCustomSorter
 
@@ -294,7 +294,7 @@ function set_sort_func(cf::GtkCustomSorter, ::Nothing)
     ccall(("gtk_custom_sorter_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
 end
 
-changed(cs::GtkCustomSorter, _change = Gtk4.FilterChange_DIFFERENT) = G_.changed(cs, _change)
+changed(cs::GtkCustomSorter, _change = FilterChange_DIFFERENT) = G_.changed(cs, _change)
 
 ## GtkExpressions
 

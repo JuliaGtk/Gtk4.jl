@@ -26,7 +26,6 @@ function info_unref(info::GIInfo)
     info.handle = C_NULL
 end
 
-convert(::Type{Ptr{GIBaseInfo}},w::GIInfo) = w.handle
 unsafe_convert(::Type{Ptr{GIBaseInfo}},w::GIInfo) = w.handle
 
 const GIInfoTypesShortNames = (:Invalid, :Function, :Callback, :Struct, :Boxed, :Enum,
@@ -115,13 +114,7 @@ struct GINamespace
         new(namespace)
     end
 end
-convert(::Type{Symbol}, ns::GINamespace) = ns.name
 convert(::Type{Cstring}, ns::GINamespace) = ns.name
-convert(::Type{Ptr{UInt8}}, ns::GINamespace) = convert(Ptr{UInt8}, ns.name)
-unsafe_convert(::Type{Symbol}, ns::GINamespace) = ns.name
-unsafe_convert(::Type{Ptr{UInt8}}, ns::GINamespace) = convert(Ptr{UInt8}, ns.name)
-
-Base.:(==)(a::GINamespace, b::GINamespace) = (a.name === b.name)
 
 function gi_require(namespace::Symbol, version = nothing)
     if isnothing(version)
