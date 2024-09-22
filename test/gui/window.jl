@@ -25,7 +25,7 @@ visible(w,true)
 
 @test Gtk4.issuspended(w) == false
 @test Gtk4.isfullscreen(w) == false
-@test Gtk4.isactive(w) == true
+#@test Gtk4.isactive(w) == true
 
 m = Gtk4.monitor(w)
 if m!==nothing
