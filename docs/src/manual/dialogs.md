@@ -10,14 +10,14 @@ Dialogs are transient windows that show messages or ask the user for information
 
 ## Message dialogs
 
-Gtk4.jl supports `GtkAlertDialog` and wraps it in convenience functions  `info_dialog` and `ask_dialog`.
-Each takes a string for a message to show and an optional parent container.
+Gtk4.jl wraps `GtkAlertDialog` in convenience functions  `info_dialog` and `ask_dialog`.
+Each takes a string for a message to show and an optional parent window.
 
 For all dialog convenience functions, there are two ways of using them. For use in the REPL or an interactive script, the following forms can be used:
 
 ```julia
 info_dialog("Julia rocks!")
-ask_dialog("Do you like chocolate ice cream?", "Not at all", "I like it") && println("That's my favorite too.")
+ask_dialog("Do you like chocolate ice cream?"; no_text = "Not at all", yes_text = "I like it") && println("That's my favorite too.")
 ```
 Note that `ask_dialog` returns `true` if the user clicks the button corresponding to yes. These functions take an optional argument `timeout` (in seconds) that can be used to make the dialog disappear after a certain time.
 

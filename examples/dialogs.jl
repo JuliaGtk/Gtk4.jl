@@ -21,7 +21,7 @@ question_dialog_button = GtkButton("Question dialog")
 push!(box,question_dialog_button)
 
 function open_question_dialog(b)
-    ask_dialog("May I ask you a question?","No","Yes",main_window) do ans
+    ask_dialog("May I ask you a question?",main_window) do ans
         @async println("You answered $ans")
     end
 end
@@ -34,7 +34,7 @@ input_dialog_button = GtkButton("Input dialog")
 push!(box, input_dialog_button)
 
 function open_input_dialog(b)
-    input_dialog("Enter your information", "", (("Cancel", 0), ("Accept", 1)), main_window) do t
+    input_dialog("Enter your information", "", main_window) do t
         @async println("response was ",t)
     end
 end

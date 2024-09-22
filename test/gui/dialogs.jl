@@ -31,11 +31,13 @@ main_window = GtkWindow("Dialog example")
 
 open_dialog("Pick a file to open", main_window; timeout = 0.25)
 sleep(1.0)
-open_dialog("Pick a file to open", main_window, ["*.png"]; timeout = 0.25)
+open_dialog("Pick files to open", main_window, ["*.png"]; timeout = 0.25, multiple = true, start_folder = ".")
 sleep(1.0)
 
 save_dialog("Pick a filename", main_window; timeout = 0.25)
+sleep(1.0)
 
+save_dialog("Pick a filename", main_window, ["*.png"]; timeout = 0.25, start_folder = ".")
 sleep(1.0)
 
 color_dialog("What is your favorite color?", main_window; timeout = 0.25)
@@ -77,6 +79,9 @@ csvfilter3 = GtkFileFilter("", "text/csv")
 csvfilter4 = GtkFileFilter("*.csv", "text/csv")
 # Pattern takes precedence over mime-type, causing mime-type to be ignored
 @test csvfilter4.name == "*.csv"
+
+imfilter = GtkFileFilter("")
+@test GtkFileFilter(imfilter) == imfilter
 end
 
 @testset "New dialogs" begin

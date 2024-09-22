@@ -341,7 +341,7 @@ function input_dialog(callback::Function, message::AbstractString, entry_default
     cancel = GtkButton("Cancel"; hexpand = true)
     push!(boxb, cancel)
     push!(boxb, accept)
-    isnothing(parent) && (G_.set_transient_for(dlg, parent); G_.set_modal(dlg, true))
+    isnothing(parent) || (G_.set_transient_for(dlg, parent); G_.set_modal(dlg, true))
     dlg[] = box
     
     signal_connect(cancel, "clicked") do b
@@ -456,7 +456,7 @@ Keyword arguments:
 - `start_folder = ""`: if set to a path, the dialog will start out browsing a particular folder. Otherwise GTK will decide.
 """
 function open_dialog(title::AbstractString, parent = nothing, filters::Union{AbstractVector, Tuple} = String[]; timeout = -1, multiple = false, select_folder = false, start_folder = "")
-    res = Ref{String}("")
+    res = Ref{Union{Vector{String},String}}("")
     c = Condition()
 
     open_dialog(title, parent, filters; timeout, multiple, select_folder, start_folder) do filename
