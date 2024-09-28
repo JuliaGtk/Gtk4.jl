@@ -134,6 +134,12 @@ function GMenu(i::GMenuItem)
     G_.set_submenu(i,m)
     m
 end
+"""
+    GMenuItem(label, [detailed_action])
+
+Create a GMenuItem with attributes `label` and an optional `detailed_action`, which is
+an action name with an optional detail argument.
+"""
 GMenuItem(label,detailed_action = nothing) = G_.MenuItem_new(label, detailed_action)
 
 push!(m::GMenu, i::GMenuItem) = (G_.append_item(m,i); m)
