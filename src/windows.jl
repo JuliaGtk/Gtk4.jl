@@ -307,12 +307,13 @@ window by default.
 
 Keyword arguments:
 - `timeout = -1` to set a time in seconds after which the dialog will close and `false` will be returned. Disabled if negative.
+- `modal = true` sets whether the dialog is modal (i.e. stays on top of its parent window)
 """
-function input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing; timeout = -1)
+function input_dialog(message::AbstractString, entry_default::AbstractString, parent = nothing; timeout = -1, modal = true)
     res = Ref{String}("")
     c = Condition()
 
-    input_dialog(message, entry_default, parent; timeout) do res_
+    input_dialog(message, entry_default, parent; timeout, modal) do res_
         res[] = res_
         notify(c)
     end
@@ -327,7 +328,7 @@ function _callback_and_destroy(dlg, callback, txt)
 end
 
 function input_dialog(callback::Function, message::AbstractString, entry_default::AbstractString,
-                      parent = nothing; timeout = -1)
+                      parent = nothing; timeout = -1, modal = true)
     dlg = GtkWindow()
     box = GtkBox(:v)
     push!(box, GtkLabel(message))
@@ -341,7 +342,7 @@ function input_dialog(callback::Function, message::AbstractString, entry_default
     cancel = GtkButton("Cancel"; hexpand = true)
     push!(boxb, cancel)
     push!(boxb, accept)
-    isnothing(parent) || (G_.set_transient_for(dlg, parent); G_.set_modal(dlg, true))
+    isnothing(parent) || (G_.set_transient_for(dlg, parent); G_.set_modal(dlg, modal))
     dlg[] = box
     
     signal_connect(cancel, "clicked") do b

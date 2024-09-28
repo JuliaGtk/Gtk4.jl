@@ -98,7 +98,7 @@ if isdir(dir[])
 end
 ```
 
-### Filters
+### File Filters
 Filters can be used to limit the type of files that the user can pick. Filters can be specified as a Tuple or Vector.
 A filter can be specified as a string, in which case it specifies a globbing pattern, for example `"*.png"`.
 You can specify multiple match types for a single filter by separating the patterns with a comma, for example `"*.png,*.jpg"`.
@@ -108,3 +108,54 @@ The generic specification of a filter is
 GtkFileFilter(pattern = "", mimetype = "")
 ```
 A human-readable name can optionally be provided using a keyword argument.
+
+## Custom dialogs
+
+You can define your own type of dialog by creating a window that closes and calls a function when a button is pressed.
+For example:
+```julia
+using Gtk4
+
+function callback_and_destroy(dlg, callback, args...)  # calls the callback and destroys the dialog
+    callback(args...)
+    Gtk4.transient_for(dlg, nothing)
+    destroy(dlg)
+end
+
+function custom_dialog(callback::Function, message::AbstractString, parent::GtkWindow)
+    dlg = GtkWindow(; modal = true)
+    box = GtkBox(:v)
+    push!(box, GtkLabel(message))  # or could put other widgets here
+    boxb = GtkBox(:h)  # box with buttons for the bottom of the dialog
+    push!(box, boxb)
+    choice1 = GtkButton("Choice 1"; hexpand = true)
+    choice2 = GtkButton("Choice 2"; hexpand = true)
+    choice3 = GtkButton("Choice 3"; hexpand = true)
+    push!(boxb, choice1)
+    push!(boxb, choice2)
+    push!(boxb, choice3)
+    Gtk4.transient_for(dlg, parent)
+    dlg[] = box
+    
+    signal_connect(choice1, "clicked") do b
+        callback_and_destroy(dlg, callback, 1)
+    end
+    
+    signal_connect(choice2, "clicked") do b
+        callback_and_destroy(dlg, callback, 2)
+    end
+    
+    signal_connect(choice3, "clicked") do b
+        callback_and_destroy(dlg, callback, 3)
+    end
+
+    show(dlg)
+
+    return dlg
+end
+
+custom_dialog("choice", GtkWindow("parent")) do val
+    println("Your choice was $val")
+end
+```
+
