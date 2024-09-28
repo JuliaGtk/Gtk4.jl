@@ -36,6 +36,7 @@ Gtk4.fullscreen
 Gtk4.unfullscreen
 Gtk4.isfullscreen
 Gtk4.isactive
+Gtk4.issuspended
 Gtk4.maximize
 Gtk4.unmaximize
 Gtk4.present
@@ -48,6 +49,13 @@ Gtk4.toplevels
 Gtk4.configure!
 Gtk4.selected_string!
 Gtk4.selected_string
+```
+
+## Display widgets
+
+```@docs
+Gtk4.start
+Gtk4.stop
 ```
 
 ## Dialogs
@@ -86,7 +94,6 @@ Gtk4.add_action_shortcut
 ## GtkTextView
 
 ```@docs
-Gtk4.buffer
 Gtk4.undo!
 Gtk4.redo!
 Gtk4.create_mark
@@ -102,6 +109,5 @@ Gtk4.char_offset
 Gtk4.forward_search
 Gtk4.text_iter_at_position
 Gtk4.window_to_buffer_coords
-Gtk4._GtkTextIter
 ```
 

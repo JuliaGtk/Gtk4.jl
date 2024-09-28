@@ -2,6 +2,9 @@
 
 A menu lets you organize lots of options or actions. In days of yore there was often an extensive menu bar at the top of an application window. Nowadays it's more common to see a button or two showing more limited menus when clicked.
 
+!!! note "Example"
+    Some of the code on this page can be found in "menubutton.jl" in the "example" subdirectory.
+
 Menus in GTK are defined using a [menu model](https://docs.gtk.org/gio/class.MenuModel.html). This and related classes are defined in the library libgio rather than libgtk. Thus in Gtk4.jl these objects are defined in the submodule Gtk4.GLib rather than Gtk4.
 
 To define a menu with three simple items, each of which is associated with an action, one could use:

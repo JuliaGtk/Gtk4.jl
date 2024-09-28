@@ -6,12 +6,12 @@ Dialogs are transient windows that show messages or ask the user for information
     Some of the code on this page can be found in "dialogs.jl" in the "example" subdirectory.
 
 !!! tip "Creating dialogs in callbacks"
-    When creating dialogs in signal or action callbacks, you must use the methods that take a function as the first argument (equivalently the `do` syntax).
+    When creating dialogs in signal or action callbacks, you must use the methods that take a function as the first argument (or equivalently the `do` syntax).
 
 ## Message dialogs
 
 Gtk4.jl wraps `GtkAlertDialog` in convenience functions  `info_dialog` and `ask_dialog`.
-Each takes a string for a message to show and an optional parent window.
+Each takes a string for a message to show and an optional parent window, and `ask_dialog` shows two buttons to allow the user to select between two options: "Yes" and "No" by default.
 
 For all dialog convenience functions, there are two ways of using them. For use in the REPL or an interactive script, the following forms can be used:
 
@@ -19,19 +19,22 @@ For all dialog convenience functions, there are two ways of using them. For use 
 info_dialog("Julia rocks!")
 ask_dialog("Do you like chocolate ice cream?"; no_text = "Not at all", yes_text = "I like it") && println("That's my favorite too.")
 ```
-Note that `ask_dialog` returns `true` if the user clicks the button corresponding to yes. These functions take an optional argument `timeout` (in seconds) that can be used to make the dialog disappear after a certain time.
+Note that `ask_dialog` returns `true` if the user clicks the button corresponding to "yes". The keyword arguments `yes_text` and `no_text` of `ask_dialog` allow you to customize the text for the buttons. These functions take an optional argument `timeout` (in seconds) that can be used to make the dialog disappear after a certain time.
 
-In callbacks (for example when a user clicks a button in a GUI), you _must_ use a different form, which takes a callback as the first argument that will be called when the user closes the dialog. A full example:
+In callbacks (for example when a user clicks a button in a GUI), you **must** use a different form, which takes a callback as the first argument. 
+The callback will be called when the user selects an option or closes the dialog. A full example:
 ```julia
 b = GtkButton("Click me")
 win = GtkWindow(b,"Info dialog example")
 f() = println("message received")
 function on_click(b)
-    info_dialog(f, "Julia rocks!",win)
+    info_dialog(f, "Julia rocks!", win)
 end
 signal_connect(on_click, b, "clicked")
 ```
-If you are using these functions in the context of a GUI, you should set the third argument of `info_dialog`, `parent`, to be the top-level window.
+The callback for `info_dialog` should take no arguments, while the callback for `ask_dialog` should take a single boolean argument (which is the user's choice: `true` for "yes", `false` for "no").
+
+If you are using these functions in the context of a GUI, you should set the third argument of `info_dialog`, `parent`, to be the top-level window. The dialog will appear above that window by default (this can be changed by setting the keyword argument `modal` to `false`.
 
 The callback function can alternatively be constructed using Julia's `do` syntax:
 ```julia
@@ -40,7 +43,14 @@ info_dialog("Julia rocks!", win) do
 end
 ```
 
-## File Dialogs
+## Input dialog
+
+The function `input_dialog` presents a message and a text entry, and it works just like the message dialogs.
+The form without a callback argument returns the string entered by the user when the "OK" button is clicked, or an empty string if the dialog is closed or "Cancel" is pressed.
+
+When the form of `input_dialog` with a callback is called (as for example inside callbacks), the callback should take a single string argument.
+
+## File dialogs
 
 A common reason to use a dialog is to allow the user to pick a file to be opened or saved to.
 For this Gtk4.jl provides the functions `open_dialog` for choosing an existing file or directory to be opened and `save_dialog` for choosing a filename to be saved to.

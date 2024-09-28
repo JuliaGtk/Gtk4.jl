@@ -19,11 +19,11 @@ makedocs(
                      "manual/actions.md",
                      "manual/buttons.md",
                      "manual/menus.md",
+                     "manual/dialogs.md",
                      "manual/textwidgets.md",
                      "manual/display.md",
                      "manual/combobox.md",
                      "manual/listtreeview.md",
-                     "manual/dialogs.md",
                      "manual/keyevents.md",
                      "manual/canvas.md"
                     ],

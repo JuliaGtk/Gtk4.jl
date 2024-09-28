@@ -5,6 +5,7 @@
 - `css.jl` demonstrates widget styling using CSS.
 - `css-style.jl` shows how to style individual widgets using CSS classes.
 - `dialogs.jl` demonstrates various types of dialogs.
+- `menubutton.jl` shows basic use of menus and `GtkMenuButton`.
 - `show_image.jl` demonstrates how to show a static image using `GtkPicture` and how to copy an image to the clipboard.
 - `word_counter.jl` is a minimal example using `GtkTextView`.
 
