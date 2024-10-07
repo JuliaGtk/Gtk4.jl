@@ -136,7 +136,6 @@ function struct_constructor_exprs!(exprs,ns;constructor_skiplist=[], struct_skip
     s=get_non_skipped(ns,GIStructInfo,struct_skiplist,exclude_deprecated)
     structs = get_name.(s)
     for ss in vcat(first_list, structs)
-        println("struct constructor: ",ss)
         ssi=gi_find_by_name(ns,ss)
         constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
         if !isempty(constructors)
@@ -192,9 +191,10 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
     struct_skiplist, loaded
 end
 
-function all_callbacks!(exprs, exports, ns)
+function all_callbacks!(exprs, exports, ns; callback_skiplist = [])
     callbacks=get_all(ns,GICallbackInfo)
     for c in callbacks
+        get_name(c) in callback_skiplist && continue
         try
 	    push!(exprs, decl(c))
 	catch e
@@ -209,7 +209,7 @@ function all_callbacks!(exprs, exports, ns)
     nothing
 end
 
-function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque; doc_xml = nothing, doc_prefix = prefix, constructor_skiplist = [], first_list = [], output_boxed_cache_init = true, output_object_cache_init = true, output_object_cache_define = true, object_skiplist = [], object_constructor_skiplist = [], interface_skiplist = [], signal_skiplist = [], expr_init = nothing, output_gtype_wrapper_cache_def = false, output_boxed_types_def = true, output_callbacks = true, exclude_deprecated = true, doc_skiplist = [])
+function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque; doc_xml = nothing, doc_prefix = prefix, constructor_skiplist = [], first_list = [], output_boxed_cache_init = true, output_object_cache_init = true, output_object_cache_define = true, object_skiplist = [], object_constructor_skiplist = [], interface_skiplist = [], signal_skiplist = [], expr_init = nothing, output_gtype_wrapper_cache_def = false, output_boxed_types_def = true, output_callbacks = true, exclude_deprecated = true, doc_skiplist = [], callback_skiplist = [])
     toplevel, exprs, exports = GI.output_exprs()
 
     if output_boxed_types_def
@@ -235,7 +235,7 @@ function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque;
     end
     all_object_signals!(exprs, ns;skiplist=signal_skiplist,object_skiplist=object_skiplist, exclude_deprecated = exclude_deprecated)
     if output_callbacks
-        all_callbacks!(exprs, exports, ns)
+        all_callbacks!(exprs, exports, ns; callback_skiplist)
     end
     push!(exprs,exports)
     write_to_file(path,"$(prefix)_structs",toplevel)

@@ -332,7 +332,7 @@ end
 """
     gtk_propertynames(w::GObject)
 
-Prints a list of property names for the GObject `w`.
+Get a list of property names for the GObject `w`.
 """
 function gtk_propertynames(w::GObject)
     n = Ref{Cuint}()
