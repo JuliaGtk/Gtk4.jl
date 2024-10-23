@@ -31,10 +31,10 @@ function show(io::IO, w::GObject)
     n = Ref{Cuint}()
     props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
         (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
-    v = gvalue(String)
     if get(io, :compact, false)::Bool
         print(io, getfield(w,:handle)) # show pointer
     else # show properties
+        v = gvalue(String)
         first = true
         for i = 1:n[]
             param = unsafe_load(unsafe_load(props, i))
@@ -59,9 +59,9 @@ function show(io::IO, w::GObject)
                 end
             end
         end
+        ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), v)
     end
     print(io, ')')
-    ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), v)
     nothing
 end
 
@@ -71,7 +71,7 @@ end
 Prints information about a property of the GObject `w`, including a
 brief description, its type, its default value, and its current value.
 """
-function propertyinfo(w::GObject, name::AbstractString)
+function propertyinfo(@nospecialize(w::GObject), name::AbstractString)
     p = ccall((:g_object_class_find_property, libgobject), Ptr{GParamSpec}, (Ptr{Nothing}, Ptr{UInt8}), G_OBJECT_GET_CLASS(w), name)
     if p == C_NULL
         error("No property with that name")

@@ -200,6 +200,32 @@ include("loop.jl")
 include("actions.jl")
 include("gio.jl")
 
+function set_default_log_handler(log_func)
+    global func = @cfunction(GLogFunc, Nothing, (Cstring, Cuint, Cstring, Ref{Function}))
+    ref, deref = gc_ref_closure(log_func)
+    ccall((:g_log_set_default_handler, libglib), Ptr{Cvoid}, (Ptr{Cvoid},Ptr{Cvoid}), func, ref)
+end
+
+function set_log_handler(log_domain, log_levels, log_func)
+    func = @cfunction(GLogFunc, Nothing, (Cstring, Cuint, Cstring, Ref{Function}))
+    ref, deref = gc_ref_closure(log_func)
+    ccall((:g_log_set_handler_full, libglib), Cuint, (Cstring, Cint, Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}), log_domain, Cuint(log_levels), func, ref, deref)
+end
+
+function GLogWriterFunc(log_level, fields, n_fields, user_data)
+    log_level = LogLevelFlags(log_level)
+    fields = collect(unsafe_wrap(Vector{_GLogField}, fields, n_fields))
+    f = user_data
+    ret = f(log_level, fields)
+    convert(UInt32, ret)
+end
+
+function set_log_writer_func(log_func)
+    func = @cfunction(GLogWriterFunc, Cuint, (Cuint, Ptr{_GLogField}, Csize_t, Ref{Function}))
+    ref, deref = gc_ref_closure(log_func)
+    ccall((:g_log_set_writer_func, libglib), Nothing, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}), func, ref, deref)
+end
+
 const exiting = Ref(false)
 function __init__()
     # check that libglib is compatible with what the GI generated code expects
