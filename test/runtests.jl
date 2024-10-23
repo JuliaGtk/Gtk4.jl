@@ -1,7 +1,7 @@
 module Gtk4TestModule
 using Test
 
-# An increasing number of tests are failing for i386, not sure why.
+# An increasing number of tests are failing for x86, not sure why.
 
 @testset "GLib" begin
 if Sys.WORD_SIZE == 64
@@ -35,7 +35,10 @@ include("comboboxtext.jl")
 include("tree.jl")
 include("text.jl")
 include("gui/misc.jl")
-include("gui/canvas.jl")
+if Sys.WORD_SIZE == 64
+    # fails with latest libpng versions on x86
+    include("gui/canvas.jl")
+end
 include("gui/dialogs.jl")
 include("gui/displays.jl")
 include("gui/input.jl")
