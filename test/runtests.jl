@@ -1,6 +1,8 @@
 module Gtk4TestModule
 using Test
 
+# An increasing number of tests are failing for i386, not sure why.
+
 @testset "GLib" begin
 if Sys.WORD_SIZE == 64
     include("keyfile.jl")
