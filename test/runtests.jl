@@ -35,10 +35,7 @@ include("comboboxtext.jl")
 include("tree.jl")
 include("text.jl")
 include("gui/misc.jl")
-if Sys.WORD_SIZE == 64
-    # fails with latest libpng versions on x86
-    include("gui/canvas.jl")
-end
+include("gui/canvas.jl")
 include("gui/dialogs.jl")
 include("gui/displays.jl")
 include("gui/input.jl")
