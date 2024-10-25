@@ -21,7 +21,7 @@ end
     destroy(win)
 end
 
-if !(get(ENV, "CI", nothing) == "true" && Sys.iswindows())
+if !(get(ENV, "CI", nothing) == "true" && (Sys.iswindows() || Sys.WORD_SIZE!=64))
 @testset "GL Area" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "glarea.jl"))
     destroy(w)

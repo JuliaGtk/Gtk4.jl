@@ -1,6 +1,7 @@
 module Cairo
 
 using ..GLib
+using Cairo_jll
 
 import Base: convert, unsafe_convert
 import CEnum: @cenum, CEnum

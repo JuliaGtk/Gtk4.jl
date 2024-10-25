@@ -1,6 +1,7 @@
 import Cairo: CairoSurface, CairoContext, CairoARGBSurface
 
 using Cairo_jll
+using ..Pango.Cairo
 
 function _canvas_draw_backing_store(w, cr, width, height, user_data) # cr is a Cairo context, user_data is a Cairo surface
     user_data==C_NULL && return
@@ -131,3 +132,5 @@ function cairo_surface(c::GtkCanvas)
     isdefined(c,:back) || error("GtkCanvas not yet initialized.")
     return c.back
 end
+
+CairoContext(cr::cairoContext) = CairoContext(Ptr{Nothing}(cr.handle))

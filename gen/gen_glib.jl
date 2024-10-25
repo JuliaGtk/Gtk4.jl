@@ -62,9 +62,10 @@ struct_skiplist=vcat(disguised, special, [:Cond,:HashTableIter,:Hook,
     :RecMutex,:Scanner,
     :TestLogBuffer,:TestLogMsg,:Thread,:ThreadPool,:Tree,:UriParamsIter])
 
+callback_skiplist=[:LogWriterFunc]
 constructor_skiplist=[:new,:new_take,:new_from_unix_utc,:new_now_utc,:new_utc,:new_maybe]
 
-GI.export_struct_exprs!(ns,path, "glib", struct_skiplist, import_as_opaque; doc_xml = dglib, constructor_skiplist = constructor_skiplist, output_object_cache_init = false, output_object_cache_define = false, output_boxed_types_def = false)
+GI.export_struct_exprs!(ns,path, "glib", struct_skiplist, import_as_opaque; doc_xml = dglib, constructor_skiplist = constructor_skiplist, output_object_cache_init = false, output_object_cache_define = false, output_boxed_types_def = false, callback_skiplist)
 
 ## struct methods
 
