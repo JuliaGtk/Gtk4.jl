@@ -29,7 +29,7 @@ using Preferences
 
 using Reexport
 @reexport using Graphics
-import .Graphics: width, height, getgc, scale
+import .Graphics: width, height, getgc, scale, center, clip
 import Cairo: destroy, text, status
 
 eval(include("gen/gdk4_consts"))
@@ -54,6 +54,8 @@ using ..Gtk4
 
 eval(include("gen/gdk4_methods"))
 eval(include("gen/gdk4_functions"))
+eval(include("gen/gsk4_methods"))
+eval(include("gen/gsk4_functions"))
 eval(include("gen/gtk4_methods"))
 eval(include("gen/gtk4_functions"))
 
