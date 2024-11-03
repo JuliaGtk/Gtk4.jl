@@ -60,6 +60,12 @@ function monitors()
     G_.get_monitors(d)
 end
 
+## GdkClipboard
+
+function set_text(c::GdkClipboard, str::AbstractString)
+    ccall((:gdk_clipboard_set_text, libgtk4), Nothing, (Ptr{GObject}, Cstring), c, str)
+end
+
 ## GdkTexture
 
 size(t::GdkTexture) = (G_.get_width(t),G_.get_height(t))

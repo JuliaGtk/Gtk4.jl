@@ -1,5 +1,7 @@
 # Gtk4.jl Examples
 
+These examples should be run in the REPL unless stated otherwise.
+
 ## Basic examples
 - `calculator4.jl` demonstrates a simple GUI with lots of buttons. Adapted from an example in Gtk.jl by Nand Vinchhi.
 - `css.jl` demonstrates widget styling using CSS.
@@ -32,7 +34,7 @@
 - The `ExampleApplication` subdirectory shows how to use Gtk4.jl with [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl).
 
 ## Toys
-- `HDF5Viewer` is a more extended example that shows the contents of an HDF5 file. Uses `GtkBuilder`, `GtkColumnView`, and `GtkTextView` and does some work in a separate thread to keep the UI responsive.
+- `HDF5Viewer` is a more extended example that shows the contents of an HDF5 file. Uses `GtkBuilder`, `GtkColumnView`, and `GtkTextView` and does some work in a separate thread to keep the UI responsive. This directory should be `dev`'ed to use it.
 
 ## Experimental
 
