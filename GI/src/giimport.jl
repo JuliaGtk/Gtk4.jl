@@ -844,6 +844,10 @@ function convert_to_c(name::Symbol, arginfo::GIArgInfo, typeinfo::TypeDesc{T}) w
     _convert_obj_to_c(name,arginfo,typeinfo)
 end
 
+function convert_to_c(name::Symbol, arginfo::GIArgInfo, typeinfo::TypeDesc{T}) where {T<:Type{GBoxed}}
+    _convert_obj_to_c(name,arginfo,typeinfo)
+end
+
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}, isconstructor=false) where {T <: Type{GObject}}
     owns = get_ownership_transfer(arginfo) != GITransfer.NOTHING
     object = get_container(arginfo)

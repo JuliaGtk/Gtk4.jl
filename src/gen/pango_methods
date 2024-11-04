@@ -48,6 +48,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function change(instance::PangoAttrList, _attr::PangoAttributeLike)
+        _attr = GLib.glib_ref(_attr)
         ret = ccall(("pango_attr_list_change", libpango), Nothing, (Ptr{PangoAttrList}, Ptr{_PangoAttribute}), instance, _attr)
         nothing
     end
@@ -72,10 +73,12 @@ $(Expr(:toplevel, quote
         ret2
     end
     function insert(instance::PangoAttrList, _attr::PangoAttributeLike)
+        _attr = GLib.glib_ref(_attr)
         ret = ccall(("pango_attr_list_insert", libpango), Nothing, (Ptr{PangoAttrList}, Ptr{_PangoAttribute}), instance, _attr)
         nothing
     end
     function insert_before(instance::PangoAttrList, _attr::PangoAttributeLike)
+        _attr = GLib.glib_ref(_attr)
         ret = ccall(("pango_attr_list_insert_before", libpango), Nothing, (Ptr{PangoAttrList}, Ptr{_PangoAttribute}), instance, _attr)
         nothing
     end

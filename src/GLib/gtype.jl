@@ -128,6 +128,12 @@ function delboxed(x::GBoxed)
     ccall((:g_boxed_free, libgobject), Nothing, (GType, Ptr{GBoxed},), gtype, x.handle)
 end
 
+function glib_ref(x::GBoxed)
+    T=typeof(x)
+    gtype = g_type(T)
+    ccall((:g_boxed_copy, libgobject), Ptr{GBoxed}, (GType, Ptr{GBoxed},), gtype, x.handle)
+end
+
 cconvert(::Type{Ptr{GObject}}, @nospecialize(x::GObject)) = x
 
 # All GObjects are expected to have a 'handle' field
