@@ -127,6 +127,7 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
             unsafe_convert(::Type{Ptr{$ustructname}}, box::$gstructname) = convert(Ptr{$ustructname}, box.handle)
             convert(::Type{$gstructname}, p::Ptr{$ustructname},  owns = false) = $gstructname(p, owns)
             const $structlike = Union{Ref{$ustructname},$gstructname}
+            convert(::Type{$structlike}, p, owns) = convert($gstructname, p, owns)
         end
     else
         conv = quote

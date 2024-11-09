@@ -29,6 +29,10 @@ end
 include("gdkpixbuf.jl")
 end
 
+@testset "Graphene" begin
+include("graphene.jl")
+end
+
 @testset "Gtk" begin
 include("gui.jl")
 include("comboboxtext.jl")
