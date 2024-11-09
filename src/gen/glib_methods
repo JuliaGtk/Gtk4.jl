@@ -339,13 +339,15 @@ $(Expr(:toplevel, quote
         nothing
     end
     function unref_to_array(instance::GBytes)
-        ret = ccall(("g_bytes_unref_to_array", libglib), Ptr{GByteArray}, (Ptr{GBytes},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_bytes_unref_to_array", libglib), Ptr{GByteArray}, (Ptr{GBytes},), reffed_instance)
         ret2 = convert(GByteArray, ret, true)
         ret2
     end
     function unref_to_data(instance::GBytes)
+        reffed_instance = GLib.glib_ref(instance)
         m_size = Ref{UInt64}()
-        ret = ccall(("g_bytes_unref_to_data", libglib), Ptr{UInt8}, (Ptr{GBytes}, Ptr{UInt64}), instance, m_size)
+        ret = ccall(("g_bytes_unref_to_data", libglib), Ptr{UInt8}, (Ptr{GBytes}, Ptr{UInt64}), reffed_instance, m_size)
         ret2 = begin
                 arrtemp = copy(unsafe_wrap(Vector{UInt8}, ret, m_size[]))
                 GLib.g_free(ret)
@@ -1550,17 +1552,20 @@ $(Expr(:toplevel, quote
         ret2
     end
     function free(instance::GStringLike, _free_segment::Bool)
-        ret = ccall(("g_string_free", libglib), Cstring, (Ptr{_GString}, Cint), instance, _free_segment)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_string_free", libglib), Cstring, (Ptr{_GString}, Cint), reffed_instance, _free_segment)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
     function free_and_steal(instance::GStringLike)
-        ret = ccall(("g_string_free_and_steal", libglib), Cstring, (Ptr{_GString},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_string_free_and_steal", libglib), Cstring, (Ptr{_GString},), reffed_instance)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
     function free_to_bytes(instance::GStringLike)
-        ret = ccall(("g_string_free_to_bytes", libglib), Ptr{GBytes}, (Ptr{_GString},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_string_free_to_bytes", libglib), Ptr{GBytes}, (Ptr{_GString},), reffed_instance)
         ret2 = convert(GBytes, ret, true)
         ret2
     end
@@ -2171,7 +2176,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unref(instance::GVariantBuilder)
-        ret = ccall(("g_variant_builder_unref", libglib), Nothing, (Ptr{GVariantBuilder},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_variant_builder_unref", libglib), Nothing, (Ptr{GVariantBuilder},), reffed_instance)
         nothing
     end
     function VariantDict_new(_from_asv::Maybe(GVariant))
@@ -2210,7 +2216,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unref(instance::GVariantDict)
-        ret = ccall(("g_variant_dict_unref", libglib), Nothing, (Ptr{GVariantDict},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_variant_dict_unref", libglib), Nothing, (Ptr{GVariantDict},), reffed_instance)
         nothing
     end
     function VariantType_new(_type_string::Union{AbstractString, Symbol})

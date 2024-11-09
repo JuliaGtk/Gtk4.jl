@@ -115,17 +115,20 @@ $(Expr(:toplevel, quote
         ret2
     end
     function invert(instance::GskTransform)
-        ret = ccall(("gsk_transform_invert", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_invert", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform},), reffed_instance)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function matrix(instance::GskTransform, _matrix::GrapheneMatrixLike)
-        ret = ccall(("gsk_transform_matrix", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GrapheneMatrix}), instance, _matrix)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_matrix", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GrapheneMatrix}), reffed_instance, _matrix)
         ret2 = convert(GskTransform, ret, true)
         ret2
     end
     function perspective(instance::GskTransform, _depth::Real)
-        ret = ccall(("gsk_transform_perspective", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32), instance, _depth)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_perspective", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32), reffed_instance, _depth)
         ret2 = convert(GskTransform, ret, true)
         ret2
     end
@@ -139,27 +142,32 @@ $(Expr(:toplevel, quote
         ret2
     end
     function rotate(instance::GskTransform, _angle::Real)
-        ret = ccall(("gsk_transform_rotate", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32), instance, _angle)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_rotate", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32), reffed_instance, _angle)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function rotate_3d(instance::GskTransform, _angle::Real, _axis::GrapheneVec3Like)
-        ret = ccall(("gsk_transform_rotate_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Ptr{_GrapheneVec3}), instance, _angle, _axis)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_rotate_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Ptr{_GrapheneVec3}), reffed_instance, _angle, _axis)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function scale(instance::GskTransform, _factor_x::Real, _factor_y::Real)
-        ret = ccall(("gsk_transform_scale", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32), instance, _factor_x, _factor_y)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_scale", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32), reffed_instance, _factor_x, _factor_y)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function scale_3d(instance::GskTransform, _factor_x::Real, _factor_y::Real, _factor_z::Real)
-        ret = ccall(("gsk_transform_scale_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32, Float32), instance, _factor_x, _factor_y, _factor_z)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_scale_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32, Float32), reffed_instance, _factor_x, _factor_y, _factor_z)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function skew(instance::GskTransform, _skew_x::Real, _skew_y::Real)
-        ret = ccall(("gsk_transform_skew", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32), instance, _skew_x, _skew_y)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_skew", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32), reffed_instance, _skew_x, _skew_y)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
@@ -229,8 +237,9 @@ $(Expr(:toplevel, quote
         (_out_dx, _out_dy)
     end
     function transform(instance::GskTransform, _other::Maybe(GskTransform))
+        reffed_instance = GLib.glib_ref(instance)
         _other_maybe = nothing_to_null(_other)
-        ret = ccall(("gsk_transform_transform", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{GskTransform}), instance, _other_maybe)
+        ret = ccall(("gsk_transform_transform", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{GskTransform}), reffed_instance, _other_maybe)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
@@ -247,12 +256,14 @@ $(Expr(:toplevel, quote
         _out_point
     end
     function translate(instance::GskTransform, _point::GraphenePointLike)
-        ret = ccall(("gsk_transform_translate", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GraphenePoint}), instance, _point)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_translate", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GraphenePoint}), reffed_instance, _point)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function translate_3d(instance::GskTransform, _point::GraphenePoint3DLike)
-        ret = ccall(("gsk_transform_translate_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GraphenePoint3D}), instance, _point)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_translate_3d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GraphenePoint3D}), reffed_instance, _point)
         ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
@@ -777,7 +788,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unref(instance::GskRenderNode)
-        ret = ccall(("gsk_render_node_unref", libgtk4), Nothing, (Ptr{GskRenderNode},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_render_node_unref", libgtk4), Nothing, (Ptr{GskRenderNode},), reffed_instance)
         nothing
     end
     function write_to_file(instance::GskRenderNode, _filename::Union{AbstractString, Symbol})

@@ -1137,7 +1137,12 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         object = get_container(info)
         if object !== nothing
             typeinfo = extract_type(InstanceType,object)
-            push!(cargs, Arg(:instance, typeinfo.ctype))
+            if get_instance_ownership_transfer(info) == GITransfer.EVERYTHING
+                push!(prologue, :(reffed_instance = GLib.glib_ref(instance)))
+                push!(cargs, Arg(:reffed_instance, typeinfo.ctype))
+            else
+                push!(cargs, Arg(:instance, typeinfo.ctype))
+            end
         end
     end
     if flags & GIFunction.IS_CONSTRUCTOR != 0

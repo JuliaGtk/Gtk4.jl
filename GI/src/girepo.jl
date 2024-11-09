@@ -307,7 +307,7 @@ ctypes = Dict(GIInfo=>Ptr{GIBaseInfo},
 for (owner,property,typ) in [
     (:base, :name, Symbol), (:base, :namespace, Symbol), (:base, :type, Int),
     (:base, :container, MaybeGIInfo), (:registered_type, :g_type, GType), (:registered_type, :type_name, Symbol), (:object, :parent, MaybeGIInfo), (:object, :type_init, Symbol),
-    (:callable, :return_type, GIInfo), (:callable, :caller_owns, EnumGI), (:registered_type, :type_init, Symbol),
+    (:callable, :return_type, GIInfo), (:callable, :caller_owns, EnumGI), (:callable, :instance_ownership_transfer, EnumGI), (:registered_type, :type_init, Symbol),
     (:function, :flags, EnumGI), (:function, :symbol, Symbol), (:property, :type, GIInfo), (:property, :ownership_transfer, EnumGI), (:property, :flags, EnumGI),
     (:arg, :type, GIInfo), (:arg, :direction, EnumGI), (:arg, :ownership_transfer, EnumGI), #(:function, :property, MaybeGIInfo),
     (:arg, :closure, Cint), (:arg, :destroy, Cint), (:arg, :scope, EnumGI),

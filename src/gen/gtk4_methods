@@ -42,7 +42,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unref(instance::GtkExpressionWatch)
-        ret = ccall(("gtk_expression_watch_unref", libgtk4), Nothing, (Ptr{GtkExpressionWatch},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gtk_expression_watch_unref", libgtk4), Nothing, (Ptr{GtkExpressionWatch},), reffed_instance)
         nothing
     end
     function unwatch(instance::GtkExpressionWatch)
@@ -7088,8 +7089,9 @@ $(Expr(:toplevel, quote
         get_buildable_id(GtkBuildable(instance))
     end
     function bind(instance::GtkExpression, _target::GObject, _property::Union{AbstractString, Symbol}, _this_::Maybe(GObject))
+        reffed_instance = GLib.glib_ref(instance)
         _this__maybe = nothing_to_null(_this_)
-        ret = ccall(("gtk_expression_bind", libgtk4), Ptr{GtkExpressionWatch}, (Ptr{GtkExpression}, Ptr{GObject}, Cstring, Ptr{GObject}), instance, _target, _property, _this__maybe)
+        ret = ccall(("gtk_expression_bind", libgtk4), Ptr{GtkExpressionWatch}, (Ptr{GtkExpression}, Ptr{GObject}, Cstring, Ptr{GObject}), reffed_instance, _target, _property, _this__maybe)
         ret2 = convert(GtkExpressionWatch, ret, false)
         ret2
     end
@@ -7114,7 +7116,8 @@ $(Expr(:toplevel, quote
         ret2
     end
     function unref(instance::GtkExpression)
-        ret = ccall(("gtk_expression_unref", libgtk4), Nothing, (Ptr{GtkExpression},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gtk_expression_unref", libgtk4), Nothing, (Ptr{GtkExpression},), reffed_instance)
         nothing
     end
     function announce(instance::GtkFileChooserDialog, _message::Union{AbstractString, Symbol}, _priority)
