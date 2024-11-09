@@ -134,3 +134,4 @@ function cairo_surface(c::GtkCanvas)
 end
 
 CairoContext(cr::cairoContext) = CairoContext(Ptr{Nothing}(cr.handle))
+cairoContext(cr::CairoContext) = cairoContext(Ptr{cairoContext}(cr.ptr),false)

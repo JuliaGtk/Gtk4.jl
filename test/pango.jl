@@ -1,4 +1,4 @@
-using Gtk4.Pango
+using Gtk4.Pango, Cairo, Gtk4
 using Test
 
 @testset "layout" begin
@@ -19,11 +19,15 @@ using Test
     @test logical.width == width
     @test logical.height == height
 
-    fd=Pango.font_description(l)    
+    fd=Pango.font_description(l)
 end
 
 @testset "font description" begin
     fd2 = PangoFontDescription("Sans")
+    show(IOBuffer(), fd2)
+    fm=Pango.default_font_map()
+    c=PangoContext(fm)
+    c[fd2]
 end
 
 @testset "families" begin
@@ -59,3 +63,11 @@ end
     end
 
 end
+
+@testset "cairo" begin
+    c = CairoRGBSurface(256,256)
+    cr = CairoContext(c)
+    cr2 = Gtk4.cairoContext(cr)
+    layout = PangoLayout(cr2)
+end
+

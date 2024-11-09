@@ -10,8 +10,6 @@ function widget_measure(widget::Ptr{GObject}, orientation::Cint, for_size::Cint,
 end
 
 function widget_snapshot(widget_ptr::Ptr{GObject}, snapshot_ptr::Ptr{GObject})
-    t = GLib.G_OBJECT_CLASS_TYPE(widget_ptr)
-    t2 = GLib.G_OBJECT_CLASS_TYPE(snapshot_ptr)
     widget = convert(GtkWidget, widget_ptr)
     snapshot = convert(GtkSnapshot, snapshot_ptr)
     w,h = size(widget)
@@ -23,8 +21,6 @@ function widget_snapshot(widget_ptr::Ptr{GObject}, snapshot_ptr::Ptr{GObject})
 end
 
 function object_class_init(class::Ptr{_GObjectClass}, user_data)
-    object_klass_ptr = Ptr{_GObjectClass}(class)
-    object_klass = unsafe_load(object_klass_ptr)
     widget_klass_ptr = Ptr{_GtkWidgetClass}(class)
     widget_klass = unsafe_load(widget_klass_ptr)
     widget_klass.snapshot = @cfunction(widget_snapshot, Cvoid, (Ptr{GObject}, Ptr{GObject}))
@@ -37,31 +33,34 @@ mutable struct MyWidget <: GtkWidget
     handle::Ptr{GObject}
 end
 
-const class_init = @cfunction(object_class_init, Cvoid, (Ptr{_GObjectClass}, Ptr{Cvoid}))
-
-function register_new_widget()
-    base_gtype = GLib.g_type(GtkWidget)
-    tq=GLib.G_.type_query(base_gtype)
-    typeinfo=_GTypeInfo(tq.class_size,
+function GLib.g_type(::Type{T}) where T <: MyWidget
+    gt = GLib.g_type_from_name(:MyWidget)
+    if gt > 0
+        return gt
+    else
+        base_gtype = GLib.g_type(GtkWidget)
+        tq=GLib.G_.type_query(base_gtype)
+        typeinfo = _GTypeInfo(tq.class_size,
                         C_NULL,   # base_init
                         C_NULL,   # base_finalize
-                        class_init,
+                        @cfunction(object_class_init, Cvoid, (Ptr{_GObjectClass}, Ptr{Cvoid})),
                         C_NULL,   # class_finalize
                         C_NULL,   # class_data
                         tq.instance_size,
                         0,        # n_preallocs
                         C_NULL,   # instance_init
                         C_NULL)   # value_table
-    GLib.G_.type_register_static(GLib.g_type(GtkWidget),:MyWidget,Ref(typeinfo),GLib.TypeFlags_FINAL)
+        return GLib.G_.type_register_static(base_gtype,:MyWidget,Ref(typeinfo),GLib.TypeFlags_FINAL)
+    end
 end
 
-function create_widget(gtype)
+function MyWidget()
+    gtype = GLib.g_type(MyWidget)
     h = ccall(("g_object_new", GLib.libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)
     MyWidget(h)
 end
 
-gt=register_new_widget()
-w = create_widget(gt)
+w = MyWidget()
 
 win=GtkWindow("custom widget")
 win[] = w

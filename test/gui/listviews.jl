@@ -17,13 +17,17 @@ model = GLib.GListModel(slist)
 show(IOBuffer(), model)
 show(IOContext(IOBuffer(),:limit=>true,:displaysize=>(5,80)),model)
 push!(slist, "Mango")
-factory = GtkSignalListItemFactory()
 
 @test length(slist) == 4
 @test slist[2]=="Orange"
+@test slist[end]=="Mango"
 
 l = [s for s in model]
 @test length(l) == 4
+
+# test GtkStringObject by indexing using GListModel's methods
+so1 = GListModel(slist)[1]
+@test string(so1) == "Apple"
 
 function setup_cb(f, li)
     set_child(li,GtkLabel(""))
@@ -35,7 +39,7 @@ function bind_cb(f, li)
     label.label = text
 end
 
-
+factory = GtkSignalListItemFactory()
 list = GtkListView(GtkSelectionModel(GtkSingleSelection(model)))
 Gtk4.factory(list,factory)
 
@@ -146,7 +150,16 @@ Gtk4.set_filter_func(listBox, match)
 Gtk4.set_sort_func(listBox, alpha_compare)
 
 destroy(win)
+end
 
+@testset "GridView" begin
+gridview = GtkGridView()
+end
+
+@testset "ColumnView" begin
+columnview = GtkColumnView()
+col = GtkColumnViewColumn("first column")
+push!(columnview, col)
 end
 
 @testset "CustomFilter and CustomSorter" begin
