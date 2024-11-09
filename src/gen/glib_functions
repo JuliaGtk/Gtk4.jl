@@ -333,6 +333,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_bit_unlock", libglib), Nothing, (Ptr{Int32}, Int32), _address, _lock_bit)
         nothing
     end
+    function blow_chunks()
+        ret = ccall(("g_blow_chunks", libglib), Nothing, ())
+        nothing
+    end
     function bookmark_file_error_quark()
         ret = ccall(("g_bookmark_file_error_quark", libglib), UInt32, ())
         ret
@@ -345,6 +349,11 @@ $(Expr(:toplevel, quote
     function build_pathv(_separator::Union{AbstractString, Symbol}, _args)
         ret = ccall(("g_build_pathv", libglib), Cstring, (Cstring, Ptr{Cstring}), _separator, _args)
         ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function byte_array_append(_array, _data::UInt8, _len::Integer)
+        ret = ccall(("g_byte_array_append", libglib), Ptr{GByteArray}, (Ptr{GByteArray}, Ptr{UInt8}, UInt32), _array, _data, _len)
+        ret2 = convert(GByteArray, ret, false)
         ret2
     end
     function byte_array_free(_array, _free_segment::Bool)
@@ -368,6 +377,52 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_byte_array_new_take", libglib), Ptr{GByteArray}, (Ptr{UInt8}, UInt64), _data_arr, _len)
         ret2 = convert(GByteArray, ret, true)
         ret2
+    end
+    function byte_array_prepend(_array, _data::UInt8, _len::Integer)
+        ret = ccall(("g_byte_array_prepend", libglib), Ptr{GByteArray}, (Ptr{GByteArray}, Ptr{UInt8}, UInt32), _array, _data, _len)
+        ret2 = convert(GByteArray, ret, false)
+        ret2
+    end
+    function byte_array_ref(_array)
+        ret = ccall(("g_byte_array_ref", libglib), Ptr{GByteArray}, (Ptr{GByteArray},), _array)
+        ret2 = convert(GByteArray, ret, true)
+        ret2
+    end
+    function byte_array_remove_index(_array, _index_::Integer)
+        ret = ccall(("g_byte_array_remove_index", libglib), Ptr{GByteArray}, (Ptr{GByteArray}, UInt32), _array, _index_)
+        ret2 = convert(GByteArray, ret, false)
+        ret2
+    end
+    function byte_array_remove_index_fast(_array, _index_::Integer)
+        ret = ccall(("g_byte_array_remove_index_fast", libglib), Ptr{GByteArray}, (Ptr{GByteArray}, UInt32), _array, _index_)
+        ret2 = convert(GByteArray, ret, false)
+        ret2
+    end
+    function byte_array_remove_range(_array, _index_::Integer, _length::Integer)
+        ret = ccall(("g_byte_array_remove_range", libglib), Ptr{GByteArray}, (Ptr{GByteArray}, UInt32, UInt32), _array, _index_, _length)
+        ret2 = convert(GByteArray, ret, false)
+        ret2
+    end
+    function byte_array_set_size(_array, _length::Integer)
+        ret = ccall(("g_byte_array_set_size", libglib), Ptr{GByteArray}, (Ptr{GByteArray}, UInt32), _array, _length)
+        ret2 = convert(GByteArray, ret, false)
+        ret2
+    end
+    function byte_array_sized_new(_reserved_size::Integer)
+        ret = ccall(("g_byte_array_sized_new", libglib), Ptr{GByteArray}, (UInt32,), _reserved_size)
+        ret2 = convert(GByteArray, ret, true)
+        ret2
+    end
+    function byte_array_sort_with_data(_array, _compare_func::Function)
+        begin
+            _compare_func_cfunc = @cfunction(GCompareDataFunc, Int32, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_compare_func)
+                _compare_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_byte_array_sort_with_data", libglib), Nothing, (Ptr{GByteArray}, Ptr{Cvoid}, Ptr{Nothing}), _array, _compare_func_cfunc, _compare_func_closure)
+        nothing
     end
     function byte_array_steal(_array)
         m_len = Ref{UInt64}()
@@ -399,6 +454,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_checksum_type_get_length", libglib), Int64, (UInt32,), _checksum_type)
         ret
     end
+    function chmod(_filename::Union{AbstractString, Symbol}, _mode::Integer)
+        ret = ccall(("g_chmod", libglib), Int32, (Cstring, Int32), _filename, _mode)
+        ret
+    end
     function clear_error()
         err = err_buf()
         ret = ccall(("g_clear_error", libglib), Nothing, (Ptr{Ptr{GError}},), err)
@@ -411,6 +470,10 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function closefrom(_lowfd::Integer)
+        ret = ccall(("g_closefrom", libglib), Int32, (Int32,), _lowfd)
+        ret
     end
     function compute_checksum_for_bytes(_checksum_type, _data::GBytes)
         ret = ccall(("g_compute_checksum_for_bytes", libglib), Cstring, (UInt32, Ptr{GBytes}), _checksum_type, _data)
@@ -470,6 +533,10 @@ $(Expr(:toplevel, quote
         _bytes_read = m_bytes_read[]
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_read)
+    end
+    function creat(_filename::Union{AbstractString, Symbol}, _mode::Integer)
+        ret = ccall(("g_creat", libglib), Int32, (Cstring, Int32), _filename, _mode)
+        ret
     end
     function dataset_destroy(_dataset_location::Nothing)
         ret = ccall(("g_dataset_destroy", libglib), Nothing, (Ptr{Nothing},), _dataset_location)
@@ -614,6 +681,10 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
+    function fdwalk_set_cloexec(_lowfd::Integer)
+        ret = ccall(("g_fdwalk_set_cloexec", libglib), Int32, (Int32,), _lowfd)
+        ret
+    end
     function file_error_from_errno(_err_no::Integer)
         ret = ccall(("g_file_error_from_errno", libglib), UInt32, (Int32,), _err_no)
         ret2 = FileError(ret)
@@ -735,6 +806,11 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
+    function fopen(_filename::Union{AbstractString, Symbol}, _mode::Union{AbstractString, Symbol})
+        ret = ccall(("g_fopen", libglib), Ptr{Nothing}, (Cstring, Cstring), _filename, _mode)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
     function format_size(_size::Integer)
         ret = ccall(("g_format_size", libglib), Cstring, (UInt64,), _size)
         ret2 = string_or_nothing(ret, true)
@@ -754,6 +830,16 @@ $(Expr(:toplevel, quote
         _mem_maybe = nothing_to_null(_mem)
         ret = ccall(("g_free_sized", libglib), Nothing, (Ptr{Nothing}, UInt64), _mem_maybe, _size)
         nothing
+    end
+    function freopen(_filename::Union{AbstractString, Symbol}, _mode::Union{AbstractString, Symbol}, _stream::Maybe(Nothing))
+        _stream_maybe = nothing_to_null(_stream)
+        ret = ccall(("g_freopen", libglib), Ptr{Nothing}, (Cstring, Cstring, Ptr{Nothing}), _filename, _mode, _stream_maybe)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function fsync(_fd::Integer)
+        ret = ccall(("g_fsync", libglib), Int32, (Int32,), _fd)
+        ret
     end
     function get_application_name()
         ret = ccall(("g_get_application_name", libglib), Cstring, ())
@@ -952,6 +1038,51 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_hash_table_destroy", libglib), Nothing, (Ptr{GHashTable},), _hash_table)
         nothing
     end
+    function hash_table_find(_hash_table, _predicate::Function)
+        begin
+            _predicate_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_predicate)
+                _predicate_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_hash_table_find", libglib), Ptr{Nothing}, (Ptr{GHashTable}, Ptr{Cvoid}, Ptr{Nothing}), _hash_table, _predicate_cfunc, _predicate_closure)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function hash_table_foreach(_hash_table, _func::Function)
+        begin
+            _func_cfunc = @cfunction(GHFunc, Nothing, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_func)
+                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_hash_table_foreach", libglib), Nothing, (Ptr{GHashTable}, Ptr{Cvoid}, Ptr{Nothing}), _hash_table, _func_cfunc, _func_closure)
+        nothing
+    end
+    function hash_table_foreach_remove(_hash_table, _func::Function)
+        begin
+            _func_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_func)
+                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_hash_table_foreach_remove", libglib), UInt32, (Ptr{GHashTable}, Ptr{Cvoid}, Ptr{Nothing}), _hash_table, _func_cfunc, _func_closure)
+        ret
+    end
+    function hash_table_foreach_steal(_hash_table, _func::Function)
+        begin
+            _func_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_func)
+                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_hash_table_foreach_steal", libglib), UInt32, (Ptr{GHashTable}, Ptr{Cvoid}, Ptr{Nothing}), _hash_table, _func_cfunc, _func_closure)
+        ret
+    end
     function hash_table_insert(_hash_table, _key::Maybe(Nothing), _value::Maybe(Nothing))
         _key_maybe = nothing_to_null(_key)
         _value_maybe = nothing_to_null(_value)
@@ -979,6 +1110,10 @@ $(Expr(:toplevel, quote
     end
     function hash_table_new_similar(_other_hash_table)
         ret = ccall(("g_hash_table_new_similar", libglib), Ptr{GHashTable}, (Ptr{GHashTable},), _other_hash_table)
+        ret
+    end
+    function hash_table_ref(_hash_table)
+        ret = ccall(("g_hash_table_ref", libglib), Ptr{GHashTable}, (Ptr{GHashTable},), _hash_table)
         ret
     end
     function hash_table_remove(_hash_table, _key::Maybe(Nothing))
@@ -1102,6 +1237,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_key_file_error_quark", libglib), UInt32, ())
         ret
     end
+    function list_pop_allocator()
+        ret = ccall(("g_list_pop_allocator", libglib), Nothing, ())
+        nothing
+    end
     function listenv()
         ret = ccall(("g_listenv", libglib), Ptr{Cstring}, ())
         ret2 = begin
@@ -1175,6 +1314,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_log_variant", libglib), Nothing, (Cstring, UInt32, Ptr{GVariant}), _log_domain_maybe, _log_level, _fields)
         nothing
     end
+    function log_writer_default_set_debug_domains(_domains::Maybe(Union{AbstractString, Symbol}))
+        _domains_maybe = nothing_to_null(_domains)
+        ret = ccall(("g_log_writer_default_set_debug_domains", libglib), Nothing, (Cstring,), _domains_maybe)
+        nothing
+    end
     function log_writer_default_set_use_stderr(_use_stderr::Bool)
         ret = ccall(("g_log_writer_default_set_use_stderr", libglib), Nothing, (Cint,), _use_stderr)
         nothing
@@ -1193,6 +1337,14 @@ $(Expr(:toplevel, quote
     function log_writer_supports_color(_output_fd::Integer)
         ret = ccall(("g_log_writer_supports_color", libglib), Cint, (Int32,), _output_fd)
         ret2 = convert(Bool, ret)
+        ret2
+    end
+    function log_writer_syslog(_log_level, _fields, _user_data::Maybe(Nothing))
+        _fields_arr = convert(Vector{_GLogField}, _fields)
+        _user_data_maybe = nothing_to_null(_user_data)
+        _n_fields = length(_fields)
+        ret = ccall(("g_log_writer_syslog", libglib), UInt32, (UInt32, Ptr{_GLogField}, UInt64, Ptr{Nothing}), _log_level, _fields_arr, _n_fields, _user_data_maybe)
+        ret2 = LogWriterOutput(ret)
         ret2
     end
     function main_context_default()
@@ -1243,15 +1395,27 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
+    function mem_chunk_info()
+        ret = ccall(("g_mem_chunk_info", libglib), Nothing, ())
+        nothing
+    end
     function memdup2(_mem::Maybe(Nothing), _byte_size::Integer)
         _mem_maybe = nothing_to_null(_mem)
         ret = ccall(("g_memdup2", libglib), Ptr{Nothing}, (Ptr{Nothing}, UInt64), _mem_maybe, _byte_size)
         ret2 = convert(Nothing, ret)
         ret2
     end
+    function mkdir(_filename::Union{AbstractString, Symbol}, _mode::Integer)
+        ret = ccall(("g_mkdir", libglib), Int32, (Cstring, Int32), _filename, _mode)
+        ret
+    end
     function mkdir_with_parents(_pathname::Union{AbstractString, Symbol}, _mode::Integer)
         ret = ccall(("g_mkdir_with_parents", libglib), Int32, (Cstring, Int32), _pathname, _mode)
         ret
+    end
+    function node_pop_allocator()
+        ret = ccall(("g_node_pop_allocator", libglib), Nothing, ())
+        nothing
     end
     function nullify_pointer(_nullify_location::Nothing)
         ret = ccall(("g_nullify_pointer", libglib), Nothing, (Ptr{Nothing},), _nullify_location)
@@ -1270,13 +1434,40 @@ $(Expr(:toplevel, quote
         nothing
     end
     function once_init_enter(_location::Nothing)
-        ret = ccall(("g_once_init_enter", libglib), Cint, (Ptr{Nothing},), _location)
+        m_location = Ref{Ptr{Nothing}}()
+        m_location[] = Base.cconvert(Ptr{Nothing}, _location)
+        ret = ccall(("g_once_init_enter", libglib), Cint, (Ptr{Ptr{Nothing}},), m_location)
+        ret2 = convert(Bool, ret)
+        _location = m_location[]
+        _location = convert(Nothing, _location)
+        (ret2, _location)
+    end
+    function once_init_enter_impl(_location::UInt64)
+        ret = ccall(("g_once_init_enter_impl", libglib), Cint, (Ptr{UInt64},), _location)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function once_init_enter_pointer(_location::Nothing)
+        ret = ccall(("g_once_init_enter_pointer", libglib), Cint, (Ptr{Nothing},), _location)
         ret2 = convert(Bool, ret)
         ret2
     end
     function once_init_leave(_location::Nothing, _result::Integer)
-        ret = ccall(("g_once_init_leave", libglib), Nothing, (Ptr{Nothing}, UInt64), _location, _result)
+        m_location = Ref{Ptr{Nothing}}()
+        m_location[] = Base.cconvert(Ptr{Nothing}, _location)
+        ret = ccall(("g_once_init_leave", libglib), Nothing, (Ptr{Ptr{Nothing}}, UInt64), m_location, _result)
+        _location = m_location[]
+        _location = convert(Nothing, _location)
+        _location
+    end
+    function once_init_leave_pointer(_location::Nothing, _result::Maybe(Nothing))
+        _result_maybe = nothing_to_null(_result)
+        ret = ccall(("g_once_init_leave_pointer", libglib), Nothing, (Ptr{Nothing}, Ptr{Nothing}), _location, _result_maybe)
         nothing
+    end
+    function open(_filename::Union{AbstractString, Symbol}, _flags::Integer, _mode::Integer)
+        ret = ccall(("g_open", libglib), Int32, (Cstring, Int32, Int32), _filename, _flags, _mode)
+        ret
     end
     function option_error_quark()
         ret = ccall(("g_option_error_quark", libglib), UInt32, ())
@@ -1316,6 +1507,19 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_pointer_bit_lock", libglib), Nothing, (Ptr{Nothing}, Int32), _address, _lock_bit)
         nothing
     end
+    function pointer_bit_lock_and_get(_address::Nothing, _lock_bit::Integer)
+        m_out_ptr = Ref{UInt64}()
+        ret = ccall(("g_pointer_bit_lock_and_get", libglib), Nothing, (Ptr{Nothing}, UInt32, Ptr{UInt64}), _address, _lock_bit, m_out_ptr)
+        _out_ptr = m_out_ptr[]
+        _out_ptr
+    end
+    function pointer_bit_lock_mask_ptr(_ptr::Maybe(Nothing), _lock_bit::Integer, _set::Bool, _preserve_mask::Integer, _preserve_ptr::Maybe(Nothing))
+        _ptr_maybe = nothing_to_null(_ptr)
+        _preserve_ptr_maybe = nothing_to_null(_preserve_ptr)
+        ret = ccall(("g_pointer_bit_lock_mask_ptr", libglib), Ptr{Nothing}, (Ptr{Nothing}, UInt32, Cint, UInt64, Ptr{Nothing}), _ptr_maybe, _lock_bit, _set, _preserve_mask, _preserve_ptr_maybe)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
     function pointer_bit_trylock(_address::Nothing, _lock_bit::Integer)
         ret = ccall(("g_pointer_bit_trylock", libglib), Cint, (Ptr{Nothing}, Int32), _address, _lock_bit)
         ret2 = convert(Bool, ret)
@@ -1325,16 +1529,35 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_pointer_bit_unlock", libglib), Nothing, (Ptr{Nothing}, Int32), _address, _lock_bit)
         nothing
     end
+    function pointer_bit_unlock_and_set(_address::Nothing, _lock_bit::Integer, _ptr::Maybe(Nothing), _preserve_mask::Integer)
+        _ptr_maybe = nothing_to_null(_ptr)
+        ret = ccall(("g_pointer_bit_unlock_and_set", libglib), Nothing, (Ptr{Nothing}, UInt32, Ptr{Nothing}, UInt64), _address, _lock_bit, _ptr_maybe, _preserve_mask)
+        nothing
+    end
     function prefix_error_literal(_err, _prefix::Union{AbstractString, Symbol})
         _err_maybe = nothing_to_null(_err)
-        ret = ccall(("g_prefix_error_literal", libglib), Nothing, (Ptr{GError}, Cstring), _err_maybe, _prefix)
-        nothing
+        m_err = Ref{Ptr{GError}}()
+        m_err[] = Base.cconvert(Ptr{GError}, _err_maybe)
+        ret = ccall(("g_prefix_error_literal", libglib), Nothing, (Ptr{Ptr{GError}}, Cstring), m_err, _prefix)
+        _err_maybe = m_err[]
+        _err_maybe
     end
     function propagate_error(_src)
         m_dest = Ref{Ptr{GError}}()
         ret = ccall(("g_propagate_error", libglib), Nothing, (Ptr{Ptr{GError}}, Ptr{GError}), m_dest, _src)
         _dest = m_dest[]
         _dest
+    end
+    function qsort_with_data(_pbase::Nothing, _total_elems::Integer, _size::Integer, _compare_func::Function)
+        begin
+            _compare_func_cfunc = @cfunction(GCompareDataFunc, Int32, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_compare_func)
+                _compare_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        ret = ccall(("g_qsort_with_data", libglib), Nothing, (Ptr{Nothing}, Int32, UInt64, Ptr{Cvoid}, Ptr{Nothing}), _pbase, _total_elems, _size, _compare_func_cfunc, _compare_func_closure)
+        nothing
     end
     function quark_from_static_string(_string::Maybe(Union{AbstractString, Symbol}))
         _string_maybe = nothing_to_null(_string)
@@ -1505,6 +1728,14 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_reload_user_special_dirs_cache", libglib), Nothing, ())
         nothing
     end
+    function remove(_filename::Union{AbstractString, Symbol})
+        ret = ccall(("g_remove", libglib), Int32, (Cstring,), _filename)
+        ret
+    end
+    function rename(_oldfilename::Union{AbstractString, Symbol}, _newfilename::Union{AbstractString, Symbol})
+        ret = ccall(("g_rename", libglib), Int32, (Cstring, Cstring), _oldfilename, _newfilename)
+        ret
+    end
     function rmdir(_filename::Union{AbstractString, Symbol})
         ret = ccall(("g_rmdir", libglib), Int32, (Cstring,), _filename)
         ret
@@ -1522,6 +1753,11 @@ $(Expr(:toplevel, quote
     function set_prgname(_prgname::Union{AbstractString, Symbol})
         ret = ccall(("g_set_prgname", libglib), Nothing, (Cstring,), _prgname)
         nothing
+    end
+    function set_prgname_once(_prgname::Union{AbstractString, Symbol})
+        ret = ccall(("g_set_prgname_once", libglib), Cint, (Cstring,), _prgname)
+        ret2 = convert(Bool, ret)
+        ret2
     end
     function setenv(_variable::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol}, _overwrite::Bool)
         ret = ccall(("g_setenv", libglib), Cint, (Cstring, Cstring, Cint), _variable, _value, _overwrite)
@@ -1581,6 +1817,10 @@ $(Expr(:toplevel, quote
     end
     function slice_set_config(_ckey, _value::Integer)
         ret = ccall(("g_slice_set_config", libglib), Nothing, (UInt32, Int64), _ckey, _value)
+        nothing
+    end
+    function slist_pop_allocator()
+        ret = ccall(("g_slist_pop_allocator", libglib), Nothing, ())
         nothing
     end
     function source_remove(_tag::Integer)
@@ -1725,6 +1965,17 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
+    function strdupv(_str_array)
+        _str_array_maybe = nothing_to_null(_str_array)
+        ret = ccall(("g_strdupv", libglib), Ptr{Cstring}, (Ptr{Cstring},), _str_array_maybe)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                GLib.g_strfreev(ret)
+                arrtemp
+            end
+        ret2
+    end
     function strerror(_errnum::Integer)
         ret = ccall(("g_strerror", libglib), Cstring, (Int32,), _errnum)
         ret2 = string_or_nothing(ret, false)
@@ -1736,9 +1987,9 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, true)
         ret2
     end
-    function strfreev(_str_array::Maybe(Union{AbstractString, Symbol}))
+    function strfreev(_str_array)
         _str_array_maybe = nothing_to_null(_str_array)
-        ret = ccall(("g_strfreev", libglib), Nothing, (Cstring,), _str_array_maybe)
+        ret = ccall(("g_strfreev", libglib), Nothing, (Ptr{Cstring},), _str_array_maybe)
         nothing
     end
     function strip_context(_msgid::Union{AbstractString, Symbol}, _msgval::Union{AbstractString, Symbol})
@@ -1746,9 +1997,9 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, false)
         ret2
     end
-    function strjoinv(_separator::Maybe(Union{AbstractString, Symbol}), _str_array::Union{AbstractString, Symbol})
+    function strjoinv(_separator::Maybe(Union{AbstractString, Symbol}), _str_array)
         _separator_maybe = nothing_to_null(_separator)
-        ret = ccall(("g_strjoinv", libglib), Cstring, (Cstring, Cstring), _separator_maybe, _str_array)
+        ret = ccall(("g_strjoinv", libglib), Cstring, (Cstring, Ptr{Cstring}), _separator_maybe, _str_array)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
@@ -1760,8 +2011,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_strlcpy", libglib), UInt64, (Cstring, Cstring, UInt64), _dest, _src, _dest_size)
         ret
     end
-    function strndup(_str::Union{AbstractString, Symbol}, _n::Integer)
-        ret = ccall(("g_strndup", libglib), Cstring, (Cstring, UInt64), _str, _n)
+    function strndup(_str::Maybe(Union{AbstractString, Symbol}), _n::Integer)
+        _str_maybe = nothing_to_null(_str)
+        ret = ccall(("g_strndup", libglib), Cstring, (Cstring, UInt64), _str_maybe, _n)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
@@ -1790,6 +2042,26 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, false)
         ret2
     end
+    function strsplit(_string::Union{AbstractString, Symbol}, _delimiter::Union{AbstractString, Symbol}, _max_tokens::Integer)
+        ret = ccall(("g_strsplit", libglib), Ptr{Cstring}, (Cstring, Cstring, Int32), _string, _delimiter, _max_tokens)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                GLib.g_strfreev(ret)
+                arrtemp
+            end
+        ret2
+    end
+    function strsplit_set(_string::Union{AbstractString, Symbol}, _delimiters::Union{AbstractString, Symbol}, _max_tokens::Integer)
+        ret = ccall(("g_strsplit_set", libglib), Ptr{Cstring}, (Cstring, Cstring, Int32), _string, _delimiters, _max_tokens)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                GLib.g_strfreev(ret)
+                arrtemp
+            end
+        ret2
+    end
     function strstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
         ret2 = string_or_nothing(ret, true)
@@ -1802,13 +2074,13 @@ $(Expr(:toplevel, quote
         _endptr = string_or_nothing(_endptr, false)
         (ret, _endptr)
     end
-    function strv_contains(_strv::Union{AbstractString, Symbol}, _str::Union{AbstractString, Symbol})
-        ret = ccall(("g_strv_contains", libglib), Cint, (Cstring, Cstring), _strv, _str)
+    function strv_contains(_strv, _str::Union{AbstractString, Symbol})
+        ret = ccall(("g_strv_contains", libglib), Cint, (Ptr{Cstring}, Cstring), _strv, _str)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function strv_equal(_strv1::Union{AbstractString, Symbol}, _strv2::Union{AbstractString, Symbol})
-        ret = ccall(("g_strv_equal", libglib), Cint, (Cstring, Cstring), _strv1, _strv2)
+    function strv_equal(_strv1, _strv2)
+        ret = ccall(("g_strv_equal", libglib), Cint, (Ptr{Cstring}, Ptr{Cstring}), _strv1, _strv2)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -1816,8 +2088,8 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_strv_get_type", libglib), UInt64, ())
         ret
     end
-    function strv_length(_str_array::Union{AbstractString, Symbol})
-        ret = ccall(("g_strv_length", libglib), UInt32, (Cstring,), _str_array)
+    function strv_length(_str_array)
+        ret = ccall(("g_strv_length", libglib), UInt32, (Ptr{Cstring},), _str_array)
         ret
     end
     function test_assert_expected_messages_internal(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol})
@@ -1944,6 +2216,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_test_trap_subprocess", libglib), Nothing, (Cstring, UInt64, UInt32), _test_path_maybe, _usec_timeout, _test_flags)
         nothing
     end
+    function test_trap_subprocess_with_envp(_test_path::Maybe(Union{AbstractString, Symbol}), _envp, _usec_timeout::Integer, _test_flags)
+        _test_path_maybe = nothing_to_null(_test_path)
+        _envp_maybe = nothing_to_null(_envp)
+        ret = ccall(("g_test_trap_subprocess_with_envp", libglib), Nothing, (Cstring, Ptr{Cstring}, UInt64, UInt32), _test_path_maybe, _envp_maybe, _usec_timeout, _test_flags)
+        nothing
+    end
     function thread_error_quark()
         ret = ccall(("g_thread_error_quark", libglib), UInt32, ())
         ret
@@ -1979,14 +2257,6 @@ $(Expr(:toplevel, quote
     end
     function thread_yield()
         ret = ccall(("g_thread_yield", libglib), Nothing, ())
-        nothing
-    end
-    function trace_define_int64_counter(_group::Union{AbstractString, Symbol}, _name::Union{AbstractString, Symbol}, _description::Union{AbstractString, Symbol})
-        ret = ccall(("g_trace_define_int64_counter", libglib), UInt32, (Cstring, Cstring, Cstring), _group, _name, _description)
-        ret
-    end
-    function trace_set_int64_counter(_id::Integer, _value::Integer)
-        ret = ccall(("g_trace_set_int64_counter", libglib), Nothing, (UInt32, Int64), _id, _value)
         nothing
     end
     function try_malloc(_n_bytes::Integer)
@@ -2082,10 +2352,12 @@ $(Expr(:toplevel, quote
         _result = m_result[]
         (ret, _result)
     end
-    function unichar_get_mirror_char(_ch, _mirrored_ch::Nothing)
-        ret = ccall(("g_unichar_get_mirror_char", libglib), Cint, (Nothing, Ptr{Nothing}), _ch, _mirrored_ch)
+    function unichar_get_mirror_char(_ch)
+        m_mirrored_ch = Ref{Nothing}()
+        ret = ccall(("g_unichar_get_mirror_char", libglib), Cint, (Nothing, Ptr{Nothing}), _ch, m_mirrored_ch)
         ret2 = convert(Bool, ret)
-        ret2
+        _mirrored_ch = m_mirrored_ch[]
+        (ret2, _mirrored_ch)
     end
     function unichar_get_script(_ch)
         ret = ccall(("g_unichar_get_script", libglib), UInt32, (Nothing,), _ch)
@@ -2640,6 +2912,11 @@ $(Expr(:toplevel, quote
         _end = string_or_nothing(_end, false)
         (ret2, _end)
     end
+    function utime(_filename::Union{AbstractString, Symbol}, _utb::Maybe(Nothing))
+        _utb_maybe = nothing_to_null(_utb)
+        ret = ccall(("g_utime", libglib), Int32, (Cstring, Ptr{Nothing}), _filename, _utb_maybe)
+        ret
+    end
     function uuid_string_is_valid(_str::Union{AbstractString, Symbol})
         ret = ccall(("g_uuid_string_is_valid", libglib), Cint, (Cstring,), _str)
         ret2 = convert(Bool, ret)
@@ -2683,8 +2960,8 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_variant_parse_error_quark", libglib), UInt32, ())
         ret
     end
-    function variant_type_checked_(_arg0::Union{AbstractString, Symbol})
-        ret = ccall(("g_variant_type_checked_", libglib), Ptr{GVariantType}, (Cstring,), _arg0)
+    function variant_type_checked_(_type_string::Union{AbstractString, Symbol})
+        ret = ccall(("g_variant_type_checked_", libglib), Ptr{GVariantType}, (Cstring,), _type_string)
         ret2 = convert(GVariantType, ret, false)
         ret2
     end

@@ -125,6 +125,48 @@ $(Expr(:toplevel, quote
         end
     end
     begin
+        mutable struct GDir <: GBoxed
+            handle::Ptr{GDir}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GDir) = begin
+                        ccall(("g_dir_get_type", libgobject), GType, ())
+                    end
+                function GDir(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GDir)
+            end
+        end
+        const GDirLike = GDir
+    end
+    begin
+        mutable struct GHmac <: GBoxed
+            handle::Ptr{GHmac}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GHmac) = begin
+                        ccall(("g_hmac_get_type", libgobject), GType, ())
+                    end
+                function GHmac(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GHmac)
+            end
+        end
+        const GHmacLike = GHmac
+    end
+    begin
         mutable struct GKeyFile <: GBoxed
             handle::Ptr{GKeyFile}
             begin
@@ -314,6 +356,27 @@ $(Expr(:toplevel, quote
         const GPatternSpecLike = GPatternSpec
     end
     begin
+        mutable struct GRand <: GBoxed
+            handle::Ptr{GRand}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GRand) = begin
+                        ccall(("g_rand_get_type", libgobject), GType, ())
+                    end
+                function GRand(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GRand)
+            end
+        end
+        const GRandLike = GRand
+    end
+    begin
         mutable struct GRegex <: GBoxed
             handle::Ptr{GRegex}
             begin
@@ -453,6 +516,27 @@ $(Expr(:toplevel, quote
         end
     end
     begin
+        mutable struct GStrvBuilder <: GBoxed
+            handle::Ptr{GStrvBuilder}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GStrvBuilder) = begin
+                        ccall(("g_strv_builder_get_type", libgobject), GType, ())
+                    end
+                function GStrvBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GStrvBuilder)
+            end
+        end
+        const GStrvBuilderLike = GStrvBuilder
+    end
+    begin
         struct _GTestConfig
             test_initialized::Cint
             test_quick::Cint
@@ -494,6 +578,23 @@ $(Expr(:toplevel, quote
             end
         end
         const GTimeZoneLike = GTimeZone
+    end
+    begin
+        struct _GUnixPipe
+            fds::Ptr{Int32}
+        end
+        mutable struct GUnixPipe
+            handle::Ptr{_GUnixPipe}
+        end
+        begin
+            unsafe_convert(::Type{Ptr{_GUnixPipe}}, box::GUnixPipe) = begin
+                    convert(Ptr{_GUnixPipe}, box.handle)
+                end
+            convert(::Type{GUnixPipe}, p::Ptr{_GUnixPipe}, owns = false) = begin
+                    GUnixPipe(p, owns)
+                end
+            const GUnixPipeLike = Union{Ref{_GUnixPipe}, GUnixPipe}
+        end
     end
     begin
         mutable struct GUri <: GBoxed
@@ -588,6 +689,7 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Date.html)." GDate
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.DateTime.html)." GDateTime
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.DebugKey.html)." GDebugKey
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Dir.html)." GDir
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.KeyFile.html)." GKeyFile
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.LogField.html)." GLogField
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MainContext.html)." GMainContext
@@ -597,12 +699,15 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.MatchInfo.html)." GMatchInfo
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.OptionEntry.html)." GOptionEntry
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.PatternSpec.html)." GPatternSpec
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Rand.html)." GRand
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Regex.html)." GRegex
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.ScannerConfig.html)." GScannerConfig
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Source.html)." GSource
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.SourceCallbackFuncs.html)." GSourceCallbackFuncs
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.String.html)." GString
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.StrvBuilder.html)." GStrvBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.TimeZone.html)." GTimeZone
+    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.UnixPipe.html)." GUnixPipe
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Uri.html)." GUri
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantBuilder.html)." GVariantBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantDict.html)." GVariantDict
@@ -628,11 +733,20 @@ $(Expr(:toplevel, quote
     function GDateTime()
         G_.DateTime_new_now_local()
     end
+    function GDir(_path::Union{AbstractString, Symbol}, _flags::Integer)
+        G_.Dir_open(_path, _flags)
+    end
     function GMainContext(_flags)
         G_.MainContext_new_with_flags(_flags)
     end
     function GMappedFile(_fd::Integer, _writable::Bool)
         G_.MappedFile_new_from_fd(_fd, _writable)
+    end
+    function GRand(_seed::Integer)
+        G_.Rand_new_with_seed(_seed)
+    end
+    function GRand(_seed::UInt32, _seed_length::Integer)
+        G_.Rand_new_with_seed_array(_seed, _seed_length)
     end
     function GString(_init::Union{AbstractString, Symbol}, _len::Integer)
         G_.String_new_len(_init, _len)
@@ -879,6 +993,6 @@ $(Expr(:toplevel, quote
         ret = f(fd, condition)
         convert(Cint, ret)
     end
-    export GBookmarkFile, GBytes, GChecksum, GDate, GDateLike, _GDate, GDateTime, GDebugKey, GDebugKeyLike, _GDebugKey, GKeyFile, GLogField, GLogFieldLike, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, GOptionEntryLike, _GOptionEntry, GPatternSpec, GRegex, GScannerConfig, GScannerConfigLike, _GScannerConfig, GSource, GSourceLike, _GSource, GSourceCallbackFuncs, GSourceCallbackFuncsLike, _GSourceCallbackFuncs, GString, GStringLike, _GString, GTestConfig, GTestConfigLike, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDestroyNotify, GDuplicateFunc, GEqualFuncFull, GFreeFunc, GFunc, GHFunc, GHRFunc, GHookCheckFunc, GHookCheckMarshaller, GHookFindFunc, GHookFunc, GHookMarshaller, GIOFunc, GLogFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc, GUnixFDSourceFunc
+    export GBookmarkFile, GBytes, GChecksum, GDate, GDateLike, _GDate, GDateTime, GDebugKey, GDebugKeyLike, _GDebugKey, GDir, GHmac, GKeyFile, GLogField, GLogFieldLike, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, GOptionEntryLike, _GOptionEntry, GPatternSpec, GRand, GRegex, GScannerConfig, GScannerConfigLike, _GScannerConfig, GSource, GSourceLike, _GSource, GSourceCallbackFuncs, GSourceCallbackFuncsLike, _GSourceCallbackFuncs, GString, GStringLike, _GString, GStrvBuilder, GTestConfig, GTestConfigLike, _GTestConfig, GTimeZone, GUnixPipe, GUnixPipeLike, _GUnixPipe, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDestroyNotify, GDuplicateFunc, GEqualFuncFull, GFreeFunc, GFunc, GHFunc, GHRFunc, GHookCheckFunc, GHookCheckMarshaller, GHookFindFunc, GHookFunc, GHookMarshaller, GIOFunc, GLogFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc, GUnixFDSourceFunc
 end))
 end

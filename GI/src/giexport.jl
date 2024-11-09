@@ -4,8 +4,8 @@
 function _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
     for e in es
         name = Symbol(get_name(e))
-        typeinit = in(name, skiplist) ? false : incl_typeinit
-        push!(const_mod.args, unblock(decl(e,typeinit)))
+        in(name, skiplist) && continue
+        push!(const_mod.args, unblock(decl(e,incl_typeinit)))
         push!(const_exports.args, name)
         push!(loaded,name)
     end

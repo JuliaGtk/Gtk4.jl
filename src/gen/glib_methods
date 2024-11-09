@@ -554,8 +554,18 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
+    function DateTime_new_from_unix_local_usec(_usecs::Integer)
+        ret = ccall(("g_date_time_new_from_unix_local_usec", libglib), Ptr{GDateTime}, (Int64,), _usecs)
+        ret2 = convert_if_not_null(GDateTime, ret, true)
+        ret2
+    end
     function DateTime_new_from_unix_utc(_t::Integer)
         ret = ccall(("g_date_time_new_from_unix_utc", libglib), Ptr{GDateTime}, (Int64,), _t)
+        ret2 = convert_if_not_null(GDateTime, ret, true)
+        ret2
+    end
+    function DateTime_new_from_unix_utc_usec(_usecs::Integer)
+        ret = ccall(("g_date_time_new_from_unix_utc_usec", libglib), Ptr{GDateTime}, (Int64,), _usecs)
         ret2 = convert_if_not_null(GDateTime, ret, true)
         ret2
     end
@@ -752,6 +762,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_date_time_to_unix", libglib), Int64, (Ptr{GDateTime},), instance)
         ret
     end
+    function to_unix_usec(instance::GDateTime)
+        ret = ccall(("g_date_time_to_unix_usec", libglib), Int64, (Ptr{GDateTime},), instance)
+        ret
+    end
     function to_utc(instance::GDateTime)
         ret = ccall(("g_date_time_to_utc", libglib), Ptr{GDateTime}, (Ptr{GDateTime},), instance)
         ret2 = convert_if_not_null(GDateTime, ret, true)
@@ -759,6 +773,69 @@ $(Expr(:toplevel, quote
     end
     function unref(instance::GDateTime)
         ret = ccall(("g_date_time_unref", libglib), Nothing, (Ptr{GDateTime},), instance)
+        nothing
+    end
+    function Dir_open(_path::Union{AbstractString, Symbol}, _flags::Integer)
+        err = err_buf()
+        ret = ccall(("g_dir_open", libglib), Ptr{GDir}, (Cstring, UInt32, Ptr{Ptr{GError}}), _path, _flags, err)
+        check_err(err)
+        ret2 = convert(GDir, ret, true)
+        ret2
+    end
+    function close(instance::GDir)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_dir_close", libglib), Nothing, (Ptr{GDir},), reffed_instance)
+        nothing
+    end
+    function read_name(instance::GDir)
+        ret = ccall(("g_dir_read_name", libglib), Cstring, (Ptr{GDir},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function ref(instance::GDir)
+        ret = ccall(("g_dir_ref", libglib), Ptr{GDir}, (Ptr{GDir},), instance)
+        ret2 = convert(GDir, ret, true)
+        ret2
+    end
+    function rewind(instance::GDir)
+        ret = ccall(("g_dir_rewind", libglib), Nothing, (Ptr{GDir},), instance)
+        nothing
+    end
+    function unref(instance::GDir)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_dir_unref", libglib), Nothing, (Ptr{GDir},), reffed_instance)
+        nothing
+    end
+    function Hmac_new(_digest_type, _key::UInt8, _key_len::Integer)
+        ret = ccall(("g_hmac_new", libglib), Ptr{GHmac}, (UInt32, Ptr{UInt8}, UInt64), _digest_type, _key, _key_len)
+        ret2 = convert(GHmac, ret, true)
+        ret2
+    end
+    function copy(instance::GHmac)
+        ret = ccall(("g_hmac_copy", libglib), Ptr{GHmac}, (Ptr{GHmac},), instance)
+        ret2 = convert(GHmac, ret, true)
+        ret2
+    end
+    function get_digest(instance::GHmac, _buffer::UInt8, _digest_len::UInt64)
+        ret = ccall(("g_hmac_get_digest", libglib), Nothing, (Ptr{GHmac}, Ptr{UInt8}, Ptr{UInt64}), instance, _buffer, _digest_len)
+        nothing
+    end
+    function get_string(instance::GHmac)
+        ret = ccall(("g_hmac_get_string", libglib), Cstring, (Ptr{GHmac},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function ref(instance::GHmac)
+        ret = ccall(("g_hmac_ref", libglib), Ptr{GHmac}, (Ptr{GHmac},), instance)
+        ret2 = convert(GHmac, ret, true)
+        ret2
+    end
+    function unref(instance::GHmac)
+        ret = ccall(("g_hmac_unref", libglib), Nothing, (Ptr{GHmac},), instance)
+        nothing
+    end
+    function update(instance::GHmac, _data::UInt8, _length::Integer)
+        ret = ccall(("g_hmac_update", libglib), Nothing, (Ptr{GHmac}, Ptr{UInt8}, Int64), instance, _data, _length)
         nothing
     end
     function KeyFile_new()
@@ -1350,6 +1427,54 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function Rand_new()
+        ret = ccall(("g_rand_new", libglib), Ptr{GRand}, ())
+        ret2 = convert(GRand, ret, true)
+        ret2
+    end
+    function Rand_new_with_seed(_seed::Integer)
+        ret = ccall(("g_rand_new_with_seed", libglib), Ptr{GRand}, (UInt32,), _seed)
+        ret2 = convert(GRand, ret, true)
+        ret2
+    end
+    function Rand_new_with_seed_array(_seed::UInt32, _seed_length::Integer)
+        ret = ccall(("g_rand_new_with_seed_array", libglib), Ptr{GRand}, (Ptr{UInt32}, UInt32), _seed, _seed_length)
+        ret2 = convert(GRand, ret, true)
+        ret2
+    end
+    function copy(instance::GRand)
+        ret = ccall(("g_rand_copy", libglib), Ptr{GRand}, (Ptr{GRand},), instance)
+        ret2 = convert(GRand, ret, true)
+        ret2
+    end
+    function double(instance::GRand)
+        ret = ccall(("g_rand_double", libglib), Float64, (Ptr{GRand},), instance)
+        ret
+    end
+    function double_range(instance::GRand, _begin::Real, _end::Real)
+        ret = ccall(("g_rand_double_range", libglib), Float64, (Ptr{GRand}, Float64, Float64), instance, _begin, _end)
+        ret
+    end
+    function free(instance::GRand)
+        ret = ccall(("g_rand_free", libglib), Nothing, (Ptr{GRand},), instance)
+        nothing
+    end
+    function int(instance::GRand)
+        ret = ccall(("g_rand_int", libglib), UInt32, (Ptr{GRand},), instance)
+        ret
+    end
+    function int_range(instance::GRand, _begin::Integer, _end::Integer)
+        ret = ccall(("g_rand_int_range", libglib), Int32, (Ptr{GRand}, Int32, Int32), instance, _begin, _end)
+        ret
+    end
+    function set_seed(instance::GRand, _seed::Integer)
+        ret = ccall(("g_rand_set_seed", libglib), Nothing, (Ptr{GRand}, UInt32), instance, _seed)
+        nothing
+    end
+    function set_seed_array(instance::GRand, _seed::UInt32, _seed_length::Integer)
+        ret = ccall(("g_rand_set_seed_array", libglib), Nothing, (Ptr{GRand}, Ptr{UInt32}, UInt32), instance, _seed, _seed_length)
+        nothing
+    end
     function Regex_new(_pattern::Union{AbstractString, Symbol}, _compile_options, _match_options)
         err = err_buf()
         ret = ccall(("g_regex_new", libglib), Ptr{GRegex}, (Cstring, UInt32, UInt32, Ptr{Ptr{GError}}), _pattern, _compile_options, _match_options, err)
@@ -1440,6 +1565,21 @@ $(Expr(:toplevel, quote
         _string_len = length(_string)
         err = err_buf()
         ret = ccall(("g_regex_replace", libglib), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _replacement, _match_options, err)
+        check_err(err)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function replace_eval(instance::GRegex, _string, _start_position::Integer, _match_options, _eval::Function)
+        begin
+            _eval_cfunc = @cfunction(GRegexEvalCallback, Cint, (Ptr{GMatchInfo}, Ptr{_GString}, Ref{Function}))
+            begin
+                ref = Ref{Any}(_eval)
+                _eval_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+            end
+        end
+        _string_len = length(_string)
+        err = err_buf()
+        ret = ccall(("g_regex_replace_eval", libglib), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, _eval_cfunc, _eval_closure, err)
         check_err(err)
         ret2 = string_or_nothing(ret, true)
         ret2
@@ -1636,6 +1776,33 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_string_truncate", libglib), Ptr{_GString}, (Ptr{_GString}, UInt64), instance, _len)
         ret2 = convert(GStringLike, ret, false)
         ret2
+    end
+    function StrvBuilder_new()
+        ret = ccall(("g_strv_builder_new", libglib), Ptr{GStrvBuilder}, ())
+        ret2 = convert(GStrvBuilder, ret, true)
+        ret2
+    end
+    function add(instance::GStrvBuilder, _value::Union{AbstractString, Symbol})
+        ret = ccall(("g_strv_builder_add", libglib), Nothing, (Ptr{GStrvBuilder}, Cstring), instance, _value)
+        nothing
+    end
+    function addv(instance::GStrvBuilder, _value)
+        ret = ccall(("g_strv_builder_addv", libglib), Nothing, (Ptr{GStrvBuilder}, Ptr{Cstring}), instance, _value)
+        nothing
+    end
+    function ref(instance::GStrvBuilder)
+        ret = ccall(("g_strv_builder_ref", libglib), Ptr{GStrvBuilder}, (Ptr{GStrvBuilder},), instance)
+        ret2 = convert(GStrvBuilder, ret, true)
+        ret2
+    end
+    function take(instance::GStrvBuilder, _value::Union{AbstractString, Symbol})
+        ret = ccall(("g_strv_builder_take", libglib), Nothing, (Ptr{GStrvBuilder}, Cstring), instance, _value)
+        nothing
+    end
+    function unref(instance::GStrvBuilder)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_strv_builder_unref", libglib), Nothing, (Ptr{GStrvBuilder},), reffed_instance)
+        nothing
     end
     function TimeZone_new_identifier(_identifier::Maybe(Union{AbstractString, Symbol}))
         _identifier_maybe = nothing_to_null(_identifier)

@@ -7,7 +7,7 @@ toplevel, exprs, exports = GI.output_exprs()
 path="../src/gen"
 
 ns = GINamespace(:Gio,"2.0")
-d = GI.read_gir(gobject_introspection_jll, ns)
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 ## structs
 
@@ -19,7 +19,7 @@ struct_skiplist=vcat(disguised, [:ActionEntry,:DBusAnnotationInfo,:DBusArgInfo,:
 :XdpDocumentsSkeletonClass,:XdpOpenURIProxy,:XdpOpenURIProxyClass,:XdpOpenURISkeletonClass,
 :XdpProxyResolverProxy,:XdpProxyResolverProxyClass,:XdpProxyResolverSkeleton,:XdpProxyResolverSkeletonClass,:XdpTrashProxy,:XdpTrashProxyClass,:XdpTrashSkeleton,:XdpTrashSkeletonClass,:_FreedesktopDBusProxyClass,:_FreedesktopDBusSkeletonClass])
 
-obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus]
+obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus,:DBusInterfaceSkeleton,:DBusObjectSkeleton,:DBusObjectManagerServer]
 
 obj_constructor_skiplist = [:new_for_bus_sync,:new_sync,:new_with_fd_list,:new_for_address_finish,:new_for_bus_finish,:new_for_bus_finish,:new_from_filename,:new_loopback,:new_section,:new_with_default_fallbacks,:new_from_file_with_password]
 

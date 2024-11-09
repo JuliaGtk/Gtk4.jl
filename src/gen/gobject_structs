@@ -307,40 +307,6 @@ $(Expr(:toplevel, quote
             const GTypeQueryLike = Union{Ref{_GTypeQuery}, GTypeQuery}
         end
     end
-    begin
-        struct _GValueArray
-            n_values::UInt32
-            values::Ptr{_GValue}
-            n_prealloced::UInt32
-        end
-        mutable struct GValueArray <: GBoxed
-            handle::Ptr{_GValueArray}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GValueArray) = begin
-                        ccall(("g_value_array_get_type", libgobject), GType, ())
-                    end
-                function GValueArray(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GValueArray}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
-                    x
-                end
-                push!(gboxed_types, GValueArray)
-            end
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GValueArray}}, box::GValueArray) = begin
-                    convert(Ptr{_GValueArray}, box.handle)
-                end
-            convert(::Type{GValueArray}, p::Ptr{_GValueArray}, owns = false) = begin
-                    GValueArray(p, owns)
-                end
-            const GValueArrayLike = Union{Ref{_GValueArray}, GValueArray}
-        end
-    end
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.EnumClass.html)." GEnumClass
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.FlagsClass.html)." GFlagsClass
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.InterfaceInfo.html)." GInterfaceInfo
@@ -351,7 +317,6 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeInfo.html)." GTypeInfo
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypePluginClass.html)." GTypePluginClass
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
-    @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.ValueArray.html)." GValueArray
     struct GTypePlugin <: GInterface
         handle::Ptr{GObject}
         gc::Any
@@ -491,6 +456,6 @@ $(Expr(:toplevel, quote
         ret = f(ihint, n_param_values, param_values)
         convert(Cint, ret)
     end
-    export GEnumValue, _GEnumValue, GEnumValueLike, GTypeClass, _GTypeClass, GTypeClassLike, GTypeInterface, _GTypeInterface, GTypeInterfaceLike, GFlagsValue, _GFlagsValue, GFlagsValueLike, GTypeValueTable, _GTypeValueTable, GTypeValueTableLike, GEnumClass, GEnumClassLike, _GEnumClass, GFlagsClass, GFlagsClassLike, _GFlagsClass, GInterfaceInfo, GInterfaceInfoLike, _GInterfaceInfo, GParamSpecTypeInfo, GParamSpecTypeInfoLike, _GParamSpecTypeInfo, GSignalInvocationHint, GSignalInvocationHintLike, _GSignalInvocationHint, GSignalQuery, GSignalQueryLike, _GSignalQuery, GTypeFundamentalInfo, GTypeFundamentalInfoLike, _GTypeFundamentalInfo, GTypeInfo, GTypeInfoLike, _GTypeInfo, GTypePluginClass, GTypePluginClassLike, _GTypePluginClass, GTypeQuery, GTypeQueryLike, _GTypeQuery, GValueArray, GValueArrayLike, _GValueArray, GTypePlugin, GBinding, GBindingLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
+    export GEnumValue, _GEnumValue, GEnumValueLike, GTypeClass, _GTypeClass, GTypeClassLike, GTypeInterface, _GTypeInterface, GTypeInterfaceLike, GFlagsValue, _GFlagsValue, GFlagsValueLike, GTypeValueTable, _GTypeValueTable, GTypeValueTableLike, GEnumClass, GEnumClassLike, _GEnumClass, GFlagsClass, GFlagsClassLike, _GFlagsClass, GInterfaceInfo, GInterfaceInfoLike, _GInterfaceInfo, GParamSpecTypeInfo, GParamSpecTypeInfoLike, _GParamSpecTypeInfo, GSignalInvocationHint, GSignalInvocationHintLike, _GSignalInvocationHint, GSignalQuery, GSignalQueryLike, _GSignalQuery, GTypeFundamentalInfo, GTypeFundamentalInfoLike, _GTypeFundamentalInfo, GTypeInfo, GTypeInfoLike, _GTypeInfo, GTypePluginClass, GTypePluginClassLike, _GTypePluginClass, GTypeQuery, GTypeQueryLike, _GTypeQuery, GTypePlugin, GBinding, GBindingLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
 end))
 end

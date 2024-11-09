@@ -222,6 +222,11 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_value_set_variant", libgobject), Nothing, (Ptr{_GValue}, Ptr{GVariant}), instance, _variant_maybe)
         nothing
     end
+    function steal_string(instance::GValueLike)
+        ret = ccall(("g_value_steal_string", libgobject), Cstring, (Ptr{_GValue},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
     function take_boxed(instance::GValueLike, _v_boxed::Maybe(Nothing))
         _v_boxed_maybe = nothing_to_null(_v_boxed)
         ret = ccall(("g_value_take_boxed", libgobject), Nothing, (Ptr{_GValue}, Ptr{Nothing}), instance, _v_boxed_maybe)

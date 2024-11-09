@@ -5,7 +5,7 @@ path="../src/gen"
 ns = GINamespace(:Gtk,"4.0")
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
-GI.export_consts!(ns, path, "gtk4", [:CssParserError,:CssParserWarning]; doc_xml = d)
+GI.export_consts!(ns, path, "gtk4", []; doc_xml = d)
 
 disguised = Symbol[]
 struct_skiplist=vcat(disguised, [:PageRange,:TreeRowReference])
