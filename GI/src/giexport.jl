@@ -1,17 +1,17 @@
 # functions that output expressions for a library in bulk
 
 ## Constants, enums, and flags
-function _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
+function _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants = true)
     for e in es
         name = Symbol(get_name(e))
         in(name, skiplist) && continue
         push!(const_mod.args, unblock(decl(e,incl_typeinit)))
-        push!(const_exports.args, name)
+        export_constants && push!(const_exports.args, name)
         push!(loaded,name)
     end
 end
 
-function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[])
+function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[], export_constants = true)
     loaded=Symbol[]
     c = get_consts(ns)
 
@@ -25,14 +25,14 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
     end
 
     es=get_all(ns,GIEnumInfo)
-    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
+    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants)
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," enums\n";color=:green)
     end
 
     es=get_all(ns,GIFlagsInfo)
-    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
+    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants)
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," flags\n";color=:green)
@@ -45,11 +45,11 @@ function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix,
     
     const_mod = Expr(:block)
 
-    c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist)
+    c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist, export_constants)
     if doc_xml !== nothing
         GI.append_const_docs!(const_mod.args, doc_prefix, doc_xml, c)
     end
-    export_constants && push!(const_mod.args, exports)
+    isempty(exports.args) || push!(const_mod.args, exports)
 
     push!(exprs, const_mod)
 
@@ -438,11 +438,11 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
     end
 end
 
-function export_methods!(ns,path,prefix;struct_method_skiplist = Symbol[], object_method_skiplist = Symbol[],interface_method_skiplist = Symbol[], struct_skiplist = Symbol[], interface_skiplist = Symbol[], object_skiplist = Symbol[], exclude_deprecated = true)
+function export_methods!(ns,path,prefix;struct_method_skiplist = Symbol[], object_method_skiplist = Symbol[],interface_method_skiplist = Symbol[], struct_skiplist = Symbol[], interface_skiplist = Symbol[], object_skiplist = Symbol[], exclude_deprecated = true, interface_helpers = true)
     toplevel, exprs, exports = GI.output_exprs()
 
     all_struct_methods!(exprs,ns, struct_skiplist = struct_skiplist, skiplist = struct_method_skiplist, exclude_deprecated = exclude_deprecated)
-    all_object_methods!(exprs,ns; skiplist = object_method_skiplist, object_skiplist = object_skiplist, exclude_deprecated = exclude_deprecated)
+    all_object_methods!(exprs,ns; skiplist = object_method_skiplist, object_skiplist = object_skiplist, exclude_deprecated = exclude_deprecated, interface_helpers)
     all_interface_methods!(exprs,ns; skiplist = interface_method_skiplist, interface_skiplist = interface_skiplist, exclude_deprecated = exclude_deprecated)
     
     write_to_file(path,"$(prefix)_methods",toplevel)

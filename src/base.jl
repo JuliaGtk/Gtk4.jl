@@ -34,7 +34,7 @@ toplevel(w::GtkWidget) = G_.get_root(w)
 
 Returns the allocated width of `w` in pixels.
 
-Related GTK function: [`gtk_widget_get_allocated_width`()]($(gtkdoc_method_url("gtk4","Widget","get_allocated_width")))
+Related GTK function: [`gtk_widget_get_width`()]($(gtkdoc_method_url("gtk4","Widget","get_width")))
 """ width
 
 @doc """
@@ -42,7 +42,7 @@ Related GTK function: [`gtk_widget_get_allocated_width`()]($(gtkdoc_method_url("
 
 Returns the allocated height of `w` in pixels.
 
-Related GTK function: [`gtk_widget_get_allocated_height`()]($(gtkdoc_method_url("gtk4","Widget","get_allocated_height")))
+Related GTK function: [`gtk_widget_get_height`()]($(gtkdoc_method_url("gtk4","Widget","get_height")))
 """ height
 
 size(w::GtkWidget) = (width(w), height(w))

@@ -29,7 +29,7 @@ struct_skiplist = GI.export_struct_exprs!(ns,path, "gio", struct_skiplist, impor
 
 object_method_skiplist=[:new_for_bus,:export,:add_option_group,:make_pollfd,:get_info,
 :new_for_bus_sync,:new_sync,:writev,:writev_all,:flatten_tree,:changed_tree,:receive_messages,:send_message,:send_message_with_timeout,:send_messages,
-:get_channel_binding_data,:lookup_certificates_issued_by,:get_default,:get_unix_fd_list,:set_unix_fd_list,:get_attribute_file_path,:set_attribute_file_path,:get_timeout,:set_timeout]
+:get_channel_binding_data,:lookup_certificates_issued_by,:get_default,:get_unix_fd_list,:set_unix_fd_list,:get_attribute_file_path,:set_attribute_file_path]
 
 object_skiplist=vcat(obj_skiplist,[:AppInfoMonitor,:DBusConnection,:DBusMenuModel,:DBusProxy,:DBusMethodInvocation,:IOModule,:SimpleProxyResolver,:UnixMountMonitor])
 

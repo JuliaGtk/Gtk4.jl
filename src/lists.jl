@@ -70,7 +70,7 @@ function show(io::IO, sl::GtkStringList)
             end
         end
     else
-        println(io, "0-element GtkStringList")
+        print(io, "0-element GtkStringList")
     end
 end
 string(obj::GtkStringObject) = G_.get_string(obj)

@@ -25,6 +25,11 @@ eval(include("gen/graphene_methods"))
 end
 
 _GrapheneRect(x::Number,y::Number,w::Number,h::Number) = _GrapheneRect(_GraphenePoint(x,y),_GrapheneSize(w,h))
+# this constructor returns a RefValue{_GrapheneRect}, which is GrapheneRectLike
+# This seems to result in one less (Julia) allocation than constructing a Ptr{GrapheneRect} by calling "alloc", "init"
+GrapheneRect(x::Number,y::Number,w::Number,h::Number) = Ref(_GrapheneRect(x,y,w,h))
+
+GraphenePoint(x::Number, y::Number) = Ref(_GraphenePoint(x,y))
 
 function __init__()
    gtype_wrapper_cache_init()

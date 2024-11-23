@@ -25,6 +25,7 @@ using Pango_jll, Glib_jll
 
 using ..GLib
 using ..Pango
+using ..Pango: Alignment, AttrType, BaselineShift, CoverageLevel, Direction, EllipsizeMode, FontScale, Gravity, GravityHint, LayoutDeserializeError, Overline, RenderPart, Script, Stretch, Style, TabAlign, TextTransform, Underline, Variant, Weight, WrapMode, FontMask, LayoutDeserializeFlags, LayoutSerializeFlags, ShapeFlags, ShowFlags
 using ..Pango.Cairo
 
 eval(include("../gen/pango_methods"))

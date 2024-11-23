@@ -4069,6 +4069,10 @@ $(Expr(:toplevel, quote
     function to_string(instance::GProxyAddress)
         to_string(GSocketConnectable(instance))
     end
+    function get_timeout(instance::GResolver)
+        ret = ccall(("g_resolver_get_timeout", libgio), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
     function lookup_by_address(instance::GResolver, _address::GInetAddress, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
@@ -4206,6 +4210,10 @@ $(Expr(:toplevel, quote
     end
     function set_default(instance::GResolver)
         ret = ccall(("g_resolver_set_default", libgio), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
+    function set_timeout(instance::GResolver, _timeout_ms::Integer)
+        ret = ccall(("g_resolver_set_timeout", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _timeout_ms)
         nothing
     end
     function Settings_new(_schema_id::Union{AbstractString, Symbol})
@@ -4745,6 +4753,10 @@ $(Expr(:toplevel, quote
         ret2 = SocketType(ret)
         ret2
     end
+    function get_timeout(instance::GSocket)
+        ret = ccall(("g_socket_get_timeout", libgio), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
     function get_ttl(instance::GSocket)
         ret = ccall(("g_socket_get_ttl", libgio), UInt32, (Ptr{GObject},), instance)
         ret
@@ -4937,6 +4949,10 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function set_timeout(instance::GSocket, _timeout::Integer)
+        ret = ccall(("g_socket_set_timeout", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _timeout)
+        nothing
     end
     function set_ttl(instance::GSocket, _ttl::Integer)
         ret = ccall(("g_socket_set_ttl", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _ttl)
@@ -5168,6 +5184,10 @@ $(Expr(:toplevel, quote
         ret2 = SocketType(ret)
         ret2
     end
+    function get_timeout(instance::GSocketClient)
+        ret = ccall(("g_socket_client_get_timeout", libgio), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
     function get_tls(instance::GSocketClient)
         ret = ccall(("g_socket_client_get_tls", libgio), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -5197,6 +5217,10 @@ $(Expr(:toplevel, quote
     end
     function set_socket_type(instance::GSocketClient, _type)
         ret = ccall(("g_socket_client_set_socket_type", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _type)
+        nothing
+    end
+    function set_timeout(instance::GSocketClient, _timeout::Integer)
+        ret = ccall(("g_socket_client_set_timeout", libgio), Nothing, (Ptr{GObject}, UInt32), instance, _timeout)
         nothing
     end
     function set_tls(instance::GSocketClient, _tls::Bool)

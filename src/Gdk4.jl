@@ -144,3 +144,6 @@ end
 function glib_unref(x::Ptr{GdkEvent})
     ccall((:gdk_event_unref, libgtk4), Nothing, (Ptr{GdkEvent},), x)
 end
+
+Base.show(io::IO, t::GskTransform) = print(io,"GskTransform("*G_.to_string(t)*")")
+

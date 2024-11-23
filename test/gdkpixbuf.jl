@@ -31,6 +31,8 @@ pb[1:3,1:3]=x
 pb[1,1]=colorant"blue"
 @test pb[1,1] == GdkPixbufLib.RGB(0,0,0xff)
 
+cs = GdkPixbufLib.G_.get_colorspace(pb)
+
 end
 
 @testset "Transparent pixbuf" begin

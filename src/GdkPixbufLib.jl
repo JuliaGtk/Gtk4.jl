@@ -28,6 +28,7 @@ using gdk_pixbuf_jll
 
 using ..GLib
 using ..GdkPixbufLib
+using ..GdkPixbufLib: Colorspace, InterpType, PixbufError, PixbufRotation
 
 import Base: convert, copy
 
