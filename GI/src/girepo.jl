@@ -3,18 +3,29 @@
 # https://gi.readthedocs.io/en/latest/
 # https://gnome.pages.gitlab.gnome.org/gobject-introspection/girepository/
 
-abstract type GIRepository end
 abstract type GITypelib end
 abstract type GIBaseInfo end
+
+mutable struct GIRepository
+    handle::Ptr{GIRepository}
+end
+
+GIRepository() = GIRepository(ccall((:gi_repository_new, libgi), Ptr{GIRepository}, ()))
+
+unsafe_convert(::Type{Ptr{GIRepository}},w::GIRepository) = w.handle
 
 # a GIBaseInfo we own a reference to
 mutable struct GIInfo{Typeid}
     handle::Ptr{GIBaseInfo}
 end
 
+G_TYPE_FROM_CLASS(w::Ptr) = unsafe_load(convert(Ptr{GType}, w))
+
 function GIInfo(h::Ptr{GIBaseInfo},owns=true)
     h == C_NULL && error("Cannot construct GIInfo from NULL")
-    typeid = ccall((:gi_base_info_get_type, libgi), Int, (Ptr{GIBaseInfo},), h)
+    #typeid = ccall((:gi_base_info_get_type, libgi), Int, (Ptr{GIBaseInfo},), h)
+    typeid = G_TYPE_FROM_CLASS(h)
+    println(typeid)
     info = GIInfo{typeid}(h)
     owns && finalizer(info_unref, info)
     info
@@ -39,9 +50,11 @@ const GIInfoTypeNames = [ Base.Symbol("GI$(name)Info") for name in GIInfoTypesSh
 const GIInfoTypes = Dict{Symbol, Type}()
 
 for (i,itype) in enumerate(GIInfoTypesShortNames)
+    gt = GLib.g_type_from_name(Symbol("GI",itype,"Info"))
+    println("itype is $itype, gt is $gt")
     let lowername = Symbol(lowercase(string(itype)))
-        @eval const $(GIInfoTypeNames[i]) = GIInfo{$(i-1)}
-        GIInfoTypes[lowername] = GIInfo{i-1}
+        @eval const $(GIInfoTypeNames[i]) = GIInfo{$gt}
+        GIInfoTypes[lowername] = GIInfo{gt}
     end
 end
 
@@ -122,24 +135,24 @@ function gi_require(namespace::Symbol, version = nothing)
     end
     GError() do error_check
         typelib = ccall((:gi_repository_require, libgi), Ptr{GITypelib},
-            (Ptr{GIRepository}, Ptr{UInt8}, Ptr{UInt8}, Cint, Ptr{Ptr{GError}}),
-            C_NULL, namespace, version, 0, error_check)
+            (Ptr{GIRepository}, Cstring, Cstring, Cint, Ptr{Ptr{GError}}),
+            repo, namespace, version, 0, error_check)
         return  typelib !== C_NULL
     end
 end
 
 function gi_find_by_name(namespace::GINamespace, name::Symbol)
     info = ccall((:gi_repository_find_by_name, libgi), Ptr{GIBaseInfo},
-                  (Ptr{GIRepository}, Cstring, Cstring), C_NULL, namespace.name, name)
+                  (Ptr{GIRepository}, Cstring, Cstring), repo, namespace.name, name)
 
     info == C_NULL && error("Name $name not found in $namespace")
     GIInfo(info)
 end
 
 Base.length(ns::GINamespace) = Int(ccall((:gi_repository_get_n_infos, libgi), Cint,
-                               (Ptr{GIRepository}, Cstring), C_NULL, ns))
+                               (Ptr{GIRepository}, Cstring), repo, ns))
 Base.iterate(ns::GINamespace, state=1) = state > length(ns) ? nothing : (GIInfo(ccall((:gi_repository_get_info, libgi), Ptr{GIBaseInfo},
-                                             (Ptr{GIRepository}, Cstring, Cint), C_NULL, ns, state-1 )), state+1)
+                                             (Ptr{GIRepository}, Cstring, Cint), repo, ns, state-1 )), state+1)
 Base.eltype(::Type{GINamespace}) = GIInfo
 
 getindex(ns::GINamespace, name::Symbol) = gi_find_by_name(ns, name)
@@ -151,7 +164,7 @@ Add a directory that contains *.typelib files to libgirepository's search
 path.
 """
 function prepend_search_path(s::AbstractString)
-    ccall((:gi_repository_prepend_search_path, libgi), Cvoid, (Cstring,), s)
+    ccall((:gi_repository_prepend_search_path, libgi), Cvoid, (Ptr{GIRepository}, Cstring), repo, s)
 end
 
 """
@@ -177,7 +190,7 @@ Get the C prefix for a namespace, which, for example, is "G" for GLib and "Gtk"
 for GTK.
 """
 function get_c_prefix(ns)
-    ret = ccall((:gi_repository_get_c_prefix, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    ret = ccall((:gi_repository_get_c_prefix, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), repo, ns)
     if ret != C_NULL
         bytestring(ret)
     else
@@ -186,7 +199,7 @@ function get_c_prefix(ns)
 end
 
 function get_version(ns::GINamespace)
-    ret = ccall((:gi_repository_get_version, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    ret = ccall((:gi_repository_get_version, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), repo, ns)
     if ret != C_NULL
         bytestring(ret)
     else
@@ -210,19 +223,20 @@ function bytestring_array(ptr)
 end
 
 function get_dependencies(ns)
-    ret = ccall((:gi_repository_get_dependencies, libgi), Ptr{Ptr{UInt8}}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    ret = ccall((:gi_repository_get_dependencies, libgi), Ptr{Ptr{UInt8}}, (Ptr{GIRepository}, Cstring), repo, ns)
     bytestring_array(ret)
 end
 
 function get_immediate_dependencies(ns)
-    ret = ccall((:gi_repository_get_immediate_dependencies, libgi), Ptr{Ptr{UInt8}}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    ret = ccall((:gi_repository_get_immediate_dependencies, libgi), Ptr{Ptr{UInt8}}, (Ptr{GIRepository}, Cstring), repo, ns)
     bytestring_array(ret)
 end
 
 function get_shlibs(ns)
-    names = ccall((:gi_repository_get_shared_library, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
-    bnames = bytestring(names)
+    n_elements = Ref{Csize_t}()
+    names = ccall((:gi_repository_get_shared_libraries, libgi), Ptr{Cstring}, (Ptr{GIRepository}, Cstring, Ref{Csize_t}), repo, ns, n_elements)
     if bnames !== nothing
+        collect(bytestring.(unsafe_wrap(Vector{Cstring}, names, n_elements)))
         [bytestring(s) for s in split(bnames,",")]
     else
         String[]
@@ -231,7 +245,7 @@ end
 get_shlibs(info::GIInfo) = get_shlibs(get_namespace(info))
 
 function find_by_gtype(gtypeid::Csize_t)
-    GIInfo(ccall((:gi_repository_find_by_gtype, libgi), Ptr{GIBaseInfo}, (Ptr{GIRepository}, Csize_t), C_NULL, gtypeid))
+    GIInfo(ccall((:gi_repository_find_by_gtype, libgi), Ptr{GIBaseInfo}, (Ptr{GIRepository}, Csize_t), repo, gtypeid))
 end
 
 GIInfoTypes[:method] = GIFunctionInfo
@@ -305,14 +319,14 @@ ctypes = Dict(GIInfo=>Ptr{GIBaseInfo},
          MaybeGIInfo=>Ptr{GIBaseInfo},
           Symbol=>Ptr{UInt8})
 for (owner,property,typ) in [
-    (:base, :name, Symbol), (:base, :namespace, Symbol), (:base, :type, Int),
+    (:base, :name, Symbol), (:base, :namespace, Symbol), #(:base, :type, Int),
     (:base, :container, MaybeGIInfo), (:registered_type, :g_type, GType), (:registered_type, :type_name, Symbol), (:object, :parent, MaybeGIInfo), (:object, :type_init, Symbol),
     (:callable, :return_type, GIInfo), (:callable, :caller_owns, EnumGI), (:callable, :instance_ownership_transfer, EnumGI), (:registered_type, :type_init, Symbol),
     (:function, :flags, EnumGI), (:function, :symbol, Symbol), (:property, :type, GIInfo), (:property, :ownership_transfer, EnumGI), (:property, :flags, EnumGI),
     (:arg, :type, GIInfo), (:arg, :direction, EnumGI), (:arg, :ownership_transfer, EnumGI), #(:function, :property, MaybeGIInfo),
     (:arg, :closure, Cint), (:arg, :destroy, Cint), (:arg, :scope, EnumGI),
     (:type, :tag, EnumGI), (:type, :interface, MaybeGIInfo), (:type, :array_type, EnumGI),
-    (:type, :array_length, Cint), (:type, :array_fixed_size, Cint), (:constant, :type, GIInfo),
+    (:type, :array_length, Cint), (:type, :array_fixed_size, Cint), (:constant, :type_info, GIInfo),
     (:value, :value, Int64), (:field, :type, GIInfo), (:enum, :storage_type, EnumGI) ]
 
     ctype = get(ctypes, typ, typ)

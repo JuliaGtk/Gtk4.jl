@@ -16,6 +16,7 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
     c = get_consts(ns)
 
     for (name,val) in c
+        println(name)
         in(name, skiplist) && continue
         push!(const_mod.args, const_expr("$name",val))
         push!(loaded,name)
