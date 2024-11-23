@@ -14,7 +14,7 @@ end
 
 function GIInfo(h::Ptr{GIBaseInfo},owns=true)
     h == C_NULL && error("Cannot construct GIInfo from NULL")
-    typeid = ccall((:g_base_info_get_type, libgi), Int, (Ptr{GIBaseInfo},), h)
+    typeid = ccall((:gi_base_info_get_type, libgi), Int, (Ptr{GIBaseInfo},), h)
     info = GIInfo{typeid}(h)
     owns && finalizer(info_unref, info)
     info
@@ -22,7 +22,7 @@ end
 
 # don't call directly, called by gc
 function info_unref(info::GIInfo)
-    ccall((:g_base_info_unref, libgi), Nothing, (Ptr{GIBaseInfo},), info.handle)
+    ccall((:gi_base_info_unref, libgi), Nothing, (Ptr{GIBaseInfo},), info.handle)
     info.handle = C_NULL
 end
 
@@ -121,7 +121,7 @@ function gi_require(namespace::Symbol, version = nothing)
         version = C_NULL
     end
     GError() do error_check
-        typelib = ccall((:g_irepository_require, libgi), Ptr{GITypelib},
+        typelib = ccall((:gi_repository_require, libgi), Ptr{GITypelib},
             (Ptr{GIRepository}, Ptr{UInt8}, Ptr{UInt8}, Cint, Ptr{Ptr{GError}}),
             C_NULL, namespace, version, 0, error_check)
         return  typelib !== C_NULL
@@ -129,16 +129,16 @@ function gi_require(namespace::Symbol, version = nothing)
 end
 
 function gi_find_by_name(namespace::GINamespace, name::Symbol)
-    info = ccall((:g_irepository_find_by_name, libgi), Ptr{GIBaseInfo},
+    info = ccall((:gi_repository_find_by_name, libgi), Ptr{GIBaseInfo},
                   (Ptr{GIRepository}, Cstring, Cstring), C_NULL, namespace.name, name)
 
     info == C_NULL && error("Name $name not found in $namespace")
     GIInfo(info)
 end
 
-Base.length(ns::GINamespace) = Int(ccall((:g_irepository_get_n_infos, libgi), Cint,
+Base.length(ns::GINamespace) = Int(ccall((:gi_repository_get_n_infos, libgi), Cint,
                                (Ptr{GIRepository}, Cstring), C_NULL, ns))
-Base.iterate(ns::GINamespace, state=1) = state > length(ns) ? nothing : (GIInfo(ccall((:g_irepository_get_info, libgi), Ptr{GIBaseInfo},
+Base.iterate(ns::GINamespace, state=1) = state > length(ns) ? nothing : (GIInfo(ccall((:gi_repository_get_info, libgi), Ptr{GIBaseInfo},
                                              (Ptr{GIRepository}, Cstring, Cint), C_NULL, ns, state-1 )), state+1)
 Base.eltype(::Type{GINamespace}) = GIInfo
 
@@ -151,7 +151,7 @@ Add a directory that contains *.typelib files to libgirepository's search
 path.
 """
 function prepend_search_path(s::AbstractString)
-    ccall((:g_irepository_prepend_search_path, libgi), Cvoid, (Cstring,), s)
+    ccall((:gi_repository_prepend_search_path, libgi), Cvoid, (Cstring,), s)
 end
 
 """
@@ -177,7 +177,7 @@ Get the C prefix for a namespace, which, for example, is "G" for GLib and "Gtk"
 for GTK.
 """
 function get_c_prefix(ns)
-    ret = ccall((:g_irepository_get_c_prefix, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    ret = ccall((:gi_repository_get_c_prefix, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
     if ret != C_NULL
         bytestring(ret)
     else
@@ -186,7 +186,7 @@ function get_c_prefix(ns)
 end
 
 function get_version(ns::GINamespace)
-    ret = ccall((:g_irepository_get_version, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    ret = ccall((:gi_repository_get_version, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
     if ret != C_NULL
         bytestring(ret)
     else
@@ -210,17 +210,17 @@ function bytestring_array(ptr)
 end
 
 function get_dependencies(ns)
-    ret = ccall((:g_irepository_get_dependencies, libgi), Ptr{Ptr{UInt8}}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    ret = ccall((:gi_repository_get_dependencies, libgi), Ptr{Ptr{UInt8}}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
     bytestring_array(ret)
 end
 
 function get_immediate_dependencies(ns)
-    ret = ccall((:g_irepository_get_immediate_dependencies, libgi), Ptr{Ptr{UInt8}}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    ret = ccall((:gi_repository_get_immediate_dependencies, libgi), Ptr{Ptr{UInt8}}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
     bytestring_array(ret)
 end
 
 function get_shlibs(ns)
-    names = ccall((:g_irepository_get_shared_library, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
+    names = ccall((:gi_repository_get_shared_library, libgi), Ptr{UInt8}, (Ptr{GIRepository}, Cstring), C_NULL, ns)
     bnames = bytestring(names)
     if bnames !== nothing
         [bytestring(s) for s in split(bnames,",")]
@@ -231,7 +231,7 @@ end
 get_shlibs(info::GIInfo) = get_shlibs(get_namespace(info))
 
 function find_by_gtype(gtypeid::Csize_t)
-    GIInfo(ccall((:g_irepository_find_by_gtype, libgi), Ptr{GIBaseInfo}, (Ptr{GIRepository}, Csize_t), C_NULL, gtypeid))
+    GIInfo(ccall((:gi_repository_find_by_gtype, libgi), Ptr{GIBaseInfo}, (Ptr{GIRepository}, Csize_t), C_NULL, gtypeid))
 end
 
 GIInfoTypes[:method] = GIFunctionInfo
@@ -263,13 +263,13 @@ for (owner, property) in [
     (:enum, :value), (:struct, :field), (:struct, :method),
     (:interface, :prerequisite)]
     @eval function $(Symbol("get_$(property)s"))(info::$(GIInfoTypes[owner]))
-        n = Int(ccall(($("g_$(owner)_info_get_n_$(property)s"), libgi), Cint, (Ptr{GIBaseInfo},), info))
-        GIInfo[ GIInfo( ccall(($("g_$(owner)_info_get_$property"), libgi), Ptr{GIBaseInfo},
+        n = Int(ccall(($("gi_$(owner)_info_get_n_$(property)s"), libgi), Cint, (Ptr{GIBaseInfo},), info))
+        GIInfo[ GIInfo( ccall(($("gi_$(owner)_info_get_$property"), libgi), Ptr{GIBaseInfo},
                       (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
     end
     if property === :method
         @eval function $(Symbol("find_$(property)"))(info::$(GIInfoTypes[owner]), name)
-            ptr = ccall(($("g_$(owner)_info_find_$(property)"), libgi), Ptr{GIBaseInfo},
+            ptr = ccall(($("gi_$(owner)_info_find_$(property)"), libgi), Ptr{GIBaseInfo},
                             (Ptr{GIBaseInfo}, Ptr{UInt8}), info, name)
             rconvert(MaybeGIInfo, ptr, true)
         end
@@ -277,14 +277,14 @@ for (owner, property) in [
 end
 
 function get_properties(info::GIObjectInfo)
-    n = Int(ccall(("g_object_info_get_n_properties", libgi), Cint, (Ptr{GIBaseInfo},), info))
-    GIInfo[ GIInfo( ccall(("g_object_info_get_property", libgi), Ptr{GIBaseInfo},
+    n = Int(ccall(("gi_object_info_get_n_properties", libgi), Cint, (Ptr{GIBaseInfo},), info))
+    GIInfo[ GIInfo( ccall(("gi_object_info_get_property", libgi), Ptr{GIBaseInfo},
                   (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
 end
 
 function get_properties(info::GIInterfaceInfo)
-    n = Int(ccall(("g_interface_info_get_n_properties", libgi), Cint, (Ptr{GIBaseInfo},), info))
-    GIInfo[ GIInfo( ccall(("g_interface_info_get_property", libgi), Ptr{GIBaseInfo},
+    n = Int(ccall(("gi_interface_info_get_n_properties", libgi), Cint, (Ptr{GIBaseInfo},), info))
+    GIInfo[ GIInfo( ccall(("gi_interface_info_get_property", libgi), Ptr{GIBaseInfo},
                   (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
 end
 
@@ -317,19 +317,19 @@ for (owner,property,typ) in [
 
     ctype = get(ctypes, typ, typ)
     @eval function $(Symbol("get_$(property)"))(info::$(GIInfoTypes[owner]))
-        rconvert($typ,ccall(($("g_$(owner)_info_get_$(property)"), libgi), $ctype, (Ptr{GIBaseInfo},), info))
+        rconvert($typ,ccall(($("gi_$(owner)_info_get_$(property)"), libgi), $ctype, (Ptr{GIBaseInfo},), info))
     end
 end
 
 function get_attribute(info,name)
-    ret=ccall(("g_base_info_get_attribute",libgi),Ptr{UInt8},(Ptr{GIBaseInfo},Ptr{UInt8}),info,name)
+    ret=ccall(("gi_base_info_get_attribute",libgi),Ptr{UInt8},(Ptr{GIBaseInfo},Ptr{UInt8}),info,name)
     ret==C_NULL ? nothing : bytestring(ret)
 end
 
 get_name(info::GITypeInfo) = Symbol("<gtype>")
 get_name(info::GIInvalidInfo) = Symbol("<INVALID>")
 
-get_param_type(info::GITypeInfo,n) = rconvert(MaybeGIInfo, ccall(("g_type_info_get_param_type", libgi), Ptr{GIBaseInfo}, (Ptr{GIBaseInfo}, Cint), info, n))
+get_param_type(info::GITypeInfo,n) = rconvert(MaybeGIInfo, ccall(("gi_type_info_get_param_type", libgi), Ptr{GIBaseInfo}, (Ptr{GIBaseInfo}, Cint), info, n))
 
 #pretend that CallableInfo is a ArgInfo describing the return value
 const ArgInfo = Union{GIArgInfo,GICallableInfo}
@@ -344,7 +344,7 @@ for (owner,flag) in [
     (:object, :get_abstract)]
 
     @eval function $flag(info::$(GIInfoTypes[owner]))
-        ret = ccall(($("g_$(owner)_info_$(flag)"), libgi), Cint, (Ptr{GIBaseInfo},), info)
+        ret = ccall(($("gi_$(owner)_info_$(flag)"), libgi), Cint, (Ptr{GIBaseInfo},), info)
         return ret != 0
     end
 end
@@ -513,7 +513,7 @@ end
 
 function get_constant_value(::Type{T}, info) where T
     x=Ref{T}(0)
-    siz = ccall((:g_constant_info_get_value,libgi),Cint,(Ptr{GIBaseInfo}, Ref{T}), info, x)
+    siz = ccall((:gi_constant_info_get_value,libgi),Cint,(Ptr{GIBaseInfo}, Ref{T}), info, x)
     x[]
 end
 
@@ -526,11 +526,11 @@ function get_value(info::GIConstantInfo)
         get_constant_value(Int64,info)
     elseif typ == String
         x = Array{Cstring,1}(undef,1)
-        size = ccall((:g_constant_info_get_value,libgi),Cint,(Ptr{GIBaseInfo}, Ptr{Cstring}), info, x)
+        size = ccall((:gi_constant_info_get_value,libgi),Cint,(Ptr{GIBaseInfo}, Ptr{Cstring}), info, x)
 
         val = unsafe_string(x[1])
 
-        ccall((:g_constant_info_free_value,libgi), Nothing, (Ptr{GIBaseInfo}, Ptr{Nothing}), info, x)
+        ccall((:gi_constant_info_free_value,libgi), Nothing, (Ptr{GIBaseInfo}, Ptr{Nothing}), info, x)
         val
     else
         throw(NotImplementedError("Constant with type $typ not supported"))
