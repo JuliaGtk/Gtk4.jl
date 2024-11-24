@@ -109,6 +109,13 @@ GtkFileFilter(pattern = "", mimetype = "")
 ```
 A human-readable name can optionally be provided using a keyword argument.
 
+A list of patterns or filters to use is passed in as an argument to `open_dialog` or `save_dialog`. For example,
+```julia
+open_dialog("Pick a file", parent_window, ["*.h5","*.txt"]) do name
+    # do something with the file
+end
+```
+
 ## Custom dialogs
 
 You can define your own type of dialog by creating a window that closes and calls a function when a button is pressed.
