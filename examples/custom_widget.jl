@@ -38,27 +38,12 @@ function GLib.g_type(::Type{T}) where T <: MyWidget
     if gt > 0
         return gt
     else
-        base_gtype = GLib.g_type(GtkWidget)
-        tq=GLib.G_.type_query(base_gtype)
-        typeinfo = _GTypeInfo(tq.class_size,
-                        C_NULL,   # base_init
-                        C_NULL,   # base_finalize
-                        @cfunction(object_class_init, Cvoid, (Ptr{_GObjectClass}, Ptr{Cvoid})),
-                        C_NULL,   # class_finalize
-                        C_NULL,   # class_data
-                        tq.instance_size,
-                        0,        # n_preallocs
-                        C_NULL,   # instance_init
-                        C_NULL)   # value_table
-        return GLib.G_.type_register_static(base_gtype,:MyWidget,Ref(typeinfo),GLib.TypeFlags_FINAL)
+        object_class_init_cfunc = @cfunction(object_class_init, Cvoid, (Ptr{_GObjectClass}, Ptr{Cvoid}))
+        return GLib.register_subtype(GtkWidget, :MyWidget, object_class_init_cfunc)
     end
 end
 
-function MyWidget()
-    gtype = GLib.g_type(MyWidget)
-    h = ccall(("g_object_new", GLib.libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)
-    MyWidget(h)
-end
+MyWidget() = GLib.gobject_new(MyWidget)
 
 w = MyWidget()
 

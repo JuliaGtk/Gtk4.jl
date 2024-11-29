@@ -50,3 +50,16 @@ function cancel_after_delay(timeout)
     end
     cancellable
 end
+
+mutable struct _GActionInterface
+    g_iface::_GTypeInterface
+    get_name::Ptr{Cvoid}
+    get_parameter_type::Ptr{Cvoid}
+    get_state_type::Ptr{Cvoid}
+    get_state_hint::Ptr{Cvoid}
+    get_enabled::Ptr{Cvoid}
+    get_state::Ptr{Cvoid}
+    change_state::Ptr{Cvoid}
+    activate::Ptr{Cvoid}
+end
+

@@ -60,6 +60,61 @@ const fundamental_types = (
 g_type_from_name(name::Symbol) = ccall((:g_type_from_name, libgobject), GType, (Ptr{UInt8},), name)
 const fundamental_ids = tuple(GType[g_type_from_name(name) for (name, c, j, f, v) in fundamental_types]...)
 
+function get_gtype_decl(name::Symbol, lib, callname::Symbol)
+    :(GLib.g_type(::Type{T}) where T <: $(esc(name)) =
+        ccall(($(String(callname)), $(esc(lib))), GType, ()))
+end
+
+function get_interface_decl(iname::Symbol)
+    quote
+        struct $(esc(iname)) <: GInterface
+            handle::Ptr{GObject}
+            gc::Any
+            $(esc(iname))(x::GObject) = new(unsafe_convert(Ptr{GObject}, x), x)
+        end
+    end
+end
+
+function get_object_decl(iname::Symbol,parentname::Symbol)
+    leafname = Symbol(String(iname),"Leaf")
+    undeferrmessage = "Cannot construct $leafname with a NULL pointer"
+    quote
+        abstract type $(esc(iname)) <: $(esc(parentname)) end
+        mutable struct $(esc(leafname)) <: $(esc(iname))
+            handle::Ptr{GObject}
+            function $(esc(leafname))(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error($undeferrmessage)
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[$(QuoteNode(iname))] = $(esc(leafname))
+    end
+end
+
+macro Giface(iname, lib, callname)
+    gtype_decl = get_gtype_decl(iname, lib, callname)
+    interf_decl = get_interface_decl(iname)
+    ex=quote
+        $(interf_decl)
+        $(gtype_decl)
+    end
+    Base.remove_linenums!(ex)
+end
+
+macro Gobject(iname, pname, lib, callname)
+    gtype_decl = get_gtype_decl(iname, lib, callname)
+    obj_decl = get_object_decl(iname, pname)
+    ex=quote
+        $(obj_decl)
+        $(gtype_decl)
+    end
+    Base.remove_linenums!(ex)
+end
+
+
 """
     g_type(x)
 
@@ -288,12 +343,7 @@ function delref(@nospecialize(x::GObject))
     # internal helper function
     exiting[] && return # unnecessary to cleanup if we are about to die anyways
     if gc_preserve_glib_lock[] || g_yielded[]
-        lock(await_lock)
-        try
-            push!(await_finalize, x)
-        finally
-            unlock(await_lock)
-        end
+        @lock await_lock push!(await_finalize, x)
         return # avoid running finalizers at random times
     end
     finalize_gc_unref(x)
@@ -318,12 +368,7 @@ function gobject_ref(x::T) where T <: GObject
         if ccall((:g_object_get_qdata, libgobject), Ptr{Cvoid},
                  (Ptr{GObject}, UInt32), x, jlref_quark::UInt32) != C_NULL
             # have set up metadata for this before, but its weakref has been cleared. restore the ref.
-            lock(await_lock)
-            try
-                delete!(await_finalize, x)
-            finally
-                unlock(await_lock)
-            end
+            @lock await_lock delete!(await_finalize, x)
             finalizer(delref, x)
             gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
         else
@@ -357,14 +402,11 @@ function run_delayed_finalizers()
         filter!(x->!(isa(x.first,WeakRef) && x.first.value === nothing),gc_preserve_glib)
         gc_preserve_glib_lock[] = false
     end
-    lock(await_lock)
-    try
+    @lock await_lock begin
         while !isempty(await_finalize)
             x = pop!(await_finalize)
             finalize_gc_unref(x)
         end
-    finally
-        unlock(await_lock)
     end
     topfinalizer[] = true
 end

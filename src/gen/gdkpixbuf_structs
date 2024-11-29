@@ -71,89 +71,25 @@ $(Expr(:toplevel, quote
         end
     @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/struct.PixbufFormat.html)." GdkPixbufFormat
     const gtype_wrapper_cache = Dict{Symbol, Type}()
-    begin
-        abstract type GdkPixbuf <: GObject end
-        mutable struct GdkPixbufLeaf <: GdkPixbuf
-            handle::Ptr{GObject}
-            function GdkPixbufLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkPixbufLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkPixbuf] = GdkPixbufLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkPixbuf) = begin
-                ccall(("gdk_pixbuf_get_type", libgdkpixbuf), GType, ())
-            end
-    end
+    GLib.@Gobject GdkPixbuf GObject libgdkpixbuf gdk_pixbuf_get_type
     begin
         function GLib.signalnames(::Type{GdkPixbuf})
             signalnames(supertype(GdkPixbuf))
         end
     end
-    begin
-        abstract type GdkPixbufAnimation <: GObject end
-        mutable struct GdkPixbufAnimationLeaf <: GdkPixbufAnimation
-            handle::Ptr{GObject}
-            function GdkPixbufAnimationLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkPixbufAnimationLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkPixbufAnimation] = GdkPixbufAnimationLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkPixbufAnimation) = begin
-                ccall(("gdk_pixbuf_animation_get_type", libgdkpixbuf), GType, ())
-            end
-    end
+    GLib.@Gobject GdkPixbufAnimation GObject libgdkpixbuf gdk_pixbuf_animation_get_type
     begin
         function GLib.signalnames(::Type{GdkPixbufAnimation})
             signalnames(supertype(GdkPixbufAnimation))
         end
     end
-    begin
-        abstract type GdkPixbufAnimationIter <: GObject end
-        mutable struct GdkPixbufAnimationIterLeaf <: GdkPixbufAnimationIter
-            handle::Ptr{GObject}
-            function GdkPixbufAnimationIterLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkPixbufAnimationIterLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkPixbufAnimationIter] = GdkPixbufAnimationIterLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkPixbufAnimationIter) = begin
-                ccall(("gdk_pixbuf_animation_iter_get_type", libgdkpixbuf), GType, ())
-            end
-    end
+    GLib.@Gobject GdkPixbufAnimationIter GObject libgdkpixbuf gdk_pixbuf_animation_iter_get_type
     begin
         function GLib.signalnames(::Type{GdkPixbufAnimationIter})
             signalnames(supertype(GdkPixbufAnimationIter))
         end
     end
-    begin
-        abstract type GdkPixbufLoader <: GObject end
-        mutable struct GdkPixbufLoaderLeaf <: GdkPixbufLoader
-            handle::Ptr{GObject}
-            function GdkPixbufLoaderLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkPixbufLoaderLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkPixbufLoader] = GdkPixbufLoaderLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkPixbufLoader) = begin
-                ccall(("gdk_pixbuf_loader_get_type", libgdkpixbuf), GType, ())
-            end
-    end
+    GLib.@Gobject GdkPixbufLoader GObject libgdkpixbuf gdk_pixbuf_loader_get_type
     begin
         function GLib.signalnames(::Type{GdkPixbufLoader})
             vcat([:area_prepared, :area_updated, :closed, :size_prepared], signalnames(supertype(GdkPixbufLoader)))
@@ -167,67 +103,19 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type GdkPixbufNonAnim <: GdkPixbufAnimation end
-        mutable struct GdkPixbufNonAnimLeaf <: GdkPixbufNonAnim
-            handle::Ptr{GObject}
-            function GdkPixbufNonAnimLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkPixbufNonAnimLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkPixbufNonAnim] = GdkPixbufNonAnimLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkPixbufNonAnim) = begin
-                ccall(("gdk_pixbuf_non_anim_get_type", libgdkpixbuf), GType, ())
-            end
-    end
+    GLib.@Gobject GdkPixbufNonAnim GdkPixbufAnimation libgdkpixbuf gdk_pixbuf_non_anim_get_type
     begin
         function GLib.signalnames(::Type{GdkPixbufNonAnim})
             signalnames(supertype(GdkPixbufNonAnim))
         end
     end
-    begin
-        abstract type GdkPixbufSimpleAnim <: GdkPixbufAnimation end
-        mutable struct GdkPixbufSimpleAnimLeaf <: GdkPixbufSimpleAnim
-            handle::Ptr{GObject}
-            function GdkPixbufSimpleAnimLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkPixbufSimpleAnimLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkPixbufSimpleAnim] = GdkPixbufSimpleAnimLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkPixbufSimpleAnim) = begin
-                ccall(("gdk_pixbuf_simple_anim_get_type", libgdkpixbuf), GType, ())
-            end
-    end
+    GLib.@Gobject GdkPixbufSimpleAnim GdkPixbufAnimation libgdkpixbuf gdk_pixbuf_simple_anim_get_type
     begin
         function GLib.signalnames(::Type{GdkPixbufSimpleAnim})
             signalnames(supertype(GdkPixbufSimpleAnim))
         end
     end
-    begin
-        abstract type GdkPixbufSimpleAnimIter <: GdkPixbufAnimationIter end
-        mutable struct GdkPixbufSimpleAnimIterLeaf <: GdkPixbufSimpleAnimIter
-            handle::Ptr{GObject}
-            function GdkPixbufSimpleAnimIterLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkPixbufSimpleAnimIterLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkPixbufSimpleAnimIter] = GdkPixbufSimpleAnimIterLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkPixbufSimpleAnimIter) = begin
-                ccall(("gdk_pixbuf_simple_anim_iter_get_type", libgdkpixbuf), GType, ())
-            end
-    end
+    GLib.@Gobject GdkPixbufSimpleAnimIter GdkPixbufAnimationIter libgdkpixbuf gdk_pixbuf_simple_anim_iter_get_type
     begin
         function GLib.signalnames(::Type{GdkPixbufSimpleAnimIter})
             signalnames(supertype(GdkPixbufSimpleAnimIter))

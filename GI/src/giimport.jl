@@ -221,23 +221,15 @@ function gobject_decl(objectinfo)
         println("get_g_type returns void -- not in library? : ", get_name(objectinfo))
     end
     
+    type_init = Symbol(get_type_init(objectinfo))
+    libs=get_shlibs(GINamespace(get_namespace(objectinfo)))
+    lib=libs[findfirst(find_symbol(type_init),libs)]
+    
     exprs=Expr[]
     decl=quote
-        abstract type $oname <: $pname end
-        mutable struct $leafname <: $oname
-            handle::Ptr{GObject}
-            function $leafname(handle::Ptr{GObject}, owns=false)
-                if handle == C_NULL
-                    error($("Cannot construct $leafname with a NULL pointer"))
-                end
-                GLib.gobject_maybe_sink(handle,owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[$(QuoteNode(oname))] = $leafname
-        $(unblock(typeinit_def(objectinfo, oname)))
+        @GLib.Gobject $oname $pname $(symbol_from_lib(lib)) $type_init
     end
-    push!(exprs, decl)
+    push!(exprs, MacroTools.striplines(unblock(decl)))
     # if there are signals, add "signal_return_type" method, and "signal_arg_types" method
     signals = get_all_signals(objectinfo)
     sigdict = signal_dict_incl_parents(objectinfo)
@@ -310,19 +302,20 @@ end
 
 function decl(interfaceinfo::GIInterfaceInfo)
     g_type = get_g_type(interfaceinfo)
+
+    type_init = Symbol(get_type_init(interfaceinfo))
+    libs=get_shlibs(GINamespace(get_namespace(interfaceinfo)))
+    lib=libs[findfirst(find_symbol(type_init),libs)]
+
     iname = Symbol(GLib.g_type_name(g_type))
 
     if iname === :void
         println("get_g_type returns void -- not in library? : ", get_name(interfaceinfo))
     end
     decl=quote
-        struct $iname <: GInterface
-            handle::Ptr{GObject}
-            gc::Any
-            $iname(x::GObject) = new(unsafe_convert(Ptr{GObject}, x), x)
-        end
+        @GLib.Giface $iname $(symbol_from_lib(lib)) $type_init
     end
-    unblock(decl)
+    MacroTools.striplines(unblock(decl))
 end
 
 function get_closure(callbackinfo::GICallbackInfo)

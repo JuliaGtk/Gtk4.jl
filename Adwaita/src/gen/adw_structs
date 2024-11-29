@@ -25,31 +25,9 @@ $(Expr(:toplevel, quote
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
-    struct AdwSwipeable <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        AdwSwipeable(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
+    GLib.@Giface AdwSwipeable libadwaita adw_swipeable_get_type
     const gtype_wrapper_cache = Dict{Symbol, Type}()
-    begin
-        abstract type AdwDialog <: GtkWidget end
-        mutable struct AdwDialogLeaf <: AdwDialog
-            handle::Ptr{GObject}
-            function AdwDialogLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwDialogLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwDialog] = AdwDialogLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwDialog) = begin
-                ccall(("adw_dialog_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwDialog GtkWidget libadwaita adw_dialog_get_type
     begin
         function GLib.signalnames(::Type{AdwDialog})
             vcat([:close_attempt, :closed], signalnames(supertype(AdwDialog)))
@@ -63,23 +41,7 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwAboutDialog <: AdwDialog end
-        mutable struct AdwAboutDialogLeaf <: AdwAboutDialog
-            handle::Ptr{GObject}
-            function AdwAboutDialogLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwAboutDialogLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwAboutDialog] = AdwAboutDialogLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwAboutDialog) = begin
-                ccall(("adw_about_dialog_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwAboutDialog AdwDialog libadwaita adw_about_dialog_get_type
     begin
         function GLib.signalnames(::Type{AdwAboutDialog})
             vcat([:activate_link], signalnames(supertype(AdwAboutDialog)))
@@ -93,45 +55,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwWindow <: GtkWindow end
-        mutable struct AdwWindowLeaf <: AdwWindow
-            handle::Ptr{GObject}
-            function AdwWindowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwWindowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwWindow] = AdwWindowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwWindow) = begin
-                ccall(("adw_window_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwWindow GtkWindow libadwaita adw_window_get_type
     begin
         function GLib.signalnames(::Type{AdwWindow})
             signalnames(supertype(AdwWindow))
         end
     end
-    begin
-        abstract type AdwAboutWindow <: AdwWindow end
-        mutable struct AdwAboutWindowLeaf <: AdwAboutWindow
-            handle::Ptr{GObject}
-            function AdwAboutWindowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwAboutWindowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwAboutWindow] = AdwAboutWindowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwAboutWindow) = begin
-                ccall(("adw_about_window_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwAboutWindow AdwWindow libadwaita adw_about_window_get_type
     begin
         function GLib.signalnames(::Type{AdwAboutWindow})
             vcat([:activate_link], signalnames(supertype(AdwAboutWindow)))
@@ -145,45 +75,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwPreferencesRow <: GtkListBoxRow end
-        mutable struct AdwPreferencesRowLeaf <: AdwPreferencesRow
-            handle::Ptr{GObject}
-            function AdwPreferencesRowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwPreferencesRowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwPreferencesRow] = AdwPreferencesRowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwPreferencesRow) = begin
-                ccall(("adw_preferences_row_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwPreferencesRow GtkListBoxRow libadwaita adw_preferences_row_get_type
     begin
         function GLib.signalnames(::Type{AdwPreferencesRow})
             signalnames(supertype(AdwPreferencesRow))
         end
     end
-    begin
-        abstract type AdwActionRow <: AdwPreferencesRow end
-        mutable struct AdwActionRowLeaf <: AdwActionRow
-            handle::Ptr{GObject}
-            function AdwActionRowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwActionRowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwActionRow] = AdwActionRowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwActionRow) = begin
-                ccall(("adw_action_row_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwActionRow AdwPreferencesRow libadwaita adw_action_row_get_type
     begin
         function GLib.signalnames(::Type{AdwActionRow})
             vcat([:activated], signalnames(supertype(AdwActionRow)))
@@ -197,23 +95,7 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwAlertDialog <: AdwDialog end
-        mutable struct AdwAlertDialogLeaf <: AdwAlertDialog
-            handle::Ptr{GObject}
-            function AdwAlertDialogLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwAlertDialogLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwAlertDialog] = AdwAlertDialogLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwAlertDialog) = begin
-                ccall(("adw_alert_dialog_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwAlertDialog AdwDialog libadwaita adw_alert_dialog_get_type
     begin
         function GLib.signalnames(::Type{AdwAlertDialog})
             vcat([:response], signalnames(supertype(AdwAlertDialog)))
@@ -227,23 +109,7 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwAnimation <: GObject end
-        mutable struct AdwAnimationLeaf <: AdwAnimation
-            handle::Ptr{GObject}
-            function AdwAnimationLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwAnimationLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwAnimation] = AdwAnimationLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwAnimation) = begin
-                ccall(("adw_animation_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwAnimation GObject libadwaita adw_animation_get_type
     begin
         function GLib.signalnames(::Type{AdwAnimation})
             vcat([:done], signalnames(supertype(AdwAnimation)))
@@ -257,45 +123,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwAnimationTarget <: GObject end
-        mutable struct AdwAnimationTargetLeaf <: AdwAnimationTarget
-            handle::Ptr{GObject}
-            function AdwAnimationTargetLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwAnimationTargetLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwAnimationTarget] = AdwAnimationTargetLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwAnimationTarget) = begin
-                ccall(("adw_animation_target_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwAnimationTarget GObject libadwaita adw_animation_target_get_type
     begin
         function GLib.signalnames(::Type{AdwAnimationTarget})
             signalnames(supertype(AdwAnimationTarget))
         end
     end
-    begin
-        abstract type AdwApplication <: GtkApplication end
-        mutable struct AdwApplicationLeaf <: AdwApplication
-            handle::Ptr{GObject}
-            function AdwApplicationLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwApplicationLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwApplication] = AdwApplicationLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwApplication) = begin
-                ccall(("adw_application_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwApplication GtkApplication libadwaita adw_application_get_type
     begin
         function GLib.signalnames(::Type{AdwApplication})
             vcat([:action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(AdwApplication)))
@@ -309,23 +143,7 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwApplicationWindow <: GtkApplicationWindow end
-        mutable struct AdwApplicationWindowLeaf <: AdwApplicationWindow
-            handle::Ptr{GObject}
-            function AdwApplicationWindowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwApplicationWindowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwApplicationWindow] = AdwApplicationWindowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwApplicationWindow) = begin
-                ccall(("adw_application_window_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwApplicationWindow GtkApplicationWindow libadwaita adw_application_window_get_type
     begin
         function GLib.signalnames(::Type{AdwApplicationWindow})
             vcat([:action_added, :action_enabled_changed, :action_removed, :action_state_changed], signalnames(supertype(AdwApplicationWindow)))
@@ -339,45 +157,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwAvatar <: GtkWidget end
-        mutable struct AdwAvatarLeaf <: AdwAvatar
-            handle::Ptr{GObject}
-            function AdwAvatarLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwAvatarLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwAvatar] = AdwAvatarLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwAvatar) = begin
-                ccall(("adw_avatar_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwAvatar GtkWidget libadwaita adw_avatar_get_type
     begin
         function GLib.signalnames(::Type{AdwAvatar})
             signalnames(supertype(AdwAvatar))
         end
     end
-    begin
-        abstract type AdwBanner <: GtkWidget end
-        mutable struct AdwBannerLeaf <: AdwBanner
-            handle::Ptr{GObject}
-            function AdwBannerLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwBannerLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwBanner] = AdwBannerLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwBanner) = begin
-                ccall(("adw_banner_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwBanner GtkWidget libadwaita adw_banner_get_type
     begin
         function GLib.signalnames(::Type{AdwBanner})
             vcat([:button_clicked], signalnames(supertype(AdwBanner)))
@@ -391,111 +177,31 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwBin <: GtkWidget end
-        mutable struct AdwBinLeaf <: AdwBin
-            handle::Ptr{GObject}
-            function AdwBinLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwBinLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwBin] = AdwBinLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwBin) = begin
-                ccall(("adw_bin_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwBin GtkWidget libadwaita adw_bin_get_type
     begin
         function GLib.signalnames(::Type{AdwBin})
             signalnames(supertype(AdwBin))
         end
     end
-    begin
-        abstract type AdwBreakpointBin <: GtkWidget end
-        mutable struct AdwBreakpointBinLeaf <: AdwBreakpointBin
-            handle::Ptr{GObject}
-            function AdwBreakpointBinLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwBreakpointBinLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwBreakpointBin] = AdwBreakpointBinLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwBreakpointBin) = begin
-                ccall(("adw_breakpoint_bin_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwBreakpointBin GtkWidget libadwaita adw_breakpoint_bin_get_type
     begin
         function GLib.signalnames(::Type{AdwBreakpointBin})
             signalnames(supertype(AdwBreakpointBin))
         end
     end
-    begin
-        abstract type AdwButtonContent <: GtkWidget end
-        mutable struct AdwButtonContentLeaf <: AdwButtonContent
-            handle::Ptr{GObject}
-            function AdwButtonContentLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwButtonContentLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwButtonContent] = AdwButtonContentLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwButtonContent) = begin
-                ccall(("adw_button_content_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwButtonContent GtkWidget libadwaita adw_button_content_get_type
     begin
         function GLib.signalnames(::Type{AdwButtonContent})
             signalnames(supertype(AdwButtonContent))
         end
     end
-    begin
-        abstract type AdwCallbackAnimationTarget <: AdwAnimationTarget end
-        mutable struct AdwCallbackAnimationTargetLeaf <: AdwCallbackAnimationTarget
-            handle::Ptr{GObject}
-            function AdwCallbackAnimationTargetLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwCallbackAnimationTargetLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwCallbackAnimationTarget] = AdwCallbackAnimationTargetLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwCallbackAnimationTarget) = begin
-                ccall(("adw_callback_animation_target_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwCallbackAnimationTarget AdwAnimationTarget libadwaita adw_callback_animation_target_get_type
     begin
         function GLib.signalnames(::Type{AdwCallbackAnimationTarget})
             signalnames(supertype(AdwCallbackAnimationTarget))
         end
     end
-    begin
-        abstract type AdwCarousel <: GtkWidget end
-        mutable struct AdwCarouselLeaf <: AdwCarousel
-            handle::Ptr{GObject}
-            function AdwCarouselLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwCarouselLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwCarousel] = AdwCarouselLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwCarousel) = begin
-                ccall(("adw_carousel_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwCarousel GtkWidget libadwaita adw_carousel_get_type
     begin
         function GLib.signalnames(::Type{AdwCarousel})
             vcat([:page_changed], signalnames(supertype(AdwCarousel)))
@@ -509,155 +215,43 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwCarouselIndicatorDots <: GtkWidget end
-        mutable struct AdwCarouselIndicatorDotsLeaf <: AdwCarouselIndicatorDots
-            handle::Ptr{GObject}
-            function AdwCarouselIndicatorDotsLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwCarouselIndicatorDotsLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwCarouselIndicatorDots] = AdwCarouselIndicatorDotsLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwCarouselIndicatorDots) = begin
-                ccall(("adw_carousel_indicator_dots_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwCarouselIndicatorDots GtkWidget libadwaita adw_carousel_indicator_dots_get_type
     begin
         function GLib.signalnames(::Type{AdwCarouselIndicatorDots})
             signalnames(supertype(AdwCarouselIndicatorDots))
         end
     end
-    begin
-        abstract type AdwCarouselIndicatorLines <: GtkWidget end
-        mutable struct AdwCarouselIndicatorLinesLeaf <: AdwCarouselIndicatorLines
-            handle::Ptr{GObject}
-            function AdwCarouselIndicatorLinesLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwCarouselIndicatorLinesLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwCarouselIndicatorLines] = AdwCarouselIndicatorLinesLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwCarouselIndicatorLines) = begin
-                ccall(("adw_carousel_indicator_lines_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwCarouselIndicatorLines GtkWidget libadwaita adw_carousel_indicator_lines_get_type
     begin
         function GLib.signalnames(::Type{AdwCarouselIndicatorLines})
             signalnames(supertype(AdwCarouselIndicatorLines))
         end
     end
-    begin
-        abstract type AdwClamp <: GtkWidget end
-        mutable struct AdwClampLeaf <: AdwClamp
-            handle::Ptr{GObject}
-            function AdwClampLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwClampLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwClamp] = AdwClampLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwClamp) = begin
-                ccall(("adw_clamp_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwClamp GtkWidget libadwaita adw_clamp_get_type
     begin
         function GLib.signalnames(::Type{AdwClamp})
             signalnames(supertype(AdwClamp))
         end
     end
-    begin
-        abstract type AdwClampLayout <: GtkLayoutManager end
-        mutable struct AdwClampLayoutLeaf <: AdwClampLayout
-            handle::Ptr{GObject}
-            function AdwClampLayoutLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwClampLayoutLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwClampLayout] = AdwClampLayoutLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwClampLayout) = begin
-                ccall(("adw_clamp_layout_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwClampLayout GtkLayoutManager libadwaita adw_clamp_layout_get_type
     begin
         function GLib.signalnames(::Type{AdwClampLayout})
             signalnames(supertype(AdwClampLayout))
         end
     end
-    begin
-        abstract type AdwClampScrollable <: GtkWidget end
-        mutable struct AdwClampScrollableLeaf <: AdwClampScrollable
-            handle::Ptr{GObject}
-            function AdwClampScrollableLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwClampScrollableLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwClampScrollable] = AdwClampScrollableLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwClampScrollable) = begin
-                ccall(("adw_clamp_scrollable_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwClampScrollable GtkWidget libadwaita adw_clamp_scrollable_get_type
     begin
         function GLib.signalnames(::Type{AdwClampScrollable})
             signalnames(supertype(AdwClampScrollable))
         end
     end
-    begin
-        abstract type AdwComboRow <: AdwActionRow end
-        mutable struct AdwComboRowLeaf <: AdwComboRow
-            handle::Ptr{GObject}
-            function AdwComboRowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwComboRowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwComboRow] = AdwComboRowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwComboRow) = begin
-                ccall(("adw_combo_row_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwComboRow AdwActionRow libadwaita adw_combo_row_get_type
     begin
         function GLib.signalnames(::Type{AdwComboRow})
             signalnames(supertype(AdwComboRow))
         end
     end
-    begin
-        abstract type AdwEntryRow <: AdwPreferencesRow end
-        mutable struct AdwEntryRowLeaf <: AdwEntryRow
-            handle::Ptr{GObject}
-            function AdwEntryRowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwEntryRowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwEntryRow] = AdwEntryRowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwEntryRow) = begin
-                ccall(("adw_entry_row_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwEntryRow AdwPreferencesRow libadwaita adw_entry_row_get_type
     begin
         function GLib.signalnames(::Type{AdwEntryRow})
             vcat([:apply, :entry_activated, :changed, :delete_text, :insert_text], signalnames(supertype(AdwEntryRow)))
@@ -671,45 +265,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwEnumListItem <: GObject end
-        mutable struct AdwEnumListItemLeaf <: AdwEnumListItem
-            handle::Ptr{GObject}
-            function AdwEnumListItemLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwEnumListItemLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwEnumListItem] = AdwEnumListItemLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwEnumListItem) = begin
-                ccall(("adw_enum_list_item_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwEnumListItem GObject libadwaita adw_enum_list_item_get_type
     begin
         function GLib.signalnames(::Type{AdwEnumListItem})
             signalnames(supertype(AdwEnumListItem))
         end
     end
-    begin
-        abstract type AdwEnumListModel <: GObject end
-        mutable struct AdwEnumListModelLeaf <: AdwEnumListModel
-            handle::Ptr{GObject}
-            function AdwEnumListModelLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwEnumListModelLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwEnumListModel] = AdwEnumListModelLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwEnumListModel) = begin
-                ccall(("adw_enum_list_model_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwEnumListModel GObject libadwaita adw_enum_list_model_get_type
     begin
         function GLib.signalnames(::Type{AdwEnumListModel})
             vcat([:items_changed], signalnames(supertype(AdwEnumListModel)))
@@ -723,133 +285,37 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwExpanderRow <: AdwPreferencesRow end
-        mutable struct AdwExpanderRowLeaf <: AdwExpanderRow
-            handle::Ptr{GObject}
-            function AdwExpanderRowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwExpanderRowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwExpanderRow] = AdwExpanderRowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwExpanderRow) = begin
-                ccall(("adw_expander_row_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwExpanderRow AdwPreferencesRow libadwaita adw_expander_row_get_type
     begin
         function GLib.signalnames(::Type{AdwExpanderRow})
             signalnames(supertype(AdwExpanderRow))
         end
     end
-    begin
-        abstract type AdwFlap <: GtkWidget end
-        mutable struct AdwFlapLeaf <: AdwFlap
-            handle::Ptr{GObject}
-            function AdwFlapLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwFlapLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwFlap] = AdwFlapLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwFlap) = begin
-                ccall(("adw_flap_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwFlap GtkWidget libadwaita adw_flap_get_type
     begin
         function GLib.signalnames(::Type{AdwFlap})
             signalnames(supertype(AdwFlap))
         end
     end
-    begin
-        abstract type AdwHeaderBar <: GtkWidget end
-        mutable struct AdwHeaderBarLeaf <: AdwHeaderBar
-            handle::Ptr{GObject}
-            function AdwHeaderBarLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwHeaderBarLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwHeaderBar] = AdwHeaderBarLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwHeaderBar) = begin
-                ccall(("adw_header_bar_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwHeaderBar GtkWidget libadwaita adw_header_bar_get_type
     begin
         function GLib.signalnames(::Type{AdwHeaderBar})
             signalnames(supertype(AdwHeaderBar))
         end
     end
-    begin
-        abstract type AdwLeaflet <: GtkWidget end
-        mutable struct AdwLeafletLeaf <: AdwLeaflet
-            handle::Ptr{GObject}
-            function AdwLeafletLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwLeafletLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwLeaflet] = AdwLeafletLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwLeaflet) = begin
-                ccall(("adw_leaflet_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwLeaflet GtkWidget libadwaita adw_leaflet_get_type
     begin
         function GLib.signalnames(::Type{AdwLeaflet})
             signalnames(supertype(AdwLeaflet))
         end
     end
-    begin
-        abstract type AdwLeafletPage <: GObject end
-        mutable struct AdwLeafletPageLeaf <: AdwLeafletPage
-            handle::Ptr{GObject}
-            function AdwLeafletPageLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwLeafletPageLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwLeafletPage] = AdwLeafletPageLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwLeafletPage) = begin
-                ccall(("adw_leaflet_page_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwLeafletPage GObject libadwaita adw_leaflet_page_get_type
     begin
         function GLib.signalnames(::Type{AdwLeafletPage})
             signalnames(supertype(AdwLeafletPage))
         end
     end
-    begin
-        abstract type AdwMessageDialog <: GtkWindow end
-        mutable struct AdwMessageDialogLeaf <: AdwMessageDialog
-            handle::Ptr{GObject}
-            function AdwMessageDialogLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwMessageDialogLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwMessageDialog] = AdwMessageDialogLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwMessageDialog) = begin
-                ccall(("adw_message_dialog_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwMessageDialog GtkWindow libadwaita adw_message_dialog_get_type
     begin
         function GLib.signalnames(::Type{AdwMessageDialog})
             vcat([:response], signalnames(supertype(AdwMessageDialog)))
@@ -863,23 +329,7 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwNavigationPage <: GtkWidget end
-        mutable struct AdwNavigationPageLeaf <: AdwNavigationPage
-            handle::Ptr{GObject}
-            function AdwNavigationPageLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwNavigationPageLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwNavigationPage] = AdwNavigationPageLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwNavigationPage) = begin
-                ccall(("adw_navigation_page_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwNavigationPage GtkWidget libadwaita adw_navigation_page_get_type
     begin
         function GLib.signalnames(::Type{AdwNavigationPage})
             vcat([:hidden, :hiding, :showing, :shown], signalnames(supertype(AdwNavigationPage)))
@@ -893,45 +343,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwNavigationSplitView <: GtkWidget end
-        mutable struct AdwNavigationSplitViewLeaf <: AdwNavigationSplitView
-            handle::Ptr{GObject}
-            function AdwNavigationSplitViewLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwNavigationSplitViewLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwNavigationSplitView] = AdwNavigationSplitViewLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwNavigationSplitView) = begin
-                ccall(("adw_navigation_split_view_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwNavigationSplitView GtkWidget libadwaita adw_navigation_split_view_get_type
     begin
         function GLib.signalnames(::Type{AdwNavigationSplitView})
             signalnames(supertype(AdwNavigationSplitView))
         end
     end
-    begin
-        abstract type AdwNavigationView <: GtkWidget end
-        mutable struct AdwNavigationViewLeaf <: AdwNavigationView
-            handle::Ptr{GObject}
-            function AdwNavigationViewLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwNavigationViewLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwNavigationView] = AdwNavigationViewLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwNavigationView) = begin
-                ccall(("adw_navigation_view_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwNavigationView GtkWidget libadwaita adw_navigation_view_get_type
     begin
         function GLib.signalnames(::Type{AdwNavigationView})
             vcat([:get_next_page, :popped, :pushed, :replaced], signalnames(supertype(AdwNavigationView)))
@@ -945,45 +363,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwOverlaySplitView <: GtkWidget end
-        mutable struct AdwOverlaySplitViewLeaf <: AdwOverlaySplitView
-            handle::Ptr{GObject}
-            function AdwOverlaySplitViewLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwOverlaySplitViewLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwOverlaySplitView] = AdwOverlaySplitViewLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwOverlaySplitView) = begin
-                ccall(("adw_overlay_split_view_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwOverlaySplitView GtkWidget libadwaita adw_overlay_split_view_get_type
     begin
         function GLib.signalnames(::Type{AdwOverlaySplitView})
             signalnames(supertype(AdwOverlaySplitView))
         end
     end
-    begin
-        abstract type AdwPasswordEntryRow <: AdwEntryRow end
-        mutable struct AdwPasswordEntryRowLeaf <: AdwPasswordEntryRow
-            handle::Ptr{GObject}
-            function AdwPasswordEntryRowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwPasswordEntryRowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwPasswordEntryRow] = AdwPasswordEntryRowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwPasswordEntryRow) = begin
-                ccall(("adw_password_entry_row_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwPasswordEntryRow AdwEntryRow libadwaita adw_password_entry_row_get_type
     begin
         function GLib.signalnames(::Type{AdwPasswordEntryRow})
             vcat([:changed, :delete_text, :insert_text], signalnames(supertype(AdwPasswordEntryRow)))
@@ -997,133 +383,37 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwPreferencesDialog <: AdwDialog end
-        mutable struct AdwPreferencesDialogLeaf <: AdwPreferencesDialog
-            handle::Ptr{GObject}
-            function AdwPreferencesDialogLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwPreferencesDialogLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwPreferencesDialog] = AdwPreferencesDialogLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwPreferencesDialog) = begin
-                ccall(("adw_preferences_dialog_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwPreferencesDialog AdwDialog libadwaita adw_preferences_dialog_get_type
     begin
         function GLib.signalnames(::Type{AdwPreferencesDialog})
             signalnames(supertype(AdwPreferencesDialog))
         end
     end
-    begin
-        abstract type AdwPreferencesGroup <: GtkWidget end
-        mutable struct AdwPreferencesGroupLeaf <: AdwPreferencesGroup
-            handle::Ptr{GObject}
-            function AdwPreferencesGroupLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwPreferencesGroupLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwPreferencesGroup] = AdwPreferencesGroupLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwPreferencesGroup) = begin
-                ccall(("adw_preferences_group_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwPreferencesGroup GtkWidget libadwaita adw_preferences_group_get_type
     begin
         function GLib.signalnames(::Type{AdwPreferencesGroup})
             signalnames(supertype(AdwPreferencesGroup))
         end
     end
-    begin
-        abstract type AdwPreferencesPage <: GtkWidget end
-        mutable struct AdwPreferencesPageLeaf <: AdwPreferencesPage
-            handle::Ptr{GObject}
-            function AdwPreferencesPageLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwPreferencesPageLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwPreferencesPage] = AdwPreferencesPageLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwPreferencesPage) = begin
-                ccall(("adw_preferences_page_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwPreferencesPage GtkWidget libadwaita adw_preferences_page_get_type
     begin
         function GLib.signalnames(::Type{AdwPreferencesPage})
             signalnames(supertype(AdwPreferencesPage))
         end
     end
-    begin
-        abstract type AdwPreferencesWindow <: AdwWindow end
-        mutable struct AdwPreferencesWindowLeaf <: AdwPreferencesWindow
-            handle::Ptr{GObject}
-            function AdwPreferencesWindowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwPreferencesWindowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwPreferencesWindow] = AdwPreferencesWindowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwPreferencesWindow) = begin
-                ccall(("adw_preferences_window_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwPreferencesWindow AdwWindow libadwaita adw_preferences_window_get_type
     begin
         function GLib.signalnames(::Type{AdwPreferencesWindow})
             signalnames(supertype(AdwPreferencesWindow))
         end
     end
-    begin
-        abstract type AdwPropertyAnimationTarget <: AdwAnimationTarget end
-        mutable struct AdwPropertyAnimationTargetLeaf <: AdwPropertyAnimationTarget
-            handle::Ptr{GObject}
-            function AdwPropertyAnimationTargetLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwPropertyAnimationTargetLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwPropertyAnimationTarget] = AdwPropertyAnimationTargetLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwPropertyAnimationTarget) = begin
-                ccall(("adw_property_animation_target_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwPropertyAnimationTarget AdwAnimationTarget libadwaita adw_property_animation_target_get_type
     begin
         function GLib.signalnames(::Type{AdwPropertyAnimationTarget})
             signalnames(supertype(AdwPropertyAnimationTarget))
         end
     end
-    begin
-        abstract type AdwSpinRow <: AdwActionRow end
-        mutable struct AdwSpinRowLeaf <: AdwSpinRow
-            handle::Ptr{GObject}
-            function AdwSpinRowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwSpinRowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwSpinRow] = AdwSpinRowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwSpinRow) = begin
-                ccall(("adw_spin_row_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwSpinRow AdwActionRow libadwaita adw_spin_row_get_type
     begin
         function GLib.signalnames(::Type{AdwSpinRow})
             vcat([:input, :output, :wrapped, :changed, :delete_text, :insert_text], signalnames(supertype(AdwSpinRow)))
@@ -1137,23 +427,7 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwSplitButton <: GtkWidget end
-        mutable struct AdwSplitButtonLeaf <: AdwSplitButton
-            handle::Ptr{GObject}
-            function AdwSplitButtonLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwSplitButtonLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwSplitButton] = AdwSplitButtonLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwSplitButton) = begin
-                ccall(("adw_split_button_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwSplitButton GtkWidget libadwaita adw_split_button_get_type
     begin
         function GLib.signalnames(::Type{AdwSplitButton})
             vcat([:activate, :clicked], signalnames(supertype(AdwSplitButton)))
@@ -1167,133 +441,37 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwSpringAnimation <: AdwAnimation end
-        mutable struct AdwSpringAnimationLeaf <: AdwSpringAnimation
-            handle::Ptr{GObject}
-            function AdwSpringAnimationLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwSpringAnimationLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwSpringAnimation] = AdwSpringAnimationLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwSpringAnimation) = begin
-                ccall(("adw_spring_animation_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwSpringAnimation AdwAnimation libadwaita adw_spring_animation_get_type
     begin
         function GLib.signalnames(::Type{AdwSpringAnimation})
             signalnames(supertype(AdwSpringAnimation))
         end
     end
-    begin
-        abstract type AdwSqueezer <: GtkWidget end
-        mutable struct AdwSqueezerLeaf <: AdwSqueezer
-            handle::Ptr{GObject}
-            function AdwSqueezerLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwSqueezerLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwSqueezer] = AdwSqueezerLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwSqueezer) = begin
-                ccall(("adw_squeezer_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwSqueezer GtkWidget libadwaita adw_squeezer_get_type
     begin
         function GLib.signalnames(::Type{AdwSqueezer})
             signalnames(supertype(AdwSqueezer))
         end
     end
-    begin
-        abstract type AdwSqueezerPage <: GObject end
-        mutable struct AdwSqueezerPageLeaf <: AdwSqueezerPage
-            handle::Ptr{GObject}
-            function AdwSqueezerPageLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwSqueezerPageLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwSqueezerPage] = AdwSqueezerPageLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwSqueezerPage) = begin
-                ccall(("adw_squeezer_page_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwSqueezerPage GObject libadwaita adw_squeezer_page_get_type
     begin
         function GLib.signalnames(::Type{AdwSqueezerPage})
             signalnames(supertype(AdwSqueezerPage))
         end
     end
-    begin
-        abstract type AdwStatusPage <: GtkWidget end
-        mutable struct AdwStatusPageLeaf <: AdwStatusPage
-            handle::Ptr{GObject}
-            function AdwStatusPageLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwStatusPageLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwStatusPage] = AdwStatusPageLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwStatusPage) = begin
-                ccall(("adw_status_page_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwStatusPage GtkWidget libadwaita adw_status_page_get_type
     begin
         function GLib.signalnames(::Type{AdwStatusPage})
             signalnames(supertype(AdwStatusPage))
         end
     end
-    begin
-        abstract type AdwStyleManager <: GObject end
-        mutable struct AdwStyleManagerLeaf <: AdwStyleManager
-            handle::Ptr{GObject}
-            function AdwStyleManagerLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwStyleManagerLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwStyleManager] = AdwStyleManagerLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwStyleManager) = begin
-                ccall(("adw_style_manager_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwStyleManager GObject libadwaita adw_style_manager_get_type
     begin
         function GLib.signalnames(::Type{AdwStyleManager})
             signalnames(supertype(AdwStyleManager))
         end
     end
-    begin
-        abstract type AdwSwipeTracker <: GObject end
-        mutable struct AdwSwipeTrackerLeaf <: AdwSwipeTracker
-            handle::Ptr{GObject}
-            function AdwSwipeTrackerLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwSwipeTrackerLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwSwipeTracker] = AdwSwipeTrackerLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwSwipeTracker) = begin
-                ccall(("adw_swipe_tracker_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwSwipeTracker GObject libadwaita adw_swipe_tracker_get_type
     begin
         function GLib.signalnames(::Type{AdwSwipeTracker})
             vcat([:begin_swipe, :end_swipe, :prepare, :update_swipe], signalnames(supertype(AdwSwipeTracker)))
@@ -1307,45 +485,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwSwitchRow <: AdwActionRow end
-        mutable struct AdwSwitchRowLeaf <: AdwSwitchRow
-            handle::Ptr{GObject}
-            function AdwSwitchRowLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwSwitchRowLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwSwitchRow] = AdwSwitchRowLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwSwitchRow) = begin
-                ccall(("adw_switch_row_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwSwitchRow AdwActionRow libadwaita adw_switch_row_get_type
     begin
         function GLib.signalnames(::Type{AdwSwitchRow})
             signalnames(supertype(AdwSwitchRow))
         end
     end
-    begin
-        abstract type AdwTabBar <: GtkWidget end
-        mutable struct AdwTabBarLeaf <: AdwTabBar
-            handle::Ptr{GObject}
-            function AdwTabBarLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwTabBarLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwTabBar] = AdwTabBarLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwTabBar) = begin
-                ccall(("adw_tab_bar_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwTabBar GtkWidget libadwaita adw_tab_bar_get_type
     begin
         function GLib.signalnames(::Type{AdwTabBar})
             vcat([:extra_drag_drop, :extra_drag_value], signalnames(supertype(AdwTabBar)))
@@ -1359,23 +505,7 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwTabButton <: GtkWidget end
-        mutable struct AdwTabButtonLeaf <: AdwTabButton
-            handle::Ptr{GObject}
-            function AdwTabButtonLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwTabButtonLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwTabButton] = AdwTabButtonLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwTabButton) = begin
-                ccall(("adw_tab_button_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwTabButton GtkWidget libadwaita adw_tab_button_get_type
     begin
         function GLib.signalnames(::Type{AdwTabButton})
             vcat([:activate, :clicked], signalnames(supertype(AdwTabButton)))
@@ -1389,23 +519,7 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwTabOverview <: GtkWidget end
-        mutable struct AdwTabOverviewLeaf <: AdwTabOverview
-            handle::Ptr{GObject}
-            function AdwTabOverviewLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwTabOverviewLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwTabOverview] = AdwTabOverviewLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwTabOverview) = begin
-                ccall(("adw_tab_overview_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwTabOverview GtkWidget libadwaita adw_tab_overview_get_type
     begin
         function GLib.signalnames(::Type{AdwTabOverview})
             vcat([:create_tab, :extra_drag_drop, :extra_drag_value], signalnames(supertype(AdwTabOverview)))
@@ -1419,45 +533,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwTabPage <: GObject end
-        mutable struct AdwTabPageLeaf <: AdwTabPage
-            handle::Ptr{GObject}
-            function AdwTabPageLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwTabPageLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwTabPage] = AdwTabPageLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwTabPage) = begin
-                ccall(("adw_tab_page_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwTabPage GObject libadwaita adw_tab_page_get_type
     begin
         function GLib.signalnames(::Type{AdwTabPage})
             signalnames(supertype(AdwTabPage))
         end
     end
-    begin
-        abstract type AdwTabView <: GtkWidget end
-        mutable struct AdwTabViewLeaf <: AdwTabView
-            handle::Ptr{GObject}
-            function AdwTabViewLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwTabViewLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwTabView] = AdwTabViewLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwTabView) = begin
-                ccall(("adw_tab_view_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwTabView GtkWidget libadwaita adw_tab_view_get_type
     begin
         function GLib.signalnames(::Type{AdwTabView})
             vcat([:close_page, :create_window, :indicator_activated, :page_attached, :page_detached, :page_reordered, :setup_menu], signalnames(supertype(AdwTabView)))
@@ -1471,45 +553,13 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwTimedAnimation <: AdwAnimation end
-        mutable struct AdwTimedAnimationLeaf <: AdwTimedAnimation
-            handle::Ptr{GObject}
-            function AdwTimedAnimationLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwTimedAnimationLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwTimedAnimation] = AdwTimedAnimationLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwTimedAnimation) = begin
-                ccall(("adw_timed_animation_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwTimedAnimation AdwAnimation libadwaita adw_timed_animation_get_type
     begin
         function GLib.signalnames(::Type{AdwTimedAnimation})
             signalnames(supertype(AdwTimedAnimation))
         end
     end
-    begin
-        abstract type AdwToast <: GObject end
-        mutable struct AdwToastLeaf <: AdwToast
-            handle::Ptr{GObject}
-            function AdwToastLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwToastLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwToast] = AdwToastLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwToast) = begin
-                ccall(("adw_toast_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwToast GObject libadwaita adw_toast_get_type
     begin
         function GLib.signalnames(::Type{AdwToast})
             vcat([:button_clicked, :dismissed], signalnames(supertype(AdwToast)))
@@ -1523,111 +573,31 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwToastOverlay <: GtkWidget end
-        mutable struct AdwToastOverlayLeaf <: AdwToastOverlay
-            handle::Ptr{GObject}
-            function AdwToastOverlayLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwToastOverlayLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwToastOverlay] = AdwToastOverlayLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwToastOverlay) = begin
-                ccall(("adw_toast_overlay_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwToastOverlay GtkWidget libadwaita adw_toast_overlay_get_type
     begin
         function GLib.signalnames(::Type{AdwToastOverlay})
             signalnames(supertype(AdwToastOverlay))
         end
     end
-    begin
-        abstract type AdwToolbarView <: GtkWidget end
-        mutable struct AdwToolbarViewLeaf <: AdwToolbarView
-            handle::Ptr{GObject}
-            function AdwToolbarViewLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwToolbarViewLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwToolbarView] = AdwToolbarViewLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwToolbarView) = begin
-                ccall(("adw_toolbar_view_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwToolbarView GtkWidget libadwaita adw_toolbar_view_get_type
     begin
         function GLib.signalnames(::Type{AdwToolbarView})
             signalnames(supertype(AdwToolbarView))
         end
     end
-    begin
-        abstract type AdwViewStack <: GtkWidget end
-        mutable struct AdwViewStackLeaf <: AdwViewStack
-            handle::Ptr{GObject}
-            function AdwViewStackLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwViewStackLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwViewStack] = AdwViewStackLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwViewStack) = begin
-                ccall(("adw_view_stack_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwViewStack GtkWidget libadwaita adw_view_stack_get_type
     begin
         function GLib.signalnames(::Type{AdwViewStack})
             signalnames(supertype(AdwViewStack))
         end
     end
-    begin
-        abstract type AdwViewStackPage <: GObject end
-        mutable struct AdwViewStackPageLeaf <: AdwViewStackPage
-            handle::Ptr{GObject}
-            function AdwViewStackPageLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwViewStackPageLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwViewStackPage] = AdwViewStackPageLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwViewStackPage) = begin
-                ccall(("adw_view_stack_page_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwViewStackPage GObject libadwaita adw_view_stack_page_get_type
     begin
         function GLib.signalnames(::Type{AdwViewStackPage})
             signalnames(supertype(AdwViewStackPage))
         end
     end
-    begin
-        abstract type AdwViewStackPages <: GObject end
-        mutable struct AdwViewStackPagesLeaf <: AdwViewStackPages
-            handle::Ptr{GObject}
-            function AdwViewStackPagesLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwViewStackPagesLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwViewStackPages] = AdwViewStackPagesLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwViewStackPages) = begin
-                ccall(("adw_view_stack_pages_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwViewStackPages GObject libadwaita adw_view_stack_pages_get_type
     begin
         function GLib.signalnames(::Type{AdwViewStackPages})
             vcat([:items_changed, :selection_changed], signalnames(supertype(AdwViewStackPages)))
@@ -1641,89 +611,25 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    begin
-        abstract type AdwViewSwitcher <: GtkWidget end
-        mutable struct AdwViewSwitcherLeaf <: AdwViewSwitcher
-            handle::Ptr{GObject}
-            function AdwViewSwitcherLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwViewSwitcherLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwViewSwitcher] = AdwViewSwitcherLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwViewSwitcher) = begin
-                ccall(("adw_view_switcher_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwViewSwitcher GtkWidget libadwaita adw_view_switcher_get_type
     begin
         function GLib.signalnames(::Type{AdwViewSwitcher})
             signalnames(supertype(AdwViewSwitcher))
         end
     end
-    begin
-        abstract type AdwViewSwitcherBar <: GtkWidget end
-        mutable struct AdwViewSwitcherBarLeaf <: AdwViewSwitcherBar
-            handle::Ptr{GObject}
-            function AdwViewSwitcherBarLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwViewSwitcherBarLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwViewSwitcherBar] = AdwViewSwitcherBarLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwViewSwitcherBar) = begin
-                ccall(("adw_view_switcher_bar_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwViewSwitcherBar GtkWidget libadwaita adw_view_switcher_bar_get_type
     begin
         function GLib.signalnames(::Type{AdwViewSwitcherBar})
             signalnames(supertype(AdwViewSwitcherBar))
         end
     end
-    begin
-        abstract type AdwViewSwitcherTitle <: GtkWidget end
-        mutable struct AdwViewSwitcherTitleLeaf <: AdwViewSwitcherTitle
-            handle::Ptr{GObject}
-            function AdwViewSwitcherTitleLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwViewSwitcherTitleLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwViewSwitcherTitle] = AdwViewSwitcherTitleLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwViewSwitcherTitle) = begin
-                ccall(("adw_view_switcher_title_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwViewSwitcherTitle GtkWidget libadwaita adw_view_switcher_title_get_type
     begin
         function GLib.signalnames(::Type{AdwViewSwitcherTitle})
             signalnames(supertype(AdwViewSwitcherTitle))
         end
     end
-    begin
-        abstract type AdwWindowTitle <: GtkWidget end
-        mutable struct AdwWindowTitleLeaf <: AdwWindowTitle
-            handle::Ptr{GObject}
-            function AdwWindowTitleLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct AdwWindowTitleLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:AdwWindowTitle] = AdwWindowTitleLeaf
-        (GLib.g_type(::Type{T}) where T <: AdwWindowTitle) = begin
-                ccall(("adw_window_title_get_type", libadwaita), GType, ())
-            end
-    end
+    GLib.@Gobject AdwWindowTitle GtkWidget libadwaita adw_window_title_get_type
     begin
         function GLib.signalnames(::Type{AdwWindowTitle})
             signalnames(supertype(AdwWindowTitle))

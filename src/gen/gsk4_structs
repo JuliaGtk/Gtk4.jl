@@ -161,45 +161,13 @@ $(Expr(:toplevel, quote
             handle::Ptr{GskRenderNode}
         end
     end
-    begin
-        abstract type GskRenderer <: GObject end
-        mutable struct GskRendererLeaf <: GskRenderer
-            handle::Ptr{GObject}
-            function GskRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskRenderer] = GskRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskRenderer) = begin
-                ccall(("gsk_renderer_get_type", libgtk4), GType, ())
-            end
-    end
+    GLib.@Gobject GskRenderer GObject libgtk4 gsk_renderer_get_type
     begin
         function GLib.signalnames(::Type{GskRenderer})
             signalnames(supertype(GskRenderer))
         end
     end
-    begin
-        abstract type GskBroadwayRenderer <: GskRenderer end
-        mutable struct GskBroadwayRendererLeaf <: GskBroadwayRenderer
-            handle::Ptr{GObject}
-            function GskBroadwayRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskBroadwayRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskBroadwayRenderer) = begin
-                ccall(("gsk_broadway_renderer_get_type", libgtk4), GType, ())
-            end
-    end
+    GLib.@Gobject GskBroadwayRenderer GskRenderer libgtk4 gsk_broadway_renderer_get_type
     begin
         function GLib.signalnames(::Type{GskBroadwayRenderer})
             signalnames(supertype(GskBroadwayRenderer))
@@ -213,23 +181,7 @@ $(Expr(:toplevel, quote
             handle::Ptr{GskRenderNode}
         end
     end
-    begin
-        abstract type GskCairoRenderer <: GskRenderer end
-        mutable struct GskCairoRendererLeaf <: GskCairoRenderer
-            handle::Ptr{GObject}
-            function GskCairoRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskCairoRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskCairoRenderer) = begin
-                ccall(("gsk_cairo_renderer_get_type", libgtk4), GType, ())
-            end
-    end
+    GLib.@Gobject GskCairoRenderer GskRenderer libgtk4 gsk_cairo_renderer_get_type
     begin
         function GLib.signalnames(::Type{GskCairoRenderer})
             signalnames(supertype(GskCairoRenderer))
@@ -291,45 +243,13 @@ $(Expr(:toplevel, quote
             handle::Ptr{GskRenderNode}
         end
     end
-    begin
-        abstract type GskGLRenderer <: GskRenderer end
-        mutable struct GskGLRendererLeaf <: GskGLRenderer
-            handle::Ptr{GObject}
-            function GskGLRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskGLRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskGLRenderer] = GskGLRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskGLRenderer) = begin
-                ccall(("gsk_gl_renderer_get_type", libgtk4), GType, ())
-            end
-    end
+    GLib.@Gobject GskGLRenderer GskRenderer libgtk4 gsk_gl_renderer_get_type
     begin
         function GLib.signalnames(::Type{GskGLRenderer})
             signalnames(supertype(GskGLRenderer))
         end
     end
-    begin
-        abstract type GskGLShader <: GObject end
-        mutable struct GskGLShaderLeaf <: GskGLShader
-            handle::Ptr{GObject}
-            function GskGLShaderLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskGLShaderLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
-        (GLib.g_type(::Type{T}) where T <: GskGLShader) = begin
-                ccall(("gsk_gl_shader_get_type", libgtk4), GType, ())
-            end
-    end
+    GLib.@Gobject GskGLShader GObject libgtk4 gsk_gl_shader_get_type
     begin
         function GLib.signalnames(::Type{GskGLShader})
             signalnames(supertype(GskGLShader))
@@ -367,23 +287,7 @@ $(Expr(:toplevel, quote
             handle::Ptr{GskRenderNode}
         end
     end
-    begin
-        abstract type GskNglRenderer <: GskRenderer end
-        mutable struct GskNglRendererLeaf <: GskNglRenderer
-            handle::Ptr{GObject}
-            function GskNglRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskNglRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskNglRenderer) = begin
-                ccall(("gsk_ngl_renderer_get_type", libgtk4), GType, ())
-            end
-    end
+    GLib.@Gobject GskNglRenderer GskRenderer libgtk4 gsk_ngl_renderer_get_type
     begin
         function GLib.signalnames(::Type{GskNglRenderer})
             signalnames(supertype(GskNglRenderer))
@@ -485,23 +389,7 @@ $(Expr(:toplevel, quote
             handle::Ptr{GskRenderNode}
         end
     end
-    begin
-        abstract type GskVulkanRenderer <: GskRenderer end
-        mutable struct GskVulkanRendererLeaf <: GskVulkanRenderer
-            handle::Ptr{GObject}
-            function GskVulkanRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskVulkanRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskVulkanRenderer] = GskVulkanRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskVulkanRenderer) = begin
-                ccall(("gsk_vulkan_renderer_get_type", libgtk4), GType, ())
-            end
-    end
+    GLib.@Gobject GskVulkanRenderer GskRenderer libgtk4 gsk_vulkan_renderer_get_type
     begin
         function GLib.signalnames(::Type{GskVulkanRenderer})
             signalnames(supertype(GskVulkanRenderer))
