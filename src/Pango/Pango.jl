@@ -2,8 +2,13 @@ module Pango
 
 using GObjects
 const GLib = GObjects
-using Glib_jll
-using Pango_jll
+
+@static if GObjects.libdir == ""
+    using Glib_jll
+    using Pango_jll
+else
+    const libpango = joinpath(GObjects.libdir, "libpango-1.0.so")
+end
 
 import Base: convert, length, getindex, iterate, unsafe_convert
 import CEnum: @cenum, CEnum
@@ -22,12 +27,12 @@ module G_
 
 import Base: copy
 
-using Pango_jll, Glib_jll
-
 using GObjects
+using GObjects: libglib, libgobject, libgio
 const GLib = GObjects
 using ..Pango
 using ..Pango: Alignment, AttrType, BaselineShift, CoverageLevel, Direction, EllipsizeMode, FontScale, Gravity, GravityHint, LayoutDeserializeError, Overline, RenderPart, Script, Stretch, Style, TabAlign, TextTransform, Underline, Variant, Weight, WrapMode, FontMask, LayoutDeserializeFlags, LayoutSerializeFlags, ShapeFlags, ShowFlags
+using ..Pango: libpango
 using ..Pango.Cairo
 
 eval(include("../gen/pango_methods"))

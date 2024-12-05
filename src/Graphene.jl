@@ -2,7 +2,11 @@ module Graphene
 
 using GObjects
 const GLib = GObjects
-using Graphene_jll
+@static if GObjects.libdir == ""
+    using Graphene_jll
+else
+    const libgraphene = joinpath(GObjects.libdir, "libgraphene-1.0.so")
+end
 
 import Base: convert, length, getindex, iterate, unsafe_convert
 
@@ -15,10 +19,9 @@ export _GrapheneRect, _GraphenePoint, _GrapheneMatrix, _GrapheneVec4, _GrapheneV
 
 module G_
 
-using Graphene_jll
-
 using ..GLib
 using ..Graphene
+using ..Graphene: libgraphene
 
 eval(include("gen/graphene_methods"))
 #eval(include("gen/graphene_functions"))

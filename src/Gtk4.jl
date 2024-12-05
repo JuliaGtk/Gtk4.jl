@@ -18,8 +18,12 @@ include("Pango/Pango.jl")
 include("GdkPixbufLib.jl")
 include("Graphene.jl")
 
-using GTK4_jll, Glib_jll
-using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
+@static if GObjects.libdir == ""
+    using GTK4_jll, Glib_jll
+    using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
+else
+    const libgtk4 = joinpath(GObjects.libdir, "libgtk-4.so")
+end
 
 using ..GdkPixbufLib
 using ..Graphene
@@ -43,9 +47,8 @@ const ModifierType_NONE = ModifierType_NO_MODIFIER_MASK
 
 module G_
 
-using GTK4_jll, Glib_jll
-
 using GObjects
+using GObjects: libglib, libgobject, libgio
 const GLib = GObjects
 using ..Pango
 using ..Pango.Cairo
@@ -54,6 +57,7 @@ using ..GdkPixbufLib
 using ..Gtk4
 
 using ..Gtk4: BlendMode, Corner, FillRule, GLUniformType, LineCap, LineJoin, MaskMode, PathDirection, PathOperation, RenderNodeType, ScalingFilter, SerializationError, TransformCategory, PathForeachFlags, AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DmabufError, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, ScrollUnit, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState, AccessibleAnnouncementPriority, AccessibleAutocomplete, AccessibleInvalidState, AccessiblePlatformState, AccessibleProperty, AccessibleRelation, AccessibleRole, AccessibleSort, AccessibleState, AccessibleTextContentChange, AccessibleTextGranularity, AccessibleTristate, Align, ArrowType, AssistantPageType, BaselinePosition, BorderStyle, BuilderError, ButtonsType, CellRendererAccelMode, CellRendererMode, Collation, ConstraintAttribute, ConstraintRelation, ConstraintStrength, ConstraintVflParserError, ContentFit, CornerType, CssParserError, CssParserWarning, DeleteType, DialogError, DirectionType, EditableProperties, EntryIconPosition, EventSequenceState, FileChooserAction, FileChooserError, FilterChange, FilterMatch, FontLevel, GraphicsOffloadEnabled, IconSize, IconThemeError, IconViewDropPosition, ImageType, InputPurpose, InscriptionOverflow, Justification, LevelBarMode, License, ListTabBehavior, MessageType, MovementStep, NaturalWrapMode, NotebookTab, NumberUpLayout, Ordering, Orientation, Overflow, PackType, PadActionType, PageOrientation, PageSet, PanDirection, PolicyType, PositionType, PrintDuplex, PrintError, PrintOperationAction, PrintOperationResult, PrintPages, PrintQuality, PrintStatus, PropagationLimit, PropagationPhase, RecentManagerError, ResponseType, RevealerTransitionType, ScrollStep, ScrollType, ScrollablePolicy, SelectionMode, SensitivityType, ShortcutScope, ShortcutType, SizeGroupMode, SizeRequestMode, SortType, SorterChange, SorterOrder, SpinButtonUpdatePolicy, SpinType, StackTransitionType, StringFilterMatchMode, SymbolicColor, SystemSetting, TextDirection, TextExtendSelection, TextViewLayer, TextWindowType, TreeViewColumnSizing, TreeViewDropPosition, TreeViewGridLines, Unit, WrapMode, ApplicationInhibitFlags, BuilderClosureFlags, CellRendererState, DebugFlags, DialogFlags, EventControllerScrollFlags, FontChooserLevel, IconLookupFlags, InputHints, ListScrollFlags, PickFlags, PopoverMenuFlags, PrintCapabilities, ShortcutActionFlags, StateFlags, StyleContextPrintFlags, TextSearchFlags
+using ..Gtk4: libgtk4
 
 eval(include("gen/gdk4_methods"))
 eval(include("gen/gdk4_functions"))
@@ -108,7 +112,7 @@ include("layout.jl")
 include("buttons.jl")
 include("displays.jl")
 include("events.jl")
-include("cairo.jl")
+#include("cairo.jl")
 include("gl_area.jl")
 include("lists.jl")
 include("text.jl")
@@ -135,37 +139,41 @@ function __init__()
         @warn "Gtk4 version check failed: $vercheck"
     end
 
-    # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
-    ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
-        dirname(adwaita_icons_dir),
-        dirname(hicolor_icons_dir),
-        joinpath(dirname(GTK4_jll.libgtk4_path::String), "..", "share"),
-         Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
-     ]), Sys.iswindows() ? ";" : ":")
+    @static if GObjects.libdir == ""
+        # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
+        ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
+            dirname(adwaita_icons_dir),
+            dirname(hicolor_icons_dir),
+            joinpath(dirname(GTK4_jll.libgtk4_path::String), "..", "share"),
+             Base.get(ENV, "XDG_DATA_DIRS", nothing)::Union{String,Nothing},
+            ]), Sys.iswindows() ? ";" : ":")
 
-    if !Sys.iswindows()
-        # Help GTK find modules for printing, media, and input backends
-        # May have consequences for GTK3 programs spawned by Julia
-        ENV["GTK_PATH"] = joinpath(dirname(GTK4_jll.libgtk4_path::String),"gtk-4.0")
+        if !Sys.iswindows()
+            # Help GTK find modules for printing, media, and input backends
+            # May have consequences for GTK3 programs spawned by Julia
+            ENV["GTK_PATH"] = joinpath(dirname(GTK4_jll.libgtk4_path::String),"gtk-4.0")
         
-        # Following also works for finding the printing backends (and also may affect GTK3 programs)
-        #ENV["GTK_EXE_PREFIX"] = GTK4_jll.artifact_dir
+            # Following also works for finding the printing backends (and also may affect GTK3 programs)
+            #ENV["GTK_EXE_PREFIX"] = GTK4_jll.artifact_dir
+        end
     end
 
     gtype_wrapper_cache_init()
     gboxed_cache_init()
 
-    if Sys.islinux() || Sys.isfreebsd()
-        # Needed by xkbcommon:
-        # https://xkbcommon.org/doc/current/group__include-path.html.  Related
-        # to issue https://github.com/JuliaGraphics/Gtk.jl/issues/469
-        ENV["XKB_CONFIG_ROOT"] = joinpath(Xorg_xkeyboard_config_jll.artifact_dir::String,
-                                          "share", "X11", "xkb")
+    @static if GObjects.libdir == ""
+        if Sys.islinux() || Sys.isfreebsd()
+            # Needed by xkbcommon:
+            # https://xkbcommon.org/doc/current/group__include-path.html.  Related
+            # to issue https://github.com/JuliaGraphics/Gtk.jl/issues/469
+            ENV["XKB_CONFIG_ROOT"] = joinpath(Xorg_xkeyboard_config_jll.artifact_dir::String,
+                                              "share", "X11", "xkb")
 
-        # Tell libglvnd where to find libEGL
-        d = @load_preference("EGL_vendorlib_dirs", "")
-        if d != ""
-            ENV["__EGL_VENDOR_LIBRARY_DIRS"] = d
+            # Tell libglvnd where to find libEGL
+            d = @load_preference("EGL_vendorlib_dirs", "")
+            if d != ""
+                ENV["__EGL_VENDOR_LIBRARY_DIRS"] = d
+            end
         end
     end
     
@@ -187,7 +195,7 @@ end
 
 isinitialized() = G_.is_initialized()
 
-include("precompile.jl")
-_precompile_()
+#include("precompile.jl")
+#_precompile_()
 
 end

@@ -2,10 +2,15 @@ module GdkPixbufLib
 
 using GObjects
 const GLib = GObjects
-using Glib_jll
-using gdk_pixbuf_jll
-using Librsvg_jll
-using JLLWrappers
+
+@static if GObjects.libdir == ""
+    using Glib_jll
+    using gdk_pixbuf_jll
+    using Librsvg_jll
+    using JLLWrappers
+else
+    const libgdkpixbuf = joinpath(GObjects.libdir, "libgdk_pixbuf-2.0.so")
+end
 using Scratch
 using ColorTypes
 import FixedPointNumbers: N0f8
@@ -25,12 +30,12 @@ eval(include("gen/gdkpixbuf_structs"))
 
 module G_
 
-using gdk_pixbuf_jll
-
 using GObjects
 const GLib = GObjects
+using GObjects: libglib, libgobject, libgio
 using ..GdkPixbufLib
-using ..GdkPixbufLib: Colorspace, InterpType, PixbufError, PixbufRotation
+using ..GdkPixbufLib: Colorspace, InterpType, PixbufError, PixbufRotation, libgdkpixbuf
+
 
 import Base: convert, copy
 
@@ -276,29 +281,32 @@ function __init__()
     gtype_wrapper_cache_init()
     gboxed_cache_init()
 
-    cache_dir = @get_scratch!("gdk-pixbuf-cache")
-    treehash_cache_path = joinpath(cache_dir, "gdk_pixbuf_treehash.cache")
-    loaders_cache_path = joinpath(cache_dir, "loaders.cache")
-    gdk_pixbuf_treehash = basename(gdk_pixbuf_jll.artifact_dir)
-    if !isfile(treehash_cache_path) || read(treehash_cache_path, String) != gdk_pixbuf_treehash
-        function query_pixbuf_loaders(dir::String;
-                                      extra_env::Vector{Pair{String,String}} = Pair{String,String}[])
-            gpql = gdk_pixbuf_query_loaders()
-            return readchomp(addenv(gpql, "GDK_PIXBUF_MODULEDIR" => dir, extra_env...))
-        end
+    @static if GObjects.libdir == ""
+        cache_dir = @get_scratch!("gdk-pixbuf-cache")
+        treehash_cache_path = joinpath(cache_dir, "gdk_pixbuf_treehash.cache")
+        loaders_cache_path = joinpath(cache_dir, "loaders.cache")
+    
+        gdk_pixbuf_treehash = basename(gdk_pixbuf_jll.artifact_dir)
+        if !isfile(treehash_cache_path) || read(treehash_cache_path, String) != gdk_pixbuf_treehash
+            function query_pixbuf_loaders(dir::String;
+                                          extra_env::Vector{Pair{String,String}} = Pair{String,String}[])
+                gpql = gdk_pixbuf_query_loaders()
+                return readchomp(addenv(gpql, "GDK_PIXBUF_MODULEDIR" => dir, extra_env...))
+            end
 
-        open(loaders_cache_path, write=true) do io
-            # Cache builtin gdx-pixbuf modules
-            write(io, query_pixbuf_loaders(gdk_pixbuf_loaders_dir))
-            println(io)
-
-            # If Librsvg_jll is available, cache that one too
-            if Librsvg_jll.is_available()
-                librsvg_module_dir = dirname(Librsvg_jll.libpixbufloader_svg)
-                write(io, query_pixbuf_loaders(librsvg_module_dir; extra_env = [
-                    JLLWrappers.LIBPATH_env=>Librsvg_jll.LIBPATH[],
-                ]))
+            open(loaders_cache_path, write=true) do io
+                # Cache builtin gdx-pixbuf modules
+                write(io, query_pixbuf_loaders(gdk_pixbuf_loaders_dir))
                 println(io)
+
+                # If Librsvg_jll is available, cache that one too
+                if Librsvg_jll.is_available()
+                    librsvg_module_dir = dirname(Librsvg_jll.libpixbufloader_svg)
+                    write(io, query_pixbuf_loaders(librsvg_module_dir; extra_env = [
+                        JLLWrappers.LIBPATH_env=>Librsvg_jll.LIBPATH[],
+                    ]))
+                    println(io)
+                end
             end
         end
 
@@ -306,10 +314,10 @@ function __init__()
         open(treehash_cache_path, write=true) do io
             write(io, gdk_pixbuf_treehash)
         end
-    end
 
-    # Point gdk to our cached loaders
-    ENV["GDK_PIXBUF_MODULE_FILE"] = loaders_cache_path
+        # Point gdk to our cached loaders
+        ENV["GDK_PIXBUF_MODULE_FILE"] = loaders_cache_path
+    end
 end
 
 end

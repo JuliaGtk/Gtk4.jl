@@ -14,13 +14,13 @@ import BitFlags: @bitflag, BitFlag
 
 using Libdl, Preferences
 
-d = @load_preference("libdir", "")
-@static if d == ""
+const libdir = @load_preference("libdir", "")
+@static if libdir == ""
     using Glib_jll
 else
-    const libglib = "/usr/lib64/libglib-2.0.so"
-    const libgobject = "/usr/lib64/libgobject-2.0.so"
-    const libgio = "/usr/lib64/libgio-2.0.so"
+    const libglib = joinpath(libdir,"libglib-2.0.so")
+    const libgobject = joinpath(libdir,"libgobject-2.0.so")
+    const libgio = joinpath(libdir,"libgio-2.0.so")
 end
 
 function set_libdir(libdir)
@@ -312,7 +312,7 @@ function __init__()
     atexit(() -> (exiting[] = true))
     __init__gtype__()
     __init__gmainloop__()
-    @info("$libglib")
+    #@info("$libglib")
     nothing
 end
 
