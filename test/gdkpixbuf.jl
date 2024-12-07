@@ -1,7 +1,7 @@
-using Test, Gtk4, Gtk4.GdkPixbufLib, Colors, TestImages
+using Test, Gtk4, Gtk4.GdkPixbufLib, Colors, FixedPointNumbers
 
 @testset "GdkTexture" begin
-    img = testimage("mountainstream")
+    img = rand(RGB{N0f8}, 512, 768)
     t = GdkMemoryTexture(img)
     @test size(t) == reverse(size(img)) # image is transposed
     p = GdkPaintable(t)
