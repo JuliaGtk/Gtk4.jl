@@ -1,5 +1,3 @@
-using gobject_introspection_jll
-ENV["GI_TYPELIB_PATH"]=gobject_introspection_jll.find_artifact_dir()*"/lib/girepository-1.0"
 using GI, EzXML
 
 printstyled("Generating constants for GLib, GObject, and Gio\n";bold=true)
@@ -27,13 +25,13 @@ const_exports = Expr(:export)
 const_skip = [:E,:LN2,:LN10,:LOG_2_BASE_10,:PI,:PI_2,:PI_4,:SQRT2]
 
 c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=const_skip; incl_typeinit=false)
-dglib = GI.read_gir(gobject_introspection_jll, ns)
+dglib = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 GI.append_const_docs!(const_mod.args, "glib", dglib, c)
-c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:ConnectFlags,:ParamFlags,:SignalFlags,:SignalMatchType,:TypeFlags,:TypeFundamentalFlags])
-d = GI.read_gir(gobject_introspection_jll, ns2)
+c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:IOCondition])
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns2)).gir")
 GI.append_const_docs!(const_mod.args, "gobject", d, c)
 c = GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
-d = GI.read_gir(gobject_introspection_jll, ns3)
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns3)).gir")
 GI.append_const_docs!(const_mod.args, "gio", d, c)
 push!(const_mod.args,const_exports)
 
@@ -62,9 +60,10 @@ struct_skiplist=vcat(disguised, special, [:Cond,:HashTableIter,:Hook,
     :RecMutex,:Scanner,
     :TestLogBuffer,:TestLogMsg,:Thread,:ThreadPool,:Tree,:UriParamsIter])
 
-constructor_skiplist=[:new,:new_take,:new_from_unix_utc,:new_now_utc,:new_utc,:new_maybe]
+callback_skiplist=[:LogWriterFunc]
+constructor_skiplist=[:new,:new_take,:new_from_unix_utc,:new_now_utc,:new_utc,:new_maybe,:new_from_unix_local_usec,:new_from_unix_utc_usec]
 
-GI.export_struct_exprs!(ns,path, "glib", struct_skiplist, import_as_opaque; doc_xml = dglib, constructor_skiplist = constructor_skiplist, output_object_cache_init = false, output_object_cache_define = false, output_boxed_types_def = false)
+GI.export_struct_exprs!(ns,path, "glib", struct_skiplist, import_as_opaque; doc_xml = dglib, constructor_skiplist = constructor_skiplist, output_object_cache_init = false, output_object_cache_define = false, output_boxed_types_def = false, callback_skiplist)
 
 ## struct methods
 
@@ -93,7 +92,23 @@ GI.write_to_file(path,"glib_methods",toplevel)
 toplevel, exprs, exports = GI.output_exprs()
 
 # many of these are skipped because they involve callbacks
-skiplist=[:convert,:atomic_rc_box_release_full,:child_watch_add,:datalist_foreach,:dataset_foreach,:io_add_watch,:io_create_watch,:log_set_handler,:log_set_writer_func,:rc_box_release_full,:spawn_async,:spawn_async_with_fds,:spawn_async_with_pipes,:spawn_async_with_pipes_and_fds,:spawn_sync,:test_add_data_func,:test_add_data_func_full,:test_add_func,:test_queue_destroy,:thread_self, :unix_fd_add_full,:unix_signal_add, :datalist_get_data, :datalist_get_flags, :datalist_id_get_data, :datalist_set_flags, :datalist_unset_flags,:hook_destroy,:hook_destroy_link,:hook_free,:hook_insert_before, :hook_prepend,:hook_unref,:poll, :sequence_get,:sequence_move,:sequence_move_range,:sequence_remove,:sequence_remove_range,:sequence_set,:sequence_swap,:shell_parse_argv,:source_remove_by_funcs_user_data,:test_run_suite, :assertion_message_error,:uri_parse_params, :pattern_match,:pattern_match_string,:log_structured_array,:log_writer_default,:log_writer_format_fields,:log_writer_journald,:log_writer_standard_streams,:parse_debug_string,:child_watch_source_new,:date_strftime,:idle_source_new,:main_current_source,:timeout_source_new,:timeout_source_new_seconds,:unix_fd_source_new,:unix_signal_source_new,:datalist_id_remove_multiple,:base64_encode_close,:base64_encode_step,:sequence_insert_before,:sequence_range_get_midpoint]
+skiplist=[:convert,:atomic_rc_box_release_full,:child_watch_add,:datalist_foreach,:dataset_foreach,
+          :io_add_watch,:io_create_watch,:log_set_handler,:log_set_writer_func,:rc_box_release_full,
+          :spawn_async,:spawn_async_with_fds,:spawn_async_with_pipes,:spawn_async_with_pipes_and_fds,
+          :spawn_sync,:test_add_data_func,:test_add_data_func_full,:test_add_func,:test_queue_destroy,
+          :thread_self, :unix_fd_add_full,:unix_signal_add, :datalist_get_data, :datalist_get_flags,
+          :datalist_id_get_data, :datalist_set_flags, :datalist_unset_flags,:hook_destroy,
+          :hook_destroy_link,:hook_free,:hook_insert_before, :hook_prepend,:hook_unref,:poll,
+          :sequence_get,:sequence_move,:sequence_move_range,:sequence_remove,:sequence_remove_range,
+          :sequence_set,:sequence_swap,:shell_parse_argv,:source_remove_by_funcs_user_data,
+          :test_run_suite,:assertion_message_error,:uri_parse_params, :pattern_match,
+          :pattern_match_string,:log_structured_array,:log_writer_default,:log_writer_format_fields,
+          :log_writer_journald,:log_writer_standard_streams,:parse_debug_string,:lstat,:stat,
+          :child_watch_source_new,:date_strftime,:idle_source_new,:main_current_source,
+          :timeout_source_new,:timeout_source_new_seconds,:unix_fd_source_new,
+          :unix_signal_source_new,:datalist_id_remove_multiple,:base64_encode_close,
+          :base64_encode_step,:sequence_insert_before,:sequence_range_get_midpoint,
+          :list_push_allocator,:node_push_allocator,:slist_push_allocator,:sequence_foreach_range,:sequence_sort_changed,:sequence_sort_changed_iter]
 
 GI.all_functions!(exprs,ns,skiplist=skiplist,symbol_skiplist=symbols_handled, liboverride=:libglib)
 

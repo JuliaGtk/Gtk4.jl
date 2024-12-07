@@ -7,7 +7,7 @@ Gtk4.value(sl, 3)
 push!(sl,π,:right,"pi")
 push!(sl,-3,:left)
 @test Gtk4.value(sl) == 3
-adj = GtkAdjustment(sl)
+adj = adjustment(sl)
 @test get_gtk_property(adj,:value,Float64) == 3
 set_gtk_property!(adj,:upper,11)
 empty!(sl)
@@ -28,7 +28,7 @@ destroy(w)
 
 adj = GtkAdjustment(5.0,0.0,10.0,1.0,5.0,5.0)
 sp2 = GtkSpinButton(adj, 1.0, 2)
-adj2 = GtkAdjustment(sp2)
+adj2 = adjustment(sp2)
 @test adj == adj2
 
 configure!(adj2; value = 2.0, lower = 1.0, upper = 20.0, step_increment = 2.0, page_increment = 10.0, page_size = 10.0)
@@ -107,7 +107,7 @@ end
 
 @testset "ScaleButton" begin
 sb = GtkScaleButton(0.0:1.0:10.0)
-adj = GtkAdjustment(sb)
+adj = adjustment(sb)
     
 end
 

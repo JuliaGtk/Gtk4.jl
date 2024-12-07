@@ -7,7 +7,7 @@ toplevel, exprs, exports = GI.output_exprs()
 path="../GObjects/src/gen"
 
 ns = GINamespace(:Gio,"2.0")
-d = GI.read_gir(gobject_introspection_jll, ns)
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 ## structs
 
@@ -19,7 +19,7 @@ struct_skiplist=vcat(disguised, [:ActionEntry,:DBusAnnotationInfo,:DBusArgInfo,:
 :XdpDocumentsSkeletonClass,:XdpOpenURIProxy,:XdpOpenURIProxyClass,:XdpOpenURISkeletonClass,
 :XdpProxyResolverProxy,:XdpProxyResolverProxyClass,:XdpProxyResolverSkeleton,:XdpProxyResolverSkeletonClass,:XdpTrashProxy,:XdpTrashProxyClass,:XdpTrashSkeleton,:XdpTrashSkeletonClass,:_FreedesktopDBusProxyClass,:_FreedesktopDBusSkeletonClass])
 
-obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus]
+obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus,:DBusInterfaceSkeleton,:DBusObjectSkeleton,:DBusObjectManagerServer]
 
 obj_constructor_skiplist = [:new_for_bus_sync,:new_sync,:new_with_fd_list,:new_for_address_finish,:new_for_bus_finish,:new_for_bus_finish,:new_from_filename,:new_loopback,:new_section,:new_with_default_fallbacks,:new_from_file_with_password]
 
@@ -29,9 +29,9 @@ struct_skiplist = GI.export_struct_exprs!(ns,path, "gio", struct_skiplist, impor
 
 object_method_skiplist=[:new_for_bus,:export,:add_option_group,:make_pollfd,:get_info,
 :new_for_bus_sync,:new_sync,:writev,:writev_all,:flatten_tree,:changed_tree,:receive_messages,:send_message,:send_message_with_timeout,:send_messages,
-:get_channel_binding_data,:lookup_certificates_issued_by,:get_default,:get_unix_fd_list,:set_unix_fd_list,:get_attribute_file_path,:set_attribute_file_path,:get_timeout,:set_timeout]
+:get_channel_binding_data,:lookup_certificates_issued_by,:get_default,:get_unix_fd_list,:set_unix_fd_list,:get_attribute_file_path,:set_attribute_file_path]
 
-object_skiplist=vcat(obj_skiplist,[:AppInfoMonitor,:DBusConnection,:DBusMenuModel,:DBusProxy,:DBusMethodInvocation,:IOModule,:SimpleProxyResolver,:UnixMountMonitor,:Task])
+object_skiplist=vcat(obj_skiplist,[:AppInfoMonitor,:DBusConnection,:DBusMenuModel,:DBusProxy,:DBusMethodInvocation,:IOModule,:SimpleProxyResolver,:UnixMountMonitor])
 
 interface_method_skiplist=[:add_action_entries,:get_info,:receive_messages,:send_messages,
 :writev_nonblocking,:dup_default,:remove_action_entries,:new_build_filenamev]

@@ -8,9 +8,18 @@ $(Expr(:toplevel, quote
         mutable struct GDBusErrorEntry
             handle::Ptr{_GDBusErrorEntry}
         end
-        unsafe_convert(::Type{Ptr{_GDBusErrorEntry}}, box::GDBusErrorEntry) = begin
-                convert(Ptr{_GDBusErrorEntry}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GDBusErrorEntry}}, box::GDBusErrorEntry) = begin
+                    convert(Ptr{_GDBusErrorEntry}, box.handle)
+                end
+            convert(::Type{GDBusErrorEntry}, p::Ptr{_GDBusErrorEntry}, owns = false) = begin
+                    GDBusErrorEntry(p, owns)
+                end
+            const GDBusErrorEntryLike = Union{Ref{_GDBusErrorEntry}, GDBusErrorEntry}
+            convert(::Type{GDBusErrorEntryLike}, p, owns) = begin
+                    convert(GDBusErrorEntry, p, owns)
+                end
+        end
     end
     begin
         struct _GFileAttributeInfo
@@ -21,9 +30,18 @@ $(Expr(:toplevel, quote
         mutable struct GFileAttributeInfo
             handle::Ptr{_GFileAttributeInfo}
         end
-        unsafe_convert(::Type{Ptr{_GFileAttributeInfo}}, box::GFileAttributeInfo) = begin
-                convert(Ptr{_GFileAttributeInfo}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GFileAttributeInfo}}, box::GFileAttributeInfo) = begin
+                    convert(Ptr{_GFileAttributeInfo}, box.handle)
+                end
+            convert(::Type{GFileAttributeInfo}, p::Ptr{_GFileAttributeInfo}, owns = false) = begin
+                    GFileAttributeInfo(p, owns)
+                end
+            const GFileAttributeInfoLike = Union{Ref{_GFileAttributeInfo}, GFileAttributeInfo}
+            convert(::Type{GFileAttributeInfoLike}, p, owns) = begin
+                    convert(GFileAttributeInfo, p, owns)
+                end
+        end
     end
     begin
         struct _GFileAttributeInfoList
@@ -36,7 +54,7 @@ $(Expr(:toplevel, quote
                 (GLib.g_type(::Type{T}) where T <: GFileAttributeInfoList) = begin
                         ccall(("g_file_attribute_info_list_get_type", libgio), GType, ())
                     end
-                function GFileAttributeInfoList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                function GFileAttributeInfoList(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GFileAttributeInfoList}
                     x = new(ref)
                     if own
                         finalizer(x) do x
@@ -48,27 +66,39 @@ $(Expr(:toplevel, quote
                 push!(gboxed_types, GFileAttributeInfoList)
             end
         end
-        unsafe_convert(::Type{Ptr{_GFileAttributeInfoList}}, box::GFileAttributeInfoList) = begin
-                convert(Ptr{_GFileAttributeInfoList}, box.handle)
-            end
-    end
-    mutable struct GFileAttributeMatcher <: GBoxed
-        handle::Ptr{GFileAttributeMatcher}
         begin
-            (GLib.g_type(::Type{T}) where T <: GFileAttributeMatcher) = begin
-                    ccall(("g_file_attribute_matcher_get_type", libgio), GType, ())
+            unsafe_convert(::Type{Ptr{_GFileAttributeInfoList}}, box::GFileAttributeInfoList) = begin
+                    convert(Ptr{_GFileAttributeInfoList}, box.handle)
                 end
-            function GFileAttributeMatcher(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
-                    end
+            convert(::Type{GFileAttributeInfoList}, p::Ptr{_GFileAttributeInfoList}, owns = false) = begin
+                    GFileAttributeInfoList(p, owns)
                 end
-                x
-            end
-            push!(gboxed_types, GFileAttributeMatcher)
+            const GFileAttributeInfoListLike = Union{Ref{_GFileAttributeInfoList}, GFileAttributeInfoList}
+            convert(::Type{GFileAttributeInfoListLike}, p, owns) = begin
+                    convert(GFileAttributeInfoList, p, owns)
+                end
         end
+    end
+    begin
+        mutable struct GFileAttributeMatcher <: GBoxed
+            handle::Ptr{GFileAttributeMatcher}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GFileAttributeMatcher) = begin
+                        ccall(("g_file_attribute_matcher_get_type", libgio), GType, ())
+                    end
+                function GFileAttributeMatcher(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GFileAttributeMatcher)
+            end
+        end
+        const GFileAttributeMatcherLike = GFileAttributeMatcher
     end
     begin
         struct _GInputVector
@@ -78,9 +108,18 @@ $(Expr(:toplevel, quote
         mutable struct GInputVector
             handle::Ptr{_GInputVector}
         end
-        unsafe_convert(::Type{Ptr{_GInputVector}}, box::GInputVector) = begin
-                convert(Ptr{_GInputVector}, box.handle)
-            end
+        begin
+            unsafe_convert(::Type{Ptr{_GInputVector}}, box::GInputVector) = begin
+                    convert(Ptr{_GInputVector}, box.handle)
+                end
+            convert(::Type{GInputVector}, p::Ptr{_GInputVector}, owns = false) = begin
+                    GInputVector(p, owns)
+                end
+            const GInputVectorLike = Union{Ref{_GInputVector}, GInputVector}
+            convert(::Type{GInputVectorLike}, p, owns) = begin
+                    convert(GInputVector, p, owns)
+                end
+        end
     end
     begin
         struct _GOutputVector
@@ -90,233 +129,123 @@ $(Expr(:toplevel, quote
         mutable struct GOutputVector
             handle::Ptr{_GOutputVector}
         end
-        unsafe_convert(::Type{Ptr{_GOutputVector}}, box::GOutputVector) = begin
-                convert(Ptr{_GOutputVector}, box.handle)
-            end
-    end
-    mutable struct GResource <: GBoxed
-        handle::Ptr{GResource}
         begin
-            (GLib.g_type(::Type{T}) where T <: GResource) = begin
-                    ccall(("g_resource_get_type", libgio), GType, ())
+            unsafe_convert(::Type{Ptr{_GOutputVector}}, box::GOutputVector) = begin
+                    convert(Ptr{_GOutputVector}, box.handle)
                 end
-            function GResource(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+            convert(::Type{GOutputVector}, p::Ptr{_GOutputVector}, owns = false) = begin
+                    GOutputVector(p, owns)
+                end
+            const GOutputVectorLike = Union{Ref{_GOutputVector}, GOutputVector}
+            convert(::Type{GOutputVectorLike}, p, owns) = begin
+                    convert(GOutputVector, p, owns)
+                end
+        end
+    end
+    begin
+        mutable struct GResource <: GBoxed
+            handle::Ptr{GResource}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GResource) = begin
+                        ccall(("g_resource_get_type", libgio), GType, ())
                     end
-                end
-                x
-            end
-            push!(gboxed_types, GResource)
-        end
-    end
-    mutable struct GSettingsSchema <: GBoxed
-        handle::Ptr{GSettingsSchema}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GSettingsSchema) = begin
-                    ccall(("g_settings_schema_get_type", libgio), GType, ())
-                end
-            function GSettingsSchema(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+                function GResource(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
                     end
+                    x
                 end
-                x
+                push!(gboxed_types, GResource)
             end
-            push!(gboxed_types, GSettingsSchema)
         end
+        const GResourceLike = GResource
     end
-    mutable struct GSettingsSchemaKey <: GBoxed
-        handle::Ptr{GSettingsSchemaKey}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GSettingsSchemaKey) = begin
-                    ccall(("g_settings_schema_key_get_type", libgio), GType, ())
-                end
-            function GSettingsSchemaKey(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GSettingsSchema <: GBoxed
+            handle::Ptr{GSettingsSchema}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GSettingsSchema) = begin
+                        ccall(("g_settings_schema_get_type", libgio), GType, ())
                     end
-                end
-                x
-            end
-            push!(gboxed_types, GSettingsSchemaKey)
-        end
-    end
-    mutable struct GSettingsSchemaSource <: GBoxed
-        handle::Ptr{GSettingsSchemaSource}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GSettingsSchemaSource) = begin
-                    ccall(("g_settings_schema_source_get_type", libgio), GType, ())
-                end
-            function GSettingsSchemaSource(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+                function GSettingsSchema(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
                     end
+                    x
                 end
-                x
+                push!(gboxed_types, GSettingsSchema)
             end
-            push!(gboxed_types, GSettingsSchemaSource)
         end
+        const GSettingsSchemaLike = GSettingsSchema
     end
-    mutable struct GSrvTarget <: GBoxed
-        handle::Ptr{GSrvTarget}
-        begin
-            (GLib.g_type(::Type{T}) where T <: GSrvTarget) = begin
-                    ccall(("g_srv_target_get_type", libgio), GType, ())
-                end
-            function GSrvTarget(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                x = new(ref)
-                if own
-                    finalizer(x) do x
-                        GLib.delboxed(x)
+    begin
+        mutable struct GSettingsSchemaKey <: GBoxed
+            handle::Ptr{GSettingsSchemaKey}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GSettingsSchemaKey) = begin
+                        ccall(("g_settings_schema_key_get_type", libgio), GType, ())
                     end
+                function GSettingsSchemaKey(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
                 end
-                x
+                push!(gboxed_types, GSettingsSchemaKey)
             end
-            push!(gboxed_types, GSrvTarget)
         end
+        const GSettingsSchemaKeyLike = GSettingsSchemaKey
     end
     begin
-        struct _GXdpDocumentsIface
-            parent_iface::_GTypeInterface
-            handle_add::Ptr{Cvoid}
-            handle_add_full::Ptr{Cvoid}
-            handle_add_named::Ptr{Cvoid}
-            handle_add_named_full::Ptr{Cvoid}
-            handle_delete::Ptr{Cvoid}
-            handle_get_mount_point::Ptr{Cvoid}
-            handle_grant_permissions::Ptr{Cvoid}
-            handle_info::Ptr{Cvoid}
-            handle_list::Ptr{Cvoid}
-            handle_lookup::Ptr{Cvoid}
-            handle_revoke_permissions::Ptr{Cvoid}
-            get_version::Ptr{Cvoid}
-        end
-        mutable struct GXdpDocumentsIface
-            handle::Ptr{_GXdpDocumentsIface}
-        end
-        unsafe_convert(::Type{Ptr{_GXdpDocumentsIface}}, box::GXdpDocumentsIface) = begin
-                convert(Ptr{_GXdpDocumentsIface}, box.handle)
+        mutable struct GSettingsSchemaSource <: GBoxed
+            handle::Ptr{GSettingsSchemaSource}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GSettingsSchemaSource) = begin
+                        ccall(("g_settings_schema_source_get_type", libgio), GType, ())
+                    end
+                function GSettingsSchemaSource(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GSettingsSchemaSource)
             end
+        end
+        const GSettingsSchemaSourceLike = GSettingsSchemaSource
     end
     begin
-        struct _GXdpOpenURIIface
-            parent_iface::_GTypeInterface
-            handle_open_directory::Ptr{Cvoid}
-            handle_open_file::Ptr{Cvoid}
-            handle_open_uri::Ptr{Cvoid}
-            get_version::Ptr{Cvoid}
-        end
-        mutable struct GXdpOpenURIIface
-            handle::Ptr{_GXdpOpenURIIface}
-        end
-        unsafe_convert(::Type{Ptr{_GXdpOpenURIIface}}, box::GXdpOpenURIIface) = begin
-                convert(Ptr{_GXdpOpenURIIface}, box.handle)
+        mutable struct GSrvTarget <: GBoxed
+            handle::Ptr{GSrvTarget}
+            begin
+                (GLib.g_type(::Type{T}) where T <: GSrvTarget) = begin
+                        ccall(("g_srv_target_get_type", libgio), GType, ())
+                    end
+                function GSrvTarget(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, GSrvTarget)
             end
-    end
-    begin
-        struct _GXdpProxyResolverIface
-            parent_iface::_GTypeInterface
-            handle_lookup::Ptr{Cvoid}
-            get_version::Ptr{Cvoid}
         end
-        mutable struct GXdpProxyResolverIface
-            handle::Ptr{_GXdpProxyResolverIface}
-        end
-        unsafe_convert(::Type{Ptr{_GXdpProxyResolverIface}}, box::GXdpProxyResolverIface) = begin
-                convert(Ptr{_GXdpProxyResolverIface}, box.handle)
-            end
-    end
-    begin
-        struct _GXdpTrashIface
-            parent_iface::_GTypeInterface
-            handle_trash_file::Ptr{Cvoid}
-            get_version::Ptr{Cvoid}
-        end
-        mutable struct GXdpTrashIface
-            handle::Ptr{_GXdpTrashIface}
-        end
-        unsafe_convert(::Type{Ptr{_GXdpTrashIface}}, box::GXdpTrashIface) = begin
-                convert(Ptr{_GXdpTrashIface}, box.handle)
-            end
-    end
-    begin
-        struct _G_FreedesktopDBusIface
-            parent_iface::_GTypeInterface
-            handle_add_match::Ptr{Nothing}
-            handle_get_connection_selinux_security_context::Ptr{Nothing}
-            handle_get_connection_unix_process_id::Ptr{Nothing}
-            handle_get_connection_unix_user::Ptr{Nothing}
-            handle_get_id::Ptr{Nothing}
-            handle_get_name_owner::Ptr{Nothing}
-            handle_hello::Ptr{Nothing}
-            handle_list_activatable_names::Ptr{Nothing}
-            handle_list_names::Ptr{Nothing}
-            handle_list_queued_owners::Ptr{Nothing}
-            handle_name_has_owner::Ptr{Nothing}
-            handle_release_name::Ptr{Nothing}
-            handle_reload_config::Ptr{Nothing}
-            handle_remove_match::Ptr{Nothing}
-            handle_request_name::Ptr{Nothing}
-            handle_start_service_by_name::Ptr{Nothing}
-            handle_update_activation_environment::Ptr{Nothing}
-            name_acquired::Ptr{Nothing}
-            name_lost::Ptr{Nothing}
-            name_owner_changed::Ptr{Nothing}
-        end
-        mutable struct G_FreedesktopDBusIface
-            handle::Ptr{_G_FreedesktopDBusIface}
-        end
-        unsafe_convert(::Type{Ptr{_G_FreedesktopDBusIface}}, box::G_FreedesktopDBusIface) = begin
-                convert(Ptr{_G_FreedesktopDBusIface}, box.handle)
-            end
-    end
-    begin
-        struct _G_FreedesktopDBusProxy
-            parent_instance::Ptr{GObject}
-            priv::Ptr{Nothing}
-        end
-        mutable struct G_FreedesktopDBusProxy
-            handle::Ptr{_G_FreedesktopDBusProxy}
-        end
-        unsafe_convert(::Type{Ptr{_G_FreedesktopDBusProxy}}, box::G_FreedesktopDBusProxy) = begin
-                convert(Ptr{_G_FreedesktopDBusProxy}, box.handle)
-            end
-    end
-    begin
-        struct _G_FreedesktopDBusSkeleton
-            parent_instance::Ptr{GObject}
-            priv::Ptr{Nothing}
-        end
-        mutable struct G_FreedesktopDBusSkeleton
-            handle::Ptr{_G_FreedesktopDBusSkeleton}
-        end
-        unsafe_convert(::Type{Ptr{_G_FreedesktopDBusSkeleton}}, box::G_FreedesktopDBusSkeleton) = begin
-                convert(Ptr{_G_FreedesktopDBusSkeleton}, box.handle)
-            end
-    end
-    function GFileAttributeInfoList()
-        G_.FileAttributeInfoList_new()
-    end
-    function GFileAttributeMatcher(_attributes::Union{AbstractString, Symbol})
-        G_.FileAttributeMatcher_new(_attributes)
-    end
-    function GResource(_data::GBytes)
-        G_.Resource_new_from_data(_data)
-    end
-    function GSettingsSchemaSource(_directory::Union{AbstractString, Symbol}, _parent::Maybe(GSettingsSchemaSource), _trusted::Bool)
-        G_.SettingsSchemaSource_new_from_directory(_directory, _parent, _trusted)
-    end
-    function GSrvTarget(_hostname::Union{AbstractString, Symbol}, _port::Integer, _priority::Integer, _weight::Integer)
-        G_.SrvTarget_new(_hostname, _port, _priority, _weight)
+        const GSrvTargetLike = GSrvTarget
     end
     @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.DBusErrorEntry.html)." GDBusErrorEntry
     @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.FileAttributeInfo.html)." GFileAttributeInfo
@@ -329,279 +258,44 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.SettingsSchemaKey.html)." GSettingsSchemaKey
     @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.SettingsSchemaSource.html)." GSettingsSchemaSource
     @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.SrvTarget.html)." GSrvTarget
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.XdpDocumentsIface.html)." GXdpDocumentsIface
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.XdpOpenURIIface.html)." GXdpOpenURIIface
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.XdpProxyResolverIface.html)." GXdpProxyResolverIface
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/struct.XdpTrashIface.html)." GXdpTrashIface
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/struct._FreedesktopDBusIface.html)." G_FreedesktopDBusIface
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/struct._FreedesktopDBusProxy.html)." G_FreedesktopDBusProxy
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/struct._FreedesktopDBusSkeleton.html)." G_FreedesktopDBusSkeleton
-    struct GAction <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GAction(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GActionGroup <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GActionGroup(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GActionMap <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GActionMap(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GAppInfo <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GAppInfo(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GAsyncInitable <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GAsyncInitable(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GAsyncResult <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GAsyncResult(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GConverter <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GConverter(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDBusInterface <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDBusInterface(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDBusObject <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDBusObject(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDBusObjectManager <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDBusObjectManager(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDatagramBased <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDatagramBased(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDebugController <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDebugController(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDrive <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDrive(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDtlsClientConnection <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDtlsClientConnection(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDtlsConnection <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDtlsConnection(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GDtlsServerConnection <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GDtlsServerConnection(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GFile <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GFile(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GFileDescriptorBased <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GFileDescriptorBased(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GIcon <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GIcon(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GInitable <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GInitable(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GListModel <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GListModel(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GLoadableIcon <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GLoadableIcon(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GMemoryMonitor <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GMemoryMonitor(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GMount <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GMount(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GNetworkMonitor <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GNetworkMonitor(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GPollableInputStream <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GPollableInputStream(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GPollableOutputStream <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GPollableOutputStream(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GPowerProfileMonitor <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GPowerProfileMonitor(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GProxy <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GProxy(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GProxyResolver <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GProxyResolver(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GRemoteActionGroup <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GRemoteActionGroup(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GSeekable <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GSeekable(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GSocketConnectable <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GSocketConnectable(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GTlsBackend <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GTlsBackend(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GTlsClientConnection <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GTlsClientConnection(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GTlsFileDatabase <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GTlsFileDatabase(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GTlsServerConnection <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GTlsServerConnection(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GVolume <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GVolume(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
+    GLib.@Giface GAction libgio g_action_get_type
+    GLib.@Giface GActionGroup libgio g_action_group_get_type
+    GLib.@Giface GActionMap libgio g_action_map_get_type
+    GLib.@Giface GAppInfo libgio g_app_info_get_type
+    GLib.@Giface GAsyncInitable libgio g_async_initable_get_type
+    GLib.@Giface GAsyncResult libgio g_async_result_get_type
+    GLib.@Giface GConverter libgio g_converter_get_type
+    GLib.@Giface GDBusInterface libgio g_dbus_interface_get_type
+    GLib.@Giface GDBusObject libgio g_dbus_object_get_type
+    GLib.@Giface GDBusObjectManager libgio g_dbus_object_manager_get_type
+    GLib.@Giface GDatagramBased libgio g_datagram_based_get_type
+    GLib.@Giface GDebugController libgio g_debug_controller_get_type
+    GLib.@Giface GDrive libgio g_drive_get_type
+    GLib.@Giface GDtlsClientConnection libgio g_dtls_client_connection_get_type
+    GLib.@Giface GDtlsConnection libgio g_dtls_connection_get_type
+    GLib.@Giface GDtlsServerConnection libgio g_dtls_server_connection_get_type
+    GLib.@Giface GFile libgio g_file_get_type
+    GLib.@Giface GFileDescriptorBased libgio g_file_descriptor_based_get_type
+    GLib.@Giface GIcon libgio g_icon_get_type
+    GLib.@Giface GInitable libgio g_initable_get_type
+    GLib.@Giface GListModel libgio g_list_model_get_type
+    GLib.@Giface GLoadableIcon libgio g_loadable_icon_get_type
+    GLib.@Giface GMemoryMonitor libgio g_memory_monitor_get_type
+    GLib.@Giface GMount libgio g_mount_get_type
+    GLib.@Giface GNetworkMonitor libgio g_network_monitor_get_type
+    GLib.@Giface GPollableInputStream libgio g_pollable_input_stream_get_type
+    GLib.@Giface GPollableOutputStream libgio g_pollable_output_stream_get_type
+    GLib.@Giface GPowerProfileMonitor libgio g_power_profile_monitor_get_type
+    GLib.@Giface GProxy libgio g_proxy_get_type
+    GLib.@Giface GProxyResolver libgio g_proxy_resolver_get_type
+    GLib.@Giface GRemoteActionGroup libgio g_remote_action_group_get_type
+    GLib.@Giface GSeekable libgio g_seekable_get_type
+    GLib.@Giface GSocketConnectable libgio g_socket_connectable_get_type
+    GLib.@Giface GTlsBackend libgio g_tls_backend_get_type
+    GLib.@Giface GTlsClientConnection libgio g_tls_client_connection_get_type
+    GLib.@Giface GTlsFileDatabase libgio g_tls_file_database_get_type
+    GLib.@Giface GTlsServerConnection libgio g_tls_server_connection_get_type
+    GLib.@Giface GVolume libgio g_volume_get_type
     begin
         abstract type GAppInfoMonitor <: GObject end
         mutable struct GAppInfoMonitorLeaf <: GAppInfoMonitor
@@ -1077,36 +771,6 @@ $(Expr(:toplevel, quote
         end
     end
     begin
-        abstract type GDBusInterfaceSkeleton <: GObject end
-        mutable struct GDBusInterfaceSkeletonLeaf <: GDBusInterfaceSkeleton
-            handle::Ptr{GObject}
-            function GDBusInterfaceSkeletonLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GDBusInterfaceSkeletonLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GDBusInterfaceSkeleton] = GDBusInterfaceSkeletonLeaf
-        (GLib.g_type(::Type{T}) where T <: GDBusInterfaceSkeleton) = begin
-                ccall(("g_dbus_interface_skeleton_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GDBusInterfaceSkeleton})
-            vcat([:g_authorize_method], signalnames(supertype(GDBusInterfaceSkeleton)))
-        end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :g_authorize_method => (:Cint, Expr[:(Ptr{GObject})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GDBusInterfaceSkeleton
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GDBusInterfaceSkeleton
-                Tuple(eval.((d[name])[2]))
-            end
-        end
-    end
-    begin
         abstract type GMenuModel <: GObject end
         mutable struct GMenuModelLeaf <: GMenuModel
             handle::Ptr{GObject}
@@ -1233,36 +897,6 @@ $(Expr(:toplevel, quote
         end
     end
     begin
-        abstract type GDBusObjectManagerServer <: GObject end
-        mutable struct GDBusObjectManagerServerLeaf <: GDBusObjectManagerServer
-            handle::Ptr{GObject}
-            function GDBusObjectManagerServerLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GDBusObjectManagerServerLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GDBusObjectManagerServer] = GDBusObjectManagerServerLeaf
-        (GLib.g_type(::Type{T}) where T <: GDBusObjectManagerServer) = begin
-                ccall(("g_dbus_object_manager_server_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GDBusObjectManagerServer})
-            vcat([:interface_added, :interface_removed, :object_added, :object_removed], signalnames(supertype(GDBusObjectManagerServer)))
-        end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GDBusObjectManagerServer
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GDBusObjectManagerServer
-                Tuple(eval.((d[name])[2]))
-            end
-        end
-    end
-    begin
         abstract type GDBusObjectProxy <: GObject end
         mutable struct GDBusObjectProxyLeaf <: GDBusObjectProxy
             handle::Ptr{GObject}
@@ -1288,36 +922,6 @@ $(Expr(:toplevel, quote
                 eval((d[name])[1])
             end
             function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GDBusObjectProxy
-                Tuple(eval.((d[name])[2]))
-            end
-        end
-    end
-    begin
-        abstract type GDBusObjectSkeleton <: GObject end
-        mutable struct GDBusObjectSkeletonLeaf <: GDBusObjectSkeleton
-            handle::Ptr{GObject}
-            function GDBusObjectSkeletonLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GDBusObjectSkeletonLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GDBusObjectSkeleton] = GDBusObjectSkeletonLeaf
-        (GLib.g_type(::Type{T}) where T <: GDBusObjectSkeleton) = begin
-                ccall(("g_dbus_object_skeleton_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GDBusObjectSkeleton})
-            vcat([:authorize_method, :interface_added, :interface_removed], signalnames(supertype(GDBusObjectSkeleton)))
-        end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :authorize_method => (:Cint, Expr[:(Ptr{GObject}), :(Ptr{GObject})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GDBusObjectSkeleton
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GDBusObjectSkeleton
                 Tuple(eval.((d[name])[2]))
             end
         end
@@ -3170,18 +2774,8 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function GDBusObjectManagerServer(_object_path::Union{AbstractString, Symbol}; kwargs...)
-        obj = G_.DBusObjectManagerServer_new(_object_path)
-        GLib.setproperties!(obj; kwargs...)
-        obj
-    end
     function GDBusObjectProxy(_connection::GDBusConnection, _object_path::Union{AbstractString, Symbol}; kwargs...)
         obj = G_.DBusObjectProxy_new(_connection, _object_path)
-        GLib.setproperties!(obj; kwargs...)
-        obj
-    end
-    function GDBusObjectSkeleton(_object_path::Union{AbstractString, Symbol}; kwargs...)
-        obj = G_.DBusObjectSkeleton_new(_object_path)
         GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -3502,6 +3096,21 @@ $(Expr(:toplevel, quote
         GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GFileAttributeInfoList()
+        G_.FileAttributeInfoList_new()
+    end
+    function GFileAttributeMatcher(_attributes::Union{AbstractString, Symbol})
+        G_.FileAttributeMatcher_new(_attributes)
+    end
+    function GResource(_data::GBytes)
+        G_.Resource_new_from_data(_data)
+    end
+    function GSettingsSchemaSource(_directory::Union{AbstractString, Symbol}, _parent::Maybe(GSettingsSchemaSource), _trusted::Bool)
+        G_.SettingsSchemaSource_new_from_directory(_directory, _parent, _trusted)
+    end
+    function GSrvTarget(_hostname::Union{AbstractString, Symbol}, _port::Integer, _priority::Integer, _weight::Integer)
+        G_.SrvTarget_new(_hostname, _port, _priority, _weight)
+    end
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.AppInfoMonitor.html)." GAppInfoMonitor
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.AppLaunchContext.html)." GAppLaunchContext
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.Application.html)." GApplication
@@ -3517,14 +3126,11 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusActionGroup.html)." GDBusActionGroup
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusAuthObserver.html)." GDBusAuthObserver
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusConnection.html)." GDBusConnection
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusInterfaceSkeleton.html)." GDBusInterfaceSkeleton
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusMenuModel.html)." GDBusMenuModel
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusMessage.html)." GDBusMessage
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusMethodInvocation.html)." GDBusMethodInvocation
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusObjectManagerClient.html)." GDBusObjectManagerClient
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusObjectManagerServer.html)." GDBusObjectManagerServer
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusObjectProxy.html)." GDBusObjectProxy
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusObjectSkeleton.html)." GDBusObjectSkeleton
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusProxy.html)." GDBusProxy
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusServer.html)." GDBusServer
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DataInputStream.html)." GDataInputStream
@@ -3672,9 +3278,6 @@ $(Expr(:toplevel, quote
     function on_closed(f, object::GDBusConnection, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "closed", Nothing, (Cint, Ptr{GError}), after, user_data)
     end
-    function on_g_authorize_method(f, object::GDBusInterfaceSkeleton, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "g-authorize-method", Cint, (Ptr{GObject},), after, user_data)
-    end
     function on_interface_proxy_properties_changed(f, object::GDBusObjectManagerClient, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "interface-proxy-properties-changed", Nothing, (Ptr{GObject}, Ptr{GObject}, GVariant, Ptr{Cstring}), after, user_data)
     end
@@ -3693,31 +3296,10 @@ $(Expr(:toplevel, quote
     function on_object_removed(f, object::GDBusObjectManagerClient, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "object-removed", Nothing, (Ptr{GObject},), after, user_data)
     end
-    function on_interface_added(f, object::GDBusObjectManagerServer, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "interface-added", Nothing, (Ptr{GObject}, Ptr{GObject}), after, user_data)
-    end
-    function on_interface_removed(f, object::GDBusObjectManagerServer, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "interface-removed", Nothing, (Ptr{GObject}, Ptr{GObject}), after, user_data)
-    end
-    function on_object_added(f, object::GDBusObjectManagerServer, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "object-added", Nothing, (Ptr{GObject},), after, user_data)
-    end
-    function on_object_removed(f, object::GDBusObjectManagerServer, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "object-removed", Nothing, (Ptr{GObject},), after, user_data)
-    end
     function on_interface_added(f, object::GDBusObjectProxy, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "interface-added", Nothing, (Ptr{GObject},), after, user_data)
     end
     function on_interface_removed(f, object::GDBusObjectProxy, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "interface-removed", Nothing, (Ptr{GObject},), after, user_data)
-    end
-    function on_authorize_method(f, object::GDBusObjectSkeleton, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "authorize-method", Cint, (Ptr{GObject}, Ptr{GObject}), after, user_data)
-    end
-    function on_interface_added(f, object::GDBusObjectSkeleton, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "interface-added", Nothing, (Ptr{GObject},), after, user_data)
-    end
-    function on_interface_removed(f, object::GDBusObjectSkeleton, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "interface-removed", Nothing, (Ptr{GObject},), after, user_data)
     end
     function on_g_properties_changed(f, object::GDBusProxy, user_data = object, after = false)
@@ -4022,13 +3604,6 @@ $(Expr(:toplevel, quote
         ret = f(file_contents, file_size)
         convert(Cint, ret)
     end
-    function GIOSchedulerJobFunc(job, cancellable, data)
-        job = convert(GIOSchedulerJob, job)
-        cancellable = convert_if_not_null(GCancellable, cancellable, false)
-        f = data
-        ret = f(job, cancellable)
-        convert(Cint, ret)
-    end
     function GPollableSourceFunc(pollable_stream, data)
         pollable_stream = convert(GObject, pollable_stream, false)
         f = data
@@ -4036,14 +3611,14 @@ $(Expr(:toplevel, quote
         convert(Cint, ret)
     end
     function GSettingsBindGetMapping(value, variant, user_data)
-        value = convert(Union{GValue, Ref{_GValue}}, value, false)
+        value = convert(GValueLike, value, false)
         variant = convert(GVariant, variant)
         f = user_data
         ret = f(value, variant)
         convert(Cint, ret)
     end
     function GSettingsBindSetMapping(value, expected_type, user_data)
-        value = convert(Union{GValue, Ref{_GValue}}, value, false)
+        value = convert(GValueLike, value, false)
         expected_type = convert(GVariantType, expected_type, false)
         f = user_data
         ret = f(value, expected_type)
@@ -4076,6 +3651,6 @@ $(Expr(:toplevel, quote
             convert(Ptr{GObject}, GLib.get_pointer(ret))
         end
     end
-    export GDBusErrorEntry, _GDBusErrorEntry, GFileAttributeInfo, _GFileAttributeInfo, GFileAttributeInfoList, _GFileAttributeInfoList, GFileAttributeMatcher, GInputVector, _GInputVector, GOutputVector, _GOutputVector, GResource, GSettingsSchema, GSettingsSchemaKey, GSettingsSchemaSource, GSrvTarget, GXdpDocumentsIface, _GXdpDocumentsIface, GXdpOpenURIIface, _GXdpOpenURIIface, GXdpProxyResolverIface, _GXdpProxyResolverIface, GXdpTrashIface, _GXdpTrashIface, G_FreedesktopDBusIface, _G_FreedesktopDBusIface, G_FreedesktopDBusProxy, _G_FreedesktopDBusProxy, G_FreedesktopDBusSkeleton, _G_FreedesktopDBusSkeleton, GAction, GActionGroup, GActionMap, GAppInfo, GAsyncInitable, GAsyncResult, GConverter, GDBusInterface, GDBusObject, GDBusObjectManager, GDatagramBased, GDebugController, GDrive, GDtlsClientConnection, GDtlsConnection, GDtlsServerConnection, GFile, GFileDescriptorBased, GIcon, GInitable, GListModel, GLoadableIcon, GMemoryMonitor, GMount, GNetworkMonitor, GPollableInputStream, GPollableOutputStream, GPowerProfileMonitor, GProxy, GProxyResolver, GRemoteActionGroup, GSeekable, GSocketConnectable, GTlsBackend, GTlsClientConnection, GTlsFileDatabase, GTlsServerConnection, GVolume, GAppInfoMonitor, GAppInfoMonitorLeaf, GAppLaunchContext, GAppLaunchContextLeaf, GApplication, GApplicationLeaf, GApplicationCommandLine, GApplicationCommandLineLeaf, GBufferedInputStream, GBufferedInputStreamLeaf, GBufferedOutputStream, GBufferedOutputStreamLeaf, GBytesIcon, GBytesIconLeaf, GCancellable, GCancellableLeaf, GCharsetConverter, GCharsetConverterLeaf, GConverterInputStream, GConverterInputStreamLeaf, GConverterOutputStream, GConverterOutputStreamLeaf, GCredentials, GCredentialsLeaf, GDBusActionGroup, GDBusActionGroupLeaf, GDBusAuthObserver, GDBusAuthObserverLeaf, GDBusConnection, GDBusConnectionLeaf, GDBusInterfaceSkeleton, GDBusMenuModel, GDBusMenuModelLeaf, GDBusMessage, GDBusMessageLeaf, GDBusMethodInvocation, GDBusMethodInvocationLeaf, GDBusObjectManagerClient, GDBusObjectManagerClientLeaf, GDBusObjectManagerServer, GDBusObjectManagerServerLeaf, GDBusObjectProxy, GDBusObjectProxyLeaf, GDBusObjectSkeleton, GDBusObjectSkeletonLeaf, GDBusProxy, GDBusProxyLeaf, GDBusServer, GDBusServerLeaf, GDataInputStream, GDataInputStreamLeaf, GDataOutputStream, GDataOutputStreamLeaf, GDesktopAppInfo, GDesktopAppInfoLeaf, GEmblem, GEmblemLeaf, GEmblemedIcon, GEmblemedIconLeaf, GFileEnumerator, GFileEnumeratorLeaf, GFileIOStream, GFileIOStreamLeaf, GFileIcon, GFileIconLeaf, GFileInfo, GFileInfoLeaf, GFileInputStream, GFileInputStreamLeaf, GFileMonitor, GFileOutputStream, GFileOutputStreamLeaf, GFilenameCompleter, GFilenameCompleterLeaf, GFilterInputStream, GFilterOutputStream, GIOModule, GIOModuleLeaf, GIOStream, GInetAddress, GInetAddressLeaf, GInetAddressMask, GInetAddressMaskLeaf, GInetSocketAddress, GInetSocketAddressLeaf, GInputStream, GListStore, GListStoreLeaf, GMemoryInputStream, GMemoryInputStreamLeaf, GMemoryOutputStream, GMemoryOutputStreamLeaf, GMenu, GMenuLeaf, GMenuAttributeIter, GMenuItem, GMenuItemLeaf, GMenuLinkIter, GMenuModel, GMountOperation, GMountOperationLeaf, GNativeSocketAddress, GNativeSocketAddressLeaf, GNativeVolumeMonitor, GNetworkAddress, GNetworkAddressLeaf, GNetworkService, GNetworkServiceLeaf, GNotification, GNotificationLeaf, GOutputStream, GPermission, GPropertyAction, GPropertyActionLeaf, GProxyAddress, GProxyAddressLeaf, GProxyAddressEnumerator, GProxyAddressEnumeratorLeaf, GResolver, GSettings, GSettingsLeaf, GSettingsBackend, GSimpleAction, GSimpleActionLeaf, GSimpleActionGroup, GSimpleActionGroupLeaf, GSimpleAsyncResult, GSimpleAsyncResultLeaf, GSimpleIOStream, GSimpleIOStreamLeaf, GSimplePermission, GSimplePermissionLeaf, GSimpleProxyResolver, GSimpleProxyResolverLeaf, GSocket, GSocketLeaf, GSocketAddress, GSocketAddressEnumerator, GSocketClient, GSocketClientLeaf, GSocketConnection, GSocketConnectionLeaf, GSocketControlMessage, GSocketListener, GSocketListenerLeaf, GSocketService, GSocketServiceLeaf, GSubprocess, GSubprocessLeaf, GSubprocessLauncher, GSubprocessLauncherLeaf, GTask, GTaskLeaf, GTcpConnection, GTcpConnectionLeaf, GTcpWrapperConnection, GTcpWrapperConnectionLeaf, GTestDBus, GTestDBusLeaf, GThemedIcon, GThemedIconLeaf, GThreadedResolver, GThreadedResolverLeaf, GThreadedSocketService, GThreadedSocketServiceLeaf, GTlsCertificate, GTlsConnection, GTlsDatabase, GTlsInteraction, GTlsInteractionLeaf, GTlsPassword, GTlsPasswordLeaf, GUnixConnection, GUnixConnectionLeaf, GUnixCredentialsMessage, GUnixCredentialsMessageLeaf, GVfs, GVfsLeaf, GVolumeMonitor, GVolumeMonitorLeaf, GZlibCompressor, GZlibCompressorLeaf, GZlibDecompressor, GZlibDecompressorLeaf, GAsyncReadyCallback, GBusAcquiredCallback, GBusNameAcquiredCallback, GBusNameAppearedCallback, GBusNameLostCallback, GBusNameVanishedCallback, GCancellableSourceFunc, GDBusInterfaceGetPropertyFunc, GDBusInterfaceMethodCallFunc, GDBusInterfaceSetPropertyFunc, GDBusMessageFilterFunction, GDBusProxyTypeFunc, GDBusSignalCallback, GDBusSubtreeDispatchFunc, GDBusSubtreeEnumerateFunc, GDBusSubtreeIntrospectFunc, GDatagramBasedSourceFunc, GDesktopAppLaunchCallback, GFileMeasureProgressCallback, GFileProgressCallback, GFileReadMoreCallback, GIOSchedulerJobFunc, GPollableSourceFunc, GSettingsBindGetMapping, GSettingsBindSetMapping, GSettingsGetMapping, GSocketSourceFunc, GVfsFileLookupFunc
+    export GDBusErrorEntry, GDBusErrorEntryLike, _GDBusErrorEntry, GFileAttributeInfo, GFileAttributeInfoLike, _GFileAttributeInfo, GFileAttributeInfoList, GFileAttributeInfoListLike, _GFileAttributeInfoList, GFileAttributeMatcher, GInputVector, GInputVectorLike, _GInputVector, GOutputVector, GOutputVectorLike, _GOutputVector, GResource, GSettingsSchema, GSettingsSchemaKey, GSettingsSchemaSource, GSrvTarget, GAction, GActionGroup, GActionMap, GAppInfo, GAsyncInitable, GAsyncResult, GConverter, GDBusInterface, GDBusObject, GDBusObjectManager, GDatagramBased, GDebugController, GDrive, GDtlsClientConnection, GDtlsConnection, GDtlsServerConnection, GFile, GFileDescriptorBased, GIcon, GInitable, GListModel, GLoadableIcon, GMemoryMonitor, GMount, GNetworkMonitor, GPollableInputStream, GPollableOutputStream, GPowerProfileMonitor, GProxy, GProxyResolver, GRemoteActionGroup, GSeekable, GSocketConnectable, GTlsBackend, GTlsClientConnection, GTlsFileDatabase, GTlsServerConnection, GVolume, GAppInfoMonitor, GAppInfoMonitorLeaf, GAppLaunchContext, GAppLaunchContextLeaf, GApplication, GApplicationLeaf, GApplicationCommandLine, GApplicationCommandLineLeaf, GBufferedInputStream, GBufferedInputStreamLeaf, GBufferedOutputStream, GBufferedOutputStreamLeaf, GBytesIcon, GBytesIconLeaf, GCancellable, GCancellableLeaf, GCharsetConverter, GCharsetConverterLeaf, GConverterInputStream, GConverterInputStreamLeaf, GConverterOutputStream, GConverterOutputStreamLeaf, GCredentials, GCredentialsLeaf, GDBusActionGroup, GDBusActionGroupLeaf, GDBusAuthObserver, GDBusAuthObserverLeaf, GDBusConnection, GDBusConnectionLeaf, GDBusMenuModel, GDBusMenuModelLeaf, GDBusMessage, GDBusMessageLeaf, GDBusMethodInvocation, GDBusMethodInvocationLeaf, GDBusObjectManagerClient, GDBusObjectManagerClientLeaf, GDBusObjectProxy, GDBusObjectProxyLeaf, GDBusProxy, GDBusProxyLeaf, GDBusServer, GDBusServerLeaf, GDataInputStream, GDataInputStreamLeaf, GDataOutputStream, GDataOutputStreamLeaf, GDesktopAppInfo, GDesktopAppInfoLeaf, GEmblem, GEmblemLeaf, GEmblemedIcon, GEmblemedIconLeaf, GFileEnumerator, GFileEnumeratorLeaf, GFileIOStream, GFileIOStreamLeaf, GFileIcon, GFileIconLeaf, GFileInfo, GFileInfoLeaf, GFileInputStream, GFileInputStreamLeaf, GFileMonitor, GFileOutputStream, GFileOutputStreamLeaf, GFilenameCompleter, GFilenameCompleterLeaf, GFilterInputStream, GFilterOutputStream, GIOModule, GIOModuleLeaf, GIOStream, GInetAddress, GInetAddressLeaf, GInetAddressMask, GInetAddressMaskLeaf, GInetSocketAddress, GInetSocketAddressLeaf, GInputStream, GListStore, GListStoreLeaf, GMemoryInputStream, GMemoryInputStreamLeaf, GMemoryOutputStream, GMemoryOutputStreamLeaf, GMenu, GMenuLeaf, GMenuAttributeIter, GMenuItem, GMenuItemLeaf, GMenuLinkIter, GMenuModel, GMountOperation, GMountOperationLeaf, GNativeSocketAddress, GNativeSocketAddressLeaf, GNativeVolumeMonitor, GNetworkAddress, GNetworkAddressLeaf, GNetworkService, GNetworkServiceLeaf, GNotification, GNotificationLeaf, GOutputStream, GPermission, GPropertyAction, GPropertyActionLeaf, GProxyAddress, GProxyAddressLeaf, GProxyAddressEnumerator, GProxyAddressEnumeratorLeaf, GResolver, GSettings, GSettingsLeaf, GSettingsBackend, GSimpleAction, GSimpleActionLeaf, GSimpleActionGroup, GSimpleActionGroupLeaf, GSimpleAsyncResult, GSimpleAsyncResultLeaf, GSimpleIOStream, GSimpleIOStreamLeaf, GSimplePermission, GSimplePermissionLeaf, GSimpleProxyResolver, GSimpleProxyResolverLeaf, GSocket, GSocketLeaf, GSocketAddress, GSocketAddressEnumerator, GSocketClient, GSocketClientLeaf, GSocketConnection, GSocketConnectionLeaf, GSocketControlMessage, GSocketListener, GSocketListenerLeaf, GSocketService, GSocketServiceLeaf, GSubprocess, GSubprocessLeaf, GSubprocessLauncher, GSubprocessLauncherLeaf, GTask, GTaskLeaf, GTcpConnection, GTcpConnectionLeaf, GTcpWrapperConnection, GTcpWrapperConnectionLeaf, GTestDBus, GTestDBusLeaf, GThemedIcon, GThemedIconLeaf, GThreadedResolver, GThreadedResolverLeaf, GThreadedSocketService, GThreadedSocketServiceLeaf, GTlsCertificate, GTlsConnection, GTlsDatabase, GTlsInteraction, GTlsInteractionLeaf, GTlsPassword, GTlsPasswordLeaf, GUnixConnection, GUnixConnectionLeaf, GUnixCredentialsMessage, GUnixCredentialsMessageLeaf, GVfs, GVfsLeaf, GVolumeMonitor, GVolumeMonitorLeaf, GZlibCompressor, GZlibCompressorLeaf, GZlibDecompressor, GZlibDecompressorLeaf, GAsyncReadyCallback, GBusAcquiredCallback, GBusNameAcquiredCallback, GBusNameAppearedCallback, GBusNameLostCallback, GBusNameVanishedCallback, GCancellableSourceFunc, GDBusInterfaceGetPropertyFunc, GDBusInterfaceMethodCallFunc, GDBusInterfaceSetPropertyFunc, GDBusMessageFilterFunction, GDBusProxyTypeFunc, GDBusSignalCallback, GDBusSubtreeDispatchFunc, GDBusSubtreeEnumerateFunc, GDBusSubtreeIntrospectFunc, GDatagramBasedSourceFunc, GDesktopAppLaunchCallback, GFileMeasureProgressCallback, GFileProgressCallback, GFileReadMoreCallback, GPollableSourceFunc, GSettingsBindGetMapping, GSettingsBindSetMapping, GSettingsGetMapping, GSocketSourceFunc, GVfsFileLookupFunc
 end))
 end

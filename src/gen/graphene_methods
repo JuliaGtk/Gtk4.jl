@@ -2,135 +2,135 @@ quote
 $(Expr(:toplevel, quote
     function Box_alloc()
         ret = ccall(("graphene_box_alloc", libgraphene), Ptr{_GrapheneBox}, ())
-        ret2 = convert(Union{GrapheneBox, Ref{_GrapheneBox}}, ret, true)
+        ret2 = convert(GrapheneBoxLike, ret, true)
         ret2
     end
-    function contains_box(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _b::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function contains_box(instance::GrapheneBoxLike, _b::GrapheneBoxLike)
         ret = ccall(("graphene_box_contains_box", libgraphene), Cint, (Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function contains_point(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function contains_point(instance::GrapheneBoxLike, _point::GraphenePoint3DLike)
         ret = ccall(("graphene_box_contains_point", libgraphene), Cint, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}), instance, _point)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function equal(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _b::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function equal(instance::GrapheneBoxLike, _b::GrapheneBoxLike)
         ret = ccall(("graphene_box_equal", libgraphene), Cint, (Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function expand(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function expand(instance::GrapheneBoxLike, _point::GraphenePoint3DLike)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_expand", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneBox}), instance, _point, m_res)
         _res = m_res[]
         _res
     end
-    function expand_scalar(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _scalar::Real)
+    function expand_scalar(instance::GrapheneBoxLike, _scalar::Real)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_expand_scalar", libgraphene), Nothing, (Ptr{_GrapheneBox}, Float32, Ptr{_GrapheneBox}), instance, _scalar, m_res)
         _res = m_res[]
         _res
     end
-    function expand_vec3(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _vec::Union{GrapheneVec3, Ref{_GrapheneVec3}})
+    function expand_vec3(instance::GrapheneBoxLike, _vec::GrapheneVec3Like)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_expand_vec3", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GrapheneVec3}, Ptr{_GrapheneBox}), instance, _vec, m_res)
         _res = m_res[]
         _res
     end
-    function free(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function free(instance::GrapheneBoxLike)
         ret = ccall(("graphene_box_free", libgraphene), Nothing, (Ptr{_GrapheneBox},), instance)
         nothing
     end
-    function get_bounding_sphere(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_bounding_sphere(instance::GrapheneBoxLike)
         m_sphere = Ref{_GrapheneSphere}()
         ret = ccall(("graphene_box_get_bounding_sphere", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GrapheneSphere}), instance, m_sphere)
         _sphere = m_sphere[]
         _sphere
     end
-    function get_center(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_center(instance::GrapheneBoxLike)
         m_center = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_box_get_center", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}), instance, m_center)
         _center = m_center[]
         _center
     end
-    function get_depth(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_depth(instance::GrapheneBoxLike)
         ret = ccall(("graphene_box_get_depth", libgraphene), Float32, (Ptr{_GrapheneBox},), instance)
         ret
     end
-    function get_height(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_height(instance::GrapheneBoxLike)
         ret = ccall(("graphene_box_get_height", libgraphene), Float32, (Ptr{_GrapheneBox},), instance)
         ret
     end
-    function get_max(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_max(instance::GrapheneBoxLike)
         m_max = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_box_get_max", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}), instance, m_max)
         _max = m_max[]
         _max
     end
-    function get_min(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_min(instance::GrapheneBoxLike)
         m_min = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_box_get_min", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}), instance, m_min)
         _min = m_min[]
         _min
     end
-    function get_size(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_size(instance::GrapheneBoxLike)
         m_size = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_box_get_size", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GrapheneVec3}), instance, m_size)
         _size = m_size[]
         _size
     end
-    function get_vertices(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_vertices(instance::GrapheneBoxLike)
         m_vertices = Ref{Ptr{_GrapheneVec3}}()
         ret = ccall(("graphene_box_get_vertices", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{Ptr{_GrapheneVec3}}), instance, m_vertices)
         _vertices = m_vertices[]
         _vertices
     end
-    function get_width(instance::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function get_width(instance::GrapheneBoxLike)
         ret = ccall(("graphene_box_get_width", libgraphene), Float32, (Ptr{_GrapheneBox},), instance)
         ret
     end
-    function init(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _min::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _max::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
+    function init(instance::GrapheneBoxLike, _min::Maybe(GraphenePoint3DLike), _max::Maybe(GraphenePoint3DLike))
         _min_maybe = nothing_to_null(_min)
         _max_maybe = nothing_to_null(_max)
         ret = ccall(("graphene_box_init", libgraphene), Ptr{_GrapheneBox}, (Ptr{_GrapheneBox}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _min_maybe, _max_maybe)
-        ret2 = convert(Union{GrapheneBox, Ref{_GrapheneBox}}, ret, false)
+        ret2 = convert(GrapheneBoxLike, ret, false)
         ret2
     end
-    function init_from_box(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _src::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function init_from_box(instance::GrapheneBoxLike, _src::GrapheneBoxLike)
         ret = ccall(("graphene_box_init_from_box", libgraphene), Ptr{_GrapheneBox}, (Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _src)
-        ret2 = convert(Union{GrapheneBox, Ref{_GrapheneBox}}, ret, false)
+        ret2 = convert(GrapheneBoxLike, ret, false)
         ret2
     end
-    function init_from_points(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _points)
+    function init_from_points(instance::GrapheneBoxLike, _points)
         _points_arr = convert(Vector{_GraphenePoint3D}, _points)
         _n_points = length(_points)
         ret = ccall(("graphene_box_init_from_points", libgraphene), Ptr{_GrapheneBox}, (Ptr{_GrapheneBox}, UInt32, Ptr{_GraphenePoint3D}), instance, _n_points, _points_arr)
-        ret2 = convert(Union{GrapheneBox, Ref{_GrapheneBox}}, ret, false)
+        ret2 = convert(GrapheneBoxLike, ret, false)
         ret2
     end
-    function init_from_vec3(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _min::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _max::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}))
+    function init_from_vec3(instance::GrapheneBoxLike, _min::Maybe(GrapheneVec3Like), _max::Maybe(GrapheneVec3Like))
         _min_maybe = nothing_to_null(_min)
         _max_maybe = nothing_to_null(_max)
         ret = ccall(("graphene_box_init_from_vec3", libgraphene), Ptr{_GrapheneBox}, (Ptr{_GrapheneBox}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _min_maybe, _max_maybe)
-        ret2 = convert(Union{GrapheneBox, Ref{_GrapheneBox}}, ret, false)
+        ret2 = convert(GrapheneBoxLike, ret, false)
         ret2
     end
-    function init_from_vectors(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _vectors)
+    function init_from_vectors(instance::GrapheneBoxLike, _vectors)
         _vectors_arr = convert(Vector{_GrapheneVec3}, _vectors)
         _n_vectors = length(_vectors)
         ret = ccall(("graphene_box_init_from_vectors", libgraphene), Ptr{_GrapheneBox}, (Ptr{_GrapheneBox}, UInt32, Ptr{_GrapheneVec3}), instance, _n_vectors, _vectors_arr)
-        ret2 = convert(Union{GrapheneBox, Ref{_GrapheneBox}}, ret, false)
+        ret2 = convert(GrapheneBoxLike, ret, false)
         ret2
     end
-    function intersection(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _b::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function intersection(instance::GrapheneBoxLike, _b::GrapheneBoxLike)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_intersection", libgraphene), Cint, (Ptr{_GrapheneBox}, Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _b, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
         (ret2, _res)
     end
-    function union(instance::Union{GrapheneBox, Ref{_GrapheneBox}}, _b::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function union(instance::GrapheneBoxLike, _b::GrapheneBoxLike)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_box_union", libgraphene), Nothing, (Ptr{_GrapheneBox}, Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _b, m_res)
         _res = m_res[]
@@ -138,105 +138,105 @@ $(Expr(:toplevel, quote
     end
     function Euler_alloc()
         ret = ccall(("graphene_euler_alloc", libgraphene), Ptr{_GrapheneEuler}, ())
-        ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, true)
+        ret2 = convert(GrapheneEulerLike, ret, true)
         ret2
     end
-    function equal(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _b::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function equal(instance::GrapheneEulerLike, _b::GrapheneEulerLike)
         ret = ccall(("graphene_euler_equal", libgraphene), Cint, (Ptr{_GrapheneEuler}, Ptr{_GrapheneEuler}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function free(instance::GrapheneEulerLike)
         ret = ccall(("graphene_euler_free", libgraphene), Nothing, (Ptr{_GrapheneEuler},), instance)
         nothing
     end
-    function get_alpha(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function get_alpha(instance::GrapheneEulerLike)
         ret = ccall(("graphene_euler_get_alpha", libgraphene), Float32, (Ptr{_GrapheneEuler},), instance)
         ret
     end
-    function get_beta(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function get_beta(instance::GrapheneEulerLike)
         ret = ccall(("graphene_euler_get_beta", libgraphene), Float32, (Ptr{_GrapheneEuler},), instance)
         ret
     end
-    function get_gamma(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function get_gamma(instance::GrapheneEulerLike)
         ret = ccall(("graphene_euler_get_gamma", libgraphene), Float32, (Ptr{_GrapheneEuler},), instance)
         ret
     end
-    function get_order(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function get_order(instance::GrapheneEulerLike)
         ret = ccall(("graphene_euler_get_order", libgraphene), UInt32, (Ptr{_GrapheneEuler},), instance)
         ret2 = EulerOrder(ret)
         ret2
     end
-    function get_x(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function get_x(instance::GrapheneEulerLike)
         ret = ccall(("graphene_euler_get_x", libgraphene), Float32, (Ptr{_GrapheneEuler},), instance)
         ret
     end
-    function get_y(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function get_y(instance::GrapheneEulerLike)
         ret = ccall(("graphene_euler_get_y", libgraphene), Float32, (Ptr{_GrapheneEuler},), instance)
         ret
     end
-    function get_z(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function get_z(instance::GrapheneEulerLike)
         ret = ccall(("graphene_euler_get_z", libgraphene), Float32, (Ptr{_GrapheneEuler},), instance)
         ret
     end
-    function init(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _x::Real, _y::Real, _z::Real)
+    function init(instance::GrapheneEulerLike, _x::Real, _y::Real, _z::Real)
         ret = ccall(("graphene_euler_init", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Float32, Float32, Float32), instance, _x, _y, _z)
-        ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
+        ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
-    function init_from_euler(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _src::Maybe(Union{GrapheneEuler, Ref{_GrapheneEuler}}))
+    function init_from_euler(instance::GrapheneEulerLike, _src::Maybe(GrapheneEulerLike))
         _src_maybe = nothing_to_null(_src)
         ret = ccall(("graphene_euler_init_from_euler", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneEuler}), instance, _src_maybe)
-        ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
+        ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
-    function init_from_matrix(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _m::Maybe(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}), _order)
+    function init_from_matrix(instance::GrapheneEulerLike, _m::Maybe(GrapheneMatrixLike), _order)
         _m_maybe = nothing_to_null(_m)
         ret = ccall(("graphene_euler_init_from_matrix", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneMatrix}, UInt32), instance, _m_maybe, _order)
-        ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
+        ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
-    function init_from_quaternion(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _q::Maybe(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}), _order)
+    function init_from_quaternion(instance::GrapheneEulerLike, _q::Maybe(GrapheneQuaternionLike), _order)
         _q_maybe = nothing_to_null(_q)
         ret = ccall(("graphene_euler_init_from_quaternion", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneQuaternion}, UInt32), instance, _q_maybe, _order)
-        ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
+        ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
-    function init_from_radians(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _x::Real, _y::Real, _z::Real, _order)
+    function init_from_radians(instance::GrapheneEulerLike, _x::Real, _y::Real, _z::Real, _order)
         ret = ccall(("graphene_euler_init_from_radians", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Float32, Float32, Float32, UInt32), instance, _x, _y, _z, _order)
-        ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
+        ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
-    function init_from_vec3(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _v::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _order)
+    function init_from_vec3(instance::GrapheneEulerLike, _v::Maybe(GrapheneVec3Like), _order)
         _v_maybe = nothing_to_null(_v)
         ret = ccall(("graphene_euler_init_from_vec3", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneVec3}, UInt32), instance, _v_maybe, _order)
-        ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
+        ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
-    function init_with_order(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _x::Real, _y::Real, _z::Real, _order)
+    function init_with_order(instance::GrapheneEulerLike, _x::Real, _y::Real, _z::Real, _order)
         ret = ccall(("graphene_euler_init_with_order", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Float32, Float32, Float32, UInt32), instance, _x, _y, _z, _order)
-        ret2 = convert(Union{GrapheneEuler, Ref{_GrapheneEuler}}, ret, false)
+        ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
-    function reorder(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}}, _order)
+    function reorder(instance::GrapheneEulerLike, _order)
         m_res = Ref{_GrapheneEuler}()
         ret = ccall(("graphene_euler_reorder", libgraphene), Nothing, (Ptr{_GrapheneEuler}, UInt32, Ptr{_GrapheneEuler}), instance, _order, m_res)
         _res = m_res[]
         _res
     end
-    function to_matrix(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function to_matrix(instance::GrapheneEulerLike)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_euler_to_matrix", libgraphene), Nothing, (Ptr{_GrapheneEuler}, Ptr{_GrapheneMatrix}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function to_quaternion(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function to_quaternion(instance::GrapheneEulerLike)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_euler_to_quaternion", libgraphene), Nothing, (Ptr{_GrapheneEuler}, Ptr{_GrapheneQuaternion}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function to_vec3(instance::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function to_vec3(instance::GrapheneEulerLike)
         m_res = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_euler_to_vec3", libgraphene), Nothing, (Ptr{_GrapheneEuler}, Ptr{_GrapheneVec3}), instance, m_res)
         _res = m_res[]
@@ -244,60 +244,60 @@ $(Expr(:toplevel, quote
     end
     function Frustum_alloc()
         ret = ccall(("graphene_frustum_alloc", libgraphene), Ptr{_GrapheneFrustum}, ())
-        ret2 = convert(Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, ret, true)
+        ret2 = convert(GrapheneFrustumLike, ret, true)
         ret2
     end
-    function contains_point(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function contains_point(instance::GrapheneFrustumLike, _point::GraphenePoint3DLike)
         ret = ccall(("graphene_frustum_contains_point", libgraphene), Cint, (Ptr{_GrapheneFrustum}, Ptr{_GraphenePoint3D}), instance, _point)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function equal(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, _b::Union{GrapheneFrustum, Ref{_GrapheneFrustum}})
+    function equal(instance::GrapheneFrustumLike, _b::GrapheneFrustumLike)
         ret = ccall(("graphene_frustum_equal", libgraphene), Cint, (Ptr{_GrapheneFrustum}, Ptr{_GrapheneFrustum}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}})
+    function free(instance::GrapheneFrustumLike)
         ret = ccall(("graphene_frustum_free", libgraphene), Nothing, (Ptr{_GrapheneFrustum},), instance)
         nothing
     end
-    function get_planes(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}})
+    function get_planes(instance::GrapheneFrustumLike)
         m_planes = Ref{Ptr{_GraphenePlane}}()
         ret = ccall(("graphene_frustum_get_planes", libgraphene), Nothing, (Ptr{_GrapheneFrustum}, Ptr{Ptr{_GraphenePlane}}), instance, m_planes)
         _planes = m_planes[]
         _planes
     end
-    function init(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, _p0::Union{GraphenePlane, Ref{_GraphenePlane}}, _p1::Union{GraphenePlane, Ref{_GraphenePlane}}, _p2::Union{GraphenePlane, Ref{_GraphenePlane}}, _p3::Union{GraphenePlane, Ref{_GraphenePlane}}, _p4::Union{GraphenePlane, Ref{_GraphenePlane}}, _p5::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function init(instance::GrapheneFrustumLike, _p0::GraphenePlaneLike, _p1::GraphenePlaneLike, _p2::GraphenePlaneLike, _p3::GraphenePlaneLike, _p4::GraphenePlaneLike, _p5::GraphenePlaneLike)
         ret = ccall(("graphene_frustum_init", libgraphene), Ptr{_GrapheneFrustum}, (Ptr{_GrapheneFrustum}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}, Ptr{_GraphenePlane}), instance, _p0, _p1, _p2, _p3, _p4, _p5)
-        ret2 = convert(Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, ret, false)
+        ret2 = convert(GrapheneFrustumLike, ret, false)
         ret2
     end
-    function init_from_frustum(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, _src::Union{GrapheneFrustum, Ref{_GrapheneFrustum}})
+    function init_from_frustum(instance::GrapheneFrustumLike, _src::GrapheneFrustumLike)
         ret = ccall(("graphene_frustum_init_from_frustum", libgraphene), Ptr{_GrapheneFrustum}, (Ptr{_GrapheneFrustum}, Ptr{_GrapheneFrustum}), instance, _src)
-        ret2 = convert(Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, ret, false)
+        ret2 = convert(GrapheneFrustumLike, ret, false)
         ret2
     end
-    function init_from_matrix(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, _matrix::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function init_from_matrix(instance::GrapheneFrustumLike, _matrix::GrapheneMatrixLike)
         ret = ccall(("graphene_frustum_init_from_matrix", libgraphene), Ptr{_GrapheneFrustum}, (Ptr{_GrapheneFrustum}, Ptr{_GrapheneMatrix}), instance, _matrix)
-        ret2 = convert(Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, ret, false)
+        ret2 = convert(GrapheneFrustumLike, ret, false)
         ret2
     end
-    function intersects_box(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, _box::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function intersects_box(instance::GrapheneFrustumLike, _box::GrapheneBoxLike)
         ret = ccall(("graphene_frustum_intersects_box", libgraphene), Cint, (Ptr{_GrapheneFrustum}, Ptr{_GrapheneBox}), instance, _box)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function intersects_sphere(instance::Union{GrapheneFrustum, Ref{_GrapheneFrustum}}, _sphere::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function intersects_sphere(instance::GrapheneFrustumLike, _sphere::GrapheneSphereLike)
         ret = ccall(("graphene_frustum_intersects_sphere", libgraphene), Cint, (Ptr{_GrapheneFrustum}, Ptr{_GrapheneSphere}), instance, _sphere)
         ret2 = convert(Bool, ret)
         ret2
     end
     function Matrix_alloc()
         ret = ccall(("graphene_matrix_alloc", libgraphene), Ptr{_GrapheneMatrix}, ())
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, true)
+        ret2 = convert(GrapheneMatrixLike, ret, true)
         ret2
     end
-    function decompose(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function decompose(instance::GrapheneMatrixLike)
         m_translate = Ref{_GrapheneVec3}()
         m_scale = Ref{_GrapheneVec3}()
         m_rotate = Ref{_GrapheneQuaternion}()
@@ -312,243 +312,243 @@ $(Expr(:toplevel, quote
         _perspective = m_perspective[]
         (ret2, _translate, _scale, _rotate, _shear, _perspective)
     end
-    function determinant(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function determinant(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_determinant", libgraphene), Float32, (Ptr{_GrapheneMatrix},), instance)
         ret
     end
-    function equal(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _b::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function equal(instance::GrapheneMatrixLike, _b::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_equal", libgraphene), Cint, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function equal_fast(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _b::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function equal_fast(instance::GrapheneMatrixLike, _b::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_equal_fast", libgraphene), Cint, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function free(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_free", libgraphene), Nothing, (Ptr{_GrapheneMatrix},), instance)
         nothing
     end
-    function get_row(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _index_::Integer)
+    function get_row(instance::GrapheneMatrixLike, _index_::Integer)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_matrix_get_row", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, UInt32, Ptr{_GrapheneVec4}), instance, _index_, m_res)
         _res = m_res[]
         _res
     end
-    function get_value(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _row::Integer, _col::Integer)
+    function get_value(instance::GrapheneMatrixLike, _row::Integer, _col::Integer)
         ret = ccall(("graphene_matrix_get_value", libgraphene), Float32, (Ptr{_GrapheneMatrix}, UInt32, UInt32), instance, _row, _col)
         ret
     end
-    function get_x_scale(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function get_x_scale(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_get_x_scale", libgraphene), Float32, (Ptr{_GrapheneMatrix},), instance)
         ret
     end
-    function get_x_translation(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function get_x_translation(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_get_x_translation", libgraphene), Float32, (Ptr{_GrapheneMatrix},), instance)
         ret
     end
-    function get_y_scale(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function get_y_scale(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_get_y_scale", libgraphene), Float32, (Ptr{_GrapheneMatrix},), instance)
         ret
     end
-    function get_y_translation(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function get_y_translation(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_get_y_translation", libgraphene), Float32, (Ptr{_GrapheneMatrix},), instance)
         ret
     end
-    function get_z_scale(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function get_z_scale(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_get_z_scale", libgraphene), Float32, (Ptr{_GrapheneMatrix},), instance)
         ret
     end
-    function get_z_translation(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function get_z_translation(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_get_z_translation", libgraphene), Float32, (Ptr{_GrapheneMatrix},), instance)
         ret
     end
-    function init_from_2d(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _xx::Real, _yx::Real, _xy::Real, _yy::Real, _x_0::Real, _y_0::Real)
+    function init_from_2d(instance::GrapheneMatrixLike, _xx::Real, _yx::Real, _xy::Real, _yy::Real, _x_0::Real, _y_0::Real)
         ret = ccall(("graphene_matrix_init_from_2d", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Float64, Float64, Float64, Float64, Float64, Float64), instance, _xx, _yx, _xy, _yy, _x_0, _y_0)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_from_float(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _v)
+    function init_from_float(instance::GrapheneMatrixLike, _v)
         _v_arr = convert(Vector{Float32}, _v)
         ret = ccall(("graphene_matrix_init_from_float", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Ptr{Float32}), instance, _v_arr)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_from_matrix(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _src::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function init_from_matrix(instance::GrapheneMatrixLike, _src::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_init_from_matrix", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, _src)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_from_vec4(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _v0::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _v1::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _v2::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _v3::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function init_from_vec4(instance::GrapheneMatrixLike, _v0::GrapheneVec4Like, _v1::GrapheneVec4Like, _v2::GrapheneVec4Like, _v3::GrapheneVec4Like)
         ret = ccall(("graphene_matrix_init_from_vec4", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _v0, _v1, _v2, _v3)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_frustum(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _left::Real, _right::Real, _bottom::Real, _top::Real, _z_near::Real, _z_far::Real)
+    function init_frustum(instance::GrapheneMatrixLike, _left::Real, _right::Real, _bottom::Real, _top::Real, _z_near::Real, _z_far::Real)
         ret = ccall(("graphene_matrix_init_frustum", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Float32, Float32, Float32, Float32, Float32, Float32), instance, _left, _right, _bottom, _top, _z_near, _z_far)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_identity(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function init_identity(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_init_identity", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix},), instance)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_look_at(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _eye::Union{GrapheneVec3, Ref{_GrapheneVec3}}, _center::Union{GrapheneVec3, Ref{_GrapheneVec3}}, _up::Union{GrapheneVec3, Ref{_GrapheneVec3}})
+    function init_look_at(instance::GrapheneMatrixLike, _eye::GrapheneVec3Like, _center::GrapheneVec3Like, _up::GrapheneVec3Like)
         ret = ccall(("graphene_matrix_init_look_at", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _eye, _center, _up)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_ortho(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _left::Real, _right::Real, _top::Real, _bottom::Real, _z_near::Real, _z_far::Real)
+    function init_ortho(instance::GrapheneMatrixLike, _left::Real, _right::Real, _top::Real, _bottom::Real, _z_near::Real, _z_far::Real)
         ret = ccall(("graphene_matrix_init_ortho", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Float32, Float32, Float32, Float32, Float32, Float32), instance, _left, _right, _top, _bottom, _z_near, _z_far)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_perspective(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _fovy::Real, _aspect::Real, _z_near::Real, _z_far::Real)
+    function init_perspective(instance::GrapheneMatrixLike, _fovy::Real, _aspect::Real, _z_near::Real, _z_far::Real)
         ret = ccall(("graphene_matrix_init_perspective", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Float32, Float32, Float32, Float32), instance, _fovy, _aspect, _z_near, _z_far)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_rotate(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _angle::Real, _axis::Union{GrapheneVec3, Ref{_GrapheneVec3}})
+    function init_rotate(instance::GrapheneMatrixLike, _angle::Real, _axis::GrapheneVec3Like)
         ret = ccall(("graphene_matrix_init_rotate", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Float32, Ptr{_GrapheneVec3}), instance, _angle, _axis)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_scale(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _x::Real, _y::Real, _z::Real)
+    function init_scale(instance::GrapheneMatrixLike, _x::Real, _y::Real, _z::Real)
         ret = ccall(("graphene_matrix_init_scale", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Float32, Float32, Float32), instance, _x, _y, _z)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_skew(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _x_skew::Real, _y_skew::Real)
+    function init_skew(instance::GrapheneMatrixLike, _x_skew::Real, _y_skew::Real)
         ret = ccall(("graphene_matrix_init_skew", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Float32, Float32), instance, _x_skew, _y_skew)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function init_translate(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _p::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function init_translate(instance::GrapheneMatrixLike, _p::GraphenePoint3DLike)
         ret = ccall(("graphene_matrix_init_translate", libgraphene), Ptr{_GrapheneMatrix}, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint3D}), instance, _p)
-        ret2 = convert(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, ret, false)
+        ret2 = convert(GrapheneMatrixLike, ret, false)
         ret2
     end
-    function interpolate(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _b::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _factor::Real)
+    function interpolate(instance::GrapheneMatrixLike, _b::GrapheneMatrixLike, _factor::Real)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_interpolate", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Float64, Ptr{_GrapheneMatrix}), instance, _b, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function inverse(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function inverse(instance::GrapheneMatrixLike)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_inverse", libgraphene), Cint, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
         (ret2, _res)
     end
-    function is_2d(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function is_2d(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_is_2d", libgraphene), Cint, (Ptr{_GrapheneMatrix},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function is_backface_visible(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function is_backface_visible(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_is_backface_visible", libgraphene), Cint, (Ptr{_GrapheneMatrix},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function is_identity(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function is_identity(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_is_identity", libgraphene), Cint, (Ptr{_GrapheneMatrix},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function is_singular(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function is_singular(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_is_singular", libgraphene), Cint, (Ptr{_GrapheneMatrix},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function multiply(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _b::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function multiply(instance::GrapheneMatrixLike, _b::GrapheneMatrixLike)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_multiply", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function near(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _b::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _epsilon::Real)
+    function near(instance::GrapheneMatrixLike, _b::GrapheneMatrixLike, _epsilon::Real)
         ret = ccall(("graphene_matrix_near", libgraphene), Cint, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Float32), instance, _b, _epsilon)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function normalize(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function normalize(instance::GrapheneMatrixLike)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_normalize", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function perspective(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _depth::Real)
+    function perspective(instance::GrapheneMatrixLike, _depth::Real)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_perspective", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32, Ptr{_GrapheneMatrix}), instance, _depth, m_res)
         _res = m_res[]
         _res
     end
-    function print(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function print(instance::GrapheneMatrixLike)
         ret = ccall(("graphene_matrix_print", libgraphene), Nothing, (Ptr{_GrapheneMatrix},), instance)
         nothing
     end
-    function project_point(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _p::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function project_point(instance::GrapheneMatrixLike, _p::GraphenePointLike)
         m_res = Ref{_GraphenePoint}()
         ret = ccall(("graphene_matrix_project_point", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _p, m_res)
         _res = m_res[]
         _res
     end
-    function project_rect(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _r::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function project_rect(instance::GrapheneMatrixLike, _r::GrapheneRectLike)
         m_res = Ref{_GrapheneQuad}()
         ret = ccall(("graphene_matrix_project_rect", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneQuad}), instance, _r, m_res)
         _res = m_res[]
         _res
     end
-    function project_rect_bounds(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _r::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function project_rect_bounds(instance::GrapheneMatrixLike, _r::GrapheneRectLike)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_matrix_project_rect_bounds", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _r, m_res)
         _res = m_res[]
         _res
     end
-    function rotate(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _angle::Real, _axis::Union{GrapheneVec3, Ref{_GrapheneVec3}})
+    function rotate(instance::GrapheneMatrixLike, _angle::Real, _axis::GrapheneVec3Like)
         ret = ccall(("graphene_matrix_rotate", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32, Ptr{_GrapheneVec3}), instance, _angle, _axis)
         nothing
     end
-    function rotate_euler(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _e::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function rotate_euler(instance::GrapheneMatrixLike, _e::GrapheneEulerLike)
         ret = ccall(("graphene_matrix_rotate_euler", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneEuler}), instance, _e)
         nothing
     end
-    function rotate_quaternion(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _q::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function rotate_quaternion(instance::GrapheneMatrixLike, _q::GrapheneQuaternionLike)
         ret = ccall(("graphene_matrix_rotate_quaternion", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneQuaternion}), instance, _q)
         nothing
     end
-    function rotate_x(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _angle::Real)
+    function rotate_x(instance::GrapheneMatrixLike, _angle::Real)
         ret = ccall(("graphene_matrix_rotate_x", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32), instance, _angle)
         nothing
     end
-    function rotate_y(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _angle::Real)
+    function rotate_y(instance::GrapheneMatrixLike, _angle::Real)
         ret = ccall(("graphene_matrix_rotate_y", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32), instance, _angle)
         nothing
     end
-    function rotate_z(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _angle::Real)
+    function rotate_z(instance::GrapheneMatrixLike, _angle::Real)
         ret = ccall(("graphene_matrix_rotate_z", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32), instance, _angle)
         nothing
     end
-    function scale(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _factor_x::Real, _factor_y::Real, _factor_z::Real)
+    function scale(instance::GrapheneMatrixLike, _factor_x::Real, _factor_y::Real, _factor_z::Real)
         ret = ccall(("graphene_matrix_scale", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32, Float32, Float32), instance, _factor_x, _factor_y, _factor_z)
         nothing
     end
-    function skew_xy(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _factor::Real)
+    function skew_xy(instance::GrapheneMatrixLike, _factor::Real)
         ret = ccall(("graphene_matrix_skew_xy", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32), instance, _factor)
         nothing
     end
-    function skew_xz(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _factor::Real)
+    function skew_xz(instance::GrapheneMatrixLike, _factor::Real)
         ret = ccall(("graphene_matrix_skew_xz", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32), instance, _factor)
         nothing
     end
-    function skew_yz(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _factor::Real)
+    function skew_yz(instance::GrapheneMatrixLike, _factor::Real)
         ret = ccall(("graphene_matrix_skew_yz", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Float32), instance, _factor)
         nothing
     end
-    function to_2d(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function to_2d(instance::GrapheneMatrixLike)
         m_xx = Ref{Float64}()
         m_yx = Ref{Float64}()
         m_xy = Ref{Float64}()
@@ -565,89 +565,89 @@ $(Expr(:toplevel, quote
         _y_0 = m_y_0[]
         (ret2, _xx, _yx, _xy, _yy, _x_0, _y_0)
     end
-    function to_float(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function to_float(instance::GrapheneMatrixLike)
         m_v = Ref{Ptr{Float32}}()
         ret = ccall(("graphene_matrix_to_float", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{Ptr{Float32}}), instance, m_v)
         _v = m_v[]
         _v
     end
-    function transform_bounds(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _r::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function transform_bounds(instance::GrapheneMatrixLike, _r::GrapheneRectLike)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_matrix_transform_bounds", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _r, m_res)
         _res = m_res[]
         _res
     end
-    function transform_box(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _b::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function transform_box(instance::GrapheneMatrixLike, _b::GrapheneBoxLike)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_matrix_transform_box", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneBox}, Ptr{_GrapheneBox}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function transform_point(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _p::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function transform_point(instance::GrapheneMatrixLike, _p::GraphenePointLike)
         m_res = Ref{_GraphenePoint}()
         ret = ccall(("graphene_matrix_transform_point", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _p, m_res)
         _res = m_res[]
         _res
     end
-    function transform_point3d(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _p::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function transform_point3d(instance::GrapheneMatrixLike, _p::GraphenePoint3DLike)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_matrix_transform_point3d", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _p, m_res)
         _res = m_res[]
         _res
     end
-    function transform_ray(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _r::Union{GrapheneRay, Ref{_GrapheneRay}})
+    function transform_ray(instance::GrapheneMatrixLike, _r::GrapheneRayLike)
         m_res = Ref{_GrapheneRay}()
         ret = ccall(("graphene_matrix_transform_ray", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRay}, Ptr{_GrapheneRay}), instance, _r, m_res)
         _res = m_res[]
         _res
     end
-    function transform_rect(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _r::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function transform_rect(instance::GrapheneMatrixLike, _r::GrapheneRectLike)
         m_res = Ref{_GrapheneQuad}()
         ret = ccall(("graphene_matrix_transform_rect", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneQuad}), instance, _r, m_res)
         _res = m_res[]
         _res
     end
-    function transform_sphere(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _s::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function transform_sphere(instance::GrapheneMatrixLike, _s::GrapheneSphereLike)
         m_res = Ref{_GrapheneSphere}()
         ret = ccall(("graphene_matrix_transform_sphere", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneSphere}, Ptr{_GrapheneSphere}), instance, _s, m_res)
         _res = m_res[]
         _res
     end
-    function transform_vec3(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _v::Union{GrapheneVec3, Ref{_GrapheneVec3}})
+    function transform_vec3(instance::GrapheneMatrixLike, _v::GrapheneVec3Like)
         m_res = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_matrix_transform_vec3", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _v, m_res)
         _res = m_res[]
         _res
     end
-    function transform_vec4(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _v::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function transform_vec4(instance::GrapheneMatrixLike, _v::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_matrix_transform_vec4", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _v, m_res)
         _res = m_res[]
         _res
     end
-    function translate(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _pos::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function translate(instance::GrapheneMatrixLike, _pos::GraphenePoint3DLike)
         ret = ccall(("graphene_matrix_translate", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint3D}), instance, _pos)
         nothing
     end
-    function transpose(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function transpose(instance::GrapheneMatrixLike)
         m_res = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_matrix_transpose", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function unproject_point3d(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _modelview::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function unproject_point3d(instance::GrapheneMatrixLike, _modelview::GrapheneMatrixLike, _point::GraphenePoint3DLike)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_matrix_unproject_point3d", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _modelview, _point, m_res)
         _res = m_res[]
         _res
     end
-    function untransform_bounds(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _r::Union{GrapheneRect, Ref{_GrapheneRect}}, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function untransform_bounds(instance::GrapheneMatrixLike, _r::GrapheneRectLike, _bounds::GrapheneRectLike)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_matrix_untransform_bounds", libgraphene), Nothing, (Ptr{_GrapheneMatrix}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _r, _bounds, m_res)
         _res = m_res[]
         _res
     end
-    function untransform_point(instance::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _p::Union{GraphenePoint, Ref{_GraphenePoint}}, _bounds::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function untransform_point(instance::GrapheneMatrixLike, _p::GraphenePointLike, _bounds::GrapheneRectLike)
         m_res = Ref{_GraphenePoint}()
         ret = ccall(("graphene_matrix_untransform_point", libgraphene), Cint, (Ptr{_GrapheneMatrix}, Ptr{_GraphenePoint}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, _p, _bounds, m_res)
         ret2 = convert(Bool, ret)
@@ -656,71 +656,71 @@ $(Expr(:toplevel, quote
     end
     function Plane_alloc()
         ret = ccall(("graphene_plane_alloc", libgraphene), Ptr{_GraphenePlane}, ())
-        ret2 = convert(Union{GraphenePlane, Ref{_GraphenePlane}}, ret, true)
+        ret2 = convert(GraphenePlaneLike, ret, true)
         ret2
     end
-    function distance(instance::Union{GraphenePlane, Ref{_GraphenePlane}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function distance(instance::GraphenePlaneLike, _point::GraphenePoint3DLike)
         ret = ccall(("graphene_plane_distance", libgraphene), Float32, (Ptr{_GraphenePlane}, Ptr{_GraphenePoint3D}), instance, _point)
         ret
     end
-    function equal(instance::Union{GraphenePlane, Ref{_GraphenePlane}}, _b::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function equal(instance::GraphenePlaneLike, _b::GraphenePlaneLike)
         ret = ccall(("graphene_plane_equal", libgraphene), Cint, (Ptr{_GraphenePlane}, Ptr{_GraphenePlane}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function free(instance::GraphenePlaneLike)
         ret = ccall(("graphene_plane_free", libgraphene), Nothing, (Ptr{_GraphenePlane},), instance)
         nothing
     end
-    function get_constant(instance::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function get_constant(instance::GraphenePlaneLike)
         ret = ccall(("graphene_plane_get_constant", libgraphene), Float32, (Ptr{_GraphenePlane},), instance)
         ret
     end
-    function get_normal(instance::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function get_normal(instance::GraphenePlaneLike)
         m_normal = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_plane_get_normal", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GrapheneVec3}), instance, m_normal)
         _normal = m_normal[]
         _normal
     end
-    function init(instance::Union{GraphenePlane, Ref{_GraphenePlane}}, _normal::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _constant::Real)
+    function init(instance::GraphenePlaneLike, _normal::Maybe(GrapheneVec3Like), _constant::Real)
         _normal_maybe = nothing_to_null(_normal)
         ret = ccall(("graphene_plane_init", libgraphene), Ptr{_GraphenePlane}, (Ptr{_GraphenePlane}, Ptr{_GrapheneVec3}, Float32), instance, _normal_maybe, _constant)
-        ret2 = convert(Union{GraphenePlane, Ref{_GraphenePlane}}, ret, false)
+        ret2 = convert(GraphenePlaneLike, ret, false)
         ret2
     end
-    function init_from_plane(instance::Union{GraphenePlane, Ref{_GraphenePlane}}, _src::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function init_from_plane(instance::GraphenePlaneLike, _src::GraphenePlaneLike)
         ret = ccall(("graphene_plane_init_from_plane", libgraphene), Ptr{_GraphenePlane}, (Ptr{_GraphenePlane}, Ptr{_GraphenePlane}), instance, _src)
-        ret2 = convert(Union{GraphenePlane, Ref{_GraphenePlane}}, ret, false)
+        ret2 = convert(GraphenePlaneLike, ret, false)
         ret2
     end
-    function init_from_point(instance::Union{GraphenePlane, Ref{_GraphenePlane}}, _normal::Union{GrapheneVec3, Ref{_GrapheneVec3}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function init_from_point(instance::GraphenePlaneLike, _normal::GrapheneVec3Like, _point::GraphenePoint3DLike)
         ret = ccall(("graphene_plane_init_from_point", libgraphene), Ptr{_GraphenePlane}, (Ptr{_GraphenePlane}, Ptr{_GrapheneVec3}, Ptr{_GraphenePoint3D}), instance, _normal, _point)
-        ret2 = convert(Union{GraphenePlane, Ref{_GraphenePlane}}, ret, false)
+        ret2 = convert(GraphenePlaneLike, ret, false)
         ret2
     end
-    function init_from_points(instance::Union{GraphenePlane, Ref{_GraphenePlane}}, _a::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _b::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _c::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function init_from_points(instance::GraphenePlaneLike, _a::GraphenePoint3DLike, _b::GraphenePoint3DLike, _c::GraphenePoint3DLike)
         ret = ccall(("graphene_plane_init_from_points", libgraphene), Ptr{_GraphenePlane}, (Ptr{_GraphenePlane}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _a, _b, _c)
-        ret2 = convert(Union{GraphenePlane, Ref{_GraphenePlane}}, ret, false)
+        ret2 = convert(GraphenePlaneLike, ret, false)
         ret2
     end
-    function init_from_vec4(instance::Union{GraphenePlane, Ref{_GraphenePlane}}, _src::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function init_from_vec4(instance::GraphenePlaneLike, _src::GrapheneVec4Like)
         ret = ccall(("graphene_plane_init_from_vec4", libgraphene), Ptr{_GraphenePlane}, (Ptr{_GraphenePlane}, Ptr{_GrapheneVec4}), instance, _src)
-        ret2 = convert(Union{GraphenePlane, Ref{_GraphenePlane}}, ret, false)
+        ret2 = convert(GraphenePlaneLike, ret, false)
         ret2
     end
-    function negate(instance::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function negate(instance::GraphenePlaneLike)
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_plane_negate", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GraphenePlane}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function normalize(instance::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function normalize(instance::GraphenePlaneLike)
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_plane_normalize", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GraphenePlane}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function transform(instance::Union{GraphenePlane, Ref{_GraphenePlane}}, _matrix::Union{GrapheneMatrix, Ref{_GrapheneMatrix}}, _normal_matrix::Maybe(Union{GrapheneMatrix, Ref{_GrapheneMatrix}}))
+    function transform(instance::GraphenePlaneLike, _matrix::GrapheneMatrixLike, _normal_matrix::Maybe(GrapheneMatrixLike))
         _normal_matrix_maybe = nothing_to_null(_normal_matrix)
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_plane_transform", libgraphene), Nothing, (Ptr{_GraphenePlane}, Ptr{_GrapheneMatrix}, Ptr{_GrapheneMatrix}, Ptr{_GraphenePlane}), instance, _matrix, _normal_matrix_maybe, m_res)
@@ -729,10 +729,10 @@ $(Expr(:toplevel, quote
     end
     function Point_alloc()
         ret = ccall(("graphene_point_alloc", libgraphene), Ptr{_GraphenePoint}, ())
-        ret2 = convert(Union{GraphenePoint, Ref{_GraphenePoint}}, ret, true)
+        ret2 = convert(GraphenePointLike, ret, true)
         ret2
     end
-    function distance(instance::Union{GraphenePoint, Ref{_GraphenePoint}}, _b::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function distance(instance::GraphenePointLike, _b::GraphenePointLike)
         m_d_x = Ref{Float32}()
         m_d_y = Ref{Float32}()
         ret = ccall(("graphene_point_distance", libgraphene), Float32, (Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{Float32}, Ptr{Float32}), instance, _b, m_d_x, m_d_y)
@@ -740,42 +740,42 @@ $(Expr(:toplevel, quote
         _d_y = m_d_y[]
         (ret, _d_x, _d_y)
     end
-    function equal(instance::Union{GraphenePoint, Ref{_GraphenePoint}}, _b::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function equal(instance::GraphenePointLike, _b::GraphenePointLike)
         ret = ccall(("graphene_point_equal", libgraphene), Cint, (Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function free(instance::GraphenePointLike)
         ret = ccall(("graphene_point_free", libgraphene), Nothing, (Ptr{_GraphenePoint},), instance)
         nothing
     end
-    function init(instance::Union{GraphenePoint, Ref{_GraphenePoint}}, _x::Real, _y::Real)
+    function init(instance::GraphenePointLike, _x::Real, _y::Real)
         ret = ccall(("graphene_point_init", libgraphene), Ptr{_GraphenePoint}, (Ptr{_GraphenePoint}, Float32, Float32), instance, _x, _y)
-        ret2 = convert(Union{GraphenePoint, Ref{_GraphenePoint}}, ret, false)
+        ret2 = convert(GraphenePointLike, ret, false)
         ret2
     end
-    function init_from_point(instance::Union{GraphenePoint, Ref{_GraphenePoint}}, _src::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function init_from_point(instance::GraphenePointLike, _src::GraphenePointLike)
         ret = ccall(("graphene_point_init_from_point", libgraphene), Ptr{_GraphenePoint}, (Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _src)
-        ret2 = convert(Union{GraphenePoint, Ref{_GraphenePoint}}, ret, false)
+        ret2 = convert(GraphenePointLike, ret, false)
         ret2
     end
-    function init_from_vec2(instance::Union{GraphenePoint, Ref{_GraphenePoint}}, _src::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function init_from_vec2(instance::GraphenePointLike, _src::GrapheneVec2Like)
         ret = ccall(("graphene_point_init_from_vec2", libgraphene), Ptr{_GraphenePoint}, (Ptr{_GraphenePoint}, Ptr{_GrapheneVec2}), instance, _src)
-        ret2 = convert(Union{GraphenePoint, Ref{_GraphenePoint}}, ret, false)
+        ret2 = convert(GraphenePointLike, ret, false)
         ret2
     end
-    function interpolate(instance::Union{GraphenePoint, Ref{_GraphenePoint}}, _b::Union{GraphenePoint, Ref{_GraphenePoint}}, _factor::Real)
+    function interpolate(instance::GraphenePointLike, _b::GraphenePointLike, _factor::Real)
         m_res = Ref{_GraphenePoint}()
         ret = ccall(("graphene_point_interpolate", libgraphene), Nothing, (Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Float64, Ptr{_GraphenePoint}), instance, _b, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function near(instance::Union{GraphenePoint, Ref{_GraphenePoint}}, _b::Union{GraphenePoint, Ref{_GraphenePoint}}, _epsilon::Real)
+    function near(instance::GraphenePointLike, _b::GraphenePointLike, _epsilon::Real)
         ret = ccall(("graphene_point_near", libgraphene), Cint, (Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Float32), instance, _b, _epsilon)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function to_vec2(instance::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function to_vec2(instance::GraphenePointLike)
         m_v = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_point_to_vec2", libgraphene), Nothing, (Ptr{_GraphenePoint}, Ptr{_GrapheneVec2}), instance, m_v)
         _v = m_v[]
@@ -783,83 +783,83 @@ $(Expr(:toplevel, quote
     end
     function Point3D_alloc()
         ret = ccall(("graphene_point3d_alloc", libgraphene), Ptr{_GraphenePoint3D}, ())
-        ret2 = convert(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, ret, true)
+        ret2 = convert(GraphenePoint3DLike, ret, true)
         ret2
     end
-    function cross(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _b::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function cross(instance::GraphenePoint3DLike, _b::GraphenePoint3DLike)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_cross", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function distance(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _b::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function distance(instance::GraphenePoint3DLike, _b::GraphenePoint3DLike)
         m_delta = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_point3d_distance", libgraphene), Float32, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec3}), instance, _b, m_delta)
         _delta = m_delta[]
         (ret, _delta)
     end
-    function dot(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _b::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function dot(instance::GraphenePoint3DLike, _b::GraphenePoint3DLike)
         ret = ccall(("graphene_point3d_dot", libgraphene), Float32, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _b)
         ret
     end
-    function equal(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _b::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function equal(instance::GraphenePoint3DLike, _b::GraphenePoint3DLike)
         ret = ccall(("graphene_point3d_equal", libgraphene), Cint, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function free(instance::GraphenePoint3DLike)
         ret = ccall(("graphene_point3d_free", libgraphene), Nothing, (Ptr{_GraphenePoint3D},), instance)
         nothing
     end
-    function init(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _x::Real, _y::Real, _z::Real)
+    function init(instance::GraphenePoint3DLike, _x::Real, _y::Real, _z::Real)
         ret = ccall(("graphene_point3d_init", libgraphene), Ptr{_GraphenePoint3D}, (Ptr{_GraphenePoint3D}, Float32, Float32, Float32), instance, _x, _y, _z)
-        ret2 = convert(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, ret, false)
+        ret2 = convert(GraphenePoint3DLike, ret, false)
         ret2
     end
-    function init_from_point(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _src::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function init_from_point(instance::GraphenePoint3DLike, _src::GraphenePoint3DLike)
         ret = ccall(("graphene_point3d_init_from_point", libgraphene), Ptr{_GraphenePoint3D}, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _src)
-        ret2 = convert(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, ret, false)
+        ret2 = convert(GraphenePoint3DLike, ret, false)
         ret2
     end
-    function init_from_vec3(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _v::Union{GrapheneVec3, Ref{_GrapheneVec3}})
+    function init_from_vec3(instance::GraphenePoint3DLike, _v::GrapheneVec3Like)
         ret = ccall(("graphene_point3d_init_from_vec3", libgraphene), Ptr{_GraphenePoint3D}, (Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec3}), instance, _v)
-        ret2 = convert(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, ret, false)
+        ret2 = convert(GraphenePoint3DLike, ret, false)
         ret2
     end
-    function interpolate(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _b::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _factor::Real)
+    function interpolate(instance::GraphenePoint3DLike, _b::GraphenePoint3DLike, _factor::Real)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_interpolate", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Float64, Ptr{_GraphenePoint3D}), instance, _b, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function length(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function length(instance::GraphenePoint3DLike)
         ret = ccall(("graphene_point3d_length", libgraphene), Float32, (Ptr{_GraphenePoint3D},), instance)
         ret
     end
-    function near(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _b::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _epsilon::Real)
+    function near(instance::GraphenePoint3DLike, _b::GraphenePoint3DLike, _epsilon::Real)
         ret = ccall(("graphene_point3d_near", libgraphene), Cint, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Float32), instance, _b, _epsilon)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function normalize(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function normalize(instance::GraphenePoint3DLike)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_normalize", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function normalize_viewport(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _viewport::Union{GrapheneRect, Ref{_GrapheneRect}}, _z_near::Real, _z_far::Real)
+    function normalize_viewport(instance::GraphenePoint3DLike, _viewport::GrapheneRectLike, _z_near::Real, _z_far::Real)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_normalize_viewport", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GrapheneRect}, Float32, Float32, Ptr{_GraphenePoint3D}), instance, _viewport, _z_near, _z_far, m_res)
         _res = m_res[]
         _res
     end
-    function scale(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}}, _factor::Real)
+    function scale(instance::GraphenePoint3DLike, _factor::Real)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_point3d_scale", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Float32, Ptr{_GraphenePoint3D}), instance, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function to_vec3(instance::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function to_vec3(instance::GraphenePoint3DLike)
         m_v = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_point3d_to_vec3", libgraphene), Nothing, (Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec3}), instance, m_v)
         _v = m_v[]
@@ -867,145 +867,145 @@ $(Expr(:toplevel, quote
     end
     function Quad_alloc()
         ret = ccall(("graphene_quad_alloc", libgraphene), Ptr{_GrapheneQuad}, ())
-        ret2 = convert(Union{GrapheneQuad, Ref{_GrapheneQuad}}, ret, true)
+        ret2 = convert(GrapheneQuadLike, ret, true)
         ret2
     end
-    function bounds(instance::Union{GrapheneQuad, Ref{_GrapheneQuad}})
+    function bounds(instance::GrapheneQuadLike)
         m_r = Ref{_GrapheneRect}()
         ret = ccall(("graphene_quad_bounds", libgraphene), Nothing, (Ptr{_GrapheneQuad}, Ptr{_GrapheneRect}), instance, m_r)
         _r = m_r[]
         _r
     end
-    function contains(instance::Union{GrapheneQuad, Ref{_GrapheneQuad}}, _p::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function contains(instance::GrapheneQuadLike, _p::GraphenePointLike)
         ret = ccall(("graphene_quad_contains", libgraphene), Cint, (Ptr{_GrapheneQuad}, Ptr{_GraphenePoint}), instance, _p)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneQuad, Ref{_GrapheneQuad}})
+    function free(instance::GrapheneQuadLike)
         ret = ccall(("graphene_quad_free", libgraphene), Nothing, (Ptr{_GrapheneQuad},), instance)
         nothing
     end
-    function get_point(instance::Union{GrapheneQuad, Ref{_GrapheneQuad}}, _index_::Integer)
+    function get_point(instance::GrapheneQuadLike, _index_::Integer)
         ret = ccall(("graphene_quad_get_point", libgraphene), Ptr{_GraphenePoint}, (Ptr{_GrapheneQuad}, UInt32), instance, _index_)
-        ret2 = convert(Union{GraphenePoint, Ref{_GraphenePoint}}, ret, false)
+        ret2 = convert(GraphenePointLike, ret, false)
         ret2
     end
-    function init(instance::Union{GrapheneQuad, Ref{_GrapheneQuad}}, _p1::Union{GraphenePoint, Ref{_GraphenePoint}}, _p2::Union{GraphenePoint, Ref{_GraphenePoint}}, _p3::Union{GraphenePoint, Ref{_GraphenePoint}}, _p4::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function init(instance::GrapheneQuadLike, _p1::GraphenePointLike, _p2::GraphenePointLike, _p3::GraphenePointLike, _p4::GraphenePointLike)
         ret = ccall(("graphene_quad_init", libgraphene), Ptr{_GrapheneQuad}, (Ptr{_GrapheneQuad}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}, Ptr{_GraphenePoint}), instance, _p1, _p2, _p3, _p4)
-        ret2 = convert(Union{GrapheneQuad, Ref{_GrapheneQuad}}, ret, false)
+        ret2 = convert(GrapheneQuadLike, ret, false)
         ret2
     end
-    function init_from_points(instance::Union{GrapheneQuad, Ref{_GrapheneQuad}}, _points)
+    function init_from_points(instance::GrapheneQuadLike, _points)
         _points_arr = convert(Vector{_GraphenePoint}, _points)
         ret = ccall(("graphene_quad_init_from_points", libgraphene), Ptr{_GrapheneQuad}, (Ptr{_GrapheneQuad}, Ptr{_GraphenePoint}), instance, _points_arr)
-        ret2 = convert(Union{GrapheneQuad, Ref{_GrapheneQuad}}, ret, false)
+        ret2 = convert(GrapheneQuadLike, ret, false)
         ret2
     end
-    function init_from_rect(instance::Union{GrapheneQuad, Ref{_GrapheneQuad}}, _r::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function init_from_rect(instance::GrapheneQuadLike, _r::GrapheneRectLike)
         ret = ccall(("graphene_quad_init_from_rect", libgraphene), Ptr{_GrapheneQuad}, (Ptr{_GrapheneQuad}, Ptr{_GrapheneRect}), instance, _r)
-        ret2 = convert(Union{GrapheneQuad, Ref{_GrapheneQuad}}, ret, false)
+        ret2 = convert(GrapheneQuadLike, ret, false)
         ret2
     end
     function Quaternion_alloc()
         ret = ccall(("graphene_quaternion_alloc", libgraphene), Ptr{_GrapheneQuaternion}, ())
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, true)
+        ret2 = convert(GrapheneQuaternionLike, ret, true)
         ret2
     end
-    function add(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _b::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function add(instance::GrapheneQuaternionLike, _b::GrapheneQuaternionLike)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_add", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function dot(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _b::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function dot(instance::GrapheneQuaternionLike, _b::GrapheneQuaternionLike)
         ret = ccall(("graphene_quaternion_dot", libgraphene), Float32, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, _b)
         ret
     end
-    function equal(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _b::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function equal(instance::GrapheneQuaternionLike, _b::GrapheneQuaternionLike)
         ret = ccall(("graphene_quaternion_equal", libgraphene), Cint, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function free(instance::GrapheneQuaternionLike)
         ret = ccall(("graphene_quaternion_free", libgraphene), Nothing, (Ptr{_GrapheneQuaternion},), instance)
         nothing
     end
-    function init(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _x::Real, _y::Real, _z::Real, _w::Real)
+    function init(instance::GrapheneQuaternionLike, _x::Real, _y::Real, _z::Real, _w::Real)
         ret = ccall(("graphene_quaternion_init", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion}, Float32, Float32, Float32, Float32), instance, _x, _y, _z, _w)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function init_from_angle_vec3(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _angle::Real, _axis::Union{GrapheneVec3, Ref{_GrapheneVec3}})
+    function init_from_angle_vec3(instance::GrapheneQuaternionLike, _angle::Real, _axis::GrapheneVec3Like)
         ret = ccall(("graphene_quaternion_init_from_angle_vec3", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion}, Float32, Ptr{_GrapheneVec3}), instance, _angle, _axis)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function init_from_angles(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _deg_x::Real, _deg_y::Real, _deg_z::Real)
+    function init_from_angles(instance::GrapheneQuaternionLike, _deg_x::Real, _deg_y::Real, _deg_z::Real)
         ret = ccall(("graphene_quaternion_init_from_angles", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion}, Float32, Float32, Float32), instance, _deg_x, _deg_y, _deg_z)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function init_from_euler(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _e::Union{GrapheneEuler, Ref{_GrapheneEuler}})
+    function init_from_euler(instance::GrapheneQuaternionLike, _e::GrapheneEulerLike)
         ret = ccall(("graphene_quaternion_init_from_euler", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneEuler}), instance, _e)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function init_from_matrix(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _m::Union{GrapheneMatrix, Ref{_GrapheneMatrix}})
+    function init_from_matrix(instance::GrapheneQuaternionLike, _m::GrapheneMatrixLike)
         ret = ccall(("graphene_quaternion_init_from_matrix", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneMatrix}), instance, _m)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function init_from_quaternion(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _src::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function init_from_quaternion(instance::GrapheneQuaternionLike, _src::GrapheneQuaternionLike)
         ret = ccall(("graphene_quaternion_init_from_quaternion", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, _src)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function init_from_radians(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _rad_x::Real, _rad_y::Real, _rad_z::Real)
+    function init_from_radians(instance::GrapheneQuaternionLike, _rad_x::Real, _rad_y::Real, _rad_z::Real)
         ret = ccall(("graphene_quaternion_init_from_radians", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion}, Float32, Float32, Float32), instance, _rad_x, _rad_y, _rad_z)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function init_from_vec4(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _src::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function init_from_vec4(instance::GrapheneQuaternionLike, _src::GrapheneVec4Like)
         ret = ccall(("graphene_quaternion_init_from_vec4", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneVec4}), instance, _src)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function init_identity(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function init_identity(instance::GrapheneQuaternionLike)
         ret = ccall(("graphene_quaternion_init_identity", libgraphene), Ptr{_GrapheneQuaternion}, (Ptr{_GrapheneQuaternion},), instance)
-        ret2 = convert(Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, ret, false)
+        ret2 = convert(GrapheneQuaternionLike, ret, false)
         ret2
     end
-    function invert(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function invert(instance::GrapheneQuaternionLike)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_invert", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function multiply(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _b::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function multiply(instance::GrapheneQuaternionLike, _b::GrapheneQuaternionLike)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_multiply", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function normalize(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function normalize(instance::GrapheneQuaternionLike)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_normalize", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function scale(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _factor::Real)
+    function scale(instance::GrapheneQuaternionLike, _factor::Real)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_scale", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Float32, Ptr{_GrapheneQuaternion}), instance, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function slerp(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _b::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}}, _factor::Real)
+    function slerp(instance::GrapheneQuaternionLike, _b::GrapheneQuaternionLike, _factor::Real)
         m_res = Ref{_GrapheneQuaternion}()
         ret = ccall(("graphene_quaternion_slerp", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneQuaternion}, Float32, Ptr{_GrapheneQuaternion}), instance, _b, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function to_angle_vec3(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function to_angle_vec3(instance::GrapheneQuaternionLike)
         m_angle = Ref{Float32}()
         m_axis = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_quaternion_to_angle_vec3", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{Float32}, Ptr{_GrapheneVec3}), instance, m_angle, m_axis)
@@ -1013,7 +1013,7 @@ $(Expr(:toplevel, quote
         _axis = m_axis[]
         (_angle, _axis)
     end
-    function to_angles(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function to_angles(instance::GrapheneQuaternionLike)
         m_deg_x = Ref{Float32}()
         m_deg_y = Ref{Float32}()
         m_deg_z = Ref{Float32}()
@@ -1023,13 +1023,13 @@ $(Expr(:toplevel, quote
         _deg_z = m_deg_z[]
         (_deg_x, _deg_y, _deg_z)
     end
-    function to_matrix(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function to_matrix(instance::GrapheneQuaternionLike)
         m_m = Ref{_GrapheneMatrix}()
         ret = ccall(("graphene_quaternion_to_matrix", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneMatrix}), instance, m_m)
         _m = m_m[]
         _m
     end
-    function to_radians(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function to_radians(instance::GrapheneQuaternionLike)
         m_rad_x = Ref{Float32}()
         m_rad_y = Ref{Float32}()
         m_rad_z = Ref{Float32}()
@@ -1039,7 +1039,7 @@ $(Expr(:toplevel, quote
         _rad_z = m_rad_z[]
         (_rad_x, _rad_y, _rad_z)
     end
-    function to_vec4(instance::Union{GrapheneQuaternion, Ref{_GrapheneQuaternion}})
+    function to_vec4(instance::GrapheneQuaternionLike)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_quaternion_to_vec4", libgraphene), Nothing, (Ptr{_GrapheneQuaternion}, Ptr{_GrapheneVec4}), instance, m_res)
         _res = m_res[]
@@ -1047,255 +1047,255 @@ $(Expr(:toplevel, quote
     end
     function Ray_alloc()
         ret = ccall(("graphene_ray_alloc", libgraphene), Ptr{_GrapheneRay}, ())
-        ret2 = convert(Union{GrapheneRay, Ref{_GrapheneRay}}, ret, true)
+        ret2 = convert(GrapheneRayLike, ret, true)
         ret2
     end
-    function equal(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _b::Union{GrapheneRay, Ref{_GrapheneRay}})
+    function equal(instance::GrapheneRayLike, _b::GrapheneRayLike)
         ret = ccall(("graphene_ray_equal", libgraphene), Cint, (Ptr{_GrapheneRay}, Ptr{_GrapheneRay}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneRay, Ref{_GrapheneRay}})
+    function free(instance::GrapheneRayLike)
         ret = ccall(("graphene_ray_free", libgraphene), Nothing, (Ptr{_GrapheneRay},), instance)
         nothing
     end
-    function get_closest_point_to_point(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _p::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function get_closest_point_to_point(instance::GrapheneRayLike, _p::GraphenePoint3DLike)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_ray_get_closest_point_to_point", libgraphene), Nothing, (Ptr{_GrapheneRay}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _p, m_res)
         _res = m_res[]
         _res
     end
-    function get_direction(instance::Union{GrapheneRay, Ref{_GrapheneRay}})
+    function get_direction(instance::GrapheneRayLike)
         m_direction = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_ray_get_direction", libgraphene), Nothing, (Ptr{_GrapheneRay}, Ptr{_GrapheneVec3}), instance, m_direction)
         _direction = m_direction[]
         _direction
     end
-    function get_distance_to_plane(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _p::Union{GraphenePlane, Ref{_GraphenePlane}})
+    function get_distance_to_plane(instance::GrapheneRayLike, _p::GraphenePlaneLike)
         ret = ccall(("graphene_ray_get_distance_to_plane", libgraphene), Float32, (Ptr{_GrapheneRay}, Ptr{_GraphenePlane}), instance, _p)
         ret
     end
-    function get_distance_to_point(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _p::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function get_distance_to_point(instance::GrapheneRayLike, _p::GraphenePoint3DLike)
         ret = ccall(("graphene_ray_get_distance_to_point", libgraphene), Float32, (Ptr{_GrapheneRay}, Ptr{_GraphenePoint3D}), instance, _p)
         ret
     end
-    function get_origin(instance::Union{GrapheneRay, Ref{_GrapheneRay}})
+    function get_origin(instance::GrapheneRayLike)
         m_origin = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_ray_get_origin", libgraphene), Nothing, (Ptr{_GrapheneRay}, Ptr{_GraphenePoint3D}), instance, m_origin)
         _origin = m_origin[]
         _origin
     end
-    function get_position_at(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _t::Real)
+    function get_position_at(instance::GrapheneRayLike, _t::Real)
         m_position = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_ray_get_position_at", libgraphene), Nothing, (Ptr{_GrapheneRay}, Float32, Ptr{_GraphenePoint3D}), instance, _t, m_position)
         _position = m_position[]
         _position
     end
-    function init(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _origin::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _direction::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}))
+    function init(instance::GrapheneRayLike, _origin::Maybe(GraphenePoint3DLike), _direction::Maybe(GrapheneVec3Like))
         _origin_maybe = nothing_to_null(_origin)
         _direction_maybe = nothing_to_null(_direction)
         ret = ccall(("graphene_ray_init", libgraphene), Ptr{_GrapheneRay}, (Ptr{_GrapheneRay}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec3}), instance, _origin_maybe, _direction_maybe)
-        ret2 = convert(Union{GrapheneRay, Ref{_GrapheneRay}}, ret, false)
+        ret2 = convert(GrapheneRayLike, ret, false)
         ret2
     end
-    function init_from_ray(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _src::Union{GrapheneRay, Ref{_GrapheneRay}})
+    function init_from_ray(instance::GrapheneRayLike, _src::GrapheneRayLike)
         ret = ccall(("graphene_ray_init_from_ray", libgraphene), Ptr{_GrapheneRay}, (Ptr{_GrapheneRay}, Ptr{_GrapheneRay}), instance, _src)
-        ret2 = convert(Union{GrapheneRay, Ref{_GrapheneRay}}, ret, false)
+        ret2 = convert(GrapheneRayLike, ret, false)
         ret2
     end
-    function init_from_vec3(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _origin::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _direction::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}))
+    function init_from_vec3(instance::GrapheneRayLike, _origin::Maybe(GrapheneVec3Like), _direction::Maybe(GrapheneVec3Like))
         _origin_maybe = nothing_to_null(_origin)
         _direction_maybe = nothing_to_null(_direction)
         ret = ccall(("graphene_ray_init_from_vec3", libgraphene), Ptr{_GrapheneRay}, (Ptr{_GrapheneRay}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _origin_maybe, _direction_maybe)
-        ret2 = convert(Union{GrapheneRay, Ref{_GrapheneRay}}, ret, false)
+        ret2 = convert(GrapheneRayLike, ret, false)
         ret2
     end
-    function intersect_box(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _b::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function intersect_box(instance::GrapheneRayLike, _b::GrapheneBoxLike)
         m_t_out = Ref{Float32}()
         ret = ccall(("graphene_ray_intersect_box", libgraphene), UInt32, (Ptr{_GrapheneRay}, Ptr{_GrapheneBox}, Ptr{Float32}), instance, _b, m_t_out)
         ret2 = RayIntersectionKind(ret)
         _t_out = m_t_out[]
         (ret2, _t_out)
     end
-    function intersect_sphere(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _s::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function intersect_sphere(instance::GrapheneRayLike, _s::GrapheneSphereLike)
         m_t_out = Ref{Float32}()
         ret = ccall(("graphene_ray_intersect_sphere", libgraphene), UInt32, (Ptr{_GrapheneRay}, Ptr{_GrapheneSphere}, Ptr{Float32}), instance, _s, m_t_out)
         ret2 = RayIntersectionKind(ret)
         _t_out = m_t_out[]
         (ret2, _t_out)
     end
-    function intersect_triangle(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _t::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function intersect_triangle(instance::GrapheneRayLike, _t::GrapheneTriangleLike)
         m_t_out = Ref{Float32}()
         ret = ccall(("graphene_ray_intersect_triangle", libgraphene), UInt32, (Ptr{_GrapheneRay}, Ptr{_GrapheneTriangle}, Ptr{Float32}), instance, _t, m_t_out)
         ret2 = RayIntersectionKind(ret)
         _t_out = m_t_out[]
         (ret2, _t_out)
     end
-    function intersects_box(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _b::Union{GrapheneBox, Ref{_GrapheneBox}})
+    function intersects_box(instance::GrapheneRayLike, _b::GrapheneBoxLike)
         ret = ccall(("graphene_ray_intersects_box", libgraphene), Cint, (Ptr{_GrapheneRay}, Ptr{_GrapheneBox}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function intersects_sphere(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _s::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function intersects_sphere(instance::GrapheneRayLike, _s::GrapheneSphereLike)
         ret = ccall(("graphene_ray_intersects_sphere", libgraphene), Cint, (Ptr{_GrapheneRay}, Ptr{_GrapheneSphere}), instance, _s)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function intersects_triangle(instance::Union{GrapheneRay, Ref{_GrapheneRay}}, _t::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function intersects_triangle(instance::GrapheneRayLike, _t::GrapheneTriangleLike)
         ret = ccall(("graphene_ray_intersects_triangle", libgraphene), Cint, (Ptr{_GrapheneRay}, Ptr{_GrapheneTriangle}), instance, _t)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function contains_point(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _p::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function contains_point(instance::GrapheneRectLike, _p::GraphenePointLike)
         ret = ccall(("graphene_rect_contains_point", libgraphene), Cint, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, _p)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function contains_rect(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _b::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function contains_rect(instance::GrapheneRectLike, _b::GrapheneRectLike)
         ret = ccall(("graphene_rect_contains_rect", libgraphene), Cint, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function equal(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _b::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function equal(instance::GrapheneRectLike, _b::GrapheneRectLike)
         ret = ccall(("graphene_rect_equal", libgraphene), Cint, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function expand(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _p::Union{GraphenePoint, Ref{_GraphenePoint}})
+    function expand(instance::GrapheneRectLike, _p::GraphenePointLike)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_expand", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Ptr{_GrapheneRect}), instance, _p, m_res)
         _res = m_res[]
         _res
     end
-    function free(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function free(instance::GrapheneRectLike)
         ret = ccall(("graphene_rect_free", libgraphene), Nothing, (Ptr{_GrapheneRect},), instance)
         nothing
     end
-    function get_area(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_area(instance::GrapheneRectLike)
         ret = ccall(("graphene_rect_get_area", libgraphene), Float32, (Ptr{_GrapheneRect},), instance)
         ret
     end
-    function get_bottom_left(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_bottom_left(instance::GrapheneRectLike)
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_bottom_left", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
         _p
     end
-    function get_bottom_right(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_bottom_right(instance::GrapheneRectLike)
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_bottom_right", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
         _p
     end
-    function get_center(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_center(instance::GrapheneRectLike)
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_center", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
         _p
     end
-    function get_height(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_height(instance::GrapheneRectLike)
         ret = ccall(("graphene_rect_get_height", libgraphene), Float32, (Ptr{_GrapheneRect},), instance)
         ret
     end
-    function get_top_left(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_top_left(instance::GrapheneRectLike)
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_top_left", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
         _p
     end
-    function get_top_right(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_top_right(instance::GrapheneRectLike)
         m_p = Ref{_GraphenePoint}()
         ret = ccall(("graphene_rect_get_top_right", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GraphenePoint}), instance, m_p)
         _p = m_p[]
         _p
     end
-    function get_vertices(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_vertices(instance::GrapheneRectLike)
         m_vertices = Ref{Ptr{_GrapheneVec2}}()
         ret = ccall(("graphene_rect_get_vertices", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{Ptr{_GrapheneVec2}}), instance, m_vertices)
         _vertices = m_vertices[]
         _vertices
     end
-    function get_width(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_width(instance::GrapheneRectLike)
         ret = ccall(("graphene_rect_get_width", libgraphene), Float32, (Ptr{_GrapheneRect},), instance)
         ret
     end
-    function get_x(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_x(instance::GrapheneRectLike)
         ret = ccall(("graphene_rect_get_x", libgraphene), Float32, (Ptr{_GrapheneRect},), instance)
         ret
     end
-    function get_y(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function get_y(instance::GrapheneRectLike)
         ret = ccall(("graphene_rect_get_y", libgraphene), Float32, (Ptr{_GrapheneRect},), instance)
         ret
     end
-    function init(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _x::Real, _y::Real, _width::Real, _height::Real)
+    function init(instance::GrapheneRectLike, _x::Real, _y::Real, _width::Real, _height::Real)
         ret = ccall(("graphene_rect_init", libgraphene), Ptr{_GrapheneRect}, (Ptr{_GrapheneRect}, Float32, Float32, Float32, Float32), instance, _x, _y, _width, _height)
-        ret2 = convert(Union{GrapheneRect, Ref{_GrapheneRect}}, ret, false)
+        ret2 = convert(GrapheneRectLike, ret, false)
         ret2
     end
-    function init_from_rect(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _src::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function init_from_rect(instance::GrapheneRectLike, _src::GrapheneRectLike)
         ret = ccall(("graphene_rect_init_from_rect", libgraphene), Ptr{_GrapheneRect}, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _src)
-        ret2 = convert(Union{GrapheneRect, Ref{_GrapheneRect}}, ret, false)
+        ret2 = convert(GrapheneRectLike, ret, false)
         ret2
     end
-    function inset(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _d_x::Real, _d_y::Real)
+    function inset(instance::GrapheneRectLike, _d_x::Real, _d_y::Real)
         ret = ccall(("graphene_rect_inset", libgraphene), Ptr{_GrapheneRect}, (Ptr{_GrapheneRect}, Float32, Float32), instance, _d_x, _d_y)
-        ret2 = convert(Union{GrapheneRect, Ref{_GrapheneRect}}, ret, false)
+        ret2 = convert(GrapheneRectLike, ret, false)
         ret2
     end
-    function inset_r(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _d_x::Real, _d_y::Real)
+    function inset_r(instance::GrapheneRectLike, _d_x::Real, _d_y::Real)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_inset_r", libgraphene), Nothing, (Ptr{_GrapheneRect}, Float32, Float32, Ptr{_GrapheneRect}), instance, _d_x, _d_y, m_res)
         _res = m_res[]
         _res
     end
-    function interpolate(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _b::Union{GrapheneRect, Ref{_GrapheneRect}}, _factor::Real)
+    function interpolate(instance::GrapheneRectLike, _b::GrapheneRectLike, _factor::Real)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_interpolate", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}, Float64, Ptr{_GrapheneRect}), instance, _b, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function intersection(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _b::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function intersection(instance::GrapheneRectLike, _b::GrapheneRectLike)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_intersection", libgraphene), Cint, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _b, m_res)
         ret2 = convert(Bool, ret)
         _res = m_res[]
         (ret2, _res)
     end
-    function normalize(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function normalize(instance::GrapheneRectLike)
         ret = ccall(("graphene_rect_normalize", libgraphene), Ptr{_GrapheneRect}, (Ptr{_GrapheneRect},), instance)
-        ret2 = convert(Union{GrapheneRect, Ref{_GrapheneRect}}, ret, false)
+        ret2 = convert(GrapheneRectLike, ret, false)
         ret2
     end
-    function normalize_r(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function normalize_r(instance::GrapheneRectLike)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_normalize_r", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function offset(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _d_x::Real, _d_y::Real)
+    function offset(instance::GrapheneRectLike, _d_x::Real, _d_y::Real)
         ret = ccall(("graphene_rect_offset", libgraphene), Ptr{_GrapheneRect}, (Ptr{_GrapheneRect}, Float32, Float32), instance, _d_x, _d_y)
-        ret2 = convert(Union{GrapheneRect, Ref{_GrapheneRect}}, ret, false)
+        ret2 = convert(GrapheneRectLike, ret, false)
         ret2
     end
-    function offset_r(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _d_x::Real, _d_y::Real)
+    function offset_r(instance::GrapheneRectLike, _d_x::Real, _d_y::Real)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_offset_r", libgraphene), Nothing, (Ptr{_GrapheneRect}, Float32, Float32, Ptr{_GrapheneRect}), instance, _d_x, _d_y, m_res)
         _res = m_res[]
         _res
     end
-    function round_extents(instance::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function round_extents(instance::GrapheneRectLike)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_round_extents", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function scale(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _s_h::Real, _s_v::Real)
+    function scale(instance::GrapheneRectLike, _s_h::Real, _s_v::Real)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_scale", libgraphene), Nothing, (Ptr{_GrapheneRect}, Float32, Float32, Ptr{_GrapheneRect}), instance, _s_h, _s_v, m_res)
         _res = m_res[]
         _res
     end
-    function union(instance::Union{GrapheneRect, Ref{_GrapheneRect}}, _b::Union{GrapheneRect, Ref{_GrapheneRect}})
+    function union(instance::GrapheneRectLike, _b::GrapheneRectLike)
         m_res = Ref{_GrapheneRect}()
         ret = ccall(("graphene_rect_union", libgraphene), Nothing, (Ptr{_GrapheneRect}, Ptr{_GrapheneRect}, Ptr{_GrapheneRect}), instance, _b, m_res)
         _res = m_res[]
@@ -1303,71 +1303,71 @@ $(Expr(:toplevel, quote
     end
     function Sphere_alloc()
         ret = ccall(("graphene_sphere_alloc", libgraphene), Ptr{_GrapheneSphere}, ())
-        ret2 = convert(Union{GrapheneSphere, Ref{_GrapheneSphere}}, ret, true)
+        ret2 = convert(GrapheneSphereLike, ret, true)
         ret2
     end
-    function contains_point(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function contains_point(instance::GrapheneSphereLike, _point::GraphenePoint3DLike)
         ret = ccall(("graphene_sphere_contains_point", libgraphene), Cint, (Ptr{_GrapheneSphere}, Ptr{_GraphenePoint3D}), instance, _point)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function distance(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function distance(instance::GrapheneSphereLike, _point::GraphenePoint3DLike)
         ret = ccall(("graphene_sphere_distance", libgraphene), Float32, (Ptr{_GrapheneSphere}, Ptr{_GraphenePoint3D}), instance, _point)
         ret
     end
-    function equal(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}}, _b::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function equal(instance::GrapheneSphereLike, _b::GrapheneSphereLike)
         ret = ccall(("graphene_sphere_equal", libgraphene), Cint, (Ptr{_GrapheneSphere}, Ptr{_GrapheneSphere}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function free(instance::GrapheneSphereLike)
         ret = ccall(("graphene_sphere_free", libgraphene), Nothing, (Ptr{_GrapheneSphere},), instance)
         nothing
     end
-    function get_bounding_box(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function get_bounding_box(instance::GrapheneSphereLike)
         m_box = Ref{_GrapheneBox}()
         ret = ccall(("graphene_sphere_get_bounding_box", libgraphene), Nothing, (Ptr{_GrapheneSphere}, Ptr{_GrapheneBox}), instance, m_box)
         _box = m_box[]
         _box
     end
-    function get_center(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function get_center(instance::GrapheneSphereLike)
         m_center = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_sphere_get_center", libgraphene), Nothing, (Ptr{_GrapheneSphere}, Ptr{_GraphenePoint3D}), instance, m_center)
         _center = m_center[]
         _center
     end
-    function get_radius(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function get_radius(instance::GrapheneSphereLike)
         ret = ccall(("graphene_sphere_get_radius", libgraphene), Float32, (Ptr{_GrapheneSphere},), instance)
         ret
     end
-    function init(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}}, _center::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _radius::Real)
+    function init(instance::GrapheneSphereLike, _center::Maybe(GraphenePoint3DLike), _radius::Real)
         _center_maybe = nothing_to_null(_center)
         ret = ccall(("graphene_sphere_init", libgraphene), Ptr{_GrapheneSphere}, (Ptr{_GrapheneSphere}, Ptr{_GraphenePoint3D}, Float32), instance, _center_maybe, _radius)
-        ret2 = convert(Union{GrapheneSphere, Ref{_GrapheneSphere}}, ret, false)
+        ret2 = convert(GrapheneSphereLike, ret, false)
         ret2
     end
-    function init_from_points(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}}, _points, _center::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
+    function init_from_points(instance::GrapheneSphereLike, _points, _center::Maybe(GraphenePoint3DLike))
         _points_arr = convert(Vector{_GraphenePoint3D}, _points)
         _center_maybe = nothing_to_null(_center)
         _n_points = length(_points)
         ret = ccall(("graphene_sphere_init_from_points", libgraphene), Ptr{_GrapheneSphere}, (Ptr{_GrapheneSphere}, UInt32, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _n_points, _points_arr, _center_maybe)
-        ret2 = convert(Union{GrapheneSphere, Ref{_GrapheneSphere}}, ret, false)
+        ret2 = convert(GrapheneSphereLike, ret, false)
         ret2
     end
-    function init_from_vectors(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}}, _vectors, _center::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
+    function init_from_vectors(instance::GrapheneSphereLike, _vectors, _center::Maybe(GraphenePoint3DLike))
         _vectors_arr = convert(Vector{_GrapheneVec3}, _vectors)
         _center_maybe = nothing_to_null(_center)
         _n_vectors = length(_vectors)
         ret = ccall(("graphene_sphere_init_from_vectors", libgraphene), Ptr{_GrapheneSphere}, (Ptr{_GrapheneSphere}, UInt32, Ptr{_GrapheneVec3}, Ptr{_GraphenePoint3D}), instance, _n_vectors, _vectors_arr, _center_maybe)
-        ret2 = convert(Union{GrapheneSphere, Ref{_GrapheneSphere}}, ret, false)
+        ret2 = convert(GrapheneSphereLike, ret, false)
         ret2
     end
-    function is_empty(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}})
+    function is_empty(instance::GrapheneSphereLike)
         ret = ccall(("graphene_sphere_is_empty", libgraphene), Cint, (Ptr{_GrapheneSphere},), instance)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function translate(instance::Union{GrapheneSphere, Ref{_GrapheneSphere}}, _point::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function translate(instance::GrapheneSphereLike, _point::GraphenePoint3DLike)
         m_res = Ref{_GrapheneSphere}()
         ret = ccall(("graphene_sphere_translate", libgraphene), Nothing, (Ptr{_GrapheneSphere}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneSphere}), instance, _point, m_res)
         _res = m_res[]
@@ -1375,28 +1375,28 @@ $(Expr(:toplevel, quote
     end
     function Triangle_alloc()
         ret = ccall(("graphene_triangle_alloc", libgraphene), Ptr{_GrapheneTriangle}, ())
-        ret2 = convert(Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, ret, true)
+        ret2 = convert(GrapheneTriangleLike, ret, true)
         ret2
     end
-    function contains_point(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, _p::Union{GraphenePoint3D, Ref{_GraphenePoint3D}})
+    function contains_point(instance::GrapheneTriangleLike, _p::GraphenePoint3DLike)
         ret = ccall(("graphene_triangle_contains_point", libgraphene), Cint, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}), instance, _p)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function equal(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, _b::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function equal(instance::GrapheneTriangleLike, _b::GrapheneTriangleLike)
         ret = ccall(("graphene_triangle_equal", libgraphene), Cint, (Ptr{_GrapheneTriangle}, Ptr{_GrapheneTriangle}), instance, _b)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function free(instance::GrapheneTriangleLike)
         ret = ccall(("graphene_triangle_free", libgraphene), Nothing, (Ptr{_GrapheneTriangle},), instance)
         nothing
     end
-    function get_area(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function get_area(instance::GrapheneTriangleLike)
         ret = ccall(("graphene_triangle_get_area", libgraphene), Float32, (Ptr{_GrapheneTriangle},), instance)
         ret
     end
-    function get_barycoords(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, _p::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
+    function get_barycoords(instance::GrapheneTriangleLike, _p::Maybe(GraphenePoint3DLike))
         _p_maybe = nothing_to_null(_p)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_triangle_get_barycoords", libgraphene), Cint, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec2}), instance, _p_maybe, m_res)
@@ -1404,31 +1404,31 @@ $(Expr(:toplevel, quote
         _res = m_res[]
         (ret2, _res)
     end
-    function get_bounding_box(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function get_bounding_box(instance::GrapheneTriangleLike)
         m_res = Ref{_GrapheneBox}()
         ret = ccall(("graphene_triangle_get_bounding_box", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GrapheneBox}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function get_midpoint(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function get_midpoint(instance::GrapheneTriangleLike)
         m_res = Ref{_GraphenePoint3D}()
         ret = ccall(("graphene_triangle_get_midpoint", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function get_normal(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function get_normal(instance::GrapheneTriangleLike)
         m_res = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_triangle_get_normal", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GrapheneVec3}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function get_plane(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function get_plane(instance::GrapheneTriangleLike)
         m_res = Ref{_GraphenePlane}()
         ret = ccall(("graphene_triangle_get_plane", libgraphene), Nothing, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePlane}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function get_points(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function get_points(instance::GrapheneTriangleLike)
         m_a = Ref{_GraphenePoint3D}()
         m_b = Ref{_GraphenePoint3D}()
         m_c = Ref{_GraphenePoint3D}()
@@ -1438,7 +1438,7 @@ $(Expr(:toplevel, quote
         _c = m_c[]
         (_a, _b, _c)
     end
-    function get_uv(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, _p::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _uv_a::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _uv_b::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _uv_c::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function get_uv(instance::GrapheneTriangleLike, _p::Maybe(GraphenePoint3DLike), _uv_a::GrapheneVec2Like, _uv_b::GrapheneVec2Like, _uv_c::GrapheneVec2Like)
         _p_maybe = nothing_to_null(_p)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_triangle_get_uv", libgraphene), Cint, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _p_maybe, _uv_a, _uv_b, _uv_c, m_res)
@@ -1446,7 +1446,7 @@ $(Expr(:toplevel, quote
         _res = m_res[]
         (ret2, _res)
     end
-    function get_vertices(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}})
+    function get_vertices(instance::GrapheneTriangleLike)
         m_a = Ref{_GrapheneVec3}()
         m_b = Ref{_GrapheneVec3}()
         m_c = Ref{_GrapheneVec3}()
@@ -1456,142 +1456,142 @@ $(Expr(:toplevel, quote
         _c = m_c[]
         (_a, _b, _c)
     end
-    function init_from_float(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, _a, _b, _c)
+    function init_from_float(instance::GrapheneTriangleLike, _a, _b, _c)
         _a_arr = convert(Vector{Float32}, _a)
         _b_arr = convert(Vector{Float32}, _b)
         _c_arr = convert(Vector{Float32}, _c)
         ret = ccall(("graphene_triangle_init_from_float", libgraphene), Ptr{_GrapheneTriangle}, (Ptr{_GrapheneTriangle}, Ptr{Float32}, Ptr{Float32}, Ptr{Float32}), instance, _a_arr, _b_arr, _c_arr)
-        ret2 = convert(Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, ret, false)
+        ret2 = convert(GrapheneTriangleLike, ret, false)
         ret2
     end
-    function init_from_point3d(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, _a::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _b::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}), _c::Maybe(Union{GraphenePoint3D, Ref{_GraphenePoint3D}}))
+    function init_from_point3d(instance::GrapheneTriangleLike, _a::Maybe(GraphenePoint3DLike), _b::Maybe(GraphenePoint3DLike), _c::Maybe(GraphenePoint3DLike))
         _a_maybe = nothing_to_null(_a)
         _b_maybe = nothing_to_null(_b)
         _c_maybe = nothing_to_null(_c)
         ret = ccall(("graphene_triangle_init_from_point3d", libgraphene), Ptr{_GrapheneTriangle}, (Ptr{_GrapheneTriangle}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}, Ptr{_GraphenePoint3D}), instance, _a_maybe, _b_maybe, _c_maybe)
-        ret2 = convert(Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, ret, false)
+        ret2 = convert(GrapheneTriangleLike, ret, false)
         ret2
     end
-    function init_from_vec3(instance::Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, _a::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _b::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}), _c::Maybe(Union{GrapheneVec3, Ref{_GrapheneVec3}}))
+    function init_from_vec3(instance::GrapheneTriangleLike, _a::Maybe(GrapheneVec3Like), _b::Maybe(GrapheneVec3Like), _c::Maybe(GrapheneVec3Like))
         _a_maybe = nothing_to_null(_a)
         _b_maybe = nothing_to_null(_b)
         _c_maybe = nothing_to_null(_c)
         ret = ccall(("graphene_triangle_init_from_vec3", libgraphene), Ptr{_GrapheneTriangle}, (Ptr{_GrapheneTriangle}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}, Ptr{_GrapheneVec3}), instance, _a_maybe, _b_maybe, _c_maybe)
-        ret2 = convert(Union{GrapheneTriangle, Ref{_GrapheneTriangle}}, ret, false)
+        ret2 = convert(GrapheneTriangleLike, ret, false)
         ret2
     end
     function Vec2_alloc()
         ret = ccall(("graphene_vec2_alloc", libgraphene), Ptr{_GrapheneVec2}, ())
-        ret2 = convert(Union{GrapheneVec2, Ref{_GrapheneVec2}}, ret, true)
+        ret2 = convert(GrapheneVec2Like, ret, true)
         ret2
     end
-    function add(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _b::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function add(instance::GrapheneVec2Like, _b::GrapheneVec2Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_add", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function divide(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _b::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function divide(instance::GrapheneVec2Like, _b::GrapheneVec2Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_divide", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function dot(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _b::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function dot(instance::GrapheneVec2Like, _b::GrapheneVec2Like)
         ret = ccall(("graphene_vec2_dot", libgraphene), Float32, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b)
         ret
     end
-    function equal(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _v2::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function equal(instance::GrapheneVec2Like, _v2::GrapheneVec2Like)
         ret = ccall(("graphene_vec2_equal", libgraphene), Cint, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _v2)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function free(instance::GrapheneVec2Like)
         ret = ccall(("graphene_vec2_free", libgraphene), Nothing, (Ptr{_GrapheneVec2},), instance)
         nothing
     end
-    function get_x(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function get_x(instance::GrapheneVec2Like)
         ret = ccall(("graphene_vec2_get_x", libgraphene), Float32, (Ptr{_GrapheneVec2},), instance)
         ret
     end
-    function get_y(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function get_y(instance::GrapheneVec2Like)
         ret = ccall(("graphene_vec2_get_y", libgraphene), Float32, (Ptr{_GrapheneVec2},), instance)
         ret
     end
-    function init(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _x::Real, _y::Real)
+    function init(instance::GrapheneVec2Like, _x::Real, _y::Real)
         ret = ccall(("graphene_vec2_init", libgraphene), Ptr{_GrapheneVec2}, (Ptr{_GrapheneVec2}, Float32, Float32), instance, _x, _y)
-        ret2 = convert(Union{GrapheneVec2, Ref{_GrapheneVec2}}, ret, false)
+        ret2 = convert(GrapheneVec2Like, ret, false)
         ret2
     end
-    function init_from_float(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _src)
+    function init_from_float(instance::GrapheneVec2Like, _src)
         _src_arr = convert(Vector{Float32}, _src)
         ret = ccall(("graphene_vec2_init_from_float", libgraphene), Ptr{_GrapheneVec2}, (Ptr{_GrapheneVec2}, Ptr{Float32}), instance, _src_arr)
-        ret2 = convert(Union{GrapheneVec2, Ref{_GrapheneVec2}}, ret, false)
+        ret2 = convert(GrapheneVec2Like, ret, false)
         ret2
     end
-    function init_from_vec2(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _src::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function init_from_vec2(instance::GrapheneVec2Like, _src::GrapheneVec2Like)
         ret = ccall(("graphene_vec2_init_from_vec2", libgraphene), Ptr{_GrapheneVec2}, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _src)
-        ret2 = convert(Union{GrapheneVec2, Ref{_GrapheneVec2}}, ret, false)
+        ret2 = convert(GrapheneVec2Like, ret, false)
         ret2
     end
-    function interpolate(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _v2::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _factor::Real)
+    function interpolate(instance::GrapheneVec2Like, _v2::GrapheneVec2Like, _factor::Real)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_interpolate", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Float64, Ptr{_GrapheneVec2}), instance, _v2, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function length(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function length(instance::GrapheneVec2Like)
         ret = ccall(("graphene_vec2_length", libgraphene), Float32, (Ptr{_GrapheneVec2},), instance)
         ret
     end
-    function max(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _b::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function max(instance::GrapheneVec2Like, _b::GrapheneVec2Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_max", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function min(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _b::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function min(instance::GrapheneVec2Like, _b::GrapheneVec2Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_min", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function multiply(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _b::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function multiply(instance::GrapheneVec2Like, _b::GrapheneVec2Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_multiply", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function near(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _v2::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _epsilon::Real)
+    function near(instance::GrapheneVec2Like, _v2::GrapheneVec2Like, _epsilon::Real)
         ret = ccall(("graphene_vec2_near", libgraphene), Cint, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Float32), instance, _v2, _epsilon)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function negate(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function negate(instance::GrapheneVec2Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_negate", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function normalize(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function normalize(instance::GrapheneVec2Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_normalize", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function scale(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _factor::Real)
+    function scale(instance::GrapheneVec2Like, _factor::Real)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_scale", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Float32, Ptr{_GrapheneVec2}), instance, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function subtract(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _b::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function subtract(instance::GrapheneVec2Like, _b::GrapheneVec2Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec2_subtract", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}, Ptr{_GrapheneVec2}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function to_float(instance::Union{GrapheneVec2, Ref{_GrapheneVec2}})
+    function to_float(instance::GrapheneVec2Like)
         m_dest = Ref{Ptr{Float32}}()
         ret = ccall(("graphene_vec2_to_float", libgraphene), Nothing, (Ptr{_GrapheneVec2}, Ptr{Ptr{Float32}}), instance, m_dest)
         _dest = m_dest[]
@@ -1599,146 +1599,146 @@ $(Expr(:toplevel, quote
     end
     function Vec4_alloc()
         ret = ccall(("graphene_vec4_alloc", libgraphene), Ptr{_GrapheneVec4}, ())
-        ret2 = convert(Union{GrapheneVec4, Ref{_GrapheneVec4}}, ret, true)
+        ret2 = convert(GrapheneVec4Like, ret, true)
         ret2
     end
-    function add(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _b::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function add(instance::GrapheneVec4Like, _b::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_add", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function divide(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _b::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function divide(instance::GrapheneVec4Like, _b::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_divide", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function dot(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _b::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function dot(instance::GrapheneVec4Like, _b::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_dot", libgraphene), Float32, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b)
         ret
     end
-    function equal(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _v2::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function equal(instance::GrapheneVec4Like, _v2::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_equal", libgraphene), Cint, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _v2)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function free(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function free(instance::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_free", libgraphene), Nothing, (Ptr{_GrapheneVec4},), instance)
         nothing
     end
-    function get_w(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function get_w(instance::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_get_w", libgraphene), Float32, (Ptr{_GrapheneVec4},), instance)
         ret
     end
-    function get_x(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function get_x(instance::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_get_x", libgraphene), Float32, (Ptr{_GrapheneVec4},), instance)
         ret
     end
-    function get_xy(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function get_xy(instance::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec2}()
         ret = ccall(("graphene_vec4_get_xy", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec2}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function get_xyz(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function get_xyz(instance::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec3}()
         ret = ccall(("graphene_vec4_get_xyz", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec3}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function get_y(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function get_y(instance::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_get_y", libgraphene), Float32, (Ptr{_GrapheneVec4},), instance)
         ret
     end
-    function get_z(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function get_z(instance::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_get_z", libgraphene), Float32, (Ptr{_GrapheneVec4},), instance)
         ret
     end
-    function init(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _x::Real, _y::Real, _z::Real, _w::Real)
+    function init(instance::GrapheneVec4Like, _x::Real, _y::Real, _z::Real, _w::Real)
         ret = ccall(("graphene_vec4_init", libgraphene), Ptr{_GrapheneVec4}, (Ptr{_GrapheneVec4}, Float32, Float32, Float32, Float32), instance, _x, _y, _z, _w)
-        ret2 = convert(Union{GrapheneVec4, Ref{_GrapheneVec4}}, ret, false)
+        ret2 = convert(GrapheneVec4Like, ret, false)
         ret2
     end
-    function init_from_float(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _src)
+    function init_from_float(instance::GrapheneVec4Like, _src)
         _src_arr = convert(Vector{Float32}, _src)
         ret = ccall(("graphene_vec4_init_from_float", libgraphene), Ptr{_GrapheneVec4}, (Ptr{_GrapheneVec4}, Ptr{Float32}), instance, _src_arr)
-        ret2 = convert(Union{GrapheneVec4, Ref{_GrapheneVec4}}, ret, false)
+        ret2 = convert(GrapheneVec4Like, ret, false)
         ret2
     end
-    function init_from_vec2(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _src::Union{GrapheneVec2, Ref{_GrapheneVec2}}, _z::Real, _w::Real)
+    function init_from_vec2(instance::GrapheneVec4Like, _src::GrapheneVec2Like, _z::Real, _w::Real)
         ret = ccall(("graphene_vec4_init_from_vec2", libgraphene), Ptr{_GrapheneVec4}, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec2}, Float32, Float32), instance, _src, _z, _w)
-        ret2 = convert(Union{GrapheneVec4, Ref{_GrapheneVec4}}, ret, false)
+        ret2 = convert(GrapheneVec4Like, ret, false)
         ret2
     end
-    function init_from_vec3(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _src::Union{GrapheneVec3, Ref{_GrapheneVec3}}, _w::Real)
+    function init_from_vec3(instance::GrapheneVec4Like, _src::GrapheneVec3Like, _w::Real)
         ret = ccall(("graphene_vec4_init_from_vec3", libgraphene), Ptr{_GrapheneVec4}, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec3}, Float32), instance, _src, _w)
-        ret2 = convert(Union{GrapheneVec4, Ref{_GrapheneVec4}}, ret, false)
+        ret2 = convert(GrapheneVec4Like, ret, false)
         ret2
     end
-    function init_from_vec4(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _src::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function init_from_vec4(instance::GrapheneVec4Like, _src::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_init_from_vec4", libgraphene), Ptr{_GrapheneVec4}, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _src)
-        ret2 = convert(Union{GrapheneVec4, Ref{_GrapheneVec4}}, ret, false)
+        ret2 = convert(GrapheneVec4Like, ret, false)
         ret2
     end
-    function interpolate(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _v2::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _factor::Real)
+    function interpolate(instance::GrapheneVec4Like, _v2::GrapheneVec4Like, _factor::Real)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_interpolate", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Float64, Ptr{_GrapheneVec4}), instance, _v2, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function length(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function length(instance::GrapheneVec4Like)
         ret = ccall(("graphene_vec4_length", libgraphene), Float32, (Ptr{_GrapheneVec4},), instance)
         ret
     end
-    function max(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _b::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function max(instance::GrapheneVec4Like, _b::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_max", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function min(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _b::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function min(instance::GrapheneVec4Like, _b::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_min", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function multiply(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _b::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function multiply(instance::GrapheneVec4Like, _b::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_multiply", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function near(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _v2::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _epsilon::Real)
+    function near(instance::GrapheneVec4Like, _v2::GrapheneVec4Like, _epsilon::Real)
         ret = ccall(("graphene_vec4_near", libgraphene), Cint, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Float32), instance, _v2, _epsilon)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function negate(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function negate(instance::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_negate", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function normalize(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function normalize(instance::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_normalize", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, m_res)
         _res = m_res[]
         _res
     end
-    function scale(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _factor::Real)
+    function scale(instance::GrapheneVec4Like, _factor::Real)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_scale", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Float32, Ptr{_GrapheneVec4}), instance, _factor, m_res)
         _res = m_res[]
         _res
     end
-    function subtract(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}}, _b::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function subtract(instance::GrapheneVec4Like, _b::GrapheneVec4Like)
         m_res = Ref{_GrapheneVec4}()
         ret = ccall(("graphene_vec4_subtract", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}, Ptr{_GrapheneVec4}), instance, _b, m_res)
         _res = m_res[]
         _res
     end
-    function to_float(instance::Union{GrapheneVec4, Ref{_GrapheneVec4}})
+    function to_float(instance::GrapheneVec4Like)
         m_dest = Ref{Ptr{Float32}}()
         ret = ccall(("graphene_vec4_to_float", libgraphene), Nothing, (Ptr{_GrapheneVec4}, Ptr{Ptr{Float32}}), instance, m_dest)
         _dest = m_dest[]

@@ -86,11 +86,14 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
     gstructname = get_full_name(structinfo)
     gtype=get_g_type(structinfo)
     isboxed = GLib.g_isa(gtype,GLib.g_type(GBoxed))
+    ustructname=get_struct_name(structinfo,force_opaque)
+    opaque = force_opaque || isopaque(structinfo)
+    ctypename = opaque ? :GBoxed : :(Union{GBoxed,$ustructname})
     exprs=Expr[]
     if isboxed
         fin = quote
             $(unblock(typeinit_def(structinfo,gstructname)))
-            function $gstructname(ref::Ptr{T}, own::Bool = false) where {T <: GBoxed}
+            function $gstructname(ref::Ptr{T}, own::Bool = false) where {T <: $ctypename}
                 #println("constructing ",$(QuoteNode(gstructname)), " ",own)
                 x = new(ref)
                 if own
@@ -105,8 +108,7 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
         end
     end
     conv=nothing
-    opaque = force_opaque || isopaque(structinfo)
-    ustructname=get_struct_name(structinfo,force_opaque)
+    structlike = Symbol(gstructname,:Like)
     if !opaque
         fieldsexpr=Expr[]
         for field in get_fields(structinfo)
@@ -123,6 +125,13 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
         push!(exprs,ustruc)
         conv = quote
             unsafe_convert(::Type{Ptr{$ustructname}}, box::$gstructname) = convert(Ptr{$ustructname}, box.handle)
+            convert(::Type{$gstructname}, p::Ptr{$ustructname},  owns = false) = $gstructname(p, owns)
+            const $structlike = Union{Ref{$ustructname},$gstructname}
+            convert(::Type{$structlike}, p, owns) = convert($gstructname, p, owns)
+        end
+    else
+        conv = quote
+            const $structlike = $gstructname
         end
     end
     decl = isboxed ? :($gstructname <: GBoxed) : gstructname
@@ -301,19 +310,20 @@ end
 
 function decl(interfaceinfo::GIInterfaceInfo)
     g_type = get_g_type(interfaceinfo)
+
+    type_init = Symbol(get_type_init(interfaceinfo))
+    libs=get_shlibs(GINamespace(get_namespace(interfaceinfo)))
+    lib=libs[findfirst(find_symbol(type_init),libs)]
+
     iname = Symbol(GLib.g_type_name(g_type))
 
     if iname === :void
         println("get_g_type returns void -- not in library? : ", get_name(interfaceinfo))
     end
     decl=quote
-        struct $iname <: GInterface
-            handle::Ptr{GObject}
-            gc::Any
-            $iname(x::GObject) = new(unsafe_convert(Ptr{GObject}, x), x)
-        end
+        @GLib.Giface $iname $(symbol_from_lib(lib)) $type_init
     end
-    unblock(decl)
+    MacroTools.striplines(unblock(decl))
 end
 
 function get_closure(callbackinfo::GICallbackInfo)
@@ -499,12 +509,13 @@ function typename(info::GIStructInfo)
         Symbol(GLib.g_type_name(g_type))
     end
 end
+structptrlike(info::GIStructInfo) = Symbol(get_full_name(info),:Like)
 function extract_type(typeinfo::GITypeInfo, info::GIStructInfo)
     name = typename(info)
     sname = get_struct_name(info)
     if is_pointer(typeinfo)
         fname = get_full_name(info)
-        tname = isopaque(info) ? fname : :(Union{$fname,Ref{$sname}})
+        tname = isopaque(info) ? fname : structptrlike(info)
         TypeDesc(info,tname,typename(info),:(Ptr{$sname}))
     else
         TypeDesc(info,sname,sname,sname)
@@ -515,7 +526,7 @@ function extract_type(typeinfo::Type{InstanceType}, info::GIStructInfo)
     sname = get_struct_name(info)
     if is_pointer(typeinfo)
         fname = get_full_name(info)
-        tname = isopaque(info) ? fname : :(Union{$fname,Ref{$sname}})
+        tname = isopaque(info) ? fname : structptrlike(info)
         TypeDesc(info,tname,typename(info),:(Ptr{$sname}))
     else
         TypeDesc(info,sname,sname,sname)
@@ -799,7 +810,7 @@ function extract_type(typeinfo::GITypeInfo, basetype::Type{T}) where {T<:GBoxed}
     name = get_full_name(interf_info)
     sname = get_struct_name(interf_info)
     p = is_pointer(typeinfo)
-    jarg = (name != sname ? :(Union{$name,Ref{$sname}}) : name)
+    jarg = (name != sname ? structptrlike(interf_info) : name)
     ctype = is_pointer(typeinfo) ? :(Ptr{$sname}) : sname
     TypeDesc{Type{GBoxed}}(GBoxed, jarg, name, ctype)
 end
@@ -832,6 +843,10 @@ function convert_to_c(name::Symbol, arginfo::GIArgInfo, typeinfo::TypeDesc{T}) w
 end
 
 function convert_to_c(name::Symbol, arginfo::GIArgInfo, typeinfo::TypeDesc{T}) where {T<:Type{GInterface}}
+    _convert_obj_to_c(name,arginfo,typeinfo)
+end
+
+function convert_to_c(name::Symbol, arginfo::GIArgInfo, typeinfo::TypeDesc{T}) where {T<:Type{GBoxed}}
     _convert_obj_to_c(name,arginfo,typeinfo)
 end
 
@@ -1124,7 +1139,12 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         object = get_container(info)
         if object !== nothing
             typeinfo = extract_type(InstanceType,object)
-            push!(cargs, Arg(:instance, typeinfo.ctype))
+            if get_instance_ownership_transfer(info) == GITransfer.EVERYTHING
+                push!(prologue, :(reffed_instance = GLib.glib_ref(instance)))
+                push!(cargs, Arg(:reffed_instance, typeinfo.ctype))
+            else
+                push!(cargs, Arg(:instance, typeinfo.ctype))
+            end
         end
     end
     if flags & GIFunction.IS_CONSTRUCTOR != 0

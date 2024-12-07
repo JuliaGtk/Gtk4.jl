@@ -21,7 +21,7 @@ end
     destroy(win)
 end
 
-if !(get(ENV, "CI", nothing) == "true" && Sys.iswindows())
+if !(get(ENV, "CI", nothing) == "true" && (Sys.iswindows() || Sys.WORD_SIZE!=64))
 @testset "GL Area" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "glarea.jl"))
     destroy(w)
@@ -65,5 +65,14 @@ end
     include(joinpath(@__DIR__, "..", "..", "examples", "listbox.jl"))
     destroy(main_window)
 end
+
+    #@testset "Show Image" begin
+    #    include(joinpath(@__DIR__, "..", "..", "examples", "show_image.jl"))
+    #    destroy(win)
+    #end
+
+    @testset "CSS Style" begin
+        include(joinpath(@__DIR__, "..", "..", "examples", "css-style.jl"))
+    end
 
 end

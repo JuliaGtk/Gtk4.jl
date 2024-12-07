@@ -1,6 +1,6 @@
 using Gtk4, CairoMakie
 
-config = CairoMakie.ScreenConfig(1.0, 1.0, :good, true, false)
+config = CairoMakie.ScreenConfig(1.0, 1.0, :good, true, false, nothing)
 CairoMakie.activate!()
 
 t_range = 0.0:0.1:10.0

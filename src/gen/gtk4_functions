@@ -42,15 +42,15 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-    function accessible_property_init_value(_property, _value::Union{GValue, Ref{_GValue}})
+    function accessible_property_init_value(_property, _value::GValueLike)
         ret = ccall(("gtk_accessible_property_init_value", libgtk4), Nothing, (UInt32, Ptr{_GValue}), _property, _value)
         nothing
     end
-    function accessible_relation_init_value(_relation, _value::Union{GValue, Ref{_GValue}})
+    function accessible_relation_init_value(_relation, _value::GValueLike)
         ret = ccall(("gtk_accessible_relation_init_value", libgtk4), Nothing, (UInt32, Ptr{_GValue}), _relation, _value)
         nothing
     end
-    function accessible_state_init_value(_state, _value::Union{GValue, Ref{_GValue}})
+    function accessible_state_init_value(_state, _value::GValueLike)
         ret = ccall(("gtk_accessible_state_init_value", libgtk4), Nothing, (UInt32, Ptr{_GValue}), _state, _value)
         nothing
     end
@@ -116,12 +116,12 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_distribute_natural_allocation", libgtk4), Int32, (Int32, UInt32, Ptr{_GtkRequestedSize}), _extra_space, _n_requested_sizes, _sizes_arr)
         ret
     end
-    function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
+    function editable_delegate_get_property(_object::GObject, _prop_id::Integer, _value::GValueLike, _pspec::GParam)
         ret = ccall(("gtk_editable_delegate_get_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
     end
-    function editable_delegate_set_property(_object::GObject, _prop_id::Integer, _value::Union{GValue, Ref{_GValue}}, _pspec::GParam)
+    function editable_delegate_set_property(_object::GObject, _prop_id::Integer, _value::GValueLike, _pspec::GParam)
         ret = ccall(("gtk_editable_delegate_set_property", libgtk4), Cint, (Ptr{GObject}, UInt32, Ptr{_GValue}, Ptr{GParam}), _object, _prop_id, _value, _pspec)
         ret2 = convert(Bool, ret)
         ret2
@@ -364,7 +364,7 @@ $(Expr(:toplevel, quote
         ret2 = convert(GdkContentProvider, ret, true)
         ret2
     end
-    function tree_get_row_drag_data(_value::Union{GValue, Ref{_GValue}})
+    function tree_get_row_drag_data(_value::GValueLike)
         m_tree_model = Ref{Ptr{GObject}}()
         m_path = Ref{Ptr{GtkTreePath}}()
         ret = ccall(("gtk_tree_get_row_drag_data", libgtk4), Cint, (Ptr{_GValue}, Ptr{Ptr{GObject}}, Ptr{Ptr{GtkTreePath}}), _value, m_tree_model, m_path)

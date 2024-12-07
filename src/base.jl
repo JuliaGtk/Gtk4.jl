@@ -34,7 +34,7 @@ toplevel(w::GtkWidget) = G_.get_root(w)
 
 Returns the allocated width of `w` in pixels.
 
-Related GTK function: [`gtk_widget_get_allocated_width`()]($(gtkdoc_method_url("gtk4","Widget","get_allocated_width")))
+Related GTK function: [`gtk_widget_get_width`()]($(gtkdoc_method_url("gtk4","Widget","get_width")))
 """ width
 
 @doc """
@@ -42,7 +42,7 @@ Related GTK function: [`gtk_widget_get_allocated_width`()]($(gtkdoc_method_url("
 
 Returns the allocated height of `w` in pixels.
 
-Related GTK function: [`gtk_widget_get_allocated_height`()]($(gtkdoc_method_url("gtk4","Widget","get_allocated_height")))
+Related GTK function: [`gtk_widget_get_height`()]($(gtkdoc_method_url("gtk4","Widget","get_height")))
 """ height
 
 size(w::GtkWidget) = (width(w), height(w))
@@ -83,10 +83,10 @@ end
 
 Flag `w` to be displayed and return `w`.
 
-Related GTK function: [`gtk_widget_show`()]($(gtkdoc_method_url("gtk4","Widget","show")))
+Related GTK function: [`gtk_widget_set_visible`()]($(gtkdoc_method_url("gtk4","Widget","set_visible")))
 """
 function show(w::GtkWidget)
-    G_.show(w)
+    G_.set_visible(w, true)
     w
 end
 
@@ -95,10 +95,10 @@ end
 
 Flag `w` to be hidden and return `w`. This is the opposite of `show`.
 
-Related GTK function: [`gtk_widget_hide`()]($(gtkdoc_method_url("gtk4","Widget","hide")))
+Related GTK function: [`gtk_widget_set_visible`()]($(gtkdoc_method_url("gtk4","Widget","set_visible")))
 """
 function hide(w::GtkWidget)
-    G_.hide(w)
+    G_.set_visible(w, false)
     w
 end
 
@@ -327,3 +327,50 @@ function inhibit(app::GtkApplication, win::GtkWindow, flags, reason)
 end
 
 uninhibit(app::GtkApplication, cookie) = G_.uninhibit(app, cookie)
+
+mutable struct _GtkWidgetClass
+    g_type_class::_GTypeClass
+    construct_properties::Ptr{GLib._GSList{Ptr{Nothing}}}
+    constructor::Ptr{Nothing}
+    set_property::Ptr{Cvoid}
+    get_property::Ptr{Cvoid}
+    dispose::Ptr{Cvoid}
+    finalize::Ptr{Cvoid}
+    dispatch_properties_changed::Ptr{Cvoid}
+    notify::Ptr{Cvoid}
+    constructed::Ptr{Cvoid}
+    flags::Csize_t
+    n_construct_properties::Csize_t
+    pspecs::Ptr{Nothing}
+    n_pspecs::Csize_t
+    pdummy1::Ptr{Nothing}
+    pdummy2::Ptr{Nothing}
+    pdummy3::Ptr{Nothing}
+    show::Ptr{Cvoid}
+    hide::Ptr{Cvoid}
+    map::Ptr{Cvoid}
+    unmap::Ptr{Cvoid}
+    realize::Ptr{Cvoid}
+    unrealize::Ptr{Cvoid}
+    root::Ptr{Cvoid}
+    unroot::Ptr{Cvoid}
+    size_allocate::Ptr{Cvoid}
+    state_flags_changed::Ptr{Cvoid}
+    direction_changed::Ptr{Cvoid}
+    get_request_mode::Ptr{Cvoid}
+    measure::Ptr{Cvoid}
+    mnemonic_activate::Ptr{Cvoid}
+    grab_focus::Ptr{Cvoid}
+    focus::Ptr{Cvoid}
+    set_focus_child::Ptr{Cvoid}
+    move_focus::Ptr{Cvoid}
+    keynav_failed::Ptr{Cvoid}
+    query_tooltip::Ptr{Cvoid}
+    compute_expand::Ptr{Cvoid}
+    css_changed::Ptr{Cvoid}
+    system_setting_changed::Ptr{Cvoid}
+    snapshot::Ptr{Cvoid}
+    contains::Ptr{Cvoid}
+    priv::Ptr{Nothing}
+    padding::Ptr{Ptr{Nothing}}
+end

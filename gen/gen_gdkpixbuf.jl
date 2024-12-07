@@ -3,10 +3,10 @@ using GI
 printstyled("Generating code for GdkPixbuf\n";bold=true)
 
 ns = GINamespace(:GdkPixbuf,"2.0")
-d = GI.read_gir(gdk_pixbuf_jll, ns)
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 path="../src/gen"
 
-GI.export_consts!(ns, path, "gdkpixbuf", [:PixbufFormatFlags]; doc_prefix = "gdk-pixbuf", doc_xml = d, export_constants = false)
+GI.export_consts!(ns, path, "gdkpixbuf", []; doc_prefix = "gdk-pixbuf", doc_xml = d, export_constants = false)
 
 ## structs
 

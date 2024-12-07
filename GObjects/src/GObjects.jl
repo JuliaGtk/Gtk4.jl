@@ -5,9 +5,9 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@optle
 end
 
 import Base: convert, copy, run, show, size, length, getindex, setindex!, get,
-             iterate, eltype, isempty, ndims, stride, strides, popfirst!,
+             iterate, eltype, isempty, popfirst!,
              empty!, append!, reverse!, pushfirst!, pop!, push!, splice!, insert!, deleteat!, delete!,
-             sigatomic_begin, sigatomic_end, unsafe_convert,
+             unsafe_convert,
              getproperty, setproperty!, propertynames, getindex, setindex!, print, replace
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag
@@ -33,7 +33,7 @@ export gtkdoc_const_url, gtkdoc_enum_url, gtkdoc_flags_url, gtkdoc_method_url,
        gtkdoc_func_url, gtkdoc_struc_url
 
 export gtype_wrappers, GVariantDict, GBytes, GVariantType
-export GValue, GParamSpec, GTypeModule, _GValue
+export GValue, GParamSpec, GTypeModule, _GValue, GValueLike
 
 Maybe(T) = Union{T,Nothing}
 
@@ -155,7 +155,7 @@ const GLib = GObjects
 
 eval(include("gen/glib_consts"))
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
       MAJOR_VERSION,
       MINOR_VERSION,
       MICRO_VERSION)
@@ -181,6 +181,7 @@ using Glib_jll
 using ..GObjects
 
 const GLib = GObjects
+using ..GObjects: BookmarkFileError, ChecksumType, ConvertError, DateDMY, DateMonth, DateWeekday, ErrorType, FileError, IOChannelError, IOError, IOStatus, KeyFileError, LogWriterOutput, MarkupError, NormalizeMode, NumberParserError, OnceStatus, OptionArg, OptionError, RegexError, SeekType, ShellError, SliceConfig, SpawnError, TestFileType, TestLogType, TestResult, ThreadError, TimeType, TokenType, TraverseType, UnicodeBreakType, UnicodeScript, UnicodeType, UnixPipeEnd, UriError, UserDirectory, VariantClass, VariantParseError, BusType, ConverterResult, CredentialsType, DBusError, DBusMessageByteOrder, DBusMessageHeaderField, DBusMessageType, DataStreamByteOrder, DataStreamNewlineType, DriveStartStopType, EmblemOrigin, FileAttributeStatus, FileAttributeType, FileMonitorEvent, FileType, FilesystemPreviewType, IOErrorEnum, IOModuleScopeFlags, MemoryMonitorWarningLevel, MountOperationResult, NetworkConnectivity, NotificationPriority, PasswordSave, PollableReturn, ResolverError, ResolverRecordType, ResourceError, SocketClientEvent, SocketFamily, SocketListenerEvent, SocketProtocol, SocketType, TlsAuthenticationMode, TlsCertificateRequestFlags, TlsChannelBindingError, TlsChannelBindingType, TlsDatabaseLookupFlags, TlsError, TlsInteractionResult, UnixSocketAddressType, ZlibCompressorFormat, AsciiType, FileSetContentsFlags, FileTest, FormatSizeFlags, HookFlagMask, IOCondition, IOFlags, KeyFileFlags, LogLevelFlags, MainContextFlags, MarkupCollectType, MarkupParseFlags, OptionFlags, RegexCompileFlags, RegexMatchFlags, SpawnFlags, TestSubprocessFlags, TraverseFlags, UriFlags, UriHideFlags, UriParamsFlags, BindingFlags, ConnectFlags, IOCondition, ParamFlags, SignalFlags, SignalMatchType, TypeFlags, TypeFundamentalFlags, AppInfoCreateFlags, ApplicationFlags, AskPasswordFlags, BusNameOwnerFlags, BusNameWatcherFlags, ConverterFlags, DBusCallFlags, DBusCapabilityFlags, DBusConnectionFlags, DBusInterfaceSkeletonFlags, DBusMessageFlags, DBusObjectManagerClientFlags, DBusPropertyInfoFlags, DBusProxyFlags, DBusSendMessageFlags, DBusServerFlags, DBusSignalFlags, DBusSubtreeFlags, DriveStartFlags, FileAttributeInfoFlags, FileCopyFlags, FileCreateFlags, FileMeasureFlags, FileMonitorFlags, FileQueryInfoFlags, IOStreamSpliceFlags, MountMountFlags, MountUnmountFlags, OutputStreamSpliceFlags, ResolverNameLookupFlags, ResourceFlags, ResourceLookupFlags, SettingsBindFlags, SocketMsgFlags, SubprocessFlags, TestDBusFlags, TlsCertificateFlags, TlsDatabaseVerifyFlags, TlsPasswordFlags
 
 import Base: convert, copy, run
 
@@ -204,8 +205,95 @@ include("loop.jl")
 include("actions.jl")
 include("gio.jl")
 
+function set_default_log_handler(log_func)
+    global func = @cfunction(GLogFunc, Nothing, (Cstring, Cuint, Cstring, Ref{Function}))
+    ref, deref = gc_ref_closure(log_func)
+    ccall((:g_log_set_default_handler, libglib), Ptr{Cvoid}, (Ptr{Cvoid},Ptr{Cvoid}), func, ref)
+end
+
+function set_log_handler(log_domain, log_levels, log_func)
+    func = @cfunction(GLogFunc, Nothing, (Cstring, Cuint, Cstring, Ref{Function}))
+    ref, deref = gc_ref_closure(log_func)
+    ccall((:g_log_set_handler_full, libglib), Cuint, (Cstring, Cint, Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}), log_domain, Cuint(log_levels), func, ref, deref)
+end
+
+function GLogWriterFunc(log_level, fields, n_fields, user_data)
+    log_level = LogLevelFlags(log_level)
+    fields = collect(unsafe_wrap(Vector{_GLogField}, fields, n_fields))
+    f = user_data
+    ret = f(log_level, fields)
+    convert(UInt32, ret)
+end
+
+"""
+    set_log_writer_func(log_func)
+
+Sets a function that is used to handle messages. The function should be of the form
+`log_func(log_level,fields)` and should return `true` if the message was handled and
+otherwise `false.`
+
+This function must be called only once per Julia session.
+"""
+function set_log_writer_func(log_func)
+    func = @cfunction(GLogWriterFunc, Cuint, (Cuint, Ptr{_GLogField}, Csize_t, Ref{Function}))
+    ref, deref = gc_ref_closure(log_func)
+    ccall((:g_log_set_writer_func, libglib), Nothing, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}), func, ref, deref)
+end
+
+"""
+    suppress_C_messages()
+
+Sets the preference `"C_message_handling"` to "suppress_all", which intercepts all
+messages from the C libraries and stores them in an internal buffer. This setting
+will take effect the next time Julia is started.
+
+The stored messages can be found in `GLib.C_message_buffer`.
+
+See also [`show_C_messages`](@ref).
+"""
+function suppress_C_messages()
+    @set_preferences!("C_message_handling" => "suppress_all")
+    @info("Setting will take effect after restarting Julia.")
+end
+
+"""
+    show_C_messages()
+
+Sets the preference `"C_message_handling"` to "", which allows messages and warnings
+from the C libraries to be displayed. This setting will take effect the next time
+Julia is started.
+
+See also [`suppress_C_messages`](@ref).
+"""
+function show_C_messages()
+    @set_preferences!("C_message_handling" => "")
+    @info("Setting will take effect after restarting Julia.")
+end
+
+C_message_buffer::Vector{Tuple{LogLevelFlags,String,String}} = Tuple{LogLevelFlags,String,String}[]
+
+function suppress_func(log_level, fields)
+    imessage = findfirst(f->bytestring(f.key)=="MESSAGE", fields)
+    idomain = findfirst(f->bytestring(f.key)=="GLIB_DOMAIN", fields)
+    if imessage !== nothing && idomain !== nothing
+        push!(C_message_buffer, (log_level,bytestring(Ptr{UInt8}(fields[idomain].value)),bytestring(Ptr{UInt8}(fields[imessage].value))))
+        return true
+    else
+        return false
+    end
+end
+
 const exiting = Ref(false)
 function __init__()
+    # check that libglib is compatible with what the GI generated code expects
+    vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
+    if vercheck !== nothing
+        @warn "GLib version check failed: $vercheck"
+    end
+    d = @load_preference("C_message_handling", "")
+    if d == "suppress_all"
+        set_log_writer_func(suppress_func)
+    end
     global JuliaClosureMarshal = @cfunction(GClosureMarshal, Nothing,
         (Ptr{Nothing}, Ptr{GValue}, Cuint, Ptr{GValue}, Ptr{Nothing}, Ptr{Nothing}))
     exiting[] = false

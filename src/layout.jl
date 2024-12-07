@@ -1,22 +1,22 @@
-function convert(::Type{Gtk4.Orientation}, x::Symbol)
+function convert(::Type{Orientation}, x::Symbol)
     if x === :h
-        Gtk4.Orientation_HORIZONTAL
+        Orientation_HORIZONTAL
     elseif x === :v
-        Gtk4.Orientation_VERTICAL
+        Orientation_VERTICAL
     else
         error("can't convert $x to GtkOrientation")
     end
 end
 
-function convert(::Type{Gtk4.PositionType}, x::Symbol)
+function convert(::Type{PositionType}, x::Symbol)
     if x === :left
-        Gtk4.PositionType_LEFT
+        PositionType_LEFT
     elseif x === :right
-        Gtk4.PositionType_RIGHT
+        PositionType_RIGHT
     elseif x === :top
-        Gtk4.PositionType_TOP
+        PositionType_TOP
     elseif x === :bottom
-        Gtk4.PositionType_BOTTOM
+        PositionType_BOTTOM
     else
         error("can't convert $x to GtkPositionType")
     end
@@ -32,7 +32,7 @@ horizontal, or `:v` for vertical. The `spacing` argument controls the spacing
 between child widgets in pixels. Keyword arguments allow you to set GObject
 properties.
 """
-GtkBox(orientation::Symbol, spacing::Integer=0; kwargs...) = GtkBox(convert(Gtk4.Orientation, orientation), spacing; kwargs...)
+GtkBox(orientation::Symbol, spacing::Integer=0; kwargs...) = GtkBox(convert(Orientation, orientation), spacing; kwargs...)
 
 function push!(b::GtkBox,w::GtkWidget)
     hasparent(w) && error("Widget already has a parent")
@@ -61,7 +61,7 @@ end
 
 ## GtkSeparator
 
-GtkSeparator(orientation::Symbol; kwargs...) = GtkSeparator(convert(Gtk4.Orientation, orientation); kwargs...)
+GtkSeparator(orientation::Symbol; kwargs...) = GtkSeparator(convert(Orientation, orientation); kwargs...)
 
 ## GtkCenterBox
 
@@ -74,7 +74,7 @@ GObject properties.
 """
 function GtkCenterBox(orientation::Symbol; kwargs...)
     b = GtkCenterBox(;kwargs...)
-    G_.set_orientation(GtkOrientable(b), convert(Gtk4.Orientation, orientation))
+    G_.set_orientation(GtkOrientable(b), convert(Orientation, orientation))
     b
 end
 
@@ -110,7 +110,7 @@ Create and return a `GtkPaned` widget. The `orientation` argument can be
 `:h` for horizontal, or `:v` for vertical. Keyword arguments allow you to set
 GObject properties.
 """
-GtkPaned(orientation::Symbol; kwargs...) = GtkPaned(convert(Gtk4.Orientation, orientation); kwargs...)
+GtkPaned(orientation::Symbol; kwargs...) = GtkPaned(convert(Orientation, orientation); kwargs...)
 
 function getindex(pane::GtkPaned, i::Integer)
     if i == 1
@@ -151,21 +151,21 @@ function setindex!(grid::GtkGrid, child, i::Union{T, AbstractRange{T}}, j::Union
 end
 
 function insert!(grid::GtkGrid, i::Integer, side)
-    side = convert(Gtk4.PositionType, side)
-    if side == Gtk4.PositionType_LEFT
+    side = convert(PositionType, side)
+    if side == PositionType_LEFT
         G_.insert_column(grid, i - 1)
-    elseif side == Gtk4.PositionType_RIGHT
+    elseif side == PositionType_RIGHT
         G_.insert_column(grid, i)
-    elseif side == Gtk4.PositionType_TOP
+    elseif side == PositionType_TOP
         G_.insert_row(grid, i - 1)
-    elseif side == Gtk4.PositionType_BOTTOM
+    elseif side == PositionType_BOTTOM
         G_.insert_row(grid, i)
     end
     grid
 end
 
 function insert!(grid::GtkGrid, sibling, side)
-    side = convert(Gtk4.PositionType, side)
+    side = convert(PositionType, side)
     G_.insert_next_to(grid, sibling, side)
     grid
 end

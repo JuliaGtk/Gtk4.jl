@@ -14,6 +14,12 @@ Gtk4.set_EGL_vendorlib_dirs("/usr/share/glvnd/egl_vendor.d")
 ```
 where "/usr/share/glvnd/egl_vendor.d" is a typical location for Mesa's libEGL (this should be modified if it's somewhere else on your distribution). Other vendor-provided libraries may be in other locations, and a colon-separated list of directories can be used for that situation. **Note that this has only been tested for the Mesa-provided libEGL on Fedora and Ubuntu.**
 
+## Message handling
+
+Informational messages, warnings, and critical warnings can be emitted by the C libraries and show up in the Julia REPL. In many cases these are unavoidable or at least pretty harmless. The function `Gtk4.GLib.suppress_C_messages()` sets the preference `"C_message_handling"` to `"suppress_all"`, allowing you to prevent the appearance of these messages. They are instead added to an internal buffer `Gtk4.GLib.C_message_buffer`. This can be turned off using `Gtk4.GLib.show_C_messages()`.
+
+For more sophisticated message handling you can provide your own message handler function using `Gtk4.GLib.set_log_writer_func`.
+
 ## UV loop integration
 
 GTK relies on an event loop (provided by GLib) to process and handle mouse and keyboard events, while Julia relies on its own event loop (provided by libuv) for IO, timers, etc. Interactions between these event loops can cause REPL lag and can interfere with multithreading performance. Explicit integration of the two loops by creating a libuv event source in the GLib main loop is currently [disabled](https://github.com/JuliaGraphics/Gtk.jl/pull/630) because it caused [slowdowns in multithreaded code](https://github.com/JuliaGraphics/Gtk.jl/issues/503). On some Macs, unfortunately, [REPL lag](https://github.com/JuliaGtk/Gtk4.jl/issues/23) occurs without this explicit integration (explicit in the sense that libuv can insert events in the GLib main loop through its own GSource).

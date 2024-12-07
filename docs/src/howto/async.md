@@ -13,7 +13,8 @@ robustly.
 Here is an example using [threads](https://docs.julialang.org/en/v1/manual/multi-threading/).
 Notice that this example will freeze the UI during computation unless Julia is run with two
 or more threads, for example by calling `julia -t2` or `julia -t1,1` to use the interactive
-threadpool in recent versions of Julia.
+thread pool in recent versions of Julia.
+If an interactive thread pool exists, the GLib main loop will be started in an interactive thread.
 
 ```julia
 using Gtk4

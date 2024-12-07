@@ -22,6 +22,15 @@ function glib_unref(x::Ptr{GParamSpec})
     ccall((:g_param_spec_unref, libgobject), Nothing, (Ptr{GParamSpec},), x)
 end
 
+"""
+    GVariant(x)
+
+Create a `GVariant` that contains the value `x`. This is a container used to
+pass parameters and store states in GLib's action system.
+
+The value is accessed from a `GVariant` `gv` using `gv[t]`, where `t` is the
+Julia type. For example, to access a boolean inside a `GVariant`, use `gv[Bool]`.
+"""
 mutable struct GVariant
     handle::Ptr{GVariant}
     function GVariant(ref::Ptr{GVariant})
@@ -59,6 +68,31 @@ const fundamental_types = (
 # NOTE: in general do not cache ids, except for these fundamental values
 g_type_from_name(name::Symbol) = ccall((:g_type_from_name, libgobject), GType, (Ptr{UInt8},), name)
 const fundamental_ids = tuple(GType[g_type_from_name(name) for (name, c, j, f, v) in fundamental_types]...)
+
+function get_gtype_decl(name::Symbol, lib, callname::Symbol)
+    :(GLib.g_type(::Type{T}) where T <: $(esc(name)) =
+        ccall(($(String(callname)), $(esc(lib))), GType, ()))
+end
+
+function get_interface_decl(iname::Symbol)
+    quote
+        struct $(esc(iname)) <: GInterface
+            handle::Ptr{GObject}
+            gc::Any
+            $(esc(iname))(x::GObject) = new(unsafe_convert(Ptr{GObject}, x), x)
+        end
+    end
+end
+
+macro Giface(iname, lib, callname)
+    gtype_decl = get_gtype_decl(iname, lib, callname)
+    interf_decl = get_interface_decl(iname)
+    ex=quote
+        $(interf_decl)
+        $(gtype_decl)
+    end
+    Base.remove_linenums!(ex)
+end
 
 """
     g_type(x)
@@ -126,6 +160,12 @@ function delboxed(x::GBoxed)
         "g_boxed_free($(x.handle)::$name)"
     end
     ccall((:g_boxed_free, libgobject), Nothing, (GType, Ptr{GBoxed},), gtype, x.handle)
+end
+
+function glib_ref(x::GBoxed)
+    T=typeof(x)
+    gtype = g_type(T)
+    ccall((:g_boxed_copy, libgobject), Ptr{GBoxed}, (GType, Ptr{GBoxed},), gtype, x.handle)
 end
 
 cconvert(::Type{Ptr{GObject}}, @nospecialize(x::GObject)) = x
@@ -224,7 +264,11 @@ _gc_unref(@nospecialize(x), ::Ptr{Nothing}) = gc_unref(x)
 gc_ref_closure(@nospecialize(cb::Function)) = (invoke(gc_ref, Tuple{Any}, cb), @cfunction(_gc_unref, Nothing, (Any, Ptr{Nothing})))
 gc_ref_closure(x::T) where {T} = (gc_ref(x), @cfunction(_gc_unref, Nothing, (Any, Ptr{Nothing})))
 
-# GLib ref/unref functions -- generally, you shouldn't be calling these
+"""
+    glib_ref(x::Ptr)
+
+Increments the reference count of a pointer managed by a GLib based library. Generally this function will just call a C function, e.g. `g_object_ref`. Most users will not ever need to use this function.
+"""
 function glib_ref(x::Ptr{GObject})
     ccall((:g_object_ref, libgobject), Nothing, (Ptr{GObject},), x)
 end
@@ -234,6 +278,12 @@ function glib_ref(x::GObject)
 end
 glib_ref(::Nothing) = nothing
 gc_unref(p::Ptr{GObject}) = glib_unref(p)
+
+"""
+    glib_unref(x::Ptr)
+
+Decrements the reference count of a pointer managed by a GLib based library. Generally this function will just call a C function, e.g. `g_object_unref`. Most users will not ever need to use this function.
+"""
 function glib_unref(x::Ptr{GObject})
     ccall((:g_object_unref, libgobject), Nothing, (Ptr{GObject},), x)
 end
@@ -242,6 +292,7 @@ function glib_ref_sink(x::Ptr{GObject})
 end
 const gc_preserve_glib = Dict{Union{WeakRef, GObject}, Bool}() # glib objects
 const gc_preserve_glib_lock = Ref(false) # to satisfy this lock, must never decrement a ref counter while it is held
+const await_lock = ReentrantLock()
 const topfinalizer = Ref(true) # keep recursion to a minimum by only iterating from the top
 const await_finalize = Set{Any}()
 
@@ -271,7 +322,7 @@ function delref(@nospecialize(x::GObject))
     # internal helper function
     exiting[] && return # unnecessary to cleanup if we are about to die anyways
     if gc_preserve_glib_lock[] || g_yielded[]
-        push!(await_finalize, x)
+        @lock await_lock push!(await_finalize, x)
         return # avoid running finalizers at random times
     end
     finalize_gc_unref(x)
@@ -296,7 +347,7 @@ function gobject_ref(x::T) where T <: GObject
         if ccall((:g_object_get_qdata, libgobject), Ptr{Cvoid},
                  (Ptr{GObject}, UInt32), x, jlref_quark::UInt32) != C_NULL
             # have set up metadata for this before, but its weakref has been cleared. restore the ref.
-            delete!(await_finalize, x)
+            @lock await_lock delete!(await_finalize, x)
             finalizer(delref, x)
             gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
         else
@@ -324,14 +375,18 @@ function run_delayed_finalizers()
     exiting[] && return # unnecessary to cleanup if we are about to die anyways
     g_yielded[] && return # can't run them right now
     topfinalizer[] = false
-    while !isempty(await_finalize)
-        x = pop!(await_finalize)
-        finalize_gc_unref(x)
+    if !isempty(await_finalize) # only do this once when we're doing GC stuff
+        # prevents empty WeakRefs from filling gc_preserve_glib
+        gc_preserve_glib_lock[] = true
+        filter!(x->!(isa(x.first,WeakRef) && x.first.value === nothing),gc_preserve_glib)
+        gc_preserve_glib_lock[] = false
     end
-    # prevents empty WeakRefs from filling gc_preserve_glib
-    gc_preserve_glib_lock[] = true
-    filter!(x->!(isa(x.first,WeakRef) && x.first.value === nothing),gc_preserve_glib)
-    gc_preserve_glib_lock[] = false
+    @lock await_lock begin
+        while !isempty(await_finalize)
+            x = pop!(await_finalize)
+            finalize_gc_unref(x)
+        end
+    end
     topfinalizer[] = true
 end
 

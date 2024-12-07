@@ -1,22 +1,10 @@
 quote
 $(Expr(:toplevel, quote
-    struct PangoCairoFont <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        PangoCairoFont(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct PangoCairoFontMap <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        PangoCairoFontMap(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
+    GLib.@Giface PangoCairoFont libpangocairo pango_cairo_font_get_type
+    GLib.@Giface PangoCairoFontMap libpangocairo pango_cairo_font_map_get_type
     function PangoCairoShapeRendererFunc(cr, attr, do_path, data)
         cr = convert(cairoContext, cr, false)
-        attr = convert(Union{PangoAttrShape, Ref{_PangoAttrShape}}, attr)
+        attr = convert(PangoAttrShapeLike, attr)
         do_path = convert(Bool, do_path)
         f = data
         ret = f(cr, attr, do_path)

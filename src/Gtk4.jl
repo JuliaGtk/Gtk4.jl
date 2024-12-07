@@ -2,11 +2,8 @@ module Gtk4
 
 import Base: unsafe_convert, length, size, parent, push!, pushfirst!, insert!,
              pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
-             convert, empty!, string, popfirst!, size, delete!, in, close,
+             convert, empty!, string, popfirst!, size, delete!, in, close, stack,
              deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
-@static if VERSION >= v"1.9"
-    import Base: stack
-end
 
 import CEnum: @cenum
 import BitFlags: @bitflag
@@ -32,8 +29,8 @@ using Preferences
 
 using Reexport
 @reexport using Graphics
-import .Graphics: width, height, getgc, scale
-import Cairo: destroy, show_text, text, status
+import .Graphics: width, height, getgc, scale, center, clip
+import Cairo: destroy, text, status
 
 eval(include("gen/gdk4_consts"))
 eval(include("gen/gdk4_structs"))
@@ -41,6 +38,8 @@ eval(include("gen/gsk4_consts"))
 eval(include("gen/gsk4_structs"))
 eval(include("gen/gtk4_consts"))
 eval(include("gen/gtk4_structs"))
+
+const ModifierType_NONE = ModifierType_NO_MODIFIER_MASK
 
 module G_
 
@@ -54,8 +53,12 @@ using ..Graphene
 using ..GdkPixbufLib
 using ..Gtk4
 
+using ..Gtk4: BlendMode, Corner, FillRule, GLUniformType, LineCap, LineJoin, MaskMode, PathDirection, PathOperation, RenderNodeType, ScalingFilter, SerializationError, TransformCategory, PathForeachFlags, AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DmabufError, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, ScrollUnit, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState, AccessibleAnnouncementPriority, AccessibleAutocomplete, AccessibleInvalidState, AccessiblePlatformState, AccessibleProperty, AccessibleRelation, AccessibleRole, AccessibleSort, AccessibleState, AccessibleTextContentChange, AccessibleTextGranularity, AccessibleTristate, Align, ArrowType, AssistantPageType, BaselinePosition, BorderStyle, BuilderError, ButtonsType, CellRendererAccelMode, CellRendererMode, Collation, ConstraintAttribute, ConstraintRelation, ConstraintStrength, ConstraintVflParserError, ContentFit, CornerType, CssParserError, CssParserWarning, DeleteType, DialogError, DirectionType, EditableProperties, EntryIconPosition, EventSequenceState, FileChooserAction, FileChooserError, FilterChange, FilterMatch, FontLevel, GraphicsOffloadEnabled, IconSize, IconThemeError, IconViewDropPosition, ImageType, InputPurpose, InscriptionOverflow, Justification, LevelBarMode, License, ListTabBehavior, MessageType, MovementStep, NaturalWrapMode, NotebookTab, NumberUpLayout, Ordering, Orientation, Overflow, PackType, PadActionType, PageOrientation, PageSet, PanDirection, PolicyType, PositionType, PrintDuplex, PrintError, PrintOperationAction, PrintOperationResult, PrintPages, PrintQuality, PrintStatus, PropagationLimit, PropagationPhase, RecentManagerError, ResponseType, RevealerTransitionType, ScrollStep, ScrollType, ScrollablePolicy, SelectionMode, SensitivityType, ShortcutScope, ShortcutType, SizeGroupMode, SizeRequestMode, SortType, SorterChange, SorterOrder, SpinButtonUpdatePolicy, SpinType, StackTransitionType, StringFilterMatchMode, SymbolicColor, SystemSetting, TextDirection, TextExtendSelection, TextViewLayer, TextWindowType, TreeViewColumnSizing, TreeViewDropPosition, TreeViewGridLines, Unit, WrapMode, ApplicationInhibitFlags, BuilderClosureFlags, CellRendererState, DebugFlags, DialogFlags, EventControllerScrollFlags, FontChooserLevel, IconLookupFlags, InputHints, ListScrollFlags, PickFlags, PopoverMenuFlags, PrintCapabilities, ShortcutActionFlags, StateFlags, StyleContextPrintFlags, TextSearchFlags
+
 eval(include("gen/gdk4_methods"))
 eval(include("gen/gdk4_functions"))
+eval(include("gen/gsk4_methods"))
+eval(include("gen/gsk4_functions"))
 eval(include("gen/gtk4_methods"))
 eval(include("gen/gtk4_functions"))
 
@@ -67,7 +70,7 @@ end
 
 end
 
-import .GLib: set_gtk_property!, get_gtk_property, run, activate,
+import .GLib: set_gtk_property!, get_gtk_property, activate,
               signal_handler_is_connected, signalnames,
               GListModel, start_main_loop, stop_main_loop
 
@@ -113,7 +116,7 @@ include("tree.jl")
 include("deprecated.jl")
 include("basic_exports.jl")
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
     G_.get_major_version(),
     G_.get_minor_version(),
     G_.get_micro_version())
@@ -125,6 +128,12 @@ end
 
 function __init__()
     in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
+
+    # check that GTK is compatible with what the GI generated code expects
+    vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
+    if vercheck !== nothing
+        @warn "Gtk4 version check failed: $vercheck"
+    end
 
     # Set XDG_DATA_DIRS so that Gtk can find its icons and schemas
     ENV["XDG_DATA_DIRS"] = join(filter(x -> x !== nothing, [
@@ -166,6 +175,10 @@ function __init__()
     if Sys.islinux() || Sys.isfreebsd()
         G_.set_default_icon_name("julia")
     end
+
+    # prevents warnings from being thrown when using file dialogs
+    GLib.G_.set_application_name("julia")
+    GLib.G_.set_prgname("julia")
 
     isinteractive() && GLib.start_main_loop()
 

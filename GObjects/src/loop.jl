@@ -85,7 +85,7 @@ glib_main() = g_sigatom() do
 end
 
 """
-    is_loop_running()
+    is_loop_running() -> Bool
 
 Return true if the default GLib main event loop is running.
 
@@ -188,7 +188,7 @@ function set_uv_loop_integration(s = "auto")
 end
 
 """
-    get_uv_loop_integration()
+    get_uv_loop_integration() -> String
 
 Get Gtk4.jl's libuv loop integration setting: "auto", "enabled", or "disabled".
 
@@ -197,7 +197,7 @@ See also [`set_uv_loop_integration`](@ref).
 get_uv_loop_integration() = @load_preference("uv_loop_integration", "auto")
 
 """
-    is_uv_loop_integration_enabled()
+    is_uv_loop_integration_enabled() -> Bool
 
 Get whether Gtk4.jl's libuv loop integration is enabled.
 
@@ -205,12 +205,19 @@ See also [`set_uv_loop_integration`](@ref).
 """
 is_uv_loop_integration_enabled() = uv_int_enabled[]
 
-GApplication(id = nothing) = G_.Application_new(id,ApplicationFlags_FLAGS_NONE)
+"""
+    GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE)
+
+Create a `GApplication` with DBus id `id` and flags.
+
+Related GLib function: [`g_application_new`()]($(gtkdoc_method_url("gio","Application","new")))
+"""
+GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,ApplicationFlags_FLAGS_NONE)
 
 """
     run(app::GApplication)
 
-Calls `g_application_run`, starting the main loop. If the loop is already running, it will stop it before
+Calls `g_application_run`, starting the main loop. If the loop is already running, this function will stop it and emit a warning before
 starting the application loop.
 """
 function run(app::GApplication)

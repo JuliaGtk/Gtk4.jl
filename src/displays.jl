@@ -40,7 +40,22 @@ pulse(progress::GtkProgressBar) = G_.pulse(progress)
 
 ## GtkSpinner
 
+"""
+    start(spinner::GtkSpinner)
+
+Start a GtkSpinner widget spinning. The purpose of this widget is to show that some operation is in process.
+
+Related GTK function: [`gtk_spinner_start`()]($(gtkdoc_method_url("gtk4","Spinner","start")))
+"""
 start(spinner::GtkSpinner) = G_.start(spinner)
+
+"""
+    stop(spinner::GtkSpinner)
+
+Stop a GtkSpinner. The purpose of this widget is to show that some operation is in process.
+
+Related GTK function: [`gtk_spinner_stop`()]($(gtkdoc_method_url("gtk4","Spinner","stop")))
+"""
 stop(spinner::GtkSpinner) = G_.stop(spinner)
 
 ## GtkStatusbar

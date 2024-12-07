@@ -31,10 +31,10 @@ function show(io::IO, w::GObject)
     n = Ref{Cuint}()
     props = ccall((:g_object_class_list_properties, libgobject), Ptr{Ptr{GParamSpec}},
         (Ptr{Nothing}, Ptr{Cuint}), G_OBJECT_GET_CLASS(w), n)
-    v = gvalue(String)
     if get(io, :compact, false)::Bool
         print(io, getfield(w,:handle)) # show pointer
     else # show properties
+        v = gvalue(String)
         first = true
         for i = 1:n[]
             param = unsafe_load(unsafe_load(props, i))
@@ -59,9 +59,9 @@ function show(io::IO, w::GObject)
                 end
             end
         end
+        ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), v)
     end
     print(io, ')')
-    ccall((:g_value_unset, libgobject), Ptr{Nothing}, (Ptr{GValue},), v)
     nothing
 end
 
@@ -71,7 +71,7 @@ end
 Prints information about a property of the GObject `w`, including a
 brief description, its type, its default value, and its current value.
 """
-function propertyinfo(w::GObject, name::AbstractString)
+function propertyinfo(@nospecialize(w::GObject), name::AbstractString)
     p = ccall((:g_object_class_find_property, libgobject), Ptr{GParamSpec}, (Ptr{Nothing}, Ptr{UInt8}), G_OBJECT_GET_CLASS(w), name)
     if p == C_NULL
         error("No property with that name")
@@ -151,3 +151,56 @@ See also [`bind_property`](@ref).
 Related GTK function: [`g_binding_unbind`](https://docs.gtk.org/gobject/method.Binding.unbind.html)
 """
 unbind_property(b::GBinding) = G_.unbind(b)
+
+## Below is experimental and unstable!
+
+mutable struct _GObjectClass
+    g_type_class::_GTypeClass
+    construct_properties::Ptr{GLib._GSList{Ptr{Nothing}}}
+    constructor::Ptr{Nothing}
+    set_property::Ptr{Cvoid}
+    get_property::Ptr{Cvoid}
+    dispose::Ptr{Cvoid}
+    finalize::Ptr{Cvoid}
+    dispatch_properties_changed::Ptr{Cvoid}
+    notify::Ptr{Cvoid}
+    constructed::Ptr{Cvoid}
+    flags::UInt64
+    n_construct_properties::UInt64
+    pspecs::Ptr{Nothing}
+    n_pspecs::UInt64
+    pdummy1::Ptr{Nothing}
+    pdummy2::Ptr{Nothing}
+    pdummy3::Ptr{Nothing}
+end
+
+# Register a subtype of `T` with name `typename` and class init C function `object_class_init_cfunc`.
+# The class init function should fill in the virtual functions necessary for the class and its ancestors.
+function register_subtype(::Type{T}, typename::Symbol, object_class_init_cfunc) where T<:GObject
+    base_gtype = g_type(T)
+    tq=G_.type_query(base_gtype)
+    typeinfo = _GTypeInfo(tq.class_size,
+               C_NULL,   # base_init
+               C_NULL,   # base_finalize
+               object_class_init_cfunc,
+               C_NULL,   # class_finalize
+               C_NULL,   # class_data
+               tq.instance_size,
+               0,        # n_preallocs
+               C_NULL,   # instance_init
+               C_NULL)   # value_table
+    G_.type_register_static(base_gtype,typename,Ref(typeinfo),TypeFlags_FINAL)
+end
+
+# Override a property (sometimes needed for interfaces or subtypes) of a `class`
+# `property_id` is under your control but you have to be self-consistent
+function override_property(class::Ptr{_GObjectClass}, property_id, name::AbstractString)
+    ccall((:g_object_class_override_property, libgobject), Cvoid, (Ptr{_GObjectClass}, Cuint, Cstring), class, property_id, name)
+end
+
+# Asks GLib to make a new GObject
+function gobject_new(juliatype, args...)
+    gtype = GLib.g_type(juliatype)
+    h=ccall(("g_object_new", GLib.libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)
+    juliatype(h, args...)
+end

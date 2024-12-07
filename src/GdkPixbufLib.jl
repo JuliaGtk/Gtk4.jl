@@ -30,6 +30,7 @@ using gdk_pixbuf_jll
 using GObjects
 const GLib = GObjects
 using ..GdkPixbufLib
+using ..GdkPixbufLib: Colorspace, InterpType, PixbufError, PixbufRotation
 
 import Base: convert, copy
 
@@ -61,7 +62,7 @@ let skiplist = [ :file_info ]
     end
 end
 
-global const lib_version = VersionNumber(
+const lib_version = VersionNumber(
       PIXBUF_MAJOR,
       PIXBUF_MINOR,
       PIXBUF_MICRO)

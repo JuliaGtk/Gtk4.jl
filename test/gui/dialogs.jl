@@ -19,10 +19,6 @@ main_window = GtkWindow("Dialog example")
 
 info_dialog("Here's some information", main_window; timeout = 0.25)
 sleep(1.0)
-warn_dialog("Here's some alarming information", main_window; timeout = 0.25)
-sleep(1.0)
-error_dialog("Here's an error", main_window; timeout = 0.25)
-sleep(1.0)
 GC.gc()
 sleep(1.0)
 close(main_window)
@@ -35,18 +31,20 @@ main_window = GtkWindow("Dialog example")
 
 open_dialog("Pick a file to open", main_window; timeout = 0.25)
 sleep(1.0)
-open_dialog("Pick a file to open", main_window, ["*.png"]; timeout = 0.25)
+open_dialog("Pick files to open", main_window, ["*.png"]; timeout = 0.25, multiple = true, start_folder = ".")
 sleep(1.0)
 
 save_dialog("Pick a filename", main_window; timeout = 0.25)
+sleep(1.0)
 
+save_dialog("Pick a filename", main_window, ["*.png"]; timeout = 0.25, start_folder = ".")
 sleep(1.0)
 
 color_dialog("What is your favorite color?", main_window; timeout = 0.25)
 
 sleep(1.0)
 
-input_dialog("What is the meaning of life, the universe, and everything?", "42", (("Cancel", 0), ("Accept", 1)), main_window; timeout = 0.25)
+input_dialog("Whadya know?", "Not much, you?", main_window; timeout = 0.25)
 
 sleep(1.0)
 
@@ -81,6 +79,9 @@ csvfilter3 = GtkFileFilter("", "text/csv")
 csvfilter4 = GtkFileFilter("*.csv", "text/csv")
 # Pattern takes precedence over mime-type, causing mime-type to be ignored
 @test csvfilter4.name == "*.csv"
+
+imfilter = GtkFileFilter("")
+@test GtkFileFilter(imfilter) == imfilter
 end
 
 @testset "New dialogs" begin

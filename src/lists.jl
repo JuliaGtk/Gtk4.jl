@@ -70,9 +70,10 @@ function show(io::IO, sl::GtkStringList)
             end
         end
     else
-        println(io, "0-element GtkStringList")
+        print(io, "0-element GtkStringList")
     end
 end
+string(obj::GtkStringObject) = G_.get_string(obj)
 
 ## GtkDropdown
 
@@ -135,7 +136,20 @@ GObject properties.
 """
 GtkGridView(model=nothing; kwargs...) = GtkGridView(model, nothing; kwargs...)
 
+function scroll_to(lv::Union{GtkListView,GtkGridView}, pos, flags = ListScrollFlags_NONE)
+    G_.scroll_to(lv, pos - 1, flags, nothing)
+end
+
 GtkColumnView(; kwargs...) = GtkColumnView(nothing; kwargs...)
+
+function scroll_to(cv::GtkColumnView, pos, flags::ListScrollFlags = ListScrollFlags_NONE)
+    G_.scroll_to(cv, pos - 1, nothing, flags, nothing)
+end
+
+function scroll_to(cv::GtkColumnView, pos, column::GtkColumnViewColumn, flags::ListScrollFlags = ListScrollFlags_NONE)
+    G_.scroll_to(cv, pos - 1, column, flags, nothing)
+end
+
 GtkColumnViewColumn(title=""; kwargs...) = GtkColumnViewColumn(title, nothing; kwargs...)
 push!(cv::GtkColumnView, cvc::GtkColumnViewColumn) = (G_.append_column(cv,cvc); cv)
 
@@ -149,6 +163,7 @@ get_child(te::GtkTreeExpander) = G_.get_child(te)
 
 get_item(trl::GtkTreeListRow) = G_.get_item(trl)
 get_children(trl::GtkTreeListRow) = G_.get_children(trl)
+getindex(trl::GtkTreeListRow, pos) = G_.get_child_row(trl, pos - 1)
 
 function GtkTreeListModel(root, passthrough, autoexpand, create_func)
     rootlm = GListModel(root)
@@ -158,6 +173,8 @@ function GtkTreeListModel(root, passthrough, autoexpand, create_func)
     ret = ccall(("gtk_tree_list_model_new", libgtk4), Ptr{GObject}, (Ptr{GObject}, Cint, Cint, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), rootlm, passthrough, autoexpand, create_cfunc, ref, deref)
     GtkTreeListModelLeaf(ret, true)
 end
+
+getindex(tlm::GtkTreeListModel, pos) = G_.get_row(tlm, pos - 1)
 
 """
     GtkSignalListItemFactory(setup_cb, bind_cb)
@@ -261,7 +278,7 @@ function set_filter_func(cf::GtkCustomFilter, ::Nothing)
     ccall(("gtk_custom_filter_set_filter_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
 end
 
-changed(cf::GtkCustomFilter, _change = Gtk4.FilterChange_DIFFERENT) = G_.changed(cf, _change)
+changed(cf::GtkCustomFilter, _change = FilterChange_DIFFERENT) = G_.changed(cf, _change)
 
 ## GtkCustomSorter
 
@@ -281,7 +298,7 @@ function set_sort_func(cf::GtkCustomSorter, ::Nothing)
     ccall(("gtk_custom_sorter_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
 end
 
-changed(cs::GtkCustomSorter, _change = Gtk4.FilterChange_DIFFERENT) = G_.changed(cs, _change)
+changed(cs::GtkCustomSorter, _change = FilterChange_DIFFERENT) = G_.changed(cs, _change)
 
 ## GtkExpressions
 

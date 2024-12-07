@@ -36,3 +36,30 @@ end
 cancel(c::GCancellable) = G_.cancel(c)
 iscancelled(c::GCancellable) = G_.is_cancelled(c)
 
+"""
+    cancel_after_delay(timeout)->GCancellable
+
+Creates and returns a `GCancellable` and after `timeout` seconds, cancels it.
+"""
+function cancel_after_delay(timeout)
+    cancellable = GCancellable()
+    if timeout > 0
+        Timer(timeout) do timer
+            cancel(cancellable)
+        end
+    end
+    cancellable
+end
+
+mutable struct _GActionInterface
+    g_iface::_GTypeInterface
+    get_name::Ptr{Cvoid}
+    get_parameter_type::Ptr{Cvoid}
+    get_state_type::Ptr{Cvoid}
+    get_state_hint::Ptr{Cvoid}
+    get_enabled::Ptr{Cvoid}
+    get_state::Ptr{Cvoid}
+    change_state::Ptr{Cvoid}
+    activate::Ptr{Cvoid}
+end
+

@@ -5,9 +5,9 @@ const GLib = GObjects
 using Glib_jll
 using Pango_jll
 
-import Base: convert, copy, length, getindex, iterate, unsafe_convert
+import Base: convert, length, getindex, iterate, unsafe_convert
 import CEnum: @cenum, CEnum
-import BitFlags: @bitflag, BitFlag
+import BitFlags: @bitflag
 
 eval(include("../gen/pango_consts"))
 eval(include("../gen/pango_structs"))
@@ -27,6 +27,7 @@ using Pango_jll, Glib_jll
 using GObjects
 const GLib = GObjects
 using ..Pango
+using ..Pango: Alignment, AttrType, BaselineShift, CoverageLevel, Direction, EllipsizeMode, FontScale, Gravity, GravityHint, LayoutDeserializeError, Overline, RenderPart, Script, Stretch, Style, TabAlign, TextTransform, Underline, Variant, Weight, WrapMode, FontMask, LayoutDeserializeFlags, LayoutSerializeFlags, ShapeFlags, ShowFlags
 using ..Pango.Cairo
 
 eval(include("../gen/pango_methods"))
@@ -57,8 +58,13 @@ for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
 end
 
 function __init__()
-   gtype_wrapper_cache_init()
-   gboxed_cache_init()
+    # check that libpango is compatible with what the GI generated code expects
+    vercheck = G_.version_check(VERSION_MAJOR,VERSION_MINOR,0)
+    if vercheck !== nothing
+        @warn "Pango version check failed: $vercheck"
+    end
+    gtype_wrapper_cache_init()
+    gboxed_cache_init()
 end
 
 default_font_map() = G_.font_map_get_default()

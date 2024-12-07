@@ -5,7 +5,7 @@ printstyled("Generating code for GObject\n";bold=true)
 path="../GObjects/src/gen"
 
 ns = GINamespace(:GObject,"2.0")
-d = GI.read_gir(gobject_introspection_jll, ns)
+d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
 ## structs
 
@@ -60,7 +60,7 @@ skiplist=vcat(handled_list,[:enum_complete_type_info,:enum_register_static,:flag
 :source_set_closure,:source_set_dummy_callback,
 :type_check_instance,:type_check_instance_is_a,:type_check_instance_is_fundamentally_a,
 :type_default_interface_unref,:type_free_instance,
-:type_name_from_instance,:type_register_fundamental,
+:type_name_from_instance,:type_register_fundamental,:variant_get_gtype,
 :signal_set_va_marshaller,:signal_emitv,:param_value_convert,:param_value_defaults,:param_value_set_default,:param_value_validate,:param_values_cmp])
 
 GI.all_functions!(exprs,ns,skiplist=skiplist,symbol_skiplist=symbols_handled)

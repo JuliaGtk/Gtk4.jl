@@ -122,6 +122,7 @@ push!(g::GSimpleActionGroup, a) = (push!(GActionMap(g), GAction(a)); g)
 delete!(g::GSimpleActionGroup, a::AbstractString) = (delete!(GActionMap(g), a); g)
 getindex(g::GSimpleActionGroup, name::AbstractString) = getindex(GActionMap(g), name)
 list_actions(g) = G_.list_actions(GActionGroup(g))
+Base.keys(g::GSimpleActionGroup) = G_.list_actions(GActionGroup(g))
 
 function GDBusActionGroup(app::GApplication, bus_name, object_path)
     conn = G_.get_dbus_connection(app)
@@ -134,6 +135,12 @@ function GMenu(i::GMenuItem)
     G_.set_submenu(i,m)
     m
 end
+"""
+    GMenuItem(label, [detailed_action])
+
+Create a GMenuItem with attributes `label` and an optional `detailed_action`, which is
+an action name with an optional detail argument.
+"""
 GMenuItem(label,detailed_action = nothing) = G_.MenuItem_new(label, detailed_action)
 
 push!(m::GMenu, i::GMenuItem) = (G_.append_item(m,i); m)

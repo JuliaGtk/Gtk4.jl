@@ -15,13 +15,13 @@ using Gtk4
 model = GtkStringList(string.(names(Gtk4)))
 selmodel = GtkSelectionModel(GtkSingleSelection(GListModel(model)))
 
-function setup_cb(f, li)
-    set_child(li,GtkLabel(""))
+function setup_cb(f, list_item)  # here `f` is the item factory
+    set_child(list_item, GtkLabel(""))
 end
 
-function bind_cb(f, li)
-    text = li[].string
-    label = get_child(li)
+function bind_cb(f, list_item)
+    text = list_item[].string
+    label = get_child(list_item)
     label.label = text
 end
 
@@ -36,7 +36,7 @@ sw[] = list
 Let's go through each step. First, we create a model that holds the data we want to display. In this
 example we display a list of strings (all of the names exported by the `Gtk4` module, which was 1053
 strings when this was written), and we store them in a `GtkStringList`. This object implements
-the interface `GListModel`, which is what all of the list widgets require.
+the interface `GListModel`, which stores an ordered list of `GObject`s.
 
 Next, we create a "selection model", which wraps the model we just created and controls how the user
 can select items in the list. Possible wrappers include `GtkNoSelection` (no selection allowed),
@@ -47,13 +47,15 @@ Next, a "factory" is created. The list widget can efficiently display a huge num
 populating display widgets for an item when the item becomes visible. The "factory" is what does this. The
 constructor takes two callback functions: "setup", which creates a suitable widget for displaying an
 item, and "bind", which sets the widget to display a particular item. The arguments of the callbacks
-are the factory `f` and a list item `li`, which is an object that represents elements of the
-GListModel. In the "setup" callback, you can call the function `set_child` on the list item to set a
-widget that will be used to display the item. In our example we create a `GtkLabel` to display the
-string. In the "bind" callback, we first fetch the element of the list model using the `getindex`
-method on the list item (by calling `li[]`) and we get the text from its "string" property. We then
-get the `GtkLabel` using the `get_child` function on the list item, and then we set the text of this
-`GtkLabel`.
+are the factory `f` (often unused) and a `GtkListItem` `list_item`, which is an object that holds pointers to elements of the
+`GListModel` (the "item") and the widget (the "child").
+
+In the "setup" callback, we use `set_child` to set a new `GtkLabel` as the `GtkListItem`'s child
+widget. If you need to set up signals for the widget that don't depend on the item, this is where you would typically do that. This callback is called when the `ListView` widget is created (or resized, presumably), unlike the "bind" callback, which is called multiple times as the user scrolls through the list.
+
+In the "bind" callback, we first fetch the element of the list model that will be displayed, using the `getindex`
+method on the list item (by calling `list_item[]`). Each string in `GtkStringList` is stored inside a `GtkStringObject`. The string can be accessed using the "string" object (i.e. `obj.string`) or using an accessor (i.e. `string(obj)`). We then fetch the text from its "string" property. We then get the `GtkLabel` using the `get_child` function on the list item, and finally we set the text of this
+`GtkLabel`. 
 
 Finally, we construct the `GtkListView` using the selection model and the factory and add it to a
 `GtkScrolledWindow` and a `GtkWindow`.

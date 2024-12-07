@@ -1,11 +1,15 @@
 # Gtk4.jl Examples
 
+These examples should be run in the REPL unless stated otherwise.
+
 ## Basic examples
 - `calculator4.jl` demonstrates a simple GUI with lots of buttons. Adapted from an example in Gtk.jl by Nand Vinchhi.
 - `css.jl` demonstrates widget styling using CSS.
 - `css-style.jl` shows how to style individual widgets using CSS classes.
 - `dialogs.jl` demonstrates various types of dialogs.
+- `menubutton.jl` shows basic use of menus and `GtkMenuButton`.
 - `show_image.jl` demonstrates how to show a static image using `GtkPicture` and how to copy an image to the clipboard.
+- `word_counter.jl` is a minimal example using `GtkTextView`.
 
 ## Drawing
 - `canvas.jl` demonstrates use of `GtkCanvas`, which allows drawing with [Cairo](https://github.com/JuliaGraphics/Cairo.jl). Also shows how to change the cursor when it's over a certain widget. Adapted from an example in the Gtk.jl manual.
@@ -30,4 +34,8 @@
 - The `ExampleApplication` subdirectory shows how to use Gtk4.jl with [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl).
 
 ## Toys
-- `HDF5Viewer` is a more extended example that shows the contents of an HDF5 file. Uses `GtkBuilder`, `GtkColumnView`, and `GtkTextView` and does some work in a separate thread to keep the UI responsive.
+- `HDF5Viewer` is a more extended example that shows the contents of an HDF5 file. Uses `GtkBuilder`, `GtkColumnView`, and `GtkTextView` and does some work in a separate thread to keep the UI responsive. This directory should be `dev`'ed to use it.
+
+## Experimental
+
+- `custom_widget` shows how to define a custom GtkWidget with its own "snapshot" callback

@@ -1,17 +1,17 @@
 # functions that output expressions for a library in bulk
 
 ## Constants, enums, and flags
-function _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
+function _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants = true)
     for e in es
         name = Symbol(get_name(e))
-        typeinit = in(name, skiplist) ? false : incl_typeinit
-        push!(const_mod.args, unblock(decl(e,typeinit)))
-        push!(const_exports.args, name)
+        in(name, skiplist) && continue
+        push!(const_mod.args, unblock(decl(e,incl_typeinit)))
+        export_constants && push!(const_exports.args, name)
         push!(loaded,name)
     end
 end
 
-function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[])
+function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[], export_constants = true)
     loaded=Symbol[]
     c = get_consts(ns)
 
@@ -25,14 +25,14 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
     end
 
     es=get_all(ns,GIEnumInfo)
-    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
+    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants)
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," enums\n";color=:green)
     end
 
     es=get_all(ns,GIFlagsInfo)
-    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded)
+    _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants)
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," flags\n";color=:green)
@@ -45,11 +45,11 @@ function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix,
     
     const_mod = Expr(:block)
 
-    c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist)
+    c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist, export_constants)
     if doc_xml !== nothing
         GI.append_const_docs!(const_mod.args, doc_prefix, doc_xml, c)
     end
-    export_constants && push!(const_mod.args, exports)
+    isempty(exports.args) || push!(const_mod.args, exports)
 
     push!(exprs, const_mod)
 
@@ -89,10 +89,12 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         fields=get_fields(ssi)
         if only_opaque && length(fields)>0 && !in(name,import_as_opaque)
             imported-=1
+            push!(struct_skiplist,name)
             continue
         end
         if occursin("Private",String(name))
             imported-=1
+            push!(struct_skiplist,name)
             continue
         end
         if is_gtype_struct(ssi) # these are "class structures" and according to the documentation we probably don't need them in bindings
@@ -118,13 +120,8 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
         end
         push!(exports.args, get_full_name(ssi))
         length(fields)>0 && push!(exports.args,get_struct_name(ssi,false))
-    end
-
-    for ss in structs
-        ssi=gi_find_by_name(ns,ss)
-        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
-        if !isempty(constructors)
-            append!(exprs,constructors)
+        if length(fields)>0 && !in(name, import_as_opaque)
+            push!(exports.args, structptrlike(ssi))
         end
     end
 
@@ -133,6 +130,18 @@ function struct_exprs!(exprs,exports,ns,structs=nothing;print_summary=true,exclu
     end
 
     struct_skiplist
+end
+
+function struct_constructor_exprs!(exprs,ns;constructor_skiplist=[], struct_skiplist=[], exclude_deprecated=true,first_list=[])
+    s=get_non_skipped(ns,GIStructInfo,struct_skiplist,exclude_deprecated)
+    structs = get_name.(s)
+    for ss in vcat(first_list, structs)
+        ssi=gi_find_by_name(ns,ss)
+        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
+        if !isempty(constructors)
+            append!(exprs,constructors)
+        end
+    end
 end
 
 function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],constructor_skiplist=[],import_as_opaque=Symbol[],output_cache_init=true,only_opaque=false,exclude_deprecated=true)
@@ -161,6 +170,9 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
 
         push!(exprs, decl(ssi,in(name,import_as_opaque)))
         push!(exports.args, get_full_name(ssi))
+        if length(fields)>0
+            push!(exports.args, structptrlike(ssi))
+        end
         push!(loaded, name)
         length(fields)>0 && push!(exports.args,get_struct_name(ssi,false))
     end
@@ -171,13 +183,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
         end
         push!(exprs,unblock(gboxed_types_init))
     end
-
     
-    for ssi in ss
-        constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
-        isempty(constructors) || append!(exprs,constructors)
-    end
-
     if print_summary
         printstyled("Generated ",imported," structs out of ",length(ss),"\n";color=:green)
     end
@@ -185,9 +191,10 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
     struct_skiplist, loaded
 end
 
-function all_callbacks!(exprs, exports, ns)
+function all_callbacks!(exprs, exports, ns; callback_skiplist = [])
     callbacks=get_all(ns,GICallbackInfo)
     for c in callbacks
+        get_name(c) in callback_skiplist && continue
         try
 	    push!(exprs, decl(c))
 	catch e
@@ -202,7 +209,7 @@ function all_callbacks!(exprs, exports, ns)
     nothing
 end
 
-function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque; doc_xml = nothing, doc_prefix = prefix, constructor_skiplist = [], first_list = [], output_boxed_cache_init = true, output_object_cache_init = true, output_object_cache_define = true, object_skiplist = [], object_constructor_skiplist = [], interface_skiplist = [], signal_skiplist = [], expr_init = nothing, output_gtype_wrapper_cache_def = false, output_boxed_types_def = true, output_callbacks = true, exclude_deprecated = true, doc_skiplist = [])
+function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque; doc_xml = nothing, doc_prefix = prefix, constructor_skiplist = [], first_list = [], output_boxed_cache_init = true, output_object_cache_init = true, output_object_cache_define = true, object_skiplist = [], object_constructor_skiplist = [], interface_skiplist = [], signal_skiplist = [], expr_init = nothing, output_gtype_wrapper_cache_def = false, output_boxed_types_def = true, output_callbacks = true, exclude_deprecated = true, doc_skiplist = [], callback_skiplist = [])
     toplevel, exprs, exports = GI.output_exprs()
 
     if output_boxed_types_def
@@ -219,6 +226,7 @@ function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque;
     end
     all_interfaces!(exprs,exports,ns; skiplist = interface_skiplist, exclude_deprecated = exclude_deprecated)
     c = all_objects!(exprs,exports,ns;handled=[:Object],skiplist=object_skiplist,output_cache_init = output_object_cache_init, output_cache_define = output_object_cache_define, constructor_skiplist = object_constructor_skiplist,exclude_deprecated=exclude_deprecated)
+    struct_constructor_exprs!(exprs,ns;constructor_skiplist=constructor_skiplist,exclude_deprecated=exclude_deprecated,struct_skiplist=struct_skiplist,first_list=first_list)
     if doc_xml !== nothing
         append_object_docs!(exprs, doc_prefix, doc_xml, c, ns; skiplist = doc_skiplist)
     end
@@ -227,7 +235,7 @@ function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque;
     end
     all_object_signals!(exprs, ns;skiplist=signal_skiplist,object_skiplist=object_skiplist, exclude_deprecated = exclude_deprecated)
     if output_callbacks
-        all_callbacks!(exprs, exports, ns)
+        all_callbacks!(exprs, exports, ns; callback_skiplist)
     end
     push!(exprs,exports)
     write_to_file(path,"$(prefix)_structs",toplevel)
@@ -430,11 +438,11 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
     end
 end
 
-function export_methods!(ns,path,prefix;struct_method_skiplist = Symbol[], object_method_skiplist = Symbol[],interface_method_skiplist = Symbol[], struct_skiplist = Symbol[], interface_skiplist = Symbol[], object_skiplist = Symbol[], exclude_deprecated = true)
+function export_methods!(ns,path,prefix;struct_method_skiplist = Symbol[], object_method_skiplist = Symbol[],interface_method_skiplist = Symbol[], struct_skiplist = Symbol[], interface_skiplist = Symbol[], object_skiplist = Symbol[], exclude_deprecated = true, interface_helpers = true)
     toplevel, exprs, exports = GI.output_exprs()
 
     all_struct_methods!(exprs,ns, struct_skiplist = struct_skiplist, skiplist = struct_method_skiplist, exclude_deprecated = exclude_deprecated)
-    all_object_methods!(exprs,ns; skiplist = object_method_skiplist, object_skiplist = object_skiplist, exclude_deprecated = exclude_deprecated)
+    all_object_methods!(exprs,ns; skiplist = object_method_skiplist, object_skiplist = object_skiplist, exclude_deprecated = exclude_deprecated, interface_helpers)
     all_interface_methods!(exprs,ns; skiplist = interface_method_skiplist, interface_skiplist = interface_skiplist, exclude_deprecated = exclude_deprecated)
     
     write_to_file(path,"$(prefix)_methods",toplevel)
