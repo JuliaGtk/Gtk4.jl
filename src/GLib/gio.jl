@@ -37,7 +37,7 @@ cancel(c::GCancellable) = G_.cancel(c)
 iscancelled(c::GCancellable) = G_.is_cancelled(c)
 
 """
-    cancel_after_delay(timeout)
+    cancel_after_delay(timeout)->GCancellable
 
 Creates and returns a `GCancellable` and after `timeout` seconds, cancels it.
 """

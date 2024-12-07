@@ -174,6 +174,8 @@ mutable struct _GObjectClass
     pdummy3::Ptr{Nothing}
 end
 
+# Register a subtype of `T` with name `typename` and class init C function `object_class_init_cfunc`.
+# The class init function should fill in the virtual functions necessary for the class and its ancestors.
 function register_subtype(::Type{T}, typename::Symbol, object_class_init_cfunc) where T<:GObject
     base_gtype = g_type(T)
     tq=G_.type_query(base_gtype)
@@ -190,10 +192,13 @@ function register_subtype(::Type{T}, typename::Symbol, object_class_init_cfunc) 
     G_.type_register_static(base_gtype,typename,Ref(typeinfo),TypeFlags_FINAL)
 end
 
+# Override a property (sometimes needed for interfaces or subtypes) of a `class`
+# `property_id` is under your control but you have to be self-consistent
 function override_property(class::Ptr{_GObjectClass}, property_id, name::AbstractString)
     ccall((:g_object_class_override_property, libgobject), Cvoid, (Ptr{_GObjectClass}, Cuint, Cstring), class, property_id, name)
 end
 
+# Asks GLib to make a new GObject
 function gobject_new(juliatype, args...)
     gtype = GLib.g_type(juliatype)
     h=ccall(("g_object_new", GLib.libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)

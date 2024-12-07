@@ -22,6 +22,15 @@ function glib_unref(x::Ptr{GParamSpec})
     ccall((:g_param_spec_unref, libgobject), Nothing, (Ptr{GParamSpec},), x)
 end
 
+"""
+    GVariant(x)
+
+Create a `GVariant` that contains the value `x`. This is a container used to
+pass parameters and store states in GLib's action system.
+
+The value is accessed from a `GVariant` `gv` using `gv[t]`, where `t` is the
+Julia type. For example, to access a boolean inside a `GVariant`, use `gv[Bool]`.
+"""
 mutable struct GVariant
     handle::Ptr{GVariant}
     function GVariant(ref::Ptr{GVariant})
@@ -75,25 +84,6 @@ function get_interface_decl(iname::Symbol)
     end
 end
 
-function get_object_decl(iname::Symbol,parentname::Symbol)
-    leafname = Symbol(String(iname),"Leaf")
-    undeferrmessage = "Cannot construct $leafname with a NULL pointer"
-    quote
-        abstract type $(esc(iname)) <: $(esc(parentname)) end
-        mutable struct $(esc(leafname)) <: $(esc(iname))
-            handle::Ptr{GObject}
-            function $(esc(leafname))(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error($undeferrmessage)
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[$(QuoteNode(iname))] = $(esc(leafname))
-    end
-end
-
 macro Giface(iname, lib, callname)
     gtype_decl = get_gtype_decl(iname, lib, callname)
     interf_decl = get_interface_decl(iname)
@@ -103,17 +93,6 @@ macro Giface(iname, lib, callname)
     end
     Base.remove_linenums!(ex)
 end
-
-macro Gobject(iname, pname, lib, callname)
-    gtype_decl = get_gtype_decl(iname, lib, callname)
-    obj_decl = get_object_decl(iname, pname)
-    ex=quote
-        $(obj_decl)
-        $(gtype_decl)
-    end
-    Base.remove_linenums!(ex)
-end
-
 
 """
     g_type(x)

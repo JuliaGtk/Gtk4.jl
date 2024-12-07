@@ -221,15 +221,23 @@ function gobject_decl(objectinfo)
         println("get_g_type returns void -- not in library? : ", get_name(objectinfo))
     end
     
-    type_init = Symbol(get_type_init(objectinfo))
-    libs=get_shlibs(GINamespace(get_namespace(objectinfo)))
-    lib=libs[findfirst(find_symbol(type_init),libs)]
-    
     exprs=Expr[]
     decl=quote
-        @GLib.Gobject $oname $pname $(symbol_from_lib(lib)) $type_init
+        abstract type $oname <: $pname end
+        mutable struct $leafname <: $oname
+            handle::Ptr{GObject}
+            function $leafname(handle::Ptr{GObject}, owns=false)
+                if handle == C_NULL
+                    error($("Cannot construct $leafname with a NULL pointer"))
+                end
+                GLib.gobject_maybe_sink(handle,owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[$(QuoteNode(oname))] = $leafname
+        $(unblock(typeinit_def(objectinfo, oname)))
     end
-    push!(exprs, MacroTools.striplines(unblock(decl)))
+    push!(exprs, decl)
     # if there are signals, add "signal_return_type" method, and "signal_arg_types" method
     signals = get_all_signals(objectinfo)
     sigdict = signal_dict_incl_parents(objectinfo)

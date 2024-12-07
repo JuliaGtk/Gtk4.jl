@@ -875,31 +875,111 @@ $(Expr(:toplevel, quote
             append!(GLib.gboxed_types, gboxed_types)
         end
     const gtype_wrapper_cache = Dict{Symbol, Type}()
-    GLib.@Gobject PangoContext GObject libpango pango_context_get_type
+    begin
+        abstract type PangoContext <: GObject end
+        mutable struct PangoContextLeaf <: PangoContext
+            handle::Ptr{GObject}
+            function PangoContextLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoContextLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoContext] = PangoContextLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoContext) = begin
+                ccall(("pango_context_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoContext})
             signalnames(supertype(PangoContext))
         end
     end
-    GLib.@Gobject PangoCoverage GObject libpango pango_coverage_get_type
+    begin
+        abstract type PangoCoverage <: GObject end
+        mutable struct PangoCoverageLeaf <: PangoCoverage
+            handle::Ptr{GObject}
+            function PangoCoverageLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoCoverageLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoCoverage] = PangoCoverageLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoCoverage) = begin
+                ccall(("pango_coverage_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoCoverage})
             signalnames(supertype(PangoCoverage))
         end
     end
-    GLib.@Gobject PangoFont GObject libpango pango_font_get_type
+    begin
+        abstract type PangoFont <: GObject end
+        mutable struct PangoFontLeaf <: PangoFont
+            handle::Ptr{GObject}
+            function PangoFontLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoFont] = PangoFontLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoFont) = begin
+                ccall(("pango_font_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoFont})
             signalnames(supertype(PangoFont))
         end
     end
-    GLib.@Gobject PangoFontFace GObject libpango pango_font_face_get_type
+    begin
+        abstract type PangoFontFace <: GObject end
+        mutable struct PangoFontFaceLeaf <: PangoFontFace
+            handle::Ptr{GObject}
+            function PangoFontFaceLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontFaceLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoFontFace] = PangoFontFaceLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoFontFace) = begin
+                ccall(("pango_font_face_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoFontFace})
             signalnames(supertype(PangoFontFace))
         end
     end
-    GLib.@Gobject PangoFontFamily GObject libpango pango_font_family_get_type
+    begin
+        abstract type PangoFontFamily <: GObject end
+        mutable struct PangoFontFamilyLeaf <: PangoFontFamily
+            handle::Ptr{GObject}
+            function PangoFontFamilyLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontFamilyLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoFontFamily] = PangoFontFamilyLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoFontFamily) = begin
+                ccall(("pango_font_family_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoFontFamily})
             vcat([:items_changed], signalnames(supertype(PangoFontFamily)))
@@ -913,7 +993,23 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    GLib.@Gobject PangoFontMap GObject libpango pango_font_map_get_type
+    begin
+        abstract type PangoFontMap <: GObject end
+        mutable struct PangoFontMapLeaf <: PangoFontMap
+            handle::Ptr{GObject}
+            function PangoFontMapLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontMapLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoFontMap] = PangoFontMapLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoFontMap) = begin
+                ccall(("pango_font_map_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoFontMap})
             vcat([:items_changed], signalnames(supertype(PangoFontMap)))
@@ -927,25 +1023,89 @@ $(Expr(:toplevel, quote
             end
         end
     end
-    GLib.@Gobject PangoFontset GObject libpango pango_fontset_get_type
+    begin
+        abstract type PangoFontset <: GObject end
+        mutable struct PangoFontsetLeaf <: PangoFontset
+            handle::Ptr{GObject}
+            function PangoFontsetLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontsetLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoFontset] = PangoFontsetLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoFontset) = begin
+                ccall(("pango_fontset_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoFontset})
             signalnames(supertype(PangoFontset))
         end
     end
-    GLib.@Gobject PangoFontsetSimple PangoFontset libpango pango_fontset_simple_get_type
+    begin
+        abstract type PangoFontsetSimple <: PangoFontset end
+        mutable struct PangoFontsetSimpleLeaf <: PangoFontsetSimple
+            handle::Ptr{GObject}
+            function PangoFontsetSimpleLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoFontsetSimpleLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoFontsetSimple] = PangoFontsetSimpleLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoFontsetSimple) = begin
+                ccall(("pango_fontset_simple_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoFontsetSimple})
             signalnames(supertype(PangoFontsetSimple))
         end
     end
-    GLib.@Gobject PangoLayout GObject libpango pango_layout_get_type
+    begin
+        abstract type PangoLayout <: GObject end
+        mutable struct PangoLayoutLeaf <: PangoLayout
+            handle::Ptr{GObject}
+            function PangoLayoutLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoLayoutLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoLayout] = PangoLayoutLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoLayout) = begin
+                ccall(("pango_layout_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoLayout})
             signalnames(supertype(PangoLayout))
         end
     end
-    GLib.@Gobject PangoRenderer GObject libpango pango_renderer_get_type
+    begin
+        abstract type PangoRenderer <: GObject end
+        mutable struct PangoRendererLeaf <: PangoRenderer
+            handle::Ptr{GObject}
+            function PangoRendererLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct PangoRendererLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:PangoRenderer] = PangoRendererLeaf
+        (GLib.g_type(::Type{T}) where T <: PangoRenderer) = begin
+                ccall(("pango_renderer_get_type", libpango), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{PangoRenderer})
             signalnames(supertype(PangoRenderer))

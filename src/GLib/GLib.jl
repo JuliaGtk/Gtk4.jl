@@ -221,10 +221,62 @@ function GLogWriterFunc(log_level, fields, n_fields, user_data)
     convert(UInt32, ret)
 end
 
+"""
+    set_log_writer_func(log_func)
+
+Sets a function that is used to handle messages. The function should be of the form
+`log_func(log_level,fields)` and should return `true` if the message was handled and
+otherwise `false.`
+
+This function must be called only once per Julia session.
+"""
 function set_log_writer_func(log_func)
     func = @cfunction(GLogWriterFunc, Cuint, (Cuint, Ptr{_GLogField}, Csize_t, Ref{Function}))
     ref, deref = gc_ref_closure(log_func)
     ccall((:g_log_set_writer_func, libglib), Nothing, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}), func, ref, deref)
+end
+
+"""
+    suppress_C_messages()
+
+Sets the preference `"C_message_handling"` to "suppress_all", which intercepts all
+messages from the C libraries and stores them in an internal buffer. This setting
+will take effect the next time Julia is started.
+
+The stored messages can be found in `GLib.C_message_buffer`.
+
+See also [`show_C_messages`](@ref).
+"""
+function suppress_C_messages()
+    @set_preferences!("C_message_handling" => "suppress_all")
+    @info("Setting will take effect after restarting Julia.")
+end
+
+"""
+    show_C_messages()
+
+Sets the preference `"C_message_handling"` to "", which allows messages and warnings
+from the C libraries to be displayed. This setting will take effect the next time
+Julia is started.
+
+See also [`suppress_C_messages`](@ref).
+"""
+function show_C_messages()
+    @set_preferences!("C_message_handling" => "")
+    @info("Setting will take effect after restarting Julia.")
+end
+
+C_message_buffer::Vector{Tuple{LogLevelFlags,String,String}} = Tuple{LogLevelFlags,String,String}[]
+
+function suppress_func(log_level, fields)
+    imessage = findfirst(f->bytestring(f.key)=="MESSAGE", fields)
+    idomain = findfirst(f->bytestring(f.key)=="GLIB_DOMAIN", fields)
+    if imessage !== nothing && idomain !== nothing
+        push!(C_message_buffer, (log_level,bytestring(Ptr{UInt8}(fields[idomain].value)),bytestring(Ptr{UInt8}(fields[imessage].value))))
+        return true
+    else
+        return false
+    end
 end
 
 const exiting = Ref(false)
@@ -233,6 +285,10 @@ function __init__()
     vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
     if vercheck !== nothing
         @warn "GLib version check failed: $vercheck"
+    end
+    d = @load_preference("C_message_handling", "")
+    if d == "suppress_all"
+        set_log_writer_func(suppress_func)
     end
     global JuliaClosureMarshal = @cfunction(GClosureMarshal, Nothing,
         (Ptr{Nothing}, Ptr{GValue}, Cuint, Ptr{GValue}, Ptr{Nothing}, Ptr{Nothing}))

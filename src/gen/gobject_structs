@@ -364,19 +364,67 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
     GLib.@Giface GTypePlugin libgobject g_type_plugin_get_type
     const gtype_wrapper_cache = Dict{Symbol, Type}()
-    GLib.@Gobject GBinding GObject libgobject g_binding_get_type
+    begin
+        abstract type GBinding <: GObject end
+        mutable struct GBindingLeaf <: GBinding
+            handle::Ptr{GObject}
+            function GBindingLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GBindingLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GBinding] = GBindingLeaf
+        (GLib.g_type(::Type{T}) where T <: GBinding) = begin
+                ccall(("g_binding_get_type", libgobject), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{GBinding})
             signalnames(supertype(GBinding))
         end
     end
-    GLib.@Gobject GInitiallyUnowned GObject libgobject g_initially_unowned_get_type
+    begin
+        abstract type GInitiallyUnowned <: GObject end
+        mutable struct GInitiallyUnownedLeaf <: GInitiallyUnowned
+            handle::Ptr{GObject}
+            function GInitiallyUnownedLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GInitiallyUnownedLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GInitiallyUnowned] = GInitiallyUnownedLeaf
+        (GLib.g_type(::Type{T}) where T <: GInitiallyUnowned) = begin
+                ccall(("g_initially_unowned_get_type", libgobject), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{GInitiallyUnowned})
             signalnames(supertype(GInitiallyUnowned))
         end
     end
-    GLib.@Gobject GTypeModule GObject libgobject g_type_module_get_type
+    begin
+        abstract type GTypeModule <: GObject end
+        mutable struct GTypeModuleLeaf <: GTypeModule
+            handle::Ptr{GObject}
+            function GTypeModuleLeaf(handle::Ptr{GObject}, owns = false)
+                if handle == C_NULL
+                    error("Cannot construct GTypeModuleLeaf with a NULL pointer")
+                end
+                GLib.gobject_maybe_sink(handle, owns)
+                return gobject_ref(new(handle))
+            end
+        end
+        gtype_wrapper_cache[:GTypeModule] = GTypeModuleLeaf
+        (GLib.g_type(::Type{T}) where T <: GTypeModule) = begin
+                ccall(("g_type_module_get_type", libgobject), GType, ())
+            end
+    end
     begin
         function GLib.signalnames(::Type{GTypeModule})
             signalnames(supertype(GTypeModule))
