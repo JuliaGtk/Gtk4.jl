@@ -206,7 +206,6 @@ width(a::MatrixStrided) = a.width
 height(a::MatrixStrided) = a.height
 size(a::MatrixStrided, i::Integer) = (i == 1 ? width(a) : (i == 2 ? height(a) : 1))
 size(a::MatrixStrided) = (width(a), height(a))
-eltype(a::MatrixStrided{T}) where {T} = T
 Base.ndims(::MatrixStrided) = 2
 # next line was causing invalidations
 # convert(::Type{P}, a::MatrixStrided) where {P <: Ptr} = convert(P, a.p)

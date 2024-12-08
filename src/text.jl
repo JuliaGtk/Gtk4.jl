@@ -4,7 +4,7 @@ GtkTextMark(left_gravity::Bool = false; kwargs...) = GtkTextMark(nothing, left_g
 
 GtkTextTag(; kwargs...) = GtkTextTag(nothing; kwargs...)
 
-const TI = Union{Ref{_GtkTextIter}, GtkTextIter}
+const TI = Union{Base.RefValue{_GtkTextIter}, GtkTextIter}
 zero(::Type{_GtkTextIter}) = _GtkTextIter()
 copy(ti::_GtkTextIter) = Ref(ti)
 copy(ti::Ref{_GtkTextIter}) = Ref(ti[])
@@ -59,6 +59,8 @@ end
 
 #####  _GtkTextIter  #####
 #TODO: search
+# This one (specifically `getproperty(text::RefValue{_GtkTextIter}, key::Symbol)` causes an invalidation
+# But I don't see a way of fixing it
 function getproperty(text::TI, key::Symbol)
     Base.in(key, fieldnames(typeof(text))) && return getfield(text, key)
     if     key === :offset
