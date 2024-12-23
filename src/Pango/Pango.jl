@@ -48,8 +48,8 @@ for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
     ms=methods(getfield(Pango.G_,func))
     v=Symbol(string(func)[5:end])
     for m in ms
-        GLib.isgetter(m) || continue
-        eval(GLib.gen_getter(func,v,m))
+        GObjects.isgetter(m) || continue
+        eval(GObjects.gen_getter(func,v,m))
     end
 end
 
@@ -57,8 +57,8 @@ for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
     ms=methods(getfield(Pango.G_,func))
     v=Symbol(string(func)[5:end])
     for m in ms
-        GLib.issetter(m) || continue
-        eval(GLib.gen_setter(func,v,m))
+        GObjects.issetter(m) || continue
+        eval(GObjects.gen_setter(func,v,m))
     end
 end
 

@@ -152,7 +152,7 @@ setindex!(w::GtkWindow, widget::Union{Nothing,GtkWidget}) = G_.set_child(w, widg
 getindex(w::GtkWindow) = G_.get_child(w)
 
 # totally ugly hack to salvage this Gtk.jl legacy function for its original purpose
-function GLib.waitforsignal(obj::GtkWindow,signal)
+function GObjects.waitforsignal(obj::GtkWindow,signal)
     if signal === :close_request || signal == "close-request"
         c = Condition()
         signal_connect(obj, signal) do w
@@ -161,7 +161,7 @@ function GLib.waitforsignal(obj::GtkWindow,signal)
         end
         wait(c)
     else
-        invoke(GLib.waitforsignal, Tuple{GObject,Any}, obj, signal)
+        invoke(GObjects.waitforsignal, Tuple{GObject,Any}, obj, signal)
     end
 end
 
@@ -230,12 +230,12 @@ function ask_dialog(callback::Function, question::AbstractString, parent = nothi
     dlg = GtkAlertDialog(question; modal = modal)
     G_.set_buttons(dlg, [no_text, yes_text])
     
-    cancellable = GLib.cancel_after_delay(timeout)
+    cancellable = GObjects.cancel_after_delay(timeout)
     choose(dlg, parent, cancellable) do dlg, resobj
         res = try
             choose_finish(dlg, resobj)
         catch e
-            if !isa(e, Gtk4.GLib.GErrorException)
+            if !isa(e, GObjects.GErrorException)
                 rethrow(e)
             end
             0
@@ -278,14 +278,14 @@ function info_dialog(callback::Function, message::AbstractString, parent = nothi
         try
             Gtk4.choose_finish(dlg, resobj)
         catch e
-            if !isa(e, Gtk4.GLib.GErrorException)
+            if !isa(e, GObjects.GErrorException)
                 rethrow(e)
             end
         end
         callback()
     end
     
-    cancellable = GLib.cancel_after_delay(timeout)
+    cancellable = GObjects.cancel_after_delay(timeout)
     choose(cb, dlg, parent, cancellable)
     
     return dlg
@@ -371,7 +371,7 @@ function GtkFileChooserDialog(title::AbstractString, parent::Union{Nothing,GtkWi
                 (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
                                    title, parent, action, C_NULL)
     w = convert(GtkFileChooserDialog, d)
-    GLib.setproperties!(w; kwargs...)
+    GObjects.setproperties!(w; kwargs...)
     for (k, v) in button_text_response
         push!(w, k, Integer(v))
     end
@@ -396,7 +396,7 @@ function GtkFileFilter(pattern::AbstractString, mimetype::AbstractString = ""; k
     else
         G_.add_pixbuf_formats(filt)
     end
-    GLib.setproperties!(filt; kwargs...)
+    GObjects.setproperties!(filt; kwargs...)
     return filt
 end
 
@@ -416,10 +416,10 @@ function selection(dlg::Union{GtkFileChooserDialog,GtkFileChooserNative}, respon
     if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
         if multiple
             filename_list = G_.get_files(dlgp)
-            sel = String[GLib.G_.get_path(GFile(f)) for f in GListModel(filename_list)]
+            sel = String[GObjects.G_.get_path(GFile(f)) for f in GListModel(filename_list)]
         else
             gfile = G_.get_file(dlgp)
-            sel = GLib.G_.get_path(GFile(gfile))
+            sel = GObjects.G_.get_path(GFile(gfile))
         end
     else
         if multiple
@@ -478,7 +478,7 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
         makefilters!(dlgp, filters)
     end
     if start_folder != ""
-        curr = Gtk4.GLib.G_.file_new_for_path(start_folder)
+        curr = GObjects.G_.file_new_for_path(start_folder)
         Gtk4.G_.set_current_folder(dlgp, GFile(curr))
     end
 
@@ -535,14 +535,14 @@ function save_dialog(callback::Function, title::AbstractString, parent = nothing
       makefilters!(dlgp, filters)
   end
   if start_folder != ""
-      curr = Gtk4.GLib.G_.file_new_for_path(start_folder)
+      curr = GObjects.G_.file_new_for_path(start_folder)
       Gtk4.G_.set_current_folder(dlgp, GFile(curr))
   end
 
   function on_response(dlg, response_id)
       if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
           file = G_.get_file(dlgp)
-          sel = GLib.G_.get_path(GFile(file))
+          sel = GObjects.G_.get_path(GFile(file))
       else
           sel = ""
       end
@@ -583,7 +583,7 @@ function color_dialog(callback::Function, title::AbstractString, parent = nothin
         rgba = try
             Gtk4.G_.choose_rgba_finish(dlg, GAsyncResult(resobj))
         catch e
-            if !isa(e, Gtk4.GLib.GErrorException)
+            if !isa(e, GObjects.GErrorException)
                 rethrow(e)
             end
             nothing
@@ -591,7 +591,7 @@ function color_dialog(callback::Function, title::AbstractString, parent = nothin
         callback(rgba)
     end
 
-    cancellable = GLib.cancel_after_delay(timeout)
+    cancellable = GObjects.cancel_after_delay(timeout)
     G_.choose_rgba(dlg, parent, initial_color, cancellable, cb)
 
     return dlg
@@ -602,7 +602,7 @@ end
 function GtkAlertDialog(message::AbstractString; kwargs...)
     ptr = ccall((:gtk_alert_dialog_new, libgtk4), Ptr{GObject}, (Ptr{UInt8},), message)
     d = GtkAlertDialogLeaf(ptr, true)
-    GLib.setproperties!(d; kwargs...)
+    GObjects.setproperties!(d; kwargs...)
     d
 end
 
@@ -617,13 +617,13 @@ end
 ### New file dialogs
 
 function _path_finish(f, dlg, resobj)
-    gfile = f(dlg, Gtk4.GLib.GAsyncResult(resobj))
-    Gtk4.GLib.path(Gtk4.GLib.GFile(gfile))
+    gfile = f(dlg, GObjects.GAsyncResult(resobj))
+    GObjects.path(GObjects.GFile(gfile))
 end
 
 function _path_multiple_finish(f, dlg, resobj)
-    gfiles = f(dlg, Gtk4.GLib.GAsyncResult(resobj))
-    [Gtk4.GLib.path(Gtk4.GLib.GFile(gfile)) for gfile in gfiles]
+    gfiles = f(dlg, GObjects.GAsyncResult(resobj))
+    [GObjects.path(GObjects.GFile(gfile)) for gfile in gfiles]
 end
 
 """

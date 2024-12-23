@@ -21,7 +21,7 @@ function GtkDialog(title::AbstractString, buttons, flags, parent = nothing; kwar
     w = GtkDialogLeaf(ccall((:gtk_dialog_new_with_buttons, libgtk4), Ptr{GObject},
                 (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
                             title, parent, flags, C_NULL))
-    GLib.setproperties!(w; kwargs...)
+    GObjects.setproperties!(w; kwargs...)
     for (k, v) in buttons
         push!(w, k, v)
     end
@@ -33,7 +33,7 @@ function GtkMessageDialog(message::AbstractString, buttons, flags, typ, parent =
     w = GtkMessageDialogLeaf(ccall((:gtk_message_dialog_new, libgtk4), Ptr{GObject},
         (Ptr{GObject}, Cuint, Cint, Cint, Ptr{UInt8}),
                                    parent, flags, typ, ButtonsType_NONE, message))
-    GLib.setproperties!(w; kwargs...)
+    GObjects.setproperties!(w; kwargs...)
     for (k, v) in buttons
         push!(w, k, v)
     end

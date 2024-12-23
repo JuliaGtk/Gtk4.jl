@@ -74,7 +74,7 @@ end
 
 end
 
-import .GLib: set_gtk_property!, get_gtk_property, activate,
+import GObjects: set_gtk_property!, get_gtk_property, activate,
               signal_handler_is_connected, signalnames,
               GListModel, start_main_loop, stop_main_loop
 
@@ -87,8 +87,8 @@ let skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten meth
         v=Symbol(string(func)[5:end])
         v in skiplist && continue
         for m in ms
-            GLib.isgetter(m) || continue
-            eval(GLib.gen_getter(func,v,m))
+            GObjects.isgetter(m) || continue
+            eval(GObjects.gen_getter(func,v,m))
         end
     end
 
@@ -97,8 +97,8 @@ let skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten meth
         v=Symbol(string(func)[5:end])
         v in skiplist && continue
         for m in ms
-            GLib.issetter(m) || continue
-            eval(GLib.gen_setter(func,v,m))
+            GObjects.issetter(m) || continue
+            eval(GObjects.gen_setter(func,v,m))
         end
     end
 end
@@ -185,10 +185,10 @@ function __init__()
     end
 
     # prevents warnings from being thrown when using file dialogs
-    GLib.G_.set_application_name("julia")
-    GLib.G_.set_prgname("julia")
+    GObjects.G_.set_application_name("julia")
+    GObjects.G_.set_prgname("julia")
 
-    isinteractive() && GLib.start_main_loop()
+    isinteractive() && GObjects.start_main_loop()
 
     #@debug("Gtk4 initialized.")
 end

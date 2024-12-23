@@ -36,11 +36,11 @@ getindex(builder::GtkBuilder, widgetId::String) = G_.get_object(builder, widgetI
 function load_builder(b::GtkBuilder,cm::Module)
     objs=[obj for obj in b]
     for obj in objs
-        gt = GLib.G_OBJECT_CLASS_TYPE(obj)
-        if GLib.g_isa(gt, GLib.g_type_from_name(:GtkBuildable)) # not all classes implement GtkBuildable, e.g. GtkAdjustment
+        gt = GObjects.G_OBJECT_CLASS_TYPE(obj)
+        if GObjects.g_isa(gt, GObjects.g_type_from_name(:GtkBuildable)) # not all classes implement GtkBuildable, e.g. GtkAdjustment
              name = ccall((:gtk_buildable_get_buildable_id, libgtk4), Ptr{UInt8}, (Ptr{GObject},), obj)
              if name != C_NULL
-                 name = GLib.bytestring(name)
+                 name = GObjects.bytestring(name)
                  # name begins with three underscores if id isn't set in glade
                  if !startswith(name,"___")
                      sname = Symbol(name)

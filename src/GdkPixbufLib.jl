@@ -51,8 +51,8 @@ let skiplist = [ :file_info ]
         v=Symbol(string(func)[5:end])
         v in skiplist && continue
         for m in ms
-            GLib.isgetter(m) || continue
-            eval(GLib.gen_getter(func,v,m))
+            GObjects.isgetter(m) || continue
+            eval(GObjects.gen_getter(func,v,m))
         end
     end
 
@@ -61,8 +61,8 @@ let skiplist = [ :file_info ]
         v=Symbol(string(func)[5:end])
         v in skiplist && continue
         for m in ms
-            GLib.issetter(m) || continue
-            eval(GLib.gen_setter(func,v,m))
+            GObjects.issetter(m) || continue
+            eval(GObjects.gen_setter(func,v,m))
         end
     end
 end
@@ -222,8 +222,8 @@ function GdkPixbuf(width::Integer, height::Integer, has_alpha = true)
     G_.Pixbuf_new(Colorspace_RGB, has_alpha, 8, width, height)
 end
 
-gc_unref_gdkpixbufdata(::Ptr{Nothing},x) = GLib.gc_unref(x)
-gc_ref_closure_gdkpixbufdata(x::T) where {T} = (GLib.gc_ref(x), @cfunction(gc_unref_gdkpixbufdata, Nothing, (Ptr{Nothing},Any)))
+gc_unref_gdkpixbufdata(::Ptr{Nothing},x) = GObjects.gc_unref(x)
+gc_ref_closure_gdkpixbufdata(x::T) where {T} = (GObjects.gc_ref(x), @cfunction(gc_unref_gdkpixbufdata, Nothing, (Ptr{Nothing},Any)))
 
 function GdkPixbuf(data::AbstractArray, has_alpha = false)
     local pixbuf::Ptr{GObject}

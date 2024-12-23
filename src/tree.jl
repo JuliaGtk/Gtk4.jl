@@ -32,8 +32,8 @@ end
 ### GtkListStore
 
 function GtkListStore(types::Type...)
-    gtypes = GLib.gtypes(types...)
-    handle = ccall((:gtk_list_store_newv, libgtk4), Ptr{GObject}, (Cint, Ptr{GLib.GType}), length(types), gtypes)
+    gtypes = GObjects.gtypes(types...)
+    handle = ccall((:gtk_list_store_newv, libgtk4), Ptr{GObject}, (Cint, Ptr{GObjects.GType}), length(types), gtypes)
     GtkListStoreLeaf(handle,true)
 end
 
@@ -50,7 +50,7 @@ function index_from_iter(store::GtkListStore, iter::TRI)
 end
 
 function list_store_set_values(store::GtkListStore, iter, values)
-    G_.set(store, Ref(iter), 0:(length(values)-1), GLib.gvalues(values...))
+    G_.set(store, Ref(iter), 0:(length(values)-1), GObjects.gvalues(values...))
 end
 
 function push!(listStore::GtkListStore, values::Tuple)
@@ -129,15 +129,15 @@ end
 ### GtkTreeStore
 
 function GtkTreeStore(types::Type...)
-    gtypes = GLib.gtypes(types...)
-    handle = ccall((:gtk_tree_store_newv, libgtk4), Ptr{GObject}, (Cint, Ptr{GLib.GType}), length(types), gtypes)
+    gtypes = GObjects.gtypes(types...)
+    handle = ccall((:gtk_tree_store_newv, libgtk4), Ptr{GObject}, (Cint, Ptr{GObjects.GType}), length(types), gtypes)
     GtkTreeStoreLeaf(handle,true)
 end
 
 iter_from_index(store::GtkTreeStoreLeaf, index::Vector{Int}) = iter_from_string_index(store, join(index.-1, ":"))
 
 function tree_store_set_values(treeStore::GtkTreeStoreLeaf, iter, values)
-    G_.set(treeStore, Ref(iter), 0:(length(values)-1), GLib.gvalues(values...))
+    G_.set(treeStore, Ref(iter), 0:(length(values)-1), GObjects.gvalues(values...))
     iter
 end
 
@@ -147,7 +147,7 @@ function push!(treeStore::GtkTreeStore, values::Tuple, parent = nothing)
     if isa(parent,_GtkTreeIter)
         parent=Ref(parent)
     end
-    G_.insert_with_values(treeStore, parent, -1, 0:(length(values)-1), GLib.gvalues(values...))
+    G_.insert_with_values(treeStore, parent, -1, 0:(length(values)-1), GObjects.gvalues(values...))
 end
 
 function pushfirst!(treeStore::GtkTreeStore, values::Tuple, parent = nothing)
@@ -226,19 +226,19 @@ getindex(store::GtkTreeStore, row::Vector{Int}, column) = getindex(store, iter_f
 getindex(store::GtkTreeStore, row::Vector{Int}) = getindex(store, iter_from_index(store, row))
 
 function setindex!(store::GtkListStore, value, iter::_GtkTreeIter, column::Integer)
-    ret = ccall(("gtk_list_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, Ref(iter), column - 1, GLib.gvalue(value))
+    ret = ccall(("gtk_list_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, Ref(iter), column - 1, GObjects.gvalue(value))
 end
 
 function setindex!(store::GtkTreeStore, value, iter::_GtkTreeIter, column::Integer)
-    ret = ccall(("gtk_tree_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, Ref(iter), column - 1, GLib.gvalue(value))
+    ret = ccall(("gtk_tree_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, Ref(iter), column - 1, GObjects.gvalue(value))
 end
 
 function setindex!(store::GtkListStore, value, iter::TRI, column::Integer)
-    ret = ccall(("gtk_list_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, iter, column - 1, GLib.gvalue(value))
+    ret = ccall(("gtk_list_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, iter, column - 1, GObjects.gvalue(value))
 end
 
 function setindex!(store::GtkTreeStore, value, iter::TRI, column::Integer)
-    ret = ccall(("gtk_tree_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, iter, column - 1, GLib.gvalue(value))
+    ret = ccall(("gtk_tree_store_set_value", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTreeIter}, Int32, Ptr{_GValue}), store, iter, column - 1, GObjects.gvalue(value))
 end
 
 
@@ -510,8 +510,8 @@ function selected_rows(selection::GtkTreeSelection)
 
     model = Ref{Ptr{GtkTreeModel}}()
 
-    paths = GLib.GList(ccall((:gtk_tree_selection_get_selected_rows, libgtk4),
-                                Ptr{GLib._GList{Ptr{GtkTreePath}}},
+    paths = GObjects.GList(ccall((:gtk_tree_selection_get_selected_rows, libgtk4),
+                                Ptr{GObjects._GList{Ptr{GtkTreePath}}},
                                 (Ptr{GObject}, Ptr{Ptr{GtkTreeModel}}),
                                 selection, model))
 

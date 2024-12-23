@@ -111,7 +111,7 @@ function GdkMemoryTexture(img::AbstractArray, tp = true)
         error("format not supported") # could also convert the image
     end
     img = tp ? img' : img
-    b=GLib.GBytes(img)
+    b=GObjects.GBytes(img)
     GdkMemoryTexture(size(img)[1], size(img)[2], f, b, sizeof(eltype(img))*size(img)[1])
 end
 

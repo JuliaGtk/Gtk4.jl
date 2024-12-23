@@ -297,13 +297,13 @@ end
 ## GtkApplication and actions
 
 """
-    GtkApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE)
+    GtkApplication(id = nothing, flags = GObjects.ApplicationFlags_FLAGS_NONE)
 
 Create a `GtkApplication` with DBus id `id` and flags.
 
 Related GTK function: [`gtk_application_new`()]($(gtkdoc_method_url("gtk4","Application","new")))
 """
-GtkApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
+GtkApplication(id = nothing, flags = GObjects.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
 function push!(app::GtkApplication, win::GtkWindow)
     G_.add_window(app, win)
     app
@@ -330,7 +330,7 @@ uninhibit(app::GtkApplication, cookie) = G_.uninhibit(app, cookie)
 
 mutable struct _GtkWidgetClass
     g_type_class::_GTypeClass
-    construct_properties::Ptr{GLib._GSList{Ptr{Nothing}}}
+    construct_properties::Ptr{GObjects._GSList{Ptr{Nothing}}}
     constructor::Ptr{Nothing}
     set_property::Ptr{Cvoid}
     get_property::Ptr{Cvoid}

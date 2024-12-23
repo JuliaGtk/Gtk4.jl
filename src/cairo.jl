@@ -70,7 +70,7 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
             _init_canvas!(widget, w, h)
         end
 
-        widget = GLib.gobject_move_ref(widget, da)
+        widget = GObjects.gobject_move_ref(widget, da)
         signal_connect(Base.inferencebarrier(_canvas_on_realize), widget, "realize", Nothing, (), false, widget)
         signal_connect(Base.inferencebarrier(_canvas_on_resize), widget, "resize", Nothing, (Cint, Cint), false, widget)
 

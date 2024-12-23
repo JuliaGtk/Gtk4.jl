@@ -89,7 +89,7 @@ function GtkEventControllerFocus(widget::GtkWidget)
 end
 
 function GtkDropTarget(t::Type, action = DragAction_COPY, widget = nothing)
-    g = G_.DropTarget_new(GLib.g_type(t), action)
+    g = G_.DropTarget_new(GObjects.g_type(t), action)
     if widget !== nothing
         push!(widget,g)
     end
