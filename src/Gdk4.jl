@@ -21,6 +21,8 @@ end
 convert(::Type{RGBA}, gcolor::_GdkRGBA) = RGBA(gcolor.red, gcolor.green, gcolor.blue, gcolor.alpha)
 convert(::Type{GdkRGBA}, color::Colorant) = GdkRGBA(red(color), green(color), blue(color), alpha(color))
 
+Base.show(io::IO, c::GdkRGBA) = print(io,"GdkRGBA(\""*G_.to_string(c)*"\")")
+
 ## GdkCursor
 
 GdkCursor(name::AbstractString; kwargs...) = GdkCursor(name, nothing; kwargs...)

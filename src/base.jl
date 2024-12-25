@@ -227,6 +227,8 @@ function GtkCssProvider(data::Union{AbstractString,Nothing}, filename = nothing)
     return provider
 end
 
+Base.show(io::IO, cssp::GtkCssProvider) = print(io,"GtkCssProviderLeaf(\""*G_.to_string(cssp)*"\")")
+
 function push!(context::GtkStyleContext, provider, priority=STYLE_PROVIDER_PRIORITY_USER)
     G_.add_provider(context, GtkStyleProvider(provider), priority)
     context
