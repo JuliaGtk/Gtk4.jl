@@ -2,7 +2,7 @@ quote
 $(Expr(:toplevel, quote
     function copy(instance::GdkPixbufFormatLike)
         ret = ccall(("gdk_pixbuf_format_copy", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Ptr{_GdkPixbufFormat},), instance)
-        ret2 = convert(GdkPixbufFormatLike, ret, true)
+        ret2 = convert_if_not_null(GdkPixbufFormat, ret, true)
         ret2
     end
     function free(instance::GdkPixbufFormatLike)
@@ -151,7 +151,7 @@ $(Expr(:toplevel, quote
     end
     function Pixbuf_new_from_xpm_data(_data)
         ret = ccall(("gdk_pixbuf_new_from_xpm_data", libgdkpixbuf), Ptr{GObject}, (Ptr{Cstring},), _data)
-        ret2 = GdkPixbufLeaf(ret, true)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function calculate_rowstride(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
@@ -212,7 +212,7 @@ $(Expr(:toplevel, quote
     end
     function add_alpha(instance::GdkPixbuf, _substitute_color::Bool, _r::Integer, _g::Integer, _b::Integer)
         ret = ccall(("gdk_pixbuf_add_alpha", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Cint, UInt8, UInt8, UInt8), instance, _substitute_color, _r, _g, _b)
-        ret2 = convert(GdkPixbuf, ret, true)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
     function apply_embedded_orientation(instance::GdkPixbuf)

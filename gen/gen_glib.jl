@@ -105,7 +105,7 @@ skiplist=[:convert,:atomic_rc_box_release_full,:child_watch_add,:datalist_foreac
           :pattern_match_string,:log_structured_array,:log_writer_default,:log_writer_format_fields,
           :log_writer_journald,:log_writer_standard_streams,:parse_debug_string,:lstat,:stat,
           :child_watch_source_new,:date_strftime,:idle_source_new,:main_current_source,
-          :timeout_source_new,:timeout_source_new_seconds,:unix_fd_source_new,
+          :timeout_source_new,:timeout_source_new_seconds,:unix_fd_source_new,:async_queue_new,
           :unix_signal_source_new,:datalist_id_remove_multiple,:base64_encode_close,
           :base64_encode_step,:sequence_insert_before,:sequence_range_get_midpoint,
           :list_push_allocator,:node_push_allocator,:slist_push_allocator,:sequence_foreach_range,:sequence_sort_changed,:sequence_sort_changed_iter]

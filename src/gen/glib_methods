@@ -1292,7 +1292,7 @@ $(Expr(:toplevel, quote
     end
     function get_contents(instance::GMappedFile)
         ret = ccall(("g_mapped_file_get_contents", libglib), Cstring, (Ptr{GMappedFile},), instance)
-        ret2 = string_or_nothing(ret, true)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_length(instance::GMappedFile)
@@ -1803,6 +1803,17 @@ $(Expr(:toplevel, quote
         reffed_instance = GLib.glib_ref(instance)
         ret = ccall(("g_strv_builder_unref", libglib), Nothing, (Ptr{GStrvBuilder},), reffed_instance)
         nothing
+    end
+    function unref_to_strv(instance::GStrvBuilder)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_strv_builder_unref_to_strv", libglib), Ptr{Cstring}, (Ptr{GStrvBuilder},), reffed_instance)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                GLib.g_strfreev(ret)
+                arrtemp
+            end
+        ret2
     end
     function TimeZone_new_identifier(_identifier::Maybe(Union{AbstractString, Symbol}))
         _identifier_maybe = nothing_to_null(_identifier)

@@ -1548,17 +1548,6 @@ $(Expr(:toplevel, quote
         _dest = m_dest[]
         _dest
     end
-    function qsort_with_data(_pbase::Nothing, _total_elems::Integer, _size::Integer, _compare_func::Function)
-        begin
-            _compare_func_cfunc = @cfunction(GCompareDataFunc, Int32, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_compare_func)
-                _compare_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
-        ret = ccall(("g_qsort_with_data", libglib), Nothing, (Ptr{Nothing}, Int32, UInt64, Ptr{Cvoid}, Ptr{Nothing}), _pbase, _total_elems, _size, _compare_func_cfunc, _compare_func_closure)
-        nothing
-    end
     function quark_from_static_string(_string::Maybe(Union{AbstractString, Symbol}))
         _string_maybe = nothing_to_null(_string)
         ret = ccall(("g_quark_from_static_string", libglib), UInt32, (Cstring,), _string_maybe)
@@ -2029,12 +2018,12 @@ $(Expr(:toplevel, quote
     end
     function strrstr(_haystack::Union{AbstractString, Symbol}, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strrstr", libglib), Cstring, (Cstring, Cstring), _haystack, _needle)
-        ret2 = string_or_nothing(ret, true)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strrstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strrstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
-        ret2 = string_or_nothing(ret, true)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strsignal(_signum::Integer)
@@ -2064,7 +2053,7 @@ $(Expr(:toplevel, quote
     end
     function strstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
-        ret2 = string_or_nothing(ret, true)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strtod(_nptr::Union{AbstractString, Symbol})

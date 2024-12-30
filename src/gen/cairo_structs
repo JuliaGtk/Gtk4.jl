@@ -257,9 +257,82 @@ $(Expr(:toplevel, quote
                 end
         end
     end
+    begin
+        struct _cairoGlyph
+            index::UInt64
+            x::Float64
+            y::Float64
+        end
+        mutable struct cairoGlyph <: GBoxed
+            handle::Ptr{_cairoGlyph}
+            begin
+                (GLib.g_type(::Type{T}) where T <: cairoGlyph) = begin
+                        ccall(("cairo_gobject_glyph_get_type", libcairo_gobject), GType, ())
+                    end
+                function cairoGlyph(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _cairoGlyph}
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, cairoGlyph)
+            end
+        end
+        begin
+            unsafe_convert(::Type{Ptr{_cairoGlyph}}, box::cairoGlyph) = begin
+                    convert(Ptr{_cairoGlyph}, box.handle)
+                end
+            convert(::Type{cairoGlyph}, p::Ptr{_cairoGlyph}, owns = false) = begin
+                    cairoGlyph(p, owns)
+                end
+            const cairoGlyphLike = Union{Ref{_cairoGlyph}, cairoGlyph}
+            convert(::Type{cairoGlyphLike}, p, owns) = begin
+                    convert(cairoGlyph, p, owns)
+                end
+        end
+    end
+    begin
+        struct _cairoTextCluster
+            num_bytes::Int32
+            num_glyphs::Int32
+        end
+        mutable struct cairoTextCluster <: GBoxed
+            handle::Ptr{_cairoTextCluster}
+            begin
+                (GLib.g_type(::Type{T}) where T <: cairoTextCluster) = begin
+                        ccall(("cairo_gobject_text_cluster_get_type", libcairo_gobject), GType, ())
+                    end
+                function cairoTextCluster(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _cairoTextCluster}
+                    x = new(ref)
+                    if own
+                        finalizer(x) do x
+                            GLib.delboxed(x)
+                        end
+                    end
+                    x
+                end
+                push!(gboxed_types, cairoTextCluster)
+            end
+        end
+        begin
+            unsafe_convert(::Type{Ptr{_cairoTextCluster}}, box::cairoTextCluster) = begin
+                    convert(Ptr{_cairoTextCluster}, box.handle)
+                end
+            convert(::Type{cairoTextCluster}, p::Ptr{_cairoTextCluster}, owns = false) = begin
+                    cairoTextCluster(p, owns)
+                end
+            const cairoTextClusterLike = Union{Ref{_cairoTextCluster}, cairoTextCluster}
+            convert(::Type{cairoTextClusterLike}, p, owns) = begin
+                    convert(cairoTextCluster, p, owns)
+                end
+        end
+    end
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
-    export cairoContext, cairoDevice, cairoSurface, cairoMatrix, cairoPattern, cairoRegion, cairoFontOptions, cairoFontFace, cairoScaledFont, cairoPath, cairoRectangle, cairoRectangleLike, _cairoRectangle, cairoRectangleInt, cairoRectangleIntLike, _cairoRectangleInt
+    export cairoContext, cairoDevice, cairoSurface, cairoMatrix, cairoPattern, cairoRegion, cairoFontOptions, cairoFontFace, cairoScaledFont, cairoPath, cairoRectangle, cairoRectangleLike, _cairoRectangle, cairoRectangleInt, cairoRectangleIntLike, _cairoRectangleInt, cairoGlyph, cairoGlyphLike, _cairoGlyph, cairoTextCluster, cairoTextClusterLike, _cairoTextCluster
 end))
 end

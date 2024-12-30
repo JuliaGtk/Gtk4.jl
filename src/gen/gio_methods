@@ -320,8 +320,10 @@ $(Expr(:toplevel, quote
             end
         ret2
     end
-    function get_startup_notify_id(instance::GAppLaunchContext, _info::GAppInfo, _files::GLib.LList{GLib._GList{Ptr{GObject}}})
-        ret = ccall(("g_app_launch_context_get_startup_notify_id", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{GLib._GList{Ptr{GObject}}}), instance, _info, _files)
+    function get_startup_notify_id(instance::GAppLaunchContext, _info::Maybe(GAppInfo), _files::Maybe(GLib.LList{GLib._GList{Ptr{GObject}}}))
+        _info_maybe = nothing_to_null(_info)
+        _files_maybe = nothing_to_null(_files)
+        ret = ccall(("g_app_launch_context_get_startup_notify_id", libgio), Cstring, (Ptr{GObject}, Ptr{GObject}, Ptr{GLib._GList{Ptr{GObject}}}), instance, _info_maybe, _files_maybe)
         ret2 = string_or_nothing(ret, true)
         ret2
     end
@@ -876,6 +878,9 @@ $(Expr(:toplevel, quote
     end
     function convert(instance::GCharsetConverter, _inbuf, _outbuf, _flags)
         convert(GConverter(instance), _inbuf, _outbuf, _flags)
+    end
+    function convert_bytes(instance::GCharsetConverter, _bytes::GBytes)
+        convert_bytes(GConverter(instance), _bytes)
     end
     function reset(instance::GCharsetConverter)
         reset(GConverter(instance))
@@ -6608,6 +6613,9 @@ $(Expr(:toplevel, quote
     function convert(instance::GZlibCompressor, _inbuf, _outbuf, _flags)
         convert(GConverter(instance), _inbuf, _outbuf, _flags)
     end
+    function convert_bytes(instance::GZlibCompressor, _bytes::GBytes)
+        convert_bytes(GConverter(instance), _bytes)
+    end
     function reset(instance::GZlibCompressor)
         reset(GConverter(instance))
     end
@@ -6623,6 +6631,9 @@ $(Expr(:toplevel, quote
     end
     function convert(instance::GZlibDecompressor, _inbuf, _outbuf, _flags)
         convert(GConverter(instance), _inbuf, _outbuf, _flags)
+    end
+    function convert_bytes(instance::GZlibDecompressor, _bytes::GBytes)
+        convert_bytes(GConverter(instance), _bytes)
     end
     function reset(instance::GZlibDecompressor)
         reset(GConverter(instance))
@@ -6788,6 +6799,284 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_action_map_remove_action", libgio), Nothing, (Ptr{GObject}, Cstring), instance, _action_name)
         nothing
     end
+    function create_from_commandline(_commandline::Union{AbstractString, Symbol}, _application_name::Maybe(Union{AbstractString, Symbol}), _flags)
+        _application_name_maybe = nothing_to_null(_application_name)
+        err = err_buf()
+        ret = ccall(("g_app_info_create_from_commandline", libgio), Ptr{GObject}, (Cstring, Cstring, UInt32, Ptr{Ptr{GError}}), _commandline, _application_name_maybe, _flags, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
+    end
+    function get_all()
+        ret = ccall(("g_app_info_get_all", libgio), Ptr{GLib._GList{Ptr{GObject}}}, ())
+        ret2 = GLib.GList(ret, true)
+        ret2
+    end
+    function get_all_for_type(_content_type::Union{AbstractString, Symbol})
+        ret = ccall(("g_app_info_get_all_for_type", libgio), Ptr{GLib._GList{Ptr{GObject}}}, (Cstring,), _content_type)
+        ret2 = GLib.GList(ret, true)
+        ret2
+    end
+    function get_default_for_type(_content_type::Union{AbstractString, Symbol}, _must_support_uris::Bool)
+        ret = ccall(("g_app_info_get_default_for_type", libgio), Ptr{GObject}, (Cstring, Cint), _content_type, _must_support_uris)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function get_default_for_type_async(_content_type::Union{AbstractString, Symbol}, _must_support_uris::Bool, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("g_app_info_get_default_for_type_async", libgio), Nothing, (Cstring, Cint, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _content_type, _must_support_uris, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function get_default_for_type_finish(_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_app_info_get_default_for_type_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
+    end
+    function get_default_for_uri_scheme(_uri_scheme::Union{AbstractString, Symbol})
+        ret = ccall(("g_app_info_get_default_for_uri_scheme", libgio), Ptr{GObject}, (Cstring,), _uri_scheme)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        ret2
+    end
+    function get_default_for_uri_scheme_async(_uri_scheme::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("g_app_info_get_default_for_uri_scheme_async", libgio), Nothing, (Cstring, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _uri_scheme, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function get_default_for_uri_scheme_finish(_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_app_info_get_default_for_uri_scheme_finish", libgio), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
+        check_err(err)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
+    end
+    function get_fallback_for_type(_content_type::Union{AbstractString, Symbol})
+        ret = ccall(("g_app_info_get_fallback_for_type", libgio), Ptr{GLib._GList{Ptr{GObject}}}, (Cstring,), _content_type)
+        ret2 = GLib.GList(ret, true)
+        ret2
+    end
+    function get_recommended_for_type(_content_type::Union{AbstractString, Symbol})
+        ret = ccall(("g_app_info_get_recommended_for_type", libgio), Ptr{GLib._GList{Ptr{GObject}}}, (Cstring,), _content_type)
+        ret2 = GLib.GList(ret, true)
+        ret2
+    end
+    function launch_default_for_uri(_uri::Union{AbstractString, Symbol}, _context::Maybe(GAppLaunchContext))
+        _context_maybe = nothing_to_null(_context)
+        err = err_buf()
+        ret = ccall(("g_app_info_launch_default_for_uri", libgio), Cint, (Cstring, Ptr{GObject}, Ptr{Ptr{GError}}), _uri, _context_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function launch_default_for_uri_async(_uri::Union{AbstractString, Symbol}, _context::Maybe(GAppLaunchContext), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _context_maybe = nothing_to_null(_context)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("g_app_info_launch_default_for_uri_async", libgio), Nothing, (Cstring, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _uri, _context_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function launch_default_for_uri_finish(_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_app_info_launch_default_for_uri_finish", libgio), Cint, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function reset_type_associations(_content_type::Union{AbstractString, Symbol})
+        ret = ccall(("g_app_info_reset_type_associations", libgio), Nothing, (Cstring,), _content_type)
+        nothing
+    end
+    function add_supports_type(instance::GAppInfo, _content_type::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_app_info_add_supports_type", libgio), Cint, (Ptr{GObject}, Cstring, Ptr{Ptr{GError}}), instance, _content_type, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function can_delete(instance::GAppInfo)
+        ret = ccall(("g_app_info_can_delete", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function can_remove_supports_type(instance::GAppInfo)
+        ret = ccall(("g_app_info_can_remove_supports_type", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function delete(instance::GAppInfo)
+        ret = ccall(("g_app_info_delete", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function dup(instance::GAppInfo)
+        ret = ccall(("g_app_info_dup", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, true)
+            end
+        ret2
+    end
+    function equal(instance::GAppInfo, _appinfo2::GAppInfo)
+        ret = ccall(("g_app_info_equal", libgio), Cint, (Ptr{GObject}, Ptr{GObject}), instance, _appinfo2)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_commandline(instance::GAppInfo)
+        ret = ccall(("g_app_info_get_commandline", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_description(instance::GAppInfo)
+        ret = ccall(("g_app_info_get_description", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_display_name(instance::GAppInfo)
+        ret = ccall(("g_app_info_get_display_name", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_executable(instance::GAppInfo)
+        ret = ccall(("g_app_info_get_executable", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_icon(instance::GAppInfo)
+        ret = ccall(("g_app_info_get_icon", libgio), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, false)
+        ret2
+    end
+    function get_id(instance::GAppInfo)
+        ret = ccall(("g_app_info_get_id", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_name(instance::GAppInfo)
+        ret = ccall(("g_app_info_get_name", libgio), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_supported_types(instance::GAppInfo)
+        ret = ccall(("g_app_info_get_supported_types", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                arrtemp
+            end
+        ret2
+    end
+    function launch(instance::GAppInfo, _files::Maybe(GLib.LList{GLib._GList{Ptr{GObject}}}), _context::Maybe(GAppLaunchContext))
+        _files_maybe = nothing_to_null(_files)
+        _context_maybe = nothing_to_null(_context)
+        err = err_buf()
+        ret = ccall(("g_app_info_launch", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{Ptr{GObject}}}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _files_maybe, _context_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function launch_uris(instance::GAppInfo, _uris::Maybe(GLib.LList{GLib._GList{String}}), _context::Maybe(GAppLaunchContext))
+        _uris_maybe = nothing_to_null(_uris)
+        _context_maybe = nothing_to_null(_context)
+        err = err_buf()
+        ret = ccall(("g_app_info_launch_uris", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{String}}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _uris_maybe, _context_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function launch_uris_async(instance::GAppInfo, _uris::Maybe(GLib.LList{GLib._GList{String}}), _context::Maybe(GAppLaunchContext), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _uris_maybe = nothing_to_null(_uris)
+        _context_maybe = nothing_to_null(_context)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("g_app_info_launch_uris_async", libgio), Nothing, (Ptr{GObject}, Ptr{GLib._GList{String}}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _uris_maybe, _context_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function launch_uris_finish(instance::GAppInfo, _result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("g_app_info_launch_uris_finish", libgio), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function remove_supports_type(instance::GAppInfo, _content_type::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_app_info_remove_supports_type", libgio), Cint, (Ptr{GObject}, Cstring, Ptr{Ptr{GError}}), instance, _content_type, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_as_default_for_extension(instance::GAppInfo, _extension::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_app_info_set_as_default_for_extension", libgio), Cint, (Ptr{GObject}, Cstring, Ptr{Ptr{GError}}), instance, _extension, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_as_default_for_type(instance::GAppInfo, _content_type::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_app_info_set_as_default_for_type", libgio), Cint, (Ptr{GObject}, Cstring, Ptr{Ptr{GError}}), instance, _content_type, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_as_last_used_for_type(instance::GAppInfo, _content_type::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("g_app_info_set_as_last_used_for_type", libgio), Cint, (Ptr{GObject}, Cstring, Ptr{Ptr{GError}}), instance, _content_type, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function should_show(instance::GAppInfo)
+        ret = ccall(("g_app_info_should_show", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function supports_files(instance::GAppInfo)
+        ret = ccall(("g_app_info_supports_files", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function supports_uris(instance::GAppInfo)
+        ret = ccall(("g_app_info_supports_uris", libgio), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function init_async(instance::GAsyncInitable, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
         _cancellable_maybe = nothing_to_null(_cancellable)
         if _callback === nothing
@@ -6851,6 +7140,13 @@ $(Expr(:toplevel, quote
         _bytes_read = m_bytes_read[]
         _bytes_written = m_bytes_written[]
         (ret2, _bytes_read, _bytes_written)
+    end
+    function convert_bytes(instance::GConverter, _bytes::GBytes)
+        err = err_buf()
+        ret = ccall(("g_converter_convert_bytes", libgio), Ptr{GBytes}, (Ptr{GObject}, Ptr{GBytes}, Ptr{Ptr{GError}}), instance, _bytes, err)
+        check_err(err)
+        ret2 = convert(GBytes, ret, true)
+        ret2
     end
     function reset(instance::GConverter)
         ret = ccall(("g_converter_reset", libgio), Nothing, (Ptr{GObject},), instance)
@@ -7256,28 +7552,6 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
-    end
-    function copy_async(instance::GFile, _destination::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _callback::Maybe(Function))
-        _cancellable_maybe = nothing_to_null(_cancellable)
-        if _progress_callback === nothing
-            _progress_callback_cfunc = C_NULL
-            begin
-                _progress_callback_closure = C_NULL
-                _progress_callback_notify = C_NULL
-            end
-        else
-            _progress_callback_cfunc = @cfunction(GFileProgressCallback, Nothing, (Int64, Int64, Ref{Function}))
-            (_progress_callback_closure, _progress_callback_notify) = GLib.gc_ref_closure(_progress_callback)
-        end
-        if _callback === nothing
-            _callback_cfunc = C_NULL
-            _callback_closure = C_NULL
-        else
-            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-            _callback_closure = GLib.gc_ref(_callback)
-        end
-        ret = ccall(("g_file_copy_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}), instance, _destination, _flags, _io_priority, _cancellable_maybe, _progress_callback_cfunc, _progress_callback_closure, _callback_cfunc, _callback_closure)
-        nothing
     end
     function copy_attributes(instance::GFile, _destination::GFile, _flags, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
@@ -7832,28 +8106,6 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
-    end
-    function move_async(instance::GFile, _destination::GFile, _flags, _io_priority::Integer, _cancellable::Maybe(GCancellable), _progress_callback::Maybe(Function), _callback::Maybe(Function))
-        _cancellable_maybe = nothing_to_null(_cancellable)
-        if _progress_callback === nothing
-            _progress_callback_cfunc = C_NULL
-            _progress_callback_closure = C_NULL
-        else
-            _progress_callback_cfunc = @cfunction(GFileProgressCallback, Nothing, (Int64, Int64, Ref{Function}))
-            begin
-                ref = Ref{Any}(_progress_callback)
-                _progress_callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
-        if _callback === nothing
-            _callback_cfunc = C_NULL
-            _callback_closure = C_NULL
-        else
-            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-            _callback_closure = GLib.gc_ref(_callback)
-        end
-        ret = ccall(("g_file_move_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}), instance, _destination, _flags, _io_priority, _cancellable_maybe, _progress_callback_cfunc, _progress_callback_closure, _callback_cfunc, _callback_closure)
-        nothing
     end
     function move_finish(instance::GFile, _result::GAsyncResult)
         err = err_buf()
