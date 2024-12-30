@@ -8,6 +8,8 @@ function on_state_changed(a,v)
 end
 
 function on_new_clicked(a,v)
+    notification = GNotification("I wet em'")
+    Gtk4.GLib.G_.send_notification(app, "new-window", notification)
     new_window()
 end
 

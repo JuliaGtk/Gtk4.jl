@@ -34,5 +34,5 @@ end
 
 box=GtkBox(:v)
 win[]=box
-push!(box, b)
-push!(box, b2)
+push!(box, b, b2)
+

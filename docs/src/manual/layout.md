@@ -49,6 +49,13 @@ Julia interface methods defined for `GtkBox`:
 | `delete!(b::GtkBox, w::GtkWidget)` | Removes a widget from the box |
 | `empty!(b::GtkBox)` | Removes all widgets from the box |
 
+In addition multiple widgets can be specified for `push!` and `pushfirst!`:
+
+| method | what it does |
+| :--- | :--- |
+| `push!(b::GtkBox, widgets...)` | Adds widgets to the end of the box |
+| `pushfirst!(b::GtkBox, widgets...)` | Adds widgets to the beginning of the box |
+
 ## [GtkGrid](https://docs.gtk.org/gtk4/class.Grid.html)
 
 To create two-dimensional (tabular) layouts of widgets, you can use `GtkGrid`:

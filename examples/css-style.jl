@@ -49,6 +49,5 @@ end
 
 box = GtkBox(:v)
 win[] = box
-push!(box, b1)
-push!(box, b2)
-push!(box, b3)
+push!(box, b1, b2, b3)
+
