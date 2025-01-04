@@ -79,6 +79,13 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
 end
 const GtkCanvasLeaf = GtkCanvas
 
+"""
+    resize(config::Function, widget::GtkCanvas)
+
+Set a function `config` to be called whenever the `GtkCanvas`'s size is changed and
+trigger a redraw. The `config` function should have a single argument, the `GtkCanvas`,
+from which the `CairoSurface` can be retrieved using [`getgc`](@ref).
+"""
 function resize(config::Function, widget::GtkCanvas)
     widget.resize = config
     if G_.get_realized(widget) && widget.is_sized
@@ -102,6 +109,11 @@ function draw(redraw::Function, widget::GtkCanvas)
     nothing
 end
 
+"""
+    draw(widget::GtkCanvas)
+
+Triggers a redraw of the canvas using a previously set `redraw` function.
+"""
 function draw(widget::GtkCanvas)
     if !isdefined(widget, :back)
         #@warn("backing store not defined")
