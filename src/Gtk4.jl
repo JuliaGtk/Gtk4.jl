@@ -138,6 +138,13 @@ end
 
 function __init__()
     in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
+    
+    if VERSION >= v"1.11" && isinteractive()
+        if (Threads.nthreads(:default) > 1 && Threads.nthreads(:interactive) == 0) || 
+           Threads.nthreads(:interactive) > 1
+            @warn("Gtk4 may freeze the REPL if there is more than one thread in its thread pool. Please set JULIA_NUM_THREADS to N,1 (for N default threads) and restart Julia.")
+        end
+    end
 
     # check that GTK is compatible with what the GI generated code expects
     vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
