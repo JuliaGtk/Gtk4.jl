@@ -98,6 +98,17 @@ let skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten meth
     end
 end
 
+let havechild = [:GtkButton,:GtkCheckButton,:GtkMenuButton,:GtkFrame,:GtkAspectFrame,
+                 :GtkExpander,:GtkOverlay,:GtkPopover,:GtkRevealer,:GtkViewport,
+                 :GtkSearchBar,:GtkComboBox,:GtkWindow,:GtkScrolledWindow]
+    for haschild in havechild
+        @eval begin
+            getindex(w::$haschild) = G_.get_child(w)
+            setindex!(w::$haschild, c::Union{Nothing,GtkWidget}) = G_.set_child(w,c)
+        end
+    end
+end
+
 include("Gdk4.jl")
 include("base.jl")
 include("builder.jl")

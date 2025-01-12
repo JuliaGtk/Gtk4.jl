@@ -305,7 +305,7 @@ Create a `GtkApplication` with DBus id `id` and flags.
 
 Related GTK function: [`gtk_application_new`()]($(gtkdoc_method_url("gtk4","Application","new")))
 """
-GtkApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
+GtkApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE; kwargs...) = GtkApplication(id,flags; kwargs...)
 function push!(app::GtkApplication, win::GtkWindow)
     G_.add_window(app, win)
     app

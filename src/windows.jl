@@ -148,8 +148,6 @@ present(win::GtkWindow) = G_.present(win)
 present(win::GtkWindow, timestamp) = G_.present_with_time(win, timestamp)
 
 push!(w::GtkWindow, widget::GtkWidget) = (G_.set_child(w, widget); w)
-setindex!(w::GtkWindow, widget::Union{Nothing,GtkWidget}) = G_.set_child(w, widget)
-getindex(w::GtkWindow) = G_.get_child(w)
 
 # totally ugly hack to salvage this Gtk.jl legacy function for its original purpose
 function GLib.waitforsignal(obj::GtkWindow,signal)
@@ -187,9 +185,6 @@ function GtkApplicationWindow(app::GtkApplication, title::AbstractString; kwargs
     G_.set_title(win, title)
     win
 end
-
-setindex!(w::GtkScrolledWindow, widg::Union{Nothing,GtkWidget}) = G_.set_child(w,widg)
-getindex(w::GtkScrolledWindow) = G_.get_child(w)
 
 ## GtkHeaderBar
 

@@ -36,9 +36,6 @@ function GtkButton(s::Symbol,str::AbstractString)
     end
 end
 
-setindex!(f::GtkButton, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
-getindex(f::GtkButton) = G_.get_child(f)
-
 function on_signal_clicked(@nospecialize(clicked_cb::Function), widget::GtkButton, vargs...)
     signal_connect(clicked_cb, widget, "clicked", Nothing, (), vargs...)
 end
@@ -82,6 +79,7 @@ function GtkVolumeButton(value::Real; kwargs...) # 0 <= value <= 1
 end
 
 popup(b::GtkMenuButton) = G_.popup(b)
+popdown(b::GtkMenuButton) = G_.popdown(b)
 
 function GtkPopoverMenu(model::GMenu, nested::Bool = false)
     if nested

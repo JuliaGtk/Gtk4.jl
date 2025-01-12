@@ -221,19 +221,6 @@ function GtkFrame(w::GtkWidget, label=nothing; kwargs...)
     f
 end
 
-setindex!(f::GtkFrame, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
-getindex(f::GtkFrame) = G_.get_child(f)
-
-## GtkAspectFrame - A widget that preserves the aspect ratio of its child
-
-setindex!(f::GtkAspectFrame, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
-getindex(f::GtkAspectFrame) = G_.get_child(f)
-
-## GtkExpander
-
-setindex!(f::GtkExpander, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
-getindex(f::GtkExpander) = G_.get_child(f)
-
 ## GtkNotebook
 
 function insert!(w::GtkNotebook, position::Integer, x::GtkWidget, label::Union{GtkWidget, AbstractString})
@@ -296,9 +283,6 @@ function GtkOverlay(w::GtkWidget; kwargs...)
     o
 end
 
-setindex!(f::GtkOverlay, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
-getindex(f::GtkOverlay) = G_.get_child(f)
-
 function add_overlay(f::GtkOverlay, x::GtkWidget, clip_overlay=false, measure_overlay=false)
     G_.add_overlay(f,x)
     clip_overlay && G_.set_clip_overlay(f,x,true)
@@ -326,7 +310,5 @@ end
 
 ## GtkPopover
 
-getindex(w::GtkPopover) = G_.get_child(w)
-setindex!(w::GtkPopover, c::GtkWidget) = G_.set_child(w,c)
 popup(m::GtkPopover) = G_.popup(m)
 
