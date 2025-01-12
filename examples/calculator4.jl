@@ -24,116 +24,68 @@ b0 = GtkButton("0")
 b_equalto = GtkButton("=")
 b_divide = GtkButton("÷")
 
-hbox1 = GtkBox(:h)
-hbox2 = GtkBox(:h)
-hbox3 = GtkBox(:h)
-hbox4 = GtkBox(:h)
-
-push!(hbox1, b1, b2, b3, b_plus)
-push!(hbox2, b4, b5, b6, b_minus)
-push!(hbox3, b7, b8, b9, b_multiply)
-push!(hbox4, b_clear, b0, b_equalto, b_divide)
+hbox1 = push!(GtkBox(:h), b1, b2, b3, b_plus)
+hbox2 = push!(GtkBox(:h), b4, b5, b6, b_minus)
+hbox3 = push!(GtkBox(:h), b7, b8, b9, b_multiply)
+hbox4 = push!(GtkBox(:h), b_clear, b0, b_equalto, b_divide)
 
 vbox = GtkBox(:v)
 label = GtkLabel("")
 
-push!(vbox, GtkLabel(""))
-push!(vbox, label)
-push!(vbox, GtkLabel(""))
-push!(vbox, hbox1)
-push!(vbox, hbox2)
-push!(vbox, hbox3)
-push!(vbox, hbox4)
-push!(win, vbox)
-
-text = ""
+push!(vbox, GtkLabel(""), label, GtkLabel(""), hbox1, hbox2, hbox3, hbox4)
+win[] = vbox
 
 function calculate(s)
-	x = "+ " * s
-	k = split(x)
-	final = 0
+    isempty(s) && return ""
+    x = "+ " * s
+    k = split(x)
+    final = 0
 
-	for i = 1:length(k)
-
-		if k[i] == "+"
-			final += parse(Float64, k[i + 1])
-		elseif k[i] == "-"
-			final -= parse(Float64, k[i + 1])
-		elseif k[i] == "x"
-			final *= parse(Float64, k[i + 1])
-		elseif k[i] == "÷"
-			final /= parse(Float64, k[i + 1])
-		end
-	end
-	return string(final)
-end
-
-
-function button_clicked_callback(widget)
-	if widget == b1
-		global text = text * "1"
-        label.label = text
-    elseif widget == b2
-    	global text = text * "2"
-        label.label = text
-    elseif widget == b3
-        global text = text * "3"
-        label.label = text
-    elseif widget == b4
-    	global text = text * "4"
-        label.label = text
-    elseif widget == b5
-        global text = text * "5"
-        label.label = text
-    elseif widget == b6
-    	global text = text * "6"
-        label.label = text
-    elseif widget == b7
-        global text = text * "7"
-        label.label = text
-    elseif widget == b8
-    	global text = text * "8"
-        label.label = text
-    elseif widget == b9
-        global text = text * "9"
-        label.label = text
-    elseif widget == b_plus
-    	global text = text * " + "
-        label.label = text
-    elseif widget == b_minus
-        global text = text * " - "
-        label.label = text
-    elseif widget == b_multiply
-    	global text = text * " x "
-        label.label = text
-    elseif widget == b_divide
-        global text = text * " ÷ "
-        label.label = text
-    elseif widget == b0
-    	global text = text * "0"
-        label.label = text
-    elseif widget == b_clear
-        global text = ""
-        label.label = text
-    elseif widget == b_equalto
-    	global text = calculate(text)
-        label.label = text
+    for i = 1:length(k)
+        if k[i] == "+"
+            final += parse(Float64, k[i + 1])
+        elseif k[i] == "-"
+            final -= parse(Float64, k[i + 1])
+        elseif k[i] == "x"
+            final *= parse(Float64, k[i + 1])
+        elseif k[i] == "÷"
+            final /= parse(Float64, k[i + 1])
+        end
     end
+    return string(final)
 end
 
-id1 = signal_connect(button_clicked_callback, b1, "clicked")
-id2 = signal_connect(button_clicked_callback, b2, "clicked")
-id3 = signal_connect(button_clicked_callback, b3, "clicked")
-id4 = signal_connect(button_clicked_callback, b4, "clicked")
-id5 = signal_connect(button_clicked_callback, b5, "clicked")
-id6 = signal_connect(button_clicked_callback, b6, "clicked")
-id7 = signal_connect(button_clicked_callback, b7, "clicked")
-id8 = signal_connect(button_clicked_callback, b8, "clicked")
-id9 = signal_connect(button_clicked_callback, b9, "clicked")
-id10 = signal_connect(button_clicked_callback, b0, "clicked")
-id11 = signal_connect(button_clicked_callback, b_plus, "clicked")
-id12 = signal_connect(button_clicked_callback, b_minus, "clicked")
-id13 = signal_connect(button_clicked_callback, b_multiply, "clicked")
-id14 = signal_connect(button_clicked_callback, b_divide, "clicked")
-id15 = signal_connect(button_clicked_callback, b_clear, "clicked")
-id16 = signal_connect(button_clicked_callback, b_equalto, "clicked")
+append_str(str) = label.label *= str
+append_1(widget) = append_str("1")
+append_2(widget) = append_str("2")
+append_3(widget) = append_str("3")
+append_4(widget) = append_str("4")
+append_5(widget) = append_str("5")
+append_6(widget) = append_str("6")
+append_7(widget) = append_str("7")
+append_8(widget) = append_str("8")
+append_9(widget) = append_str("9")
+append_0(widget) = append_str("0")
+append_plus(widget) = append_str(" + ")
+append_minus(widget) = append_str(" - ")
+append_times(widget) = append_str(" x ")
+append_div(widget) = append_str(" ÷ ")
+clear_callback(widget) = label.label = ""
+calc_callback(widget) = label.label = calculate(label.label)
+
+signal_connect(append_1, b1, "clicked")
+signal_connect(append_2, b2, "clicked")
+signal_connect(append_3, b3, "clicked")
+signal_connect(append_4, b4, "clicked")
+signal_connect(append_5, b5, "clicked")
+signal_connect(append_6, b6, "clicked")
+signal_connect(append_7, b7, "clicked")
+signal_connect(append_8, b8, "clicked")
+signal_connect(append_9, b9, "clicked")
+signal_connect(append_0, b0, "clicked")
+signal_connect(append_plus, b_plus, "clicked")
+signal_connect(append_minus, b_minus, "clicked")
+signal_connect(append_times, b_multiply, "clicked")
+signal_connect(append_div, b_divide, "clicked")
+signal_connect(clear_callback, b_clear, "clicked")
+signal_connect(calc_callback, b_equalto, "clicked")

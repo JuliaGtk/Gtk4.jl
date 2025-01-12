@@ -13,15 +13,16 @@ ent = GtkEntry(;hexpand=true)
 grid = GtkGrid()
 lab = GtkLabel("")
 grid[1:2,1] = lab
+# @idle_add adds code to be called by the GTK main loop
 @idle_add lab.label = "The GTK loop is running in thread $(Threads.threadid()) ($(Threads.threadpool()) threadpool)"
 grid[1,2] = btn
 grid[2,2] = sp
 grid[1:2,3] = ent
 
 signal_connect(btn, "clicked") do widget
-    start(sp)
+    start(sp)   # start the spinner widget
     Threads.@spawn begin
-        # Do work
+        # Do work in a separate thread to avoid bogging down the GTK main loop
         stop_time = time() + 3
         counter = 0
         while time() < stop_time
@@ -33,8 +34,8 @@ signal_connect(btn, "clicked") do widget
 
         # Interacting with GTK from a thread other than the main thread is
         # generally not allowed, so we register an idle callback instead.
-        Gtk4.GLib.g_idle_add() do
-            stop(sp)
+        @idle_add begin
+            stop(sp)   # stop the spinner widget
             ent.text = "I counted to $counter in thread $tid in the $tp threadpool!"
             false
         end
