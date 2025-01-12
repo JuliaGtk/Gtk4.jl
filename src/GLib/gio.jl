@@ -63,3 +63,28 @@ mutable struct _GActionInterface
     activate::Ptr{Cvoid}
 end
 
+# GSettings
+
+GSettingsSchemaSource() = G_.settings_schema_source_get_default()
+
+function Base.keys(s::GSettings)
+    ss=s.settings_schema
+    G_.list_keys(ss)
+end
+
+function Base.haskey(s::GSettings)
+    ss=s.settings_schema
+    G_.has_key(ss)
+end
+
+let gsettings_fns = Expr(:block)
+    for i = 1:length(fundamental_types)
+        (name, ctype, juliatype, g_value_fn, g_variant_fn) = fundamental_types[i]
+        if g_value_fn in [:boolean,:double,:int64,:string,:uint64,:int,:uint]
+            push!(gsettings_fns.args, :( getindex(gs::GSettings, key::AbstractString, ::Type{T}) where {T <: $juliatype} = G_.$(Symbol("get_", g_value_fn))(gs, key)[1]))
+            push!(gsettings_fns.args, :( setindex!(gs::GSettings, val::$juliatype, key::AbstractString) = G_.$(Symbol("set_", g_value_fn))(gs, key, val)[1]))
+        end
+    end
+    Core.eval(GLib, gsettings_fns)
+end
+
