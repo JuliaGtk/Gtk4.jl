@@ -1,41 +1,37 @@
-quote
-$(Expr(:toplevel, quote
-    function get_scaled_font(instance::PangoCairoFont)
-        ret = ccall(("pango_cairo_font_get_scaled_font", libpangocairo), Ptr{cairoScaledFont}, (Ptr{GObject},), instance)
-        ret2 = convert_if_not_null(cairoScaledFont, ret, false)
-        ret2
-    end
-    function get_default()
-        ret = ccall(("pango_cairo_font_map_get_default", libpangocairo), Ptr{GObject}, ())
-        ret2 = convert(PangoFontMap, ret, false)
-        ret2
-    end
-    function new()
-        ret = ccall(("pango_cairo_font_map_new", libpangocairo), Ptr{GObject}, ())
-        ret2 = convert(PangoFontMap, ret, true)
-        ret2
-    end
-    function new_for_font_type(_fonttype)
-        ret = ccall(("pango_cairo_font_map_new_for_font_type", libpangocairo), Ptr{GObject}, (UInt32,), _fonttype)
-        ret2 = convert_if_not_null(PangoFontMap, ret, true)
-        ret2
-    end
-    function get_font_type(instance::PangoCairoFontMap)
-        ret = ccall(("pango_cairo_font_map_get_font_type", libpangocairo), UInt32, (Ptr{GObject},), instance)
-        ret2 = FontType(ret)
-        ret2
-    end
-    function get_resolution(instance::PangoCairoFontMap)
-        ret = ccall(("pango_cairo_font_map_get_resolution", libpangocairo), Float64, (Ptr{GObject},), instance)
-        ret
-    end
-    function set_default(instance::PangoCairoFontMap)
-        ret = ccall(("pango_cairo_font_map_set_default", libpangocairo), Nothing, (Ptr{GObject},), instance)
-        nothing
-    end
-    function set_resolution(instance::PangoCairoFontMap, _dpi::Real)
-        ret = ccall(("pango_cairo_font_map_set_resolution", libpangocairo), Nothing, (Ptr{GObject}, Float64), instance, _dpi)
-        nothing
-    end
-end))
+function get_scaled_font(instance::PangoCairoFont)
+    ret = ccall(("pango_cairo_font_get_scaled_font", libpangocairo), Ptr{cairoScaledFont}, (Ptr{GObject},), instance)
+    ret2 = convert_if_not_null(cairoScaledFont, ret, false)
+    ret2
+end
+function get_default()
+    ret = ccall(("pango_cairo_font_map_get_default", libpangocairo), Ptr{GObject}, ())
+    ret2 = convert(PangoFontMap, ret, false)
+    ret2
+end
+function new()
+    ret = ccall(("pango_cairo_font_map_new", libpangocairo), Ptr{GObject}, ())
+    ret2 = convert(PangoFontMap, ret, true)
+    ret2
+end
+function new_for_font_type(_fonttype)
+    ret = ccall(("pango_cairo_font_map_new_for_font_type", libpangocairo), Ptr{GObject}, (UInt32,), _fonttype)
+    ret2 = convert_if_not_null(PangoFontMap, ret, true)
+    ret2
+end
+function get_font_type(instance::PangoCairoFontMap)
+    ret = ccall(("pango_cairo_font_map_get_font_type", libpangocairo), UInt32, (Ptr{GObject},), instance)
+    ret2 = FontType(ret)
+    ret2
+end
+function get_resolution(instance::PangoCairoFontMap)
+    ret = ccall(("pango_cairo_font_map_get_resolution", libpangocairo), Float64, (Ptr{GObject},), instance)
+    ret
+end
+function set_default(instance::PangoCairoFontMap)
+    ret = ccall(("pango_cairo_font_map_set_default", libpangocairo), Nothing, (Ptr{GObject},), instance)
+    nothing
+end
+function set_resolution(instance::PangoCairoFontMap, _dpi::Real)
+    ret = ccall(("pango_cairo_font_map_set_resolution", libpangocairo), Nothing, (Ptr{GObject}, Float64), instance, _dpi)
+    nothing
 end

@@ -151,7 +151,7 @@ end
 include("glist.jl")
 include("gtype.jl")
 
-eval(include("../gen/glib_consts"))
+include("../gen/glib_consts")
 
 const lib_version = VersionNumber(
       MAJOR_VERSION,
@@ -160,7 +160,7 @@ const lib_version = VersionNumber(
 
 include("gvalues.jl")
 
-eval(include("../gen/glib_structs"))
+include("../gen/glib_structs")
 
 include("gvariant.jl")
 include("gerror.jl")
@@ -169,8 +169,8 @@ include("hashtable.jl")
 
 include("signals.jl")
 
-eval(include("../gen/gobject_structs"))
-eval(include("../gen/gio_structs"))
+include("../gen/gobject_structs")
+include("../gen/gio_structs")
 
 module G_
 
@@ -181,12 +181,12 @@ using ..GLib: BookmarkFileError, ChecksumType, ConvertError, DateDMY, DateMonth,
 
 import Base: convert, copy, run
 
-eval(include("../gen/glib_methods"))
-eval(include("../gen/glib_functions"))
-eval(include("../gen/gobject_methods"))
-eval(include("../gen/gobject_functions"))
-eval(include("../gen/gio_methods"))
-eval(include("../gen/gio_functions"))
+include("../gen/glib_methods")
+include("../gen/glib_functions")
+include("../gen/gobject_methods")
+include("../gen/gobject_functions")
+include("../gen/gio_methods")
+include("../gen/gio_functions")
 
 end
 

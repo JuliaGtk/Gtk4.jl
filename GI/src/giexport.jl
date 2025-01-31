@@ -42,7 +42,7 @@ end
 
 function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix, doc_xml = nothing, export_constants = true)
     toplevel, exprs, exports = GI.output_exprs()
-    
+
     const_mod = Expr(:block)
 
     c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist, export_constants)
@@ -183,7 +183,7 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
         end
         push!(exprs,unblock(gboxed_types_init))
     end
-    
+
     if print_summary
         printstyled("Generated ",imported," structs out of ",length(ss),"\n";color=:green)
     end
@@ -196,13 +196,13 @@ function all_callbacks!(exprs, exports, ns; callback_skiplist = [])
     for c in callbacks
         get_name(c) in callback_skiplist && continue
         try
-	    push!(exprs, decl(c))
-	catch e
-	    if isa(e, NotImplementedError)
-	        continue
-	    else
-	        rethrow(e)
-	    end
+        push!(exprs, decl(c))
+    catch e
+        if isa(e, NotImplementedError)
+            continue
+        else
+            rethrow(e)
+        end
         end
         push!(exports.args, get_full_name(c))
     end
@@ -444,7 +444,7 @@ function export_methods!(ns,path,prefix;struct_method_skiplist = Symbol[], objec
     all_struct_methods!(exprs,ns, struct_skiplist = struct_skiplist, skiplist = struct_method_skiplist, exclude_deprecated = exclude_deprecated)
     all_object_methods!(exprs,ns; skiplist = object_method_skiplist, object_skiplist = object_skiplist, exclude_deprecated = exclude_deprecated, interface_helpers)
     all_interface_methods!(exprs,ns; skiplist = interface_method_skiplist, interface_skiplist = interface_skiplist, exclude_deprecated = exclude_deprecated)
-    
+
     write_to_file(path,"$(prefix)_methods",toplevel)
 end
 
@@ -529,24 +529,21 @@ function export_functions!(ns,path,prefix;skiplist = Symbol[], exclude_deprecate
     write_to_file(path,"$(prefix)_functions",toplevel)
 end
 
-function write_to_file(filename,toplevel)
+function write_to_file(filename,block)
     open(filename,"w") do f
-        Base.println(f,"quote")
-        Base.remove_linenums!(toplevel)
-        Base.show_unquoted(f, toplevel)
+        Base.remove_linenums!(block)
+        Base.show_unquoted(f, block)
         println(f)
-        Base.println(f,"end")
     end
 end
 
 write_to_file(path,filename,toplevel)=write_to_file(joinpath(path,filename),toplevel)
 
 function output_exprs()
-    body = Expr(:block)
-    toplevel = Expr(:toplevel, body)
-    exprs = body.args
+    block = Expr(:block)
+    exprs = block.args
     exports = Expr(:export)
-    toplevel, exprs, exports
+    block, exprs, exports
 end
 
 # Read from XML
