@@ -1,15 +1,11 @@
-quote
-$(Expr(:toplevel, quote
-    GLib.@Giface PangoCairoFont libpangocairo pango_cairo_font_get_type
-    GLib.@Giface PangoCairoFontMap libpangocairo pango_cairo_font_map_get_type
-    function PangoCairoShapeRendererFunc(cr, attr, do_path, data)
-        cr = convert(cairoContext, cr, false)
-        attr = convert(PangoAttrShapeLike, attr)
-        do_path = convert(Bool, do_path)
-        f = data
-        ret = f(cr, attr, do_path)
-        nothing
-    end
-    export PangoCairoFont, PangoCairoFontMap, PangoCairoShapeRendererFunc
-end))
+GLib.@Giface PangoCairoFont libpangocairo pango_cairo_font_get_type
+GLib.@Giface PangoCairoFontMap libpangocairo pango_cairo_font_map_get_type
+function PangoCairoShapeRendererFunc(cr, attr, do_path, data)
+    cr = convert(cairoContext, cr, false)
+    attr = convert(PangoAttrShapeLike, attr)
+    do_path = convert(Bool, do_path)
+    f = data
+    ret = f(cr, attr, do_path)
+    nothing
 end
+export PangoCairoFont, PangoCairoFontMap, PangoCairoShapeRendererFunc

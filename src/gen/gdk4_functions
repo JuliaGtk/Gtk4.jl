@@ -1,159 +1,155 @@
-quote
-$(Expr(:toplevel, quote
-    function cairo_rectangle(_cr::cairoContext, _rectangle::GdkRectangleLike)
-        ret = ccall(("gdk_cairo_rectangle", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRectangle}), _cr, _rectangle)
-        nothing
+function cairo_rectangle(_cr::cairoContext, _rectangle::GdkRectangleLike)
+    ret = ccall(("gdk_cairo_rectangle", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRectangle}), _cr, _rectangle)
+    nothing
+end
+function cairo_region(_cr::cairoContext, _region::cairoRegion)
+    ret = ccall(("gdk_cairo_region", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{cairoRegion}), _cr, _region)
+    nothing
+end
+function cairo_region_create_from_surface(_surface::cairoSurface)
+    ret = ccall(("gdk_cairo_region_create_from_surface", libgtk4), Ptr{cairoRegion}, (Ptr{cairoSurface},), _surface)
+    ret2 = convert(cairoRegion, ret, true)
+    ret2
+end
+function cairo_set_source_pixbuf(_cr::cairoContext, _pixbuf::GdkPixbuf, _pixbuf_x::Real, _pixbuf_y::Real)
+    ret = ccall(("gdk_cairo_set_source_pixbuf", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{GObject}, Float64, Float64), _cr, _pixbuf, _pixbuf_x, _pixbuf_y)
+    nothing
+end
+function cairo_set_source_rgba(_cr::cairoContext, _rgba::GdkRGBALike)
+    ret = ccall(("gdk_cairo_set_source_rgba", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRGBA}), _cr, _rgba)
+    nothing
+end
+function content_deserialize_async(_stream::GInputStream, _mime_type::Union{AbstractString, Symbol}, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+    _cancellable_maybe = nothing_to_null(_cancellable)
+    if _callback === nothing
+        _callback_cfunc = C_NULL
+        _callback_closure = C_NULL
+    else
+        _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+        _callback_closure = GLib.gc_ref(_callback)
     end
-    function cairo_region(_cr::cairoContext, _region::cairoRegion)
-        ret = ccall(("gdk_cairo_region", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{cairoRegion}), _cr, _region)
-        nothing
+    ret = ccall(("gdk_content_deserialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _mime_type, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+    nothing
+end
+function content_deserialize_finish(_result::GAsyncResult)
+    m_value = Ref{_GValue}()
+    err = err_buf()
+    ret = ccall(("gdk_content_deserialize_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{_GValue}, Ptr{Ptr{GError}}), _result, m_value, err)
+    check_err(err)
+    ret2 = convert(Bool, ret)
+    _value = m_value[]
+    (ret2, _value)
+end
+function content_formats_parse(_string::Union{AbstractString, Symbol})
+    ret = ccall(("gdk_content_formats_parse", libgtk4), Ptr{GdkContentFormats}, (Cstring,), _string)
+    ret2 = convert_if_not_null(GdkContentFormats, ret, true)
+    ret2
+end
+function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::GValueLike, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+    _cancellable_maybe = nothing_to_null(_cancellable)
+    if _callback === nothing
+        _callback_cfunc = C_NULL
+        _callback_closure = C_NULL
+    else
+        _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+        _callback_closure = GLib.gc_ref(_callback)
     end
-    function cairo_region_create_from_surface(_surface::cairoSurface)
-        ret = ccall(("gdk_cairo_region_create_from_surface", libgtk4), Ptr{cairoRegion}, (Ptr{cairoSurface},), _surface)
-        ret2 = convert(cairoRegion, ret, true)
-        ret2
-    end
-    function cairo_set_source_pixbuf(_cr::cairoContext, _pixbuf::GdkPixbuf, _pixbuf_x::Real, _pixbuf_y::Real)
-        ret = ccall(("gdk_cairo_set_source_pixbuf", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{GObject}, Float64, Float64), _cr, _pixbuf, _pixbuf_x, _pixbuf_y)
-        nothing
-    end
-    function cairo_set_source_rgba(_cr::cairoContext, _rgba::GdkRGBALike)
-        ret = ccall(("gdk_cairo_set_source_rgba", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRGBA}), _cr, _rgba)
-        nothing
-    end
-    function content_deserialize_async(_stream::GInputStream, _mime_type::Union{AbstractString, Symbol}, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
-        _cancellable_maybe = nothing_to_null(_cancellable)
-        if _callback === nothing
-            _callback_cfunc = C_NULL
-            _callback_closure = C_NULL
-        else
-            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-            _callback_closure = GLib.gc_ref(_callback)
+    ret = ccall(("gdk_content_serialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{_GValue}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _mime_type, _value, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+    nothing
+end
+function content_serialize_finish(_result::GAsyncResult)
+    err = err_buf()
+    ret = ccall(("gdk_content_serialize_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
+    check_err(err)
+    ret2 = convert(Bool, ret)
+    ret2
+end
+function dmabuf_error_quark()
+    ret = ccall(("gdk_dmabuf_error_quark", libgtk4), UInt32, ())
+    ret
+end
+function drag_action_is_unique(_action)
+    ret = ccall(("gdk_drag_action_is_unique", libgtk4), Cint, (UInt32,), _action)
+    ret2 = convert(Bool, ret)
+    ret2
+end
+function drag_surface_size_get_type()
+    ret = ccall(("gdk_drag_surface_size_get_type", libgtk4), UInt64, ())
+    ret
+end
+function gl_error_quark()
+    ret = ccall(("gdk_gl_error_quark", libgtk4), UInt32, ())
+    ret
+end
+function intern_mime_type(_string::Union{AbstractString, Symbol})
+    ret = ccall(("gdk_intern_mime_type", libgtk4), Cstring, (Cstring,), _string)
+    ret2 = string_or_nothing(ret, false)
+    ret2
+end
+function keyval_convert_case(_symbol::Integer)
+    m_lower = Ref{UInt32}()
+    m_upper = Ref{UInt32}()
+    ret = ccall(("gdk_keyval_convert_case", libgtk4), Nothing, (UInt32, Ptr{UInt32}, Ptr{UInt32}), _symbol, m_lower, m_upper)
+    _lower = m_lower[]
+    _upper = m_upper[]
+    (_lower, _upper)
+end
+function keyval_from_name(_keyval_name::Union{AbstractString, Symbol})
+    ret = ccall(("gdk_keyval_from_name", libgtk4), UInt32, (Cstring,), _keyval_name)
+    ret
+end
+function keyval_is_lower(_keyval::Integer)
+    ret = ccall(("gdk_keyval_is_lower", libgtk4), Cint, (UInt32,), _keyval)
+    ret2 = convert(Bool, ret)
+    ret2
+end
+function keyval_is_upper(_keyval::Integer)
+    ret = ccall(("gdk_keyval_is_upper", libgtk4), Cint, (UInt32,), _keyval)
+    ret2 = convert(Bool, ret)
+    ret2
+end
+function keyval_name(_keyval::Integer)
+    ret = ccall(("gdk_keyval_name", libgtk4), Cstring, (UInt32,), _keyval)
+    ret2 = string_or_nothing(ret, false)
+    ret2
+end
+function keyval_to_lower(_keyval::Integer)
+    ret = ccall(("gdk_keyval_to_lower", libgtk4), UInt32, (UInt32,), _keyval)
+    ret
+end
+function keyval_to_unicode(_keyval::Integer)
+    ret = ccall(("gdk_keyval_to_unicode", libgtk4), UInt32, (UInt32,), _keyval)
+    ret
+end
+function keyval_to_upper(_keyval::Integer)
+    ret = ccall(("gdk_keyval_to_upper", libgtk4), UInt32, (UInt32,), _keyval)
+    ret
+end
+function paintable_new_empty(_intrinsic_width::Integer, _intrinsic_height::Integer)
+    ret = ccall(("gdk_paintable_new_empty", libgtk4), Ptr{GObject}, (Int32, Int32), _intrinsic_width, _intrinsic_height)
+    ret2 = begin
+            leaftype = GLib.find_leaf_type(ret)
+            convert(leaftype, ret, true)
         end
-        ret = ccall(("gdk_content_deserialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _mime_type, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
-        nothing
-    end
-    function content_deserialize_finish(_result::GAsyncResult)
-        m_value = Ref{_GValue}()
-        err = err_buf()
-        ret = ccall(("gdk_content_deserialize_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{_GValue}, Ptr{Ptr{GError}}), _result, m_value, err)
-        check_err(err)
-        ret2 = convert(Bool, ret)
-        _value = m_value[]
-        (ret2, _value)
-    end
-    function content_formats_parse(_string::Union{AbstractString, Symbol})
-        ret = ccall(("gdk_content_formats_parse", libgtk4), Ptr{GdkContentFormats}, (Cstring,), _string)
-        ret2 = convert_if_not_null(GdkContentFormats, ret, true)
-        ret2
-    end
-    function content_serialize_async(_stream::GOutputStream, _mime_type::Union{AbstractString, Symbol}, _value::GValueLike, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
-        _cancellable_maybe = nothing_to_null(_cancellable)
-        if _callback === nothing
-            _callback_cfunc = C_NULL
-            _callback_closure = C_NULL
-        else
-            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-            _callback_closure = GLib.gc_ref(_callback)
-        end
-        ret = ccall(("gdk_content_serialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, Ptr{_GValue}, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _mime_type, _value, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
-        nothing
-    end
-    function content_serialize_finish(_result::GAsyncResult)
-        err = err_buf()
-        ret = ccall(("gdk_content_serialize_finish", libgtk4), Cint, (Ptr{GObject}, Ptr{Ptr{GError}}), _result, err)
-        check_err(err)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function dmabuf_error_quark()
-        ret = ccall(("gdk_dmabuf_error_quark", libgtk4), UInt32, ())
-        ret
-    end
-    function drag_action_is_unique(_action)
-        ret = ccall(("gdk_drag_action_is_unique", libgtk4), Cint, (UInt32,), _action)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function drag_surface_size_get_type()
-        ret = ccall(("gdk_drag_surface_size_get_type", libgtk4), UInt64, ())
-        ret
-    end
-    function gl_error_quark()
-        ret = ccall(("gdk_gl_error_quark", libgtk4), UInt32, ())
-        ret
-    end
-    function intern_mime_type(_string::Union{AbstractString, Symbol})
-        ret = ccall(("gdk_intern_mime_type", libgtk4), Cstring, (Cstring,), _string)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function keyval_convert_case(_symbol::Integer)
-        m_lower = Ref{UInt32}()
-        m_upper = Ref{UInt32}()
-        ret = ccall(("gdk_keyval_convert_case", libgtk4), Nothing, (UInt32, Ptr{UInt32}, Ptr{UInt32}), _symbol, m_lower, m_upper)
-        _lower = m_lower[]
-        _upper = m_upper[]
-        (_lower, _upper)
-    end
-    function keyval_from_name(_keyval_name::Union{AbstractString, Symbol})
-        ret = ccall(("gdk_keyval_from_name", libgtk4), UInt32, (Cstring,), _keyval_name)
-        ret
-    end
-    function keyval_is_lower(_keyval::Integer)
-        ret = ccall(("gdk_keyval_is_lower", libgtk4), Cint, (UInt32,), _keyval)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function keyval_is_upper(_keyval::Integer)
-        ret = ccall(("gdk_keyval_is_upper", libgtk4), Cint, (UInt32,), _keyval)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function keyval_name(_keyval::Integer)
-        ret = ccall(("gdk_keyval_name", libgtk4), Cstring, (UInt32,), _keyval)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function keyval_to_lower(_keyval::Integer)
-        ret = ccall(("gdk_keyval_to_lower", libgtk4), UInt32, (UInt32,), _keyval)
-        ret
-    end
-    function keyval_to_unicode(_keyval::Integer)
-        ret = ccall(("gdk_keyval_to_unicode", libgtk4), UInt32, (UInt32,), _keyval)
-        ret
-    end
-    function keyval_to_upper(_keyval::Integer)
-        ret = ccall(("gdk_keyval_to_upper", libgtk4), UInt32, (UInt32,), _keyval)
-        ret
-    end
-    function paintable_new_empty(_intrinsic_width::Integer, _intrinsic_height::Integer)
-        ret = ccall(("gdk_paintable_new_empty", libgtk4), Ptr{GObject}, (Int32, Int32), _intrinsic_width, _intrinsic_height)
-        ret2 = begin
-                leaftype = GLib.find_leaf_type(ret)
-                convert(leaftype, ret, true)
-            end
-        ret2
-    end
-    function set_allowed_backends(_backends::Union{AbstractString, Symbol})
-        ret = ccall(("gdk_set_allowed_backends", libgtk4), Nothing, (Cstring,), _backends)
-        nothing
-    end
-    function texture_error_quark()
-        ret = ccall(("gdk_texture_error_quark", libgtk4), UInt32, ())
-        ret
-    end
-    function toplevel_size_get_type()
-        ret = ccall(("gdk_toplevel_size_get_type", libgtk4), UInt64, ())
-        ret
-    end
-    function unicode_to_keyval(_wc::Integer)
-        ret = ccall(("gdk_unicode_to_keyval", libgtk4), UInt32, (UInt32,), _wc)
-        ret
-    end
-    function vulkan_error_quark()
-        ret = ccall(("gdk_vulkan_error_quark", libgtk4), UInt32, ())
-        ret
-    end
-end))
+    ret2
+end
+function set_allowed_backends(_backends::Union{AbstractString, Symbol})
+    ret = ccall(("gdk_set_allowed_backends", libgtk4), Nothing, (Cstring,), _backends)
+    nothing
+end
+function texture_error_quark()
+    ret = ccall(("gdk_texture_error_quark", libgtk4), UInt32, ())
+    ret
+end
+function toplevel_size_get_type()
+    ret = ccall(("gdk_toplevel_size_get_type", libgtk4), UInt64, ())
+    ret
+end
+function unicode_to_keyval(_wc::Integer)
+    ret = ccall(("gdk_unicode_to_keyval", libgtk4), UInt32, (UInt32,), _wc)
+    ret
+end
+function vulkan_error_quark()
+    ret = ccall(("gdk_vulkan_error_quark", libgtk4), UInt32, ())
+    ret
 end

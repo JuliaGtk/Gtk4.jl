@@ -32,12 +32,12 @@ using Reexport
 import .Graphics: width, height, getgc, scale, center, clip
 import Cairo: destroy, text, status
 
-eval(include("gen/gdk4_consts"))
-eval(include("gen/gdk4_structs"))
-eval(include("gen/gsk4_consts"))
-eval(include("gen/gsk4_structs"))
-eval(include("gen/gtk4_consts"))
-eval(include("gen/gtk4_structs"))
+include("gen/gdk4_consts")
+include("gen/gdk4_structs")
+include("gen/gsk4_consts")
+include("gen/gsk4_structs")
+include("gen/gtk4_consts")
+include("gen/gtk4_structs")
 
 const ModifierType_NONE = ModifierType_NO_MODIFIER_MASK
 
@@ -54,12 +54,12 @@ using ..Gtk4
 
 using ..Gtk4: BlendMode, Corner, FillRule, GLUniformType, LineCap, LineJoin, MaskMode, PathDirection, PathOperation, RenderNodeType, ScalingFilter, SerializationError, TransformCategory, PathForeachFlags, AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DmabufError, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, ScrollUnit, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState, AccessibleAnnouncementPriority, AccessibleAutocomplete, AccessibleInvalidState, AccessiblePlatformState, AccessibleProperty, AccessibleRelation, AccessibleRole, AccessibleSort, AccessibleState, AccessibleTextContentChange, AccessibleTextGranularity, AccessibleTristate, Align, ArrowType, AssistantPageType, BaselinePosition, BorderStyle, BuilderError, ButtonsType, CellRendererAccelMode, CellRendererMode, Collation, ConstraintAttribute, ConstraintRelation, ConstraintStrength, ConstraintVflParserError, ContentFit, CornerType, CssParserError, CssParserWarning, DeleteType, DialogError, DirectionType, EditableProperties, EntryIconPosition, EventSequenceState, FileChooserAction, FileChooserError, FilterChange, FilterMatch, FontLevel, GraphicsOffloadEnabled, IconSize, IconThemeError, IconViewDropPosition, ImageType, InputPurpose, InscriptionOverflow, Justification, LevelBarMode, License, ListTabBehavior, MessageType, MovementStep, NaturalWrapMode, NotebookTab, NumberUpLayout, Ordering, Orientation, Overflow, PackType, PadActionType, PageOrientation, PageSet, PanDirection, PolicyType, PositionType, PrintDuplex, PrintError, PrintOperationAction, PrintOperationResult, PrintPages, PrintQuality, PrintStatus, PropagationLimit, PropagationPhase, RecentManagerError, ResponseType, RevealerTransitionType, ScrollStep, ScrollType, ScrollablePolicy, SelectionMode, SensitivityType, ShortcutScope, ShortcutType, SizeGroupMode, SizeRequestMode, SortType, SorterChange, SorterOrder, SpinButtonUpdatePolicy, SpinType, StackTransitionType, StringFilterMatchMode, SymbolicColor, SystemSetting, TextDirection, TextExtendSelection, TextViewLayer, TextWindowType, TreeViewColumnSizing, TreeViewDropPosition, TreeViewGridLines, Unit, WrapMode, ApplicationInhibitFlags, BuilderClosureFlags, CellRendererState, DebugFlags, DialogFlags, EventControllerScrollFlags, FontChooserLevel, IconLookupFlags, InputHints, ListScrollFlags, PickFlags, PopoverMenuFlags, PrintCapabilities, ShortcutActionFlags, StateFlags, StyleContextPrintFlags, TextSearchFlags
 
-eval(include("gen/gdk4_methods"))
-eval(include("gen/gdk4_functions"))
-eval(include("gen/gsk4_methods"))
-eval(include("gen/gsk4_functions"))
-eval(include("gen/gtk4_methods"))
-eval(include("gen/gtk4_functions"))
+include("gen/gdk4_methods")
+include("gen/gdk4_functions")
+include("gen/gsk4_methods")
+include("gen/gsk4_functions")
+include("gen/gtk4_methods")
+include("gen/gtk4_functions")
 
 function get_current_event_state(instance::GtkEventController)
     ret = ccall(("gtk_event_controller_get_current_event_state", libgtk4), UInt32, (Ptr{GObject},), instance)
@@ -138,9 +138,9 @@ end
 
 function __init__()
     in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
-    
+
     if VERSION >= v"1.11" && isinteractive()
-        if (Threads.nthreads(:default) > 1 && Threads.nthreads(:interactive) == 0) || 
+        if (Threads.nthreads(:default) > 1 && Threads.nthreads(:interactive) == 0) ||
            Threads.nthreads(:interactive) > 1
             @warn("Gtk4 may freeze the REPL if there is more than one thread in its thread pool. Please set JULIA_NUM_THREADS to N,1 (for N default threads) and restart Julia.")
         end
@@ -164,7 +164,7 @@ function __init__()
         # Help GTK find modules for printing, media, and input backends
         # May have consequences for GTK3 programs spawned by Julia
         ENV["GTK_PATH"] = joinpath(dirname(GTK4_jll.libgtk4_path::String),"gtk-4.0")
-        
+
         # Following also works for finding the printing backends (and also may affect GTK3 programs)
         #ENV["GTK_EXE_PREFIX"] = GTK4_jll.artifact_dir
     end
