@@ -187,7 +187,10 @@ function __init__()
     end
 
     success = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
-    #success || error("gtk_init_check() failed.")
+    if !success
+        @warn("Gtk4 initialization failed. Calling Gtk4 methods will cause Julia to crash.")
+        return
+    end
 
     if Sys.islinux() || Sys.isfreebsd()
         G_.set_default_icon_name("julia")
@@ -198,8 +201,6 @@ function __init__()
     GLib.G_.set_prgname("julia")
 
     isinteractive() && GLib.start_main_loop()
-
-    #@debug("Gtk4 initialized.")
 end
 
 isinitialized() = G_.is_initialized()
