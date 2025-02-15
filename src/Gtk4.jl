@@ -136,6 +136,8 @@ function set_EGL_vendorlib_dirs(dirs)
     @info("Setting will take effect after restarting Julia.")
 end
 
+const initialized = Ref(false)  # whether `init_check` succeeded, not necessarily the same as GTK4's `is_initialized`
+
 function __init__()
     in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
 
@@ -186,8 +188,11 @@ function __init__()
         end
     end
 
-    success = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
-    success || error("gtk_init_check() failed.")
+    initialized[] = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
+    if !initialized[]
+        @warn("Gtk4 initialization failed. Calling Gtk4 methods will cause Julia to crash.")
+        return
+    end
 
     if Sys.islinux() || Sys.isfreebsd()
         G_.set_default_icon_name("julia")
@@ -198,8 +203,6 @@ function __init__()
     GLib.G_.set_prgname("julia")
 
     isinteractive() && GLib.start_main_loop()
-
-    #@debug("Gtk4 initialized.")
 end
 
 isinitialized() = G_.is_initialized()
