@@ -16,15 +16,10 @@ function _init_canvas!(widget, w, h)
     widget.backcc = CairoContext(widget.back)
 end
 
-function _canvas_on_realize(::Ptr, canvas)
-    canvas.is_sized && _canvas_on_resize(da,1,1)
-    nothing
-end
-
 function _canvas_on_resize(::Ptr, width, height, canvas)
-    canvas.is_sized = true
     if isrealized(canvas)
         _init_canvas!(canvas, width, height)
+        canvas.is_sized = true
 
         if isa(canvas.resize, Function)
             canvas.resize(canvas)
@@ -71,7 +66,6 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
         end
 
         widget = GLib.gobject_move_ref(widget, da)
-        signal_connect(Base.inferencebarrier(_canvas_on_realize), widget, "realize", Nothing, (), false, widget)
         signal_connect(Base.inferencebarrier(_canvas_on_resize), widget, "resize", Nothing, (Cint, Cint), false, widget)
 
         return widget
