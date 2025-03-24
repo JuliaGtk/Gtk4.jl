@@ -331,7 +331,9 @@ end
 function addref(@nospecialize(x::GObject))
     # internal helper function
     finalizer(delref, x)
-    gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
+    if !haskey(gc_preserve_glib, x)
+        gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
+    end
     nothing
 end
 function gobject_maybe_sink(handle,owns::Bool)
@@ -426,6 +428,11 @@ function gobject_move_ref(new::GObject, old::GObject)
     glib_ref(h)
     gc_unref(old)
     gc_ref(new)
+    # replace weak with strong reference
+    gc_preserve_glib_lock[] = true
+    filter!(x->!(isa(x.first,WeakRef) && x.first.value == new), gc_preserve_glib)
+    gc_preserve_glib[new] = true
+    gc_preserve_glib_lock[] = false
     glib_unref(h)
     new
 end
