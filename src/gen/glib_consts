@@ -80,7 +80,7 @@ begin
     const MAXUINT32 = 0xffffffff
     const MAXUINT64 = 0xffffffffffffffff
     const MAXUINT8 = 0xff
-    const MICRO_VERSION = 2
+    const MICRO_VERSION = 5
     const MININT16 = -32768
     const MININT32 = -2147483648
     const MININT64 = -9223372036854775808
@@ -337,12 +337,8 @@ begin
     const VALUE_COLLECT_FORMAT_MAX_LENGTH = 8
     const VALUE_INTERNED_STRING = 268435456
     const VALUE_NOCOPY_CONTENTS = 134217728
-    begin
-        @bitflag BindingFlags::UInt32 BindingFlags_DEFAULT = 0 BindingFlags_BIDIRECTIONAL = 1 BindingFlags_SYNC_CREATE = 2 BindingFlags_INVERT_BOOLEAN = 4
-        (GLib.g_type(::Type{T}) where T <: BindingFlags) = begin
-                ccall(("g_binding_flags_get_type", libgobject), GType, ())
-            end
-    end
+    @bitflag BindingFlags::UInt32 BindingFlags_DEFAULT = 0 BindingFlags_BIDIRECTIONAL = 1 BindingFlags_SYNC_CREATE = 2 BindingFlags_INVERT_BOOLEAN = 4
+    (GLib.g_type(::Type{T}) where T <: BindingFlags) = ccall(("g_binding_flags_get_type", libgobject), GType, ())
     @bitflag ConnectFlags::UInt32 ConnectFlags_DEFAULT = 0 ConnectFlags_AFTER = 1 ConnectFlags_SWAPPED = 2
     @bitflag ParamFlags::UInt32 ParamFlags_READABLE = 1 ParamFlags_WRITABLE = 2 ParamFlags_CONSTRUCT = 4 ParamFlags_CONSTRUCT_ONLY = 8 ParamFlags_LAX_VALIDATION = 16 ParamFlags_STATIC_NAME = 32 ParamFlags_STATIC_NICK = 64 ParamFlags_STATIC_BLURB = 128 ParamFlags_EXPLICIT_NOTIFY = 1073741824 ParamFlags_NONE = 0
     @bitflag SignalFlags::UInt32 SignalFlags_RUN_FIRST = 1 SignalFlags_RUN_LAST = 2 SignalFlags_RUN_CLEANUP = 4 SignalFlags_NO_RECURSE = 8 SignalFlags_DETAILED = 16 SignalFlags_ACTION = 32 SignalFlags_NO_HOOKS = 64 SignalFlags_MUST_COLLECT = 128 SignalFlags_DEPRECATED = 256 SignalFlags_ACCUMULATOR_FIRST_RUN = 131072 SignalFlags_NONE = 0
@@ -500,486 +496,166 @@ begin
     const VOLUME_IDENTIFIER_KIND_UNIX_DEVICE = "unix-device"
     const VOLUME_IDENTIFIER_KIND_UUID = "uuid"
     const VOLUME_MONITOR_EXTENSION_POINT_NAME = "gio-volume-monitor"
-    begin
-        @cenum BusType::UInt16 BusType_STARTER = 0xffff BusType_NONE = 0x0000 BusType_SYSTEM = 0x0001 BusType_SESSION = 0x0002
-        (GLib.g_type(::Type{T}) where T <: BusType) = begin
-                ccall(("g_bus_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum ConverterResult::Int32 ConverterResult_ERROR = 0 ConverterResult_CONVERTED = 1 ConverterResult_FINISHED = 2 ConverterResult_FLUSHED = 3
-        (GLib.g_type(::Type{T}) where T <: ConverterResult) = begin
-                ccall(("g_converter_result_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum CredentialsType::Int32 CredentialsType_INVALID = 0 CredentialsType_LINUX_UCRED = 1 CredentialsType_FREEBSD_CMSGCRED = 2 CredentialsType_OPENBSD_SOCKPEERCRED = 3 CredentialsType_SOLARIS_UCRED = 4 CredentialsType_NETBSD_UNPCBID = 5 CredentialsType_APPLE_XUCRED = 6 CredentialsType_WIN32_PID = 7
-        (GLib.g_type(::Type{T}) where T <: CredentialsType) = begin
-                ccall(("g_credentials_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum DBusError::Int32 DBusError_FAILED = 0 DBusError_NO_MEMORY = 1 DBusError_SERVICE_UNKNOWN = 2 DBusError_NAME_HAS_NO_OWNER = 3 DBusError_NO_REPLY = 4 DBusError_IO_ERROR = 5 DBusError_BAD_ADDRESS = 6 DBusError_NOT_SUPPORTED = 7 DBusError_LIMITS_EXCEEDED = 8 DBusError_ACCESS_DENIED = 9 DBusError_AUTH_FAILED = 10 DBusError_NO_SERVER = 11 DBusError_TIMEOUT = 12 DBusError_NO_NETWORK = 13 DBusError_ADDRESS_IN_USE = 14 DBusError_DISCONNECTED = 15 DBusError_INVALID_ARGS = 16 DBusError_FILE_NOT_FOUND = 17 DBusError_FILE_EXISTS = 18 DBusError_UNKNOWN_METHOD = 19 DBusError_TIMED_OUT = 20 DBusError_MATCH_RULE_NOT_FOUND = 21 DBusError_MATCH_RULE_INVALID = 22 DBusError_SPAWN_EXEC_FAILED = 23 DBusError_SPAWN_FORK_FAILED = 24 DBusError_SPAWN_CHILD_EXITED = 25 DBusError_SPAWN_CHILD_SIGNALED = 26 DBusError_SPAWN_FAILED = 27 DBusError_SPAWN_SETUP_FAILED = 28 DBusError_SPAWN_CONFIG_INVALID = 29 DBusError_SPAWN_SERVICE_INVALID = 30 DBusError_SPAWN_SERVICE_NOT_FOUND = 31 DBusError_SPAWN_PERMISSIONS_INVALID = 32 DBusError_SPAWN_FILE_INVALID = 33 DBusError_SPAWN_NO_MEMORY = 34 DBusError_UNIX_PROCESS_ID_UNKNOWN = 35 DBusError_INVALID_SIGNATURE = 36 DBusError_INVALID_FILE_CONTENT = 37 DBusError_SELINUX_SECURITY_CONTEXT_UNKNOWN = 38 DBusError_ADT_AUDIT_DATA_UNKNOWN = 39 DBusError_OBJECT_PATH_IN_USE = 40 DBusError_UNKNOWN_OBJECT = 41 DBusError_UNKNOWN_INTERFACE = 42 DBusError_UNKNOWN_PROPERTY = 43 DBusError_PROPERTY_READ_ONLY = 44
-        (GLib.g_type(::Type{T}) where T <: DBusError) = begin
-                ccall(("g_dbus_error_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum DBusMessageByteOrder::Int32 DBusMessageByteOrder_BIG_ENDIAN = 66 DBusMessageByteOrder_LITTLE_ENDIAN = 108
-        (GLib.g_type(::Type{T}) where T <: DBusMessageByteOrder) = begin
-                ccall(("g_dbus_message_byte_order_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum DBusMessageHeaderField::Int32 DBusMessageHeaderField_INVALID = 0 DBusMessageHeaderField_PATH = 1 DBusMessageHeaderField_INTERFACE = 2 DBusMessageHeaderField_MEMBER = 3 DBusMessageHeaderField_ERROR_NAME = 4 DBusMessageHeaderField_REPLY_SERIAL = 5 DBusMessageHeaderField_DESTINATION = 6 DBusMessageHeaderField_SENDER = 7 DBusMessageHeaderField_SIGNATURE = 8 DBusMessageHeaderField_NUM_UNIX_FDS = 9
-        (GLib.g_type(::Type{T}) where T <: DBusMessageHeaderField) = begin
-                ccall(("g_dbus_message_header_field_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum DBusMessageType::Int32 DBusMessageType_INVALID = 0 DBusMessageType_METHOD_CALL = 1 DBusMessageType_METHOD_RETURN = 2 DBusMessageType_ERROR = 3 DBusMessageType_SIGNAL = 4
-        (GLib.g_type(::Type{T}) where T <: DBusMessageType) = begin
-                ccall(("g_dbus_message_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum DataStreamByteOrder::Int32 DataStreamByteOrder_BIG_ENDIAN = 0 DataStreamByteOrder_LITTLE_ENDIAN = 1 DataStreamByteOrder_HOST_ENDIAN = 2
-        (GLib.g_type(::Type{T}) where T <: DataStreamByteOrder) = begin
-                ccall(("g_data_stream_byte_order_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum DataStreamNewlineType::Int32 DataStreamNewlineType_LF = 0 DataStreamNewlineType_CR = 1 DataStreamNewlineType_CR_LF = 2 DataStreamNewlineType_ANY = 3
-        (GLib.g_type(::Type{T}) where T <: DataStreamNewlineType) = begin
-                ccall(("g_data_stream_newline_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum DriveStartStopType::Int32 DriveStartStopType_UNKNOWN = 0 DriveStartStopType_SHUTDOWN = 1 DriveStartStopType_NETWORK = 2 DriveStartStopType_MULTIDISK = 3 DriveStartStopType_PASSWORD = 4
-        (GLib.g_type(::Type{T}) where T <: DriveStartStopType) = begin
-                ccall(("g_drive_start_stop_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum EmblemOrigin::Int32 EmblemOrigin_UNKNOWN = 0 EmblemOrigin_DEVICE = 1 EmblemOrigin_LIVEMETADATA = 2 EmblemOrigin_TAG = 3
-        (GLib.g_type(::Type{T}) where T <: EmblemOrigin) = begin
-                ccall(("g_emblem_origin_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum FileAttributeStatus::Int32 FileAttributeStatus_UNSET = 0 FileAttributeStatus_SET = 1 FileAttributeStatus_ERROR_SETTING = 2
-        (GLib.g_type(::Type{T}) where T <: FileAttributeStatus) = begin
-                ccall(("g_file_attribute_status_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum FileAttributeType::Int32 FileAttributeType_INVALID = 0 FileAttributeType_STRING = 1 FileAttributeType_BYTE_STRING = 2 FileAttributeType_BOOLEAN = 3 FileAttributeType_UINT32 = 4 FileAttributeType_INT32 = 5 FileAttributeType_UINT64 = 6 FileAttributeType_INT64 = 7 FileAttributeType_OBJECT = 8 FileAttributeType_STRINGV = 9
-        (GLib.g_type(::Type{T}) where T <: FileAttributeType) = begin
-                ccall(("g_file_attribute_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum FileMonitorEvent::Int32 FileMonitorEvent_CHANGED = 0 FileMonitorEvent_CHANGES_DONE_HINT = 1 FileMonitorEvent_DELETED = 2 FileMonitorEvent_CREATED = 3 FileMonitorEvent_ATTRIBUTE_CHANGED = 4 FileMonitorEvent_PRE_UNMOUNT = 5 FileMonitorEvent_UNMOUNTED = 6 FileMonitorEvent_MOVED = 7 FileMonitorEvent_RENAMED = 8 FileMonitorEvent_MOVED_IN = 9 FileMonitorEvent_MOVED_OUT = 10
-        (GLib.g_type(::Type{T}) where T <: FileMonitorEvent) = begin
-                ccall(("g_file_monitor_event_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum FileType::Int32 FileType_UNKNOWN = 0 FileType_REGULAR = 1 FileType_DIRECTORY = 2 FileType_SYMBOLIC_LINK = 3 FileType_SPECIAL = 4 FileType_SHORTCUT = 5 FileType_MOUNTABLE = 6
-        (GLib.g_type(::Type{T}) where T <: FileType) = begin
-                ccall(("g_file_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum FilesystemPreviewType::Int32 FilesystemPreviewType_IF_ALWAYS = 0 FilesystemPreviewType_IF_LOCAL = 1 FilesystemPreviewType_NEVER = 2
-        (GLib.g_type(::Type{T}) where T <: FilesystemPreviewType) = begin
-                ccall(("g_filesystem_preview_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum IOErrorEnum::Int32 IOErrorEnum_FAILED = 0 IOErrorEnum_NOT_FOUND = 1 IOErrorEnum_EXISTS = 2 IOErrorEnum_IS_DIRECTORY = 3 IOErrorEnum_NOT_DIRECTORY = 4 IOErrorEnum_NOT_EMPTY = 5 IOErrorEnum_NOT_REGULAR_FILE = 6 IOErrorEnum_NOT_SYMBOLIC_LINK = 7 IOErrorEnum_NOT_MOUNTABLE_FILE = 8 IOErrorEnum_FILENAME_TOO_LONG = 9 IOErrorEnum_INVALID_FILENAME = 10 IOErrorEnum_TOO_MANY_LINKS = 11 IOErrorEnum_NO_SPACE = 12 IOErrorEnum_INVALID_ARGUMENT = 13 IOErrorEnum_PERMISSION_DENIED = 14 IOErrorEnum_NOT_SUPPORTED = 15 IOErrorEnum_NOT_MOUNTED = 16 IOErrorEnum_ALREADY_MOUNTED = 17 IOErrorEnum_CLOSED = 18 IOErrorEnum_CANCELLED = 19 IOErrorEnum_PENDING = 20 IOErrorEnum_READ_ONLY = 21 IOErrorEnum_CANT_CREATE_BACKUP = 22 IOErrorEnum_WRONG_ETAG = 23 IOErrorEnum_TIMED_OUT = 24 IOErrorEnum_WOULD_RECURSE = 25 IOErrorEnum_BUSY = 26 IOErrorEnum_WOULD_BLOCK = 27 IOErrorEnum_HOST_NOT_FOUND = 28 IOErrorEnum_WOULD_MERGE = 29 IOErrorEnum_FAILED_HANDLED = 30 IOErrorEnum_TOO_MANY_OPEN_FILES = 31 IOErrorEnum_NOT_INITIALIZED = 32 IOErrorEnum_ADDRESS_IN_USE = 33 IOErrorEnum_PARTIAL_INPUT = 34 IOErrorEnum_INVALID_DATA = 35 IOErrorEnum_DBUS_ERROR = 36 IOErrorEnum_HOST_UNREACHABLE = 37 IOErrorEnum_NETWORK_UNREACHABLE = 38 IOErrorEnum_CONNECTION_REFUSED = 39 IOErrorEnum_PROXY_FAILED = 40 IOErrorEnum_PROXY_AUTH_FAILED = 41 IOErrorEnum_PROXY_NEED_AUTH = 42 IOErrorEnum_PROXY_NOT_ALLOWED = 43 IOErrorEnum_BROKEN_PIPE = 44 IOErrorEnum_CONNECTION_CLOSED = 44 IOErrorEnum_NOT_CONNECTED = 45 IOErrorEnum_MESSAGE_TOO_LARGE = 46 IOErrorEnum_NO_SUCH_DEVICE = 47 IOErrorEnum_DESTINATION_UNSET = 48
-        (GLib.g_type(::Type{T}) where T <: IOErrorEnum) = begin
-                ccall(("g_io_error_enum_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum IOModuleScopeFlags::Int32 IOModuleScopeFlags_NONE = 0 IOModuleScopeFlags_BLOCK_DUPLICATES = 1
-        (GLib.g_type(::Type{T}) where T <: IOModuleScopeFlags) = begin
-                ccall(("g_io_module_scope_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum MemoryMonitorWarningLevel::Int32 MemoryMonitorWarningLevel_LOW = 50 MemoryMonitorWarningLevel_MEDIUM = 100 MemoryMonitorWarningLevel_CRITICAL = 255
-        (GLib.g_type(::Type{T}) where T <: MemoryMonitorWarningLevel) = begin
-                ccall(("g_memory_monitor_warning_level_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum MountOperationResult::Int32 MountOperationResult_HANDLED = 0 MountOperationResult_ABORTED = 1 MountOperationResult_UNHANDLED = 2
-        (GLib.g_type(::Type{T}) where T <: MountOperationResult) = begin
-                ccall(("g_mount_operation_result_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum NetworkConnectivity::Int32 NetworkConnectivity_LOCAL = 1 NetworkConnectivity_LIMITED = 2 NetworkConnectivity_PORTAL = 3 NetworkConnectivity_FULL = 4
-        (GLib.g_type(::Type{T}) where T <: NetworkConnectivity) = begin
-                ccall(("g_network_connectivity_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum NotificationPriority::Int32 NotificationPriority_NORMAL = 0 NotificationPriority_LOW = 1 NotificationPriority_HIGH = 2 NotificationPriority_URGENT = 3
-        (GLib.g_type(::Type{T}) where T <: NotificationPriority) = begin
-                ccall(("g_notification_priority_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum PasswordSave::Int32 PasswordSave_NEVER = 0 PasswordSave_FOR_SESSION = 1 PasswordSave_PERMANENTLY = 2
-        (GLib.g_type(::Type{T}) where T <: PasswordSave) = begin
-                ccall(("g_password_save_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum PollableReturn::UInt16 PollableReturn_FAILED = 0x0000 PollableReturn_OK = 0x0001 PollableReturn_WOULD_BLOCK = 0xffe5
-        (GLib.g_type(::Type{T}) where T <: PollableReturn) = begin
-                ccall(("g_pollable_return_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum ResolverError::Int32 ResolverError_NOT_FOUND = 0 ResolverError_TEMPORARY_FAILURE = 1 ResolverError_INTERNAL = 2
-        (GLib.g_type(::Type{T}) where T <: ResolverError) = begin
-                ccall(("g_resolver_error_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum ResolverRecordType::Int32 ResolverRecordType_SRV = 1 ResolverRecordType_MX = 2 ResolverRecordType_TXT = 3 ResolverRecordType_SOA = 4 ResolverRecordType_NS = 5
-        (GLib.g_type(::Type{T}) where T <: ResolverRecordType) = begin
-                ccall(("g_resolver_record_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum ResourceError::Int32 ResourceError_NOT_FOUND = 0 ResourceError_INTERNAL = 1
-        (GLib.g_type(::Type{T}) where T <: ResourceError) = begin
-                ccall(("g_resource_error_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum SocketClientEvent::Int32 SocketClientEvent_RESOLVING = 0 SocketClientEvent_RESOLVED = 1 SocketClientEvent_CONNECTING = 2 SocketClientEvent_CONNECTED = 3 SocketClientEvent_PROXY_NEGOTIATING = 4 SocketClientEvent_PROXY_NEGOTIATED = 5 SocketClientEvent_TLS_HANDSHAKING = 6 SocketClientEvent_TLS_HANDSHAKED = 7 SocketClientEvent_COMPLETE = 8
-        (GLib.g_type(::Type{T}) where T <: SocketClientEvent) = begin
-                ccall(("g_socket_client_event_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum SocketFamily::Int32 SocketFamily_INVALID = 0 SocketFamily_UNIX = 1 SocketFamily_IPV4 = 2 SocketFamily_IPV6 = 10
-        (GLib.g_type(::Type{T}) where T <: SocketFamily) = begin
-                ccall(("g_socket_family_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum SocketListenerEvent::Int32 SocketListenerEvent_BINDING = 0 SocketListenerEvent_BOUND = 1 SocketListenerEvent_LISTENING = 2 SocketListenerEvent_LISTENED = 3
-        (GLib.g_type(::Type{T}) where T <: SocketListenerEvent) = begin
-                ccall(("g_socket_listener_event_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum SocketProtocol::UInt16 SocketProtocol_UNKNOWN = 0xffff SocketProtocol_DEFAULT = 0x0000 SocketProtocol_TCP = 0x0006 SocketProtocol_UDP = 0x0011 SocketProtocol_SCTP = 0x0084
-        (GLib.g_type(::Type{T}) where T <: SocketProtocol) = begin
-                ccall(("g_socket_protocol_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum SocketType::Int32 SocketType_INVALID = 0 SocketType_STREAM = 1 SocketType_DATAGRAM = 2 SocketType_SEQPACKET = 3
-        (GLib.g_type(::Type{T}) where T <: SocketType) = begin
-                ccall(("g_socket_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum TlsAuthenticationMode::Int32 TlsAuthenticationMode_NONE = 0 TlsAuthenticationMode_REQUESTED = 1 TlsAuthenticationMode_REQUIRED = 2
-        (GLib.g_type(::Type{T}) where T <: TlsAuthenticationMode) = begin
-                ccall(("g_tls_authentication_mode_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum TlsCertificateRequestFlags::Int32 TlsCertificateRequestFlags_NONE = 0
-        (GLib.g_type(::Type{T}) where T <: TlsCertificateRequestFlags) = begin
-                ccall(("g_tls_certificate_request_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum TlsChannelBindingError::Int32 TlsChannelBindingError_NOT_IMPLEMENTED = 0 TlsChannelBindingError_INVALID_STATE = 1 TlsChannelBindingError_NOT_AVAILABLE = 2 TlsChannelBindingError_NOT_SUPPORTED = 3 TlsChannelBindingError_GENERAL_ERROR = 4
-        (GLib.g_type(::Type{T}) where T <: TlsChannelBindingError) = begin
-                ccall(("g_tls_channel_binding_error_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum TlsChannelBindingType::Int32 TlsChannelBindingType_UNIQUE = 0 TlsChannelBindingType_SERVER_END_POINT = 1 TlsChannelBindingType_EXPORTER = 2
-        (GLib.g_type(::Type{T}) where T <: TlsChannelBindingType) = begin
-                ccall(("g_tls_channel_binding_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum TlsDatabaseLookupFlags::Int32 TlsDatabaseLookupFlags_NONE = 0 TlsDatabaseLookupFlags_KEYPAIR = 1
-        (GLib.g_type(::Type{T}) where T <: TlsDatabaseLookupFlags) = begin
-                ccall(("g_tls_database_lookup_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum TlsError::Int32 TlsError_UNAVAILABLE = 0 TlsError_MISC = 1 TlsError_BAD_CERTIFICATE = 2 TlsError_NOT_TLS = 3 TlsError_HANDSHAKE = 4 TlsError_CERTIFICATE_REQUIRED = 5 TlsError_EOF = 6 TlsError_INAPPROPRIATE_FALLBACK = 7 TlsError_BAD_CERTIFICATE_PASSWORD = 8
-        (GLib.g_type(::Type{T}) where T <: TlsError) = begin
-                ccall(("g_tls_error_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum TlsInteractionResult::Int32 TlsInteractionResult_UNHANDLED = 0 TlsInteractionResult_HANDLED = 1 TlsInteractionResult_FAILED = 2
-        (GLib.g_type(::Type{T}) where T <: TlsInteractionResult) = begin
-                ccall(("g_tls_interaction_result_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum UnixSocketAddressType::Int32 UnixSocketAddressType_INVALID = 0 UnixSocketAddressType_ANONYMOUS = 1 UnixSocketAddressType_PATH = 2 UnixSocketAddressType_ABSTRACT = 3 UnixSocketAddressType_ABSTRACT_PADDED = 4
-        (GLib.g_type(::Type{T}) where T <: UnixSocketAddressType) = begin
-                ccall(("g_unix_socket_address_type_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @cenum ZlibCompressorFormat::Int32 ZlibCompressorFormat_ZLIB = 0 ZlibCompressorFormat_GZIP = 1 ZlibCompressorFormat_RAW = 2
-        (GLib.g_type(::Type{T}) where T <: ZlibCompressorFormat) = begin
-                ccall(("g_zlib_compressor_format_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag AppInfoCreateFlags::UInt32 AppInfoCreateFlags_NONE = 0 AppInfoCreateFlags_NEEDS_TERMINAL = 1 AppInfoCreateFlags_SUPPORTS_URIS = 2 AppInfoCreateFlags_SUPPORTS_STARTUP_NOTIFICATION = 4
-        (GLib.g_type(::Type{T}) where T <: AppInfoCreateFlags) = begin
-                ccall(("g_app_info_create_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag ApplicationFlags::UInt32 ApplicationFlags_FLAGS_NONE = 0 ApplicationFlags_IS_SERVICE = 1 ApplicationFlags_IS_LAUNCHER = 2 ApplicationFlags_HANDLES_OPEN = 4 ApplicationFlags_HANDLES_COMMAND_LINE = 8 ApplicationFlags_SEND_ENVIRONMENT = 16 ApplicationFlags_NON_UNIQUE = 32 ApplicationFlags_CAN_OVERRIDE_APP_ID = 64 ApplicationFlags_ALLOW_REPLACEMENT = 128 ApplicationFlags_REPLACE = 256
-        (GLib.g_type(::Type{T}) where T <: ApplicationFlags) = begin
-                ccall(("g_application_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag AskPasswordFlags::UInt32 AskPasswordFlags_NEED_PASSWORD = 1 AskPasswordFlags_NEED_USERNAME = 2 AskPasswordFlags_NEED_DOMAIN = 4 AskPasswordFlags_SAVING_SUPPORTED = 8 AskPasswordFlags_ANONYMOUS_SUPPORTED = 16 AskPasswordFlags_TCRYPT = 32 AskPasswordFlags_NONE = 0
-        (GLib.g_type(::Type{T}) where T <: AskPasswordFlags) = begin
-                ccall(("g_ask_password_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag BusNameOwnerFlags::UInt32 BusNameOwnerFlags_NONE = 0 BusNameOwnerFlags_ALLOW_REPLACEMENT = 1 BusNameOwnerFlags_REPLACE = 2 BusNameOwnerFlags_DO_NOT_QUEUE = 4
-        (GLib.g_type(::Type{T}) where T <: BusNameOwnerFlags) = begin
-                ccall(("g_bus_name_owner_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag BusNameWatcherFlags::UInt32 BusNameWatcherFlags_NONE = 0 BusNameWatcherFlags_AUTO_START = 1
-        (GLib.g_type(::Type{T}) where T <: BusNameWatcherFlags) = begin
-                ccall(("g_bus_name_watcher_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag ConverterFlags::UInt32 ConverterFlags_NONE = 0 ConverterFlags_INPUT_AT_END = 1 ConverterFlags_FLUSH = 2
-        (GLib.g_type(::Type{T}) where T <: ConverterFlags) = begin
-                ccall(("g_converter_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusCallFlags::UInt32 DBusCallFlags_NONE = 0 DBusCallFlags_NO_AUTO_START = 1 DBusCallFlags_ALLOW_INTERACTIVE_AUTHORIZATION = 2
-        (GLib.g_type(::Type{T}) where T <: DBusCallFlags) = begin
-                ccall(("g_dbus_call_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusCapabilityFlags::UInt32 DBusCapabilityFlags_NONE = 0 DBusCapabilityFlags_UNIX_FD_PASSING = 1
-        (GLib.g_type(::Type{T}) where T <: DBusCapabilityFlags) = begin
-                ccall(("g_dbus_capability_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusConnectionFlags::UInt32 DBusConnectionFlags_NONE = 0 DBusConnectionFlags_AUTHENTICATION_CLIENT = 1 DBusConnectionFlags_AUTHENTICATION_SERVER = 2 DBusConnectionFlags_AUTHENTICATION_ALLOW_ANONYMOUS = 4 DBusConnectionFlags_MESSAGE_BUS_CONNECTION = 8 DBusConnectionFlags_DELAY_MESSAGE_PROCESSING = 16 DBusConnectionFlags_AUTHENTICATION_REQUIRE_SAME_USER = 32 DBusConnectionFlags_CROSS_NAMESPACE = 64
-        (GLib.g_type(::Type{T}) where T <: DBusConnectionFlags) = begin
-                ccall(("g_dbus_connection_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusInterfaceSkeletonFlags::UInt32 DBusInterfaceSkeletonFlags_NONE = 0 DBusInterfaceSkeletonFlags_HANDLE_METHOD_INVOCATIONS_IN_THREAD = 1
-        (GLib.g_type(::Type{T}) where T <: DBusInterfaceSkeletonFlags) = begin
-                ccall(("g_dbus_interface_skeleton_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusMessageFlags::UInt32 DBusMessageFlags_NONE = 0 DBusMessageFlags_NO_REPLY_EXPECTED = 1 DBusMessageFlags_NO_AUTO_START = 2 DBusMessageFlags_ALLOW_INTERACTIVE_AUTHORIZATION = 4
-        (GLib.g_type(::Type{T}) where T <: DBusMessageFlags) = begin
-                ccall(("g_dbus_message_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusObjectManagerClientFlags::UInt32 DBusObjectManagerClientFlags_NONE = 0 DBusObjectManagerClientFlags_DO_NOT_AUTO_START = 1
-        (GLib.g_type(::Type{T}) where T <: DBusObjectManagerClientFlags) = begin
-                ccall(("g_dbus_object_manager_client_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusPropertyInfoFlags::UInt32 DBusPropertyInfoFlags_NONE = 0 DBusPropertyInfoFlags_READABLE = 1 DBusPropertyInfoFlags_WRITABLE = 2
-        (GLib.g_type(::Type{T}) where T <: DBusPropertyInfoFlags) = begin
-                ccall(("g_dbus_property_info_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusProxyFlags::UInt32 DBusProxyFlags_NONE = 0 DBusProxyFlags_DO_NOT_LOAD_PROPERTIES = 1 DBusProxyFlags_DO_NOT_CONNECT_SIGNALS = 2 DBusProxyFlags_DO_NOT_AUTO_START = 4 DBusProxyFlags_GET_INVALIDATED_PROPERTIES = 8 DBusProxyFlags_DO_NOT_AUTO_START_AT_CONSTRUCTION = 16 DBusProxyFlags_NO_MATCH_RULE = 32
-        (GLib.g_type(::Type{T}) where T <: DBusProxyFlags) = begin
-                ccall(("g_dbus_proxy_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusSendMessageFlags::UInt32 DBusSendMessageFlags_NONE = 0 DBusSendMessageFlags_PRESERVE_SERIAL = 1
-        (GLib.g_type(::Type{T}) where T <: DBusSendMessageFlags) = begin
-                ccall(("g_dbus_send_message_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusServerFlags::UInt32 DBusServerFlags_NONE = 0 DBusServerFlags_RUN_IN_THREAD = 1 DBusServerFlags_AUTHENTICATION_ALLOW_ANONYMOUS = 2 DBusServerFlags_AUTHENTICATION_REQUIRE_SAME_USER = 4
-        (GLib.g_type(::Type{T}) where T <: DBusServerFlags) = begin
-                ccall(("g_dbus_server_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusSignalFlags::UInt32 DBusSignalFlags_NONE = 0 DBusSignalFlags_NO_MATCH_RULE = 1 DBusSignalFlags_MATCH_ARG0_NAMESPACE = 2 DBusSignalFlags_MATCH_ARG0_PATH = 4
-        (GLib.g_type(::Type{T}) where T <: DBusSignalFlags) = begin
-                ccall(("g_dbus_signal_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DBusSubtreeFlags::UInt32 DBusSubtreeFlags_NONE = 0 DBusSubtreeFlags_DISPATCH_TO_UNENUMERATED_NODES = 1
-        (GLib.g_type(::Type{T}) where T <: DBusSubtreeFlags) = begin
-                ccall(("g_dbus_subtree_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag DriveStartFlags::UInt32 DriveStartFlags_NONE = 0
-        (GLib.g_type(::Type{T}) where T <: DriveStartFlags) = begin
-                ccall(("g_drive_start_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag FileAttributeInfoFlags::UInt32 FileAttributeInfoFlags_NONE = 0 FileAttributeInfoFlags_COPY_WITH_FILE = 1 FileAttributeInfoFlags_COPY_WHEN_MOVED = 2
-        (GLib.g_type(::Type{T}) where T <: FileAttributeInfoFlags) = begin
-                ccall(("g_file_attribute_info_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag FileCopyFlags::UInt32 FileCopyFlags_NONE = 0 FileCopyFlags_OVERWRITE = 1 FileCopyFlags_BACKUP = 2 FileCopyFlags_NOFOLLOW_SYMLINKS = 4 FileCopyFlags_ALL_METADATA = 8 FileCopyFlags_NO_FALLBACK_FOR_MOVE = 16 FileCopyFlags_TARGET_DEFAULT_PERMS = 32 FileCopyFlags_TARGET_DEFAULT_MODIFIED_TIME = 64
-        (GLib.g_type(::Type{T}) where T <: FileCopyFlags) = begin
-                ccall(("g_file_copy_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag FileCreateFlags::UInt32 FileCreateFlags_NONE = 0 FileCreateFlags_PRIVATE = 1 FileCreateFlags_REPLACE_DESTINATION = 2
-        (GLib.g_type(::Type{T}) where T <: FileCreateFlags) = begin
-                ccall(("g_file_create_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag FileMeasureFlags::UInt32 FileMeasureFlags_NONE = 0 FileMeasureFlags_REPORT_ANY_ERROR = 2 FileMeasureFlags_APPARENT_SIZE = 4 FileMeasureFlags_NO_XDEV = 8
-        (GLib.g_type(::Type{T}) where T <: FileMeasureFlags) = begin
-                ccall(("g_file_measure_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag FileMonitorFlags::UInt32 FileMonitorFlags_NONE = 0 FileMonitorFlags_WATCH_MOUNTS = 1 FileMonitorFlags_SEND_MOVED = 2 FileMonitorFlags_WATCH_HARD_LINKS = 4 FileMonitorFlags_WATCH_MOVES = 8
-        (GLib.g_type(::Type{T}) where T <: FileMonitorFlags) = begin
-                ccall(("g_file_monitor_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag FileQueryInfoFlags::UInt32 FileQueryInfoFlags_NONE = 0 FileQueryInfoFlags_NOFOLLOW_SYMLINKS = 1
-        (GLib.g_type(::Type{T}) where T <: FileQueryInfoFlags) = begin
-                ccall(("g_file_query_info_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag IOStreamSpliceFlags::UInt32 IOStreamSpliceFlags_NONE = 0 IOStreamSpliceFlags_CLOSE_STREAM1 = 1 IOStreamSpliceFlags_CLOSE_STREAM2 = 2 IOStreamSpliceFlags_WAIT_FOR_BOTH = 4
-        (GLib.g_type(::Type{T}) where T <: IOStreamSpliceFlags) = begin
-                ccall(("g_io_stream_splice_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag MountMountFlags::UInt32 MountMountFlags_NONE = 0
-        (GLib.g_type(::Type{T}) where T <: MountMountFlags) = begin
-                ccall(("g_mount_mount_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag MountUnmountFlags::UInt32 MountUnmountFlags_NONE = 0 MountUnmountFlags_FORCE = 1
-        (GLib.g_type(::Type{T}) where T <: MountUnmountFlags) = begin
-                ccall(("g_mount_unmount_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag OutputStreamSpliceFlags::UInt32 OutputStreamSpliceFlags_NONE = 0 OutputStreamSpliceFlags_CLOSE_SOURCE = 1 OutputStreamSpliceFlags_CLOSE_TARGET = 2
-        (GLib.g_type(::Type{T}) where T <: OutputStreamSpliceFlags) = begin
-                ccall(("g_output_stream_splice_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag ResolverNameLookupFlags::UInt32 ResolverNameLookupFlags_DEFAULT = 0 ResolverNameLookupFlags_IPV4_ONLY = 1 ResolverNameLookupFlags_IPV6_ONLY = 2
-        (GLib.g_type(::Type{T}) where T <: ResolverNameLookupFlags) = begin
-                ccall(("g_resolver_name_lookup_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag ResourceFlags::UInt32 ResourceFlags_NONE = 0 ResourceFlags_COMPRESSED = 1
-        (GLib.g_type(::Type{T}) where T <: ResourceFlags) = begin
-                ccall(("g_resource_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag ResourceLookupFlags::UInt32 ResourceLookupFlags_NONE = 0
-        (GLib.g_type(::Type{T}) where T <: ResourceLookupFlags) = begin
-                ccall(("g_resource_lookup_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag SettingsBindFlags::UInt32 SettingsBindFlags_DEFAULT = 0 SettingsBindFlags_GET = 1 SettingsBindFlags_SET = 2 SettingsBindFlags_NO_SENSITIVITY = 4 SettingsBindFlags_GET_NO_CHANGES = 8 SettingsBindFlags_INVERT_BOOLEAN = 16
-        (GLib.g_type(::Type{T}) where T <: SettingsBindFlags) = begin
-                ccall(("g_settings_bind_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag SocketMsgFlags::UInt32 SocketMsgFlags_NONE = 0 SocketMsgFlags_OOB = 1 SocketMsgFlags_PEEK = 2 SocketMsgFlags_DONTROUTE = 4
-        (GLib.g_type(::Type{T}) where T <: SocketMsgFlags) = begin
-                ccall(("g_socket_msg_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag SubprocessFlags::UInt32 SubprocessFlags_NONE = 0 SubprocessFlags_STDIN_PIPE = 1 SubprocessFlags_STDIN_INHERIT = 2 SubprocessFlags_STDOUT_PIPE = 4 SubprocessFlags_STDOUT_SILENCE = 8 SubprocessFlags_STDERR_PIPE = 16 SubprocessFlags_STDERR_SILENCE = 32 SubprocessFlags_STDERR_MERGE = 64 SubprocessFlags_INHERIT_FDS = 128 SubprocessFlags_SEARCH_PATH_FROM_ENVP = 256
-        (GLib.g_type(::Type{T}) where T <: SubprocessFlags) = begin
-                ccall(("g_subprocess_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag TestDBusFlags::UInt32 TestDBusFlags_NONE = 0
-        (GLib.g_type(::Type{T}) where T <: TestDBusFlags) = begin
-                ccall(("g_test_dbus_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag TlsCertificateFlags::UInt32 TlsCertificateFlags_NO_FLAGS = 0 TlsCertificateFlags_UNKNOWN_CA = 1 TlsCertificateFlags_BAD_IDENTITY = 2 TlsCertificateFlags_NOT_ACTIVATED = 4 TlsCertificateFlags_EXPIRED = 8 TlsCertificateFlags_REVOKED = 16 TlsCertificateFlags_INSECURE = 32 TlsCertificateFlags_GENERIC_ERROR = 64
-        (GLib.g_type(::Type{T}) where T <: TlsCertificateFlags) = begin
-                ccall(("g_tls_certificate_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag TlsDatabaseVerifyFlags::UInt32 TlsDatabaseVerifyFlags_NONE = 0
-        (GLib.g_type(::Type{T}) where T <: TlsDatabaseVerifyFlags) = begin
-                ccall(("g_tls_database_verify_flags_get_type", libgio), GType, ())
-            end
-    end
-    begin
-        @bitflag TlsPasswordFlags::UInt32 TlsPasswordFlags_NONE = 0 TlsPasswordFlags_RETRY = 2 TlsPasswordFlags_MANY_TRIES = 4 TlsPasswordFlags_FINAL_TRY = 8 TlsPasswordFlags_PKCS11_USER = 16 TlsPasswordFlags_PKCS11_SECURITY_OFFICER = 32 TlsPasswordFlags_PKCS11_CONTEXT_SPECIFIC = 64
-        (GLib.g_type(::Type{T}) where T <: TlsPasswordFlags) = begin
-                ccall(("g_tls_password_flags_get_type", libgio), GType, ())
-            end
-    end
+    @cenum BusType::UInt16 BusType_STARTER = 0xffff BusType_NONE = 0x0000 BusType_SYSTEM = 0x0001 BusType_SESSION = 0x0002
+    (GLib.g_type(::Type{T}) where T <: BusType) = ccall(("g_bus_type_get_type", libgio), GType, ())
+    @cenum ConverterResult::Int32 ConverterResult_ERROR = 0 ConverterResult_CONVERTED = 1 ConverterResult_FINISHED = 2 ConverterResult_FLUSHED = 3
+    (GLib.g_type(::Type{T}) where T <: ConverterResult) = ccall(("g_converter_result_get_type", libgio), GType, ())
+    @cenum CredentialsType::Int32 CredentialsType_INVALID = 0 CredentialsType_LINUX_UCRED = 1 CredentialsType_FREEBSD_CMSGCRED = 2 CredentialsType_OPENBSD_SOCKPEERCRED = 3 CredentialsType_SOLARIS_UCRED = 4 CredentialsType_NETBSD_UNPCBID = 5 CredentialsType_APPLE_XUCRED = 6 CredentialsType_WIN32_PID = 7
+    (GLib.g_type(::Type{T}) where T <: CredentialsType) = ccall(("g_credentials_type_get_type", libgio), GType, ())
+    @cenum DBusError::Int32 DBusError_FAILED = 0 DBusError_NO_MEMORY = 1 DBusError_SERVICE_UNKNOWN = 2 DBusError_NAME_HAS_NO_OWNER = 3 DBusError_NO_REPLY = 4 DBusError_IO_ERROR = 5 DBusError_BAD_ADDRESS = 6 DBusError_NOT_SUPPORTED = 7 DBusError_LIMITS_EXCEEDED = 8 DBusError_ACCESS_DENIED = 9 DBusError_AUTH_FAILED = 10 DBusError_NO_SERVER = 11 DBusError_TIMEOUT = 12 DBusError_NO_NETWORK = 13 DBusError_ADDRESS_IN_USE = 14 DBusError_DISCONNECTED = 15 DBusError_INVALID_ARGS = 16 DBusError_FILE_NOT_FOUND = 17 DBusError_FILE_EXISTS = 18 DBusError_UNKNOWN_METHOD = 19 DBusError_TIMED_OUT = 20 DBusError_MATCH_RULE_NOT_FOUND = 21 DBusError_MATCH_RULE_INVALID = 22 DBusError_SPAWN_EXEC_FAILED = 23 DBusError_SPAWN_FORK_FAILED = 24 DBusError_SPAWN_CHILD_EXITED = 25 DBusError_SPAWN_CHILD_SIGNALED = 26 DBusError_SPAWN_FAILED = 27 DBusError_SPAWN_SETUP_FAILED = 28 DBusError_SPAWN_CONFIG_INVALID = 29 DBusError_SPAWN_SERVICE_INVALID = 30 DBusError_SPAWN_SERVICE_NOT_FOUND = 31 DBusError_SPAWN_PERMISSIONS_INVALID = 32 DBusError_SPAWN_FILE_INVALID = 33 DBusError_SPAWN_NO_MEMORY = 34 DBusError_UNIX_PROCESS_ID_UNKNOWN = 35 DBusError_INVALID_SIGNATURE = 36 DBusError_INVALID_FILE_CONTENT = 37 DBusError_SELINUX_SECURITY_CONTEXT_UNKNOWN = 38 DBusError_ADT_AUDIT_DATA_UNKNOWN = 39 DBusError_OBJECT_PATH_IN_USE = 40 DBusError_UNKNOWN_OBJECT = 41 DBusError_UNKNOWN_INTERFACE = 42 DBusError_UNKNOWN_PROPERTY = 43 DBusError_PROPERTY_READ_ONLY = 44
+    (GLib.g_type(::Type{T}) where T <: DBusError) = ccall(("g_dbus_error_get_type", libgio), GType, ())
+    @cenum DBusMessageByteOrder::Int32 DBusMessageByteOrder_BIG_ENDIAN = 66 DBusMessageByteOrder_LITTLE_ENDIAN = 108
+    (GLib.g_type(::Type{T}) where T <: DBusMessageByteOrder) = ccall(("g_dbus_message_byte_order_get_type", libgio), GType, ())
+    @cenum DBusMessageHeaderField::Int32 DBusMessageHeaderField_INVALID = 0 DBusMessageHeaderField_PATH = 1 DBusMessageHeaderField_INTERFACE = 2 DBusMessageHeaderField_MEMBER = 3 DBusMessageHeaderField_ERROR_NAME = 4 DBusMessageHeaderField_REPLY_SERIAL = 5 DBusMessageHeaderField_DESTINATION = 6 DBusMessageHeaderField_SENDER = 7 DBusMessageHeaderField_SIGNATURE = 8 DBusMessageHeaderField_NUM_UNIX_FDS = 9
+    (GLib.g_type(::Type{T}) where T <: DBusMessageHeaderField) = ccall(("g_dbus_message_header_field_get_type", libgio), GType, ())
+    @cenum DBusMessageType::Int32 DBusMessageType_INVALID = 0 DBusMessageType_METHOD_CALL = 1 DBusMessageType_METHOD_RETURN = 2 DBusMessageType_ERROR = 3 DBusMessageType_SIGNAL = 4
+    (GLib.g_type(::Type{T}) where T <: DBusMessageType) = ccall(("g_dbus_message_type_get_type", libgio), GType, ())
+    @cenum DataStreamByteOrder::Int32 DataStreamByteOrder_BIG_ENDIAN = 0 DataStreamByteOrder_LITTLE_ENDIAN = 1 DataStreamByteOrder_HOST_ENDIAN = 2
+    (GLib.g_type(::Type{T}) where T <: DataStreamByteOrder) = ccall(("g_data_stream_byte_order_get_type", libgio), GType, ())
+    @cenum DataStreamNewlineType::Int32 DataStreamNewlineType_LF = 0 DataStreamNewlineType_CR = 1 DataStreamNewlineType_CR_LF = 2 DataStreamNewlineType_ANY = 3
+    (GLib.g_type(::Type{T}) where T <: DataStreamNewlineType) = ccall(("g_data_stream_newline_type_get_type", libgio), GType, ())
+    @cenum DriveStartStopType::Int32 DriveStartStopType_UNKNOWN = 0 DriveStartStopType_SHUTDOWN = 1 DriveStartStopType_NETWORK = 2 DriveStartStopType_MULTIDISK = 3 DriveStartStopType_PASSWORD = 4
+    (GLib.g_type(::Type{T}) where T <: DriveStartStopType) = ccall(("g_drive_start_stop_type_get_type", libgio), GType, ())
+    @cenum EmblemOrigin::Int32 EmblemOrigin_UNKNOWN = 0 EmblemOrigin_DEVICE = 1 EmblemOrigin_LIVEMETADATA = 2 EmblemOrigin_TAG = 3
+    (GLib.g_type(::Type{T}) where T <: EmblemOrigin) = ccall(("g_emblem_origin_get_type", libgio), GType, ())
+    @cenum FileAttributeStatus::Int32 FileAttributeStatus_UNSET = 0 FileAttributeStatus_SET = 1 FileAttributeStatus_ERROR_SETTING = 2
+    (GLib.g_type(::Type{T}) where T <: FileAttributeStatus) = ccall(("g_file_attribute_status_get_type", libgio), GType, ())
+    @cenum FileAttributeType::Int32 FileAttributeType_INVALID = 0 FileAttributeType_STRING = 1 FileAttributeType_BYTE_STRING = 2 FileAttributeType_BOOLEAN = 3 FileAttributeType_UINT32 = 4 FileAttributeType_INT32 = 5 FileAttributeType_UINT64 = 6 FileAttributeType_INT64 = 7 FileAttributeType_OBJECT = 8 FileAttributeType_STRINGV = 9
+    (GLib.g_type(::Type{T}) where T <: FileAttributeType) = ccall(("g_file_attribute_type_get_type", libgio), GType, ())
+    @cenum FileMonitorEvent::Int32 FileMonitorEvent_CHANGED = 0 FileMonitorEvent_CHANGES_DONE_HINT = 1 FileMonitorEvent_DELETED = 2 FileMonitorEvent_CREATED = 3 FileMonitorEvent_ATTRIBUTE_CHANGED = 4 FileMonitorEvent_PRE_UNMOUNT = 5 FileMonitorEvent_UNMOUNTED = 6 FileMonitorEvent_MOVED = 7 FileMonitorEvent_RENAMED = 8 FileMonitorEvent_MOVED_IN = 9 FileMonitorEvent_MOVED_OUT = 10
+    (GLib.g_type(::Type{T}) where T <: FileMonitorEvent) = ccall(("g_file_monitor_event_get_type", libgio), GType, ())
+    @cenum FileType::Int32 FileType_UNKNOWN = 0 FileType_REGULAR = 1 FileType_DIRECTORY = 2 FileType_SYMBOLIC_LINK = 3 FileType_SPECIAL = 4 FileType_SHORTCUT = 5 FileType_MOUNTABLE = 6
+    (GLib.g_type(::Type{T}) where T <: FileType) = ccall(("g_file_type_get_type", libgio), GType, ())
+    @cenum FilesystemPreviewType::Int32 FilesystemPreviewType_IF_ALWAYS = 0 FilesystemPreviewType_IF_LOCAL = 1 FilesystemPreviewType_NEVER = 2
+    (GLib.g_type(::Type{T}) where T <: FilesystemPreviewType) = ccall(("g_filesystem_preview_type_get_type", libgio), GType, ())
+    @cenum IOErrorEnum::Int32 IOErrorEnum_FAILED = 0 IOErrorEnum_NOT_FOUND = 1 IOErrorEnum_EXISTS = 2 IOErrorEnum_IS_DIRECTORY = 3 IOErrorEnum_NOT_DIRECTORY = 4 IOErrorEnum_NOT_EMPTY = 5 IOErrorEnum_NOT_REGULAR_FILE = 6 IOErrorEnum_NOT_SYMBOLIC_LINK = 7 IOErrorEnum_NOT_MOUNTABLE_FILE = 8 IOErrorEnum_FILENAME_TOO_LONG = 9 IOErrorEnum_INVALID_FILENAME = 10 IOErrorEnum_TOO_MANY_LINKS = 11 IOErrorEnum_NO_SPACE = 12 IOErrorEnum_INVALID_ARGUMENT = 13 IOErrorEnum_PERMISSION_DENIED = 14 IOErrorEnum_NOT_SUPPORTED = 15 IOErrorEnum_NOT_MOUNTED = 16 IOErrorEnum_ALREADY_MOUNTED = 17 IOErrorEnum_CLOSED = 18 IOErrorEnum_CANCELLED = 19 IOErrorEnum_PENDING = 20 IOErrorEnum_READ_ONLY = 21 IOErrorEnum_CANT_CREATE_BACKUP = 22 IOErrorEnum_WRONG_ETAG = 23 IOErrorEnum_TIMED_OUT = 24 IOErrorEnum_WOULD_RECURSE = 25 IOErrorEnum_BUSY = 26 IOErrorEnum_WOULD_BLOCK = 27 IOErrorEnum_HOST_NOT_FOUND = 28 IOErrorEnum_WOULD_MERGE = 29 IOErrorEnum_FAILED_HANDLED = 30 IOErrorEnum_TOO_MANY_OPEN_FILES = 31 IOErrorEnum_NOT_INITIALIZED = 32 IOErrorEnum_ADDRESS_IN_USE = 33 IOErrorEnum_PARTIAL_INPUT = 34 IOErrorEnum_INVALID_DATA = 35 IOErrorEnum_DBUS_ERROR = 36 IOErrorEnum_HOST_UNREACHABLE = 37 IOErrorEnum_NETWORK_UNREACHABLE = 38 IOErrorEnum_CONNECTION_REFUSED = 39 IOErrorEnum_PROXY_FAILED = 40 IOErrorEnum_PROXY_AUTH_FAILED = 41 IOErrorEnum_PROXY_NEED_AUTH = 42 IOErrorEnum_PROXY_NOT_ALLOWED = 43 IOErrorEnum_BROKEN_PIPE = 44 IOErrorEnum_CONNECTION_CLOSED = 44 IOErrorEnum_NOT_CONNECTED = 45 IOErrorEnum_MESSAGE_TOO_LARGE = 46 IOErrorEnum_NO_SUCH_DEVICE = 47 IOErrorEnum_DESTINATION_UNSET = 48
+    (GLib.g_type(::Type{T}) where T <: IOErrorEnum) = ccall(("g_io_error_enum_get_type", libgio), GType, ())
+    @cenum IOModuleScopeFlags::Int32 IOModuleScopeFlags_NONE = 0 IOModuleScopeFlags_BLOCK_DUPLICATES = 1
+    (GLib.g_type(::Type{T}) where T <: IOModuleScopeFlags) = ccall(("g_io_module_scope_flags_get_type", libgio), GType, ())
+    @cenum MemoryMonitorWarningLevel::Int32 MemoryMonitorWarningLevel_LOW = 50 MemoryMonitorWarningLevel_MEDIUM = 100 MemoryMonitorWarningLevel_CRITICAL = 255
+    (GLib.g_type(::Type{T}) where T <: MemoryMonitorWarningLevel) = ccall(("g_memory_monitor_warning_level_get_type", libgio), GType, ())
+    @cenum MountOperationResult::Int32 MountOperationResult_HANDLED = 0 MountOperationResult_ABORTED = 1 MountOperationResult_UNHANDLED = 2
+    (GLib.g_type(::Type{T}) where T <: MountOperationResult) = ccall(("g_mount_operation_result_get_type", libgio), GType, ())
+    @cenum NetworkConnectivity::Int32 NetworkConnectivity_LOCAL = 1 NetworkConnectivity_LIMITED = 2 NetworkConnectivity_PORTAL = 3 NetworkConnectivity_FULL = 4
+    (GLib.g_type(::Type{T}) where T <: NetworkConnectivity) = ccall(("g_network_connectivity_get_type", libgio), GType, ())
+    @cenum NotificationPriority::Int32 NotificationPriority_NORMAL = 0 NotificationPriority_LOW = 1 NotificationPriority_HIGH = 2 NotificationPriority_URGENT = 3
+    (GLib.g_type(::Type{T}) where T <: NotificationPriority) = ccall(("g_notification_priority_get_type", libgio), GType, ())
+    @cenum PasswordSave::Int32 PasswordSave_NEVER = 0 PasswordSave_FOR_SESSION = 1 PasswordSave_PERMANENTLY = 2
+    (GLib.g_type(::Type{T}) where T <: PasswordSave) = ccall(("g_password_save_get_type", libgio), GType, ())
+    @cenum PollableReturn::UInt16 PollableReturn_FAILED = 0x0000 PollableReturn_OK = 0x0001 PollableReturn_WOULD_BLOCK = 0xffe5
+    (GLib.g_type(::Type{T}) where T <: PollableReturn) = ccall(("g_pollable_return_get_type", libgio), GType, ())
+    @cenum ResolverError::Int32 ResolverError_NOT_FOUND = 0 ResolverError_TEMPORARY_FAILURE = 1 ResolverError_INTERNAL = 2
+    (GLib.g_type(::Type{T}) where T <: ResolverError) = ccall(("g_resolver_error_get_type", libgio), GType, ())
+    @cenum ResolverRecordType::Int32 ResolverRecordType_SRV = 1 ResolverRecordType_MX = 2 ResolverRecordType_TXT = 3 ResolverRecordType_SOA = 4 ResolverRecordType_NS = 5
+    (GLib.g_type(::Type{T}) where T <: ResolverRecordType) = ccall(("g_resolver_record_type_get_type", libgio), GType, ())
+    @cenum ResourceError::Int32 ResourceError_NOT_FOUND = 0 ResourceError_INTERNAL = 1
+    (GLib.g_type(::Type{T}) where T <: ResourceError) = ccall(("g_resource_error_get_type", libgio), GType, ())
+    @cenum SocketClientEvent::Int32 SocketClientEvent_RESOLVING = 0 SocketClientEvent_RESOLVED = 1 SocketClientEvent_CONNECTING = 2 SocketClientEvent_CONNECTED = 3 SocketClientEvent_PROXY_NEGOTIATING = 4 SocketClientEvent_PROXY_NEGOTIATED = 5 SocketClientEvent_TLS_HANDSHAKING = 6 SocketClientEvent_TLS_HANDSHAKED = 7 SocketClientEvent_COMPLETE = 8
+    (GLib.g_type(::Type{T}) where T <: SocketClientEvent) = ccall(("g_socket_client_event_get_type", libgio), GType, ())
+    @cenum SocketFamily::Int32 SocketFamily_INVALID = 0 SocketFamily_UNIX = 1 SocketFamily_IPV4 = 2 SocketFamily_IPV6 = 10
+    (GLib.g_type(::Type{T}) where T <: SocketFamily) = ccall(("g_socket_family_get_type", libgio), GType, ())
+    @cenum SocketListenerEvent::Int32 SocketListenerEvent_BINDING = 0 SocketListenerEvent_BOUND = 1 SocketListenerEvent_LISTENING = 2 SocketListenerEvent_LISTENED = 3
+    (GLib.g_type(::Type{T}) where T <: SocketListenerEvent) = ccall(("g_socket_listener_event_get_type", libgio), GType, ())
+    @cenum SocketProtocol::UInt16 SocketProtocol_UNKNOWN = 0xffff SocketProtocol_DEFAULT = 0x0000 SocketProtocol_TCP = 0x0006 SocketProtocol_UDP = 0x0011 SocketProtocol_SCTP = 0x0084
+    (GLib.g_type(::Type{T}) where T <: SocketProtocol) = ccall(("g_socket_protocol_get_type", libgio), GType, ())
+    @cenum SocketType::Int32 SocketType_INVALID = 0 SocketType_STREAM = 1 SocketType_DATAGRAM = 2 SocketType_SEQPACKET = 3
+    (GLib.g_type(::Type{T}) where T <: SocketType) = ccall(("g_socket_type_get_type", libgio), GType, ())
+    @cenum TlsAuthenticationMode::Int32 TlsAuthenticationMode_NONE = 0 TlsAuthenticationMode_REQUESTED = 1 TlsAuthenticationMode_REQUIRED = 2
+    (GLib.g_type(::Type{T}) where T <: TlsAuthenticationMode) = ccall(("g_tls_authentication_mode_get_type", libgio), GType, ())
+    @cenum TlsCertificateRequestFlags::Int32 TlsCertificateRequestFlags_NONE = 0
+    (GLib.g_type(::Type{T}) where T <: TlsCertificateRequestFlags) = ccall(("g_tls_certificate_request_flags_get_type", libgio), GType, ())
+    @cenum TlsChannelBindingError::Int32 TlsChannelBindingError_NOT_IMPLEMENTED = 0 TlsChannelBindingError_INVALID_STATE = 1 TlsChannelBindingError_NOT_AVAILABLE = 2 TlsChannelBindingError_NOT_SUPPORTED = 3 TlsChannelBindingError_GENERAL_ERROR = 4
+    (GLib.g_type(::Type{T}) where T <: TlsChannelBindingError) = ccall(("g_tls_channel_binding_error_get_type", libgio), GType, ())
+    @cenum TlsChannelBindingType::Int32 TlsChannelBindingType_UNIQUE = 0 TlsChannelBindingType_SERVER_END_POINT = 1 TlsChannelBindingType_EXPORTER = 2
+    (GLib.g_type(::Type{T}) where T <: TlsChannelBindingType) = ccall(("g_tls_channel_binding_type_get_type", libgio), GType, ())
+    @cenum TlsDatabaseLookupFlags::Int32 TlsDatabaseLookupFlags_NONE = 0 TlsDatabaseLookupFlags_KEYPAIR = 1
+    (GLib.g_type(::Type{T}) where T <: TlsDatabaseLookupFlags) = ccall(("g_tls_database_lookup_flags_get_type", libgio), GType, ())
+    @cenum TlsError::Int32 TlsError_UNAVAILABLE = 0 TlsError_MISC = 1 TlsError_BAD_CERTIFICATE = 2 TlsError_NOT_TLS = 3 TlsError_HANDSHAKE = 4 TlsError_CERTIFICATE_REQUIRED = 5 TlsError_EOF = 6 TlsError_INAPPROPRIATE_FALLBACK = 7 TlsError_BAD_CERTIFICATE_PASSWORD = 8
+    (GLib.g_type(::Type{T}) where T <: TlsError) = ccall(("g_tls_error_get_type", libgio), GType, ())
+    @cenum TlsInteractionResult::Int32 TlsInteractionResult_UNHANDLED = 0 TlsInteractionResult_HANDLED = 1 TlsInteractionResult_FAILED = 2
+    (GLib.g_type(::Type{T}) where T <: TlsInteractionResult) = ccall(("g_tls_interaction_result_get_type", libgio), GType, ())
+    @cenum UnixSocketAddressType::Int32 UnixSocketAddressType_INVALID = 0 UnixSocketAddressType_ANONYMOUS = 1 UnixSocketAddressType_PATH = 2 UnixSocketAddressType_ABSTRACT = 3 UnixSocketAddressType_ABSTRACT_PADDED = 4
+    (GLib.g_type(::Type{T}) where T <: UnixSocketAddressType) = ccall(("g_unix_socket_address_type_get_type", libgio), GType, ())
+    @cenum ZlibCompressorFormat::Int32 ZlibCompressorFormat_ZLIB = 0 ZlibCompressorFormat_GZIP = 1 ZlibCompressorFormat_RAW = 2
+    (GLib.g_type(::Type{T}) where T <: ZlibCompressorFormat) = ccall(("g_zlib_compressor_format_get_type", libgio), GType, ())
+    @bitflag AppInfoCreateFlags::UInt32 AppInfoCreateFlags_NONE = 0 AppInfoCreateFlags_NEEDS_TERMINAL = 1 AppInfoCreateFlags_SUPPORTS_URIS = 2 AppInfoCreateFlags_SUPPORTS_STARTUP_NOTIFICATION = 4
+    (GLib.g_type(::Type{T}) where T <: AppInfoCreateFlags) = ccall(("g_app_info_create_flags_get_type", libgio), GType, ())
+    @bitflag ApplicationFlags::UInt32 ApplicationFlags_FLAGS_NONE = 0 ApplicationFlags_IS_SERVICE = 1 ApplicationFlags_IS_LAUNCHER = 2 ApplicationFlags_HANDLES_OPEN = 4 ApplicationFlags_HANDLES_COMMAND_LINE = 8 ApplicationFlags_SEND_ENVIRONMENT = 16 ApplicationFlags_NON_UNIQUE = 32 ApplicationFlags_CAN_OVERRIDE_APP_ID = 64 ApplicationFlags_ALLOW_REPLACEMENT = 128 ApplicationFlags_REPLACE = 256
+    (GLib.g_type(::Type{T}) where T <: ApplicationFlags) = ccall(("g_application_flags_get_type", libgio), GType, ())
+    @bitflag AskPasswordFlags::UInt32 AskPasswordFlags_NEED_PASSWORD = 1 AskPasswordFlags_NEED_USERNAME = 2 AskPasswordFlags_NEED_DOMAIN = 4 AskPasswordFlags_SAVING_SUPPORTED = 8 AskPasswordFlags_ANONYMOUS_SUPPORTED = 16 AskPasswordFlags_TCRYPT = 32 AskPasswordFlags_NONE = 0
+    (GLib.g_type(::Type{T}) where T <: AskPasswordFlags) = ccall(("g_ask_password_flags_get_type", libgio), GType, ())
+    @bitflag BusNameOwnerFlags::UInt32 BusNameOwnerFlags_NONE = 0 BusNameOwnerFlags_ALLOW_REPLACEMENT = 1 BusNameOwnerFlags_REPLACE = 2 BusNameOwnerFlags_DO_NOT_QUEUE = 4
+    (GLib.g_type(::Type{T}) where T <: BusNameOwnerFlags) = ccall(("g_bus_name_owner_flags_get_type", libgio), GType, ())
+    @bitflag BusNameWatcherFlags::UInt32 BusNameWatcherFlags_NONE = 0 BusNameWatcherFlags_AUTO_START = 1
+    (GLib.g_type(::Type{T}) where T <: BusNameWatcherFlags) = ccall(("g_bus_name_watcher_flags_get_type", libgio), GType, ())
+    @bitflag ConverterFlags::UInt32 ConverterFlags_NONE = 0 ConverterFlags_INPUT_AT_END = 1 ConverterFlags_FLUSH = 2
+    (GLib.g_type(::Type{T}) where T <: ConverterFlags) = ccall(("g_converter_flags_get_type", libgio), GType, ())
+    @bitflag DBusCallFlags::UInt32 DBusCallFlags_NONE = 0 DBusCallFlags_NO_AUTO_START = 1 DBusCallFlags_ALLOW_INTERACTIVE_AUTHORIZATION = 2
+    (GLib.g_type(::Type{T}) where T <: DBusCallFlags) = ccall(("g_dbus_call_flags_get_type", libgio), GType, ())
+    @bitflag DBusCapabilityFlags::UInt32 DBusCapabilityFlags_NONE = 0 DBusCapabilityFlags_UNIX_FD_PASSING = 1
+    (GLib.g_type(::Type{T}) where T <: DBusCapabilityFlags) = ccall(("g_dbus_capability_flags_get_type", libgio), GType, ())
+    @bitflag DBusConnectionFlags::UInt32 DBusConnectionFlags_NONE = 0 DBusConnectionFlags_AUTHENTICATION_CLIENT = 1 DBusConnectionFlags_AUTHENTICATION_SERVER = 2 DBusConnectionFlags_AUTHENTICATION_ALLOW_ANONYMOUS = 4 DBusConnectionFlags_MESSAGE_BUS_CONNECTION = 8 DBusConnectionFlags_DELAY_MESSAGE_PROCESSING = 16 DBusConnectionFlags_AUTHENTICATION_REQUIRE_SAME_USER = 32 DBusConnectionFlags_CROSS_NAMESPACE = 64
+    (GLib.g_type(::Type{T}) where T <: DBusConnectionFlags) = ccall(("g_dbus_connection_flags_get_type", libgio), GType, ())
+    @bitflag DBusInterfaceSkeletonFlags::UInt32 DBusInterfaceSkeletonFlags_NONE = 0 DBusInterfaceSkeletonFlags_HANDLE_METHOD_INVOCATIONS_IN_THREAD = 1
+    (GLib.g_type(::Type{T}) where T <: DBusInterfaceSkeletonFlags) = ccall(("g_dbus_interface_skeleton_flags_get_type", libgio), GType, ())
+    @bitflag DBusMessageFlags::UInt32 DBusMessageFlags_NONE = 0 DBusMessageFlags_NO_REPLY_EXPECTED = 1 DBusMessageFlags_NO_AUTO_START = 2 DBusMessageFlags_ALLOW_INTERACTIVE_AUTHORIZATION = 4
+    (GLib.g_type(::Type{T}) where T <: DBusMessageFlags) = ccall(("g_dbus_message_flags_get_type", libgio), GType, ())
+    @bitflag DBusObjectManagerClientFlags::UInt32 DBusObjectManagerClientFlags_NONE = 0 DBusObjectManagerClientFlags_DO_NOT_AUTO_START = 1
+    (GLib.g_type(::Type{T}) where T <: DBusObjectManagerClientFlags) = ccall(("g_dbus_object_manager_client_flags_get_type", libgio), GType, ())
+    @bitflag DBusPropertyInfoFlags::UInt32 DBusPropertyInfoFlags_NONE = 0 DBusPropertyInfoFlags_READABLE = 1 DBusPropertyInfoFlags_WRITABLE = 2
+    (GLib.g_type(::Type{T}) where T <: DBusPropertyInfoFlags) = ccall(("g_dbus_property_info_flags_get_type", libgio), GType, ())
+    @bitflag DBusProxyFlags::UInt32 DBusProxyFlags_NONE = 0 DBusProxyFlags_DO_NOT_LOAD_PROPERTIES = 1 DBusProxyFlags_DO_NOT_CONNECT_SIGNALS = 2 DBusProxyFlags_DO_NOT_AUTO_START = 4 DBusProxyFlags_GET_INVALIDATED_PROPERTIES = 8 DBusProxyFlags_DO_NOT_AUTO_START_AT_CONSTRUCTION = 16 DBusProxyFlags_NO_MATCH_RULE = 32
+    (GLib.g_type(::Type{T}) where T <: DBusProxyFlags) = ccall(("g_dbus_proxy_flags_get_type", libgio), GType, ())
+    @bitflag DBusSendMessageFlags::UInt32 DBusSendMessageFlags_NONE = 0 DBusSendMessageFlags_PRESERVE_SERIAL = 1
+    (GLib.g_type(::Type{T}) where T <: DBusSendMessageFlags) = ccall(("g_dbus_send_message_flags_get_type", libgio), GType, ())
+    @bitflag DBusServerFlags::UInt32 DBusServerFlags_NONE = 0 DBusServerFlags_RUN_IN_THREAD = 1 DBusServerFlags_AUTHENTICATION_ALLOW_ANONYMOUS = 2 DBusServerFlags_AUTHENTICATION_REQUIRE_SAME_USER = 4
+    (GLib.g_type(::Type{T}) where T <: DBusServerFlags) = ccall(("g_dbus_server_flags_get_type", libgio), GType, ())
+    @bitflag DBusSignalFlags::UInt32 DBusSignalFlags_NONE = 0 DBusSignalFlags_NO_MATCH_RULE = 1 DBusSignalFlags_MATCH_ARG0_NAMESPACE = 2 DBusSignalFlags_MATCH_ARG0_PATH = 4
+    (GLib.g_type(::Type{T}) where T <: DBusSignalFlags) = ccall(("g_dbus_signal_flags_get_type", libgio), GType, ())
+    @bitflag DBusSubtreeFlags::UInt32 DBusSubtreeFlags_NONE = 0 DBusSubtreeFlags_DISPATCH_TO_UNENUMERATED_NODES = 1
+    (GLib.g_type(::Type{T}) where T <: DBusSubtreeFlags) = ccall(("g_dbus_subtree_flags_get_type", libgio), GType, ())
+    @bitflag DriveStartFlags::UInt32 DriveStartFlags_NONE = 0
+    (GLib.g_type(::Type{T}) where T <: DriveStartFlags) = ccall(("g_drive_start_flags_get_type", libgio), GType, ())
+    @bitflag FileAttributeInfoFlags::UInt32 FileAttributeInfoFlags_NONE = 0 FileAttributeInfoFlags_COPY_WITH_FILE = 1 FileAttributeInfoFlags_COPY_WHEN_MOVED = 2
+    (GLib.g_type(::Type{T}) where T <: FileAttributeInfoFlags) = ccall(("g_file_attribute_info_flags_get_type", libgio), GType, ())
+    @bitflag FileCopyFlags::UInt32 FileCopyFlags_NONE = 0 FileCopyFlags_OVERWRITE = 1 FileCopyFlags_BACKUP = 2 FileCopyFlags_NOFOLLOW_SYMLINKS = 4 FileCopyFlags_ALL_METADATA = 8 FileCopyFlags_NO_FALLBACK_FOR_MOVE = 16 FileCopyFlags_TARGET_DEFAULT_PERMS = 32 FileCopyFlags_TARGET_DEFAULT_MODIFIED_TIME = 64
+    (GLib.g_type(::Type{T}) where T <: FileCopyFlags) = ccall(("g_file_copy_flags_get_type", libgio), GType, ())
+    @bitflag FileCreateFlags::UInt32 FileCreateFlags_NONE = 0 FileCreateFlags_PRIVATE = 1 FileCreateFlags_REPLACE_DESTINATION = 2
+    (GLib.g_type(::Type{T}) where T <: FileCreateFlags) = ccall(("g_file_create_flags_get_type", libgio), GType, ())
+    @bitflag FileMeasureFlags::UInt32 FileMeasureFlags_NONE = 0 FileMeasureFlags_REPORT_ANY_ERROR = 2 FileMeasureFlags_APPARENT_SIZE = 4 FileMeasureFlags_NO_XDEV = 8
+    (GLib.g_type(::Type{T}) where T <: FileMeasureFlags) = ccall(("g_file_measure_flags_get_type", libgio), GType, ())
+    @bitflag FileMonitorFlags::UInt32 FileMonitorFlags_NONE = 0 FileMonitorFlags_WATCH_MOUNTS = 1 FileMonitorFlags_SEND_MOVED = 2 FileMonitorFlags_WATCH_HARD_LINKS = 4 FileMonitorFlags_WATCH_MOVES = 8
+    (GLib.g_type(::Type{T}) where T <: FileMonitorFlags) = ccall(("g_file_monitor_flags_get_type", libgio), GType, ())
+    @bitflag FileQueryInfoFlags::UInt32 FileQueryInfoFlags_NONE = 0 FileQueryInfoFlags_NOFOLLOW_SYMLINKS = 1
+    (GLib.g_type(::Type{T}) where T <: FileQueryInfoFlags) = ccall(("g_file_query_info_flags_get_type", libgio), GType, ())
+    @bitflag IOStreamSpliceFlags::UInt32 IOStreamSpliceFlags_NONE = 0 IOStreamSpliceFlags_CLOSE_STREAM1 = 1 IOStreamSpliceFlags_CLOSE_STREAM2 = 2 IOStreamSpliceFlags_WAIT_FOR_BOTH = 4
+    (GLib.g_type(::Type{T}) where T <: IOStreamSpliceFlags) = ccall(("g_io_stream_splice_flags_get_type", libgio), GType, ())
+    @bitflag MountMountFlags::UInt32 MountMountFlags_NONE = 0
+    (GLib.g_type(::Type{T}) where T <: MountMountFlags) = ccall(("g_mount_mount_flags_get_type", libgio), GType, ())
+    @bitflag MountUnmountFlags::UInt32 MountUnmountFlags_NONE = 0 MountUnmountFlags_FORCE = 1
+    (GLib.g_type(::Type{T}) where T <: MountUnmountFlags) = ccall(("g_mount_unmount_flags_get_type", libgio), GType, ())
+    @bitflag OutputStreamSpliceFlags::UInt32 OutputStreamSpliceFlags_NONE = 0 OutputStreamSpliceFlags_CLOSE_SOURCE = 1 OutputStreamSpliceFlags_CLOSE_TARGET = 2
+    (GLib.g_type(::Type{T}) where T <: OutputStreamSpliceFlags) = ccall(("g_output_stream_splice_flags_get_type", libgio), GType, ())
+    @bitflag ResolverNameLookupFlags::UInt32 ResolverNameLookupFlags_DEFAULT = 0 ResolverNameLookupFlags_IPV4_ONLY = 1 ResolverNameLookupFlags_IPV6_ONLY = 2
+    (GLib.g_type(::Type{T}) where T <: ResolverNameLookupFlags) = ccall(("g_resolver_name_lookup_flags_get_type", libgio), GType, ())
+    @bitflag ResourceFlags::UInt32 ResourceFlags_NONE = 0 ResourceFlags_COMPRESSED = 1
+    (GLib.g_type(::Type{T}) where T <: ResourceFlags) = ccall(("g_resource_flags_get_type", libgio), GType, ())
+    @bitflag ResourceLookupFlags::UInt32 ResourceLookupFlags_NONE = 0
+    (GLib.g_type(::Type{T}) where T <: ResourceLookupFlags) = ccall(("g_resource_lookup_flags_get_type", libgio), GType, ())
+    @bitflag SettingsBindFlags::UInt32 SettingsBindFlags_DEFAULT = 0 SettingsBindFlags_GET = 1 SettingsBindFlags_SET = 2 SettingsBindFlags_NO_SENSITIVITY = 4 SettingsBindFlags_GET_NO_CHANGES = 8 SettingsBindFlags_INVERT_BOOLEAN = 16
+    (GLib.g_type(::Type{T}) where T <: SettingsBindFlags) = ccall(("g_settings_bind_flags_get_type", libgio), GType, ())
+    @bitflag SocketMsgFlags::UInt32 SocketMsgFlags_NONE = 0 SocketMsgFlags_OOB = 1 SocketMsgFlags_PEEK = 2 SocketMsgFlags_DONTROUTE = 4
+    (GLib.g_type(::Type{T}) where T <: SocketMsgFlags) = ccall(("g_socket_msg_flags_get_type", libgio), GType, ())
+    @bitflag SubprocessFlags::UInt32 SubprocessFlags_NONE = 0 SubprocessFlags_STDIN_PIPE = 1 SubprocessFlags_STDIN_INHERIT = 2 SubprocessFlags_STDOUT_PIPE = 4 SubprocessFlags_STDOUT_SILENCE = 8 SubprocessFlags_STDERR_PIPE = 16 SubprocessFlags_STDERR_SILENCE = 32 SubprocessFlags_STDERR_MERGE = 64 SubprocessFlags_INHERIT_FDS = 128 SubprocessFlags_SEARCH_PATH_FROM_ENVP = 256
+    (GLib.g_type(::Type{T}) where T <: SubprocessFlags) = ccall(("g_subprocess_flags_get_type", libgio), GType, ())
+    @bitflag TestDBusFlags::UInt32 TestDBusFlags_NONE = 0
+    (GLib.g_type(::Type{T}) where T <: TestDBusFlags) = ccall(("g_test_dbus_flags_get_type", libgio), GType, ())
+    @bitflag TlsCertificateFlags::UInt32 TlsCertificateFlags_NO_FLAGS = 0 TlsCertificateFlags_UNKNOWN_CA = 1 TlsCertificateFlags_BAD_IDENTITY = 2 TlsCertificateFlags_NOT_ACTIVATED = 4 TlsCertificateFlags_EXPIRED = 8 TlsCertificateFlags_REVOKED = 16 TlsCertificateFlags_INSECURE = 32 TlsCertificateFlags_GENERIC_ERROR = 64
+    (GLib.g_type(::Type{T}) where T <: TlsCertificateFlags) = ccall(("g_tls_certificate_flags_get_type", libgio), GType, ())
+    @bitflag TlsDatabaseVerifyFlags::UInt32 TlsDatabaseVerifyFlags_NONE = 0
+    (GLib.g_type(::Type{T}) where T <: TlsDatabaseVerifyFlags) = ccall(("g_tls_database_verify_flags_get_type", libgio), GType, ())
+    @bitflag TlsPasswordFlags::UInt32 TlsPasswordFlags_NONE = 0 TlsPasswordFlags_RETRY = 2 TlsPasswordFlags_MANY_TRIES = 4 TlsPasswordFlags_FINAL_TRY = 8 TlsPasswordFlags_PKCS11_USER = 16 TlsPasswordFlags_PKCS11_SECURITY_OFFICER = 32 TlsPasswordFlags_PKCS11_CONTEXT_SPECIFIC = 64
+    (GLib.g_type(::Type{T}) where T <: TlsPasswordFlags) = ccall(("g_tls_password_flags_get_type", libgio), GType, ())
     @doc "See the [GTK docs](https://docs.gtk.org/gio/const.DBUS_METHOD_INVOCATION_HANDLED.html)." DBUS_METHOD_INVOCATION_HANDLED
     @doc "See the [GTK docs](https://docs.gtk.org/gio/const.DBUS_METHOD_INVOCATION_UNHANDLED.html)." DBUS_METHOD_INVOCATION_UNHANDLED
     @doc "See the [GTK docs](https://docs.gtk.org/gio/const.DEBUG_CONTROLLER_EXTENSION_POINT_NAME.html)." DEBUG_CONTROLLER_EXTENSION_POINT_NAME

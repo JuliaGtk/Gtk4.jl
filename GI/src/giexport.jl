@@ -51,7 +51,7 @@ function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix,
     end
     isempty(exports.args) || push!(const_mod.args, exports)
 
-    push!(exprs, const_mod)
+    push!(exprs, MacroTools.flatten(const_mod))
 
     ## export constants, enums, and flags code
     GI.write_to_file(path,"$(prefix)_consts",toplevel)
@@ -532,7 +532,7 @@ end
 function write_to_file(filename,block)
     open(filename,"w") do f
         Base.remove_linenums!(block)
-        Base.show_unquoted(f, block)
+        Base.show_unquoted(f, MacroTools.flatten(block))
         println(f)
     end
 end

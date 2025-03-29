@@ -1,360 +1,362 @@
-function boxed_copy(_boxed_type::Integer, _src_boxed::Nothing)
-    ret = ccall(("g_boxed_copy", libgobject), Ptr{Nothing}, (UInt64, Ptr{Nothing}), _boxed_type, _src_boxed)
-    ret2 = convert(Nothing, ret)
-    ret2
-end
-function boxed_free(_boxed_type::Integer, _boxed::Nothing)
-    ret = ccall(("g_boxed_free", libgobject), Nothing, (UInt64, Ptr{Nothing}), _boxed_type, _boxed)
-    nothing
-end
-function clear_signal_handler(_handler_id_ptr::UInt64, _instance::GObject)
-    ret = ccall(("g_clear_signal_handler", libgobject), Nothing, (Ptr{UInt64}, Ptr{GObject}), _handler_id_ptr, _instance)
-    nothing
-end
-function enum_get_value(_enum_class::GEnumClassLike, _value::Integer)
-    ret = ccall(("g_enum_get_value", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Int32), _enum_class, _value)
-    ret2 = convert(GEnumValueLike, ret)
-    ret2
-end
-function enum_get_value_by_name(_enum_class::GEnumClassLike, _name::Union{AbstractString, Symbol})
-    ret = ccall(("g_enum_get_value_by_name", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Cstring), _enum_class, _name)
-    ret2 = convert(GEnumValueLike, ret)
-    ret2
-end
-function enum_get_value_by_nick(_enum_class::GEnumClassLike, _nick::Union{AbstractString, Symbol})
-    ret = ccall(("g_enum_get_value_by_nick", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Cstring), _enum_class, _nick)
-    ret2 = convert(GEnumValueLike, ret)
-    ret2
-end
-function enum_to_string(_g_enum_type::Integer, _value::Integer)
-    ret = ccall(("g_enum_to_string", libgobject), Cstring, (UInt64, Int32), _g_enum_type, _value)
-    ret2 = string_or_nothing(ret, true)
-    ret2
-end
-function flags_get_first_value(_flags_class::GFlagsClassLike, _value::Integer)
-    ret = ccall(("g_flags_get_first_value", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, UInt32), _flags_class, _value)
-    ret2 = convert(GFlagsValueLike, ret)
-    ret2
-end
-function flags_get_value_by_name(_flags_class::GFlagsClassLike, _name::Union{AbstractString, Symbol})
-    ret = ccall(("g_flags_get_value_by_name", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, Cstring), _flags_class, _name)
-    ret2 = convert(GFlagsValueLike, ret)
-    ret2
-end
-function flags_get_value_by_nick(_flags_class::GFlagsClassLike, _nick::Union{AbstractString, Symbol})
-    ret = ccall(("g_flags_get_value_by_nick", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, Cstring), _flags_class, _nick)
-    ret2 = convert(GFlagsValueLike, ret)
-    ret2
-end
-function flags_to_string(_flags_type::Integer, _value::Integer)
-    ret = ccall(("g_flags_to_string", libgobject), Cstring, (UInt64, UInt32), _flags_type, _value)
-    ret2 = string_or_nothing(ret, true)
-    ret2
-end
-function gtype_get_type()
-    ret = ccall(("g_gtype_get_type", libgobject), UInt64, ())
-    ret
-end
-function param_value_is_valid(_pspec::GParam, _value::GValueLike)
-    ret = ccall(("g_param_value_is_valid", libgobject), Cint, (Ptr{GParam}, Ptr{_GValue}), _pspec, _value)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function pointer_type_register_static(_name::Union{AbstractString, Symbol})
-    ret = ccall(("g_pointer_type_register_static", libgobject), UInt64, (Cstring,), _name)
-    ret
-end
-function signal_chain_from_overridden(_instance_and_params, _return_value::GValueLike)
-    _instance_and_params_arr = convert(Vector{_GValue}, _instance_and_params)
-    ret = ccall(("g_signal_chain_from_overridden", libgobject), Nothing, (Ptr{_GValue}, Ptr{_GValue}), _instance_and_params_arr, _return_value)
-    nothing
-end
-function signal_get_invocation_hint(_instance::GObject)
-    ret = ccall(("g_signal_get_invocation_hint", libgobject), Ptr{_GSignalInvocationHint}, (Ptr{GObject},), _instance)
-    ret2 = convert(GSignalInvocationHintLike, ret)
-    ret2
-end
-function signal_handler_block(_instance::GObject, _handler_id::Integer)
-    ret = ccall(("g_signal_handler_block", libgobject), Nothing, (Ptr{GObject}, UInt64), _instance, _handler_id)
-    nothing
-end
-function signal_handler_disconnect(_instance::GObject, _handler_id::Integer)
-    ret = ccall(("g_signal_handler_disconnect", libgobject), Nothing, (Ptr{GObject}, UInt64), _instance, _handler_id)
-    nothing
-end
-function signal_handler_is_connected(_instance::GObject, _handler_id::Integer)
-    ret = ccall(("g_signal_handler_is_connected", libgobject), Cint, (Ptr{GObject}, UInt64), _instance, _handler_id)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function signal_handler_unblock(_instance::GObject, _handler_id::Integer)
-    ret = ccall(("g_signal_handler_unblock", libgobject), Nothing, (Ptr{GObject}, UInt64), _instance, _handler_id)
-    nothing
-end
-function signal_handlers_destroy(_instance::GObject)
-    ret = ccall(("g_signal_handlers_destroy", libgobject), Nothing, (Ptr{GObject},), _instance)
-    nothing
-end
-function signal_has_handler_pending(_instance::GObject, _signal_id::Integer, _detail::Integer, _may_be_blocked::Bool)
-    ret = ccall(("g_signal_has_handler_pending", libgobject), Cint, (Ptr{GObject}, UInt32, UInt32, Cint), _instance, _signal_id, _detail, _may_be_blocked)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function signal_is_valid_name(_name::Union{AbstractString, Symbol})
-    ret = ccall(("g_signal_is_valid_name", libgobject), Cint, (Cstring,), _name)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function signal_list_ids(_itype::Integer)
-    m_n_ids = Ref{UInt32}()
-    ret = ccall(("g_signal_list_ids", libgobject), Ptr{UInt32}, (UInt64, Ptr{UInt32}), _itype, m_n_ids)
-    ret2 = begin
-            arrtemp = copy(unsafe_wrap(Vector{UInt32}, ret, m_n_ids[]))
-            GLib.g_free(ret)
-            arrtemp
-        end
-    _n_ids = m_n_ids[]
-    ret2
-end
-function signal_lookup(_name::Union{AbstractString, Symbol}, _itype::Integer)
-    ret = ccall(("g_signal_lookup", libgobject), UInt32, (Cstring, UInt64), _name, _itype)
-    ret
-end
-function signal_name(_signal_id::Integer)
-    ret = ccall(("g_signal_name", libgobject), Cstring, (UInt32,), _signal_id)
-    ret2 = string_or_nothing(ret, false)
-    ret2
-end
-function signal_parse_name(_detailed_signal::Union{AbstractString, Symbol}, _itype::Integer, _force_detail_quark::Bool)
-    m_signal_id_p = Ref{UInt32}()
-    m_detail_p = Ref{UInt32}()
-    ret = ccall(("g_signal_parse_name", libgobject), Cint, (Cstring, UInt64, Ptr{UInt32}, Ptr{UInt32}, Cint), _detailed_signal, _itype, m_signal_id_p, m_detail_p, _force_detail_quark)
-    ret2 = convert(Bool, ret)
-    _signal_id_p = m_signal_id_p[]
-    _detail_p = m_detail_p[]
-    (ret2, _signal_id_p, _detail_p)
-end
-function signal_query(_signal_id::Integer)
-    m_query = Ref{_GSignalQuery}()
-    ret = ccall(("g_signal_query", libgobject), Nothing, (UInt32, Ptr{_GSignalQuery}), _signal_id, m_query)
-    _query = m_query[]
-    _query = convert(_GSignalQuery, _query)
-    _query
-end
-function signal_remove_emission_hook(_signal_id::Integer, _hook_id::Integer)
-    ret = ccall(("g_signal_remove_emission_hook", libgobject), Nothing, (UInt32, UInt64), _signal_id, _hook_id)
-    nothing
-end
-function signal_stop_emission(_instance::GObject, _signal_id::Integer, _detail::Integer)
-    ret = ccall(("g_signal_stop_emission", libgobject), Nothing, (Ptr{GObject}, UInt32, UInt32), _instance, _signal_id, _detail)
-    nothing
-end
-function signal_stop_emission_by_name(_instance::GObject, _detailed_signal::Union{AbstractString, Symbol})
-    ret = ccall(("g_signal_stop_emission_by_name", libgobject), Nothing, (Ptr{GObject}, Cstring), _instance, _detailed_signal)
-    nothing
-end
-function strdup_value_contents(_value::GValueLike)
-    ret = ccall(("g_strdup_value_contents", libgobject), Cstring, (Ptr{_GValue},), _value)
-    ret2 = string_or_nothing(ret, true)
-    ret2
-end
-function type_add_class_private(_class_type::Integer, _private_size::Integer)
-    ret = ccall(("g_type_add_class_private", libgobject), Nothing, (UInt64, UInt64), _class_type, _private_size)
-    nothing
-end
-function type_add_instance_private(_class_type::Integer, _private_size::Integer)
-    ret = ccall(("g_type_add_instance_private", libgobject), Int32, (UInt64, UInt64), _class_type, _private_size)
-    ret
-end
-function type_add_interface_dynamic(_instance_type::Integer, _interface_type::Integer, _plugin::GTypePlugin)
-    ret = ccall(("g_type_add_interface_dynamic", libgobject), Nothing, (UInt64, UInt64, Ptr{GObject}), _instance_type, _interface_type, _plugin)
-    nothing
-end
-function type_add_interface_static(_instance_type::Integer, _interface_type::Integer, _info::GInterfaceInfoLike)
-    ret = ccall(("g_type_add_interface_static", libgobject), Nothing, (UInt64, UInt64, Ptr{_GInterfaceInfo}), _instance_type, _interface_type, _info)
-    nothing
-end
-function type_check_class_is_a(_g_class::GTypeClassLike, _is_a_type::Integer)
-    ret = ccall(("g_type_check_class_is_a", libgobject), Cint, (Ptr{_GTypeClass}, UInt64), _g_class, _is_a_type)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function type_check_is_value_type(_type::Integer)
-    ret = ccall(("g_type_check_is_value_type", libgobject), Cint, (UInt64,), _type)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function type_check_value(_value::GValueLike)
-    ret = ccall(("g_type_check_value", libgobject), Cint, (Ptr{_GValue},), _value)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function type_check_value_holds(_value::GValueLike, _type::Integer)
-    ret = ccall(("g_type_check_value_holds", libgobject), Cint, (Ptr{_GValue}, UInt64), _value, _type)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function type_children(_type::Integer)
-    m_n_children = Ref{UInt32}()
-    ret = ccall(("g_type_children", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _type, m_n_children)
-    ret2 = begin
-            arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_children[]))
-            GLib.g_free(ret)
-            arrtemp
-        end
-    _n_children = m_n_children[]
-    ret2
-end
-function type_class_adjust_private_offset(_g_class::Maybe(Nothing), _private_size_or_offset::Int32)
-    _g_class_maybe = nothing_to_null(_g_class)
-    ret = ccall(("g_type_class_adjust_private_offset", libgobject), Nothing, (Ptr{Nothing}, Ptr{Int32}), _g_class_maybe, _private_size_or_offset)
-    nothing
-end
-function type_class_peek(_type::Integer)
-    ret = ccall(("g_type_class_peek", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
-    ret2 = convert(GTypeClassLike, ret)
-    ret2
-end
-function type_class_peek_static(_type::Integer)
-    ret = ccall(("g_type_class_peek_static", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
-    ret2 = convert(GTypeClassLike, ret)
-    ret2
-end
-function type_class_ref(_type::Integer)
-    ret = ccall(("g_type_class_ref", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
-    ret2 = convert(GTypeClassLike, ret)
-    ret2
-end
-function type_default_interface_peek(_g_type::Integer)
-    ret = ccall(("g_type_default_interface_peek", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
-    ret2 = convert(GTypeInterfaceLike, ret)
-    ret2
-end
-function type_default_interface_ref(_g_type::Integer)
-    ret = ccall(("g_type_default_interface_ref", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
-    ret2 = convert(GTypeInterfaceLike, ret)
-    ret2
-end
-function type_depth(_type::Integer)
-    ret = ccall(("g_type_depth", libgobject), UInt32, (UInt64,), _type)
-    ret
-end
-function type_ensure(_type::Integer)
-    ret = ccall(("g_type_ensure", libgobject), Nothing, (UInt64,), _type)
-    nothing
-end
-function type_fundamental(_type_id::Integer)
-    ret = ccall(("g_type_fundamental", libgobject), UInt64, (UInt64,), _type_id)
-    ret
-end
-function type_fundamental_next()
-    ret = ccall(("g_type_fundamental_next", libgobject), UInt64, ())
-    ret
-end
-function type_get_instance_count(_type::Integer)
-    ret = ccall(("g_type_get_instance_count", libgobject), Int32, (UInt64,), _type)
-    ret
-end
-function type_get_plugin(_type::Integer)
-    ret = ccall(("g_type_get_plugin", libgobject), Ptr{GObject}, (UInt64,), _type)
-    ret2 = begin
-            leaftype = GLib.find_leaf_type(ret)
-            convert(leaftype, ret, false)
-        end
-    ret2
-end
-function type_get_qdata(_type::Integer, _quark::Integer)
-    ret = ccall(("g_type_get_qdata", libgobject), Ptr{Nothing}, (UInt64, UInt32), _type, _quark)
-    ret2 = convert(Nothing, ret)
-    ret2
-end
-function type_get_type_registration_serial()
-    ret = ccall(("g_type_get_type_registration_serial", libgobject), UInt32, ())
-    ret
-end
-function type_interface_add_prerequisite(_interface_type::Integer, _prerequisite_type::Integer)
-    ret = ccall(("g_type_interface_add_prerequisite", libgobject), Nothing, (UInt64, UInt64), _interface_type, _prerequisite_type)
-    nothing
-end
-function type_interface_get_plugin(_instance_type::Integer, _interface_type::Integer)
-    ret = ccall(("g_type_interface_get_plugin", libgobject), Ptr{GObject}, (UInt64, UInt64), _instance_type, _interface_type)
-    ret2 = begin
-            leaftype = GLib.find_leaf_type(ret)
-            convert(leaftype, ret, false)
-        end
-    ret2
-end
-function type_interface_instantiatable_prerequisite(_interface_type::Integer)
-    ret = ccall(("g_type_interface_instantiatable_prerequisite", libgobject), UInt64, (UInt64,), _interface_type)
-    ret
-end
-function type_interface_peek(_instance_class::GTypeClassLike, _iface_type::Integer)
-    ret = ccall(("g_type_interface_peek", libgobject), Ptr{_GTypeInterface}, (Ptr{_GTypeClass}, UInt64), _instance_class, _iface_type)
-    ret2 = convert(GTypeInterfaceLike, ret)
-    ret2
-end
-function type_interface_prerequisites(_interface_type::Integer)
-    m_n_prerequisites = Ref{UInt32}()
-    ret = ccall(("g_type_interface_prerequisites", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _interface_type, m_n_prerequisites)
-    ret2 = begin
-            arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_prerequisites[]))
-            GLib.g_free(ret)
-            arrtemp
-        end
-    _n_prerequisites = m_n_prerequisites[]
-    ret2
-end
-function type_interfaces(_type::Integer)
-    m_n_interfaces = Ref{UInt32}()
-    ret = ccall(("g_type_interfaces", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _type, m_n_interfaces)
-    ret2 = begin
-            arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_interfaces[]))
-            GLib.g_free(ret)
-            arrtemp
-        end
-    _n_interfaces = m_n_interfaces[]
-    ret2
-end
-function type_name_from_class(_g_class::GTypeClassLike)
-    ret = ccall(("g_type_name_from_class", libgobject), Cstring, (Ptr{_GTypeClass},), _g_class)
-    ret2 = string_or_nothing(ret, false)
-    ret2
-end
-function type_next_base(_leaf_type::Integer, _root_type::Integer)
-    ret = ccall(("g_type_next_base", libgobject), UInt64, (UInt64, UInt64), _leaf_type, _root_type)
-    ret
-end
-function type_qname(_type::Integer)
-    ret = ccall(("g_type_qname", libgobject), UInt32, (UInt64,), _type)
-    ret
-end
-function type_query(_type::Integer)
-    m_query = Ref{_GTypeQuery}()
-    ret = ccall(("g_type_query", libgobject), Nothing, (UInt64, Ptr{_GTypeQuery}), _type, m_query)
-    _query = m_query[]
-    _query = convert(_GTypeQuery, _query)
-    _query
-end
-function type_register_dynamic(_parent_type::Integer, _type_name::Union{AbstractString, Symbol}, _plugin::GTypePlugin, _flags)
-    ret = ccall(("g_type_register_dynamic", libgobject), UInt64, (UInt64, Cstring, Ptr{GObject}, UInt32), _parent_type, _type_name, _plugin, _flags)
-    ret
-end
-function type_register_static(_parent_type::Integer, _type_name::Union{AbstractString, Symbol}, _info::GTypeInfoLike, _flags)
-    ret = ccall(("g_type_register_static", libgobject), UInt64, (UInt64, Cstring, Ptr{_GTypeInfo}, UInt32), _parent_type, _type_name, _info, _flags)
-    ret
-end
-function type_set_qdata(_type::Integer, _quark::Integer, _data::Maybe(Nothing))
-    _data_maybe = nothing_to_null(_data)
-    ret = ccall(("g_type_set_qdata", libgobject), Nothing, (UInt64, UInt32, Ptr{Nothing}), _type, _quark, _data_maybe)
-    nothing
-end
-function value_type_compatible(_src_type::Integer, _dest_type::Integer)
-    ret = ccall(("g_value_type_compatible", libgobject), Cint, (UInt64, UInt64), _src_type, _dest_type)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function value_type_transformable(_src_type::Integer, _dest_type::Integer)
-    ret = ccall(("g_value_type_transformable", libgobject), Cint, (UInt64, UInt64), _src_type, _dest_type)
-    ret2 = convert(Bool, ret)
-    ret2
+begin
+    function boxed_copy(_boxed_type::Integer, _src_boxed::Nothing)
+        ret = ccall(("g_boxed_copy", libgobject), Ptr{Nothing}, (UInt64, Ptr{Nothing}), _boxed_type, _src_boxed)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function boxed_free(_boxed_type::Integer, _boxed::Nothing)
+        ret = ccall(("g_boxed_free", libgobject), Nothing, (UInt64, Ptr{Nothing}), _boxed_type, _boxed)
+        nothing
+    end
+    function clear_signal_handler(_handler_id_ptr::UInt64, _instance::GObject)
+        ret = ccall(("g_clear_signal_handler", libgobject), Nothing, (Ptr{UInt64}, Ptr{GObject}), _handler_id_ptr, _instance)
+        nothing
+    end
+    function enum_get_value(_enum_class::GEnumClassLike, _value::Integer)
+        ret = ccall(("g_enum_get_value", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Int32), _enum_class, _value)
+        ret2 = convert(GEnumValueLike, ret)
+        ret2
+    end
+    function enum_get_value_by_name(_enum_class::GEnumClassLike, _name::Union{AbstractString, Symbol})
+        ret = ccall(("g_enum_get_value_by_name", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Cstring), _enum_class, _name)
+        ret2 = convert(GEnumValueLike, ret)
+        ret2
+    end
+    function enum_get_value_by_nick(_enum_class::GEnumClassLike, _nick::Union{AbstractString, Symbol})
+        ret = ccall(("g_enum_get_value_by_nick", libgobject), Ptr{_GEnumValue}, (Ptr{_GEnumClass}, Cstring), _enum_class, _nick)
+        ret2 = convert(GEnumValueLike, ret)
+        ret2
+    end
+    function enum_to_string(_g_enum_type::Integer, _value::Integer)
+        ret = ccall(("g_enum_to_string", libgobject), Cstring, (UInt64, Int32), _g_enum_type, _value)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function flags_get_first_value(_flags_class::GFlagsClassLike, _value::Integer)
+        ret = ccall(("g_flags_get_first_value", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, UInt32), _flags_class, _value)
+        ret2 = convert(GFlagsValueLike, ret)
+        ret2
+    end
+    function flags_get_value_by_name(_flags_class::GFlagsClassLike, _name::Union{AbstractString, Symbol})
+        ret = ccall(("g_flags_get_value_by_name", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, Cstring), _flags_class, _name)
+        ret2 = convert(GFlagsValueLike, ret)
+        ret2
+    end
+    function flags_get_value_by_nick(_flags_class::GFlagsClassLike, _nick::Union{AbstractString, Symbol})
+        ret = ccall(("g_flags_get_value_by_nick", libgobject), Ptr{_GFlagsValue}, (Ptr{_GFlagsClass}, Cstring), _flags_class, _nick)
+        ret2 = convert(GFlagsValueLike, ret)
+        ret2
+    end
+    function flags_to_string(_flags_type::Integer, _value::Integer)
+        ret = ccall(("g_flags_to_string", libgobject), Cstring, (UInt64, UInt32), _flags_type, _value)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function gtype_get_type()
+        ret = ccall(("g_gtype_get_type", libgobject), UInt64, ())
+        ret
+    end
+    function param_value_is_valid(_pspec::GParam, _value::GValueLike)
+        ret = ccall(("g_param_value_is_valid", libgobject), Cint, (Ptr{GParam}, Ptr{_GValue}), _pspec, _value)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function pointer_type_register_static(_name::Union{AbstractString, Symbol})
+        ret = ccall(("g_pointer_type_register_static", libgobject), UInt64, (Cstring,), _name)
+        ret
+    end
+    function signal_chain_from_overridden(_instance_and_params, _return_value::GValueLike)
+        _instance_and_params_arr = convert(Vector{_GValue}, _instance_and_params)
+        ret = ccall(("g_signal_chain_from_overridden", libgobject), Nothing, (Ptr{_GValue}, Ptr{_GValue}), _instance_and_params_arr, _return_value)
+        nothing
+    end
+    function signal_get_invocation_hint(_instance::GObject)
+        ret = ccall(("g_signal_get_invocation_hint", libgobject), Ptr{_GSignalInvocationHint}, (Ptr{GObject},), _instance)
+        ret2 = convert(GSignalInvocationHintLike, ret)
+        ret2
+    end
+    function signal_handler_block(_instance::GObject, _handler_id::Integer)
+        ret = ccall(("g_signal_handler_block", libgobject), Nothing, (Ptr{GObject}, UInt64), _instance, _handler_id)
+        nothing
+    end
+    function signal_handler_disconnect(_instance::GObject, _handler_id::Integer)
+        ret = ccall(("g_signal_handler_disconnect", libgobject), Nothing, (Ptr{GObject}, UInt64), _instance, _handler_id)
+        nothing
+    end
+    function signal_handler_is_connected(_instance::GObject, _handler_id::Integer)
+        ret = ccall(("g_signal_handler_is_connected", libgobject), Cint, (Ptr{GObject}, UInt64), _instance, _handler_id)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function signal_handler_unblock(_instance::GObject, _handler_id::Integer)
+        ret = ccall(("g_signal_handler_unblock", libgobject), Nothing, (Ptr{GObject}, UInt64), _instance, _handler_id)
+        nothing
+    end
+    function signal_handlers_destroy(_instance::GObject)
+        ret = ccall(("g_signal_handlers_destroy", libgobject), Nothing, (Ptr{GObject},), _instance)
+        nothing
+    end
+    function signal_has_handler_pending(_instance::GObject, _signal_id::Integer, _detail::Integer, _may_be_blocked::Bool)
+        ret = ccall(("g_signal_has_handler_pending", libgobject), Cint, (Ptr{GObject}, UInt32, UInt32, Cint), _instance, _signal_id, _detail, _may_be_blocked)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function signal_is_valid_name(_name::Union{AbstractString, Symbol})
+        ret = ccall(("g_signal_is_valid_name", libgobject), Cint, (Cstring,), _name)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function signal_list_ids(_itype::Integer)
+        m_n_ids = Ref{UInt32}()
+        ret = ccall(("g_signal_list_ids", libgobject), Ptr{UInt32}, (UInt64, Ptr{UInt32}), _itype, m_n_ids)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt32}, ret, m_n_ids[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
+        _n_ids = m_n_ids[]
+        ret2
+    end
+    function signal_lookup(_name::Union{AbstractString, Symbol}, _itype::Integer)
+        ret = ccall(("g_signal_lookup", libgobject), UInt32, (Cstring, UInt64), _name, _itype)
+        ret
+    end
+    function signal_name(_signal_id::Integer)
+        ret = ccall(("g_signal_name", libgobject), Cstring, (UInt32,), _signal_id)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function signal_parse_name(_detailed_signal::Union{AbstractString, Symbol}, _itype::Integer, _force_detail_quark::Bool)
+        m_signal_id_p = Ref{UInt32}()
+        m_detail_p = Ref{UInt32}()
+        ret = ccall(("g_signal_parse_name", libgobject), Cint, (Cstring, UInt64, Ptr{UInt32}, Ptr{UInt32}, Cint), _detailed_signal, _itype, m_signal_id_p, m_detail_p, _force_detail_quark)
+        ret2 = convert(Bool, ret)
+        _signal_id_p = m_signal_id_p[]
+        _detail_p = m_detail_p[]
+        (ret2, _signal_id_p, _detail_p)
+    end
+    function signal_query(_signal_id::Integer)
+        m_query = Ref{_GSignalQuery}()
+        ret = ccall(("g_signal_query", libgobject), Nothing, (UInt32, Ptr{_GSignalQuery}), _signal_id, m_query)
+        _query = m_query[]
+        _query = convert(_GSignalQuery, _query)
+        _query
+    end
+    function signal_remove_emission_hook(_signal_id::Integer, _hook_id::Integer)
+        ret = ccall(("g_signal_remove_emission_hook", libgobject), Nothing, (UInt32, UInt64), _signal_id, _hook_id)
+        nothing
+    end
+    function signal_stop_emission(_instance::GObject, _signal_id::Integer, _detail::Integer)
+        ret = ccall(("g_signal_stop_emission", libgobject), Nothing, (Ptr{GObject}, UInt32, UInt32), _instance, _signal_id, _detail)
+        nothing
+    end
+    function signal_stop_emission_by_name(_instance::GObject, _detailed_signal::Union{AbstractString, Symbol})
+        ret = ccall(("g_signal_stop_emission_by_name", libgobject), Nothing, (Ptr{GObject}, Cstring), _instance, _detailed_signal)
+        nothing
+    end
+    function strdup_value_contents(_value::GValueLike)
+        ret = ccall(("g_strdup_value_contents", libgobject), Cstring, (Ptr{_GValue},), _value)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function type_add_class_private(_class_type::Integer, _private_size::Integer)
+        ret = ccall(("g_type_add_class_private", libgobject), Nothing, (UInt64, UInt64), _class_type, _private_size)
+        nothing
+    end
+    function type_add_instance_private(_class_type::Integer, _private_size::Integer)
+        ret = ccall(("g_type_add_instance_private", libgobject), Int32, (UInt64, UInt64), _class_type, _private_size)
+        ret
+    end
+    function type_add_interface_dynamic(_instance_type::Integer, _interface_type::Integer, _plugin::GTypePlugin)
+        ret = ccall(("g_type_add_interface_dynamic", libgobject), Nothing, (UInt64, UInt64, Ptr{GObject}), _instance_type, _interface_type, _plugin)
+        nothing
+    end
+    function type_add_interface_static(_instance_type::Integer, _interface_type::Integer, _info::GInterfaceInfoLike)
+        ret = ccall(("g_type_add_interface_static", libgobject), Nothing, (UInt64, UInt64, Ptr{_GInterfaceInfo}), _instance_type, _interface_type, _info)
+        nothing
+    end
+    function type_check_class_is_a(_g_class::GTypeClassLike, _is_a_type::Integer)
+        ret = ccall(("g_type_check_class_is_a", libgobject), Cint, (Ptr{_GTypeClass}, UInt64), _g_class, _is_a_type)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function type_check_is_value_type(_type::Integer)
+        ret = ccall(("g_type_check_is_value_type", libgobject), Cint, (UInt64,), _type)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function type_check_value(_value::GValueLike)
+        ret = ccall(("g_type_check_value", libgobject), Cint, (Ptr{_GValue},), _value)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function type_check_value_holds(_value::GValueLike, _type::Integer)
+        ret = ccall(("g_type_check_value_holds", libgobject), Cint, (Ptr{_GValue}, UInt64), _value, _type)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function type_children(_type::Integer)
+        m_n_children = Ref{UInt32}()
+        ret = ccall(("g_type_children", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _type, m_n_children)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_children[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
+        _n_children = m_n_children[]
+        ret2
+    end
+    function type_class_adjust_private_offset(_g_class::Maybe(Nothing), _private_size_or_offset::Int32)
+        _g_class_maybe = nothing_to_null(_g_class)
+        ret = ccall(("g_type_class_adjust_private_offset", libgobject), Nothing, (Ptr{Nothing}, Ptr{Int32}), _g_class_maybe, _private_size_or_offset)
+        nothing
+    end
+    function type_class_peek(_type::Integer)
+        ret = ccall(("g_type_class_peek", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
+        ret2 = convert(GTypeClassLike, ret)
+        ret2
+    end
+    function type_class_peek_static(_type::Integer)
+        ret = ccall(("g_type_class_peek_static", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
+        ret2 = convert(GTypeClassLike, ret)
+        ret2
+    end
+    function type_class_ref(_type::Integer)
+        ret = ccall(("g_type_class_ref", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
+        ret2 = convert(GTypeClassLike, ret)
+        ret2
+    end
+    function type_default_interface_peek(_g_type::Integer)
+        ret = ccall(("g_type_default_interface_peek", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
+        ret2 = convert(GTypeInterfaceLike, ret)
+        ret2
+    end
+    function type_default_interface_ref(_g_type::Integer)
+        ret = ccall(("g_type_default_interface_ref", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
+        ret2 = convert(GTypeInterfaceLike, ret)
+        ret2
+    end
+    function type_depth(_type::Integer)
+        ret = ccall(("g_type_depth", libgobject), UInt32, (UInt64,), _type)
+        ret
+    end
+    function type_ensure(_type::Integer)
+        ret = ccall(("g_type_ensure", libgobject), Nothing, (UInt64,), _type)
+        nothing
+    end
+    function type_fundamental(_type_id::Integer)
+        ret = ccall(("g_type_fundamental", libgobject), UInt64, (UInt64,), _type_id)
+        ret
+    end
+    function type_fundamental_next()
+        ret = ccall(("g_type_fundamental_next", libgobject), UInt64, ())
+        ret
+    end
+    function type_get_instance_count(_type::Integer)
+        ret = ccall(("g_type_get_instance_count", libgobject), Int32, (UInt64,), _type)
+        ret
+    end
+    function type_get_plugin(_type::Integer)
+        ret = ccall(("g_type_get_plugin", libgobject), Ptr{GObject}, (UInt64,), _type)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, false)
+            end
+        ret2
+    end
+    function type_get_qdata(_type::Integer, _quark::Integer)
+        ret = ccall(("g_type_get_qdata", libgobject), Ptr{Nothing}, (UInt64, UInt32), _type, _quark)
+        ret2 = convert(Nothing, ret)
+        ret2
+    end
+    function type_get_type_registration_serial()
+        ret = ccall(("g_type_get_type_registration_serial", libgobject), UInt32, ())
+        ret
+    end
+    function type_interface_add_prerequisite(_interface_type::Integer, _prerequisite_type::Integer)
+        ret = ccall(("g_type_interface_add_prerequisite", libgobject), Nothing, (UInt64, UInt64), _interface_type, _prerequisite_type)
+        nothing
+    end
+    function type_interface_get_plugin(_instance_type::Integer, _interface_type::Integer)
+        ret = ccall(("g_type_interface_get_plugin", libgobject), Ptr{GObject}, (UInt64, UInt64), _instance_type, _interface_type)
+        ret2 = begin
+                leaftype = GLib.find_leaf_type(ret)
+                convert(leaftype, ret, false)
+            end
+        ret2
+    end
+    function type_interface_instantiatable_prerequisite(_interface_type::Integer)
+        ret = ccall(("g_type_interface_instantiatable_prerequisite", libgobject), UInt64, (UInt64,), _interface_type)
+        ret
+    end
+    function type_interface_peek(_instance_class::GTypeClassLike, _iface_type::Integer)
+        ret = ccall(("g_type_interface_peek", libgobject), Ptr{_GTypeInterface}, (Ptr{_GTypeClass}, UInt64), _instance_class, _iface_type)
+        ret2 = convert(GTypeInterfaceLike, ret)
+        ret2
+    end
+    function type_interface_prerequisites(_interface_type::Integer)
+        m_n_prerequisites = Ref{UInt32}()
+        ret = ccall(("g_type_interface_prerequisites", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _interface_type, m_n_prerequisites)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_prerequisites[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
+        _n_prerequisites = m_n_prerequisites[]
+        ret2
+    end
+    function type_interfaces(_type::Integer)
+        m_n_interfaces = Ref{UInt32}()
+        ret = ccall(("g_type_interfaces", libgobject), Ptr{UInt64}, (UInt64, Ptr{UInt32}), _type, m_n_interfaces)
+        ret2 = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt64}, ret, m_n_interfaces[]))
+                GLib.g_free(ret)
+                arrtemp
+            end
+        _n_interfaces = m_n_interfaces[]
+        ret2
+    end
+    function type_name_from_class(_g_class::GTypeClassLike)
+        ret = ccall(("g_type_name_from_class", libgobject), Cstring, (Ptr{_GTypeClass},), _g_class)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function type_next_base(_leaf_type::Integer, _root_type::Integer)
+        ret = ccall(("g_type_next_base", libgobject), UInt64, (UInt64, UInt64), _leaf_type, _root_type)
+        ret
+    end
+    function type_qname(_type::Integer)
+        ret = ccall(("g_type_qname", libgobject), UInt32, (UInt64,), _type)
+        ret
+    end
+    function type_query(_type::Integer)
+        m_query = Ref{_GTypeQuery}()
+        ret = ccall(("g_type_query", libgobject), Nothing, (UInt64, Ptr{_GTypeQuery}), _type, m_query)
+        _query = m_query[]
+        _query = convert(_GTypeQuery, _query)
+        _query
+    end
+    function type_register_dynamic(_parent_type::Integer, _type_name::Union{AbstractString, Symbol}, _plugin::GTypePlugin, _flags)
+        ret = ccall(("g_type_register_dynamic", libgobject), UInt64, (UInt64, Cstring, Ptr{GObject}, UInt32), _parent_type, _type_name, _plugin, _flags)
+        ret
+    end
+    function type_register_static(_parent_type::Integer, _type_name::Union{AbstractString, Symbol}, _info::GTypeInfoLike, _flags)
+        ret = ccall(("g_type_register_static", libgobject), UInt64, (UInt64, Cstring, Ptr{_GTypeInfo}, UInt32), _parent_type, _type_name, _info, _flags)
+        ret
+    end
+    function type_set_qdata(_type::Integer, _quark::Integer, _data::Maybe(Nothing))
+        _data_maybe = nothing_to_null(_data)
+        ret = ccall(("g_type_set_qdata", libgobject), Nothing, (UInt64, UInt32, Ptr{Nothing}), _type, _quark, _data_maybe)
+        nothing
+    end
+    function value_type_compatible(_src_type::Integer, _dest_type::Integer)
+        ret = ccall(("g_value_type_compatible", libgobject), Cint, (UInt64, UInt64), _src_type, _dest_type)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function value_type_transformable(_src_type::Integer, _dest_type::Integer)
+        ret = ccall(("g_value_type_transformable", libgobject), Cint, (UInt64, UInt64), _src_type, _dest_type)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
 end
