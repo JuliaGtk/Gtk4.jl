@@ -86,7 +86,7 @@ end
 ## Alternative approach to signals and signal handlers
 
 !!! warning
-    This method and the one described in the next section rely on [closure cfunctions](https://docs.julialang.org/en/v1/manual/calling-c-and-fortran-code/index.html#Closure-cfunctions), which are not supported on all platforms (including ARM). If you're writing code for those platforms, use the method described above. This may be fixed in a future version of Gtk4.
+    This methods in this section and the next section rely on [closure cfunctions](https://docs.julialang.org/en/v1/manual/calling-c-and-fortran-code/index.html#Closure-cfunctions), which are not supported on all platforms (including ARM). If you're writing code for those platforms, use the method described above. This may be fixed in a future version of Gtk4.
 
 In addition to the "simple" interface described above, Gtk4 includes an approach that allows your callback function to be directly compiled to machine code. Gtk4 makes this easier by using GObject introspection data to look up the return type and parameter types, saving the user the hassle of doing this themselves.
 
