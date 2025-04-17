@@ -227,6 +227,11 @@ begin
         ret2 = string_or_nothing(ret, false)
         ret2
     end
+    function get_features(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_features", libpango), Cstring, (Ptr{PangoFontDescription},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
     function get_gravity(instance::PangoFontDescription)
         ret = ccall(("pango_font_description_get_gravity", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
         ret2 = Gravity(ret)
@@ -294,6 +299,15 @@ begin
     end
     function set_family_static(instance::PangoFontDescription, _family::Union{AbstractString, Symbol})
         ret = ccall(("pango_font_description_set_family_static", libpango), Nothing, (Ptr{PangoFontDescription}, Cstring), instance, _family)
+        nothing
+    end
+    function set_features(instance::PangoFontDescription, _features::Maybe(Union{AbstractString, Symbol}))
+        _features_maybe = nothing_to_null(_features)
+        ret = ccall(("pango_font_description_set_features", libpango), Nothing, (Ptr{PangoFontDescription}, Cstring), instance, _features_maybe)
+        nothing
+    end
+    function set_features_static(instance::PangoFontDescription, _features::Union{AbstractString, Symbol})
+        ret = ccall(("pango_font_description_set_features_static", libpango), Nothing, (Ptr{PangoFontDescription}, Cstring), instance, _features)
         nothing
     end
     function set_gravity(instance::PangoFontDescription, _gravity)
@@ -389,7 +403,8 @@ begin
         nothing
     end
     function apply_attrs(instance::PangoGlyphItemLike, _text::Union{AbstractString, Symbol}, _list::PangoAttrList)
-        ret = ccall(("pango_glyph_item_apply_attrs", libpango), Ptr{GLib._GSList{_PangoGlyphItem}}, (Ptr{_PangoGlyphItem}, Cstring, Ptr{PangoAttrList}), instance, _text, _list)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("pango_glyph_item_apply_attrs", libpango), Ptr{GLib._GSList{_PangoGlyphItem}}, (Ptr{_PangoGlyphItem}, Cstring, Ptr{PangoAttrList}), reffed_instance, _text, _list)
         ret2 = GLib.GList(ret, true)
         ret2
     end
@@ -402,10 +417,11 @@ begin
         ret = ccall(("pango_glyph_item_free", libpango), Nothing, (Ptr{_PangoGlyphItem},), instance)
         nothing
     end
-    function get_logical_widths(instance::PangoGlyphItemLike, _text::Union{AbstractString, Symbol}, _logical_widths)
-        _logical_widths_arr = convert(Vector{Int32}, _logical_widths)
-        ret = ccall(("pango_glyph_item_get_logical_widths", libpango), Nothing, (Ptr{_PangoGlyphItem}, Cstring, Ptr{Int32}), instance, _text, _logical_widths_arr)
-        nothing
+    function get_logical_widths(instance::PangoGlyphItemLike, _text::Union{AbstractString, Symbol})
+        m_logical_widths = Ref{Ptr{Int32}}()
+        ret = ccall(("pango_glyph_item_get_logical_widths", libpango), Nothing, (Ptr{_PangoGlyphItem}, Cstring, Ptr{Ptr{Int32}}), instance, _text, m_logical_widths)
+        _logical_widths = m_logical_widths[]
+        _logical_widths
     end
     function letter_space(instance::PangoGlyphItemLike, _text::Union{AbstractString, Symbol}, _log_attrs, _letter_spacing::Integer)
         _log_attrs_arr = convert(Vector{_PangoLogAttr}, _log_attrs)
@@ -480,10 +496,11 @@ begin
         ret = ccall(("pango_glyph_string_free", libpango), Nothing, (Ptr{_PangoGlyphString},), instance)
         nothing
     end
-    function get_logical_widths(instance::PangoGlyphStringLike, _text::Union{AbstractString, Symbol}, _length::Integer, _embedding_level::Integer, _logical_widths)
-        _logical_widths_arr = convert(Vector{Int32}, _logical_widths)
-        ret = ccall(("pango_glyph_string_get_logical_widths", libpango), Nothing, (Ptr{_PangoGlyphString}, Cstring, Int32, Int32, Ptr{Int32}), instance, _text, _length, _embedding_level, _logical_widths_arr)
-        nothing
+    function get_logical_widths(instance::PangoGlyphStringLike, _text::Union{AbstractString, Symbol}, _length::Integer, _embedding_level::Integer)
+        m_logical_widths = Ref{Ptr{Int32}}()
+        ret = ccall(("pango_glyph_string_get_logical_widths", libpango), Nothing, (Ptr{_PangoGlyphString}, Cstring, Int32, Int32, Ptr{Ptr{Int32}}), instance, _text, _length, _embedding_level, m_logical_widths)
+        _logical_widths = m_logical_widths[]
+        _logical_widths
     end
     function get_width(instance::PangoGlyphStringLike)
         ret = ccall(("pango_glyph_string_get_width", libpango), Int32, (Ptr{_PangoGlyphString},), instance)
@@ -867,9 +884,9 @@ begin
         m_script = Ref{UInt32}()
         ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{UInt32}), instance, m_start, m_end, m_script)
         _start = m_start[]
-        _start = string_or_nothing(_start, true)
+        _start = string_or_nothing(_start, false)
         _end = m_end[]
-        _end = string_or_nothing(_end, true)
+        _end = string_or_nothing(_end, false)
         _script = m_script[]
         _script = Script(_script)
         (_start, _end, _script)
@@ -1083,12 +1100,6 @@ begin
         ret = ccall(("pango_coverage_set", libpango), Nothing, (Ptr{GObject}, Int32, UInt32), instance, _index_, _level)
         nothing
     end
-    function descriptions_free(_descs)
-        _descs_arr = convert(Vector{Ptr{PangoFontDescription}}, _descs)
-        _n_descs = length(_descs)
-        ret = ccall(("pango_font_descriptions_free", libpango), Nothing, (Ptr{Ptr{PangoFontDescription}}, Int32), _descs_arr, _n_descs)
-        nothing
-    end
     function deserialize(_context::PangoContext, _bytes::GBytes)
         err = err_buf()
         ret = ccall(("pango_font_deserialize", libpango), Ptr{GObject}, (Ptr{GObject}, Ptr{GBytes}, Ptr{Ptr{GError}}), _context, _bytes, err)
@@ -1225,6 +1236,13 @@ begin
     end
     function items_changed(instance::PangoFontFamily, _position::Integer, _removed::Integer, _added::Integer)
         items_changed(GListModel(instance), _position, _removed, _added)
+    end
+    function add_font_file(instance::PangoFontMap, _filename::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("pango_font_map_add_font_file", libpango), Cint, (Ptr{GObject}, Cstring, Ptr{Ptr{GError}}), instance, _filename, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
     end
     function changed(instance::PangoFontMap)
         ret = ccall(("pango_font_map_changed", libpango), Nothing, (Ptr{GObject},), instance)

@@ -38,7 +38,7 @@ push!(const_mod.args,const_exports)
 push!(exprs, const_mod)
 
 ## export constants, enums, and flags code
-GI.write_to_file(path,"glib_consts",toplevel)
+GI.write_consts_to_file(path,"glib_consts",toplevel)
 
 printstyled("Generating code for GLib\n";bold=true)
 
