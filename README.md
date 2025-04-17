@@ -26,7 +26,7 @@ Other registered packages extend the functionality of Gtk4.jl:
 ## Current status
 **Note:** On Julia 1.11, Gtk4 causes the Julia REPL to freeze if Julia is started with more than one default thread and no interactive threads or with two interactive threads. This can be avoided with little-to-no performance penalty by being careful to start julia with `--threads N,1` or setting the environment variable `JULIA_NUM_THREADS = "N,1"` where N is the number of default threads to use.
 
-For auto-generated code, Gtk4.jl relies on GObject introspection data generated on a Linux x86_64 machine, which may result in code that crashes on 32 bit computers. This mostly seems to affect obscure parts of GLib that are unlikely to be useful to Julia users, but 32 bit users should be aware of this.
+For auto-generated code, Gtk4.jl relies on GObject introspection data generated on a Linux x86_64 machine, which may result in code that crashes on 32 bit computers. This mostly seems to affect obscure parts of GLib that are unlikely to be useful to Julia users, but 32 bit users should be aware of this. Also, on Windows 32 bit systems, a crash may occur when using recent versions of libpng. This can be avoided by pinning libpng_jll to version 1.6.40.
 
 Note that this package uses binaries for the GTK library and its dependencies that are built and packaged using [BinaryBuilder.jl](https://github.com/JuliaPackaging/BinaryBuilder.jl). On Linux it does **not** use the binaries that are packaged with your distribution. The build scripts for the binaries used by Gtk4.jl, including the library versions currently being used, can be found by perusing [Yggdrasil.jl](https://github.com/JuliaPackaging/Yggdrasil.jl).
 
