@@ -1,582 +1,580 @@
-function copy(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_copy", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = convert_if_not_null(GdkPixbufFormat, ret, true)
-    ret2
-end
-function free(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_free", libgdkpixbuf), Nothing, (Ptr{_GdkPixbufFormat},), instance)
-    nothing
-end
-function get_description(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_get_description", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = string_or_nothing(ret, true)
-    ret2
-end
-function get_extensions(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_get_extensions", libgdkpixbuf), Ptr{Cstring}, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = begin
-            _len = length_zt(ret)
-            arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
-            GLib.g_strfreev(ret)
-            arrtemp
-        end
-    ret2
-end
-function get_license(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_get_license", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = string_or_nothing(ret, true)
-    ret2
-end
-function get_mime_types(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_get_mime_types", libgdkpixbuf), Ptr{Cstring}, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = begin
-            _len = length_zt(ret)
-            arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
-            GLib.g_strfreev(ret)
-            arrtemp
-        end
-    ret2
-end
-function get_name(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_get_name", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = string_or_nothing(ret, true)
-    ret2
-end
-function is_disabled(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_is_disabled", libgdkpixbuf), Cint, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function is_save_option_supported(instance::GdkPixbufFormatLike, _option_key::Union{AbstractString, Symbol})
-    ret = ccall(("gdk_pixbuf_format_is_save_option_supported", libgdkpixbuf), Cint, (Ptr{_GdkPixbufFormat}, Cstring), instance, _option_key)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function is_scalable(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_is_scalable", libgdkpixbuf), Cint, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function is_writable(instance::GdkPixbufFormatLike)
-    ret = ccall(("gdk_pixbuf_format_is_writable", libgdkpixbuf), Cint, (Ptr{_GdkPixbufFormat},), instance)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function set_disabled(instance::GdkPixbufFormatLike, _disabled::Bool)
-    ret = ccall(("gdk_pixbuf_format_set_disabled", libgdkpixbuf), Nothing, (Ptr{_GdkPixbufFormat}, Cint), instance, _disabled)
-    nothing
-end
-function Pixbuf_new(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
-    ret = ccall(("gdk_pixbuf_new", libgdkpixbuf), Ptr{GObject}, (UInt32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_bytes(_data::GBytes, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer)
-    ret = ccall(("gdk_pixbuf_new_from_bytes", libgdkpixbuf), Ptr{GObject}, (Ptr{GBytes}, UInt32, Cint, Int32, Int32, Int32, Int32), _data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride)
-    ret2 = GdkPixbufLeaf(ret, true)
-    ret2
-end
-function Pixbuf_new_from_data(_data, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer, _destroy_fn::Maybe(Function))
-    _data_arr = convert(Vector{UInt8}, _data)
-    if _destroy_fn === nothing
-        _destroy_fn_cfunc = C_NULL
-        _destroy_fn_closure = C_NULL
-    else
-        _destroy_fn_cfunc = @cfunction(GdkPixbufDestroyNotify, Nothing, (Ptr{UInt8}, Ref{Function}))
-        _destroy_fn_closure = GLib.gc_ref(_destroy_fn)
+begin
+    function copy(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_copy", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = convert_if_not_null(GdkPixbufFormat, ret, true)
+        ret2
     end
-    ret = ccall(("gdk_pixbuf_new_from_data", libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, UInt32, Cint, Int32, Int32, Int32, Int32, Ptr{Cvoid}, Ptr{Nothing}), _data_arr, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn_cfunc, _destroy_fn_closure)
-    ret2 = GdkPixbufLeaf(ret, true)
-    ret2
-end
-function Pixbuf_new_from_file(_filename::Union{AbstractString, Symbol})
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_new_from_file", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _filename, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_file_at_scale(_filename::Union{AbstractString, Symbol}, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_new_from_file_at_scale", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Cint, Ptr{Ptr{GError}}), _filename, _width, _height, _preserve_aspect_ratio, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_file_at_size(_filename::Union{AbstractString, Symbol}, _width::Integer, _height::Integer)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_new_from_file_at_size", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Ptr{Ptr{GError}}), _filename, _width, _height, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_resource(_resource_path::Union{AbstractString, Symbol})
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_new_from_resource", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _resource_path, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_resource_at_scale(_resource_path::Union{AbstractString, Symbol}, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_new_from_resource_at_scale", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Cint, Ptr{Ptr{GError}}), _resource_path, _width, _height, _preserve_aspect_ratio, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
-    _cancellable_maybe = nothing_to_null(_cancellable)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable_maybe, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_stream_at_scale(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable))
-    _cancellable_maybe = nothing_to_null(_cancellable)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_new_from_stream_at_scale", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _width, _height, _preserve_aspect_ratio, _cancellable_maybe, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_stream_finish(_async_result::GAsyncResult)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_new_from_stream_finish", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function Pixbuf_new_from_xpm_data(_data)
-    ret = ccall(("gdk_pixbuf_new_from_xpm_data", libgdkpixbuf), Ptr{GObject}, (Ptr{Cstring},), _data)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function calculate_rowstride(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
-    ret = ccall(("gdk_pixbuf_calculate_rowstride", libgdkpixbuf), Int32, (UInt32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
-    ret
-end
-function get_file_info(_filename::Union{AbstractString, Symbol})
-    m_width = Ref{Int32}()
-    m_height = Ref{Int32}()
-    ret = ccall(("gdk_pixbuf_get_file_info", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Cstring, Ptr{Int32}, Ptr{Int32}), _filename, m_width, m_height)
-    ret2 = convert_if_not_null(GdkPixbufFormat, ret, false)
-    _width = m_width[]
-    _height = m_height[]
-    (ret2, _width, _height)
-end
-function get_file_info_async(_filename::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
-    _cancellable_maybe = nothing_to_null(_cancellable)
-    if _callback === nothing
-        _callback_cfunc = C_NULL
-        _callback_closure = C_NULL
-    else
-        _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-        _callback_closure = GLib.gc_ref(_callback)
+    function free(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_free", libgdkpixbuf), Nothing, (Ptr{_GdkPixbufFormat},), instance)
+        nothing
     end
-    ret = ccall(("gdk_pixbuf_get_file_info_async", libgdkpixbuf), Nothing, (Cstring, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _filename, _cancellable_maybe, _callback_cfunc, _callback_closure)
-    nothing
-end
-function get_formats()
-    ret = ccall(("gdk_pixbuf_get_formats", libgdkpixbuf), Ptr{GLib._GSList{_GdkPixbufFormat}}, ())
-    ret2 = GLib.GList(ret, false)
-    ret2
-end
-function init_modules(_path::Union{AbstractString, Symbol})
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_init_modules", libgdkpixbuf), Cint, (Cstring, Ptr{Ptr{GError}}), _path, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function new_from_stream_at_scale_async(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
-    _cancellable_maybe = nothing_to_null(_cancellable)
-    if _callback === nothing
-        _callback_cfunc = C_NULL
-        _callback_closure = C_NULL
-    else
-        _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-        _callback_closure = GLib.gc_ref(_callback)
+    function get_description(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_get_description", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
     end
-    ret = ccall(("gdk_pixbuf_new_from_stream_at_scale_async", libgdkpixbuf), Nothing, (Ptr{GObject}, Int32, Int32, Cint, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _width, _height, _preserve_aspect_ratio, _cancellable_maybe, _callback_cfunc, _callback_closure)
-    nothing
-end
-function save_to_stream_finish(_async_result::GAsyncResult)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_save_to_stream_finish", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function add_alpha(instance::GdkPixbuf, _substitute_color::Bool, _r::Integer, _g::Integer, _b::Integer)
-    ret = ccall(("gdk_pixbuf_add_alpha", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Cint, UInt8, UInt8, UInt8), instance, _substitute_color, _r, _g, _b)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function apply_embedded_orientation(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_apply_embedded_orientation", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function composite(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type, _overall_alpha::Integer)
-    ret = ccall(("gdk_pixbuf_composite", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32, Int32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type, _overall_alpha)
-    nothing
-end
-function composite_color(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type, _overall_alpha::Integer, _check_x::Integer, _check_y::Integer, _check_size::Integer, _color1::Integer, _color2::Integer)
-    ret = ccall(("gdk_pixbuf_composite_color", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32, Int32, Int32, Int32, Int32, UInt32, UInt32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type, _overall_alpha, _check_x, _check_y, _check_size, _color1, _color2)
-    nothing
-end
-function composite_color_simple(instance::GdkPixbuf, _dest_width::Integer, _dest_height::Integer, _interp_type, _overall_alpha::Integer, _check_size::Integer, _color1::Integer, _color2::Integer)
-    ret = ccall(("gdk_pixbuf_composite_color_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, UInt32, Int32, Int32, UInt32, UInt32), instance, _dest_width, _dest_height, _interp_type, _overall_alpha, _check_size, _color1, _color2)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function copy(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_copy", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function copy_area(instance::GdkPixbuf, _src_x::Integer, _src_y::Integer, _width::Integer, _height::Integer, _dest_pixbuf::GdkPixbuf, _dest_x::Integer, _dest_y::Integer)
-    ret = ccall(("gdk_pixbuf_copy_area", libgdkpixbuf), Nothing, (Ptr{GObject}, Int32, Int32, Int32, Int32, Ptr{GObject}, Int32, Int32), instance, _src_x, _src_y, _width, _height, _dest_pixbuf, _dest_x, _dest_y)
-    nothing
-end
-function copy_options(instance::GdkPixbuf, _dest_pixbuf::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_copy_options", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{GObject}), instance, _dest_pixbuf)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function fill(instance::GdkPixbuf, _pixel::Integer)
-    ret = ccall(("gdk_pixbuf_fill", libgdkpixbuf), Nothing, (Ptr{GObject}, UInt32), instance, _pixel)
-    nothing
-end
-function flip(instance::GdkPixbuf, _horizontal::Bool)
-    ret = ccall(("gdk_pixbuf_flip", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Cint), instance, _horizontal)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function get_bits_per_sample(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_bits_per_sample", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-    ret
-end
-function get_byte_length(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_byte_length", libgdkpixbuf), UInt64, (Ptr{GObject},), instance)
-    ret
-end
-function get_colorspace(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_colorspace", libgdkpixbuf), UInt32, (Ptr{GObject},), instance)
-    ret2 = Colorspace(ret)
-    ret2
-end
-function get_has_alpha(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_has_alpha", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function get_height(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_height", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-    ret
-end
-function get_n_channels(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_n_channels", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-    ret
-end
-function get_option(instance::GdkPixbuf, _key::Union{AbstractString, Symbol})
-    ret = ccall(("gdk_pixbuf_get_option", libgdkpixbuf), Cstring, (Ptr{GObject}, Cstring), instance, _key)
-    ret2 = string_or_nothing(ret, false)
-    ret2
-end
-function get_options(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_options", libgdkpixbuf), Ptr{GHashTable}, (Ptr{GObject},), instance)
-    ret
-end
-function get_pixels(instance::GdkPixbuf)
-    m_length = Ref{UInt32}()
-    ret = ccall(("gdk_pixbuf_get_pixels_with_length", libgdkpixbuf), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt32}), instance, m_length)
-    ret2 = collect(unsafe_wrap(Vector{UInt8}, ret, m_length[]))
-    _length = m_length[]
-    ret2
-end
-function get_rowstride(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_rowstride", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-    ret
-end
-function get_width(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_get_width", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-    ret
-end
-function new_subpixbuf(instance::GdkPixbuf, _src_x::Integer, _src_y::Integer, _width::Integer, _height::Integer)
-    ret = ccall(("gdk_pixbuf_new_subpixbuf", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Int32, Int32), instance, _src_x, _src_y, _width, _height)
-    ret2 = convert(GdkPixbuf, ret, true)
-    ret2
-end
-function read_pixel_bytes(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_read_pixel_bytes", libgdkpixbuf), Ptr{GBytes}, (Ptr{GObject},), instance)
-    ret2 = convert(GBytes, ret, true)
-    ret2
-end
-function read_pixels(instance::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_read_pixels", libgdkpixbuf), Ptr{UInt8}, (Ptr{GObject},), instance)
-    ret2 = convert(UInt8, ret)
-    ret2
-end
-function remove_option(instance::GdkPixbuf, _key::Union{AbstractString, Symbol})
-    ret = ccall(("gdk_pixbuf_remove_option", libgdkpixbuf), Cint, (Ptr{GObject}, Cstring), instance, _key)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function rotate_simple(instance::GdkPixbuf, _angle)
-    ret = ccall(("gdk_pixbuf_rotate_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, UInt32), instance, _angle)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function saturate_and_pixelate(instance::GdkPixbuf, _dest::GdkPixbuf, _saturation::Real, _pixelate::Bool)
-    ret = ccall(("gdk_pixbuf_saturate_and_pixelate", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Float32, Cint), instance, _dest, _saturation, _pixelate)
-    nothing
-end
-function save_to_bufferv(instance::GdkPixbuf, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
-    m_buffer = Ref{Ptr{UInt8}}()
-    m_buffer_size = Ref{UInt64}()
-    _option_keys_maybe = nothing_to_null(_option_keys)
-    _option_values_maybe = nothing_to_null(_option_values)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_save_to_bufferv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, m_buffer, m_buffer_size, _type, _option_keys_maybe, _option_values_maybe, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    _buffer = m_buffer[]
-    _buffer = begin
-            arrtemp = copy(unsafe_wrap(Vector{UInt8}, _buffer, m_buffer_size[]))
-            GLib.g_free(_buffer)
-            arrtemp
+    function get_extensions(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_get_extensions", libgdkpixbuf), Ptr{Cstring}, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                GLib.g_strfreev(ret)
+                arrtemp
+            end
+        ret2
+    end
+    function get_license(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_get_license", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function get_mime_types(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_get_mime_types", libgdkpixbuf), Ptr{Cstring}, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                GLib.g_strfreev(ret)
+                arrtemp
+            end
+        ret2
+    end
+    function get_name(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_get_name", libgdkpixbuf), Cstring, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function is_disabled(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_is_disabled", libgdkpixbuf), Cint, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_save_option_supported(instance::GdkPixbufFormatLike, _option_key::Union{AbstractString, Symbol})
+        ret = ccall(("gdk_pixbuf_format_is_save_option_supported", libgdkpixbuf), Cint, (Ptr{_GdkPixbufFormat}, Cstring), instance, _option_key)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_scalable(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_is_scalable", libgdkpixbuf), Cint, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_writable(instance::GdkPixbufFormatLike)
+        ret = ccall(("gdk_pixbuf_format_is_writable", libgdkpixbuf), Cint, (Ptr{_GdkPixbufFormat},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_disabled(instance::GdkPixbufFormatLike, _disabled::Bool)
+        ret = ccall(("gdk_pixbuf_format_set_disabled", libgdkpixbuf), Nothing, (Ptr{_GdkPixbufFormat}, Cint), instance, _disabled)
+        nothing
+    end
+    function Pixbuf_new(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
+        ret = ccall(("gdk_pixbuf_new", libgdkpixbuf), Ptr{GObject}, (UInt32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_bytes(_data::GBytes, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer)
+        ret = ccall(("gdk_pixbuf_new_from_bytes", libgdkpixbuf), Ptr{GObject}, (Ptr{GBytes}, UInt32, Cint, Int32, Int32, Int32, Int32), _data, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride)
+        ret2 = GdkPixbufLeaf(ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_data(_data, _colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer, _rowstride::Integer, _destroy_fn::Maybe(Function))
+        _data_arr = convert(Vector{UInt8}, _data)
+        if _destroy_fn === nothing
+            _destroy_fn_cfunc = C_NULL
+            _destroy_fn_closure = C_NULL
+        else
+            _destroy_fn_cfunc = @cfunction(GdkPixbufDestroyNotify, Nothing, (Ptr{UInt8}, Ref{Function}))
+            _destroy_fn_closure = GLib.gc_ref(_destroy_fn)
         end
-    _buffer_size = m_buffer_size[]
-    (ret2, _buffer)
-end
-function save_to_callbackv(instance::GdkPixbuf, _save_func::Function, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
-    begin
+        ret = ccall(("gdk_pixbuf_new_from_data", libgdkpixbuf), Ptr{GObject}, (Ptr{UInt8}, UInt32, Cint, Int32, Int32, Int32, Int32, Ptr{Cvoid}, Ptr{Nothing}), _data_arr, _colorspace, _has_alpha, _bits_per_sample, _width, _height, _rowstride, _destroy_fn_cfunc, _destroy_fn_closure)
+        ret2 = GdkPixbufLeaf(ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_file(_filename::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_new_from_file", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _filename, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_file_at_scale(_filename::Union{AbstractString, Symbol}, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_new_from_file_at_scale", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Cint, Ptr{Ptr{GError}}), _filename, _width, _height, _preserve_aspect_ratio, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_file_at_size(_filename::Union{AbstractString, Symbol}, _width::Integer, _height::Integer)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_new_from_file_at_size", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Ptr{Ptr{GError}}), _filename, _width, _height, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_resource(_resource_path::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_new_from_resource", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _resource_path, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_resource_at_scale(_resource_path::Union{AbstractString, Symbol}, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_new_from_resource_at_scale", libgdkpixbuf), Ptr{GObject}, (Cstring, Int32, Int32, Cint, Ptr{Ptr{GError}}), _resource_path, _width, _height, _preserve_aspect_ratio, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable_maybe, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_stream_at_scale(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_new_from_stream_at_scale", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Cint, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _width, _height, _preserve_aspect_ratio, _cancellable_maybe, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_stream_finish(_async_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_new_from_stream_finish", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function Pixbuf_new_from_xpm_data(_data)
+        ret = ccall(("gdk_pixbuf_new_from_xpm_data", libgdkpixbuf), Ptr{GObject}, (Ptr{Cstring},), _data)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function calculate_rowstride(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
+        ret = ccall(("gdk_pixbuf_calculate_rowstride", libgdkpixbuf), Int32, (UInt32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
+        ret
+    end
+    function get_file_info(_filename::Union{AbstractString, Symbol})
+        m_width = Ref{Int32}()
+        m_height = Ref{Int32}()
+        ret = ccall(("gdk_pixbuf_get_file_info", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Cstring, Ptr{Int32}, Ptr{Int32}), _filename, m_width, m_height)
+        ret2 = convert_if_not_null(GdkPixbufFormat, ret, false)
+        _width = m_width[]
+        _height = m_height[]
+        (ret2, _width, _height)
+    end
+    function get_file_info_async(_filename::Union{AbstractString, Symbol}, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_pixbuf_get_file_info_async", libgdkpixbuf), Nothing, (Cstring, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _filename, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function get_formats()
+        ret = ccall(("gdk_pixbuf_get_formats", libgdkpixbuf), Ptr{GLib._GSList{_GdkPixbufFormat}}, ())
+        ret2 = GLib.GList(ret, false)
+        ret2
+    end
+    function init_modules(_path::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_init_modules", libgdkpixbuf), Cint, (Cstring, Ptr{Ptr{GError}}), _path, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function new_from_stream_at_scale_async(_stream::GInputStream, _width::Integer, _height::Integer, _preserve_aspect_ratio::Bool, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gdk_pixbuf_new_from_stream_at_scale_async", libgdkpixbuf), Nothing, (Ptr{GObject}, Int32, Int32, Cint, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _width, _height, _preserve_aspect_ratio, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function save_to_stream_finish(_async_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_save_to_stream_finish", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function add_alpha(instance::GdkPixbuf, _substitute_color::Bool, _r::Integer, _g::Integer, _b::Integer)
+        ret = ccall(("gdk_pixbuf_add_alpha", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Cint, UInt8, UInt8, UInt8), instance, _substitute_color, _r, _g, _b)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function apply_embedded_orientation(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_apply_embedded_orientation", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function composite(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type, _overall_alpha::Integer)
+        ret = ccall(("gdk_pixbuf_composite", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32, Int32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type, _overall_alpha)
+        nothing
+    end
+    function composite_color(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type, _overall_alpha::Integer, _check_x::Integer, _check_y::Integer, _check_size::Integer, _color1::Integer, _color2::Integer)
+        ret = ccall(("gdk_pixbuf_composite_color", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32, Int32, Int32, Int32, Int32, UInt32, UInt32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type, _overall_alpha, _check_x, _check_y, _check_size, _color1, _color2)
+        nothing
+    end
+    function composite_color_simple(instance::GdkPixbuf, _dest_width::Integer, _dest_height::Integer, _interp_type, _overall_alpha::Integer, _check_size::Integer, _color1::Integer, _color2::Integer)
+        ret = ccall(("gdk_pixbuf_composite_color_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, UInt32, Int32, Int32, UInt32, UInt32), instance, _dest_width, _dest_height, _interp_type, _overall_alpha, _check_size, _color1, _color2)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function copy(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_copy", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function copy_area(instance::GdkPixbuf, _src_x::Integer, _src_y::Integer, _width::Integer, _height::Integer, _dest_pixbuf::GdkPixbuf, _dest_x::Integer, _dest_y::Integer)
+        ret = ccall(("gdk_pixbuf_copy_area", libgdkpixbuf), Nothing, (Ptr{GObject}, Int32, Int32, Int32, Int32, Ptr{GObject}, Int32, Int32), instance, _src_x, _src_y, _width, _height, _dest_pixbuf, _dest_x, _dest_y)
+        nothing
+    end
+    function copy_options(instance::GdkPixbuf, _dest_pixbuf::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_copy_options", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{GObject}), instance, _dest_pixbuf)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function fill(instance::GdkPixbuf, _pixel::Integer)
+        ret = ccall(("gdk_pixbuf_fill", libgdkpixbuf), Nothing, (Ptr{GObject}, UInt32), instance, _pixel)
+        nothing
+    end
+    function flip(instance::GdkPixbuf, _horizontal::Bool)
+        ret = ccall(("gdk_pixbuf_flip", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Cint), instance, _horizontal)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function get_bits_per_sample(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_bits_per_sample", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_byte_length(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_byte_length", libgdkpixbuf), UInt64, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_colorspace(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_colorspace", libgdkpixbuf), UInt32, (Ptr{GObject},), instance)
+        ret2 = Colorspace(ret)
+        ret2
+    end
+    function get_has_alpha(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_has_alpha", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_height(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_height", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_n_channels(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_n_channels", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_option(instance::GdkPixbuf, _key::Union{AbstractString, Symbol})
+        ret = ccall(("gdk_pixbuf_get_option", libgdkpixbuf), Cstring, (Ptr{GObject}, Cstring), instance, _key)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function get_options(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_options", libgdkpixbuf), Ptr{GHashTable}, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_pixels(instance::GdkPixbuf)
+        m_length = Ref{UInt32}()
+        ret = ccall(("gdk_pixbuf_get_pixels_with_length", libgdkpixbuf), Ptr{UInt8}, (Ptr{GObject}, Ptr{UInt32}), instance, m_length)
+        ret2 = collect(unsafe_wrap(Vector{UInt8}, ret, m_length[]))
+        _length = m_length[]
+        ret2
+    end
+    function get_rowstride(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_rowstride", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_width(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_get_width", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function new_subpixbuf(instance::GdkPixbuf, _src_x::Integer, _src_y::Integer, _width::Integer, _height::Integer)
+        ret = ccall(("gdk_pixbuf_new_subpixbuf", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, Int32, Int32), instance, _src_x, _src_y, _width, _height)
+        ret2 = convert(GdkPixbuf, ret, true)
+        ret2
+    end
+    function read_pixel_bytes(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_read_pixel_bytes", libgdkpixbuf), Ptr{GBytes}, (Ptr{GObject},), instance)
+        ret2 = convert(GBytes, ret, true)
+        ret2
+    end
+    function read_pixels(instance::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_read_pixels", libgdkpixbuf), Ptr{UInt8}, (Ptr{GObject},), instance)
+        ret2 = convert(UInt8, ret)
+        ret2
+    end
+    function remove_option(instance::GdkPixbuf, _key::Union{AbstractString, Symbol})
+        ret = ccall(("gdk_pixbuf_remove_option", libgdkpixbuf), Cint, (Ptr{GObject}, Cstring), instance, _key)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function rotate_simple(instance::GdkPixbuf, _angle)
+        ret = ccall(("gdk_pixbuf_rotate_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, UInt32), instance, _angle)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function saturate_and_pixelate(instance::GdkPixbuf, _dest::GdkPixbuf, _saturation::Real, _pixelate::Bool)
+        ret = ccall(("gdk_pixbuf_saturate_and_pixelate", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Float32, Cint), instance, _dest, _saturation, _pixelate)
+        nothing
+    end
+    function save_to_bufferv(instance::GdkPixbuf, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
+        m_buffer = Ref{Ptr{UInt8}}()
+        m_buffer_size = Ref{UInt64}()
+        _option_keys_maybe = nothing_to_null(_option_keys)
+        _option_values_maybe = nothing_to_null(_option_values)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_save_to_bufferv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Ptr{UInt8}}, Ptr{UInt64}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, m_buffer, m_buffer_size, _type, _option_keys_maybe, _option_values_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        _buffer = m_buffer[]
+        _buffer = begin
+                arrtemp = copy(unsafe_wrap(Vector{UInt8}, _buffer, m_buffer_size[]))
+                GLib.g_free(_buffer)
+                arrtemp
+            end
+        _buffer_size = m_buffer_size[]
+        (ret2, _buffer)
+    end
+    function save_to_callbackv(instance::GdkPixbuf, _save_func::Function, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
         _save_func_cfunc = @cfunction(GdkPixbufSaveFunc, Cint, (Ptr{UInt8}, UInt64, Ptr{GError}, Ref{Function}))
-        begin
-            ref = Ref{Any}(_save_func)
-            _save_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+        ref = Ref{Any}(_save_func)
+        _save_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+        _option_keys_maybe = nothing_to_null(_option_keys)
+        _option_values_maybe = nothing_to_null(_option_values)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_save_to_callbackv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _save_func_cfunc, _save_func_closure, _type, _option_keys_maybe, _option_values_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function save_to_streamv(instance::GdkPixbuf, _stream::GOutputStream, _type::Union{AbstractString, Symbol}, _option_keys, _option_values, _cancellable::Maybe(GCancellable))
+        _option_keys_maybe = nothing_to_null(_option_keys)
+        _option_values_maybe = nothing_to_null(_option_values)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_save_to_streamv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _stream, _type, _option_keys_maybe, _option_values_maybe, _cancellable_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function save_to_streamv_async(instance::GdkPixbuf, _stream::GOutputStream, _type::Union{AbstractString, Symbol}, _option_keys, _option_values, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _option_keys_maybe = nothing_to_null(_option_keys)
+        _option_values_maybe = nothing_to_null(_option_values)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
         end
+        ret = ccall(("gdk_pixbuf_save_to_streamv_async", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _stream, _type, _option_keys_maybe, _option_values_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
     end
-    _option_keys_maybe = nothing_to_null(_option_keys)
-    _option_values_maybe = nothing_to_null(_option_values)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_save_to_callbackv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _save_func_cfunc, _save_func_closure, _type, _option_keys_maybe, _option_values_maybe, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function save_to_streamv(instance::GdkPixbuf, _stream::GOutputStream, _type::Union{AbstractString, Symbol}, _option_keys, _option_values, _cancellable::Maybe(GCancellable))
-    _option_keys_maybe = nothing_to_null(_option_keys)
-    _option_values_maybe = nothing_to_null(_option_values)
-    _cancellable_maybe = nothing_to_null(_cancellable)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_save_to_streamv", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _stream, _type, _option_keys_maybe, _option_values_maybe, _cancellable_maybe, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function save_to_streamv_async(instance::GdkPixbuf, _stream::GOutputStream, _type::Union{AbstractString, Symbol}, _option_keys, _option_values, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
-    _option_keys_maybe = nothing_to_null(_option_keys)
-    _option_values_maybe = nothing_to_null(_option_values)
-    _cancellable_maybe = nothing_to_null(_cancellable)
-    if _callback === nothing
-        _callback_cfunc = C_NULL
-        _callback_closure = C_NULL
-    else
-        _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-        _callback_closure = GLib.gc_ref(_callback)
+    function savev(instance::GdkPixbuf, _filename::Union{AbstractString, Symbol}, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
+        _option_keys_maybe = nothing_to_null(_option_keys)
+        _option_values_maybe = nothing_to_null(_option_values)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_savev", libgdkpixbuf), Cint, (Ptr{GObject}, Cstring, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _filename, _type, _option_keys_maybe, _option_values_maybe, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
     end
-    ret = ccall(("gdk_pixbuf_save_to_streamv_async", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _stream, _type, _option_keys_maybe, _option_values_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
-    nothing
-end
-function savev(instance::GdkPixbuf, _filename::Union{AbstractString, Symbol}, _type::Union{AbstractString, Symbol}, _option_keys, _option_values)
-    _option_keys_maybe = nothing_to_null(_option_keys)
-    _option_values_maybe = nothing_to_null(_option_values)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_savev", libgdkpixbuf), Cint, (Ptr{GObject}, Cstring, Cstring, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _filename, _type, _option_keys_maybe, _option_values_maybe, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function scale(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type)
-    ret = ccall(("gdk_pixbuf_scale", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type)
-    nothing
-end
-function scale_simple(instance::GdkPixbuf, _dest_width::Integer, _dest_height::Integer, _interp_type)
-    ret = ccall(("gdk_pixbuf_scale_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, UInt32), instance, _dest_width, _dest_height, _interp_type)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-    ret2
-end
-function set_option(instance::GdkPixbuf, _key::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol})
-    ret = ccall(("gdk_pixbuf_set_option", libgdkpixbuf), Cint, (Ptr{GObject}, Cstring, Cstring), instance, _key, _value)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function equal(instance::GdkPixbuf, _icon2::Maybe(GIcon))
-    equal(GIcon(instance), _icon2)
-end
-function hash(instance::GdkPixbuf)
-    hash(GIcon(instance))
-end
-function serialize(instance::GdkPixbuf)
-    serialize(GIcon(instance))
-end
-function to_string(instance::GdkPixbuf)
-    to_string(GIcon(instance))
-end
-function load(instance::GdkPixbuf, _size::Integer, _cancellable::Maybe(GCancellable))
-    load(GLoadableIcon(instance), _size, _cancellable)
-end
-function load_async(instance::GdkPixbuf, _size::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
-    load_async(GLoadableIcon(instance), _size, _cancellable, _callback)
-end
-function load_finish(instance::GdkPixbuf, _res::GAsyncResult)
-    load_finish(GLoadableIcon(instance), _res)
-end
-function PixbufAnimation_new_from_file(_filename::Union{AbstractString, Symbol})
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_animation_new_from_file", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _filename, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
-    ret2
-end
-function PixbufAnimation_new_from_resource(_resource_path::Union{AbstractString, Symbol})
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_animation_new_from_resource", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _resource_path, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
-    ret2
-end
-function PixbufAnimation_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
-    _cancellable_maybe = nothing_to_null(_cancellable)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_animation_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable_maybe, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
-    ret2
-end
-function PixbufAnimation_new_from_stream_finish(_async_result::GAsyncResult)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_animation_new_from_stream_finish", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
-    check_err(err)
-    ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
-    ret2
-end
-function get_height(instance::GdkPixbufAnimation)
-    ret = ccall(("gdk_pixbuf_animation_get_height", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-    ret
-end
-function get_static_image(instance::GdkPixbufAnimation)
-    ret = ccall(("gdk_pixbuf_animation_get_static_image", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-    ret2 = convert(GdkPixbuf, ret, false)
-    ret2
-end
-function get_width(instance::GdkPixbufAnimation)
-    ret = ccall(("gdk_pixbuf_animation_get_width", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-    ret
-end
-function is_static_image(instance::GdkPixbufAnimation)
-    ret = ccall(("gdk_pixbuf_animation_is_static_image", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function get_delay_time(instance::GdkPixbufAnimationIter)
-    ret = ccall(("gdk_pixbuf_animation_iter_get_delay_time", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-    ret
-end
-function get_pixbuf(instance::GdkPixbufAnimationIter)
-    ret = ccall(("gdk_pixbuf_animation_iter_get_pixbuf", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-    ret2 = convert(GdkPixbuf, ret, false)
-    ret2
-end
-function on_currently_loading_frame(instance::GdkPixbufAnimationIter)
-    ret = ccall(("gdk_pixbuf_animation_iter_on_currently_loading_frame", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function PixbufLoader_new()
-    ret = ccall(("gdk_pixbuf_loader_new", libgdkpixbuf), Ptr{GObject}, ())
-    ret2 = GdkPixbufLoaderLeaf(ret, true)
-    ret2
-end
-function PixbufLoader_new_with_mime_type(_mime_type::Union{AbstractString, Symbol})
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_loader_new_with_mime_type", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _mime_type, err)
-    check_err(err)
-    ret2 = GdkPixbufLoaderLeaf(ret, true)
-    ret2
-end
-function PixbufLoader_new_with_type(_image_type::Union{AbstractString, Symbol})
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_loader_new_with_type", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _image_type, err)
-    check_err(err)
-    ret2 = GdkPixbufLoaderLeaf(ret, true)
-    ret2
-end
-function close(instance::GdkPixbufLoader)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_loader_close", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function get_animation(instance::GdkPixbufLoader)
-    ret = ccall(("gdk_pixbuf_loader_get_animation", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-    ret2 = convert_if_not_null(GdkPixbufAnimation, ret, false)
-    ret2
-end
-function get_format(instance::GdkPixbufLoader)
-    ret = ccall(("gdk_pixbuf_loader_get_format", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Ptr{GObject},), instance)
-    ret2 = convert_if_not_null(GdkPixbufFormat, ret, false)
-    ret2
-end
-function get_pixbuf(instance::GdkPixbufLoader)
-    ret = ccall(("gdk_pixbuf_loader_get_pixbuf", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-    ret2 = convert_if_not_null(GdkPixbuf, ret, false)
-    ret2
-end
-function set_size(instance::GdkPixbufLoader, _width::Integer, _height::Integer)
-    ret = ccall(("gdk_pixbuf_loader_set_size", libgdkpixbuf), Nothing, (Ptr{GObject}, Int32, Int32), instance, _width, _height)
-    nothing
-end
-function write(instance::GdkPixbufLoader, _buf)
-    _buf_arr = convert(Vector{UInt8}, _buf)
-    _count = length(_buf)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_loader_write", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{UInt8}, UInt64, Ptr{Ptr{GError}}), instance, _buf_arr, _count, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function write_bytes(instance::GdkPixbufLoader, _buffer::GBytes)
-    err = err_buf()
-    ret = ccall(("gdk_pixbuf_loader_write_bytes", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{GBytes}, Ptr{Ptr{GError}}), instance, _buffer, err)
-    check_err(err)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function PixbufNonAnim_new(_pixbuf::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_non_anim_new", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), _pixbuf)
-    ret2 = GdkPixbufNonAnimLeaf(ret, true)
-    ret2
-end
-function PixbufSimpleAnim_new(_width::Integer, _height::Integer, _rate::Real)
-    ret = ccall(("gdk_pixbuf_simple_anim_new", libgdkpixbuf), Ptr{GObject}, (Int32, Int32, Float32), _width, _height, _rate)
-    ret2 = GdkPixbufSimpleAnimLeaf(ret, true)
-    ret2
-end
-function add_frame(instance::GdkPixbufSimpleAnim, _pixbuf::GdkPixbuf)
-    ret = ccall(("gdk_pixbuf_simple_anim_add_frame", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _pixbuf)
-    nothing
-end
-function get_loop(instance::GdkPixbufSimpleAnim)
-    ret = ccall(("gdk_pixbuf_simple_anim_get_loop", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function set_loop(instance::GdkPixbufSimpleAnim, _loop::Bool)
-    ret = ccall(("gdk_pixbuf_simple_anim_set_loop", libgdkpixbuf), Nothing, (Ptr{GObject}, Cint), instance, _loop)
-    nothing
+    function scale(instance::GdkPixbuf, _dest::GdkPixbuf, _dest_x::Integer, _dest_y::Integer, _dest_width::Integer, _dest_height::Integer, _offset_x::Real, _offset_y::Real, _scale_x::Real, _scale_y::Real, _interp_type)
+        ret = ccall(("gdk_pixbuf_scale", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32, Int32, Int32, Int32, Float64, Float64, Float64, Float64, UInt32), instance, _dest, _dest_x, _dest_y, _dest_width, _dest_height, _offset_x, _offset_y, _scale_x, _scale_y, _interp_type)
+        nothing
+    end
+    function scale_simple(instance::GdkPixbuf, _dest_width::Integer, _dest_height::Integer, _interp_type)
+        ret = ccall(("gdk_pixbuf_scale_simple", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Int32, Int32, UInt32), instance, _dest_width, _dest_height, _interp_type)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
+        ret2
+    end
+    function set_option(instance::GdkPixbuf, _key::Union{AbstractString, Symbol}, _value::Union{AbstractString, Symbol})
+        ret = ccall(("gdk_pixbuf_set_option", libgdkpixbuf), Cint, (Ptr{GObject}, Cstring, Cstring), instance, _key, _value)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function equal(instance::GdkPixbuf, _icon2::Maybe(GIcon))
+        equal(GIcon(instance), _icon2)
+    end
+    function hash(instance::GdkPixbuf)
+        hash(GIcon(instance))
+    end
+    function serialize(instance::GdkPixbuf)
+        serialize(GIcon(instance))
+    end
+    function to_string(instance::GdkPixbuf)
+        to_string(GIcon(instance))
+    end
+    function load(instance::GdkPixbuf, _size::Integer, _cancellable::Maybe(GCancellable))
+        load(GLoadableIcon(instance), _size, _cancellable)
+    end
+    function load_async(instance::GdkPixbuf, _size::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        load_async(GLoadableIcon(instance), _size, _cancellable, _callback)
+    end
+    function load_finish(instance::GdkPixbuf, _res::GAsyncResult)
+        load_finish(GLoadableIcon(instance), _res)
+    end
+    function PixbufAnimation_new_from_file(_filename::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_animation_new_from_file", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _filename, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
+        ret2
+    end
+    function PixbufAnimation_new_from_resource(_resource_path::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_animation_new_from_resource", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _resource_path, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
+        ret2
+    end
+    function PixbufAnimation_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_animation_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable_maybe, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
+        ret2
+    end
+    function PixbufAnimation_new_from_stream_finish(_async_result::GAsyncResult)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_animation_new_from_stream_finish", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
+        check_err(err)
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
+        ret2
+    end
+    function get_height(instance::GdkPixbufAnimation)
+        ret = ccall(("gdk_pixbuf_animation_get_height", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_static_image(instance::GdkPixbufAnimation)
+        ret = ccall(("gdk_pixbuf_animation_get_static_image", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkPixbuf, ret, false)
+        ret2
+    end
+    function get_width(instance::GdkPixbufAnimation)
+        ret = ccall(("gdk_pixbuf_animation_get_width", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function is_static_image(instance::GdkPixbufAnimation)
+        ret = ccall(("gdk_pixbuf_animation_is_static_image", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_delay_time(instance::GdkPixbufAnimationIter)
+        ret = ccall(("gdk_pixbuf_animation_iter_get_delay_time", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_pixbuf(instance::GdkPixbufAnimationIter)
+        ret = ccall(("gdk_pixbuf_animation_iter_get_pixbuf", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkPixbuf, ret, false)
+        ret2
+    end
+    function on_currently_loading_frame(instance::GdkPixbufAnimationIter)
+        ret = ccall(("gdk_pixbuf_animation_iter_on_currently_loading_frame", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function PixbufLoader_new()
+        ret = ccall(("gdk_pixbuf_loader_new", libgdkpixbuf), Ptr{GObject}, ())
+        ret2 = GdkPixbufLoaderLeaf(ret, true)
+        ret2
+    end
+    function PixbufLoader_new_with_mime_type(_mime_type::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_loader_new_with_mime_type", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _mime_type, err)
+        check_err(err)
+        ret2 = GdkPixbufLoaderLeaf(ret, true)
+        ret2
+    end
+    function PixbufLoader_new_with_type(_image_type::Union{AbstractString, Symbol})
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_loader_new_with_type", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _image_type, err)
+        check_err(err)
+        ret2 = GdkPixbufLoaderLeaf(ret, true)
+        ret2
+    end
+    function close(instance::GdkPixbufLoader)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_loader_close", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_animation(instance::GdkPixbufLoader)
+        ret = ccall(("gdk_pixbuf_loader_get_animation", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, false)
+        ret2
+    end
+    function get_format(instance::GdkPixbufLoader)
+        ret = ccall(("gdk_pixbuf_loader_get_format", libgdkpixbuf), Ptr{_GdkPixbufFormat}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkPixbufFormat, ret, false)
+        ret2
+    end
+    function get_pixbuf(instance::GdkPixbufLoader)
+        ret = ccall(("gdk_pixbuf_loader_get_pixbuf", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkPixbuf, ret, false)
+        ret2
+    end
+    function set_size(instance::GdkPixbufLoader, _width::Integer, _height::Integer)
+        ret = ccall(("gdk_pixbuf_loader_set_size", libgdkpixbuf), Nothing, (Ptr{GObject}, Int32, Int32), instance, _width, _height)
+        nothing
+    end
+    function write(instance::GdkPixbufLoader, _buf)
+        _buf_arr = convert(Vector{UInt8}, _buf)
+        _count = length(_buf)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_loader_write", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{UInt8}, UInt64, Ptr{Ptr{GError}}), instance, _buf_arr, _count, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function write_bytes(instance::GdkPixbufLoader, _buffer::GBytes)
+        err = err_buf()
+        ret = ccall(("gdk_pixbuf_loader_write_bytes", libgdkpixbuf), Cint, (Ptr{GObject}, Ptr{GBytes}, Ptr{Ptr{GError}}), instance, _buffer, err)
+        check_err(err)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function PixbufNonAnim_new(_pixbuf::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_non_anim_new", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), _pixbuf)
+        ret2 = GdkPixbufNonAnimLeaf(ret, true)
+        ret2
+    end
+    function PixbufSimpleAnim_new(_width::Integer, _height::Integer, _rate::Real)
+        ret = ccall(("gdk_pixbuf_simple_anim_new", libgdkpixbuf), Ptr{GObject}, (Int32, Int32, Float32), _width, _height, _rate)
+        ret2 = GdkPixbufSimpleAnimLeaf(ret, true)
+        ret2
+    end
+    function add_frame(instance::GdkPixbufSimpleAnim, _pixbuf::GdkPixbuf)
+        ret = ccall(("gdk_pixbuf_simple_anim_add_frame", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _pixbuf)
+        nothing
+    end
+    function get_loop(instance::GdkPixbufSimpleAnim)
+        ret = ccall(("gdk_pixbuf_simple_anim_get_loop", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function set_loop(instance::GdkPixbufSimpleAnim, _loop::Bool)
+        ret = ccall(("gdk_pixbuf_simple_anim_set_loop", libgdkpixbuf), Nothing, (Ptr{GObject}, Cint), instance, _loop)
+        nothing
+    end
 end

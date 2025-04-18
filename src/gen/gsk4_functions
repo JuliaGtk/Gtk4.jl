@@ -1,28 +1,30 @@
-function serialization_error_quark()
-    ret = ccall(("gsk_serialization_error_quark", libgtk4), UInt32, ())
-    ret
-end
-function stroke_equal(_stroke1::Maybe(Nothing), _stroke2::Maybe(Nothing))
-    _stroke1_maybe = nothing_to_null(_stroke1)
-    _stroke2_maybe = nothing_to_null(_stroke2)
-    ret = ccall(("gsk_stroke_equal", libgtk4), Cint, (Ptr{Nothing}, Ptr{Nothing}), _stroke1_maybe, _stroke2_maybe)
-    ret2 = convert(Bool, ret)
-    ret2
-end
-function transform_parse(_string::Union{AbstractString, Symbol})
-    m_out_transform = Ref{Ptr{GskTransform}}()
-    ret = ccall(("gsk_transform_parse", libgtk4), Cint, (Cstring, Ptr{Ptr{GskTransform}}), _string, m_out_transform)
-    ret2 = convert(Bool, ret)
-    _out_transform = m_out_transform[]
-    _out_transform = convert(GskTransform, _out_transform, true)
-    (ret2, _out_transform)
-end
-function value_set_render_node(_value::GValueLike, _node::GskRenderNode)
-    ret = ccall(("gsk_value_set_render_node", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GskRenderNode}), _value, _node)
-    nothing
-end
-function value_take_render_node(_value::GValueLike, _node::Maybe(GskRenderNode))
-    _node_maybe = nothing_to_null(_node)
-    ret = ccall(("gsk_value_take_render_node", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GskRenderNode}), _value, _node_maybe)
-    nothing
+begin
+    function serialization_error_quark()
+        ret = ccall(("gsk_serialization_error_quark", libgtk4), UInt32, ())
+        ret
+    end
+    function stroke_equal(_stroke1::Maybe(Nothing), _stroke2::Maybe(Nothing))
+        _stroke1_maybe = nothing_to_null(_stroke1)
+        _stroke2_maybe = nothing_to_null(_stroke2)
+        ret = ccall(("gsk_stroke_equal", libgtk4), Cint, (Ptr{Nothing}, Ptr{Nothing}), _stroke1_maybe, _stroke2_maybe)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function transform_parse(_string::Union{AbstractString, Symbol})
+        m_out_transform = Ref{Ptr{GskTransform}}()
+        ret = ccall(("gsk_transform_parse", libgtk4), Cint, (Cstring, Ptr{Ptr{GskTransform}}), _string, m_out_transform)
+        ret2 = convert(Bool, ret)
+        _out_transform = m_out_transform[]
+        _out_transform = convert(GskTransform, _out_transform, true)
+        (ret2, _out_transform)
+    end
+    function value_set_render_node(_value::GValueLike, _node::GskRenderNode)
+        ret = ccall(("gsk_value_set_render_node", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GskRenderNode}), _value, _node)
+        nothing
+    end
+    function value_take_render_node(_value::GValueLike, _node::Maybe(GskRenderNode))
+        _node_maybe = nothing_to_null(_node)
+        ret = ccall(("gsk_value_take_render_node", libgtk4), Nothing, (Ptr{_GValue}, Ptr{GskRenderNode}), _value, _node_maybe)
+        nothing
+    end
 end

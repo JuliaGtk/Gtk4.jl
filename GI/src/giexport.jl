@@ -51,10 +51,10 @@ function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix,
     end
     isempty(exports.args) || push!(const_mod.args, exports)
 
-    push!(exprs, const_mod)
+    push!(exprs, MacroTools.flatten(const_mod))
 
     ## export constants, enums, and flags code
-    GI.write_to_file(path,"$(prefix)_consts",toplevel)
+    GI.write_consts_to_file(path,"$(prefix)_consts",toplevel)
 end
 
 ## Structs
@@ -532,12 +532,24 @@ end
 function write_to_file(filename,block)
     open(filename,"w") do f
         Base.remove_linenums!(block)
-        Base.show_unquoted(f, block)
+        Base.show_unquoted(f, MacroTools.flatten(block))
         println(f)
     end
 end
 
 write_to_file(path,filename,toplevel)=write_to_file(joinpath(path,filename),toplevel)
+
+function write_consts_to_file(filename,block)
+    open(filename,"w") do f
+        Base.remove_linenums!(block)
+        for expr in MacroTools.flatten(block).args
+            Base.show_unquoted(f, expr)
+            println(f)
+        end
+    end
+end
+
+write_consts_to_file(path,filename,toplevel)=write_consts_to_file(joinpath(path,filename),toplevel)
 
 function output_exprs()
     block = Expr(:block)

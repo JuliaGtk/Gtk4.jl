@@ -1,134 +1,44 @@
-begin
-    begin
-        @cenum Status::Int32 Status_SUCCESS = 0 Status_NO_MEMORY = 1 Status_INVALID_RESTORE = 2 Status_INVALID_POP_GROUP = 3 Status_NO_CURRENT_POINT = 4 Status_INVALID_MATRIX = 5 Status_INVALID_STATUS = 6 Status_NULL_POINTER = 7 Status_INVALID_STRING = 8 Status_INVALID_PATH_DATA = 9 Status_READ_ERROR = 10 Status_WRITE_ERROR = 11 Status_SURFACE_FINISHED = 12 Status_SURFACE_TYPE_MISMATCH = 13 Status_PATTERN_TYPE_MISMATCH = 14 Status_INVALID_CONTENT = 15 Status_INVALID_FORMAT = 16 Status_INVALID_VISUAL = 17 Status_FILE_NOT_FOUND = 18 Status_INVALID_DASH = 19 Status_INVALID_DSC_COMMENT = 20 Status_INVALID_INDEX = 21 Status_CLIP_NOT_REPRESENTABLE = 22 Status_TEMP_FILE_ERROR = 23 Status_INVALID_STRIDE = 24 Status_FONT_TYPE_MISMATCH = 25 Status_USER_FONT_IMMUTABLE = 26 Status_USER_FONT_ERROR = 27 Status_NEGATIVE_COUNT = 28 Status_INVALID_CLUSTERS = 29 Status_INVALID_SLANT = 30 Status_INVALID_WEIGHT = 31 Status_INVALID_SIZE = 32 Status_USER_FONT_NOT_IMPLEMENTED = 33 Status_DEVICE_TYPE_MISMATCH = 34 Status_DEVICE_ERROR = 35 Status_INVALID_MESH_CONSTRUCTION = 36 Status_DEVICE_FINISHED = 37 Status_JBIG2_GLOBAL_MISSING = 38
-        (GLib.g_type(::Type{T}) where T <: Status) = begin
-                ccall(("cairo_gobject_status_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum Content::Int32 Content_COLOR = 4096 Content_ALPHA = 8192 Content_COLOR_ALPHA = 12288
-        (GLib.g_type(::Type{T}) where T <: Content) = begin
-                ccall(("cairo_gobject_content_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum Operator::Int32 Operator_CLEAR = 0 Operator_SOURCE = 1 Operator_OVER = 2 Operator_IN = 3 Operator_OUT = 4 Operator_ATOP = 5 Operator_DEST = 6 Operator_DEST_OVER = 7 Operator_DEST_IN = 8 Operator_DEST_OUT = 9 Operator_DEST_ATOP = 10 Operator_XOR = 11 Operator_ADD = 12 Operator_SATURATE = 13 Operator_MULTIPLY = 14 Operator_SCREEN = 15 Operator_OVERLAY = 16 Operator_DARKEN = 17 Operator_LIGHTEN = 18 Operator_COLOR_DODGE = 19 Operator_COLOR_BURN = 20 Operator_HARD_LIGHT = 21 Operator_SOFT_LIGHT = 22 Operator_DIFFERENCE = 23 Operator_EXCLUSION = 24 Operator_HSL_HUE = 25 Operator_HSL_SATURATION = 26 Operator_HSL_COLOR = 27 Operator_HSL_LUMINOSITY = 28
-        (GLib.g_type(::Type{T}) where T <: Operator) = begin
-                ccall(("cairo_gobject_operator_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum Antialias::Int32 Antialias_DEFAULT = 0 Antialias_NONE = 1 Antialias_GRAY = 2 Antialias_SUBPIXEL = 3 Antialias_FAST = 4 Antialias_GOOD = 5 Antialias_BEST = 6
-        (GLib.g_type(::Type{T}) where T <: Antialias) = begin
-                ccall(("cairo_gobject_antialias_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum FillRule::Int32 FillRule_WINDING = 0 FillRule_EVEN_ODD = 1
-        (GLib.g_type(::Type{T}) where T <: FillRule) = begin
-                ccall(("cairo_gobject_fill_rule_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum LineCap::Int32 LineCap_BUTT = 0 LineCap_ROUND = 1 LineCap_SQUARE = 2
-        (GLib.g_type(::Type{T}) where T <: LineCap) = begin
-                ccall(("cairo_gobject_line_cap_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum LineJoin::Int32 LineJoin_MITER = 0 LineJoin_ROUND = 1 LineJoin_BEVEL = 2
-        (GLib.g_type(::Type{T}) where T <: LineJoin) = begin
-                ccall(("cairo_gobject_line_join_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum TextClusterFlags::Int32 TextClusterFlags_BACKWARD = 1
-        (GLib.g_type(::Type{T}) where T <: TextClusterFlags) = begin
-                ccall(("cairo_gobject_text_cluster_flags_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum FontSlant::Int32 FontSlant_NORMAL = 0 FontSlant_ITALIC = 1 FontSlant_OBLIQUE = 2
-        (GLib.g_type(::Type{T}) where T <: FontSlant) = begin
-                ccall(("cairo_gobject_font_slant_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum FontWeight::Int32 FontWeight_NORMAL = 0 FontWeight_BOLD = 1
-        (GLib.g_type(::Type{T}) where T <: FontWeight) = begin
-                ccall(("cairo_gobject_font_weight_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum SubpixelOrder::Int32 SubpixelOrder_DEFAULT = 0 SubpixelOrder_RGB = 1 SubpixelOrder_BGR = 2 SubpixelOrder_VRGB = 3 SubpixelOrder_VBGR = 4
-        (GLib.g_type(::Type{T}) where T <: SubpixelOrder) = begin
-                ccall(("cairo_gobject_subpixel_order_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum HintStyle::Int32 HintStyle_DEFAULT = 0 HintStyle_NONE = 1 HintStyle_SLIGHT = 2 HintStyle_MEDIUM = 3 HintStyle_FULL = 4
-        (GLib.g_type(::Type{T}) where T <: HintStyle) = begin
-                ccall(("cairo_gobject_hint_style_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum HintMetrics::Int32 HintMetrics_DEFAULT = 0 HintMetrics_OFF = 1 HintMetrics_ON = 2
-        (GLib.g_type(::Type{T}) where T <: HintMetrics) = begin
-                ccall(("cairo_gobject_hint_metrics_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum FontType::Int32 FontType_TOY = 0 FontType_FT = 1 FontType_WIN32 = 2 FontType_QUARTZ = 3 FontType_USER = 4
-        (GLib.g_type(::Type{T}) where T <: FontType) = begin
-                ccall(("cairo_gobject_font_type_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum PathDataType::Int32 PathDataType_MOVE_TO = 0 PathDataType_LINE_TO = 1 PathDataType_CURVE_TO = 2 PathDataType_CLOSE_PATH = 3
-        (GLib.g_type(::Type{T}) where T <: PathDataType) = begin
-                ccall(("cairo_gobject_path_data_type_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum DeviceType::UInt16 DeviceType_DRM = 0x0000 DeviceType_GL = 0x0001 DeviceType_SCRIPT = 0x0002 DeviceType_XCB = 0x0003 DeviceType_XLIB = 0x0004 DeviceType_XML = 0x0005 DeviceType_COGL = 0x0006 DeviceType_WIN32 = 0x0007 DeviceType_INVALID = 0xffff
-        (GLib.g_type(::Type{T}) where T <: DeviceType) = begin
-                ccall(("cairo_gobject_device_type_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum SurfaceType::Int32 SurfaceType_IMAGE = 0 SurfaceType_PDF = 1 SurfaceType_PS = 2 SurfaceType_XLIB = 3 SurfaceType_XCB = 4 SurfaceType_GLITZ = 5 SurfaceType_QUARTZ = 6 SurfaceType_WIN32 = 7 SurfaceType_BEOS = 8 SurfaceType_DIRECTFB = 9 SurfaceType_SVG = 10 SurfaceType_OS2 = 11 SurfaceType_WIN32_PRINTING = 12 SurfaceType_QUARTZ_IMAGE = 13 SurfaceType_SCRIPT = 14 SurfaceType_QT = 15 SurfaceType_RECORDING = 16 SurfaceType_VG = 17 SurfaceType_GL = 18 SurfaceType_DRM = 19 SurfaceType_TEE = 20 SurfaceType_XML = 21 SurfaceType_SKIA = 22 SurfaceType_SUBSURFACE = 23 SurfaceType_COGL = 24
-        (GLib.g_type(::Type{T}) where T <: SurfaceType) = begin
-                ccall(("cairo_gobject_surface_type_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum Format::UInt16 Format_INVALID = 0xffff Format_ARGB32 = 0x0000 Format_RGB24 = 0x0001 Format_A8 = 0x0002 Format_A1 = 0x0003 Format_RGB16_565 = 0x0004 Format_RGB30 = 0x0005
-        (GLib.g_type(::Type{T}) where T <: Format) = begin
-                ccall(("cairo_gobject_format_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum PatternType::Int32 PatternType_SOLID = 0 PatternType_SURFACE = 1 PatternType_LINEAR = 2 PatternType_RADIAL = 3 PatternType_MESH = 4 PatternType_RASTER_SOURCE = 5
-        (GLib.g_type(::Type{T}) where T <: PatternType) = begin
-                ccall(("cairo_gobject_pattern_type_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum Extend::Int32 Extend_NONE = 0 Extend_REPEAT = 1 Extend_REFLECT = 2 Extend_PAD = 3
-        (GLib.g_type(::Type{T}) where T <: Extend) = begin
-                ccall(("cairo_gobject_extend_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum Filter::Int32 Filter_FAST = 0 Filter_GOOD = 1 Filter_BEST = 2 Filter_NEAREST = 3 Filter_BILINEAR = 4 Filter_GAUSSIAN = 5
-        (GLib.g_type(::Type{T}) where T <: Filter) = begin
-                ccall(("cairo_gobject_filter_get_type", libcairo_gobject), GType, ())
-            end
-    end
-    begin
-        @cenum RegionOverlap::Int32 RegionOverlap_IN = 0 RegionOverlap_OUT = 1 RegionOverlap_PART = 2
-        (GLib.g_type(::Type{T}) where T <: RegionOverlap) = begin
-                ccall(("cairo_gobject_region_overlap_get_type", libcairo_gobject), GType, ())
-            end
-    end
-end
+@cenum(Status::Int32, Status_SUCCESS = 0, Status_NO_MEMORY = 1, Status_INVALID_RESTORE = 2, Status_INVALID_POP_GROUP = 3, Status_NO_CURRENT_POINT = 4, Status_INVALID_MATRIX = 5, Status_INVALID_STATUS = 6, Status_NULL_POINTER = 7, Status_INVALID_STRING = 8, Status_INVALID_PATH_DATA = 9, Status_READ_ERROR = 10, Status_WRITE_ERROR = 11, Status_SURFACE_FINISHED = 12, Status_SURFACE_TYPE_MISMATCH = 13, Status_PATTERN_TYPE_MISMATCH = 14, Status_INVALID_CONTENT = 15, Status_INVALID_FORMAT = 16, Status_INVALID_VISUAL = 17, Status_FILE_NOT_FOUND = 18, Status_INVALID_DASH = 19, Status_INVALID_DSC_COMMENT = 20, Status_INVALID_INDEX = 21, Status_CLIP_NOT_REPRESENTABLE = 22, Status_TEMP_FILE_ERROR = 23, Status_INVALID_STRIDE = 24, Status_FONT_TYPE_MISMATCH = 25, Status_USER_FONT_IMMUTABLE = 26, Status_USER_FONT_ERROR = 27, Status_NEGATIVE_COUNT = 28, Status_INVALID_CLUSTERS = 29, Status_INVALID_SLANT = 30, Status_INVALID_WEIGHT = 31, Status_INVALID_SIZE = 32, Status_USER_FONT_NOT_IMPLEMENTED = 33, Status_DEVICE_TYPE_MISMATCH = 34, Status_DEVICE_ERROR = 35, Status_INVALID_MESH_CONSTRUCTION = 36, Status_DEVICE_FINISHED = 37, Status_JBIG2_GLOBAL_MISSING = 38)
+(GLib.g_type(::Type{T}) where T <: Status) = ccall(("cairo_gobject_status_get_type", libcairo_gobject), GType, ())
+@cenum(Content::Int32, Content_COLOR = 4096, Content_ALPHA = 8192, Content_COLOR_ALPHA = 12288)
+(GLib.g_type(::Type{T}) where T <: Content) = ccall(("cairo_gobject_content_get_type", libcairo_gobject), GType, ())
+@cenum(Operator::Int32, Operator_CLEAR = 0, Operator_SOURCE = 1, Operator_OVER = 2, Operator_IN = 3, Operator_OUT = 4, Operator_ATOP = 5, Operator_DEST = 6, Operator_DEST_OVER = 7, Operator_DEST_IN = 8, Operator_DEST_OUT = 9, Operator_DEST_ATOP = 10, Operator_XOR = 11, Operator_ADD = 12, Operator_SATURATE = 13, Operator_MULTIPLY = 14, Operator_SCREEN = 15, Operator_OVERLAY = 16, Operator_DARKEN = 17, Operator_LIGHTEN = 18, Operator_COLOR_DODGE = 19, Operator_COLOR_BURN = 20, Operator_HARD_LIGHT = 21, Operator_SOFT_LIGHT = 22, Operator_DIFFERENCE = 23, Operator_EXCLUSION = 24, Operator_HSL_HUE = 25, Operator_HSL_SATURATION = 26, Operator_HSL_COLOR = 27, Operator_HSL_LUMINOSITY = 28)
+(GLib.g_type(::Type{T}) where T <: Operator) = ccall(("cairo_gobject_operator_get_type", libcairo_gobject), GType, ())
+@cenum(Antialias::Int32, Antialias_DEFAULT = 0, Antialias_NONE = 1, Antialias_GRAY = 2, Antialias_SUBPIXEL = 3, Antialias_FAST = 4, Antialias_GOOD = 5, Antialias_BEST = 6)
+(GLib.g_type(::Type{T}) where T <: Antialias) = ccall(("cairo_gobject_antialias_get_type", libcairo_gobject), GType, ())
+@cenum(FillRule::Int32, FillRule_WINDING = 0, FillRule_EVEN_ODD = 1)
+(GLib.g_type(::Type{T}) where T <: FillRule) = ccall(("cairo_gobject_fill_rule_get_type", libcairo_gobject), GType, ())
+@cenum(LineCap::Int32, LineCap_BUTT = 0, LineCap_ROUND = 1, LineCap_SQUARE = 2)
+(GLib.g_type(::Type{T}) where T <: LineCap) = ccall(("cairo_gobject_line_cap_get_type", libcairo_gobject), GType, ())
+@cenum(LineJoin::Int32, LineJoin_MITER = 0, LineJoin_ROUND = 1, LineJoin_BEVEL = 2)
+(GLib.g_type(::Type{T}) where T <: LineJoin) = ccall(("cairo_gobject_line_join_get_type", libcairo_gobject), GType, ())
+@cenum(TextClusterFlags::Int32, TextClusterFlags_BACKWARD = 1)
+(GLib.g_type(::Type{T}) where T <: TextClusterFlags) = ccall(("cairo_gobject_text_cluster_flags_get_type", libcairo_gobject), GType, ())
+@cenum(FontSlant::Int32, FontSlant_NORMAL = 0, FontSlant_ITALIC = 1, FontSlant_OBLIQUE = 2)
+(GLib.g_type(::Type{T}) where T <: FontSlant) = ccall(("cairo_gobject_font_slant_get_type", libcairo_gobject), GType, ())
+@cenum(FontWeight::Int32, FontWeight_NORMAL = 0, FontWeight_BOLD = 1)
+(GLib.g_type(::Type{T}) where T <: FontWeight) = ccall(("cairo_gobject_font_weight_get_type", libcairo_gobject), GType, ())
+@cenum(SubpixelOrder::Int32, SubpixelOrder_DEFAULT = 0, SubpixelOrder_RGB = 1, SubpixelOrder_BGR = 2, SubpixelOrder_VRGB = 3, SubpixelOrder_VBGR = 4)
+(GLib.g_type(::Type{T}) where T <: SubpixelOrder) = ccall(("cairo_gobject_subpixel_order_get_type", libcairo_gobject), GType, ())
+@cenum(HintStyle::Int32, HintStyle_DEFAULT = 0, HintStyle_NONE = 1, HintStyle_SLIGHT = 2, HintStyle_MEDIUM = 3, HintStyle_FULL = 4)
+(GLib.g_type(::Type{T}) where T <: HintStyle) = ccall(("cairo_gobject_hint_style_get_type", libcairo_gobject), GType, ())
+@cenum(HintMetrics::Int32, HintMetrics_DEFAULT = 0, HintMetrics_OFF = 1, HintMetrics_ON = 2)
+(GLib.g_type(::Type{T}) where T <: HintMetrics) = ccall(("cairo_gobject_hint_metrics_get_type", libcairo_gobject), GType, ())
+@cenum(FontType::Int32, FontType_TOY = 0, FontType_FT = 1, FontType_WIN32 = 2, FontType_QUARTZ = 3, FontType_USER = 4)
+(GLib.g_type(::Type{T}) where T <: FontType) = ccall(("cairo_gobject_font_type_get_type", libcairo_gobject), GType, ())
+@cenum(PathDataType::Int32, PathDataType_MOVE_TO = 0, PathDataType_LINE_TO = 1, PathDataType_CURVE_TO = 2, PathDataType_CLOSE_PATH = 3)
+(GLib.g_type(::Type{T}) where T <: PathDataType) = ccall(("cairo_gobject_path_data_type_get_type", libcairo_gobject), GType, ())
+@cenum(DeviceType::UInt16, DeviceType_DRM = 0x0000, DeviceType_GL = 0x0001, DeviceType_SCRIPT = 0x0002, DeviceType_XCB = 0x0003, DeviceType_XLIB = 0x0004, DeviceType_XML = 0x0005, DeviceType_COGL = 0x0006, DeviceType_WIN32 = 0x0007, DeviceType_INVALID = 0xffff)
+(GLib.g_type(::Type{T}) where T <: DeviceType) = ccall(("cairo_gobject_device_type_get_type", libcairo_gobject), GType, ())
+@cenum(SurfaceType::Int32, SurfaceType_IMAGE = 0, SurfaceType_PDF = 1, SurfaceType_PS = 2, SurfaceType_XLIB = 3, SurfaceType_XCB = 4, SurfaceType_GLITZ = 5, SurfaceType_QUARTZ = 6, SurfaceType_WIN32 = 7, SurfaceType_BEOS = 8, SurfaceType_DIRECTFB = 9, SurfaceType_SVG = 10, SurfaceType_OS2 = 11, SurfaceType_WIN32_PRINTING = 12, SurfaceType_QUARTZ_IMAGE = 13, SurfaceType_SCRIPT = 14, SurfaceType_QT = 15, SurfaceType_RECORDING = 16, SurfaceType_VG = 17, SurfaceType_GL = 18, SurfaceType_DRM = 19, SurfaceType_TEE = 20, SurfaceType_XML = 21, SurfaceType_SKIA = 22, SurfaceType_SUBSURFACE = 23, SurfaceType_COGL = 24)
+(GLib.g_type(::Type{T}) where T <: SurfaceType) = ccall(("cairo_gobject_surface_type_get_type", libcairo_gobject), GType, ())
+@cenum(Format::UInt16, Format_INVALID = 0xffff, Format_ARGB32 = 0x0000, Format_RGB24 = 0x0001, Format_A8 = 0x0002, Format_A1 = 0x0003, Format_RGB16_565 = 0x0004, Format_RGB30 = 0x0005)
+(GLib.g_type(::Type{T}) where T <: Format) = ccall(("cairo_gobject_format_get_type", libcairo_gobject), GType, ())
+@cenum(PatternType::Int32, PatternType_SOLID = 0, PatternType_SURFACE = 1, PatternType_LINEAR = 2, PatternType_RADIAL = 3, PatternType_MESH = 4, PatternType_RASTER_SOURCE = 5)
+(GLib.g_type(::Type{T}) where T <: PatternType) = ccall(("cairo_gobject_pattern_type_get_type", libcairo_gobject), GType, ())
+@cenum(Extend::Int32, Extend_NONE = 0, Extend_REPEAT = 1, Extend_REFLECT = 2, Extend_PAD = 3)
+(GLib.g_type(::Type{T}) where T <: Extend) = ccall(("cairo_gobject_extend_get_type", libcairo_gobject), GType, ())
+@cenum(Filter::Int32, Filter_FAST = 0, Filter_GOOD = 1, Filter_BEST = 2, Filter_NEAREST = 3, Filter_BILINEAR = 4, Filter_GAUSSIAN = 5)
+(GLib.g_type(::Type{T}) where T <: Filter) = ccall(("cairo_gobject_filter_get_type", libcairo_gobject), GType, ())
+@cenum(RegionOverlap::Int32, RegionOverlap_IN = 0, RegionOverlap_OUT = 1, RegionOverlap_PART = 2)
+(GLib.g_type(::Type{T}) where T <: RegionOverlap) = ccall(("cairo_gobject_region_overlap_get_type", libcairo_gobject), GType, ())
