@@ -200,7 +200,8 @@ end
 
 # Asks GLib to make a new GObject
 function gobject_new(juliatype, args...)
-    gtype = GLib.g_type(juliatype)
-    h=ccall(("g_object_new", GLib.libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)
-    juliatype(h, args...)
+    gtype = g_type(juliatype)
+    h=ccall(("g_object_new", libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)
+    gobject_maybe_sink(h, false)
+    gobject_ref(juliatype(h, args...))
 end

@@ -1,7 +1,6 @@
-using Gtk4.GLib, Gtk4
+using Gtk4.GLib, Gtk4, Gtk4.Graphene
 import Gtk4.GLib: _GObjectClass
 import Gtk4: _GtkWidgetClass
-import Gtk4.Graphene: _GrapheneRect
 
 function widget_measure(widget::Ptr{GObject}, orientation::Cint, for_size::Cint, minimum::Ptr{Cint}, natural::Ptr{Cint}, minimum_baseline::Ptr{Cint}, natural_baseline::Ptr{Cint})
     unsafe_store!(minimum, Cint(100))
@@ -13,10 +12,10 @@ function widget_snapshot(widget_ptr::Ptr{GObject}, snapshot_ptr::Ptr{GObject})
     widget = convert(GtkWidget, widget_ptr)
     snapshot = convert(GtkSnapshot, snapshot_ptr)
     w,h = size(widget)
-    Gtk4.G_.append_color(snapshot, GdkRGBA("red"), Ref(_GrapheneRect(0,0,w/2,h/2)))
-    Gtk4.G_.append_color(snapshot, GdkRGBA("green"), Ref(_GrapheneRect(w/2,0,w/2,h/2)))
-    Gtk4.G_.append_color(snapshot, GdkRGBA("yellow"), Ref(_GrapheneRect(0,h/2,w/2,h/2)))
-    Gtk4.G_.append_color(snapshot, GdkRGBA("blue"), Ref(_GrapheneRect(w/2,h/2,w/2,h/2)))
+    Gtk4.G_.append_color(snapshot, GdkRGBA("red"), GrapheneRect(0,0,w/2,h/2))
+    Gtk4.G_.append_color(snapshot, GdkRGBA("green"), GrapheneRect(w/2,0,w/2,h/2))
+    Gtk4.G_.append_color(snapshot, GdkRGBA("yellow"), GrapheneRect(0,h/2,w/2,h/2))
+    Gtk4.G_.append_color(snapshot, GdkRGBA("blue"), GrapheneRect(w/2,h/2,w/2,h/2))
     nothing
 end
 
