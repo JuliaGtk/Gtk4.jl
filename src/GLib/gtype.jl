@@ -368,7 +368,7 @@ function gobject_ref(x::T) where T <: GObject
         # already gc-protected, nothing to do
     end
     gc_preserve_glib_lock[] = false
-    run_delayed_finalizers()
+    # run_delayed_finalizers() # Commenting out helps with issue #99, unsure why
     return x
 end
 gc_ref(x::GObject) = pointer_from_objref(gobject_ref(x))
