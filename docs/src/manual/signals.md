@@ -94,11 +94,11 @@ For the "clicked" signal of a `GtkButton`, the equivalent to the example at the 
 ```julia
 b = GtkButton("Press me")
 win = GtkWindow(b, "Callbacks")
-function button_cb(::Ptr, b)
-    println(b, " was clicked!")
+function cb(::Ptr, b)
+    println(b.label, " was clicked!")
 end
 
-on_clicked(cb, b)
+Gtk4.on_clicked(cb, b)
 ```
 
 Note that the main difference here, other than the name of the function being called to connect the signal, is the argument list of the callback. The first argument here is always a pointer to the GObject that sends the signal, which in this case is the `GtkButton`.
