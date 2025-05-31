@@ -51,6 +51,9 @@ path = Gtk4.path(treeModel,iter)
 @test prev(path)
 @test string(path) == "0"
 
+path9 = Gtk4.path(store, iter)
+
+
 path2 = copy(path)
 @test string(path2) == string(path)
 

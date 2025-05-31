@@ -456,6 +456,9 @@ function path(treeModel::GtkTreeModel, iter::TRI)
                             treeModel, iter ) )
 end
 
+path(treestore::GtkTreeStore, iter::TRI) = path(GtkTreeModel(treestore), iter)
+path(liststore::GtkListStore, iter::TRI) = path(GtkTreeModel(liststore), iter)
+
 ### GtkTreeSortable
 
 ### GtkCellRenderer

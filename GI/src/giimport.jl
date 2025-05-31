@@ -1022,7 +1022,7 @@ function get_constructors(info::Union{GIStructInfo,GIObjectInfo};skiplist=Symbol
                 quote
                     function $tname($(jparams(jargs)...); kwargs...)
                         obj = G_.$mname($(names(jargs)...))
-                        GLib.setproperties!(obj; kwargs...)
+                        obj !== nothing && GLib.setproperties!(obj; kwargs...)
                         obj
                     end
                 end
