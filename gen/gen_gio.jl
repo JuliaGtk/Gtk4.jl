@@ -17,7 +17,9 @@ struct_skiplist=vcat(disguised, [:ActionEntry,:DBusAnnotationInfo,:DBusArgInfo,:
 :DBusNodeInfo,:InputMessage,:OutputMessage,:StaticResource,:UnixMountEntry,:UnixMountPoint,
 :XdpDocumentsProxy,:XdpDocumentsSkeleton,:XdpOpenURISkeleton,:XdpDocumentsProxyClass,
 :XdpDocumentsSkeletonClass,:XdpOpenURIProxy,:XdpOpenURIProxyClass,:XdpOpenURISkeletonClass,
-:XdpProxyResolverProxy,:XdpProxyResolverProxyClass,:XdpProxyResolverSkeleton,:XdpProxyResolverSkeletonClass,:XdpTrashProxy,:XdpTrashProxyClass,:XdpTrashSkeleton,:XdpTrashSkeletonClass,:_FreedesktopDBusProxyClass,:_FreedesktopDBusSkeletonClass])
+:XdpProxyResolverProxy,:XdpProxyResolverProxyClass,:XdpProxyResolverSkeleton,
+:XdpProxyResolverSkeletonClass,:XdpTrashProxy,:XdpTrashProxyClass,:XdpTrashSkeleton,
+:XdpTrashSkeletonClass,:_FreedesktopDBusProxyClass,:_FreedesktopDBusSkeletonClass,])
 
 obj_skiplist=[:UnixMountMonitor,:UnixOutputStream,:UnixInputStream,:UnixFDList,:UnixFDMessage,:UnixSocketAddress,:DebugControllerDBus,:DBusInterfaceSkeleton,:DBusObjectSkeleton,:DBusObjectManagerServer]
 
@@ -45,6 +47,6 @@ skiplist=[:bus_own_name_on_connection,:bus_own_name,:bus_watch_name_on_connectio
 :dbus_error_strip_remote_error,:dbus_error_register_error_domain,:io_modules_load_all_in_directory_with_scope,:io_modules_scan_all_in_directory_with_scope,:dbus_gvariant_to_gvalue,:unix_mount_at,:unix_mount_copy,:unix_mount_compare,:unix_mount_for,:unix_mount_free,
 :unix_mount_get_device_path,:unix_mount_get_fs_type,:unix_mount_get_mount_path,:unix_mount_get_options,:unix_mount_get_root_path,:unix_mount_guess_can_eject,:unix_mount_guess_icon,:unix_mount_guess_name,:unix_mount_guess_should_display,:unix_mount_guess_symbolic_icon,
 :unix_mount_is_readonly,:unix_mount_is_system_internal,:unix_mount_point_at,:unix_mount_points_changed_since,:unix_mount_points_get,:unix_mounts_get,:file_new_build_filenamev,:io_extension_point_implement,:io_extension_point_lookup,:io_extension_point_register,
-:unix_mount_points_get_from_file,:unix_mounts_get_from_file]
+:unix_mount_points_get_from_file,:unix_mounts_get_from_file,:unix_mount_entries_get,:unix_mount_entries_get_from_file,:unix_mount_entry_at,:unix_mount_entry_for]
 
 GI.export_functions!(ns,path,"gio"; skiplist = skiplist)
