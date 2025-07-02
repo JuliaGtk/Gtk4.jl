@@ -49,54 +49,6 @@ begin
         ret2 = convert(GskRoundedRectLike, ret)
         ret2
     end
-    function ShaderArgsBuilder_new(_shader::GskGLShader, _initial_values::Maybe(GBytes))
-        _initial_values_maybe = nothing_to_null(_initial_values)
-        ret = ccall(("gsk_shader_args_builder_new", libgtk4), Ptr{GskShaderArgsBuilder}, (Ptr{GObject}, Ptr{GBytes}), _shader, _initial_values_maybe)
-        ret2 = convert(GskShaderArgsBuilder, ret, true)
-        ret2
-    end
-    function ref(instance::GskShaderArgsBuilder)
-        ret = ccall(("gsk_shader_args_builder_ref", libgtk4), Ptr{GskShaderArgsBuilder}, (Ptr{GskShaderArgsBuilder},), instance)
-        ret2 = convert(GskShaderArgsBuilder, ret, true)
-        ret2
-    end
-    function set_bool(instance::GskShaderArgsBuilder, _idx::Integer, _value::Bool)
-        ret = ccall(("gsk_shader_args_builder_set_bool", libgtk4), Nothing, (Ptr{GskShaderArgsBuilder}, Int32, Cint), instance, _idx, _value)
-        nothing
-    end
-    function set_float(instance::GskShaderArgsBuilder, _idx::Integer, _value::Real)
-        ret = ccall(("gsk_shader_args_builder_set_float", libgtk4), Nothing, (Ptr{GskShaderArgsBuilder}, Int32, Float32), instance, _idx, _value)
-        nothing
-    end
-    function set_int(instance::GskShaderArgsBuilder, _idx::Integer, _value::Integer)
-        ret = ccall(("gsk_shader_args_builder_set_int", libgtk4), Nothing, (Ptr{GskShaderArgsBuilder}, Int32, Int32), instance, _idx, _value)
-        nothing
-    end
-    function set_uint(instance::GskShaderArgsBuilder, _idx::Integer, _value::Integer)
-        ret = ccall(("gsk_shader_args_builder_set_uint", libgtk4), Nothing, (Ptr{GskShaderArgsBuilder}, Int32, UInt32), instance, _idx, _value)
-        nothing
-    end
-    function set_vec2(instance::GskShaderArgsBuilder, _idx::Integer, _value::GrapheneVec2Like)
-        ret = ccall(("gsk_shader_args_builder_set_vec2", libgtk4), Nothing, (Ptr{GskShaderArgsBuilder}, Int32, Ptr{_GrapheneVec2}), instance, _idx, _value)
-        nothing
-    end
-    function set_vec3(instance::GskShaderArgsBuilder, _idx::Integer, _value::GrapheneVec3Like)
-        ret = ccall(("gsk_shader_args_builder_set_vec3", libgtk4), Nothing, (Ptr{GskShaderArgsBuilder}, Int32, Ptr{_GrapheneVec3}), instance, _idx, _value)
-        nothing
-    end
-    function set_vec4(instance::GskShaderArgsBuilder, _idx::Integer, _value::GrapheneVec4Like)
-        ret = ccall(("gsk_shader_args_builder_set_vec4", libgtk4), Nothing, (Ptr{GskShaderArgsBuilder}, Int32, Ptr{_GrapheneVec4}), instance, _idx, _value)
-        nothing
-    end
-    function to_args(instance::GskShaderArgsBuilder)
-        ret = ccall(("gsk_shader_args_builder_to_args", libgtk4), Ptr{GBytes}, (Ptr{GskShaderArgsBuilder},), instance)
-        ret2 = convert(GBytes, ret, true)
-        ret2
-    end
-    function unref(instance::GskShaderArgsBuilder)
-        ret = ccall(("gsk_shader_args_builder_unref", libgtk4), Nothing, (Ptr{GskShaderArgsBuilder},), instance)
-        nothing
-    end
     function Transform_new()
         ret = ccall(("gsk_transform_new", libgtk4), Ptr{GskTransform}, ())
         ret2 = convert(GskTransform, ret, true)
@@ -313,8 +265,7 @@ begin
     end
     function get_colors(instance::GskBorderNode)
         ret = ccall(("gsk_border_node_get_colors", libgtk4), Ptr{_GdkRGBA}, (Ptr{GskRenderNode},), instance)
-        ret2 = convert(GdkRGBALike, ret, false)
-        ret2
+        ret
     end
     function get_outline(instance::GskBorderNode)
         ret = ccall(("gsk_border_node_get_outline", libgtk4), Ptr{_GskRoundedRect}, (Ptr{GskRenderNode},), instance)
@@ -481,113 +432,6 @@ begin
         ret2 = GskGLRendererLeaf(ret, true)
         ret2
     end
-    function GLShader_new_from_bytes(_sourcecode::GBytes)
-        ret = ccall(("gsk_gl_shader_new_from_bytes", libgtk4), Ptr{GObject}, (Ptr{GBytes},), _sourcecode)
-        ret2 = GskGLShaderLeaf(ret, true)
-        ret2
-    end
-    function GLShader_new_from_resource(_resource_path::Union{AbstractString, Symbol})
-        ret = ccall(("gsk_gl_shader_new_from_resource", libgtk4), Ptr{GObject}, (Cstring,), _resource_path)
-        ret2 = GskGLShaderLeaf(ret, true)
-        ret2
-    end
-    function compile(instance::GskGLShader, _renderer::GskRenderer)
-        err = err_buf()
-        ret = ccall(("gsk_gl_shader_compile", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _renderer, err)
-        check_err(err)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function find_uniform_by_name(instance::GskGLShader, _name::Union{AbstractString, Symbol})
-        ret = ccall(("gsk_gl_shader_find_uniform_by_name", libgtk4), Int32, (Ptr{GObject}, Cstring), instance, _name)
-        ret
-    end
-    function get_arg_bool(instance::GskGLShader, _args::GBytes, _idx::Integer)
-        ret = ccall(("gsk_gl_shader_get_arg_bool", libgtk4), Cint, (Ptr{GObject}, Ptr{GBytes}, Int32), instance, _args, _idx)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_arg_float(instance::GskGLShader, _args::GBytes, _idx::Integer)
-        ret = ccall(("gsk_gl_shader_get_arg_float", libgtk4), Float32, (Ptr{GObject}, Ptr{GBytes}, Int32), instance, _args, _idx)
-        ret
-    end
-    function get_arg_int(instance::GskGLShader, _args::GBytes, _idx::Integer)
-        ret = ccall(("gsk_gl_shader_get_arg_int", libgtk4), Int32, (Ptr{GObject}, Ptr{GBytes}, Int32), instance, _args, _idx)
-        ret
-    end
-    function get_arg_uint(instance::GskGLShader, _args::GBytes, _idx::Integer)
-        ret = ccall(("gsk_gl_shader_get_arg_uint", libgtk4), UInt32, (Ptr{GObject}, Ptr{GBytes}, Int32), instance, _args, _idx)
-        ret
-    end
-    function get_arg_vec2(instance::GskGLShader, _args::GBytes, _idx::Integer, _out_value::GrapheneVec2Like)
-        ret = ccall(("gsk_gl_shader_get_arg_vec2", libgtk4), Nothing, (Ptr{GObject}, Ptr{GBytes}, Int32, Ptr{_GrapheneVec2}), instance, _args, _idx, _out_value)
-        nothing
-    end
-    function get_arg_vec3(instance::GskGLShader, _args::GBytes, _idx::Integer, _out_value::GrapheneVec3Like)
-        ret = ccall(("gsk_gl_shader_get_arg_vec3", libgtk4), Nothing, (Ptr{GObject}, Ptr{GBytes}, Int32, Ptr{_GrapheneVec3}), instance, _args, _idx, _out_value)
-        nothing
-    end
-    function get_arg_vec4(instance::GskGLShader, _args::GBytes, _idx::Integer, _out_value::GrapheneVec4Like)
-        ret = ccall(("gsk_gl_shader_get_arg_vec4", libgtk4), Nothing, (Ptr{GObject}, Ptr{GBytes}, Int32, Ptr{_GrapheneVec4}), instance, _args, _idx, _out_value)
-        nothing
-    end
-    function get_args_size(instance::GskGLShader)
-        ret = ccall(("gsk_gl_shader_get_args_size", libgtk4), UInt64, (Ptr{GObject},), instance)
-        ret
-    end
-    function get_n_textures(instance::GskGLShader)
-        ret = ccall(("gsk_gl_shader_get_n_textures", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
-    end
-    function get_n_uniforms(instance::GskGLShader)
-        ret = ccall(("gsk_gl_shader_get_n_uniforms", libgtk4), Int32, (Ptr{GObject},), instance)
-        ret
-    end
-    function get_resource(instance::GskGLShader)
-        ret = ccall(("gsk_gl_shader_get_resource", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function get_source(instance::GskGLShader)
-        ret = ccall(("gsk_gl_shader_get_source", libgtk4), Ptr{GBytes}, (Ptr{GObject},), instance)
-        ret2 = convert(GBytes, ret, false)
-        ret2
-    end
-    function get_uniform_name(instance::GskGLShader, _idx::Integer)
-        ret = ccall(("gsk_gl_shader_get_uniform_name", libgtk4), Cstring, (Ptr{GObject}, Int32), instance, _idx)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function get_uniform_offset(instance::GskGLShader, _idx::Integer)
-        ret = ccall(("gsk_gl_shader_get_uniform_offset", libgtk4), Int32, (Ptr{GObject}, Int32), instance, _idx)
-        ret
-    end
-    function get_uniform_type(instance::GskGLShader, _idx::Integer)
-        ret = ccall(("gsk_gl_shader_get_uniform_type", libgtk4), UInt32, (Ptr{GObject}, Int32), instance, _idx)
-        ret2 = GLUniformType(ret)
-        ret2
-    end
-    function GLShaderNode_new(_shader::GskGLShader, _bounds::GrapheneRectLike, _args::GBytes, _children)
-        _children_arr = convert(Vector{Ptr{GskRenderNode}}, _children)
-        _n_children = length(_children)
-        ret = ccall(("gsk_gl_shader_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{GBytes}, Ptr{Ptr{GskRenderNode}}, UInt32), _shader, _bounds, _args, _children_arr, _n_children)
-        ret2 = convert(GskRenderNode, ret)
-        ret2
-    end
-    function get_args(instance::GskGLShaderNode)
-        ret = ccall(("gsk_gl_shader_node_get_args", libgtk4), Ptr{GBytes}, (Ptr{GskRenderNode},), instance)
-        ret2 = convert(GBytes, ret, false)
-        ret2
-    end
-    function get_child(instance::GskGLShaderNode, _idx::Integer)
-        ret = ccall(("gsk_gl_shader_node_get_child", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, UInt32), instance, _idx)
-        ret2 = convert(GskRenderNode, ret)
-        ret2
-    end
-    function get_n_children(instance::GskGLShaderNode)
-        ret = ccall(("gsk_gl_shader_node_get_n_children", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
-        ret
-    end
     function get_shader(instance::GskGLShaderNode)
         ret = ccall(("gsk_gl_shader_node_get_shader", libgtk4), Ptr{GObject}, (Ptr{GskRenderNode},), instance)
         ret2 = convert(GskGLShader, ret, false)
@@ -670,11 +514,6 @@ begin
     function get_source(instance::GskMaskNode)
         ret = ccall(("gsk_mask_node_get_source", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), instance)
         ret2 = convert(GskRenderNode, ret)
-        ret2
-    end
-    function NglRenderer_new()
-        ret = ccall(("gsk_ngl_renderer_new", libgtk4), Ptr{GObject}, ())
-        ret2 = GskNglRendererLeaf(ret, true)
         ret2
     end
     function OpacityNode_new(_child::GskRenderNode, _opacity::Real)
@@ -775,6 +614,13 @@ begin
         ret = ccall(("gsk_render_node_get_node_type", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
         ret2 = RenderNodeType(ret)
         ret2
+    end
+    function get_opaque_rect(instance::GskRenderNode)
+        m_out_opaque = Ref{_GrapheneRect}()
+        ret = ccall(("gsk_render_node_get_opaque_rect", libgtk4), Cint, (Ptr{GskRenderNode}, Ptr{_GrapheneRect}), instance, m_out_opaque)
+        ret2 = convert(Bool, ret)
+        _out_opaque = m_out_opaque[]
+        (ret2, _out_opaque)
     end
     function ref(instance::GskRenderNode)
         ret = ccall(("gsk_render_node_ref", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), instance)

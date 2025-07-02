@@ -1,5 +1,21 @@
 begin
     const gboxed_types = Any[]
+    mutable struct GdkColorState <: GBoxed
+        handle::Ptr{GdkColorState}
+        (GLib.g_type(::Type{T}) where T <: GdkColorState) = ccall(("gdk_color_state_get_type", libgtk4), GType, ())
+        function GdkColorState(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GdkColorState)
+    end
+    const GdkColorStateLike = GdkColorState
     mutable struct GdkContentFormats <: GBoxed
         handle::Ptr{GdkContentFormats}
         (GLib.g_type(::Type{T}) where T <: GdkContentFormats) = ccall(("gdk_content_formats_get_type", libgtk4), GType, ())
@@ -216,6 +232,7 @@ begin
     end
     const GdkToplevelLayoutLike = GdkToplevelLayout
     gboxed_cache_init() = append!(GLib.gboxed_types, gboxed_types)
+    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ColorState.html)." GdkColorState
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ContentFormats.html)." GdkContentFormats
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ContentFormatsBuilder.html)." GdkContentFormatsBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.DmabufFormats.html)." GdkDmabufFormats
@@ -293,6 +310,22 @@ begin
     (GLib.g_type(::Type{T}) where T <: GdkCairoContext) = ccall(("gdk_cairo_context_get_type", libgtk4), GType, ())
     function GLib.signalnames(::Type{GdkCairoContext})
         signalnames(supertype(GdkCairoContext))
+    end
+    abstract type GdkCicpParams <: GObject end
+    mutable struct GdkCicpParamsLeaf <: GdkCicpParams
+        handle::Ptr{GObject}
+        function GdkCicpParamsLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkCicpParamsLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GdkCicpParams] = GdkCicpParamsLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkCicpParams) = ccall(("gdk_cicp_params_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkCicpParams})
+        signalnames(supertype(GdkCicpParams))
     end
     abstract type GdkClipboard <: GObject end
     mutable struct GdkClipboardLeaf <: GdkClipboard
@@ -710,6 +743,22 @@ begin
             Tuple(eval.((d[name])[2]))
         end
     end
+    abstract type GdkMemoryTextureBuilder <: GObject end
+    mutable struct GdkMemoryTextureBuilderLeaf <: GdkMemoryTextureBuilder
+        handle::Ptr{GObject}
+        function GdkMemoryTextureBuilderLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkMemoryTextureBuilderLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GdkMemoryTextureBuilder] = GdkMemoryTextureBuilderLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkMemoryTextureBuilder) = ccall(("gdk_memory_texture_builder_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkMemoryTextureBuilder})
+        signalnames(supertype(GdkMemoryTextureBuilder))
+    end
     abstract type GdkMonitor <: GObject end
     mutable struct GdkMonitorLeaf <: GdkMonitor
         handle::Ptr{GObject}
@@ -822,97 +871,88 @@ begin
     mutable struct GdkTouchpadEventLeaf <: GdkTouchpadEvent
         handle::Ptr{GdkEvent}
     end
-    abstract type GdkVulkanContext <: GdkDrawContext end
-    mutable struct GdkVulkanContextLeaf <: GdkVulkanContext
-        handle::Ptr{GObject}
-        function GdkVulkanContextLeaf(handle::Ptr{GObject}, owns = false)
-            if handle == C_NULL
-                error("Cannot construct GdkVulkanContextLeaf with a NULL pointer")
-            end
-            GLib.gobject_maybe_sink(handle, owns)
-            return gobject_ref(new(handle))
-        end
-    end
-    gtype_wrapper_cache[:GdkVulkanContext] = GdkVulkanContextLeaf
-    (GLib.g_type(::Type{T}) where T <: GdkVulkanContext) = ccall(("gdk_vulkan_context_get_type", libgtk4), GType, ())
-    function GLib.signalnames(::Type{GdkVulkanContext})
-        vcat([:images_updated], signalnames(supertype(GdkVulkanContext)))
-    end
-    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :images_updated => (:Nothing, Any[]))
-        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkVulkanContext
-            eval((d[name])[1])
-        end
-        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkVulkanContext
-            Tuple(eval.((d[name])[2]))
-        end
-    end
     gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+    function GdkCicpParams(; kwargs...)
+        obj = G_.CicpParams_new()
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GdkContentProvider(_mime_type::Union{AbstractString, Symbol}, _bytes::GBytes; kwargs...)
         obj = G_.ContentProvider_new_for_bytes(_mime_type, _bytes)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkContentProvider(_value::GValueLike; kwargs...)
         obj = G_.ContentProvider_new_for_value(_value)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkContentProvider(_providers; kwargs...)
         obj = G_.ContentProvider_new_union(_providers)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkCursor(_callback::Function, _destroy::Function, _fallback::Maybe(GdkCursor); kwargs...)
+        obj = G_.Cursor_new_from_callback(_callback, _destroy, _fallback)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkCursor(_name::Union{AbstractString, Symbol}, _fallback::Maybe(GdkCursor); kwargs...)
         obj = G_.Cursor_new_from_name(_name, _fallback)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkCursor(_texture::GdkTexture, _hotspot_x::Integer, _hotspot_y::Integer, _fallback::Maybe(GdkCursor); kwargs...)
         obj = G_.Cursor_new_from_texture(_texture, _hotspot_x, _hotspot_y, _fallback)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkDmabufTextureBuilder(; kwargs...)
         obj = G_.DmabufTextureBuilder_new()
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkGLTextureBuilder(; kwargs...)
         obj = G_.GLTextureBuilder_new()
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkMemoryTexture(_width::Integer, _height::Integer, _format, _bytes::GBytes, _stride::Integer)
         G_.MemoryTexture_new(_width, _height, _format, _bytes, _stride)
     end
+    function GdkMemoryTextureBuilder(; kwargs...)
+        obj = G_.MemoryTextureBuilder_new()
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GdkSurface(_parent::GdkSurface, _autohide::Bool; kwargs...)
         obj = G_.Surface_new_popup(_parent, _autohide)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkSurface(_display::GdkDisplay; kwargs...)
         obj = G_.Surface_new_toplevel(_display)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkTexture(_pixbuf::GdkPixbuf; kwargs...)
         obj = G_.Texture_new_for_pixbuf(_pixbuf)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkTexture(_bytes::GBytes; kwargs...)
         obj = G_.Texture_new_from_bytes(_bytes)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkTexture(_file::GFile; kwargs...)
         obj = G_.Texture_new_from_file(_file)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkTexture(_path::Union{AbstractString, Symbol}; kwargs...)
         obj = G_.Texture_new_from_filename(_path)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkContentFormats(_mime_types)
@@ -942,6 +982,7 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.AppLaunchContext.html)." GdkAppLaunchContext
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.ButtonEvent.html)." GdkButtonEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.CairoContext.html)." GdkCairoContext
+    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.CicpParams.html)." GdkCicpParams
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.Clipboard.html)." GdkClipboard
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.ContentDeserializer.html)." GdkContentDeserializer
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.ContentProvider.html)." GdkContentProvider
@@ -968,6 +1009,7 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.GrabBrokenEvent.html)." GdkGrabBrokenEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.KeyEvent.html)." GdkKeyEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.MemoryTexture.html)." GdkMemoryTexture
+    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.MemoryTextureBuilder.html)." GdkMemoryTextureBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.Monitor.html)." GdkMonitor
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.MotionEvent.html)." GdkMotionEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.PadEvent.html)." GdkPadEvent
@@ -979,7 +1021,6 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.Texture.html)." GdkTexture
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.TouchEvent.html)." GdkTouchEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.TouchpadEvent.html)." GdkTouchpadEvent
-    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.VulkanContext.html)." GdkVulkanContext
     function on_changed(f, object::GdkClipboard, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
     end
@@ -1094,8 +1135,12 @@ begin
     function on_invalidate_size(f, object::GdkTexture, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
     end
-    function on_images_updated(f, object::GdkVulkanContext, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "images-updated", Nothing, (), after, user_data)
+    function GdkCursorGetTextureCallback(cursor, cursor_size, scale, width, height, hotspot_x, hotspot_y, data)
+        cursor = convert(GdkCursor, cursor, false)
+        f = data
+        ret = f(cursor, cursor_size, scale, width, height, hotspot_x, hotspot_y)
+        ret != C_NULL && GLib.glib_ref(ret)
+        convert(Ptr{GObject}, GLib.get_pointer(ret))
     end
-    export GdkContentFormats, GdkContentFormatsBuilder, GdkDmabufFormats, GdkDragSurfaceSize, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, GdkKeymapKeyLike, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, GdkRGBALike, _GdkRGBA, GdkRectangle, GdkRectangleLike, _GdkRectangle, GdkTextureDownloader, GdkTimeCoord, GdkTimeCoordLike, _GdkTimeCoord, GdkToplevelLayout, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel, GdkAppLaunchContext, GdkAppLaunchContextLeaf, GdkButtonEvent, GdkButtonEventLeaf, GdkCairoContext, GdkClipboard, GdkClipboardLeaf, GdkContentDeserializer, GdkContentDeserializerLeaf, GdkContentProvider, GdkContentProviderLeaf, GdkContentSerializer, GdkContentSerializerLeaf, GdkCrossingEvent, GdkCrossingEventLeaf, GdkCursor, GdkCursorLeaf, GdkDNDEvent, GdkDNDEventLeaf, GdkDeleteEvent, GdkDeleteEventLeaf, GdkDevice, GdkDeviceTool, GdkDeviceToolLeaf, GdkDisplay, GdkDisplayLeaf, GdkDisplayManager, GdkDisplayManagerLeaf, GdkDmabufTexture, GdkDmabufTextureLeaf, GdkDmabufTextureBuilder, GdkDmabufTextureBuilderLeaf, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFocusEventLeaf, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGLTextureLeaf, GdkGLTextureBuilder, GdkGLTextureBuilderLeaf, GdkGrabBrokenEvent, GdkGrabBrokenEventLeaf, GdkKeyEvent, GdkKeyEventLeaf, GdkMemoryTexture, GdkMemoryTextureLeaf, GdkMonitor, GdkMonitorLeaf, GdkMotionEvent, GdkMotionEventLeaf, GdkPadEvent, GdkPadEventLeaf, GdkProximityEvent, GdkProximityEventLeaf, GdkScrollEvent, GdkScrollEventLeaf, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchEventLeaf, GdkTouchpadEvent, GdkTouchpadEventLeaf, GdkVulkanContext
+    export GdkColorState, GdkContentFormats, GdkContentFormatsBuilder, GdkDmabufFormats, GdkDragSurfaceSize, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, GdkKeymapKeyLike, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, GdkRGBALike, _GdkRGBA, GdkRectangle, GdkRectangleLike, _GdkRectangle, GdkTextureDownloader, GdkTimeCoord, GdkTimeCoordLike, _GdkTimeCoord, GdkToplevelLayout, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel, GdkAppLaunchContext, GdkAppLaunchContextLeaf, GdkButtonEvent, GdkButtonEventLeaf, GdkCairoContext, GdkCicpParams, GdkCicpParamsLeaf, GdkClipboard, GdkClipboardLeaf, GdkContentDeserializer, GdkContentDeserializerLeaf, GdkContentProvider, GdkContentProviderLeaf, GdkContentSerializer, GdkContentSerializerLeaf, GdkCrossingEvent, GdkCrossingEventLeaf, GdkCursor, GdkCursorLeaf, GdkDNDEvent, GdkDNDEventLeaf, GdkDeleteEvent, GdkDeleteEventLeaf, GdkDevice, GdkDeviceTool, GdkDeviceToolLeaf, GdkDisplay, GdkDisplayLeaf, GdkDisplayManager, GdkDisplayManagerLeaf, GdkDmabufTexture, GdkDmabufTextureLeaf, GdkDmabufTextureBuilder, GdkDmabufTextureBuilderLeaf, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFocusEventLeaf, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGLTextureLeaf, GdkGLTextureBuilder, GdkGLTextureBuilderLeaf, GdkGrabBrokenEvent, GdkGrabBrokenEventLeaf, GdkKeyEvent, GdkKeyEventLeaf, GdkMemoryTexture, GdkMemoryTextureLeaf, GdkMemoryTextureBuilder, GdkMemoryTextureBuilderLeaf, GdkMonitor, GdkMonitorLeaf, GdkMotionEvent, GdkMotionEventLeaf, GdkPadEvent, GdkPadEventLeaf, GdkProximityEvent, GdkProximityEventLeaf, GdkScrollEvent, GdkScrollEventLeaf, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchEventLeaf, GdkTouchpadEvent, GdkTouchpadEventLeaf, GdkCursorGetTextureCallback
 end

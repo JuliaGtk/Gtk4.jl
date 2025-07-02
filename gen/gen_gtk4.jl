@@ -5,7 +5,7 @@ path="../src/gen"
 ns = GINamespace(:Gtk,"4.0")
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
-GI.export_consts!(ns, path, "gtk4", []; doc_xml = d)
+GI.export_consts!(ns, path, "gtk4", []; doc_xml = d, exclude_deprecated = false)
 
 disguised = Symbol[]
 struct_skiplist=vcat(disguised, [:PageRange,:TreeRowReference])
@@ -19,7 +19,7 @@ GI.export_struct_exprs!(ns,path, "gtk4", struct_skiplist, [:BitsetIter,:Buildabl
 ## object methods
 skiplist=[:create_closure,:activate_cell,:event,:start_editing,:filter_keypress,:append_node,:im_context_filter_keypress,:get_backlog,:get,:get_default,:get_for_display,:get_current_event_state,:get_axes,:append_fill,:append_stroke,:push_fill,:push_stroke]
 
-object_skiplist=vcat(object_skiplist,[:CellRenderer,:MnemonicAction,:NeverTrigger,:NothingAction,:PrintJob,:PrintSettings,:RecentManager])
+object_skiplist=vcat(object_skiplist,[:CellArea,:CellRenderer,:MnemonicAction,:NeverTrigger,:NothingAction,:PrintJob,:PrintSettings,:RecentManager])
 
 GI.export_methods!(ns,path,"gtk4"; exclude_deprecated = false, object_method_skiplist = skiplist, object_skiplist = object_skiplist, interface_method_skiplist = [:start_editing, :install_properties], interface_skiplist = [:PrintOperationPreview], struct_skiplist = vcat(struct_skiplist,[:Bitset,:BitsetIter,:BuildableParseContext,:CssSection]))
 

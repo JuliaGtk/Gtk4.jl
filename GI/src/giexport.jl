@@ -11,9 +11,9 @@ function _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports,
     end
 end
 
-function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[], export_constants = true)
+function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[], export_constants = true, exclude_deprecated = true)
     loaded=Symbol[]
-    c = get_consts(ns)
+    c = get_consts(ns, exclude_deprecated)
 
     for (name,val) in c
         in(name, skiplist) && continue
@@ -24,14 +24,14 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
         printstyled("Generated ",length(c)," constants\n";color=:green)
     end
 
-    es=get_all(ns,GIEnumInfo)
+    es=get_all(ns,GIEnumInfo,exclude_deprecated)
     _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants)
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," enums\n";color=:green)
     end
 
-    es=get_all(ns,GIFlagsInfo)
+    es=get_all(ns,GIFlagsInfo,exclude_deprecated)
     _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants)
 
     if print_summary && length(es)>0
@@ -40,12 +40,12 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
     loaded
 end
 
-function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix, doc_xml = nothing, export_constants = true)
+function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix, doc_xml = nothing, export_constants = true, exclude_deprecated = true)
     toplevel, exprs, exports = GI.output_exprs()
 
     const_mod = Expr(:block)
 
-    c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist, export_constants)
+    c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist, export_constants, exclude_deprecated)
     if doc_xml !== nothing
         GI.append_const_docs!(const_mod.args, doc_prefix, doc_xml, c)
     end
@@ -191,8 +191,8 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
     struct_skiplist, loaded
 end
 
-function all_callbacks!(exprs, exports, ns; callback_skiplist = [])
-    callbacks=get_all(ns,GICallbackInfo)
+function all_callbacks!(exprs, exports, ns; callback_skiplist = [], exclude_deprecated = true)
+    callbacks=get_all(ns,GICallbackInfo,exclude_deprecated)
     for c in callbacks
         get_name(c) in callback_skiplist && continue
         try
@@ -235,7 +235,7 @@ function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque;
     end
     all_object_signals!(exprs, ns;skiplist=signal_skiplist,object_skiplist=object_skiplist, exclude_deprecated = exclude_deprecated)
     if output_callbacks
-        all_callbacks!(exprs, exports, ns; callback_skiplist)
+        all_callbacks!(exprs, exports, ns; callback_skiplist, exclude_deprecated)
     end
     push!(exprs,exports)
     write_to_file(path,"$(prefix)_structs",toplevel)

@@ -1,4 +1,23 @@
 begin
+    function create_cicp_params(instance::GdkColorState)
+        ret = ccall(("gdk_color_state_create_cicp_params", libgtk4), Ptr{GObject}, (Ptr{GdkColorState},), instance)
+        ret2 = convert_if_not_null(GdkCicpParams, ret, true)
+        ret2
+    end
+    function equal(instance::GdkColorState, _other::GdkColorState)
+        ret = ccall(("gdk_color_state_equal", libgtk4), Cint, (Ptr{GdkColorState}, Ptr{GdkColorState}), instance, _other)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function ref(instance::GdkColorState)
+        ret = ccall(("gdk_color_state_ref", libgtk4), Ptr{GdkColorState}, (Ptr{GdkColorState},), instance)
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
+    function unref(instance::GdkColorState)
+        ret = ccall(("gdk_color_state_unref", libgtk4), Nothing, (Ptr{GdkColorState},), instance)
+        nothing
+    end
     function ContentFormats_new(_mime_types)
         _mime_types_maybe = nothing_to_null(_mime_types)
         _n_mime_types = length(_mime_types)
@@ -33,6 +52,11 @@ begin
         ret = ccall(("gdk_content_formats_get_mime_types", libgtk4), Ptr{Cstring}, (Ptr{GdkContentFormats}, Ptr{UInt64}), instance, m_n_mime_types)
         ret2 = bytestring.(unsafe_wrap(Vector{Cstring}, ret, m_n_mime_types[]))
         _n_mime_types = m_n_mime_types[]
+        ret2
+    end
+    function is_empty(instance::GdkContentFormats)
+        ret = ccall(("gdk_content_formats_is_empty", libgtk4), Cint, (Ptr{GdkContentFormats},), instance)
+        ret2 = convert(Bool, ret)
         ret2
     end
     function match(instance::GdkContentFormats, _second::GdkContentFormats)
@@ -390,6 +414,11 @@ begin
         ret = ccall(("gdk_texture_downloader_free", libgtk4), Nothing, (Ptr{GdkTextureDownloader},), instance)
         nothing
     end
+    function get_color_state(instance::GdkTextureDownloader)
+        ret = ccall(("gdk_texture_downloader_get_color_state", libgtk4), Ptr{GdkColorState}, (Ptr{GdkTextureDownloader},), instance)
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
     function get_format(instance::GdkTextureDownloader)
         ret = ccall(("gdk_texture_downloader_get_format", libgtk4), UInt32, (Ptr{GdkTextureDownloader},), instance)
         ret2 = MemoryFormat(ret)
@@ -399,6 +428,10 @@ begin
         ret = ccall(("gdk_texture_downloader_get_texture", libgtk4), Ptr{GObject}, (Ptr{GdkTextureDownloader},), instance)
         ret2 = convert(GdkTexture, ret, false)
         ret2
+    end
+    function set_color_state(instance::GdkTextureDownloader, _color_state::GdkColorState)
+        ret = ccall(("gdk_texture_downloader_set_color_state", libgtk4), Nothing, (Ptr{GdkTextureDownloader}, Ptr{GdkColorState}), instance, _color_state)
+        nothing
     end
     function set_format(instance::GdkTextureDownloader, _format)
         ret = ccall(("gdk_texture_downloader_set_format", libgtk4), Nothing, (Ptr{GdkTextureDownloader}, UInt32), instance, _format)
@@ -498,10 +531,50 @@ begin
         ret = ccall(("gdk_button_event_get_button", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
         ret
     end
-    function cairo_create(instance::GdkCairoContext)
-        ret = ccall(("gdk_cairo_context_cairo_create", libgtk4), Ptr{cairoContext}, (Ptr{GObject},), instance)
-        ret2 = convert_if_not_null(cairoContext, ret, true)
+    function CicpParams_new()
+        ret = ccall(("gdk_cicp_params_new", libgtk4), Ptr{GObject}, ())
+        ret2 = GdkCicpParamsLeaf(ret, true)
         ret2
+    end
+    function build_color_state(instance::GdkCicpParams)
+        err = err_buf()
+        ret = ccall(("gdk_cicp_params_build_color_state", libgtk4), Ptr{GdkColorState}, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
+        check_err(err)
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
+    function get_color_primaries(instance::GdkCicpParams)
+        ret = ccall(("gdk_cicp_params_get_color_primaries", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_matrix_coefficients(instance::GdkCicpParams)
+        ret = ccall(("gdk_cicp_params_get_matrix_coefficients", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_range(instance::GdkCicpParams)
+        ret = ccall(("gdk_cicp_params_get_range", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = CicpRange(ret)
+        ret2
+    end
+    function get_transfer_function(instance::GdkCicpParams)
+        ret = ccall(("gdk_cicp_params_get_transfer_function", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret
+    end
+    function set_color_primaries(instance::GdkCicpParams, _color_primaries::Integer)
+        ret = ccall(("gdk_cicp_params_set_color_primaries", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _color_primaries)
+        nothing
+    end
+    function set_matrix_coefficients(instance::GdkCicpParams, _matrix_coefficients::Integer)
+        ret = ccall(("gdk_cicp_params_set_matrix_coefficients", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _matrix_coefficients)
+        nothing
+    end
+    function set_range(instance::GdkCicpParams, _range)
+        ret = ccall(("gdk_cicp_params_set_range", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _range)
+        nothing
+    end
+    function set_transfer_function(instance::GdkCicpParams, _transfer_function::Integer)
+        ret = ccall(("gdk_cicp_params_set_transfer_function", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _transfer_function)
+        nothing
     end
     function get_content(instance::GdkClipboard)
         ret = ccall(("gdk_clipboard_get_content", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
@@ -855,6 +928,10 @@ begin
         ret2 = convert_if_not_null(GdkDrop, ret, false)
         ret2
     end
+    function get_active_layout_index(instance::GdkDevice)
+        ret = ccall(("gdk_device_get_active_layout_index", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
     function get_caps_lock_state(instance::GdkDevice)
         ret = ccall(("gdk_device_get_caps_lock_state", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -878,6 +955,16 @@ begin
     function get_has_cursor(instance::GdkDevice)
         ret = ccall(("gdk_device_get_has_cursor", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_layout_names(instance::GdkDevice)
+        ret = ccall(("gdk_device_get_layout_names", libgtk4), Ptr{Cstring}, (Ptr{GObject},), instance)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                GLib.g_strfreev(ret)
+                arrtemp
+            end
         ret2
     end
     function get_modifier_state(instance::GdkDevice)
@@ -1211,6 +1298,11 @@ begin
         ret2 = GdkDmabufTextureBuilderLeaf(ret, true)
         ret2
     end
+    function get_color_state(instance::GdkDmabufTextureBuilder)
+        ret = ccall(("gdk_dmabuf_texture_builder_get_color_state", libgtk4), Ptr{GdkColorState}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkColorState, ret, false)
+        ret2
+    end
     function get_display(instance::GdkDmabufTextureBuilder)
         ret = ccall(("gdk_dmabuf_texture_builder_get_display", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert(GdkDisplay, ret, false)
@@ -1262,6 +1354,11 @@ begin
     function get_width(instance::GdkDmabufTextureBuilder)
         ret = ccall(("gdk_dmabuf_texture_builder_get_width", libgtk4), UInt32, (Ptr{GObject},), instance)
         ret
+    end
+    function set_color_state(instance::GdkDmabufTextureBuilder, _color_state::Maybe(GdkColorState))
+        _color_state_maybe = nothing_to_null(_color_state)
+        ret = ccall(("gdk_dmabuf_texture_builder_set_color_state", libgtk4), Nothing, (Ptr{GObject}, Ptr{GdkColorState}), instance, _color_state_maybe)
+        nothing
     end
     function set_display(instance::GdkDmabufTextureBuilder, _display::GdkDisplay)
         ret = ccall(("gdk_dmabuf_texture_builder_set_display", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _display)
@@ -1361,32 +1458,14 @@ begin
         ret = ccall(("gdk_drag_set_hotspot", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32), instance, _hot_x, _hot_y)
         nothing
     end
-    function begin_frame(instance::GdkDrawContext, _region::cairoRegion)
-        ret = ccall(("gdk_draw_context_begin_frame", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region)
-        nothing
-    end
-    function end_frame(instance::GdkDrawContext)
-        ret = ccall(("gdk_draw_context_end_frame", libgtk4), Nothing, (Ptr{GObject},), instance)
-        nothing
-    end
     function get_display(instance::GdkDrawContext)
         ret = ccall(("gdk_draw_context_get_display", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
-    function get_frame_region(instance::GdkDrawContext)
-        ret = ccall(("gdk_draw_context_get_frame_region", libgtk4), Ptr{cairoRegion}, (Ptr{GObject},), instance)
-        ret2 = convert_if_not_null(cairoRegion, ret, false)
-        ret2
-    end
     function get_surface(instance::GdkDrawContext)
         ret = ccall(("gdk_draw_context_get_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GdkSurface, ret, false)
-        ret2
-    end
-    function is_in_frame(instance::GdkDrawContext)
-        ret = ccall(("gdk_draw_context_is_in_frame", libgtk4), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
         ret2
     end
     function finish(instance::GdkDrop, _action)
@@ -1803,6 +1882,11 @@ begin
         ret2 = GdkGLTextureBuilderLeaf(ret, true)
         ret2
     end
+    function get_color_state(instance::GdkGLTextureBuilder)
+        ret = ccall(("gdk_gl_texture_builder_get_color_state", libgtk4), Ptr{GdkColorState}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkColorState, ret, false)
+        ret2
+    end
     function get_context(instance::GdkGLTextureBuilder)
         ret = ccall(("gdk_gl_texture_builder_get_context", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GdkGLContext, ret, false)
@@ -1844,6 +1928,10 @@ begin
     function get_width(instance::GdkGLTextureBuilder)
         ret = ccall(("gdk_gl_texture_builder_get_width", libgtk4), Int32, (Ptr{GObject},), instance)
         ret
+    end
+    function set_color_state(instance::GdkGLTextureBuilder, _color_state::GdkColorState)
+        ret = ccall(("gdk_gl_texture_builder_set_color_state", libgtk4), Nothing, (Ptr{GObject}, Ptr{GdkColorState}), instance, _color_state)
+        nothing
     end
     function set_context(instance::GdkGLTextureBuilder, _context::Maybe(GdkGLContext))
         _context_maybe = nothing_to_null(_context)
@@ -1988,6 +2076,89 @@ begin
     end
     function load_finish(instance::GdkMemoryTexture, _res::GAsyncResult)
         load_finish(GLoadableIcon(instance), _res)
+    end
+    function MemoryTextureBuilder_new()
+        ret = ccall(("gdk_memory_texture_builder_new", libgtk4), Ptr{GObject}, ())
+        ret2 = GdkMemoryTextureBuilderLeaf(ret, true)
+        ret2
+    end
+    function build(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_build", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkTexture, ret, true)
+        ret2
+    end
+    function get_bytes(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_get_bytes", libgtk4), Ptr{GBytes}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GBytes, ret, false)
+        ret2
+    end
+    function get_color_state(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_get_color_state", libgtk4), Ptr{GdkColorState}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkColorState, ret, false)
+        ret2
+    end
+    function get_format(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_get_format", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = MemoryFormat(ret)
+        ret2
+    end
+    function get_height(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_get_height", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_stride(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_get_stride", libgtk4), UInt64, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_update_region(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_get_update_region", libgtk4), Ptr{cairoRegion}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(cairoRegion, ret, false)
+        ret2
+    end
+    function get_update_texture(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_get_update_texture", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkTexture, ret, false)
+        ret2
+    end
+    function get_width(instance::GdkMemoryTextureBuilder)
+        ret = ccall(("gdk_memory_texture_builder_get_width", libgtk4), Int32, (Ptr{GObject},), instance)
+        ret
+    end
+    function set_bytes(instance::GdkMemoryTextureBuilder, _bytes::Maybe(GBytes))
+        _bytes_maybe = nothing_to_null(_bytes)
+        ret = ccall(("gdk_memory_texture_builder_set_bytes", libgtk4), Nothing, (Ptr{GObject}, Ptr{GBytes}), instance, _bytes_maybe)
+        nothing
+    end
+    function set_color_state(instance::GdkMemoryTextureBuilder, _color_state::Maybe(GdkColorState))
+        _color_state_maybe = nothing_to_null(_color_state)
+        ret = ccall(("gdk_memory_texture_builder_set_color_state", libgtk4), Nothing, (Ptr{GObject}, Ptr{GdkColorState}), instance, _color_state_maybe)
+        nothing
+    end
+    function set_format(instance::GdkMemoryTextureBuilder, _format)
+        ret = ccall(("gdk_memory_texture_builder_set_format", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _format)
+        nothing
+    end
+    function set_height(instance::GdkMemoryTextureBuilder, _height::Integer)
+        ret = ccall(("gdk_memory_texture_builder_set_height", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _height)
+        nothing
+    end
+    function set_stride(instance::GdkMemoryTextureBuilder, _stride::Integer)
+        ret = ccall(("gdk_memory_texture_builder_set_stride", libgtk4), Nothing, (Ptr{GObject}, UInt64), instance, _stride)
+        nothing
+    end
+    function set_update_region(instance::GdkMemoryTextureBuilder, _region::Maybe(cairoRegion))
+        _region_maybe = nothing_to_null(_region)
+        ret = ccall(("gdk_memory_texture_builder_set_update_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region_maybe)
+        nothing
+    end
+    function set_update_texture(instance::GdkMemoryTextureBuilder, _texture::Maybe(GdkTexture))
+        _texture_maybe = nothing_to_null(_texture)
+        ret = ccall(("gdk_memory_texture_builder_set_update_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _texture_maybe)
+        nothing
+    end
+    function set_width(instance::GdkMemoryTextureBuilder, _width::Integer)
+        ret = ccall(("gdk_memory_texture_builder_set_width", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _width)
+        nothing
     end
     function get_connector(instance::GdkMonitor)
         ret = ccall(("gdk_monitor_get_connector", libgtk4), Cstring, (Ptr{GObject},), instance)
@@ -2137,11 +2308,6 @@ begin
         ret = ccall(("gdk_surface_beep", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-    function create_cairo_context(instance::GdkSurface)
-        ret = ccall(("gdk_surface_create_cairo_context", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GdkCairoContext, ret, true)
-        ret2
-    end
     function create_gl_context(instance::GdkSurface)
         err = err_buf()
         ret = ccall(("gdk_surface_create_gl_context", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
@@ -2236,11 +2402,6 @@ begin
         ret = ccall(("gdk_surface_set_input_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region)
         nothing
     end
-    function set_opaque_region(instance::GdkSurface, _region::Maybe(cairoRegion))
-        _region_maybe = nothing_to_null(_region)
-        ret = ccall(("gdk_surface_set_opaque_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region_maybe)
-        nothing
-    end
     function translate_coordinates(instance::GdkSurface, _to::GdkSurface, _x::Real, _y::Real)
         m_x = Ref{Float64}()
         m_x[] = Base.cconvert(Float64, _x)
@@ -2281,6 +2442,11 @@ begin
     function Texture_new_from_resource(_resource_path::Union{AbstractString, Symbol})
         ret = ccall(("gdk_texture_new_from_resource", libgtk4), Ptr{GObject}, (Cstring,), _resource_path)
         ret2 = convert(GdkTexture, ret, true)
+        ret2
+    end
+    function get_color_state(instance::GdkTexture)
+        ret = ccall(("gdk_texture_get_color_state", libgtk4), Ptr{GdkColorState}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkColorState, ret, false)
         ret2
     end
     function get_format(instance::GdkTexture)
@@ -2393,9 +2559,6 @@ begin
     function get_pinch_scale(instance::GdkTouchpadEvent)
         ret = ccall(("gdk_touchpad_event_get_pinch_scale", libgtk4), Float64, (Ptr{GdkEvent},), instance)
         ret
-    end
-    function init(instance::GdkVulkanContext, _cancellable::Maybe(GCancellable))
-        init(GInitable(instance), _cancellable)
     end
     function get_feature_group(instance::GdkDevicePad, _feature, _feature_idx::Integer)
         ret = ccall(("gdk_device_pad_get_feature_group", libgtk4), Int32, (Ptr{GObject}, UInt32, Int32), instance, _feature, _feature_idx)
