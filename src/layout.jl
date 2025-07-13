@@ -61,6 +61,13 @@ end
 
 ## GtkSeparator
 
+"""
+    GtkSeparator(orientation::Symbol; kwargs...)
+
+Create and return a `GtkSeparator` widget, which simply renders a line that
+visually separates widgets in a layout widget such as a `GtkBox`. The
+`orientation` argument can be `:h` for horizontal, or `:v` for vertical.
+"""
 GtkSeparator(orientation::Symbol; kwargs...) = GtkSeparator(convert(Orientation, orientation); kwargs...)
 
 ## GtkCenterBox
@@ -103,6 +110,7 @@ function getindex(b::GtkCenterBox, pos::Symbol)
 end
 
 ## GtkPaned
+
 """
     GtkPaned(orientation::Symbol; kwargs...)
 
@@ -135,6 +143,15 @@ function setindex!(pane::GtkPaned, child::Union{Nothing,GtkWidget}, i::Integer)
 end
 
 ## GtkGrid
+@doc """
+    GtkGrid(; kwargs...)
+
+Create and return a `GtkGrid` widget, which arranges widgets in a rectangular
+grid. Keyword arguments allow you to set GObject properties.
+
+See also the [GTK docs](https://docs.gtk.org/gtk4/class.Grid.html).
+""" GtkGrid
+
 
 rangestep(r::AbstractRange) = step(r)
 rangestep(::Integer) = 1
@@ -223,6 +240,15 @@ end
 
 ## GtkNotebook
 
+@doc """
+    GtkNotebook(; kwargs...)
+
+Create a `GtkNotebook`, which shows child widgets in tabs, like in a browser
+window. Keyword arguments allow you to set GObject properties.
+
+See also the [GTK docs](https://docs.gtk.org/gtk4/class.Notebook.html).
+""" GtkNotebook
+
 function insert!(w::GtkNotebook, position::Integer, x::GtkWidget, label::Union{GtkWidget, AbstractString})
     if isa(label, AbstractString)
         label = G_.Label_new(label)
@@ -294,6 +320,17 @@ set_measure_overlay(f::GtkOverlay, x::GtkWidget, b::Bool) = G_.set_measure_overl
 
 ## GtkStack
 
+@doc """
+    GtkStack(; kwargs...)
+
+Create a `GtkStack`, which works like a `GtkNotebook` except that the child
+widget shown is controlled by a `GtkStackSwitcher` or `GtkStackSidebar` widget
+rather than tabs. Keyword arguments allow you to set GObject properties.
+
+See also [`GtkStackSwitcher`](@ref) and [`GtkStackSidebar`](@ref)
+and the [GTK docs](https://docs.gtk.org/gtk4/class.Stack.html).
+""" GtkStack
+
 push!(s::GtkStack, x::GtkWidget) = (G_.add_child(s,x); s)
 push!(s::GtkStack, x::GtkWidget, name::AbstractString) = (G_.add_named(s,x,name); s)
 push!(s::GtkStack, x::GtkWidget, name::AbstractString, title::AbstractString) = (G_.add_titled(s,x,name,title); s)
@@ -307,6 +344,33 @@ function empty!(s::GtkStack)
     end
     s
 end
+
+"""
+    GtkStackSwitcher(orientation::Symbol; kwargs...)
+
+Create and return a `GtkStackSwitcher` widget, which is used to control which
+child widget is shown by a `GtkStack`. The `orientation` argument can be `:h`
+for horizontal, or `:v` for vertical. Keyword arguments allow you to set
+GObject properties.
+
+See also [`GtkStack`](@ref).
+"""
+function GtkStackSwitcher(orientation::Symbol; kwargs...)
+    w = GtkStackSwitcher(;kwargs...)
+    G_.set_orientation(GtkOrientable(w), convert(Orientation, orientation))
+    w
+end
+
+@doc """
+    GtkStackSidebar(; kwargs...)
+
+Create and return a `GtkStackSidebar` widget, which is used to control which
+child widget is shown by a `GtkStack`. Keyword arguments allow you to set
+GObject properties.
+
+See also [`GtkStack`](@ref).
+""" GtkStackSidebar
+
 
 ## GtkPopover
 

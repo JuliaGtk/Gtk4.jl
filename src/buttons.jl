@@ -53,6 +53,11 @@ end
 
 ## GtkSwitch
 
+"""
+    GtkSwitch(active = false; kwargs...)
+
+Create a `GtkSwitch` widget set to the on position if `active` is `true`.
+"""
 function GtkSwitch(active::Bool; kwargs...)
     b = GtkSwitch(; kwargs...)
     G_.set_active(b, active)

@@ -221,11 +221,17 @@ begin
         _attrs = collect(unsafe_wrap(Vector{_PangoLogAttr}, _attrs, m_attrs_len[]))
         _attrs
     end
-    function extents_to_pixels(_inclusive::Maybe(PangoRectangleLike), _nearest::Maybe(PangoRectangleLike))
-        _inclusive_maybe = nothing_to_null(_inclusive)
-        _nearest_maybe = nothing_to_null(_nearest)
-        ret = ccall(("pango_extents_to_pixels", libpango), Nothing, (Ptr{_PangoRectangle}, Ptr{_PangoRectangle}), _inclusive_maybe, _nearest_maybe)
-        nothing
+    function extents_to_pixels(_inclusive::_PangoRectangle, _nearest::_PangoRectangle)
+        m_inclusive = Ref{_PangoRectangle}()
+        m_inclusive[] = Base.cconvert(_PangoRectangle, _inclusive)
+        m_nearest = Ref{_PangoRectangle}()
+        m_nearest[] = Base.cconvert(_PangoRectangle, _nearest)
+        ret = ccall(("pango_extents_to_pixels", libpango), Nothing, (Ptr{_PangoRectangle}, Ptr{_PangoRectangle}), m_inclusive, m_nearest)
+        _inclusive = m_inclusive[]
+        _inclusive = convert(_PangoRectangle, _inclusive)
+        _nearest = m_nearest[]
+        _nearest = convert(_PangoRectangle, _nearest)
+        (_inclusive, _nearest)
     end
     function find_base_dir(_text::Union{AbstractString, Symbol}, _length::Integer)
         ret = ccall(("pango_find_base_dir", libpango), UInt32, (Cstring, Int32), _text, _length)
