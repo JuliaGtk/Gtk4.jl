@@ -3,6 +3,7 @@
 These examples should be run in the REPL unless otherwise noted.
 
 ## Basic examples
+- `builder.jl` shows how to use `GtkBuilder` to define widgets using XML.
 - `calculator4.jl` demonstrates a simple GUI with lots of buttons. Adapted from an example in Gtk.jl by Nand Vinchhi.
 - `css.jl` demonstrates widget styling using CSS.
 - `css-style.jl` shows how to style individual widgets using CSS classes.
@@ -42,4 +43,5 @@ These examples can be run inside or outside the REPL.
 
 ## Experimental
 
-- `custom_widget` shows how to define a custom GtkWidget with its own "snapshot" callback
+- `custom_widget.jl` shows how to define a custom GtkWidget with its own "snapshot" callback.
+- `builder2.jl` is a version of the `GtkBuilder` example that connects a signal handler automatically.
