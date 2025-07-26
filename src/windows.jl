@@ -720,6 +720,8 @@ Get the paths selected by the user in a "select multiple folders" dialog.
 """
 select_multiple_folder_paths(dlg, resobj) = _path_multiple_finish(Gtk4.G_.select_multiple_folders_finish, dlg, resobj)
 
+## GtkFontDialog
+
 function choose_font(cb, dlg::GtkFontDialog, parent = nothing, cancellable = nothing)
     G_.choose_font(dlg, parent, nothing, cancellable, cb)
 end

@@ -71,7 +71,8 @@ end
 
 import .GLib: set_gtk_property!, get_gtk_property, activate,
               signal_handler_is_connected, signalnames,
-              GListModel, start_main_loop, stop_main_loop
+              GListModel, start_main_loop, stop_main_loop,
+              _GObjectClass, g_type_from_name
 
 # define accessor methods in Gtk4
 
