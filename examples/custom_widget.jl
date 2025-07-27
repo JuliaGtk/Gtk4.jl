@@ -12,10 +12,28 @@ function widget_snapshot(widget_ptr::Ptr{GObject}, snapshot_ptr::Ptr{GObject})
     widget = convert(GtkWidget, widget_ptr)
     snapshot = convert(GtkSnapshot, snapshot_ptr)
     w,h = size(widget)
-    Gtk4.G_.append_color(snapshot, GdkRGBA("red"), GrapheneRect(0,0,w/2,h/2))
-    Gtk4.G_.append_color(snapshot, GdkRGBA("green"), GrapheneRect(w/2,0,w/2,h/2))
-    Gtk4.G_.append_color(snapshot, GdkRGBA("yellow"), GrapheneRect(0,h/2,w/2,h/2))
-    Gtk4.G_.append_color(snapshot, GdkRGBA("blue"), GrapheneRect(w/2,h/2,w/2,h/2))
+    R = min(w,h)/4
+    cx = w/2
+    cy = h/2+R/4
+    b = Gtk4.GskPathBuilder()
+
+    function draw_circle(b, center)
+        Gtk4.G_.add_circle(b, center, 3R/4)
+        Gtk4.build(b)
+    end
+
+    center = GraphenePoint(cx,cy-R)
+    p = draw_circle(b, center)
+    Gtk4.G_.append_fill(snapshot, p, 0, GdkRGBA(0.22,0.596,0.149))
+
+    center = GraphenePoint(cx-R*sin(2pi/3),cy-R*cos(2pi/3))
+    p = draw_circle(b, center)
+    Gtk4.G_.append_fill(snapshot, p, 0, GdkRGBA(0.796,0.235,0.2))
+
+    center = GraphenePoint(cx-R*sin(-2pi/3),cy-R*cos(-2pi/3))
+    p = draw_circle(b, center)
+    Gtk4.G_.append_fill(snapshot, p, 0, GdkRGBA(0.584,0.345,0.698))
+
     nothing
 end
 

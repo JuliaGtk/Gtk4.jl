@@ -24,6 +24,70 @@ begin
     convert(::Type{GskParseLocation}, p::Ptr{_GskParseLocation}, owns = false) = GskParseLocation(p, owns)
     const GskParseLocationLike = Union{Ref{_GskParseLocation}, GskParseLocation}
     convert(::Type{GskParseLocationLike}, p, owns) = convert(GskParseLocation, p, owns)
+    mutable struct GskPath <: GBoxed
+        handle::Ptr{GskPath}
+        (GLib.g_type(::Type{T}) where T <: GskPath) = ccall(("gsk_path_get_type", libgtk4), GType, ())
+        function GskPath(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskPath)
+    end
+    const GskPathLike = GskPath
+    mutable struct GskPathBuilder <: GBoxed
+        handle::Ptr{GskPathBuilder}
+        (GLib.g_type(::Type{T}) where T <: GskPathBuilder) = ccall(("gsk_path_builder_get_type", libgtk4), GType, ())
+        function GskPathBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskPathBuilder)
+    end
+    const GskPathBuilderLike = GskPathBuilder
+    mutable struct GskPathMeasure <: GBoxed
+        handle::Ptr{GskPathMeasure}
+        (GLib.g_type(::Type{T}) where T <: GskPathMeasure) = ccall(("gsk_path_measure_get_type", libgtk4), GType, ())
+        function GskPathMeasure(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskPathMeasure)
+    end
+    const GskPathMeasureLike = GskPathMeasure
+    mutable struct GskPathPoint <: GBoxed
+        handle::Ptr{GskPathPoint}
+        (GLib.g_type(::Type{T}) where T <: GskPathPoint) = ccall(("gsk_path_point_get_type", libgtk4), GType, ())
+        function GskPathPoint(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskPathPoint)
+    end
+    const GskPathPointLike = GskPathPoint
     mutable struct GskRoundedRect
         handle::Ptr{GskRoundedRect}
     end
@@ -58,6 +122,22 @@ begin
     convert(::Type{GskShadow}, p::Ptr{_GskShadow}, owns = false) = GskShadow(p, owns)
     const GskShadowLike = Union{Ref{_GskShadow}, GskShadow}
     convert(::Type{GskShadowLike}, p, owns) = convert(GskShadow, p, owns)
+    mutable struct GskStroke <: GBoxed
+        handle::Ptr{GskStroke}
+        (GLib.g_type(::Type{T}) where T <: GskStroke) = ccall(("gsk_stroke_get_type", libgtk4), GType, ())
+        function GskStroke(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskStroke)
+    end
+    const GskStrokeLike = GskStroke
     mutable struct GskTransform <: GBoxed
         handle::Ptr{GskTransform}
         (GLib.g_type(::Type{T}) where T <: GskTransform) = ccall(("gsk_transform_get_type", libgtk4), GType, ())
@@ -76,9 +156,14 @@ begin
     const GskTransformLike = GskTransform
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ColorStop.html)." GskColorStop
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ParseLocation.html)." GskParseLocation
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Path.html)." GskPath
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathBuilder.html)." GskPathBuilder
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathMeasure.html)." GskPathMeasure
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathPoint.html)." GskPathPoint
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.RoundedRect.html)." GskRoundedRect
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ShaderArgsBuilder.html)." GskShaderArgsBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Shadow.html)." GskShadow
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Stroke.html)." GskStroke
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Transform.html)." GskTransform
     abstract type GskRenderNode <: GTypeInstance end
     Base.convert(::Type{GskRenderNode}, ptr::Ptr{GskRenderNode}) = GskRenderNodeLeaf(ptr)
@@ -417,8 +502,20 @@ begin
     function GskVulkanRenderer()
         G_.VulkanRenderer_new()
     end
+    function GskPathBuilder()
+        G_.PathBuilder_new()
+    end
+    function GskPathMeasure(_path::GskPath)
+        G_.PathMeasure_new(_path)
+    end
+    function GskPathMeasure(_path::GskPath, _tolerance::Real)
+        G_.PathMeasure_new_with_tolerance(_path, _tolerance)
+    end
     function GskShaderArgsBuilder(_shader::GskGLShader, _initial_values::Maybe(GBytes))
         G_.ShaderArgsBuilder_new(_shader, _initial_values)
+    end
+    function GskStroke(_line_width::Real)
+        G_.Stroke_new(_line_width)
     end
     function GskTransform()
         G_.Transform_new()
@@ -458,5 +555,5 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TextureScaleNode.html)." GskTextureScaleNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TransformNode.html)." GskTransformNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.VulkanRenderer.html)." GskVulkanRenderer
-    export GskColorStop, GskColorStopLike, _GskColorStop, GskParseLocation, GskParseLocationLike, _GskParseLocation, GskRoundedRect, GskRoundedRectLike, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, GskShadowLike, _GskShadow, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorMatrixNode, GskColorMatrixNodeLeaf, GskColorNode, GskColorNodeLeaf, GskConicGradientNode, GskConicGradientNodeLeaf, GskContainerNode, GskContainerNodeLeaf, GskCrossFadeNode, GskCrossFadeNodeLeaf, GskDebugNode, GskDebugNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskGLShaderNode, GskGLShaderNodeLeaf, GskInsetShadowNode, GskInsetShadowNodeLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskMaskNode, GskMaskNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskOutsetShadowNode, GskOutsetShadowNodeLeaf, GskRadialGradientNode, GskRadialGradientNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRepeatingLinearGradientNode, GskRepeatingLinearGradientNodeLeaf, GskRepeatingRadialGradientNode, GskRepeatingRadialGradientNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTextureScaleNode, GskTextureScaleNodeLeaf, GskTransformNode, GskTransformNodeLeaf, GskVulkanRenderer, GskVulkanRendererLeaf
+    export GskColorStop, GskColorStopLike, _GskColorStop, GskParseLocation, GskParseLocationLike, _GskParseLocation, GskPath, GskPathBuilder, GskPathMeasure, GskPathPoint, GskRoundedRect, GskRoundedRectLike, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, GskShadowLike, _GskShadow, GskStroke, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorMatrixNode, GskColorMatrixNodeLeaf, GskColorNode, GskColorNodeLeaf, GskConicGradientNode, GskConicGradientNodeLeaf, GskContainerNode, GskContainerNodeLeaf, GskCrossFadeNode, GskCrossFadeNodeLeaf, GskDebugNode, GskDebugNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskGLShaderNode, GskGLShaderNodeLeaf, GskInsetShadowNode, GskInsetShadowNodeLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskMaskNode, GskMaskNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskOutsetShadowNode, GskOutsetShadowNodeLeaf, GskRadialGradientNode, GskRadialGradientNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRepeatingLinearGradientNode, GskRepeatingLinearGradientNodeLeaf, GskRepeatingRadialGradientNode, GskRepeatingRadialGradientNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTextureScaleNode, GskTextureScaleNodeLeaf, GskTransformNode, GskTransformNodeLeaf, GskVulkanRenderer, GskVulkanRendererLeaf
 end

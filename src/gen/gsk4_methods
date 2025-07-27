@@ -1,4 +1,286 @@
 begin
+    function get_bounds(instance::GskPath)
+        m_bounds = Ref{_GrapheneRect}()
+        ret = ccall(("gsk_path_get_bounds", libgtk4), Cint, (Ptr{GskPath}, Ptr{_GrapheneRect}), instance, m_bounds)
+        ret2 = convert(Bool, ret)
+        _bounds = m_bounds[]
+        (ret2, _bounds)
+    end
+    function get_closest_point(instance::GskPath, _point::GraphenePointLike, _threshold::Real)
+        m_result = Ref{GskPathPoint}()
+        m_distance = Ref{Float32}()
+        ret = ccall(("gsk_path_get_closest_point", libgtk4), Cint, (Ptr{GskPath}, Ptr{_GraphenePoint}, Float32, Ptr{GskPathPoint}, Ptr{Float32}), instance, _point, _threshold, m_result, m_distance)
+        ret2 = convert(Bool, ret)
+        _result = m_result[]
+        _distance = m_distance[]
+        (ret2, _result, _distance)
+    end
+    function get_end_point(instance::GskPath)
+        m_result = Ref{GskPathPoint}()
+        ret = ccall(("gsk_path_get_end_point", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskPathPoint}), instance, m_result)
+        ret2 = convert(Bool, ret)
+        _result = m_result[]
+        (ret2, _result)
+    end
+    function get_start_point(instance::GskPath)
+        m_result = Ref{GskPathPoint}()
+        ret = ccall(("gsk_path_get_start_point", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskPathPoint}), instance, m_result)
+        ret2 = convert(Bool, ret)
+        _result = m_result[]
+        (ret2, _result)
+    end
+    function get_stroke_bounds(instance::GskPath, _stroke::GskStroke)
+        m_bounds = Ref{_GrapheneRect}()
+        ret = ccall(("gsk_path_get_stroke_bounds", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskStroke}, Ptr{_GrapheneRect}), instance, _stroke, m_bounds)
+        ret2 = convert(Bool, ret)
+        _bounds = m_bounds[]
+        (ret2, _bounds)
+    end
+    function in_fill(instance::GskPath, _point::GraphenePointLike, _fill_rule)
+        ret = ccall(("gsk_path_in_fill", libgtk4), Cint, (Ptr{GskPath}, Ptr{_GraphenePoint}, UInt32), instance, _point, _fill_rule)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_closed(instance::GskPath)
+        ret = ccall(("gsk_path_is_closed", libgtk4), Cint, (Ptr{GskPath},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function is_empty(instance::GskPath)
+        ret = ccall(("gsk_path_is_empty", libgtk4), Cint, (Ptr{GskPath},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function print(instance::GskPath, _string::GStringLike)
+        ret = ccall(("gsk_path_print", libgtk4), Nothing, (Ptr{GskPath}, Ptr{_GString}), instance, _string)
+        nothing
+    end
+    function ref(instance::GskPath)
+        ret = ccall(("gsk_path_ref", libgtk4), Ptr{GskPath}, (Ptr{GskPath},), instance)
+        ret2 = convert(GskPath, ret, true)
+        ret2
+    end
+    function to_cairo(instance::GskPath, _cr::cairoContext)
+        ret = ccall(("gsk_path_to_cairo", libgtk4), Nothing, (Ptr{GskPath}, Ptr{cairoContext}), instance, _cr)
+        nothing
+    end
+    function to_string(instance::GskPath)
+        ret = ccall(("gsk_path_to_string", libgtk4), Cstring, (Ptr{GskPath},), instance)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function unref(instance::GskPath)
+        ret = ccall(("gsk_path_unref", libgtk4), Nothing, (Ptr{GskPath},), instance)
+        nothing
+    end
+    function PathBuilder_new()
+        ret = ccall(("gsk_path_builder_new", libgtk4), Ptr{GskPathBuilder}, ())
+        ret2 = convert(GskPathBuilder, ret, true)
+        ret2
+    end
+    function add_cairo_path(instance::GskPathBuilder, _path::cairoPath)
+        ret = ccall(("gsk_path_builder_add_cairo_path", libgtk4), Nothing, (Ptr{GskPathBuilder}, Ptr{cairoPath}), instance, _path)
+        nothing
+    end
+    function add_circle(instance::GskPathBuilder, _center::GraphenePointLike, _radius::Real)
+        ret = ccall(("gsk_path_builder_add_circle", libgtk4), Nothing, (Ptr{GskPathBuilder}, Ptr{_GraphenePoint}, Float32), instance, _center, _radius)
+        nothing
+    end
+    function add_layout(instance::GskPathBuilder, _layout::PangoLayout)
+        ret = ccall(("gsk_path_builder_add_layout", libgtk4), Nothing, (Ptr{GskPathBuilder}, Ptr{GObject}), instance, _layout)
+        nothing
+    end
+    function add_path(instance::GskPathBuilder, _path::GskPath)
+        ret = ccall(("gsk_path_builder_add_path", libgtk4), Nothing, (Ptr{GskPathBuilder}, Ptr{GskPath}), instance, _path)
+        nothing
+    end
+    function add_rect(instance::GskPathBuilder, _rect::GrapheneRectLike)
+        ret = ccall(("gsk_path_builder_add_rect", libgtk4), Nothing, (Ptr{GskPathBuilder}, Ptr{_GrapheneRect}), instance, _rect)
+        nothing
+    end
+    function add_reverse_path(instance::GskPathBuilder, _path::GskPath)
+        ret = ccall(("gsk_path_builder_add_reverse_path", libgtk4), Nothing, (Ptr{GskPathBuilder}, Ptr{GskPath}), instance, _path)
+        nothing
+    end
+    function add_rounded_rect(instance::GskPathBuilder, _rect::GskRoundedRectLike)
+        ret = ccall(("gsk_path_builder_add_rounded_rect", libgtk4), Nothing, (Ptr{GskPathBuilder}, Ptr{_GskRoundedRect}), instance, _rect)
+        nothing
+    end
+    function add_segment(instance::GskPathBuilder, _path::GskPath, _start::GskPathPoint, _end::GskPathPoint)
+        ret = ccall(("gsk_path_builder_add_segment", libgtk4), Nothing, (Ptr{GskPathBuilder}, Ptr{GskPath}, Ptr{GskPathPoint}, Ptr{GskPathPoint}), instance, _path, _start, _end)
+        nothing
+    end
+    function arc_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real)
+        ret = ccall(("gsk_path_builder_arc_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2)
+        nothing
+    end
+    function close(instance::GskPathBuilder)
+        ret = ccall(("gsk_path_builder_close", libgtk4), Nothing, (Ptr{GskPathBuilder},), instance)
+        nothing
+    end
+    function conic_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real, _weight::Real)
+        ret = ccall(("gsk_path_builder_conic_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2, _weight)
+        nothing
+    end
+    function cubic_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real, _x3::Real, _y3::Real)
+        ret = ccall(("gsk_path_builder_cubic_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2, _x3, _y3)
+        nothing
+    end
+    function get_current_point(instance::GskPathBuilder)
+        ret = ccall(("gsk_path_builder_get_current_point", libgtk4), Ptr{_GraphenePoint}, (Ptr{GskPathBuilder},), instance)
+        ret2 = convert(GraphenePointLike, ret, false)
+        ret2
+    end
+    function html_arc_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real, _radius::Real)
+        ret = ccall(("gsk_path_builder_html_arc_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2, _radius)
+        nothing
+    end
+    function line_to(instance::GskPathBuilder, _x::Real, _y::Real)
+        ret = ccall(("gsk_path_builder_line_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32), instance, _x, _y)
+        nothing
+    end
+    function move_to(instance::GskPathBuilder, _x::Real, _y::Real)
+        ret = ccall(("gsk_path_builder_move_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32), instance, _x, _y)
+        nothing
+    end
+    function quad_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real)
+        ret = ccall(("gsk_path_builder_quad_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2)
+        nothing
+    end
+    function ref(instance::GskPathBuilder)
+        ret = ccall(("gsk_path_builder_ref", libgtk4), Ptr{GskPathBuilder}, (Ptr{GskPathBuilder},), instance)
+        ret2 = convert(GskPathBuilder, ret, false)
+        ret2
+    end
+    function rel_arc_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real)
+        ret = ccall(("gsk_path_builder_rel_arc_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2)
+        nothing
+    end
+    function rel_conic_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real, _weight::Real)
+        ret = ccall(("gsk_path_builder_rel_conic_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2, _weight)
+        nothing
+    end
+    function rel_cubic_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real, _x3::Real, _y3::Real)
+        ret = ccall(("gsk_path_builder_rel_cubic_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2, _x3, _y3)
+        nothing
+    end
+    function rel_html_arc_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real, _radius::Real)
+        ret = ccall(("gsk_path_builder_rel_html_arc_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2, _radius)
+        nothing
+    end
+    function rel_line_to(instance::GskPathBuilder, _x::Real, _y::Real)
+        ret = ccall(("gsk_path_builder_rel_line_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32), instance, _x, _y)
+        nothing
+    end
+    function rel_move_to(instance::GskPathBuilder, _x::Real, _y::Real)
+        ret = ccall(("gsk_path_builder_rel_move_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32), instance, _x, _y)
+        nothing
+    end
+    function rel_quad_to(instance::GskPathBuilder, _x1::Real, _y1::Real, _x2::Real, _y2::Real)
+        ret = ccall(("gsk_path_builder_rel_quad_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Float32), instance, _x1, _y1, _x2, _y2)
+        nothing
+    end
+    function rel_svg_arc_to(instance::GskPathBuilder, _rx::Real, _ry::Real, _x_axis_rotation::Real, _large_arc::Bool, _positive_sweep::Bool, _x::Real, _y::Real)
+        ret = ccall(("gsk_path_builder_rel_svg_arc_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Cint, Cint, Float32, Float32), instance, _rx, _ry, _x_axis_rotation, _large_arc, _positive_sweep, _x, _y)
+        nothing
+    end
+    function svg_arc_to(instance::GskPathBuilder, _rx::Real, _ry::Real, _x_axis_rotation::Real, _large_arc::Bool, _positive_sweep::Bool, _x::Real, _y::Real)
+        ret = ccall(("gsk_path_builder_svg_arc_to", libgtk4), Nothing, (Ptr{GskPathBuilder}, Float32, Float32, Float32, Cint, Cint, Float32, Float32), instance, _rx, _ry, _x_axis_rotation, _large_arc, _positive_sweep, _x, _y)
+        nothing
+    end
+    function to_path(instance::GskPathBuilder)
+        ret = ccall(("gsk_path_builder_to_path", libgtk4), Ptr{GskPath}, (Ptr{GskPathBuilder},), instance)
+        ret2 = convert(GskPath, ret, true)
+        ret2
+    end
+    function unref(instance::GskPathBuilder)
+        ret = ccall(("gsk_path_builder_unref", libgtk4), Nothing, (Ptr{GskPathBuilder},), instance)
+        nothing
+    end
+    function PathMeasure_new(_path::GskPath)
+        ret = ccall(("gsk_path_measure_new", libgtk4), Ptr{GskPathMeasure}, (Ptr{GskPath},), _path)
+        ret2 = convert(GskPathMeasure, ret, true)
+        ret2
+    end
+    function PathMeasure_new_with_tolerance(_path::GskPath, _tolerance::Real)
+        ret = ccall(("gsk_path_measure_new_with_tolerance", libgtk4), Ptr{GskPathMeasure}, (Ptr{GskPath}, Float32), _path, _tolerance)
+        ret2 = convert(GskPathMeasure, ret, true)
+        ret2
+    end
+    function get_length(instance::GskPathMeasure)
+        ret = ccall(("gsk_path_measure_get_length", libgtk4), Float32, (Ptr{GskPathMeasure},), instance)
+        ret
+    end
+    function get_path(instance::GskPathMeasure)
+        ret = ccall(("gsk_path_measure_get_path", libgtk4), Ptr{GskPath}, (Ptr{GskPathMeasure},), instance)
+        ret2 = convert(GskPath, ret, false)
+        ret2
+    end
+    function get_point(instance::GskPathMeasure, _distance::Real)
+        m_result = Ref{GskPathPoint}()
+        ret = ccall(("gsk_path_measure_get_point", libgtk4), Cint, (Ptr{GskPathMeasure}, Float32, Ptr{GskPathPoint}), instance, _distance, m_result)
+        ret2 = convert(Bool, ret)
+        _result = m_result[]
+        (ret2, _result)
+    end
+    function get_tolerance(instance::GskPathMeasure)
+        ret = ccall(("gsk_path_measure_get_tolerance", libgtk4), Float32, (Ptr{GskPathMeasure},), instance)
+        ret
+    end
+    function ref(instance::GskPathMeasure)
+        ret = ccall(("gsk_path_measure_ref", libgtk4), Ptr{GskPathMeasure}, (Ptr{GskPathMeasure},), instance)
+        ret2 = convert(GskPathMeasure, ret, true)
+        ret2
+    end
+    function unref(instance::GskPathMeasure)
+        ret = ccall(("gsk_path_measure_unref", libgtk4), Nothing, (Ptr{GskPathMeasure},), instance)
+        nothing
+    end
+    function compare(instance::GskPathPoint, _point2::GskPathPoint)
+        ret = ccall(("gsk_path_point_compare", libgtk4), Int32, (Ptr{GskPathPoint}, Ptr{GskPathPoint}), instance, _point2)
+        ret
+    end
+    function copy(instance::GskPathPoint)
+        ret = ccall(("gsk_path_point_copy", libgtk4), Ptr{GskPathPoint}, (Ptr{GskPathPoint},), instance)
+        ret2 = convert(GskPathPoint, ret, true)
+        ret2
+    end
+    function equal(instance::GskPathPoint, _point2::GskPathPoint)
+        ret = ccall(("gsk_path_point_equal", libgtk4), Cint, (Ptr{GskPathPoint}, Ptr{GskPathPoint}), instance, _point2)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function free(instance::GskPathPoint)
+        ret = ccall(("gsk_path_point_free", libgtk4), Nothing, (Ptr{GskPathPoint},), instance)
+        nothing
+    end
+    function get_curvature(instance::GskPathPoint, _path::GskPath, _direction)
+        m_center = Ref{_GraphenePoint}()
+        ret = ccall(("gsk_path_point_get_curvature", libgtk4), Float32, (Ptr{GskPathPoint}, Ptr{GskPath}, UInt32, Ptr{_GraphenePoint}), instance, _path, _direction, m_center)
+        _center = m_center[]
+        _center = convert_if_not_null(GraphenePointLike, _center, false)
+        (ret, _center)
+    end
+    function get_distance(instance::GskPathPoint, _measure::GskPathMeasure)
+        ret = ccall(("gsk_path_point_get_distance", libgtk4), Float32, (Ptr{GskPathPoint}, Ptr{GskPathMeasure}), instance, _measure)
+        ret
+    end
+    function get_position(instance::GskPathPoint, _path::GskPath)
+        m_position = Ref{_GraphenePoint}()
+        ret = ccall(("gsk_path_point_get_position", libgtk4), Nothing, (Ptr{GskPathPoint}, Ptr{GskPath}, Ptr{_GraphenePoint}), instance, _path, m_position)
+        _position = m_position[]
+        _position
+    end
+    function get_rotation(instance::GskPathPoint, _path::GskPath, _direction)
+        ret = ccall(("gsk_path_point_get_rotation", libgtk4), Float32, (Ptr{GskPathPoint}, Ptr{GskPath}, UInt32), instance, _path, _direction)
+        ret
+    end
+    function get_tangent(instance::GskPathPoint, _path::GskPath, _direction)
+        m_tangent = Ref{_GrapheneVec2}()
+        ret = ccall(("gsk_path_point_get_tangent", libgtk4), Nothing, (Ptr{GskPathPoint}, Ptr{GskPath}, UInt32, Ptr{_GrapheneVec2}), instance, _path, _direction, m_tangent)
+        _tangent = m_tangent[]
+        _tangent
+    end
     function contains_point(instance::GskRoundedRectLike, _point::GraphenePointLike)
         ret = ccall(("gsk_rounded_rect_contains_point", libgtk4), Cint, (Ptr{_GskRoundedRect}, Ptr{_GraphenePoint}), instance, _point)
         ret2 = convert(Bool, ret)
@@ -48,6 +330,79 @@ begin
         ret = ccall(("gsk_rounded_rect_shrink", libgtk4), Ptr{_GskRoundedRect}, (Ptr{_GskRoundedRect}, Float32, Float32, Float32, Float32), instance, _top, _right, _bottom, _left)
         ret2 = convert(GskRoundedRectLike, ret)
         ret2
+    end
+    function Stroke_new(_line_width::Real)
+        ret = ccall(("gsk_stroke_new", libgtk4), Ptr{GskStroke}, (Float32,), _line_width)
+        ret2 = convert(GskStroke, ret, true)
+        ret2
+    end
+    function copy(instance::GskStroke)
+        ret = ccall(("gsk_stroke_copy", libgtk4), Ptr{GskStroke}, (Ptr{GskStroke},), instance)
+        ret2 = convert(GskStroke, ret, true)
+        ret2
+    end
+    function free(instance::GskStroke)
+        ret = ccall(("gsk_stroke_free", libgtk4), Nothing, (Ptr{GskStroke},), instance)
+        nothing
+    end
+    function get_dash(instance::GskStroke)
+        m_n_dash = Ref{UInt64}()
+        ret = ccall(("gsk_stroke_get_dash", libgtk4), Ptr{Float32}, (Ptr{GskStroke}, Ptr{UInt64}), instance, m_n_dash)
+        ret2 = collect(unsafe_wrap(Vector{Float32}, ret, m_n_dash[]))
+        _n_dash = m_n_dash[]
+        ret2
+    end
+    function get_dash_offset(instance::GskStroke)
+        ret = ccall(("gsk_stroke_get_dash_offset", libgtk4), Float32, (Ptr{GskStroke},), instance)
+        ret
+    end
+    function get_line_cap(instance::GskStroke)
+        ret = ccall(("gsk_stroke_get_line_cap", libgtk4), UInt32, (Ptr{GskStroke},), instance)
+        ret2 = LineCap(ret)
+        ret2
+    end
+    function get_line_join(instance::GskStroke)
+        ret = ccall(("gsk_stroke_get_line_join", libgtk4), UInt32, (Ptr{GskStroke},), instance)
+        ret2 = LineJoin(ret)
+        ret2
+    end
+    function get_line_width(instance::GskStroke)
+        ret = ccall(("gsk_stroke_get_line_width", libgtk4), Float32, (Ptr{GskStroke},), instance)
+        ret
+    end
+    function get_miter_limit(instance::GskStroke)
+        ret = ccall(("gsk_stroke_get_miter_limit", libgtk4), Float32, (Ptr{GskStroke},), instance)
+        ret
+    end
+    function set_dash(instance::GskStroke, _dash)
+        _dash_arr = convert(Vector{Float32}, _dash)
+        _n_dash = length(_dash)
+        ret = ccall(("gsk_stroke_set_dash", libgtk4), Nothing, (Ptr{GskStroke}, Ptr{Float32}, UInt64), instance, _dash_arr, _n_dash)
+        nothing
+    end
+    function set_dash_offset(instance::GskStroke, _offset::Real)
+        ret = ccall(("gsk_stroke_set_dash_offset", libgtk4), Nothing, (Ptr{GskStroke}, Float32), instance, _offset)
+        nothing
+    end
+    function set_line_cap(instance::GskStroke, _line_cap)
+        ret = ccall(("gsk_stroke_set_line_cap", libgtk4), Nothing, (Ptr{GskStroke}, UInt32), instance, _line_cap)
+        nothing
+    end
+    function set_line_join(instance::GskStroke, _line_join)
+        ret = ccall(("gsk_stroke_set_line_join", libgtk4), Nothing, (Ptr{GskStroke}, UInt32), instance, _line_join)
+        nothing
+    end
+    function set_line_width(instance::GskStroke, _line_width::Real)
+        ret = ccall(("gsk_stroke_set_line_width", libgtk4), Nothing, (Ptr{GskStroke}, Float32), instance, _line_width)
+        nothing
+    end
+    function set_miter_limit(instance::GskStroke, _limit::Real)
+        ret = ccall(("gsk_stroke_set_miter_limit", libgtk4), Nothing, (Ptr{GskStroke}, Float32), instance, _limit)
+        nothing
+    end
+    function to_cairo(instance::GskStroke, _cr::cairoContext)
+        ret = ccall(("gsk_stroke_to_cairo", libgtk4), Nothing, (Ptr{GskStroke}, Ptr{cairoContext}), instance, _cr)
+        nothing
     end
     function Transform_new()
         ret = ccall(("gsk_transform_new", libgtk4), Ptr{GskTransform}, ())

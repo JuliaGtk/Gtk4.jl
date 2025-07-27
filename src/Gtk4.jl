@@ -111,6 +111,7 @@ let havechild = [:GtkButton,:GtkCheckButton,:GtkMenuButton,:GtkFrame,:GtkAspectF
 end
 
 include("Gdk4.jl")
+include("Gsk4.jl")
 include("base.jl")
 include("builder.jl")
 include("input.jl")
