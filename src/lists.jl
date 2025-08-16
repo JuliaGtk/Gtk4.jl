@@ -297,6 +297,15 @@ end
 
 changed(cs::GtkCustomSorter, _change = FilterChange_DIFFERENT) = G_.changed(cs, _change)
 
+## GtkBitset (used for multiple selection)
+
+length(bs::GtkBitset) = Int(Gtk4.G_.get_size(bs))
+Base.isempty(bs::GtkBitset) = Gtk4.G_.is_empty(bs)
+function getindex(bs::GtkBitset, i::Integer)
+    (i<1 || i> length(bs)) && throw("Index $i is out of bounds")
+    Gtk4.G_.get_nth(bs, i-1)+1
+end
+
 ## GtkExpressions
 
 function glib_ref(x::Ptr{GtkExpression})
