@@ -19,6 +19,7 @@ These examples should be run in the REPL unless otherwise noted.
 
 ## Lists
 - `listview.jl` demonstrates using `GtkListView` to show a huge list of strings.
+- `listview_multi.jl` demonstrates using `GtkListView` with multiple selection.
 - `filteredlistview.jl` demonstrates `GtkListView` with a `GtkSearchEntry` and `GtkCustomFilter` to filter what's shown.
 - `sortedlistview.jl` demonstrates `GtkListView` with a `GtkDropDown` widget to control how the list is sorted.
 - `columnview.jl` demonstrates using `GtkColumnView` to show lists with multiple columns.
