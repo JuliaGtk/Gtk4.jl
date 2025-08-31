@@ -134,13 +134,10 @@ end
 
 function struct_constructor_exprs!(exprs,ns;constructor_skiplist=[], struct_skiplist=[], exclude_deprecated=true,first_list=[])
     s=get_non_skipped(ns,GIStructInfo,struct_skiplist,exclude_deprecated)
-    structs = get_name.(s)
-    for ss in vcat(first_list, structs)
+    for ss in vcat(first_list, get_name.(s))
         ssi=gi_find_by_name(ns,ss)
         constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
-        if !isempty(constructors)
-            append!(exprs,constructors)
-        end
+        append!(exprs,constructors)
     end
 end
 
@@ -192,17 +189,16 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
 end
 
 function all_callbacks!(exprs, exports, ns; callback_skiplist = [], exclude_deprecated = true)
-    callbacks=get_all(ns,GICallbackInfo,exclude_deprecated)
-    for c in callbacks
+    for c in get_all(ns,GICallbackInfo,exclude_deprecated)
         get_name(c) in callback_skiplist && continue
         try
-        push!(exprs, decl(c))
-    catch e
-        if isa(e, NotImplementedError)
-            continue
-        else
-            rethrow(e)
-        end
+            push!(exprs, decl(c))
+        catch e
+            if isa(e, NotImplementedError)
+                continue
+            else
+                rethrow(e)
+            end
         end
         push!(exports.args, get_full_name(c))
     end
@@ -268,8 +264,7 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
             (exclude_deprecated && is_deprecated(m)) && continue
             print_detailed && println(get_name(m))
             try
-                fun=create_method(m, liboverride)
-                push!(exprs, fun)
+                create_method(exprs, m, liboverride)
                 push!(handled_symbols,get_symbol(m))
                 created+=1
             catch e
@@ -332,7 +327,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     end
     for o in objects
         constructors = get_constructors(o;skiplist=constructor_skiplist, struct_skiplist=skiplist, exclude_deprecated=exclude_deprecated)
-        isempty(constructors) || append!(exprs,constructors)
+        append!(exprs,constructors)
     end
     if print_summary
         printstyled("Created ",imported," objects out of ",length(objects),"\n";color=:green)
@@ -344,8 +339,7 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
     not_implemented=0
     skipped=0
     created=0
-    objects=get_non_skipped(ns,GIObjectInfo,object_skiplist,exclude_deprecated)
-    for o in objects
+    for o in get_non_skipped(ns,GIObjectInfo,object_skiplist,exclude_deprecated)
         name=get_name(o)
         methods=get_methods(o)
         for m in methods
@@ -355,8 +349,7 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
             end
             (exclude_deprecated && is_deprecated(m)) && continue
             try
-                fun=create_method(m, liboverride)
-                push!(exprs, fun)
+                create_method(exprs, m, liboverride)
                 created+=1
             catch e
                 if isa(e, NotImplementedError)
@@ -383,8 +376,7 @@ end
 
 function all_object_signals!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing, exclude_deprecated=true)
     not_implemented=0
-    objects=get_non_skipped(ns,GIObjectInfo,object_skiplist,exclude_deprecated)
-    for o in objects
+    for o in get_non_skipped(ns,GIObjectInfo,object_skiplist,exclude_deprecated)
         signals = get_all_signals(o)
         for s in signals
             (exclude_deprecated && is_deprecated(s)) && continue
@@ -423,8 +415,7 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
             end
             (exclude_deprecated && is_deprecated(m)) && continue
             try
-                fun=create_method(m, liboverride)
-                push!(exprs, fun)
+                create_method(exprs, m, liboverride)
                 created+=1
             catch e
                 if isa(e, NotImplementedError)
@@ -496,8 +487,7 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
         name = get_name(i)
         name = Symbol("$name")
         try
-            fun=create_method(i, liboverride)
-            push!(exprs, fun)
+            create_method(exprs, i, liboverride)
             j+=1
         catch e
             if isa(e, NotImplementedError)
