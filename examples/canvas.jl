@@ -1,5 +1,6 @@
 using Gtk4
 
+# create a canvas with minimum size 100x100 pixels
 c = GtkCanvas(100,100)
 
 # define a function that will be called every time the widget needs to be drawn

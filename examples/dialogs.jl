@@ -105,3 +105,23 @@ function open_color_dialog(b)
 end
 
 signal_connect(open_color_dialog,color_dialog_button,"clicked")
+
+## Font dialog
+
+font_dialog_button = GtkButton("Font chooser dialog")
+push!(box, font_dialog_button)
+
+function font_cb(dlg, resobj)
+    try
+        println("You chose a font: ", Gtk4.font(dlg, resobj))
+    catch e
+        println(e)
+    end
+end
+
+function pick_font_dialog(b)
+    dlg = GtkFontDialog()
+    Gtk4.choose_font(font_cb, dlg)
+end
+
+signal_connect(pick_font_dialog, font_dialog_button, "clicked")

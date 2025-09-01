@@ -98,7 +98,6 @@ end
 
 win = GtkWindow("Listview tree demo with filter",600,800)
 win[] = box = GtkBox(:v)
-push!(box, searchentry)
 sw = GtkScrolledWindow()
-push!(box, sw)
+push!(box, searchentry, sw)
 sw[] = list

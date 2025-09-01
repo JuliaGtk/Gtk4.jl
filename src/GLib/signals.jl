@@ -32,9 +32,12 @@ end
 function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike, after::Bool = false)
     _signal_connect(cb, w, sig, after, false, nothing, nothing)
 end
-function _signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike, after::Bool, gtk_call_conv::Bool, param_types, user_data)
-    @assert sizeof_gclosure > 0
-    closuref = ccall((:g_closure_new_object, libgobject), Ptr{Nothing}, (Cuint, Ptr{GObject}), sizeof_gclosure::Int + Sys.WORD_SIZE * 2, w)
+
+struct GClosure
+    handle::Ptr{Nothing}
+end
+
+function _setup_closure(closuref, cb)
     closure_env = convert(Ptr{Ptr{Nothing}}, closuref + sizeof_gclosure)
     unsafe_store!(convert(Ptr{Int}, closure_env), 0, 2)
     ref_cb, deref_cb = invoke(gc_ref_closure, Tuple{Function}, cb)
@@ -43,8 +46,25 @@ function _signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractS
         (Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), closuref, ref_cb, deref_cb)
     ccall((:g_closure_set_marshal, libgobject), Nothing,
         (Ptr{Nothing}, Ptr{Nothing}), closuref, JuliaClosureMarshal::Ptr{Nothing})
+end
+
+function create_closure(@nospecialize(cb::Function))
+    closuref = ccall((:g_closure_new_simple, libgobject), Ptr{Nothing}, (Cuint, Ptr{Nothing}), sizeof_gclosure::Int + Sys.WORD_SIZE * 2, C_NULL)
+    _setup_closure(closuref, cb)
+    GClosure(closuref)
+end
+
+function create_closure(@nospecialize(cb::Function), w::GObject)
+    closuref = ccall((:g_closure_new_object, libgobject), Ptr{Nothing}, (Cuint, Ptr{GObject}), sizeof_gclosure::Int + Sys.WORD_SIZE * 2, w)
+    _setup_closure(closuref, cb)
+    GClosure(closuref)
+end
+
+function _signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike, after::Bool, gtk_call_conv::Bool, param_types, user_data)
+    @assert sizeof_gclosure > 0
+    closure = create_closure(cb, w)
     return ccall((:g_signal_connect_closure, libgobject), Culong,
-        (Ptr{GObject}, Ptr{UInt8}, Ptr{Nothing}, Cint), w, bytestring(sig), closuref, after)
+        (Ptr{GObject}, Ptr{UInt8}, Ptr{Nothing}, Cint), w, bytestring(sig), closure.handle, after)
 end
 function GClosureMarshal(closuref::Ptr{Nothing}, return_value::Ptr{GValue}, n_param_values::Cuint,
                          param_values::Ptr{GValue}, invocation_hint::Ptr{Nothing}, marshal_data::Ptr{Nothing})

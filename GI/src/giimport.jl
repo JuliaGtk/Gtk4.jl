@@ -35,10 +35,9 @@ end
 # export as a Cenum type
 function decl(enum::GIEnumInfo, incl_typeinit=true)
     enumname=get_name(enum)
-    vals = get_enum_values(enum)
     typ = typetag_primitive[get_storage_type(enum)]
     body = Expr(:macrocall, Symbol("@cenum"), Symbol("nothing"), :($enumname::$typ))
-    for (name,val) in vals
+    for (name,val) in get_enum_values(enum)
         val=unsafe_trunc(typ,val)  # sometimes the value returned by GI is outside the range of the enum's type
         fullname=enum_fullname(enumname,name)
         push!(body.args, :($fullname = $val) )
@@ -49,11 +48,10 @@ end
 # use BitFlags.jl
 function decl(enum::GIFlagsInfo, incl_typeinit=true)
     enumname=get_name(enum)
-    vals = get_enum_values(enum)
     typ = typetag_primitive[get_storage_type(enum)]
     body = Expr(:macrocall, Symbol("@bitflag"), Symbol("nothing"), :($enumname::UInt32))
     seen=UInt32[]
-    for (name,val) in vals
+    for (name,val) in get_enum_values(enum)
         val=unsafe_trunc(typ,val)  # sometimes the value returned by GI is outside the range of the enum's type
         if (iszero(val) || ispow2(val)) && !in(val,seen)
             fullname=enum_fullname(enumname,name)
@@ -107,7 +105,6 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
             push!(gboxed_types,$gstructname)
         end
     end
-    conv=nothing
     structlike = Symbol(gstructname,:Like)
     if !opaque
         fieldsexpr=Expr[]
@@ -150,9 +147,7 @@ function decl(structinfo::GIStructInfo,force_opaque=false)
         end
     end
     push!(exprs,unblock(struc))
-    if conv!==nothing
-        push!(exprs,unblock(conv))
-    end
+    push!(exprs,unblock(conv))
     if force_opaque
         ustructname = get_struct_name(structinfo)
         push!(exprs,:(const $ustructname = $gstructname))
@@ -166,9 +161,8 @@ end
 ## GObject/GTypeInstance output
 
 function signal_dict(info)
-    signals=get_signals(info)
     d=Dict{Symbol,Tuple{Any,Any}}()
-    for s in signals
+    for s in get_signals(info)
         rettyp = get_ret_type(s)
         argtyps = get_arg_types(s)
         name=Symbol(replace(String(get_name(s)),"-"=>"_"))
@@ -310,19 +304,20 @@ end
 
 function decl(interfaceinfo::GIInterfaceInfo)
     g_type = get_g_type(interfaceinfo)
+
+    type_init = Symbol(get_type_init(interfaceinfo))
+    libs=get_shlibs(GINamespace(get_namespace(interfaceinfo)))
+    lib=libs[findfirst(find_symbol(type_init),libs)]
+
     iname = Symbol(GLib.g_type_name(g_type))
 
     if iname === :void
         println("get_g_type returns void -- not in library? : ", get_name(interfaceinfo))
     end
     decl=quote
-        struct $iname <: GInterface
-            handle::Ptr{GObject}
-            gc::Any
-            $iname(x::GObject) = new(unsafe_convert(Ptr{GObject}, x), x)
-        end
+        @GLib.Giface $iname $(symbol_from_lib(lib)) $type_init
     end
-    unblock(decl)
+    MacroTools.striplines(unblock(decl))
 end
 
 function get_closure(callbackinfo::GICallbackInfo)
@@ -716,9 +711,7 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
     closure = get_closure(info)
     (st == GIScopeType.FOREVER || st == GIScopeType.INVALID) && throw(NotImplementedError("Scope type $st not implemented."))
     closure == -1 && throw(NotImplementedError("Closure not found."))
-    typeinfo=get_type(info)
-    callbackinfo=get_interface(typeinfo)
-    cclosure = get_closure(callbackinfo)
+    callbackinfo=get_interface(get_type(info))
     # get return type
     rettyp=get_return_type(callbackinfo)
     cname=get_full_name(callbackinfo)
@@ -993,15 +986,12 @@ function make_ccall(libs::AbstractArray, id, rtype, args)
 end
 
 function get_constructors(info::Union{GIStructInfo,GIObjectInfo};skiplist=Symbol[],struct_skiplist=Symbol[],exclude_deprecated=true)
-    methods=get_methods(info)
-    name=get_name(info)
     nsstring=get_namespace(info)
-    sname=Symbol("G_.",name)
     tname=get_type_name(info)
     outs=Expr[]
     gskiplist=[Symbol(nsstring,i) for i in struct_skiplist]
     ugskiplist=[Symbol("_",nsstring,i) for i in struct_skiplist]
-    for minfo in methods
+    for minfo in get_methods(info)
         if (exclude_deprecated && is_deprecated(minfo)) || get_name(minfo) in skiplist
             continue
         end
@@ -1021,7 +1011,7 @@ function get_constructors(info::Union{GIStructInfo,GIObjectInfo};skiplist=Symbol
                 quote
                     function $tname($(jparams(jargs)...); kwargs...)
                         obj = G_.$mname($(names(jargs)...))
-                        GLib.setproperties!(obj; kwargs...)
+                        obj !== nothing && GLib.setproperties!(obj; kwargs...)
                         obj
                     end
                 end
@@ -1120,6 +1110,11 @@ function create_interface_method(info::GIFunctionInfo, obj::GIObjectInfo, libove
         $name($(callargs...))
     end
     Expr(:function, j_call, blk)
+end
+
+function delete_arg!(args, arg_name)
+    arg_i=findfirst(==(arg_name),args)
+    arg_i !== nothing && deleteat!(args,arg_i)
 end
 
 # with some partial-evaluation half-magic
@@ -1225,16 +1220,14 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
             if len_i !== nothing
                 push!(prologue, :($len_name = length($aname)))
             end
-            len_i=findfirst(==(len_name),retvals)
-            len_i !== nothing && deleteat!(retvals,len_i)
+            delete_arg!(retvals, len_name)
         end
     end
     if rettype.gitype == GICArray
         arrlen=get_array_length(rettypeinfo)
         if arrlen >=0
             len_name=Symbol("_",get_name(args[arrlen+1]))
-            len_i=findfirst(==(len_name),retvals)
-            len_i !== nothing && deleteat!(retvals,len_i)
+            delete_arg!(retvals, len_name)
         end
     end
 
@@ -1262,4 +1255,9 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
     blk = Expr(:block)
     blk.args = vcat(prologue, c_call, epilogue, retstmt )
     fun = Expr(:function, j_call, blk)
+end
+
+function create_method(exprs, info::GIFunctionInfo, liboverride = nothing)
+    fun = create_method(info, liboverride)
+    push!(exprs, fun)
 end

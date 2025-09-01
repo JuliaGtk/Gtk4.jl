@@ -5,8 +5,7 @@ sw = GtkScrolledWindow()
 push!(win, sw)
 
 model = GtkStringList(string.(names(Gtk4)))
-singlesel = GtkSingleSelection(GListModel(model))
-selmodel = GtkSelectionModel(singlesel)
+selmodel = GtkSelectionModel(GtkMultiSelection(GListModel(model)))
 
 function setup_cb(f, li)
     set_child(li,GtkLabel(""))
@@ -21,9 +20,11 @@ end
 factory = GtkSignalListItemFactory(setup_cb, bind_cb)
 list = GtkListView(selmodel, factory)
 
-function ss(w, pos, n)
-    s = Gtk4.G_.get_selected(singlesel)+1
-    println("You selected ",model[s])
+sel = Gtk4.selection(selmodel)
+
+function ss(w, x, y)
+    println("You selected:")
+    println(model[sel])
 end
 signal_connect(ss, selmodel, "selection-changed")
 

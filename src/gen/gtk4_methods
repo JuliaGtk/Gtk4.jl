@@ -1,5 +1,4 @@
-quote
-$(Expr(:toplevel, quote
+begin
     function AccessibleList_new_from_array(_accessibles)
         _accessibles_arr = convert(Vector{Ptr{GObject}}, _accessibles)
         _n_accessibles = length(_accessibles)
@@ -16,6 +15,132 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_accessible_list_get_objects", libgtk4), Ptr{GLib._GList{Ptr{GObject}}}, (Ptr{GtkAccessibleList},), instance)
         ret2 = GLib.GList(ret, false)
         ret2
+    end
+    function Bitset_new_empty()
+        ret = ccall(("gtk_bitset_new_empty", libgtk4), Ptr{GtkBitset}, ())
+        ret2 = convert(GtkBitset, ret, true)
+        ret2
+    end
+    function Bitset_new_range(_start::Integer, _n_items::Integer)
+        ret = ccall(("gtk_bitset_new_range", libgtk4), Ptr{GtkBitset}, (UInt32, UInt32), _start, _n_items)
+        ret2 = convert(GtkBitset, ret, true)
+        ret2
+    end
+    function add(instance::GtkBitset, _value::Integer)
+        ret = ccall(("gtk_bitset_add", libgtk4), Cint, (Ptr{GtkBitset}, UInt32), instance, _value)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function add_range(instance::GtkBitset, _start::Integer, _n_items::Integer)
+        ret = ccall(("gtk_bitset_add_range", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32, UInt32), instance, _start, _n_items)
+        nothing
+    end
+    function add_range_closed(instance::GtkBitset, _first::Integer, _last::Integer)
+        ret = ccall(("gtk_bitset_add_range_closed", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32, UInt32), instance, _first, _last)
+        nothing
+    end
+    function add_rectangle(instance::GtkBitset, _start::Integer, _width::Integer, _height::Integer, _stride::Integer)
+        ret = ccall(("gtk_bitset_add_rectangle", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32, UInt32, UInt32, UInt32), instance, _start, _width, _height, _stride)
+        nothing
+    end
+    function contains(instance::GtkBitset, _value::Integer)
+        ret = ccall(("gtk_bitset_contains", libgtk4), Cint, (Ptr{GtkBitset}, UInt32), instance, _value)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function copy(instance::GtkBitset)
+        ret = ccall(("gtk_bitset_copy", libgtk4), Ptr{GtkBitset}, (Ptr{GtkBitset},), instance)
+        ret2 = convert(GtkBitset, ret, true)
+        ret2
+    end
+    function difference(instance::GtkBitset, _other::GtkBitset)
+        ret = ccall(("gtk_bitset_difference", libgtk4), Nothing, (Ptr{GtkBitset}, Ptr{GtkBitset}), instance, _other)
+        nothing
+    end
+    function equals(instance::GtkBitset, _other::GtkBitset)
+        ret = ccall(("gtk_bitset_equals", libgtk4), Cint, (Ptr{GtkBitset}, Ptr{GtkBitset}), instance, _other)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function get_maximum(instance::GtkBitset)
+        ret = ccall(("gtk_bitset_get_maximum", libgtk4), UInt32, (Ptr{GtkBitset},), instance)
+        ret
+    end
+    function get_minimum(instance::GtkBitset)
+        ret = ccall(("gtk_bitset_get_minimum", libgtk4), UInt32, (Ptr{GtkBitset},), instance)
+        ret
+    end
+    function get_nth(instance::GtkBitset, _nth::Integer)
+        ret = ccall(("gtk_bitset_get_nth", libgtk4), UInt32, (Ptr{GtkBitset}, UInt32), instance, _nth)
+        ret
+    end
+    function get_size(instance::GtkBitset)
+        ret = ccall(("gtk_bitset_get_size", libgtk4), UInt64, (Ptr{GtkBitset},), instance)
+        ret
+    end
+    function get_size_in_range(instance::GtkBitset, _first::Integer, _last::Integer)
+        ret = ccall(("gtk_bitset_get_size_in_range", libgtk4), UInt64, (Ptr{GtkBitset}, UInt32, UInt32), instance, _first, _last)
+        ret
+    end
+    function intersect(instance::GtkBitset, _other::GtkBitset)
+        ret = ccall(("gtk_bitset_intersect", libgtk4), Nothing, (Ptr{GtkBitset}, Ptr{GtkBitset}), instance, _other)
+        nothing
+    end
+    function is_empty(instance::GtkBitset)
+        ret = ccall(("gtk_bitset_is_empty", libgtk4), Cint, (Ptr{GtkBitset},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function ref(instance::GtkBitset)
+        ret = ccall(("gtk_bitset_ref", libgtk4), Ptr{GtkBitset}, (Ptr{GtkBitset},), instance)
+        ret2 = convert(GtkBitset, ret, false)
+        ret2
+    end
+    function remove(instance::GtkBitset, _value::Integer)
+        ret = ccall(("gtk_bitset_remove", libgtk4), Cint, (Ptr{GtkBitset}, UInt32), instance, _value)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function remove_all(instance::GtkBitset)
+        ret = ccall(("gtk_bitset_remove_all", libgtk4), Nothing, (Ptr{GtkBitset},), instance)
+        nothing
+    end
+    function remove_range(instance::GtkBitset, _start::Integer, _n_items::Integer)
+        ret = ccall(("gtk_bitset_remove_range", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32, UInt32), instance, _start, _n_items)
+        nothing
+    end
+    function remove_range_closed(instance::GtkBitset, _first::Integer, _last::Integer)
+        ret = ccall(("gtk_bitset_remove_range_closed", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32, UInt32), instance, _first, _last)
+        nothing
+    end
+    function remove_rectangle(instance::GtkBitset, _start::Integer, _width::Integer, _height::Integer, _stride::Integer)
+        ret = ccall(("gtk_bitset_remove_rectangle", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32, UInt32, UInt32, UInt32), instance, _start, _width, _height, _stride)
+        nothing
+    end
+    function shift_left(instance::GtkBitset, _amount::Integer)
+        ret = ccall(("gtk_bitset_shift_left", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32), instance, _amount)
+        nothing
+    end
+    function shift_right(instance::GtkBitset, _amount::Integer)
+        ret = ccall(("gtk_bitset_shift_right", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32), instance, _amount)
+        nothing
+    end
+    function splice(instance::GtkBitset, _position::Integer, _removed::Integer, _added::Integer)
+        ret = ccall(("gtk_bitset_splice", libgtk4), Nothing, (Ptr{GtkBitset}, UInt32, UInt32, UInt32), instance, _position, _removed, _added)
+        nothing
+    end
+    function subtract(instance::GtkBitset, _other::GtkBitset)
+        ret = ccall(("gtk_bitset_subtract", libgtk4), Nothing, (Ptr{GtkBitset}, Ptr{GtkBitset}), instance, _other)
+        nothing
+    end
+    function union(instance::GtkBitset, _other::GtkBitset)
+        ret = ccall(("gtk_bitset_union", libgtk4), Nothing, (Ptr{GtkBitset}, Ptr{GtkBitset}), instance, _other)
+        nothing
+    end
+    function unref(instance::GtkBitset)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gtk_bitset_unref", libgtk4), Nothing, (Ptr{GtkBitset},), reffed_instance)
+        nothing
     end
     function Border_new()
         ret = ccall(("gtk_border_new", libgtk4), Ptr{_GtkBorder}, ())
@@ -162,12 +287,12 @@ $(Expr(:toplevel, quote
     end
     function get_page_setup(instance::GtkPrintSetup)
         ret = ccall(("gtk_print_setup_get_page_setup", libgtk4), Ptr{GObject}, (Ptr{GtkPrintSetup},), instance)
-        ret2 = convert_if_not_null(GtkPageSetup, ret, false)
+        ret2 = convert(GtkPageSetup, ret, false)
         ret2
     end
     function get_print_settings(instance::GtkPrintSetup)
         ret = ccall(("gtk_print_setup_get_print_settings", libgtk4), Ptr{GObject}, (Ptr{GtkPrintSetup},), instance)
-        ret2 = convert_if_not_null(GtkPrintSettings, ret, false)
+        ret2 = convert(GtkPrintSettings, ret, false)
         ret2
     end
     function ref(instance::GtkPrintSetup)
@@ -393,13 +518,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function backward_find_char(instance::GtkTextIterLike, _pred::Function, _limit::Maybe(GtkTextIterLike))
-        begin
-            _pred_cfunc = @cfunction(GtkTextCharPredicate, Cint, (Nothing, Ref{Function}))
-            begin
-                ref = Ref{Any}(_pred)
-                _pred_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _pred_cfunc = @cfunction(GtkTextCharPredicate, Cint, (Nothing, Ref{Function}))
+        ref = Ref{Any}(_pred)
+        _pred_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         _limit_maybe = nothing_to_null(_limit)
         ret = ccall(("gtk_text_iter_backward_find_char", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{_GtkTextIter}), instance, _pred_cfunc, _pred_closure, _limit_maybe)
         ret2 = convert(Bool, ret)
@@ -547,13 +668,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function forward_find_char(instance::GtkTextIterLike, _pred::Function, _limit::Maybe(GtkTextIterLike))
-        begin
-            _pred_cfunc = @cfunction(GtkTextCharPredicate, Cint, (Nothing, Ref{Function}))
-            begin
-                ref = Ref{Any}(_pred)
-                _pred_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _pred_cfunc = @cfunction(GtkTextCharPredicate, Cint, (Nothing, Ref{Function}))
+        ref = Ref{Any}(_pred)
+        _pred_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         _limit_maybe = nothing_to_null(_limit)
         ret = ccall(("gtk_text_iter_forward_find_char", libgtk4), Cint, (Ptr{_GtkTextIter}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{_GtkTextIter}), instance, _pred_cfunc, _pred_closure, _limit_maybe)
         ret2 = convert(Bool, ret)
@@ -1157,6 +1274,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkAboutDialog, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkAboutDialog, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkAboutDialog, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -1267,6 +1387,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkActionBar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkActionBar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkActionBar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -1554,6 +1677,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkAppChooserButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkAppChooserButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkAppChooserButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -1639,6 +1765,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkAppChooserDialog, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkAppChooserDialog, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkAppChooserDialog, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -1782,6 +1911,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkAppChooserWidget, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkAppChooserWidget, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkAppChooserWidget, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -2073,6 +2205,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkApplicationWindow, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkApplicationWindow, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkApplicationWindow, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -2195,6 +2330,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkAspectFrame, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkAspectFrame, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkAspectFrame, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -2348,6 +2486,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkAssistant, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkAssistant, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkAssistant, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -2566,6 +2707,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkBox, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkBox, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkBox, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -2914,6 +3058,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -3062,6 +3209,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkCalendar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkCalendar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkCalendar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -3073,240 +3223,6 @@ $(Expr(:toplevel, quote
     end
     function get_buildable_id(instance::GtkCalendar)
         get_buildable_id(GtkBuildable(instance))
-    end
-    function activate(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::GdkRectangleLike, _flags, _edit_only::Bool)
-        ret = ccall(("gtk_cell_area_activate", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, UInt32, Cint), instance, _context, _widget, _cell_area, _flags, _edit_only)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function add(instance::GtkCellArea, _renderer::GtkCellRenderer)
-        ret = ccall(("gtk_cell_area_add", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _renderer)
-        nothing
-    end
-    function add_focus_sibling(instance::GtkCellArea, _renderer::GtkCellRenderer, _sibling::GtkCellRenderer)
-        ret = ccall(("gtk_cell_area_add_focus_sibling", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), instance, _renderer, _sibling)
-        nothing
-    end
-    function apply_attributes(instance::GtkCellArea, _tree_model::GtkTreeModel, _iter::GtkTreeIterLike, _is_expander::Bool, _is_expanded::Bool)
-        ret = ccall(("gtk_cell_area_apply_attributes", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GtkTreeIter}, Cint, Cint), instance, _tree_model, _iter, _is_expander, _is_expanded)
-        nothing
-    end
-    function attribute_connect(instance::GtkCellArea, _renderer::GtkCellRenderer, _attribute::Union{AbstractString, Symbol}, _column::Integer)
-        ret = ccall(("gtk_cell_area_attribute_connect", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Int32), instance, _renderer, _attribute, _column)
-        nothing
-    end
-    function attribute_disconnect(instance::GtkCellArea, _renderer::GtkCellRenderer, _attribute::Union{AbstractString, Symbol})
-        ret = ccall(("gtk_cell_area_attribute_disconnect", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring), instance, _renderer, _attribute)
-        nothing
-    end
-    function attribute_get_column(instance::GtkCellArea, _renderer::GtkCellRenderer, _attribute::Union{AbstractString, Symbol})
-        ret = ccall(("gtk_cell_area_attribute_get_column", libgtk4), Int32, (Ptr{GObject}, Ptr{GObject}, Cstring), instance, _renderer, _attribute)
-        ret
-    end
-    function cell_get_property(instance::GtkCellArea, _renderer::GtkCellRenderer, _property_name::Union{AbstractString, Symbol}, _value::GValueLike)
-        ret = ccall(("gtk_cell_area_cell_get_property", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _renderer, _property_name, _value)
-        nothing
-    end
-    function cell_set_property(instance::GtkCellArea, _renderer::GtkCellRenderer, _property_name::Union{AbstractString, Symbol}, _value::GValueLike)
-        ret = ccall(("gtk_cell_area_cell_set_property", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Cstring, Ptr{_GValue}), instance, _renderer, _property_name, _value)
-        nothing
-    end
-    function copy_context(instance::GtkCellArea, _context::GtkCellAreaContext)
-        ret = ccall(("gtk_cell_area_copy_context", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), instance, _context)
-        ret2 = convert(GtkCellAreaContext, ret, true)
-        ret2
-    end
-    function create_context(instance::GtkCellArea)
-        ret = ccall(("gtk_cell_area_create_context", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GtkCellAreaContext, ret, true)
-        ret2
-    end
-    function focus(instance::GtkCellArea, _direction)
-        ret = ccall(("gtk_cell_area_focus", libgtk4), Cint, (Ptr{GObject}, UInt32), instance, _direction)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function foreach(instance::GtkCellArea, _callback::Function)
-        begin
-            _callback_cfunc = @cfunction(GtkCellCallback, Cint, (Ptr{GObject}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_callback)
-                _callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
-        ret = ccall(("gtk_cell_area_foreach", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _callback_cfunc, _callback_closure)
-        nothing
-    end
-    function foreach_alloc(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::GdkRectangleLike, _background_area::GdkRectangleLike, _callback::Function)
-        begin
-            _callback_cfunc = @cfunction(GtkCellAllocCallback, Cint, (Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_callback)
-                _callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
-        ret = ccall(("gtk_cell_area_foreach_alloc", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, Ptr{Cvoid}, Ptr{Nothing}), instance, _context, _widget, _cell_area, _background_area, _callback_cfunc, _callback_closure)
-        nothing
-    end
-    function get_cell_allocation(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _renderer::GtkCellRenderer, _cell_area::GdkRectangleLike)
-        m_allocation = Ref{_GdkRectangle}()
-        ret = ccall(("gtk_cell_area_get_cell_allocation", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _context, _widget, _renderer, _cell_area, m_allocation)
-        _allocation = m_allocation[]
-        _allocation
-    end
-    function get_cell_at_position(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _cell_area::GdkRectangleLike, _x::Integer, _y::Integer)
-        m_alloc_area = Ref{_GdkRectangle}()
-        ret = ccall(("gtk_cell_area_get_cell_at_position", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Int32, Int32, Ptr{_GdkRectangle}), instance, _context, _widget, _cell_area, _x, _y, m_alloc_area)
-        ret2 = convert(GtkCellRenderer, ret, false)
-        _alloc_area = m_alloc_area[]
-        (ret2, _alloc_area)
-    end
-    function get_current_path_string(instance::GtkCellArea)
-        ret = ccall(("gtk_cell_area_get_current_path_string", libgtk4), Cstring, (Ptr{GObject},), instance)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function get_edit_widget(instance::GtkCellArea)
-        ret = ccall(("gtk_cell_area_get_edit_widget", libgtk4), Ptr{GtkWidget}, (Ptr{GObject},), instance)
-        ret2 = GLib.find_leaf_type_if_not_null(ret, false)
-        ret2
-    end
-    function get_edited_cell(instance::GtkCellArea)
-        ret = ccall(("gtk_cell_area_get_edited_cell", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert_if_not_null(GtkCellRenderer, ret, false)
-        ret2
-    end
-    function get_focus_cell(instance::GtkCellArea)
-        ret = ccall(("gtk_cell_area_get_focus_cell", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert_if_not_null(GtkCellRenderer, ret, false)
-        ret2
-    end
-    function get_focus_from_sibling(instance::GtkCellArea, _renderer::GtkCellRenderer)
-        ret = ccall(("gtk_cell_area_get_focus_from_sibling", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}), instance, _renderer)
-        ret2 = convert_if_not_null(GtkCellRenderer, ret, false)
-        ret2
-    end
-    function get_focus_siblings(instance::GtkCellArea, _renderer::GtkCellRenderer)
-        ret = ccall(("gtk_cell_area_get_focus_siblings", libgtk4), Ptr{GLib._GList{Ptr{GObject}}}, (Ptr{GObject}, Ptr{GObject}), instance, _renderer)
-        ret2 = GLib.GList(ret, false, false)
-        ret2
-    end
-    function get_preferred_height(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget)
-        m_minimum_height = Ref{Int32}()
-        m_natural_height = Ref{Int32}()
-        ret = ccall(("gtk_cell_area_get_preferred_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _context, _widget, m_minimum_height, m_natural_height)
-        _minimum_height = m_minimum_height[]
-        _natural_height = m_natural_height[]
-        (_minimum_height, _natural_height)
-    end
-    function get_preferred_height_for_width(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _width::Integer)
-        m_minimum_height = Ref{Int32}()
-        m_natural_height = Ref{Int32}()
-        ret = ccall(("gtk_cell_area_get_preferred_height_for_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _context, _widget, _width, m_minimum_height, m_natural_height)
-        _minimum_height = m_minimum_height[]
-        _natural_height = m_natural_height[]
-        (_minimum_height, _natural_height)
-    end
-    function get_preferred_width(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget)
-        m_minimum_width = Ref{Int32}()
-        m_natural_width = Ref{Int32}()
-        ret = ccall(("gtk_cell_area_get_preferred_width", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Int32}, Ptr{Int32}), instance, _context, _widget, m_minimum_width, m_natural_width)
-        _minimum_width = m_minimum_width[]
-        _natural_width = m_natural_width[]
-        (_minimum_width, _natural_width)
-    end
-    function get_preferred_width_for_height(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _height::Integer)
-        m_minimum_width = Ref{Int32}()
-        m_natural_width = Ref{Int32}()
-        ret = ccall(("gtk_cell_area_get_preferred_width_for_height", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _context, _widget, _height, m_minimum_width, m_natural_width)
-        _minimum_width = m_minimum_width[]
-        _natural_width = m_natural_width[]
-        (_minimum_width, _natural_width)
-    end
-    function get_request_mode(instance::GtkCellArea)
-        ret = ccall(("gtk_cell_area_get_request_mode", libgtk4), UInt32, (Ptr{GObject},), instance)
-        ret2 = SizeRequestMode(ret)
-        ret2
-    end
-    function has_renderer(instance::GtkCellArea, _renderer::GtkCellRenderer)
-        ret = ccall(("gtk_cell_area_has_renderer", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}), instance, _renderer)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function inner_cell_area(instance::GtkCellArea, _widget::GtkWidget, _cell_area::GdkRectangleLike)
-        m_inner_area = Ref{_GdkRectangle}()
-        ret = ccall(("gtk_cell_area_inner_cell_area", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}), instance, _widget, _cell_area, m_inner_area)
-        _inner_area = m_inner_area[]
-        _inner_area
-    end
-    function is_activatable(instance::GtkCellArea)
-        ret = ccall(("gtk_cell_area_is_activatable", libgtk4), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function is_focus_sibling(instance::GtkCellArea, _renderer::GtkCellRenderer, _sibling::GtkCellRenderer)
-        ret = ccall(("gtk_cell_area_is_focus_sibling", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), instance, _renderer, _sibling)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function remove(instance::GtkCellArea, _renderer::GtkCellRenderer)
-        ret = ccall(("gtk_cell_area_remove", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _renderer)
-        nothing
-    end
-    function remove_focus_sibling(instance::GtkCellArea, _renderer::GtkCellRenderer, _sibling::GtkCellRenderer)
-        ret = ccall(("gtk_cell_area_remove_focus_sibling", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), instance, _renderer, _sibling)
-        nothing
-    end
-    function request_renderer(instance::GtkCellArea, _renderer::GtkCellRenderer, _orientation, _widget::GtkWidget, _for_size::Integer)
-        m_minimum_size = Ref{Int32}()
-        m_natural_size = Ref{Int32}()
-        ret = ccall(("gtk_cell_area_request_renderer", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{GObject}, Int32, Ptr{Int32}, Ptr{Int32}), instance, _renderer, _orientation, _widget, _for_size, m_minimum_size, m_natural_size)
-        _minimum_size = m_minimum_size[]
-        _natural_size = m_natural_size[]
-        (_minimum_size, _natural_size)
-    end
-    function set_focus_cell(instance::GtkCellArea, _renderer::Maybe(GtkCellRenderer))
-        _renderer_maybe = nothing_to_null(_renderer)
-        ret = ccall(("gtk_cell_area_set_focus_cell", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _renderer_maybe)
-        nothing
-    end
-    function snapshot(instance::GtkCellArea, _context::GtkCellAreaContext, _widget::GtkWidget, _snapshot::GtkSnapshot, _background_area::GdkRectangleLike, _cell_area::GdkRectangleLike, _flags, _paint_focus::Bool)
-        ret = ccall(("gtk_cell_area_snapshot", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{_GdkRectangle}, Ptr{_GdkRectangle}, UInt32, Cint), instance, _context, _widget, _snapshot, _background_area, _cell_area, _flags, _paint_focus)
-        nothing
-    end
-    function stop_editing(instance::GtkCellArea, _canceled::Bool)
-        ret = ccall(("gtk_cell_area_stop_editing", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _canceled)
-        nothing
-    end
-    function get_buildable_id(instance::GtkCellArea)
-        get_buildable_id(GtkBuildable(instance))
-    end
-    function add_attribute(instance::GtkCellArea, _cell::GtkCellRenderer, _attribute::Union{AbstractString, Symbol}, _column::Integer)
-        add_attribute(GtkCellLayout(instance), _cell, _attribute, _column)
-    end
-    function clear(instance::GtkCellArea)
-        clear(GtkCellLayout(instance))
-    end
-    function clear_attributes(instance::GtkCellArea, _cell::GtkCellRenderer)
-        clear_attributes(GtkCellLayout(instance), _cell)
-    end
-    function get_area(instance::GtkCellArea)
-        get_area(GtkCellLayout(instance))
-    end
-    function get_cells(instance::GtkCellArea)
-        get_cells(GtkCellLayout(instance))
-    end
-    function pack_end(instance::GtkCellArea, _cell::GtkCellRenderer, _expand::Bool)
-        pack_end(GtkCellLayout(instance), _cell, _expand)
-    end
-    function pack_start(instance::GtkCellArea, _cell::GtkCellRenderer, _expand::Bool)
-        pack_start(GtkCellLayout(instance), _cell, _expand)
-    end
-    function reorder(instance::GtkCellArea, _cell::GtkCellRenderer, _position::Integer)
-        reorder(GtkCellLayout(instance), _cell, _position)
-    end
-    function set_cell_data_func(instance::GtkCellArea, _cell::GtkCellRenderer, _func::Maybe(Function), _destroy::Function)
-        set_cell_data_func(GtkCellLayout(instance), _cell, _func, _destroy)
     end
     function CellAreaBox_new()
         ret = ccall(("gtk_cell_area_box_new", libgtk4), Ptr{GObject}, ())
@@ -3599,6 +3515,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkCellView, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkCellView, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkCellView, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -3735,6 +3654,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkCenterBox, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkCenterBox, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkCenterBox, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -3924,6 +3846,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkCheckButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkCheckButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkCheckButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -4018,6 +3943,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkColorButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkColorButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkColorButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -4090,6 +4018,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkColorChooserDialog, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkColorChooserDialog, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkColorChooserDialog, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -4185,6 +4116,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkColorChooserWidget, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkColorChooserWidget, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkColorChooserWidget, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -4333,6 +4267,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkColorDialogButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkColorDialogButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkColorDialogButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -4520,6 +4457,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkColumnView, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkColumnView, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkColumnView, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -4937,6 +4877,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkComboBox, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkComboBox, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkComboBox, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -5073,6 +5016,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkComboBoxText, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkComboBoxText, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkComboBoxText, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -5434,6 +5380,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkDialog, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkDialog, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkDialog, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -5535,14 +5484,14 @@ $(Expr(:toplevel, quote
     function items_changed(instance::GtkDirectoryList, _position::Integer, _removed::Integer, _added::Integer)
         items_changed(GListModel(instance), _position, _removed, _added)
     end
+    function DragIcon_get_for_drag(_drag::GdkDrag)
+        ret = ccall(("gtk_drag_icon_get_for_drag", libgtk4), Ptr{GObject}, (Ptr{GObject},), _drag)
+        ret2 = GtkDragIconLeaf(ret, false)
+        ret2
+    end
     function create_widget_for_value(_value::GValueLike)
         ret = ccall(("gtk_drag_icon_create_widget_for_value", libgtk4), Ptr{GObject}, (Ptr{_GValue},), _value)
         ret2 = convert_if_not_null(GtkWidget, ret, true)
-        ret2
-    end
-    function get_for_drag(_drag::GdkDrag)
-        ret = ccall(("gtk_drag_icon_get_for_drag", libgtk4), Ptr{GObject}, (Ptr{GObject},), _drag)
-        ret2 = convert(GtkWidget, ret, false)
         ret2
     end
     function set_from_paintable(_drag::GdkDrag, _paintable::GdkPaintable, _hot_x::Integer, _hot_y::Integer)
@@ -5597,6 +5546,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkDragIcon, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkDragIcon, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkDragIcon, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -5731,6 +5683,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkDrawingArea, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkDrawingArea, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkDrawingArea, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -5910,6 +5865,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkDropDown, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkDropDown, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkDropDown, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -6069,6 +6027,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkEditableLabel, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkEditableLabel, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkEditableLabel, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -6196,6 +6157,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkEmojiChooser, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkEmojiChooser, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkEmojiChooser, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -6537,6 +6501,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkEntry, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkEntry, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkEntry, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -6836,7 +6803,7 @@ $(Expr(:toplevel, quote
     end
     function get_widget(instance::GtkEventController)
         ret = ccall(("gtk_event_controller_get_widget", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GtkWidget, ret, false)
+        ret2 = convert_if_not_null(GtkWidget, ret, false)
         ret2
     end
     function reset(instance::GtkEventController)
@@ -7076,6 +7043,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkExpander, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkExpander, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkExpander, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -7158,6 +7128,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkFileChooserDialog, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkFileChooserDialog, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkFileChooserDialog, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -7418,6 +7391,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkFileChooserWidget, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkFileChooserWidget, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkFileChooserWidget, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -7590,6 +7566,52 @@ $(Expr(:toplevel, quote
         ret2 = GLib.find_leaf_type_if_not_null(ret, true)
         ret2
     end
+    function open_multiple_text_files(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_dialog_open_multiple_text_files", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function open_multiple_text_files_finish(instance::GtkFileDialog, _result::GAsyncResult)
+        m_encoding = Ref{Cstring}()
+        err = err_buf()
+        ret = ccall(("gtk_file_dialog_open_multiple_text_files_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _result, m_encoding, err)
+        check_err(err)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        _encoding = m_encoding[]
+        _encoding = string_or_nothing(_encoding, false)
+        (ret2, _encoding)
+    end
+    function open_text_file(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_dialog_open_text_file", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function open_text_file_finish(instance::GtkFileDialog, _result::GAsyncResult)
+        m_encoding = Ref{Cstring}()
+        err = err_buf()
+        ret = ccall(("gtk_file_dialog_open_text_file_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _result, m_encoding, err)
+        check_err(err)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        _encoding = m_encoding[]
+        _encoding = string_or_nothing(_encoding, false)
+        (ret2, _encoding)
+    end
     function save(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
         _parent_maybe = nothing_to_null(_parent)
         _cancellable_maybe = nothing_to_null(_cancellable)
@@ -7609,6 +7631,32 @@ $(Expr(:toplevel, quote
         check_err(err)
         ret2 = GLib.find_leaf_type_if_not_null(ret, true)
         ret2
+    end
+    function save_text_file(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
+        _parent_maybe = nothing_to_null(_parent)
+        _cancellable_maybe = nothing_to_null(_cancellable)
+        if _callback === nothing
+            _callback_cfunc = C_NULL
+            _callback_closure = C_NULL
+        else
+            _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+            _callback_closure = GLib.gc_ref(_callback)
+        end
+        ret = ccall(("gtk_file_dialog_save_text_file", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _parent_maybe, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        nothing
+    end
+    function save_text_file_finish(instance::GtkFileDialog, _result::GAsyncResult)
+        m_encoding = Ref{Cstring}()
+        m_line_ending = Ref{Cstring}()
+        err = err_buf()
+        ret = ccall(("gtk_file_dialog_save_text_file_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Ptr{GError}}), instance, _result, m_encoding, m_line_ending, err)
+        check_err(err)
+        ret2 = GLib.find_leaf_type_if_not_null(ret, true)
+        _encoding = m_encoding[]
+        _encoding = string_or_nothing(_encoding, false)
+        _line_ending = m_line_ending[]
+        _line_ending = string_or_nothing(_line_ending, false)
+        (ret2, _encoding, _line_ending)
     end
     function select_folder(instance::GtkFileDialog, _parent::Maybe(GtkWindow), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
         _parent_maybe = nothing_to_null(_parent)
@@ -7971,6 +8019,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkFixed, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkFixed, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkFixed, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -8129,13 +8180,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function selected_foreach(instance::GtkFlowBox, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GtkFlowBoxForeachFunc, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GtkFlowBoxForeachFunc, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("gtk_flow_box_selected_foreach", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _func_cfunc, _func_closure)
         nothing
     end
@@ -8222,6 +8269,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkFlowBox, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkFlowBox, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkFlowBox, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -8306,6 +8356,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkFlowBoxChild, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkFlowBoxChild, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkFlowBoxChild, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -8403,6 +8456,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkFontButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkFontButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkFontButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -8518,6 +8574,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkFontChooserDialog, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkFontChooserDialog, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkFontChooserDialog, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -8655,6 +8714,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkFontChooserWidget, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkFontChooserWidget, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkFontChooserWidget, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -8985,6 +9047,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkFontDialogButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkFontDialogButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkFontDialogButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -9079,6 +9144,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkFrame, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkFrame, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkFrame, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -9223,6 +9291,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkGLArea, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkGLArea, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkGLArea, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -9486,6 +9557,11 @@ $(Expr(:toplevel, quote
         ret2 = GtkGraphicsOffloadLeaf(ret, false)
         ret2
     end
+    function get_black_background(instance::GtkGraphicsOffload)
+        ret = ccall(("gtk_graphics_offload_get_black_background", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function get_child(instance::GtkGraphicsOffload)
         ret = ccall(("gtk_graphics_offload_get_child", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GtkWidget, ret, false)
@@ -9495,6 +9571,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_graphics_offload_get_enabled", libgtk4), UInt32, (Ptr{GObject},), instance)
         ret2 = GraphicsOffloadEnabled(ret)
         ret2
+    end
+    function set_black_background(instance::GtkGraphicsOffload, _value::Bool)
+        ret = ccall(("gtk_graphics_offload_set_black_background", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _value)
+        nothing
     end
     function set_child(instance::GtkGraphicsOffload, _child::Maybe(GtkWidget))
         _child_maybe = nothing_to_null(_child)
@@ -9543,6 +9623,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkGraphicsOffload, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkGraphicsOffload, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkGraphicsOffload, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -9700,6 +9783,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkGrid, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkGrid, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkGrid, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -9936,6 +10022,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkGridView, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkGridView, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkGridView, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -10001,6 +10090,11 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(GtkWidget, ret, false)
         ret2
     end
+    function get_use_native_controls(instance::GtkHeaderBar)
+        ret = ccall(("gtk_header_bar_get_use_native_controls", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function pack_end(instance::GtkHeaderBar, _child::GtkWidget)
         ret = ccall(("gtk_header_bar_pack_end", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _child)
         nothing
@@ -10025,6 +10119,10 @@ $(Expr(:toplevel, quote
     function set_title_widget(instance::GtkHeaderBar, _title_widget::Maybe(GtkWidget))
         _title_widget_maybe = nothing_to_null(_title_widget)
         ret = ccall(("gtk_header_bar_set_title_widget", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _title_widget_maybe)
+        nothing
+    end
+    function set_use_native_controls(instance::GtkHeaderBar, _setting::Bool)
+        ret = ccall(("gtk_header_bar_set_use_native_controls", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
     function announce(instance::GtkHeaderBar, _message::Union{AbstractString, Symbol}, _priority)
@@ -10065,6 +10163,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkHeaderBar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkHeaderBar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkHeaderBar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -10539,13 +10640,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function selected_foreach(instance::GtkIconView, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GtkIconViewForeachFunc, Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GtkIconViewForeachFunc, Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("gtk_icon_view_selected_foreach", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _func_cfunc, _func_closure)
         nothing
     end
@@ -10687,6 +10784,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkIconView, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkIconView, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkIconView, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -10901,6 +11001,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkImage, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkImage, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkImage, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -11016,6 +11119,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkInfoBar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkInfoBar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkInfoBar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -11164,6 +11270,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkInscription, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkInscription, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkInscription, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -11477,6 +11586,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkLabel, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkLabel, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkLabel, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -11651,6 +11763,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkLevelBar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkLevelBar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkLevelBar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -11737,6 +11852,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkLinkButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkLinkButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkLinkButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -11802,6 +11920,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkListBase, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkListBase, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkListBase, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -11905,6 +12026,11 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
+    function get_tab_behavior(instance::GtkListBox)
+        ret = ccall(("gtk_list_box_get_tab_behavior", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = ListTabBehavior(ret)
+        ret2
+    end
     function insert(instance::GtkListBox, _child::GtkWidget, _position::Integer)
         ret = ccall(("gtk_list_box_insert", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Int32), instance, _child, _position)
         nothing
@@ -11943,13 +12069,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function selected_foreach(instance::GtkListBox, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GtkListBoxForeachFunc, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GtkListBoxForeachFunc, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("gtk_list_box_selected_foreach", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _func_cfunc, _func_closure)
         nothing
     end
@@ -11973,6 +12095,10 @@ $(Expr(:toplevel, quote
     end
     function set_show_separators(instance::GtkListBox, _show_separators::Bool)
         ret = ccall(("gtk_list_box_set_show_separators", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _show_separators)
+        nothing
+    end
+    function set_tab_behavior(instance::GtkListBox, _behavior)
+        ret = ccall(("gtk_list_box_set_tab_behavior", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _behavior)
         nothing
     end
     function unselect_all(instance::GtkListBox)
@@ -12021,6 +12147,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkListBox, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkListBox, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkListBox, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -12128,6 +12257,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkListBoxRow, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkListBoxRow, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkListBoxRow, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -12595,6 +12727,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkListView, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkListView, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkListView, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -12694,6 +12829,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkLockButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkLockButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkLockButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -12809,6 +12947,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkMediaControls, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkMediaControls, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkMediaControls, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -13223,6 +13364,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkMenuButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkMenuButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkMenuButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -13282,6 +13426,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkMessageDialog, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkMessageDialog, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkMessageDialog, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -13860,6 +14007,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkNotebook, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkNotebook, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkNotebook, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -13991,6 +14141,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkOverlay, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkOverlay, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkOverlay, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -14292,6 +14445,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkPaned, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkPaned, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkPaned, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -14372,6 +14528,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkPasswordEntry, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkPasswordEntry, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkPasswordEntry, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -14608,6 +14767,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkPicture, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkPicture, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkPicture, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -14760,6 +14922,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkPopover, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkPopover, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkPopover, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -14866,6 +15031,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkPopoverMenu, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkPopoverMenu, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkPopoverMenu, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -14958,6 +15126,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkPopoverMenuBar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkPopoverMenuBar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkPopoverMenuBar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -15045,12 +15216,12 @@ $(Expr(:toplevel, quote
     end
     function get_page_setup(instance::GtkPrintDialog)
         ret = ccall(("gtk_print_dialog_get_page_setup", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GtkPageSetup, ret, false)
+        ret2 = convert_if_not_null(GtkPageSetup, ret, false)
         ret2
     end
     function get_print_settings(instance::GtkPrintDialog)
         ret = ccall(("gtk_print_dialog_get_print_settings", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GtkPrintSettings, ret, false)
+        ret2 = convert_if_not_null(GtkPrintSettings, ret, false)
         ret2
     end
     function get_title(instance::GtkPrintDialog)
@@ -15097,7 +15268,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gtk_print_dialog_print_finish", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = convert_if_not_null(GOutputStream, ret, true)
+        ret2 = convert(GOutputStream, ret, true)
         ret2
     end
     function set_accept_label(instance::GtkPrintDialog, _accept_label::Union{AbstractString, Symbol})
@@ -15137,7 +15308,7 @@ $(Expr(:toplevel, quote
         err = err_buf()
         ret = ccall(("gtk_print_dialog_setup_finish", libgtk4), Ptr{GtkPrintSetup}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), instance, _result, err)
         check_err(err)
-        ret2 = convert_if_not_null(GtkPrintSetup, ret, true)
+        ret2 = convert(GtkPrintSetup, ret, true)
         ret2
     end
     function PrintOperation_new()
@@ -15516,6 +15687,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkProgressBar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkProgressBar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkProgressBar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -15695,6 +15869,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkRange, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkRange, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkRange, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -15797,6 +15974,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkRevealer, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkRevealer, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkRevealer, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -15917,6 +16097,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkScale, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkScale, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkScale, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -16030,6 +16213,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkScaleButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkScaleButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkScaleButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -16102,6 +16288,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkScrollbar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkScrollbar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkScrollbar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -16309,6 +16498,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkScrolledWindow, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkScrolledWindow, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkScrolledWindow, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -16406,6 +16598,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkSearchBar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkSearchBar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkSearchBar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -16508,6 +16703,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkSearchEntry, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkSearchEntry, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkSearchEntry, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -16664,6 +16862,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkSeparator, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkSeparator, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkSeparator, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -16878,6 +17079,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkShortcutLabel, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkShortcutLabel, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkShortcutLabel, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -16975,6 +17179,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkShortcutsGroup, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkShortcutsGroup, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkShortcutsGroup, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -17036,6 +17243,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkShortcutsSection, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkShortcutsSection, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkShortcutsSection, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -17093,6 +17303,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkShortcutsShortcut, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkShortcutsShortcut, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkShortcutsShortcut, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -17147,6 +17360,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkShortcutsWindow, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkShortcutsWindow, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkShortcutsWindow, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -17413,6 +17629,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_append_conic_gradient", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{_GraphenePoint}, Float32, Ptr{_GskColorStop}, UInt64), instance, _bounds, _center, _rotation, _stops_arr, _n_stops)
         nothing
     end
+    function append_fill(instance::GtkSnapshot, _path::GskPath, _fill_rule, _color::GdkRGBALike)
+        ret = ccall(("gtk_snapshot_append_fill", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskPath}, UInt32, Ptr{_GdkRGBA}), instance, _path, _fill_rule, _color)
+        nothing
+    end
     function append_inset_shadow(instance::GtkSnapshot, _outline::GskRoundedRectLike, _color::GdkRGBALike, _dx::Real, _dy::Real, _spread::Real, _blur_radius::Real)
         ret = ccall(("gtk_snapshot_append_inset_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskRoundedRect}, Ptr{_GdkRGBA}, Float32, Float32, Float32, Float32), instance, _outline, _color, _dx, _dy, _spread, _blur_radius)
         nothing
@@ -17453,6 +17673,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_append_scaled_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Ptr{_GrapheneRect}), instance, _texture, _filter, _bounds)
         nothing
     end
+    function append_stroke(instance::GtkSnapshot, _path::GskPath, _stroke::GskStroke, _color::GdkRGBALike)
+        ret = ccall(("gtk_snapshot_append_stroke", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskPath}, Ptr{GskStroke}, Ptr{_GdkRGBA}), instance, _path, _stroke, _color)
+        nothing
+    end
     function append_texture(instance::GtkSnapshot, _texture::GdkTexture, _bounds::GrapheneRectLike)
         ret = ccall(("gtk_snapshot_append_texture", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}), instance, _texture, _bounds)
         nothing
@@ -17489,6 +17713,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_snapshot_push_cross_fade", libgtk4), Nothing, (Ptr{GObject}, Float64), instance, _progress)
         nothing
     end
+    function push_fill(instance::GtkSnapshot, _path::GskPath, _fill_rule)
+        ret = ccall(("gtk_snapshot_push_fill", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskPath}, UInt32), instance, _path, _fill_rule)
+        nothing
+    end
     function push_gl_shader(instance::GtkSnapshot, _shader::GskGLShader, _bounds::GrapheneRectLike, _take_args::GBytes)
         _take_args = GLib.glib_ref(_take_args)
         ret = ccall(("gtk_snapshot_push_gl_shader", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{_GrapheneRect}, Ptr{GBytes}), instance, _shader, _bounds, _take_args)
@@ -17515,6 +17743,10 @@ $(Expr(:toplevel, quote
         _shadow_arr = convert(Vector{_GskShadow}, _shadow)
         _n_shadows = length(_shadow)
         ret = ccall(("gtk_snapshot_push_shadow", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GskShadow}, UInt64), instance, _shadow_arr, _n_shadows)
+        nothing
+    end
+    function push_stroke(instance::GtkSnapshot, _path::GskPath, _stroke::GskStroke)
+        ret = ccall(("gtk_snapshot_push_stroke", libgtk4), Nothing, (Ptr{GObject}, Ptr{GskPath}, Ptr{GskStroke}), instance, _path, _stroke)
         nothing
     end
     function render_background(instance::GtkSnapshot, _context::GtkStyleContext, _x::Real, _y::Real, _width::Real, _height::Real)
@@ -17850,6 +18082,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkSpinButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkSpinButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkSpinButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -18009,6 +18244,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkSpinner, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkSpinner, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkSpinner, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -18176,6 +18414,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkStack, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkStack, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkStack, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -18286,6 +18527,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkStackPage, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkStackPage, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkStackPage, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -18347,6 +18591,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkStackSidebar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkStackSidebar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkStackSidebar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -18413,6 +18660,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkStackSwitcher, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkStackSwitcher, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkStackSwitcher, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -18496,6 +18746,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkStatusbar, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkStatusbar, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkStatusbar, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -18561,6 +18814,10 @@ $(Expr(:toplevel, quote
     function append(instance::GtkStringList, _string::Union{AbstractString, Symbol})
         ret = ccall(("gtk_string_list_append", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _string)
         nothing
+    end
+    function find(instance::GtkStringList, _string::Union{AbstractString, Symbol})
+        ret = ccall(("gtk_string_list_find", libgtk4), UInt32, (Ptr{GObject}, Cstring), instance, _string)
+        ret
     end
     function get_string(instance::GtkStringList, _position::Integer)
         ret = ccall(("gtk_string_list_get_string", libgtk4), Cstring, (Ptr{GObject}, UInt32), instance, _position)
@@ -18800,6 +19057,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkSwitch, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkSwitch, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkSwitch, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -19033,6 +19293,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkText, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkText, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkText, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -19415,6 +19678,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_buffer_remove_all_tags", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GtkTextIter}, Ptr{_GtkTextIter}), instance, _start, _end)
         nothing
     end
+    function remove_commit_notify(instance::GtkTextBuffer, _commit_notify_handler::Integer)
+        ret = ccall(("gtk_text_buffer_remove_commit_notify", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _commit_notify_handler)
+        nothing
+    end
     function remove_selection_clipboard(instance::GtkTextBuffer, _clipboard::GdkClipboard)
         ret = ccall(("gtk_text_buffer_remove_selection_clipboard", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _clipboard)
         nothing
@@ -19541,13 +19808,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function foreach(instance::GtkTextTagTable, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GtkTextTagTableForeach, Nothing, (Ptr{GObject}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GtkTextTagTableForeach, Nothing, (Ptr{GObject}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("gtk_text_tag_table_foreach", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _func_cfunc, _func_closure)
         nothing
     end
@@ -19762,6 +20025,16 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_text_view_get_top_margin", libgtk4), Int32, (Ptr{GObject},), instance)
         ret
     end
+    function get_visible_offset(instance::GtkTextView)
+        m_x_offset = Ref{Float64}()
+        m_y_offset = Ref{Float64}()
+        ret = ccall(("gtk_text_view_get_visible_offset", libgtk4), Nothing, (Ptr{GObject}, Ptr{Float64}, Ptr{Float64}), instance, m_x_offset, m_y_offset)
+        _x_offset = m_x_offset[]
+        _x_offset = convert(Maybe(Real), _x_offset)
+        _y_offset = m_y_offset[]
+        _y_offset = convert(Maybe(Real), _y_offset)
+        (_x_offset, _y_offset)
+    end
     function get_visible_rect(instance::GtkTextView)
         m_visible_rect = Ref{_GdkRectangle}()
         ret = ccall(("gtk_text_view_get_visible_rect", libgtk4), Nothing, (Ptr{GObject}, Ptr{_GdkRectangle}), instance, m_visible_rect)
@@ -19956,6 +20229,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkTextView, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkTextView, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkTextView, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -20075,6 +20351,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkToggleButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkToggleButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkToggleButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -20232,6 +20511,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkTreeExpander, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkTreeExpander, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkTreeExpander, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -20695,13 +20977,9 @@ $(Expr(:toplevel, quote
         nothing
     end
     function selected_foreach(instance::GtkTreeSelection, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GtkTreeSelectionForeachFunc, Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GtkTreeIter}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GtkTreeSelectionForeachFunc, Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GtkTreeIter}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("gtk_tree_selection_selected_foreach", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _func_cfunc, _func_closure)
         nothing
     end
@@ -21270,13 +21548,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function map_expanded_rows(instance::GtkTreeView, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GtkTreeViewMappingFunc, Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GtkTreeViewMappingFunc, Nothing, (Ptr{GObject}, Ptr{GtkTreePath}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("gtk_tree_view_map_expanded_rows", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _func_cfunc, _func_closure)
         nothing
     end
@@ -21457,6 +21731,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkTreeView, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkTreeView, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkTreeView, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -21899,6 +22176,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkVideo, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkVideo, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkVideo, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -21986,6 +22266,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkViewport, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkViewport, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkViewport, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -22068,6 +22351,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkVolumeButton, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkVolumeButton, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkVolumeButton, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -22348,6 +22634,11 @@ $(Expr(:toplevel, quote
     function get_layout_manager(instance::GtkWidget)
         ret = ccall(("gtk_widget_get_layout_manager", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GtkLayoutManager, ret, false)
+        ret2
+    end
+    function get_limit_events(instance::GtkWidget)
+        ret = ccall(("gtk_widget_get_limit_events", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
         ret2
     end
     function get_mapped(instance::GtkWidget)
@@ -22759,6 +23050,10 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_widget_set_layout_manager", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _layout_manager_maybe)
         nothing
     end
+    function set_limit_events(instance::GtkWidget, _limit_events::Bool)
+        ret = ccall(("gtk_widget_set_limit_events", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _limit_events)
+        nothing
+    end
     function set_margin_bottom(instance::GtkWidget, _margin::Integer)
         ret = ccall(("gtk_widget_set_margin_bottom", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _margin)
         nothing
@@ -22917,6 +23212,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkWidget, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkWidget, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkWidget, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -23302,6 +23600,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkWindow, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkWindow, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkWindow, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -23352,6 +23653,11 @@ $(Expr(:toplevel, quote
         ret2 = PackType(ret)
         ret2
     end
+    function get_use_native_controls(instance::GtkWindowControls)
+        ret = ccall(("gtk_window_controls_get_use_native_controls", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function set_decoration_layout(instance::GtkWindowControls, _layout::Maybe(Union{AbstractString, Symbol}))
         _layout_maybe = nothing_to_null(_layout)
         ret = ccall(("gtk_window_controls_set_decoration_layout", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _layout_maybe)
@@ -23359,6 +23665,10 @@ $(Expr(:toplevel, quote
     end
     function set_side(instance::GtkWindowControls, _side)
         ret = ccall(("gtk_window_controls_set_side", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _side)
+        nothing
+    end
+    function set_use_native_controls(instance::GtkWindowControls, _setting::Bool)
+        ret = ccall(("gtk_window_controls_set_use_native_controls", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _setting)
         nothing
     end
     function announce(instance::GtkWindowControls, _message::Union{AbstractString, Symbol}, _priority)
@@ -23399,6 +23709,9 @@ $(Expr(:toplevel, quote
     end
     function update_next_accessible_sibling(instance::GtkWindowControls, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
+    end
+    function update_platform_state(instance::GtkWindowControls, _state)
+        update_platform_state(GtkAccessible(instance), _state)
     end
     function update_property(instance::GtkWindowControls, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
@@ -23484,6 +23797,9 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkWindowHandle, _new_sibling::Maybe(GtkAccessible))
         update_next_accessible_sibling(GtkAccessible(instance), _new_sibling)
     end
+    function update_platform_state(instance::GtkWindowHandle, _state)
+        update_platform_state(GtkAccessible(instance), _state)
+    end
     function update_property(instance::GtkWindowHandle, _properties, _values)
         update_property(GtkAccessible(instance), _properties, _values)
     end
@@ -23564,6 +23880,10 @@ $(Expr(:toplevel, quote
     function update_next_accessible_sibling(instance::GtkAccessible, _new_sibling::Maybe(GtkAccessible))
         _new_sibling_maybe = nothing_to_null(_new_sibling)
         ret = ccall(("gtk_accessible_update_next_accessible_sibling", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _new_sibling_maybe)
+        nothing
+    end
+    function update_platform_state(instance::GtkAccessible, _state)
+        ret = ccall(("gtk_accessible_update_platform_state", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _state)
         nothing
     end
     function update_property(instance::GtkAccessible, _properties, _values)
@@ -24257,13 +24577,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function foreach(instance::GtkTreeModel, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GtkTreeModelForeachFunc, Cint, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GtkTreeIter}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GtkTreeModelForeachFunc, Cint, (Ptr{GObject}, Ptr{GtkTreePath}, Ptr{_GtkTreeIter}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("gtk_tree_model_foreach", libgtk4), Nothing, (Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _func_cfunc, _func_closure)
         nothing
     end
@@ -24414,5 +24730,4 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_sortable_sort_column_changed", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
-end))
 end

@@ -38,7 +38,6 @@ GSList(list::Type{T}) where {T} = GList(convert(Ptr{_GSList{T}}, C_NULL), true)
 GList(list::Ptr{L}, transfer_full::Bool = false, transfer_container::Bool = true) where {L <: _LList} = GList{L, eltype(L)}(list, transfer_full, transfer_container)
 
 const  LList{L <: _LList} = Union{Ptr{L}, GList{L}}
-eltype(::LList{L}) where {L <: _LList} = eltype(L)
 
 _listdatatype(::Type{_LList{T}}) where {T} = T
 _listdatatype(::Type{L}) where {L <: _LList} = _listdatatype(supertype(L))

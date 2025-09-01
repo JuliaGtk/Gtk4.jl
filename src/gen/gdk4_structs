@@ -1,309 +1,238 @@
-quote
-$(Expr(:toplevel, quote
+begin
     const gboxed_types = Any[]
-    begin
-        mutable struct GdkContentFormats <: GBoxed
-            handle::Ptr{GdkContentFormats}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkContentFormats) = begin
-                        ccall(("gdk_content_formats_get_type", libgtk4), GType, ())
-                    end
-                function GdkContentFormats(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct GdkColorState <: GBoxed
+        handle::Ptr{GdkColorState}
+        (GLib.g_type(::Type{T}) where T <: GdkColorState) = ccall(("gdk_color_state_get_type", libgtk4), GType, ())
+        function GdkColorState(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkContentFormats)
             end
+            x
         end
-        const GdkContentFormatsLike = GdkContentFormats
+        push!(gboxed_types, GdkColorState)
     end
-    begin
-        mutable struct GdkContentFormatsBuilder <: GBoxed
-            handle::Ptr{GdkContentFormatsBuilder}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkContentFormatsBuilder) = begin
-                        ccall(("gdk_content_formats_builder_get_type", libgtk4), GType, ())
-                    end
-                function GdkContentFormatsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GdkColorStateLike = GdkColorState
+    mutable struct GdkContentFormats <: GBoxed
+        handle::Ptr{GdkContentFormats}
+        (GLib.g_type(::Type{T}) where T <: GdkContentFormats) = ccall(("gdk_content_formats_get_type", libgtk4), GType, ())
+        function GdkContentFormats(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkContentFormatsBuilder)
             end
+            x
         end
-        const GdkContentFormatsBuilderLike = GdkContentFormatsBuilder
+        push!(gboxed_types, GdkContentFormats)
     end
-    begin
-        mutable struct GdkDmabufFormats <: GBoxed
-            handle::Ptr{GdkDmabufFormats}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkDmabufFormats) = begin
-                        ccall(("gdk_dmabuf_formats_get_type", libgtk4), GType, ())
-                    end
-                function GdkDmabufFormats(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GdkContentFormatsLike = GdkContentFormats
+    mutable struct GdkContentFormatsBuilder <: GBoxed
+        handle::Ptr{GdkContentFormatsBuilder}
+        (GLib.g_type(::Type{T}) where T <: GdkContentFormatsBuilder) = ccall(("gdk_content_formats_builder_get_type", libgtk4), GType, ())
+        function GdkContentFormatsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkDmabufFormats)
             end
+            x
         end
-        const GdkDmabufFormatsLike = GdkDmabufFormats
+        push!(gboxed_types, GdkContentFormatsBuilder)
     end
-    begin
-        mutable struct GdkDragSurfaceSize
-            handle::Ptr{GdkDragSurfaceSize}
-        end
-        const GdkDragSurfaceSizeLike = GdkDragSurfaceSize
-    end
-    begin
-        mutable struct GdkEventSequence <: GBoxed
-            handle::Ptr{GdkEventSequence}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkEventSequence) = begin
-                        ccall(("gdk_event_sequence_get_type", libgtk4), GType, ())
-                    end
-                function GdkEventSequence(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GdkContentFormatsBuilderLike = GdkContentFormatsBuilder
+    mutable struct GdkDmabufFormats <: GBoxed
+        handle::Ptr{GdkDmabufFormats}
+        (GLib.g_type(::Type{T}) where T <: GdkDmabufFormats) = ccall(("gdk_dmabuf_formats_get_type", libgtk4), GType, ())
+        function GdkDmabufFormats(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkEventSequence)
             end
+            x
         end
-        const GdkEventSequenceLike = GdkEventSequence
+        push!(gboxed_types, GdkDmabufFormats)
     end
-    begin
-        mutable struct GdkFileList <: GBoxed
-            handle::Ptr{GdkFileList}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkFileList) = begin
-                        ccall(("gdk_file_list_get_type", libgtk4), GType, ())
-                    end
-                function GdkFileList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GdkDmabufFormatsLike = GdkDmabufFormats
+    mutable struct GdkDragSurfaceSize
+        handle::Ptr{GdkDragSurfaceSize}
+    end
+    const GdkDragSurfaceSizeLike = GdkDragSurfaceSize
+    mutable struct GdkEventSequence <: GBoxed
+        handle::Ptr{GdkEventSequence}
+        (GLib.g_type(::Type{T}) where T <: GdkEventSequence) = ccall(("gdk_event_sequence_get_type", libgtk4), GType, ())
+        function GdkEventSequence(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkFileList)
             end
+            x
         end
-        const GdkFileListLike = GdkFileList
+        push!(gboxed_types, GdkEventSequence)
     end
-    begin
-        mutable struct GdkFrameTimings <: GBoxed
-            handle::Ptr{GdkFrameTimings}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkFrameTimings) = begin
-                        ccall(("gdk_frame_timings_get_type", libgtk4), GType, ())
-                    end
-                function GdkFrameTimings(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GdkEventSequenceLike = GdkEventSequence
+    mutable struct GdkFileList <: GBoxed
+        handle::Ptr{GdkFileList}
+        (GLib.g_type(::Type{T}) where T <: GdkFileList) = ccall(("gdk_file_list_get_type", libgtk4), GType, ())
+        function GdkFileList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkFrameTimings)
             end
+            x
         end
-        const GdkFrameTimingsLike = GdkFrameTimings
+        push!(gboxed_types, GdkFileList)
     end
-    begin
-        struct _GdkKeymapKey
-            keycode::UInt32
-            group::Int32
-            level::Int32
-        end
-        mutable struct GdkKeymapKey
-            handle::Ptr{_GdkKeymapKey}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GdkKeymapKey}}, box::GdkKeymapKey) = begin
-                    convert(Ptr{_GdkKeymapKey}, box.handle)
-                end
-            convert(::Type{GdkKeymapKey}, p::Ptr{_GdkKeymapKey}, owns = false) = begin
-                    GdkKeymapKey(p, owns)
-                end
-            const GdkKeymapKeyLike = Union{Ref{_GdkKeymapKey}, GdkKeymapKey}
-            convert(::Type{GdkKeymapKeyLike}, p, owns) = begin
-                    convert(GdkKeymapKey, p, owns)
-                end
-        end
-    end
-    begin
-        mutable struct GdkPopupLayout <: GBoxed
-            handle::Ptr{GdkPopupLayout}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkPopupLayout) = begin
-                        ccall(("gdk_popup_layout_get_type", libgtk4), GType, ())
-                    end
-                function GdkPopupLayout(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GdkFileListLike = GdkFileList
+    mutable struct GdkFrameTimings <: GBoxed
+        handle::Ptr{GdkFrameTimings}
+        (GLib.g_type(::Type{T}) where T <: GdkFrameTimings) = ccall(("gdk_frame_timings_get_type", libgtk4), GType, ())
+        function GdkFrameTimings(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkPopupLayout)
             end
+            x
         end
-        const GdkPopupLayoutLike = GdkPopupLayout
+        push!(gboxed_types, GdkFrameTimings)
     end
-    begin
-        struct _GdkRGBA
-            red::Float32
-            green::Float32
-            blue::Float32
-            alpha::Float32
-        end
-        mutable struct GdkRGBA <: GBoxed
-            handle::Ptr{_GdkRGBA}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkRGBA) = begin
-                        ccall(("gdk_rgba_get_type", libgtk4), GType, ())
-                    end
-                function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkRGBA}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GdkFrameTimingsLike = GdkFrameTimings
+    struct _GdkKeymapKey
+        keycode::UInt32
+        group::Int32
+        level::Int32
+    end
+    mutable struct GdkKeymapKey
+        handle::Ptr{_GdkKeymapKey}
+    end
+    unsafe_convert(::Type{Ptr{_GdkKeymapKey}}, box::GdkKeymapKey) = convert(Ptr{_GdkKeymapKey}, box.handle)
+    convert(::Type{GdkKeymapKey}, p::Ptr{_GdkKeymapKey}, owns = false) = GdkKeymapKey(p, owns)
+    const GdkKeymapKeyLike = Union{Ref{_GdkKeymapKey}, GdkKeymapKey}
+    convert(::Type{GdkKeymapKeyLike}, p, owns) = convert(GdkKeymapKey, p, owns)
+    mutable struct GdkPopupLayout <: GBoxed
+        handle::Ptr{GdkPopupLayout}
+        (GLib.g_type(::Type{T}) where T <: GdkPopupLayout) = ccall(("gdk_popup_layout_get_type", libgtk4), GType, ())
+        function GdkPopupLayout(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkRGBA)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GdkRGBA}}, box::GdkRGBA) = begin
-                    convert(Ptr{_GdkRGBA}, box.handle)
-                end
-            convert(::Type{GdkRGBA}, p::Ptr{_GdkRGBA}, owns = false) = begin
-                    GdkRGBA(p, owns)
-                end
-            const GdkRGBALike = Union{Ref{_GdkRGBA}, GdkRGBA}
-            convert(::Type{GdkRGBALike}, p, owns) = begin
-                    convert(GdkRGBA, p, owns)
-                end
-        end
+        push!(gboxed_types, GdkPopupLayout)
     end
-    begin
-        struct _GdkRectangle
-            x::Int32
-            y::Int32
-            width::Int32
-            height::Int32
-        end
-        mutable struct GdkRectangle <: GBoxed
-            handle::Ptr{_GdkRectangle}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkRectangle) = begin
-                        ccall(("gdk_rectangle_get_type", libgtk4), GType, ())
-                    end
-                function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkRectangle}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GdkPopupLayoutLike = GdkPopupLayout
+    struct _GdkRGBA
+        red::Float32
+        green::Float32
+        blue::Float32
+        alpha::Float32
+    end
+    mutable struct GdkRGBA <: GBoxed
+        handle::Ptr{_GdkRGBA}
+        (GLib.g_type(::Type{T}) where T <: GdkRGBA) = ccall(("gdk_rgba_get_type", libgtk4), GType, ())
+        function GdkRGBA(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkRGBA}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkRectangle)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GdkRectangle}}, box::GdkRectangle) = begin
-                    convert(Ptr{_GdkRectangle}, box.handle)
-                end
-            convert(::Type{GdkRectangle}, p::Ptr{_GdkRectangle}, owns = false) = begin
-                    GdkRectangle(p, owns)
-                end
-            const GdkRectangleLike = Union{Ref{_GdkRectangle}, GdkRectangle}
-            convert(::Type{GdkRectangleLike}, p, owns) = begin
-                    convert(GdkRectangle, p, owns)
-                end
-        end
+        push!(gboxed_types, GdkRGBA)
     end
-    begin
-        mutable struct GdkTextureDownloader <: GBoxed
-            handle::Ptr{GdkTextureDownloader}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkTextureDownloader) = begin
-                        ccall(("gdk_texture_downloader_get_type", libgtk4), GType, ())
-                    end
-                function GdkTextureDownloader(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GdkRGBA}}, box::GdkRGBA) = convert(Ptr{_GdkRGBA}, box.handle)
+    convert(::Type{GdkRGBA}, p::Ptr{_GdkRGBA}, owns = false) = GdkRGBA(p, owns)
+    const GdkRGBALike = Union{Ref{_GdkRGBA}, GdkRGBA}
+    convert(::Type{GdkRGBALike}, p, owns) = convert(GdkRGBA, p, owns)
+    struct _GdkRectangle
+        x::Int32
+        y::Int32
+        width::Int32
+        height::Int32
+    end
+    mutable struct GdkRectangle <: GBoxed
+        handle::Ptr{_GdkRectangle}
+        (GLib.g_type(::Type{T}) where T <: GdkRectangle) = ccall(("gdk_rectangle_get_type", libgtk4), GType, ())
+        function GdkRectangle(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkRectangle}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkTextureDownloader)
             end
+            x
         end
-        const GdkTextureDownloaderLike = GdkTextureDownloader
+        push!(gboxed_types, GdkRectangle)
     end
-    begin
-        mutable struct GdkTimeCoord
-            handle::Ptr{GdkTimeCoord}
-        end
-        const GdkTimeCoordLike = GdkTimeCoord
-        const _GdkTimeCoord = GdkTimeCoord
-    end
-    begin
-        mutable struct GdkToplevelLayout <: GBoxed
-            handle::Ptr{GdkToplevelLayout}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GdkToplevelLayout) = begin
-                        ccall(("gdk_toplevel_layout_get_type", libgtk4), GType, ())
-                    end
-                function GdkToplevelLayout(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GdkRectangle}}, box::GdkRectangle) = convert(Ptr{_GdkRectangle}, box.handle)
+    convert(::Type{GdkRectangle}, p::Ptr{_GdkRectangle}, owns = false) = GdkRectangle(p, owns)
+    const GdkRectangleLike = Union{Ref{_GdkRectangle}, GdkRectangle}
+    convert(::Type{GdkRectangleLike}, p, owns) = convert(GdkRectangle, p, owns)
+    mutable struct GdkTextureDownloader <: GBoxed
+        handle::Ptr{GdkTextureDownloader}
+        (GLib.g_type(::Type{T}) where T <: GdkTextureDownloader) = ccall(("gdk_texture_downloader_get_type", libgtk4), GType, ())
+        function GdkTextureDownloader(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GdkToplevelLayout)
             end
+            x
         end
-        const GdkToplevelLayoutLike = GdkToplevelLayout
+        push!(gboxed_types, GdkTextureDownloader)
     end
-    gboxed_cache_init() = begin
-            append!(GLib.gboxed_types, gboxed_types)
+    const GdkTextureDownloaderLike = GdkTextureDownloader
+    mutable struct GdkTimeCoord
+        handle::Ptr{GdkTimeCoord}
+    end
+    const GdkTimeCoordLike = GdkTimeCoord
+    const _GdkTimeCoord = GdkTimeCoord
+    mutable struct GdkToplevelLayout <: GBoxed
+        handle::Ptr{GdkToplevelLayout}
+        (GLib.g_type(::Type{T}) where T <: GdkToplevelLayout) = ccall(("gdk_toplevel_layout_get_type", libgtk4), GType, ())
+        function GdkToplevelLayout(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
         end
+        push!(gboxed_types, GdkToplevelLayout)
+    end
+    const GdkToplevelLayoutLike = GdkToplevelLayout
+    gboxed_cache_init() = append!(GLib.gboxed_types, gboxed_types)
+    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ColorState.html)." GdkColorState
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ContentFormats.html)." GdkContentFormats
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ContentFormatsBuilder.html)." GdkContentFormatsBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.DmabufFormats.html)." GdkDmabufFormats
@@ -318,945 +247,712 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.TextureDownloader.html)." GdkTextureDownloader
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.TimeCoord.html)." GdkTimeCoord
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/struct.ToplevelLayout.html)." GdkToplevelLayout
-    struct GdkDevicePad <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkDevicePad(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GdkDragSurface <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkDragSurface(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GdkPaintable <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkPaintable(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GdkPopup <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkPopup(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
-    struct GdkToplevel <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        GdkToplevel(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
+    GLib.@Giface GdkDevicePad libgtk4 gdk_device_pad_get_type
+    GLib.@Giface GdkDragSurface libgtk4 gdk_drag_surface_get_type
+    GLib.@Giface GdkPaintable libgtk4 gdk_paintable_get_type
+    GLib.@Giface GdkPopup libgtk4 gdk_popup_get_type
+    GLib.@Giface GdkToplevel libgtk4 gdk_toplevel_get_type
     const gtype_wrapper_cache = Dict{Symbol, Type}()
-    begin
-        abstract type GdkAppLaunchContext <: GAppLaunchContext end
-        mutable struct GdkAppLaunchContextLeaf <: GdkAppLaunchContext
-            handle::Ptr{GObject}
-            function GdkAppLaunchContextLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkAppLaunchContextLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
+    abstract type GdkAppLaunchContext <: GAppLaunchContext end
+    mutable struct GdkAppLaunchContextLeaf <: GdkAppLaunchContext
+        handle::Ptr{GObject}
+        function GdkAppLaunchContextLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkAppLaunchContextLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkAppLaunchContext] = GdkAppLaunchContextLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkAppLaunchContext) = begin
-                ccall(("gdk_app_launch_context_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkAppLaunchContext})
-            signalnames(supertype(GdkAppLaunchContext))
-        end
+    gtype_wrapper_cache[:GdkAppLaunchContext] = GdkAppLaunchContextLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkAppLaunchContext) = ccall(("gdk_app_launch_context_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkAppLaunchContext})
+        signalnames(supertype(GdkAppLaunchContext))
     end
-    begin
-        abstract type GdkEvent <: GTypeInstance end
-        Base.convert(::Type{GdkEvent}, ptr::Ptr{GdkEvent}) = begin
-                GdkEventLeaf(ptr)
-            end
-        Base.unsafe_convert(::Type{Ptr{GdkEvent}}, o::GdkEvent) = begin
-                o.handle
-            end
+    abstract type GdkEvent <: GTypeInstance end
+    Base.convert(::Type{GdkEvent}, ptr::Ptr{GdkEvent}) = GdkEventLeaf(ptr)
+    Base.unsafe_convert(::Type{Ptr{GdkEvent}}, o::GdkEvent) = o.handle
+    mutable struct GdkEventLeaf <: GdkEvent
+        handle::Ptr{GdkEvent}
+    end
+    abstract type GdkButtonEvent <: GdkEvent end
+    mutable struct GdkButtonEventLeaf <: GdkButtonEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        mutable struct GdkEventLeaf <: GdkEvent
-            handle::Ptr{GdkEvent}
+    abstract type GdkDrawContext <: GObject end
+    mutable struct GdkDrawContextLeaf <: GdkDrawContext
+        handle::Ptr{GObject}
+        function GdkDrawContextLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDrawContextLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-    end
-    begin
-        abstract type GdkButtonEvent <: GdkEvent end
     end
-    begin
-        mutable struct GdkButtonEventLeaf <: GdkButtonEvent
-            handle::Ptr{GdkEvent}
-        end
+    gtype_wrapper_cache[:GdkDrawContext] = GdkDrawContextLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDrawContext) = ccall(("gdk_draw_context_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDrawContext})
+        signalnames(supertype(GdkDrawContext))
     end
-    begin
-        abstract type GdkDrawContext <: GObject end
-        mutable struct GdkDrawContextLeaf <: GdkDrawContext
-            handle::Ptr{GObject}
-            function GdkDrawContextLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDrawContextLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkCairoContext <: GdkDrawContext end
+    mutable struct GdkCairoContextLeaf <: GdkCairoContext
+        handle::Ptr{GObject}
+        function GdkCairoContextLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkCairoContextLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkDrawContext] = GdkDrawContextLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDrawContext) = begin
-                ccall(("gdk_draw_context_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkDrawContext})
-            signalnames(supertype(GdkDrawContext))
-        end
-    end
-    begin
-        abstract type GdkCairoContext <: GdkDrawContext end
-        mutable struct GdkCairoContextLeaf <: GdkCairoContext
-            handle::Ptr{GObject}
-            function GdkCairoContextLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkCairoContextLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkCairoContext] = GdkCairoContextLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkCairoContext) = begin
-                ccall(("gdk_cairo_context_get_type", libgtk4), GType, ())
-            end
+    gtype_wrapper_cache[:GdkCairoContext] = GdkCairoContextLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkCairoContext) = ccall(("gdk_cairo_context_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkCairoContext})
+        signalnames(supertype(GdkCairoContext))
     end
-    begin
-        function GLib.signalnames(::Type{GdkCairoContext})
-            signalnames(supertype(GdkCairoContext))
-        end
-    end
-    begin
-        abstract type GdkClipboard <: GObject end
-        mutable struct GdkClipboardLeaf <: GdkClipboard
-            handle::Ptr{GObject}
-            function GdkClipboardLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkClipboardLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkCicpParams <: GObject end
+    mutable struct GdkCicpParamsLeaf <: GdkCicpParams
+        handle::Ptr{GObject}
+        function GdkCicpParamsLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkCicpParamsLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkClipboard] = GdkClipboardLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkClipboard) = begin
-                ccall(("gdk_clipboard_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkClipboard})
-            vcat([:changed], signalnames(supertype(GdkClipboard)))
-        end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :changed => (:Nothing, Any[]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkClipboard
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkClipboard
-                Tuple(eval.((d[name])[2]))
-            end
-        end
+    gtype_wrapper_cache[:GdkCicpParams] = GdkCicpParamsLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkCicpParams) = ccall(("gdk_cicp_params_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkCicpParams})
+        signalnames(supertype(GdkCicpParams))
     end
-    begin
-        abstract type GdkContentDeserializer <: GObject end
-        mutable struct GdkContentDeserializerLeaf <: GdkContentDeserializer
-            handle::Ptr{GObject}
-            function GdkContentDeserializerLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkContentDeserializerLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkClipboard <: GObject end
+    mutable struct GdkClipboardLeaf <: GdkClipboard
+        handle::Ptr{GObject}
+        function GdkClipboardLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkClipboardLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkContentDeserializer] = GdkContentDeserializerLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkContentDeserializer) = begin
-                ccall(("gdk_content_deserializer_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkContentDeserializer})
-            signalnames(supertype(GdkContentDeserializer))
-        end
-    end
-    begin
-        abstract type GdkContentProvider <: GObject end
-        mutable struct GdkContentProviderLeaf <: GdkContentProvider
-            handle::Ptr{GObject}
-            function GdkContentProviderLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkContentProviderLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkContentProvider] = GdkContentProviderLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkContentProvider) = begin
-                ccall(("gdk_content_provider_get_type", libgtk4), GType, ())
-            end
+    gtype_wrapper_cache[:GdkClipboard] = GdkClipboardLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkClipboard) = ccall(("gdk_clipboard_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkClipboard})
+        vcat([:changed], signalnames(supertype(GdkClipboard)))
     end
-    begin
-        function GLib.signalnames(::Type{GdkContentProvider})
-            vcat([:content_changed], signalnames(supertype(GdkContentProvider)))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :changed => (:Nothing, Any[]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkClipboard
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :content_changed => (:Nothing, Any[]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkContentProvider
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkContentProvider
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkClipboard
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkContentSerializer <: GObject end
-        mutable struct GdkContentSerializerLeaf <: GdkContentSerializer
-            handle::Ptr{GObject}
-            function GdkContentSerializerLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkContentSerializerLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkContentDeserializer <: GObject end
+    mutable struct GdkContentDeserializerLeaf <: GdkContentDeserializer
+        handle::Ptr{GObject}
+        function GdkContentDeserializerLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkContentDeserializerLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkContentSerializer] = GdkContentSerializerLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkContentSerializer) = begin
-                ccall(("gdk_content_serializer_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkContentSerializer})
-            signalnames(supertype(GdkContentSerializer))
+    gtype_wrapper_cache[:GdkContentDeserializer] = GdkContentDeserializerLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkContentDeserializer) = ccall(("gdk_content_deserializer_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkContentDeserializer})
+        signalnames(supertype(GdkContentDeserializer))
+    end
+    abstract type GdkContentProvider <: GObject end
+    mutable struct GdkContentProviderLeaf <: GdkContentProvider
+        handle::Ptr{GObject}
+        function GdkContentProviderLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkContentProviderLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GdkCrossingEvent <: GdkEvent end
+    gtype_wrapper_cache[:GdkContentProvider] = GdkContentProviderLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkContentProvider) = ccall(("gdk_content_provider_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkContentProvider})
+        vcat([:content_changed], signalnames(supertype(GdkContentProvider)))
     end
-    begin
-        mutable struct GdkCrossingEventLeaf <: GdkCrossingEvent
-            handle::Ptr{GdkEvent}
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :content_changed => (:Nothing, Any[]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkContentProvider
+            eval((d[name])[1])
         end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkContentProvider
+            Tuple(eval.((d[name])[2]))
+        end
     end
-    begin
-        abstract type GdkCursor <: GObject end
-        mutable struct GdkCursorLeaf <: GdkCursor
-            handle::Ptr{GObject}
-            function GdkCursorLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkCursorLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkContentSerializer <: GObject end
+    mutable struct GdkContentSerializerLeaf <: GdkContentSerializer
+        handle::Ptr{GObject}
+        function GdkContentSerializerLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkContentSerializerLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkCursor] = GdkCursorLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkCursor) = begin
-                ccall(("gdk_cursor_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkCursor})
-            signalnames(supertype(GdkCursor))
-        end
+    gtype_wrapper_cache[:GdkContentSerializer] = GdkContentSerializerLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkContentSerializer) = ccall(("gdk_content_serializer_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkContentSerializer})
+        signalnames(supertype(GdkContentSerializer))
     end
-    begin
-        abstract type GdkDNDEvent <: GdkEvent end
+    abstract type GdkCrossingEvent <: GdkEvent end
+    mutable struct GdkCrossingEventLeaf <: GdkCrossingEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        mutable struct GdkDNDEventLeaf <: GdkDNDEvent
-            handle::Ptr{GdkEvent}
+    abstract type GdkCursor <: GObject end
+    mutable struct GdkCursorLeaf <: GdkCursor
+        handle::Ptr{GObject}
+        function GdkCursorLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkCursorLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GdkDeleteEvent <: GdkEvent end
+    gtype_wrapper_cache[:GdkCursor] = GdkCursorLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkCursor) = ccall(("gdk_cursor_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkCursor})
+        signalnames(supertype(GdkCursor))
     end
-    begin
-        mutable struct GdkDeleteEventLeaf <: GdkDeleteEvent
-            handle::Ptr{GdkEvent}
-        end
+    abstract type GdkDNDEvent <: GdkEvent end
+    mutable struct GdkDNDEventLeaf <: GdkDNDEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        abstract type GdkDevice <: GObject end
-        mutable struct GdkDeviceLeaf <: GdkDevice
-            handle::Ptr{GObject}
-            function GdkDeviceLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDeviceLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkDeleteEvent <: GdkEvent end
+    mutable struct GdkDeleteEventLeaf <: GdkDeleteEvent
+        handle::Ptr{GdkEvent}
+    end
+    abstract type GdkDevice <: GObject end
+    mutable struct GdkDeviceLeaf <: GdkDevice
+        handle::Ptr{GObject}
+        function GdkDeviceLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDeviceLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkDevice] = GdkDeviceLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDevice) = begin
-                ccall(("gdk_device_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkDevice})
-            vcat([:changed, :tool_changed], signalnames(supertype(GdkDevice)))
+    gtype_wrapper_cache[:GdkDevice] = GdkDeviceLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDevice) = ccall(("gdk_device_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDevice})
+        vcat([:changed, :tool_changed], signalnames(supertype(GdkDevice)))
+    end
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :tool_changed => (:Nothing, Expr[:(Ptr{GObject})]), :changed => (:Nothing, Any[]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDevice
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :tool_changed => (:Nothing, Expr[:(Ptr{GObject})]), :changed => (:Nothing, Any[]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDevice
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDevice
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDevice
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkDeviceTool <: GObject end
-        mutable struct GdkDeviceToolLeaf <: GdkDeviceTool
-            handle::Ptr{GObject}
-            function GdkDeviceToolLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDeviceToolLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkDeviceTool <: GObject end
+    mutable struct GdkDeviceToolLeaf <: GdkDeviceTool
+        handle::Ptr{GObject}
+        function GdkDeviceToolLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDeviceToolLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkDeviceTool] = GdkDeviceToolLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDeviceTool) = begin
-                ccall(("gdk_device_tool_get_type", libgtk4), GType, ())
-            end
+    end
+    gtype_wrapper_cache[:GdkDeviceTool] = GdkDeviceToolLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDeviceTool) = ccall(("gdk_device_tool_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDeviceTool})
+        signalnames(supertype(GdkDeviceTool))
     end
-    begin
-        function GLib.signalnames(::Type{GdkDeviceTool})
-            signalnames(supertype(GdkDeviceTool))
-        end
-    end
-    begin
-        abstract type GdkDisplay <: GObject end
-        mutable struct GdkDisplayLeaf <: GdkDisplay
-            handle::Ptr{GObject}
-            function GdkDisplayLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDisplayLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkDisplay <: GObject end
+    mutable struct GdkDisplayLeaf <: GdkDisplay
+        handle::Ptr{GObject}
+        function GdkDisplayLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDisplayLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkDisplay] = GdkDisplayLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDisplay) = begin
-                ccall(("gdk_display_get_type", libgtk4), GType, ())
-            end
+    end
+    gtype_wrapper_cache[:GdkDisplay] = GdkDisplayLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDisplay) = ccall(("gdk_display_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDisplay})
+        vcat([:closed, :opened, :seat_added, :seat_removed, :setting_changed], signalnames(supertype(GdkDisplay)))
     end
-    begin
-        function GLib.signalnames(::Type{GdkDisplay})
-            vcat([:closed, :opened, :seat_added, :seat_removed, :setting_changed], signalnames(supertype(GdkDisplay)))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :opened => (:Nothing, Any[]), :setting_changed => (:Nothing, [:Cstring]), :seat_removed => (:Nothing, Expr[:(Ptr{GObject})]), :seat_added => (:Nothing, Expr[:(Ptr{GObject})]), :closed => (:Nothing, [:Cint]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDisplay
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :opened => (:Nothing, Any[]), :setting_changed => (:Nothing, [:Cstring]), :seat_removed => (:Nothing, Expr[:(Ptr{GObject})]), :seat_added => (:Nothing, Expr[:(Ptr{GObject})]), :closed => (:Nothing, [:Cint]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDisplay
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDisplay
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDisplay
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkDisplayManager <: GObject end
-        mutable struct GdkDisplayManagerLeaf <: GdkDisplayManager
-            handle::Ptr{GObject}
-            function GdkDisplayManagerLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDisplayManagerLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkDisplayManager <: GObject end
+    mutable struct GdkDisplayManagerLeaf <: GdkDisplayManager
+        handle::Ptr{GObject}
+        function GdkDisplayManagerLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDisplayManagerLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkDisplayManager] = GdkDisplayManagerLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDisplayManager) = begin
-                ccall(("gdk_display_manager_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkDisplayManager})
-            vcat([:display_opened], signalnames(supertype(GdkDisplayManager)))
+    gtype_wrapper_cache[:GdkDisplayManager] = GdkDisplayManagerLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDisplayManager) = ccall(("gdk_display_manager_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDisplayManager})
+        vcat([:display_opened], signalnames(supertype(GdkDisplayManager)))
+    end
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :display_opened => (:Nothing, Expr[:(Ptr{GObject})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDisplayManager
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :display_opened => (:Nothing, Expr[:(Ptr{GObject})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDisplayManager
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDisplayManager
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDisplayManager
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkTexture <: GObject end
-        mutable struct GdkTextureLeaf <: GdkTexture
-            handle::Ptr{GObject}
-            function GdkTextureLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkTextureLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkTexture <: GObject end
+    mutable struct GdkTextureLeaf <: GdkTexture
+        handle::Ptr{GObject}
+        function GdkTextureLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkTextureLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkTexture] = GdkTextureLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkTexture) = begin
-                ccall(("gdk_texture_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkTexture})
-            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkTexture)))
+    gtype_wrapper_cache[:GdkTexture] = GdkTextureLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkTexture) = ccall(("gdk_texture_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkTexture})
+        vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkTexture)))
+    end
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkTexture
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkTexture
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkTexture
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkTexture
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkDmabufTexture <: GdkTexture end
-        mutable struct GdkDmabufTextureLeaf <: GdkDmabufTexture
-            handle::Ptr{GObject}
-            function GdkDmabufTextureLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDmabufTextureLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkDmabufTexture <: GdkTexture end
+    mutable struct GdkDmabufTextureLeaf <: GdkDmabufTexture
+        handle::Ptr{GObject}
+        function GdkDmabufTextureLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDmabufTextureLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkDmabufTexture] = GdkDmabufTextureLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDmabufTexture) = begin
-                ccall(("gdk_dmabuf_texture_get_type", libgtk4), GType, ())
-            end
+    end
+    gtype_wrapper_cache[:GdkDmabufTexture] = GdkDmabufTextureLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDmabufTexture) = ccall(("gdk_dmabuf_texture_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDmabufTexture})
+        vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkDmabufTexture)))
     end
-    begin
-        function GLib.signalnames(::Type{GdkDmabufTexture})
-            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkDmabufTexture)))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDmabufTexture
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDmabufTexture
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDmabufTexture
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDmabufTexture
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkDmabufTextureBuilder <: GObject end
-        mutable struct GdkDmabufTextureBuilderLeaf <: GdkDmabufTextureBuilder
-            handle::Ptr{GObject}
-            function GdkDmabufTextureBuilderLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDmabufTextureBuilderLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkDmabufTextureBuilder <: GObject end
+    mutable struct GdkDmabufTextureBuilderLeaf <: GdkDmabufTextureBuilder
+        handle::Ptr{GObject}
+        function GdkDmabufTextureBuilderLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDmabufTextureBuilderLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkDmabufTextureBuilder] = GdkDmabufTextureBuilderLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDmabufTextureBuilder) = begin
-                ccall(("gdk_dmabuf_texture_builder_get_type", libgtk4), GType, ())
-            end
+    end
+    gtype_wrapper_cache[:GdkDmabufTextureBuilder] = GdkDmabufTextureBuilderLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDmabufTextureBuilder) = ccall(("gdk_dmabuf_texture_builder_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDmabufTextureBuilder})
+        signalnames(supertype(GdkDmabufTextureBuilder))
     end
-    begin
-        function GLib.signalnames(::Type{GdkDmabufTextureBuilder})
-            signalnames(supertype(GdkDmabufTextureBuilder))
-        end
-    end
-    begin
-        abstract type GdkDrag <: GObject end
-        mutable struct GdkDragLeaf <: GdkDrag
-            handle::Ptr{GObject}
-            function GdkDragLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDragLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkDrag <: GObject end
+    mutable struct GdkDragLeaf <: GdkDrag
+        handle::Ptr{GObject}
+        function GdkDragLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDragLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkDrag] = GdkDragLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDrag) = begin
-                ccall(("gdk_drag_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkDrag})
-            vcat([:cancel, :dnd_finished, :drop_performed], signalnames(supertype(GdkDrag)))
+    gtype_wrapper_cache[:GdkDrag] = GdkDragLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDrag) = ccall(("gdk_drag_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDrag})
+        vcat([:cancel, :dnd_finished, :drop_performed], signalnames(supertype(GdkDrag)))
+    end
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :dnd_finished => (:Nothing, Any[]), :cancel => (:Nothing, [:UInt32]), :drop_performed => (:Nothing, Any[]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDrag
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :dnd_finished => (:Nothing, Any[]), :cancel => (:Nothing, [:UInt32]), :drop_performed => (:Nothing, Any[]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkDrag
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDrag
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkDrag
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkDrop <: GObject end
-        mutable struct GdkDropLeaf <: GdkDrop
-            handle::Ptr{GObject}
-            function GdkDropLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkDropLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkDrop] = GdkDropLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkDrop) = begin
-                ccall(("gdk_drop_get_type", libgtk4), GType, ())
+    abstract type GdkDrop <: GObject end
+    mutable struct GdkDropLeaf <: GdkDrop
+        handle::Ptr{GObject}
+        function GdkDropLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkDropLeaf with a NULL pointer")
             end
-    end
-    begin
-        function GLib.signalnames(::Type{GdkDrop})
-            signalnames(supertype(GdkDrop))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GdkFocusEvent <: GdkEvent end
+    gtype_wrapper_cache[:GdkDrop] = GdkDropLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkDrop) = ccall(("gdk_drop_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkDrop})
+        signalnames(supertype(GdkDrop))
     end
-    begin
-        mutable struct GdkFocusEventLeaf <: GdkFocusEvent
-            handle::Ptr{GdkEvent}
-        end
+    abstract type GdkFocusEvent <: GdkEvent end
+    mutable struct GdkFocusEventLeaf <: GdkFocusEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        abstract type GdkFrameClock <: GObject end
-        mutable struct GdkFrameClockLeaf <: GdkFrameClock
-            handle::Ptr{GObject}
-            function GdkFrameClockLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkFrameClockLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkFrameClock <: GObject end
+    mutable struct GdkFrameClockLeaf <: GdkFrameClock
+        handle::Ptr{GObject}
+        function GdkFrameClockLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkFrameClockLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkFrameClock] = GdkFrameClockLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkFrameClock) = begin
-                ccall(("gdk_frame_clock_get_type", libgtk4), GType, ())
-            end
+    end
+    gtype_wrapper_cache[:GdkFrameClock] = GdkFrameClockLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkFrameClock) = ccall(("gdk_frame_clock_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkFrameClock})
+        vcat([:after_paint, :before_paint, :flush_events, :layout, :paint, :resume_events, :update], signalnames(supertype(GdkFrameClock)))
     end
-    begin
-        function GLib.signalnames(::Type{GdkFrameClock})
-            vcat([:after_paint, :before_paint, :flush_events, :layout, :paint, :resume_events, :update], signalnames(supertype(GdkFrameClock)))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :before_paint => (:Nothing, Any[]), :update => (:Nothing, Any[]), :flush_events => (:Nothing, Any[]), :layout => (:Nothing, Any[]), :after_paint => (:Nothing, Any[]), :resume_events => (:Nothing, Any[]), :paint => (:Nothing, Any[]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkFrameClock
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :before_paint => (:Nothing, Any[]), :update => (:Nothing, Any[]), :flush_events => (:Nothing, Any[]), :layout => (:Nothing, Any[]), :after_paint => (:Nothing, Any[]), :resume_events => (:Nothing, Any[]), :paint => (:Nothing, Any[]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkFrameClock
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkFrameClock
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkFrameClock
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkGLContext <: GdkDrawContext end
-        mutable struct GdkGLContextLeaf <: GdkGLContext
-            handle::Ptr{GObject}
-            function GdkGLContextLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkGLContextLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkGLContext <: GdkDrawContext end
+    mutable struct GdkGLContextLeaf <: GdkGLContext
+        handle::Ptr{GObject}
+        function GdkGLContextLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkGLContextLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkGLContext] = GdkGLContextLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkGLContext) = begin
-                ccall(("gdk_gl_context_get_type", libgtk4), GType, ())
-            end
+    end
+    gtype_wrapper_cache[:GdkGLContext] = GdkGLContextLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkGLContext) = ccall(("gdk_gl_context_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkGLContext})
+        signalnames(supertype(GdkGLContext))
     end
-    begin
-        function GLib.signalnames(::Type{GdkGLContext})
-            signalnames(supertype(GdkGLContext))
-        end
-    end
-    begin
-        abstract type GdkGLTexture <: GdkTexture end
-        mutable struct GdkGLTextureLeaf <: GdkGLTexture
-            handle::Ptr{GObject}
-            function GdkGLTextureLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkGLTextureLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkGLTexture <: GdkTexture end
+    mutable struct GdkGLTextureLeaf <: GdkGLTexture
+        handle::Ptr{GObject}
+        function GdkGLTextureLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkGLTextureLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkGLTexture] = GdkGLTextureLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkGLTexture) = begin
-                ccall(("gdk_gl_texture_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkGLTexture})
-            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkGLTexture)))
+    gtype_wrapper_cache[:GdkGLTexture] = GdkGLTextureLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkGLTexture) = ccall(("gdk_gl_texture_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkGLTexture})
+        vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkGLTexture)))
+    end
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkGLTexture
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkGLTexture
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkGLTexture
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkGLTexture
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkGLTextureBuilder <: GObject end
-        mutable struct GdkGLTextureBuilderLeaf <: GdkGLTextureBuilder
-            handle::Ptr{GObject}
-            function GdkGLTextureBuilderLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkGLTextureBuilderLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkGLTextureBuilder] = GdkGLTextureBuilderLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkGLTextureBuilder) = begin
-                ccall(("gdk_gl_texture_builder_get_type", libgtk4), GType, ())
+    abstract type GdkGLTextureBuilder <: GObject end
+    mutable struct GdkGLTextureBuilderLeaf <: GdkGLTextureBuilder
+        handle::Ptr{GObject}
+        function GdkGLTextureBuilderLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkGLTextureBuilderLeaf with a NULL pointer")
             end
-    end
-    begin
-        function GLib.signalnames(::Type{GdkGLTextureBuilder})
-            signalnames(supertype(GdkGLTextureBuilder))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GdkGrabBrokenEvent <: GdkEvent end
+    gtype_wrapper_cache[:GdkGLTextureBuilder] = GdkGLTextureBuilderLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkGLTextureBuilder) = ccall(("gdk_gl_texture_builder_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkGLTextureBuilder})
+        signalnames(supertype(GdkGLTextureBuilder))
     end
-    begin
-        mutable struct GdkGrabBrokenEventLeaf <: GdkGrabBrokenEvent
-            handle::Ptr{GdkEvent}
-        end
+    abstract type GdkGrabBrokenEvent <: GdkEvent end
+    mutable struct GdkGrabBrokenEventLeaf <: GdkGrabBrokenEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        abstract type GdkKeyEvent <: GdkEvent end
-    end
-    begin
-        mutable struct GdkKeyEventLeaf <: GdkKeyEvent
-            handle::Ptr{GdkEvent}
-        end
+    abstract type GdkKeyEvent <: GdkEvent end
+    mutable struct GdkKeyEventLeaf <: GdkKeyEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        abstract type GdkMemoryTexture <: GdkTexture end
-        mutable struct GdkMemoryTextureLeaf <: GdkMemoryTexture
-            handle::Ptr{GObject}
-            function GdkMemoryTextureLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkMemoryTextureLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkMemoryTexture <: GdkTexture end
+    mutable struct GdkMemoryTextureLeaf <: GdkMemoryTexture
+        handle::Ptr{GObject}
+        function GdkMemoryTextureLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkMemoryTextureLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkMemoryTexture] = GdkMemoryTextureLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkMemoryTexture) = begin
-                ccall(("gdk_memory_texture_get_type", libgtk4), GType, ())
-            end
+    end
+    gtype_wrapper_cache[:GdkMemoryTexture] = GdkMemoryTextureLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkMemoryTexture) = ccall(("gdk_memory_texture_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkMemoryTexture})
+        vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkMemoryTexture)))
     end
-    begin
-        function GLib.signalnames(::Type{GdkMemoryTexture})
-            vcat([:invalidate_contents, :invalidate_size], signalnames(supertype(GdkMemoryTexture)))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkMemoryTexture
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkMemoryTexture
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkMemoryTexture
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkMemoryTexture
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkMonitor <: GObject end
-        mutable struct GdkMonitorLeaf <: GdkMonitor
-            handle::Ptr{GObject}
-            function GdkMonitorLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkMonitorLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkMemoryTextureBuilder <: GObject end
+    mutable struct GdkMemoryTextureBuilderLeaf <: GdkMemoryTextureBuilder
+        handle::Ptr{GObject}
+        function GdkMemoryTextureBuilderLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkMemoryTextureBuilderLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkMonitor] = GdkMonitorLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkMonitor) = begin
-                ccall(("gdk_monitor_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkMonitor})
-            vcat([:invalidate], signalnames(supertype(GdkMonitor)))
-        end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :invalidate => (:Nothing, Any[]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkMonitor
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkMonitor
-                Tuple(eval.((d[name])[2]))
+    gtype_wrapper_cache[:GdkMemoryTextureBuilder] = GdkMemoryTextureBuilderLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkMemoryTextureBuilder) = ccall(("gdk_memory_texture_builder_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkMemoryTextureBuilder})
+        signalnames(supertype(GdkMemoryTextureBuilder))
+    end
+    abstract type GdkMonitor <: GObject end
+    mutable struct GdkMonitorLeaf <: GdkMonitor
+        handle::Ptr{GObject}
+        function GdkMonitorLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkMonitorLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GdkMotionEvent <: GdkEvent end
+    gtype_wrapper_cache[:GdkMonitor] = GdkMonitorLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkMonitor) = ccall(("gdk_monitor_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkMonitor})
+        vcat([:invalidate], signalnames(supertype(GdkMonitor)))
     end
-    begin
-        mutable struct GdkMotionEventLeaf <: GdkMotionEvent
-            handle::Ptr{GdkEvent}
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :invalidate => (:Nothing, Any[]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkMonitor
+            eval((d[name])[1])
         end
-    end
-    begin
-        abstract type GdkPadEvent <: GdkEvent end
-    end
-    begin
-        mutable struct GdkPadEventLeaf <: GdkPadEvent
-            handle::Ptr{GdkEvent}
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkMonitor
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkProximityEvent <: GdkEvent end
+    abstract type GdkMotionEvent <: GdkEvent end
+    mutable struct GdkMotionEventLeaf <: GdkMotionEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        mutable struct GdkProximityEventLeaf <: GdkProximityEvent
-            handle::Ptr{GdkEvent}
-        end
+    abstract type GdkPadEvent <: GdkEvent end
+    mutable struct GdkPadEventLeaf <: GdkPadEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        abstract type GdkScrollEvent <: GdkEvent end
+    abstract type GdkProximityEvent <: GdkEvent end
+    mutable struct GdkProximityEventLeaf <: GdkProximityEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        mutable struct GdkScrollEventLeaf <: GdkScrollEvent
-            handle::Ptr{GdkEvent}
-        end
+    abstract type GdkScrollEvent <: GdkEvent end
+    mutable struct GdkScrollEventLeaf <: GdkScrollEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        abstract type GdkSeat <: GObject end
-        mutable struct GdkSeatLeaf <: GdkSeat
-            handle::Ptr{GObject}
-            function GdkSeatLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkSeatLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkSeat <: GObject end
+    mutable struct GdkSeatLeaf <: GdkSeat
+        handle::Ptr{GObject}
+        function GdkSeatLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkSeatLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkSeat] = GdkSeatLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkSeat) = begin
-                ccall(("gdk_seat_get_type", libgtk4), GType, ())
-            end
+    end
+    gtype_wrapper_cache[:GdkSeat] = GdkSeatLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkSeat) = ccall(("gdk_seat_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkSeat})
+        vcat([:device_added, :device_removed, :tool_added, :tool_removed], signalnames(supertype(GdkSeat)))
     end
-    begin
-        function GLib.signalnames(::Type{GdkSeat})
-            vcat([:device_added, :device_removed, :tool_added, :tool_removed], signalnames(supertype(GdkSeat)))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :tool_removed => (:Nothing, Expr[:(Ptr{GObject})]), :device_added => (:Nothing, Expr[:(Ptr{GObject})]), :tool_added => (:Nothing, Expr[:(Ptr{GObject})]), :device_removed => (:Nothing, Expr[:(Ptr{GObject})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkSeat
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :tool_removed => (:Nothing, Expr[:(Ptr{GObject})]), :device_added => (:Nothing, Expr[:(Ptr{GObject})]), :tool_added => (:Nothing, Expr[:(Ptr{GObject})]), :device_removed => (:Nothing, Expr[:(Ptr{GObject})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkSeat
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkSeat
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkSeat
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkSnapshot <: GObject end
-        mutable struct GdkSnapshotLeaf <: GdkSnapshot
-            handle::Ptr{GObject}
-            function GdkSnapshotLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkSnapshotLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GdkSnapshot <: GObject end
+    mutable struct GdkSnapshotLeaf <: GdkSnapshot
+        handle::Ptr{GObject}
+        function GdkSnapshotLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkSnapshotLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GdkSnapshot] = GdkSnapshotLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkSnapshot) = begin
-                ccall(("gdk_snapshot_get_type", libgtk4), GType, ())
-            end
     end
-    begin
-        function GLib.signalnames(::Type{GdkSnapshot})
-            signalnames(supertype(GdkSnapshot))
-        end
-    end
-    begin
-        abstract type GdkSurface <: GObject end
-        mutable struct GdkSurfaceLeaf <: GdkSurface
-            handle::Ptr{GObject}
-            function GdkSurfaceLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkSurfaceLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkSurface] = GdkSurfaceLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkSurface) = begin
-                ccall(("gdk_surface_get_type", libgtk4), GType, ())
-            end
+    gtype_wrapper_cache[:GdkSnapshot] = GdkSnapshotLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkSnapshot) = ccall(("gdk_snapshot_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkSnapshot})
+        signalnames(supertype(GdkSnapshot))
     end
-    begin
-        function GLib.signalnames(::Type{GdkSurface})
-            vcat([:enter_monitor, :event, :layout, :leave_monitor, :render], signalnames(supertype(GdkSurface)))
-        end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :event => (:Cint, Expr[:(Ptr{GdkEvent})]), :render => (:Cint, [:cairoRegion]), :layout => (:Nothing, [:Int32, :Int32]), :enter_monitor => (:Nothing, Expr[:(Ptr{GObject})]), :leave_monitor => (:Nothing, Expr[:(Ptr{GObject})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkSurface
-                eval((d[name])[1])
+    abstract type GdkSurface <: GObject end
+    mutable struct GdkSurfaceLeaf <: GdkSurface
+        handle::Ptr{GObject}
+        function GdkSurfaceLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkSurfaceLeaf with a NULL pointer")
             end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkSurface
-                Tuple(eval.((d[name])[2]))
-            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GdkTouchEvent <: GdkEvent end
+    gtype_wrapper_cache[:GdkSurface] = GdkSurfaceLeaf
+    (GLib.g_type(::Type{T}) where T <: GdkSurface) = ccall(("gdk_surface_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GdkSurface})
+        vcat([:enter_monitor, :event, :layout, :leave_monitor, :render], signalnames(supertype(GdkSurface)))
     end
-    begin
-        mutable struct GdkTouchEventLeaf <: GdkTouchEvent
-            handle::Ptr{GdkEvent}
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :event => (:Cint, Expr[:(Ptr{GdkEvent})]), :render => (:Cint, [:cairoRegion]), :layout => (:Nothing, [:Int32, :Int32]), :enter_monitor => (:Nothing, Expr[:(Ptr{GObject})]), :leave_monitor => (:Nothing, Expr[:(Ptr{GObject})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkSurface
+            eval((d[name])[1])
         end
-    end
-    begin
-        abstract type GdkTouchpadEvent <: GdkEvent end
-    end
-    begin
-        mutable struct GdkTouchpadEventLeaf <: GdkTouchpadEvent
-            handle::Ptr{GdkEvent}
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkSurface
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type GdkVulkanContext <: GdkDrawContext end
-        mutable struct GdkVulkanContextLeaf <: GdkVulkanContext
-            handle::Ptr{GObject}
-            function GdkVulkanContextLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GdkVulkanContextLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GdkVulkanContext] = GdkVulkanContextLeaf
-        (GLib.g_type(::Type{T}) where T <: GdkVulkanContext) = begin
-                ccall(("gdk_vulkan_context_get_type", libgtk4), GType, ())
-            end
+    abstract type GdkTouchEvent <: GdkEvent end
+    mutable struct GdkTouchEventLeaf <: GdkTouchEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        function GLib.signalnames(::Type{GdkVulkanContext})
-            vcat([:images_updated], signalnames(supertype(GdkVulkanContext)))
-        end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :images_updated => (:Nothing, Any[]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkVulkanContext
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkVulkanContext
-                Tuple(eval.((d[name])[2]))
-            end
-        end
+    abstract type GdkTouchpadEvent <: GdkEvent end
+    mutable struct GdkTouchpadEventLeaf <: GdkTouchpadEvent
+        handle::Ptr{GdkEvent}
     end
-    begin
-        gtype_wrapper_cache_init() = begin
-                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
-            end
+    gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
+    function GdkCicpParams(; kwargs...)
+        obj = G_.CicpParams_new()
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
     end
     function GdkContentProvider(_mime_type::Union{AbstractString, Symbol}, _bytes::GBytes; kwargs...)
         obj = G_.ContentProvider_new_for_bytes(_mime_type, _bytes)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkContentProvider(_value::GValueLike; kwargs...)
         obj = G_.ContentProvider_new_for_value(_value)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkContentProvider(_providers; kwargs...)
         obj = G_.ContentProvider_new_union(_providers)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GdkCursor(_callback::Function, _destroy::Function, _fallback::Maybe(GdkCursor); kwargs...)
+        obj = G_.Cursor_new_from_callback(_callback, _destroy, _fallback)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkCursor(_name::Union{AbstractString, Symbol}, _fallback::Maybe(GdkCursor); kwargs...)
         obj = G_.Cursor_new_from_name(_name, _fallback)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkCursor(_texture::GdkTexture, _hotspot_x::Integer, _hotspot_y::Integer, _fallback::Maybe(GdkCursor); kwargs...)
         obj = G_.Cursor_new_from_texture(_texture, _hotspot_x, _hotspot_y, _fallback)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkDmabufTextureBuilder(; kwargs...)
         obj = G_.DmabufTextureBuilder_new()
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkGLTextureBuilder(; kwargs...)
         obj = G_.GLTextureBuilder_new()
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkMemoryTexture(_width::Integer, _height::Integer, _format, _bytes::GBytes, _stride::Integer)
         G_.MemoryTexture_new(_width, _height, _format, _bytes, _stride)
     end
+    function GdkMemoryTextureBuilder(; kwargs...)
+        obj = G_.MemoryTextureBuilder_new()
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GdkSurface(_parent::GdkSurface, _autohide::Bool; kwargs...)
         obj = G_.Surface_new_popup(_parent, _autohide)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkSurface(_display::GdkDisplay; kwargs...)
         obj = G_.Surface_new_toplevel(_display)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkTexture(_pixbuf::GdkPixbuf; kwargs...)
         obj = G_.Texture_new_for_pixbuf(_pixbuf)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkTexture(_bytes::GBytes; kwargs...)
         obj = G_.Texture_new_from_bytes(_bytes)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkTexture(_file::GFile; kwargs...)
         obj = G_.Texture_new_from_file(_file)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkTexture(_path::Union{AbstractString, Symbol}; kwargs...)
         obj = G_.Texture_new_from_filename(_path)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GdkContentFormats(_mime_types)
@@ -1286,6 +982,7 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.AppLaunchContext.html)." GdkAppLaunchContext
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.ButtonEvent.html)." GdkButtonEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.CairoContext.html)." GdkCairoContext
+    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.CicpParams.html)." GdkCicpParams
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.Clipboard.html)." GdkClipboard
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.ContentDeserializer.html)." GdkContentDeserializer
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.ContentProvider.html)." GdkContentProvider
@@ -1312,6 +1009,7 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.GrabBrokenEvent.html)." GdkGrabBrokenEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.KeyEvent.html)." GdkKeyEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.MemoryTexture.html)." GdkMemoryTexture
+    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.MemoryTextureBuilder.html)." GdkMemoryTextureBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.Monitor.html)." GdkMonitor
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.MotionEvent.html)." GdkMotionEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.PadEvent.html)." GdkPadEvent
@@ -1323,7 +1021,6 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.Texture.html)." GdkTexture
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.TouchEvent.html)." GdkTouchEvent
     @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.TouchpadEvent.html)." GdkTouchpadEvent
-    @doc "See the [GTK docs](https://docs.gtk.org/gdk4/class.VulkanContext.html)." GdkVulkanContext
     function on_changed(f, object::GdkClipboard, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "changed", Nothing, (), after, user_data)
     end
@@ -1438,9 +1135,12 @@ $(Expr(:toplevel, quote
     function on_invalidate_size(f, object::GdkTexture, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
     end
-    function on_images_updated(f, object::GdkVulkanContext, user_data = object, after = false)
-        GLib.signal_connect_generic(f, object, "images-updated", Nothing, (), after, user_data)
+    function GdkCursorGetTextureCallback(cursor, cursor_size, scale, width, height, hotspot_x, hotspot_y, data)
+        cursor = convert(GdkCursor, cursor, false)
+        f = data
+        ret = f(cursor, cursor_size, scale, width, height, hotspot_x, hotspot_y)
+        ret != C_NULL && GLib.glib_ref(ret)
+        convert(Ptr{GObject}, GLib.get_pointer(ret))
     end
-    export GdkContentFormats, GdkContentFormatsBuilder, GdkDmabufFormats, GdkDragSurfaceSize, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, GdkKeymapKeyLike, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, GdkRGBALike, _GdkRGBA, GdkRectangle, GdkRectangleLike, _GdkRectangle, GdkTextureDownloader, GdkTimeCoord, GdkTimeCoordLike, _GdkTimeCoord, GdkToplevelLayout, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel, GdkAppLaunchContext, GdkAppLaunchContextLeaf, GdkButtonEvent, GdkButtonEventLeaf, GdkCairoContext, GdkClipboard, GdkClipboardLeaf, GdkContentDeserializer, GdkContentDeserializerLeaf, GdkContentProvider, GdkContentProviderLeaf, GdkContentSerializer, GdkContentSerializerLeaf, GdkCrossingEvent, GdkCrossingEventLeaf, GdkCursor, GdkCursorLeaf, GdkDNDEvent, GdkDNDEventLeaf, GdkDeleteEvent, GdkDeleteEventLeaf, GdkDevice, GdkDeviceTool, GdkDeviceToolLeaf, GdkDisplay, GdkDisplayLeaf, GdkDisplayManager, GdkDisplayManagerLeaf, GdkDmabufTexture, GdkDmabufTextureLeaf, GdkDmabufTextureBuilder, GdkDmabufTextureBuilderLeaf, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFocusEventLeaf, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGLTextureLeaf, GdkGLTextureBuilder, GdkGLTextureBuilderLeaf, GdkGrabBrokenEvent, GdkGrabBrokenEventLeaf, GdkKeyEvent, GdkKeyEventLeaf, GdkMemoryTexture, GdkMemoryTextureLeaf, GdkMonitor, GdkMonitorLeaf, GdkMotionEvent, GdkMotionEventLeaf, GdkPadEvent, GdkPadEventLeaf, GdkProximityEvent, GdkProximityEventLeaf, GdkScrollEvent, GdkScrollEventLeaf, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchEventLeaf, GdkTouchpadEvent, GdkTouchpadEventLeaf, GdkVulkanContext
-end))
+    export GdkColorState, GdkContentFormats, GdkContentFormatsBuilder, GdkDmabufFormats, GdkDragSurfaceSize, GdkEventSequence, GdkFileList, GdkFrameTimings, GdkKeymapKey, GdkKeymapKeyLike, _GdkKeymapKey, GdkPopupLayout, GdkRGBA, GdkRGBALike, _GdkRGBA, GdkRectangle, GdkRectangleLike, _GdkRectangle, GdkTextureDownloader, GdkTimeCoord, GdkTimeCoordLike, _GdkTimeCoord, GdkToplevelLayout, GdkDevicePad, GdkDragSurface, GdkPaintable, GdkPopup, GdkToplevel, GdkAppLaunchContext, GdkAppLaunchContextLeaf, GdkButtonEvent, GdkButtonEventLeaf, GdkCairoContext, GdkCicpParams, GdkCicpParamsLeaf, GdkClipboard, GdkClipboardLeaf, GdkContentDeserializer, GdkContentDeserializerLeaf, GdkContentProvider, GdkContentProviderLeaf, GdkContentSerializer, GdkContentSerializerLeaf, GdkCrossingEvent, GdkCrossingEventLeaf, GdkCursor, GdkCursorLeaf, GdkDNDEvent, GdkDNDEventLeaf, GdkDeleteEvent, GdkDeleteEventLeaf, GdkDevice, GdkDeviceTool, GdkDeviceToolLeaf, GdkDisplay, GdkDisplayLeaf, GdkDisplayManager, GdkDisplayManagerLeaf, GdkDmabufTexture, GdkDmabufTextureLeaf, GdkDmabufTextureBuilder, GdkDmabufTextureBuilderLeaf, GdkDrag, GdkDrawContext, GdkDrop, GdkEvent, GdkFocusEvent, GdkFocusEventLeaf, GdkFrameClock, GdkGLContext, GdkGLTexture, GdkGLTextureLeaf, GdkGLTextureBuilder, GdkGLTextureBuilderLeaf, GdkGrabBrokenEvent, GdkGrabBrokenEventLeaf, GdkKeyEvent, GdkKeyEventLeaf, GdkMemoryTexture, GdkMemoryTextureLeaf, GdkMemoryTextureBuilder, GdkMemoryTextureBuilderLeaf, GdkMonitor, GdkMonitorLeaf, GdkMotionEvent, GdkMotionEventLeaf, GdkPadEvent, GdkPadEventLeaf, GdkProximityEvent, GdkProximityEventLeaf, GdkScrollEvent, GdkScrollEventLeaf, GdkSeat, GdkSnapshot, GdkSurface, GdkTexture, GdkTouchEvent, GdkTouchEventLeaf, GdkTouchpadEvent, GdkTouchpadEventLeaf, GdkCursorGetTextureCallback
 end

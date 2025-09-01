@@ -1,5 +1,4 @@
-quote
-$(Expr(:toplevel, quote
+begin
     function accelerator_get_default_mod_mask()
         ret = ccall(("gtk_accelerator_get_default_mod_mask", libgtk4), UInt32, ())
         ret2 = ModifierType(ret)
@@ -105,6 +104,10 @@ $(Expr(:toplevel, quote
     function dialog_error_quark()
         ret = ccall(("gtk_dialog_error_quark", libgtk4), UInt32, ())
         ret
+    end
+    function disable_portals()
+        ret = ccall(("gtk_disable_portals", libgtk4), Nothing, ())
+        nothing
     end
     function disable_setlocale()
         ret = ccall(("gtk_disable_setlocale", libgtk4), Nothing, ())
@@ -222,10 +225,8 @@ $(Expr(:toplevel, quote
     function print_run_page_setup_dialog_async(_parent::Maybe(GtkWindow), _page_setup::Maybe(GtkPageSetup), _settings::GtkPrintSettings, _done_cb::Function)
         _parent_maybe = nothing_to_null(_parent)
         _page_setup_maybe = nothing_to_null(_page_setup)
-        begin
-            _done_cb_cfunc = @cfunction(GtkPageSetupDoneFunc, Nothing, (Ptr{GObject}, Ref{Function}))
-            _done_cb_closure = GLib.gc_ref(_done_cb)
-        end
+        _done_cb_cfunc = @cfunction(GtkPageSetupDoneFunc, Nothing, (Ptr{GObject}, Ref{Function}))
+        _done_cb_closure = GLib.gc_ref(_done_cb)
         ret = ccall(("gtk_print_run_page_setup_dialog_async", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _parent_maybe, _page_setup_maybe, _settings, _done_cb_cfunc, _done_cb_closure)
         nothing
     end
@@ -383,5 +384,4 @@ $(Expr(:toplevel, quote
         ret = ccall(("gtk_tree_row_reference_inserted", libgtk4), Nothing, (Ptr{GObject}, Ptr{GtkTreePath}), _proxy, _path)
         nothing
     end
-end))
 end

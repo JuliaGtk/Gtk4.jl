@@ -1,1121 +1,742 @@
-quote
-$(Expr(:toplevel, quote
+begin
     const gboxed_types = Any[]
-    begin
-        mutable struct PangoLanguage <: GBoxed
-            handle::Ptr{PangoLanguage}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoLanguage) = begin
-                        ccall(("pango_language_get_type", libpango), GType, ())
-                    end
-                function PangoLanguage(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct PangoLanguage <: GBoxed
+        handle::Ptr{PangoLanguage}
+        (GLib.g_type(::Type{T}) where T <: PangoLanguage) = ccall(("pango_language_get_type", libpango), GType, ())
+        function PangoLanguage(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoLanguage)
             end
+            x
         end
-        const PangoLanguageLike = PangoLanguage
+        push!(gboxed_types, PangoLanguage)
     end
-    begin
-        struct _PangoColor
-            red::UInt16
-            green::UInt16
-            blue::UInt16
-        end
-        mutable struct PangoColor <: GBoxed
-            handle::Ptr{_PangoColor}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoColor) = begin
-                        ccall(("pango_color_get_type", libpango), GType, ())
-                    end
-                function PangoColor(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoColor}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const PangoLanguageLike = PangoLanguage
+    struct _PangoColor
+        red::UInt16
+        green::UInt16
+        blue::UInt16
+    end
+    mutable struct PangoColor <: GBoxed
+        handle::Ptr{_PangoColor}
+        (GLib.g_type(::Type{T}) where T <: PangoColor) = ccall(("pango_color_get_type", libpango), GType, ())
+        function PangoColor(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoColor}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoColor)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoColor}}, box::PangoColor) = begin
-                    convert(Ptr{_PangoColor}, box.handle)
-                end
-            convert(::Type{PangoColor}, p::Ptr{_PangoColor}, owns = false) = begin
-                    PangoColor(p, owns)
-                end
-            const PangoColorLike = Union{Ref{_PangoColor}, PangoColor}
-            convert(::Type{PangoColorLike}, p, owns) = begin
-                    convert(PangoColor, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoColor)
     end
-    begin
-        struct _PangoAttrClass
-            type::UInt32
-            copy::Ptr{Cvoid}
-            destroy::Ptr{Cvoid}
-            equal::Ptr{Cvoid}
-        end
-        mutable struct PangoAttrClass
-            handle::Ptr{_PangoAttrClass}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrClass}}, box::PangoAttrClass) = begin
-                    convert(Ptr{_PangoAttrClass}, box.handle)
-                end
-            convert(::Type{PangoAttrClass}, p::Ptr{_PangoAttrClass}, owns = false) = begin
-                    PangoAttrClass(p, owns)
-                end
-            const PangoAttrClassLike = Union{Ref{_PangoAttrClass}, PangoAttrClass}
-            convert(::Type{PangoAttrClassLike}, p, owns) = begin
-                    convert(PangoAttrClass, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoColor}}, box::PangoColor) = convert(Ptr{_PangoColor}, box.handle)
+    convert(::Type{PangoColor}, p::Ptr{_PangoColor}, owns = false) = PangoColor(p, owns)
+    const PangoColorLike = Union{Ref{_PangoColor}, PangoColor}
+    convert(::Type{PangoColorLike}, p, owns) = convert(PangoColor, p, owns)
+    struct _PangoAttrClass
+        type::UInt32
+        copy::Ptr{Cvoid}
+        destroy::Ptr{Cvoid}
+        equal::Ptr{Cvoid}
     end
-    begin
-        struct _PangoRectangle
-            x::Int32
-            y::Int32
-            width::Int32
-            height::Int32
-        end
-        mutable struct PangoRectangle
-            handle::Ptr{_PangoRectangle}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoRectangle}}, box::PangoRectangle) = begin
-                    convert(Ptr{_PangoRectangle}, box.handle)
-                end
-            convert(::Type{PangoRectangle}, p::Ptr{_PangoRectangle}, owns = false) = begin
-                    PangoRectangle(p, owns)
-                end
-            const PangoRectangleLike = Union{Ref{_PangoRectangle}, PangoRectangle}
-            convert(::Type{PangoRectangleLike}, p, owns) = begin
-                    convert(PangoRectangle, p, owns)
-                end
-        end
+    mutable struct PangoAttrClass
+        handle::Ptr{_PangoAttrClass}
     end
-    begin
-        mutable struct PangoFontDescription <: GBoxed
-            handle::Ptr{PangoFontDescription}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoFontDescription) = begin
-                        ccall(("pango_font_description_get_type", libpango), GType, ())
-                    end
-                function PangoFontDescription(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_PangoAttrClass}}, box::PangoAttrClass) = convert(Ptr{_PangoAttrClass}, box.handle)
+    convert(::Type{PangoAttrClass}, p::Ptr{_PangoAttrClass}, owns = false) = PangoAttrClass(p, owns)
+    const PangoAttrClassLike = Union{Ref{_PangoAttrClass}, PangoAttrClass}
+    convert(::Type{PangoAttrClassLike}, p, owns) = convert(PangoAttrClass, p, owns)
+    struct _PangoRectangle
+        x::Int32
+        y::Int32
+        width::Int32
+        height::Int32
+    end
+    mutable struct PangoRectangle
+        handle::Ptr{_PangoRectangle}
+    end
+    unsafe_convert(::Type{Ptr{_PangoRectangle}}, box::PangoRectangle) = convert(Ptr{_PangoRectangle}, box.handle)
+    convert(::Type{PangoRectangle}, p::Ptr{_PangoRectangle}, owns = false) = PangoRectangle(p, owns)
+    const PangoRectangleLike = Union{Ref{_PangoRectangle}, PangoRectangle}
+    convert(::Type{PangoRectangleLike}, p, owns) = convert(PangoRectangle, p, owns)
+    mutable struct PangoFontDescription <: GBoxed
+        handle::Ptr{PangoFontDescription}
+        (GLib.g_type(::Type{T}) where T <: PangoFontDescription) = ccall(("pango_font_description_get_type", libpango), GType, ())
+        function PangoFontDescription(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoFontDescription)
             end
+            x
         end
-        const PangoFontDescriptionLike = PangoFontDescription
+        push!(gboxed_types, PangoFontDescription)
     end
-    begin
-        struct _PangoAttribute
-            klass::Ptr{_PangoAttrClass}
-            start_index::UInt32
-            end_index::UInt32
-        end
-        mutable struct PangoAttribute <: GBoxed
-            handle::Ptr{_PangoAttribute}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoAttribute) = begin
-                        ccall(("pango_attribute_get_type", libpango), GType, ())
-                    end
-                function PangoAttribute(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoAttribute}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const PangoFontDescriptionLike = PangoFontDescription
+    struct _PangoAttribute
+        klass::Ptr{_PangoAttrClass}
+        start_index::UInt32
+        end_index::UInt32
+    end
+    mutable struct PangoAttribute <: GBoxed
+        handle::Ptr{_PangoAttribute}
+        (GLib.g_type(::Type{T}) where T <: PangoAttribute) = ccall(("pango_attribute_get_type", libpango), GType, ())
+        function PangoAttribute(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoAttribute}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoAttribute)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttribute}}, box::PangoAttribute) = begin
-                    convert(Ptr{_PangoAttribute}, box.handle)
-                end
-            convert(::Type{PangoAttribute}, p::Ptr{_PangoAttribute}, owns = false) = begin
-                    PangoAttribute(p, owns)
-                end
-            const PangoAttributeLike = Union{Ref{_PangoAttribute}, PangoAttribute}
-            convert(::Type{PangoAttributeLike}, p, owns) = begin
-                    convert(PangoAttribute, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoAttribute)
     end
-    begin
-        struct _PangoAnalysis
-            shape_engine::Ptr{Nothing}
-            lang_engine::Ptr{Nothing}
-            font::Ptr{GObject}
-            level::UInt8
-            gravity::UInt8
-            flags::UInt8
-            script::UInt8
-            language::Ptr{PangoLanguage}
-            extra_attrs::Ptr{GLib._GSList{Ptr{Nothing}}}
-        end
-        mutable struct PangoAnalysis
-            handle::Ptr{_PangoAnalysis}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAnalysis}}, box::PangoAnalysis) = begin
-                    convert(Ptr{_PangoAnalysis}, box.handle)
-                end
-            convert(::Type{PangoAnalysis}, p::Ptr{_PangoAnalysis}, owns = false) = begin
-                    PangoAnalysis(p, owns)
-                end
-            const PangoAnalysisLike = Union{Ref{_PangoAnalysis}, PangoAnalysis}
-            convert(::Type{PangoAnalysisLike}, p, owns) = begin
-                    convert(PangoAnalysis, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoAttribute}}, box::PangoAttribute) = convert(Ptr{_PangoAttribute}, box.handle)
+    convert(::Type{PangoAttribute}, p::Ptr{_PangoAttribute}, owns = false) = PangoAttribute(p, owns)
+    const PangoAttributeLike = Union{Ref{_PangoAttribute}, PangoAttribute}
+    convert(::Type{PangoAttributeLike}, p, owns) = convert(PangoAttribute, p, owns)
+    struct _PangoAnalysis
+        shape_engine::Ptr{Nothing}
+        lang_engine::Ptr{Nothing}
+        font::Ptr{GObject}
+        level::UInt8
+        gravity::UInt8
+        flags::UInt8
+        script::UInt8
+        language::Ptr{PangoLanguage}
+        extra_attrs::Ptr{GLib._GSList{Ptr{Nothing}}}
     end
-    begin
-        struct _PangoItem
-            offset::Int32
-            length::Int32
-            num_chars::Int32
-            analysis::_PangoAnalysis
-        end
-        mutable struct PangoItem <: GBoxed
-            handle::Ptr{_PangoItem}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoItem) = begin
-                        ccall(("pango_item_get_type", libpango), GType, ())
-                    end
-                function PangoItem(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoItem}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct PangoAnalysis
+        handle::Ptr{_PangoAnalysis}
+    end
+    unsafe_convert(::Type{Ptr{_PangoAnalysis}}, box::PangoAnalysis) = convert(Ptr{_PangoAnalysis}, box.handle)
+    convert(::Type{PangoAnalysis}, p::Ptr{_PangoAnalysis}, owns = false) = PangoAnalysis(p, owns)
+    const PangoAnalysisLike = Union{Ref{_PangoAnalysis}, PangoAnalysis}
+    convert(::Type{PangoAnalysisLike}, p, owns) = convert(PangoAnalysis, p, owns)
+    struct _PangoItem
+        offset::Int32
+        length::Int32
+        num_chars::Int32
+        analysis::_PangoAnalysis
+    end
+    mutable struct PangoItem <: GBoxed
+        handle::Ptr{_PangoItem}
+        (GLib.g_type(::Type{T}) where T <: PangoItem) = ccall(("pango_item_get_type", libpango), GType, ())
+        function PangoItem(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoItem}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoItem)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoItem}}, box::PangoItem) = begin
-                    convert(Ptr{_PangoItem}, box.handle)
-                end
-            convert(::Type{PangoItem}, p::Ptr{_PangoItem}, owns = false) = begin
-                    PangoItem(p, owns)
-                end
-            const PangoItemLike = Union{Ref{_PangoItem}, PangoItem}
-            convert(::Type{PangoItemLike}, p, owns) = begin
-                    convert(PangoItem, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoItem)
     end
-    begin
-        struct _PangoGlyphVisAttr
-            is_cluster_start::UInt32
-            is_color::UInt32
-        end
-        mutable struct PangoGlyphVisAttr
-            handle::Ptr{_PangoGlyphVisAttr}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoGlyphVisAttr}}, box::PangoGlyphVisAttr) = begin
-                    convert(Ptr{_PangoGlyphVisAttr}, box.handle)
-                end
-            convert(::Type{PangoGlyphVisAttr}, p::Ptr{_PangoGlyphVisAttr}, owns = false) = begin
-                    PangoGlyphVisAttr(p, owns)
-                end
-            const PangoGlyphVisAttrLike = Union{Ref{_PangoGlyphVisAttr}, PangoGlyphVisAttr}
-            convert(::Type{PangoGlyphVisAttrLike}, p, owns) = begin
-                    convert(PangoGlyphVisAttr, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoItem}}, box::PangoItem) = convert(Ptr{_PangoItem}, box.handle)
+    convert(::Type{PangoItem}, p::Ptr{_PangoItem}, owns = false) = PangoItem(p, owns)
+    const PangoItemLike = Union{Ref{_PangoItem}, PangoItem}
+    convert(::Type{PangoItemLike}, p, owns) = convert(PangoItem, p, owns)
+    struct _PangoGlyphVisAttr
+        is_cluster_start::UInt32
+        is_color::UInt32
     end
-    begin
-        struct _PangoGlyphGeometry
-            width::Int32
-            x_offset::Int32
-            y_offset::Int32
-        end
-        mutable struct PangoGlyphGeometry
-            handle::Ptr{_PangoGlyphGeometry}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoGlyphGeometry}}, box::PangoGlyphGeometry) = begin
-                    convert(Ptr{_PangoGlyphGeometry}, box.handle)
-                end
-            convert(::Type{PangoGlyphGeometry}, p::Ptr{_PangoGlyphGeometry}, owns = false) = begin
-                    PangoGlyphGeometry(p, owns)
-                end
-            const PangoGlyphGeometryLike = Union{Ref{_PangoGlyphGeometry}, PangoGlyphGeometry}
-            convert(::Type{PangoGlyphGeometryLike}, p, owns) = begin
-                    convert(PangoGlyphGeometry, p, owns)
-                end
-        end
+    mutable struct PangoGlyphVisAttr
+        handle::Ptr{_PangoGlyphVisAttr}
     end
-    begin
-        struct _PangoGlyphInfo
-            glyph::UInt32
-            geometry::_PangoGlyphGeometry
-            attr::_PangoGlyphVisAttr
-        end
-        mutable struct PangoGlyphInfo
-            handle::Ptr{_PangoGlyphInfo}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoGlyphInfo}}, box::PangoGlyphInfo) = begin
-                    convert(Ptr{_PangoGlyphInfo}, box.handle)
-                end
-            convert(::Type{PangoGlyphInfo}, p::Ptr{_PangoGlyphInfo}, owns = false) = begin
-                    PangoGlyphInfo(p, owns)
-                end
-            const PangoGlyphInfoLike = Union{Ref{_PangoGlyphInfo}, PangoGlyphInfo}
-            convert(::Type{PangoGlyphInfoLike}, p, owns) = begin
-                    convert(PangoGlyphInfo, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoGlyphVisAttr}}, box::PangoGlyphVisAttr) = convert(Ptr{_PangoGlyphVisAttr}, box.handle)
+    convert(::Type{PangoGlyphVisAttr}, p::Ptr{_PangoGlyphVisAttr}, owns = false) = PangoGlyphVisAttr(p, owns)
+    const PangoGlyphVisAttrLike = Union{Ref{_PangoGlyphVisAttr}, PangoGlyphVisAttr}
+    convert(::Type{PangoGlyphVisAttrLike}, p, owns) = convert(PangoGlyphVisAttr, p, owns)
+    struct _PangoGlyphGeometry
+        width::Int32
+        x_offset::Int32
+        y_offset::Int32
     end
-    begin
-        struct _PangoGlyphString
-            num_glyphs::Int32
-            glyphs::Ptr{_PangoGlyphInfo}
-            log_clusters::Ptr{Int32}
-            space::Int32
-        end
-        mutable struct PangoGlyphString <: GBoxed
-            handle::Ptr{_PangoGlyphString}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoGlyphString) = begin
-                        ccall(("pango_glyph_string_get_type", libpango), GType, ())
-                    end
-                function PangoGlyphString(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoGlyphString}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct PangoGlyphGeometry
+        handle::Ptr{_PangoGlyphGeometry}
+    end
+    unsafe_convert(::Type{Ptr{_PangoGlyphGeometry}}, box::PangoGlyphGeometry) = convert(Ptr{_PangoGlyphGeometry}, box.handle)
+    convert(::Type{PangoGlyphGeometry}, p::Ptr{_PangoGlyphGeometry}, owns = false) = PangoGlyphGeometry(p, owns)
+    const PangoGlyphGeometryLike = Union{Ref{_PangoGlyphGeometry}, PangoGlyphGeometry}
+    convert(::Type{PangoGlyphGeometryLike}, p, owns) = convert(PangoGlyphGeometry, p, owns)
+    struct _PangoGlyphInfo
+        glyph::UInt32
+        geometry::_PangoGlyphGeometry
+        attr::_PangoGlyphVisAttr
+    end
+    mutable struct PangoGlyphInfo
+        handle::Ptr{_PangoGlyphInfo}
+    end
+    unsafe_convert(::Type{Ptr{_PangoGlyphInfo}}, box::PangoGlyphInfo) = convert(Ptr{_PangoGlyphInfo}, box.handle)
+    convert(::Type{PangoGlyphInfo}, p::Ptr{_PangoGlyphInfo}, owns = false) = PangoGlyphInfo(p, owns)
+    const PangoGlyphInfoLike = Union{Ref{_PangoGlyphInfo}, PangoGlyphInfo}
+    convert(::Type{PangoGlyphInfoLike}, p, owns) = convert(PangoGlyphInfo, p, owns)
+    struct _PangoGlyphString
+        num_glyphs::Int32
+        glyphs::Ptr{_PangoGlyphInfo}
+        log_clusters::Ptr{Int32}
+        space::Int32
+    end
+    mutable struct PangoGlyphString <: GBoxed
+        handle::Ptr{_PangoGlyphString}
+        (GLib.g_type(::Type{T}) where T <: PangoGlyphString) = ccall(("pango_glyph_string_get_type", libpango), GType, ())
+        function PangoGlyphString(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoGlyphString}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoGlyphString)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoGlyphString}}, box::PangoGlyphString) = begin
-                    convert(Ptr{_PangoGlyphString}, box.handle)
-                end
-            convert(::Type{PangoGlyphString}, p::Ptr{_PangoGlyphString}, owns = false) = begin
-                    PangoGlyphString(p, owns)
-                end
-            const PangoGlyphStringLike = Union{Ref{_PangoGlyphString}, PangoGlyphString}
-            convert(::Type{PangoGlyphStringLike}, p, owns) = begin
-                    convert(PangoGlyphString, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoGlyphString)
     end
-    begin
-        struct _PangoGlyphItem
-            item::Ptr{_PangoItem}
-            glyphs::Ptr{_PangoGlyphString}
-            y_offset::Int32
-            start_x_offset::Int32
-            end_x_offset::Int32
-        end
-        mutable struct PangoGlyphItem <: GBoxed
-            handle::Ptr{_PangoGlyphItem}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoGlyphItem) = begin
-                        ccall(("pango_glyph_item_get_type", libpango), GType, ())
-                    end
-                function PangoGlyphItem(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoGlyphItem}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_PangoGlyphString}}, box::PangoGlyphString) = convert(Ptr{_PangoGlyphString}, box.handle)
+    convert(::Type{PangoGlyphString}, p::Ptr{_PangoGlyphString}, owns = false) = PangoGlyphString(p, owns)
+    const PangoGlyphStringLike = Union{Ref{_PangoGlyphString}, PangoGlyphString}
+    convert(::Type{PangoGlyphStringLike}, p, owns) = convert(PangoGlyphString, p, owns)
+    struct _PangoGlyphItem
+        item::Ptr{_PangoItem}
+        glyphs::Ptr{_PangoGlyphString}
+        y_offset::Int32
+        start_x_offset::Int32
+        end_x_offset::Int32
+    end
+    mutable struct PangoGlyphItem <: GBoxed
+        handle::Ptr{_PangoGlyphItem}
+        (GLib.g_type(::Type{T}) where T <: PangoGlyphItem) = ccall(("pango_glyph_item_get_type", libpango), GType, ())
+        function PangoGlyphItem(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoGlyphItem}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoGlyphItem)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoGlyphItem}}, box::PangoGlyphItem) = begin
-                    convert(Ptr{_PangoGlyphItem}, box.handle)
-                end
-            convert(::Type{PangoGlyphItem}, p::Ptr{_PangoGlyphItem}, owns = false) = begin
-                    PangoGlyphItem(p, owns)
-                end
-            const PangoGlyphItemLike = Union{Ref{_PangoGlyphItem}, PangoGlyphItem}
-            convert(::Type{PangoGlyphItemLike}, p, owns) = begin
-                    convert(PangoGlyphItem, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoGlyphItem)
     end
-    begin
-        struct _PangoAttrColor
-            attr::_PangoAttribute
-            color::_PangoColor
-        end
-        mutable struct PangoAttrColor
-            handle::Ptr{_PangoAttrColor}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrColor}}, box::PangoAttrColor) = begin
-                    convert(Ptr{_PangoAttrColor}, box.handle)
-                end
-            convert(::Type{PangoAttrColor}, p::Ptr{_PangoAttrColor}, owns = false) = begin
-                    PangoAttrColor(p, owns)
-                end
-            const PangoAttrColorLike = Union{Ref{_PangoAttrColor}, PangoAttrColor}
-            convert(::Type{PangoAttrColorLike}, p, owns) = begin
-                    convert(PangoAttrColor, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoGlyphItem}}, box::PangoGlyphItem) = convert(Ptr{_PangoGlyphItem}, box.handle)
+    convert(::Type{PangoGlyphItem}, p::Ptr{_PangoGlyphItem}, owns = false) = PangoGlyphItem(p, owns)
+    const PangoGlyphItemLike = Union{Ref{_PangoGlyphItem}, PangoGlyphItem}
+    convert(::Type{PangoGlyphItemLike}, p, owns) = convert(PangoGlyphItem, p, owns)
+    struct _PangoAttrColor
+        attr::_PangoAttribute
+        color::_PangoColor
     end
-    begin
-        struct _PangoAttrFloat
-            attr::_PangoAttribute
-            value::Float64
-        end
-        mutable struct PangoAttrFloat
-            handle::Ptr{_PangoAttrFloat}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrFloat}}, box::PangoAttrFloat) = begin
-                    convert(Ptr{_PangoAttrFloat}, box.handle)
-                end
-            convert(::Type{PangoAttrFloat}, p::Ptr{_PangoAttrFloat}, owns = false) = begin
-                    PangoAttrFloat(p, owns)
-                end
-            const PangoAttrFloatLike = Union{Ref{_PangoAttrFloat}, PangoAttrFloat}
-            convert(::Type{PangoAttrFloatLike}, p, owns) = begin
-                    convert(PangoAttrFloat, p, owns)
-                end
-        end
+    mutable struct PangoAttrColor
+        handle::Ptr{_PangoAttrColor}
     end
-    begin
-        struct _PangoAttrFontDesc
-            attr::_PangoAttribute
-            desc::Ptr{PangoFontDescription}
-        end
-        mutable struct PangoAttrFontDesc
-            handle::Ptr{_PangoAttrFontDesc}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrFontDesc}}, box::PangoAttrFontDesc) = begin
-                    convert(Ptr{_PangoAttrFontDesc}, box.handle)
-                end
-            convert(::Type{PangoAttrFontDesc}, p::Ptr{_PangoAttrFontDesc}, owns = false) = begin
-                    PangoAttrFontDesc(p, owns)
-                end
-            const PangoAttrFontDescLike = Union{Ref{_PangoAttrFontDesc}, PangoAttrFontDesc}
-            convert(::Type{PangoAttrFontDescLike}, p, owns) = begin
-                    convert(PangoAttrFontDesc, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoAttrColor}}, box::PangoAttrColor) = convert(Ptr{_PangoAttrColor}, box.handle)
+    convert(::Type{PangoAttrColor}, p::Ptr{_PangoAttrColor}, owns = false) = PangoAttrColor(p, owns)
+    const PangoAttrColorLike = Union{Ref{_PangoAttrColor}, PangoAttrColor}
+    convert(::Type{PangoAttrColorLike}, p, owns) = convert(PangoAttrColor, p, owns)
+    struct _PangoAttrFloat
+        attr::_PangoAttribute
+        value::Float64
     end
-    begin
-        struct _PangoAttrFontFeatures
-            attr::_PangoAttribute
-            features::Cstring
-        end
-        mutable struct PangoAttrFontFeatures
-            handle::Ptr{_PangoAttrFontFeatures}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrFontFeatures}}, box::PangoAttrFontFeatures) = begin
-                    convert(Ptr{_PangoAttrFontFeatures}, box.handle)
-                end
-            convert(::Type{PangoAttrFontFeatures}, p::Ptr{_PangoAttrFontFeatures}, owns = false) = begin
-                    PangoAttrFontFeatures(p, owns)
-                end
-            const PangoAttrFontFeaturesLike = Union{Ref{_PangoAttrFontFeatures}, PangoAttrFontFeatures}
-            convert(::Type{PangoAttrFontFeaturesLike}, p, owns) = begin
-                    convert(PangoAttrFontFeatures, p, owns)
-                end
-        end
+    mutable struct PangoAttrFloat
+        handle::Ptr{_PangoAttrFloat}
     end
-    begin
-        struct _PangoAttrInt
-            attr::_PangoAttribute
-            value::Int32
-        end
-        mutable struct PangoAttrInt
-            handle::Ptr{_PangoAttrInt}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrInt}}, box::PangoAttrInt) = begin
-                    convert(Ptr{_PangoAttrInt}, box.handle)
-                end
-            convert(::Type{PangoAttrInt}, p::Ptr{_PangoAttrInt}, owns = false) = begin
-                    PangoAttrInt(p, owns)
-                end
-            const PangoAttrIntLike = Union{Ref{_PangoAttrInt}, PangoAttrInt}
-            convert(::Type{PangoAttrIntLike}, p, owns) = begin
-                    convert(PangoAttrInt, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoAttrFloat}}, box::PangoAttrFloat) = convert(Ptr{_PangoAttrFloat}, box.handle)
+    convert(::Type{PangoAttrFloat}, p::Ptr{_PangoAttrFloat}, owns = false) = PangoAttrFloat(p, owns)
+    const PangoAttrFloatLike = Union{Ref{_PangoAttrFloat}, PangoAttrFloat}
+    convert(::Type{PangoAttrFloatLike}, p, owns) = convert(PangoAttrFloat, p, owns)
+    struct _PangoAttrFontDesc
+        attr::_PangoAttribute
+        desc::Ptr{PangoFontDescription}
     end
-    begin
-        mutable struct PangoAttrIterator <: GBoxed
-            handle::Ptr{PangoAttrIterator}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoAttrIterator) = begin
-                        ccall(("pango_attr_iterator_get_type", libpango), GType, ())
-                    end
-                function PangoAttrIterator(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct PangoAttrFontDesc
+        handle::Ptr{_PangoAttrFontDesc}
+    end
+    unsafe_convert(::Type{Ptr{_PangoAttrFontDesc}}, box::PangoAttrFontDesc) = convert(Ptr{_PangoAttrFontDesc}, box.handle)
+    convert(::Type{PangoAttrFontDesc}, p::Ptr{_PangoAttrFontDesc}, owns = false) = PangoAttrFontDesc(p, owns)
+    const PangoAttrFontDescLike = Union{Ref{_PangoAttrFontDesc}, PangoAttrFontDesc}
+    convert(::Type{PangoAttrFontDescLike}, p, owns) = convert(PangoAttrFontDesc, p, owns)
+    struct _PangoAttrFontFeatures
+        attr::_PangoAttribute
+        features::Cstring
+    end
+    mutable struct PangoAttrFontFeatures
+        handle::Ptr{_PangoAttrFontFeatures}
+    end
+    unsafe_convert(::Type{Ptr{_PangoAttrFontFeatures}}, box::PangoAttrFontFeatures) = convert(Ptr{_PangoAttrFontFeatures}, box.handle)
+    convert(::Type{PangoAttrFontFeatures}, p::Ptr{_PangoAttrFontFeatures}, owns = false) = PangoAttrFontFeatures(p, owns)
+    const PangoAttrFontFeaturesLike = Union{Ref{_PangoAttrFontFeatures}, PangoAttrFontFeatures}
+    convert(::Type{PangoAttrFontFeaturesLike}, p, owns) = convert(PangoAttrFontFeatures, p, owns)
+    struct _PangoAttrInt
+        attr::_PangoAttribute
+        value::Int32
+    end
+    mutable struct PangoAttrInt
+        handle::Ptr{_PangoAttrInt}
+    end
+    unsafe_convert(::Type{Ptr{_PangoAttrInt}}, box::PangoAttrInt) = convert(Ptr{_PangoAttrInt}, box.handle)
+    convert(::Type{PangoAttrInt}, p::Ptr{_PangoAttrInt}, owns = false) = PangoAttrInt(p, owns)
+    const PangoAttrIntLike = Union{Ref{_PangoAttrInt}, PangoAttrInt}
+    convert(::Type{PangoAttrIntLike}, p, owns) = convert(PangoAttrInt, p, owns)
+    mutable struct PangoAttrIterator <: GBoxed
+        handle::Ptr{PangoAttrIterator}
+        (GLib.g_type(::Type{T}) where T <: PangoAttrIterator) = ccall(("pango_attr_iterator_get_type", libpango), GType, ())
+        function PangoAttrIterator(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoAttrIterator)
             end
+            x
         end
-        const PangoAttrIteratorLike = PangoAttrIterator
+        push!(gboxed_types, PangoAttrIterator)
     end
-    begin
-        struct _PangoAttrLanguage
-            attr::_PangoAttribute
-            value::Ptr{PangoLanguage}
-        end
-        mutable struct PangoAttrLanguage
-            handle::Ptr{_PangoAttrLanguage}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrLanguage}}, box::PangoAttrLanguage) = begin
-                    convert(Ptr{_PangoAttrLanguage}, box.handle)
-                end
-            convert(::Type{PangoAttrLanguage}, p::Ptr{_PangoAttrLanguage}, owns = false) = begin
-                    PangoAttrLanguage(p, owns)
-                end
-            const PangoAttrLanguageLike = Union{Ref{_PangoAttrLanguage}, PangoAttrLanguage}
-            convert(::Type{PangoAttrLanguageLike}, p, owns) = begin
-                    convert(PangoAttrLanguage, p, owns)
-                end
-        end
+    const PangoAttrIteratorLike = PangoAttrIterator
+    struct _PangoAttrLanguage
+        attr::_PangoAttribute
+        value::Ptr{PangoLanguage}
     end
-    begin
-        mutable struct PangoAttrList <: GBoxed
-            handle::Ptr{PangoAttrList}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoAttrList) = begin
-                        ccall(("pango_attr_list_get_type", libpango), GType, ())
-                    end
-                function PangoAttrList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct PangoAttrLanguage
+        handle::Ptr{_PangoAttrLanguage}
+    end
+    unsafe_convert(::Type{Ptr{_PangoAttrLanguage}}, box::PangoAttrLanguage) = convert(Ptr{_PangoAttrLanguage}, box.handle)
+    convert(::Type{PangoAttrLanguage}, p::Ptr{_PangoAttrLanguage}, owns = false) = PangoAttrLanguage(p, owns)
+    const PangoAttrLanguageLike = Union{Ref{_PangoAttrLanguage}, PangoAttrLanguage}
+    convert(::Type{PangoAttrLanguageLike}, p, owns) = convert(PangoAttrLanguage, p, owns)
+    mutable struct PangoAttrList <: GBoxed
+        handle::Ptr{PangoAttrList}
+        (GLib.g_type(::Type{T}) where T <: PangoAttrList) = ccall(("pango_attr_list_get_type", libpango), GType, ())
+        function PangoAttrList(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoAttrList)
             end
+            x
         end
-        const PangoAttrListLike = PangoAttrList
+        push!(gboxed_types, PangoAttrList)
     end
-    begin
-        struct _PangoAttrShape
-            attr::_PangoAttribute
-            ink_rect::_PangoRectangle
-            logical_rect::_PangoRectangle
-            data::Ptr{Nothing}
-            copy_func::Ptr{Cvoid}
-            destroy_func::Ptr{Cvoid}
-        end
-        mutable struct PangoAttrShape
-            handle::Ptr{_PangoAttrShape}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrShape}}, box::PangoAttrShape) = begin
-                    convert(Ptr{_PangoAttrShape}, box.handle)
-                end
-            convert(::Type{PangoAttrShape}, p::Ptr{_PangoAttrShape}, owns = false) = begin
-                    PangoAttrShape(p, owns)
-                end
-            const PangoAttrShapeLike = Union{Ref{_PangoAttrShape}, PangoAttrShape}
-            convert(::Type{PangoAttrShapeLike}, p, owns) = begin
-                    convert(PangoAttrShape, p, owns)
-                end
-        end
+    const PangoAttrListLike = PangoAttrList
+    struct _PangoAttrShape
+        attr::_PangoAttribute
+        ink_rect::_PangoRectangle
+        logical_rect::_PangoRectangle
+        data::Ptr{Nothing}
+        copy_func::Ptr{Cvoid}
+        destroy_func::Ptr{Cvoid}
     end
-    begin
-        struct _PangoAttrSize
-            attr::_PangoAttribute
-            size::Int32
-            absolute::UInt32
-        end
-        mutable struct PangoAttrSize
-            handle::Ptr{_PangoAttrSize}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrSize}}, box::PangoAttrSize) = begin
-                    convert(Ptr{_PangoAttrSize}, box.handle)
-                end
-            convert(::Type{PangoAttrSize}, p::Ptr{_PangoAttrSize}, owns = false) = begin
-                    PangoAttrSize(p, owns)
-                end
-            const PangoAttrSizeLike = Union{Ref{_PangoAttrSize}, PangoAttrSize}
-            convert(::Type{PangoAttrSizeLike}, p, owns) = begin
-                    convert(PangoAttrSize, p, owns)
-                end
-        end
+    mutable struct PangoAttrShape
+        handle::Ptr{_PangoAttrShape}
     end
-    begin
-        struct _PangoAttrString
-            attr::_PangoAttribute
-            value::Cstring
-        end
-        mutable struct PangoAttrString
-            handle::Ptr{_PangoAttrString}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoAttrString}}, box::PangoAttrString) = begin
-                    convert(Ptr{_PangoAttrString}, box.handle)
-                end
-            convert(::Type{PangoAttrString}, p::Ptr{_PangoAttrString}, owns = false) = begin
-                    PangoAttrString(p, owns)
-                end
-            const PangoAttrStringLike = Union{Ref{_PangoAttrString}, PangoAttrString}
-            convert(::Type{PangoAttrStringLike}, p, owns) = begin
-                    convert(PangoAttrString, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoAttrShape}}, box::PangoAttrShape) = convert(Ptr{_PangoAttrShape}, box.handle)
+    convert(::Type{PangoAttrShape}, p::Ptr{_PangoAttrShape}, owns = false) = PangoAttrShape(p, owns)
+    const PangoAttrShapeLike = Union{Ref{_PangoAttrShape}, PangoAttrShape}
+    convert(::Type{PangoAttrShapeLike}, p, owns) = convert(PangoAttrShape, p, owns)
+    struct _PangoAttrSize
+        attr::_PangoAttribute
+        size::Int32
+        absolute::UInt32
     end
-    begin
-        struct _PangoFontMetrics
-            ref_count::UInt32
-            ascent::Int32
-            descent::Int32
-            height::Int32
-            approximate_char_width::Int32
-            approximate_digit_width::Int32
-            underline_position::Int32
-            underline_thickness::Int32
-            strikethrough_position::Int32
-            strikethrough_thickness::Int32
-        end
-        mutable struct PangoFontMetrics <: GBoxed
-            handle::Ptr{_PangoFontMetrics}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoFontMetrics) = begin
-                        ccall(("pango_font_metrics_get_type", libpango), GType, ())
-                    end
-                function PangoFontMetrics(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoFontMetrics}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct PangoAttrSize
+        handle::Ptr{_PangoAttrSize}
+    end
+    unsafe_convert(::Type{Ptr{_PangoAttrSize}}, box::PangoAttrSize) = convert(Ptr{_PangoAttrSize}, box.handle)
+    convert(::Type{PangoAttrSize}, p::Ptr{_PangoAttrSize}, owns = false) = PangoAttrSize(p, owns)
+    const PangoAttrSizeLike = Union{Ref{_PangoAttrSize}, PangoAttrSize}
+    convert(::Type{PangoAttrSizeLike}, p, owns) = convert(PangoAttrSize, p, owns)
+    struct _PangoAttrString
+        attr::_PangoAttribute
+        value::Cstring
+    end
+    mutable struct PangoAttrString
+        handle::Ptr{_PangoAttrString}
+    end
+    unsafe_convert(::Type{Ptr{_PangoAttrString}}, box::PangoAttrString) = convert(Ptr{_PangoAttrString}, box.handle)
+    convert(::Type{PangoAttrString}, p::Ptr{_PangoAttrString}, owns = false) = PangoAttrString(p, owns)
+    const PangoAttrStringLike = Union{Ref{_PangoAttrString}, PangoAttrString}
+    convert(::Type{PangoAttrStringLike}, p, owns) = convert(PangoAttrString, p, owns)
+    struct _PangoFontMetrics
+        ref_count::UInt32
+        ascent::Int32
+        descent::Int32
+        height::Int32
+        approximate_char_width::Int32
+        approximate_digit_width::Int32
+        underline_position::Int32
+        underline_thickness::Int32
+        strikethrough_position::Int32
+        strikethrough_thickness::Int32
+    end
+    mutable struct PangoFontMetrics <: GBoxed
+        handle::Ptr{_PangoFontMetrics}
+        (GLib.g_type(::Type{T}) where T <: PangoFontMetrics) = ccall(("pango_font_metrics_get_type", libpango), GType, ())
+        function PangoFontMetrics(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoFontMetrics}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoFontMetrics)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoFontMetrics}}, box::PangoFontMetrics) = begin
-                    convert(Ptr{_PangoFontMetrics}, box.handle)
-                end
-            convert(::Type{PangoFontMetrics}, p::Ptr{_PangoFontMetrics}, owns = false) = begin
-                    PangoFontMetrics(p, owns)
-                end
-            const PangoFontMetricsLike = Union{Ref{_PangoFontMetrics}, PangoFontMetrics}
-            convert(::Type{PangoFontMetricsLike}, p, owns) = begin
-                    convert(PangoFontMetrics, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoFontMetrics)
     end
-    begin
-        struct _PangoGlyphItemIter
-            glyph_item::Ptr{_PangoGlyphItem}
-            text::Cstring
-            start_glyph::Int32
-            start_index::Int32
-            start_char::Int32
-            end_glyph::Int32
-            end_index::Int32
-            end_char::Int32
-        end
-        mutable struct PangoGlyphItemIter <: GBoxed
-            handle::Ptr{_PangoGlyphItemIter}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoGlyphItemIter) = begin
-                        ccall(("pango_glyph_item_iter_get_type", libpango), GType, ())
-                    end
-                function PangoGlyphItemIter(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoGlyphItemIter}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_PangoFontMetrics}}, box::PangoFontMetrics) = convert(Ptr{_PangoFontMetrics}, box.handle)
+    convert(::Type{PangoFontMetrics}, p::Ptr{_PangoFontMetrics}, owns = false) = PangoFontMetrics(p, owns)
+    const PangoFontMetricsLike = Union{Ref{_PangoFontMetrics}, PangoFontMetrics}
+    convert(::Type{PangoFontMetricsLike}, p, owns) = convert(PangoFontMetrics, p, owns)
+    struct _PangoGlyphItemIter
+        glyph_item::Ptr{_PangoGlyphItem}
+        text::Cstring
+        start_glyph::Int32
+        start_index::Int32
+        start_char::Int32
+        end_glyph::Int32
+        end_index::Int32
+        end_char::Int32
+    end
+    mutable struct PangoGlyphItemIter <: GBoxed
+        handle::Ptr{_PangoGlyphItemIter}
+        (GLib.g_type(::Type{T}) where T <: PangoGlyphItemIter) = ccall(("pango_glyph_item_iter_get_type", libpango), GType, ())
+        function PangoGlyphItemIter(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoGlyphItemIter}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoGlyphItemIter)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoGlyphItemIter}}, box::PangoGlyphItemIter) = begin
-                    convert(Ptr{_PangoGlyphItemIter}, box.handle)
-                end
-            convert(::Type{PangoGlyphItemIter}, p::Ptr{_PangoGlyphItemIter}, owns = false) = begin
-                    PangoGlyphItemIter(p, owns)
-                end
-            const PangoGlyphItemIterLike = Union{Ref{_PangoGlyphItemIter}, PangoGlyphItemIter}
-            convert(::Type{PangoGlyphItemIterLike}, p, owns) = begin
-                    convert(PangoGlyphItemIter, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoGlyphItemIter)
     end
-    begin
-        mutable struct PangoLayoutIter <: GBoxed
-            handle::Ptr{PangoLayoutIter}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoLayoutIter) = begin
-                        ccall(("pango_layout_iter_get_type", libpango), GType, ())
-                    end
-                function PangoLayoutIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_PangoGlyphItemIter}}, box::PangoGlyphItemIter) = convert(Ptr{_PangoGlyphItemIter}, box.handle)
+    convert(::Type{PangoGlyphItemIter}, p::Ptr{_PangoGlyphItemIter}, owns = false) = PangoGlyphItemIter(p, owns)
+    const PangoGlyphItemIterLike = Union{Ref{_PangoGlyphItemIter}, PangoGlyphItemIter}
+    convert(::Type{PangoGlyphItemIterLike}, p, owns) = convert(PangoGlyphItemIter, p, owns)
+    mutable struct PangoLayoutIter <: GBoxed
+        handle::Ptr{PangoLayoutIter}
+        (GLib.g_type(::Type{T}) where T <: PangoLayoutIter) = ccall(("pango_layout_iter_get_type", libpango), GType, ())
+        function PangoLayoutIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoLayoutIter)
             end
+            x
         end
-        const PangoLayoutIterLike = PangoLayoutIter
+        push!(gboxed_types, PangoLayoutIter)
     end
-    begin
-        struct _PangoLayoutLine
-            layout::Ptr{GObject}
-            start_index::Int32
-            length::Int32
-            runs::Ptr{GLib._GSList{_PangoGlyphItem}}
-            is_paragraph_start::UInt32
-            resolved_dir::UInt32
-        end
-        mutable struct PangoLayoutLine <: GBoxed
-            handle::Ptr{_PangoLayoutLine}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoLayoutLine) = begin
-                        ccall(("pango_layout_line_get_type", libpango), GType, ())
-                    end
-                function PangoLayoutLine(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoLayoutLine}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const PangoLayoutIterLike = PangoLayoutIter
+    struct _PangoLayoutLine
+        layout::Ptr{GObject}
+        start_index::Int32
+        length::Int32
+        runs::Ptr{GLib._GSList{_PangoGlyphItem}}
+        is_paragraph_start::UInt32
+        resolved_dir::UInt32
+    end
+    mutable struct PangoLayoutLine <: GBoxed
+        handle::Ptr{_PangoLayoutLine}
+        (GLib.g_type(::Type{T}) where T <: PangoLayoutLine) = ccall(("pango_layout_line_get_type", libpango), GType, ())
+        function PangoLayoutLine(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoLayoutLine}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoLayoutLine)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoLayoutLine}}, box::PangoLayoutLine) = begin
-                    convert(Ptr{_PangoLayoutLine}, box.handle)
-                end
-            convert(::Type{PangoLayoutLine}, p::Ptr{_PangoLayoutLine}, owns = false) = begin
-                    PangoLayoutLine(p, owns)
-                end
-            const PangoLayoutLineLike = Union{Ref{_PangoLayoutLine}, PangoLayoutLine}
-            convert(::Type{PangoLayoutLineLike}, p, owns) = begin
-                    convert(PangoLayoutLine, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoLayoutLine)
     end
-    begin
-        struct _PangoLogAttr
-            is_line_break::UInt32
-            is_mandatory_break::UInt32
-            is_char_break::UInt32
-            is_white::UInt32
-            is_cursor_position::UInt32
-            is_word_start::UInt32
-            is_word_end::UInt32
-            is_sentence_boundary::UInt32
-            is_sentence_start::UInt32
-            is_sentence_end::UInt32
-            backspace_deletes_character::UInt32
-            is_expandable_space::UInt32
-            is_word_boundary::UInt32
-            break_inserts_hyphen::UInt32
-            break_removes_preceding::UInt32
-            reserved::UInt32
-        end
-        mutable struct PangoLogAttr
-            handle::Ptr{_PangoLogAttr}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoLogAttr}}, box::PangoLogAttr) = begin
-                    convert(Ptr{_PangoLogAttr}, box.handle)
-                end
-            convert(::Type{PangoLogAttr}, p::Ptr{_PangoLogAttr}, owns = false) = begin
-                    PangoLogAttr(p, owns)
-                end
-            const PangoLogAttrLike = Union{Ref{_PangoLogAttr}, PangoLogAttr}
-            convert(::Type{PangoLogAttrLike}, p, owns) = begin
-                    convert(PangoLogAttr, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_PangoLayoutLine}}, box::PangoLayoutLine) = convert(Ptr{_PangoLayoutLine}, box.handle)
+    convert(::Type{PangoLayoutLine}, p::Ptr{_PangoLayoutLine}, owns = false) = PangoLayoutLine(p, owns)
+    const PangoLayoutLineLike = Union{Ref{_PangoLayoutLine}, PangoLayoutLine}
+    convert(::Type{PangoLayoutLineLike}, p, owns) = convert(PangoLayoutLine, p, owns)
+    struct _PangoLogAttr
+        is_line_break::UInt32
+        is_mandatory_break::UInt32
+        is_char_break::UInt32
+        is_white::UInt32
+        is_cursor_position::UInt32
+        is_word_start::UInt32
+        is_word_end::UInt32
+        is_sentence_boundary::UInt32
+        is_sentence_start::UInt32
+        is_sentence_end::UInt32
+        backspace_deletes_character::UInt32
+        is_expandable_space::UInt32
+        is_word_boundary::UInt32
+        break_inserts_hyphen::UInt32
+        break_removes_preceding::UInt32
+        reserved::UInt32
     end
-    begin
-        struct _PangoMatrix
-            xx::Float64
-            xy::Float64
-            yx::Float64
-            yy::Float64
-            x0::Float64
-            y0::Float64
-        end
-        mutable struct PangoMatrix <: GBoxed
-            handle::Ptr{_PangoMatrix}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoMatrix) = begin
-                        ccall(("pango_matrix_get_type", libpango), GType, ())
-                    end
-                function PangoMatrix(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoMatrix}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct PangoLogAttr
+        handle::Ptr{_PangoLogAttr}
+    end
+    unsafe_convert(::Type{Ptr{_PangoLogAttr}}, box::PangoLogAttr) = convert(Ptr{_PangoLogAttr}, box.handle)
+    convert(::Type{PangoLogAttr}, p::Ptr{_PangoLogAttr}, owns = false) = PangoLogAttr(p, owns)
+    const PangoLogAttrLike = Union{Ref{_PangoLogAttr}, PangoLogAttr}
+    convert(::Type{PangoLogAttrLike}, p, owns) = convert(PangoLogAttr, p, owns)
+    struct _PangoMatrix
+        xx::Float64
+        xy::Float64
+        yx::Float64
+        yy::Float64
+        x0::Float64
+        y0::Float64
+    end
+    mutable struct PangoMatrix <: GBoxed
+        handle::Ptr{_PangoMatrix}
+        (GLib.g_type(::Type{T}) where T <: PangoMatrix) = ccall(("pango_matrix_get_type", libpango), GType, ())
+        function PangoMatrix(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _PangoMatrix}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoMatrix)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_PangoMatrix}}, box::PangoMatrix) = begin
-                    convert(Ptr{_PangoMatrix}, box.handle)
-                end
-            convert(::Type{PangoMatrix}, p::Ptr{_PangoMatrix}, owns = false) = begin
-                    PangoMatrix(p, owns)
-                end
-            const PangoMatrixLike = Union{Ref{_PangoMatrix}, PangoMatrix}
-            convert(::Type{PangoMatrixLike}, p, owns) = begin
-                    convert(PangoMatrix, p, owns)
-                end
-        end
+        push!(gboxed_types, PangoMatrix)
     end
-    begin
-        mutable struct PangoScriptIter <: GBoxed
-            handle::Ptr{PangoScriptIter}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoScriptIter) = begin
-                        ccall(("pango_script_iter_get_type", libpango), GType, ())
-                    end
-                function PangoScriptIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_PangoMatrix}}, box::PangoMatrix) = convert(Ptr{_PangoMatrix}, box.handle)
+    convert(::Type{PangoMatrix}, p::Ptr{_PangoMatrix}, owns = false) = PangoMatrix(p, owns)
+    const PangoMatrixLike = Union{Ref{_PangoMatrix}, PangoMatrix}
+    convert(::Type{PangoMatrixLike}, p, owns) = convert(PangoMatrix, p, owns)
+    mutable struct PangoScriptIter <: GBoxed
+        handle::Ptr{PangoScriptIter}
+        (GLib.g_type(::Type{T}) where T <: PangoScriptIter) = ccall(("pango_script_iter_get_type", libpango), GType, ())
+        function PangoScriptIter(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoScriptIter)
             end
+            x
         end
-        const PangoScriptIterLike = PangoScriptIter
+        push!(gboxed_types, PangoScriptIter)
     end
-    begin
-        mutable struct PangoTabArray <: GBoxed
-            handle::Ptr{PangoTabArray}
-            begin
-                (GLib.g_type(::Type{T}) where T <: PangoTabArray) = begin
-                        ccall(("pango_tab_array_get_type", libpango), GType, ())
-                    end
-                function PangoTabArray(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const PangoScriptIterLike = PangoScriptIter
+    mutable struct PangoTabArray <: GBoxed
+        handle::Ptr{PangoTabArray}
+        (GLib.g_type(::Type{T}) where T <: PangoTabArray) = ccall(("pango_tab_array_get_type", libpango), GType, ())
+        function PangoTabArray(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, PangoTabArray)
             end
+            x
         end
-        const PangoTabArrayLike = PangoTabArray
+        push!(gboxed_types, PangoTabArray)
     end
-    gboxed_cache_init() = begin
-            append!(GLib.gboxed_types, gboxed_types)
-        end
+    const PangoTabArrayLike = PangoTabArray
+    gboxed_cache_init() = append!(GLib.gboxed_types, gboxed_types)
     const gtype_wrapper_cache = Dict{Symbol, Type}()
-    begin
-        abstract type PangoContext <: GObject end
-        mutable struct PangoContextLeaf <: PangoContext
-            handle::Ptr{GObject}
-            function PangoContextLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoContextLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type PangoContext <: GObject end
+    mutable struct PangoContextLeaf <: PangoContext
+        handle::Ptr{GObject}
+        function PangoContextLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoContextLeaf with a NULL pointer")
             end
-        end
-        gtype_wrapper_cache[:PangoContext] = PangoContextLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoContext) = begin
-                ccall(("pango_context_get_type", libpango), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{PangoContext})
-            signalnames(supertype(PangoContext))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type PangoCoverage <: GObject end
-        mutable struct PangoCoverageLeaf <: PangoCoverage
-            handle::Ptr{GObject}
-            function PangoCoverageLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoCoverageLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:PangoCoverage] = PangoCoverageLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoCoverage) = begin
-                ccall(("pango_coverage_get_type", libpango), GType, ())
-            end
+    gtype_wrapper_cache[:PangoContext] = PangoContextLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoContext) = ccall(("pango_context_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoContext})
+        signalnames(supertype(PangoContext))
     end
-    begin
-        function GLib.signalnames(::Type{PangoCoverage})
-            signalnames(supertype(PangoCoverage))
+    abstract type PangoCoverage <: GObject end
+    mutable struct PangoCoverageLeaf <: PangoCoverage
+        handle::Ptr{GObject}
+        function PangoCoverageLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoCoverageLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type PangoFont <: GObject end
-        mutable struct PangoFontLeaf <: PangoFont
-            handle::Ptr{GObject}
-            function PangoFontLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoFontLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:PangoFont] = PangoFontLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoFont) = begin
-                ccall(("pango_font_get_type", libpango), GType, ())
-            end
+    gtype_wrapper_cache[:PangoCoverage] = PangoCoverageLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoCoverage) = ccall(("pango_coverage_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoCoverage})
+        signalnames(supertype(PangoCoverage))
     end
-    begin
-        function GLib.signalnames(::Type{PangoFont})
-            signalnames(supertype(PangoFont))
+    abstract type PangoFont <: GObject end
+    mutable struct PangoFontLeaf <: PangoFont
+        handle::Ptr{GObject}
+        function PangoFontLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoFontLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type PangoFontFace <: GObject end
-        mutable struct PangoFontFaceLeaf <: PangoFontFace
-            handle::Ptr{GObject}
-            function PangoFontFaceLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoFontFaceLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:PangoFontFace] = PangoFontFaceLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoFontFace) = begin
-                ccall(("pango_font_face_get_type", libpango), GType, ())
-            end
+    gtype_wrapper_cache[:PangoFont] = PangoFontLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoFont) = ccall(("pango_font_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoFont})
+        signalnames(supertype(PangoFont))
     end
-    begin
-        function GLib.signalnames(::Type{PangoFontFace})
-            signalnames(supertype(PangoFontFace))
+    abstract type PangoFontFace <: GObject end
+    mutable struct PangoFontFaceLeaf <: PangoFontFace
+        handle::Ptr{GObject}
+        function PangoFontFaceLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoFontFaceLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type PangoFontFamily <: GObject end
-        mutable struct PangoFontFamilyLeaf <: PangoFontFamily
-            handle::Ptr{GObject}
-            function PangoFontFamilyLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoFontFamilyLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:PangoFontFamily] = PangoFontFamilyLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoFontFamily) = begin
-                ccall(("pango_font_family_get_type", libpango), GType, ())
-            end
+    gtype_wrapper_cache[:PangoFontFace] = PangoFontFaceLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoFontFace) = ccall(("pango_font_face_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoFontFace})
+        signalnames(supertype(PangoFontFace))
     end
-    begin
-        function GLib.signalnames(::Type{PangoFontFamily})
-            vcat([:items_changed], signalnames(supertype(PangoFontFamily)))
-        end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: PangoFontFamily
-                eval((d[name])[1])
+    abstract type PangoFontFamily <: GObject end
+    mutable struct PangoFontFamilyLeaf <: PangoFontFamily
+        handle::Ptr{GObject}
+        function PangoFontFamilyLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoFontFamilyLeaf with a NULL pointer")
             end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: PangoFontFamily
-                Tuple(eval.((d[name])[2]))
-            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type PangoFontMap <: GObject end
-        mutable struct PangoFontMapLeaf <: PangoFontMap
-            handle::Ptr{GObject}
-            function PangoFontMapLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoFontMapLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:PangoFontMap] = PangoFontMapLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoFontMap) = begin
-                ccall(("pango_font_map_get_type", libpango), GType, ())
-            end
+    gtype_wrapper_cache[:PangoFontFamily] = PangoFontFamilyLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoFontFamily) = ccall(("pango_font_family_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoFontFamily})
+        vcat([:items_changed], signalnames(supertype(PangoFontFamily)))
     end
-    begin
-        function GLib.signalnames(::Type{PangoFontMap})
-            vcat([:items_changed], signalnames(supertype(PangoFontMap)))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: PangoFontFamily
+            eval((d[name])[1])
         end
-        let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
-            function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: PangoFontMap
-                eval((d[name])[1])
-            end
-            function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: PangoFontMap
-                Tuple(eval.((d[name])[2]))
-            end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: PangoFontFamily
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type PangoFontset <: GObject end
-        mutable struct PangoFontsetLeaf <: PangoFontset
-            handle::Ptr{GObject}
-            function PangoFontsetLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoFontsetLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type PangoFontMap <: GObject end
+    mutable struct PangoFontMapLeaf <: PangoFontMap
+        handle::Ptr{GObject}
+        function PangoFontMapLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoFontMapLeaf with a NULL pointer")
             end
-        end
-        gtype_wrapper_cache[:PangoFontset] = PangoFontsetLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoFontset) = begin
-                ccall(("pango_fontset_get_type", libpango), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{PangoFontset})
-            signalnames(supertype(PangoFontset))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type PangoFontsetSimple <: PangoFontset end
-        mutable struct PangoFontsetSimpleLeaf <: PangoFontsetSimple
-            handle::Ptr{GObject}
-            function PangoFontsetSimpleLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoFontsetSimpleLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:PangoFontsetSimple] = PangoFontsetSimpleLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoFontsetSimple) = begin
-                ccall(("pango_fontset_simple_get_type", libpango), GType, ())
-            end
+    gtype_wrapper_cache[:PangoFontMap] = PangoFontMapLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoFontMap) = ccall(("pango_font_map_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoFontMap})
+        vcat([:items_changed], signalnames(supertype(PangoFontMap)))
     end
-    begin
-        function GLib.signalnames(::Type{PangoFontsetSimple})
-            signalnames(supertype(PangoFontsetSimple))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: PangoFontMap
+            eval((d[name])[1])
+        end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: PangoFontMap
+            Tuple(eval.((d[name])[2]))
         end
     end
-    begin
-        abstract type PangoLayout <: GObject end
-        mutable struct PangoLayoutLeaf <: PangoLayout
-            handle::Ptr{GObject}
-            function PangoLayoutLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoLayoutLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type PangoFontset <: GObject end
+    mutable struct PangoFontsetLeaf <: PangoFontset
+        handle::Ptr{GObject}
+        function PangoFontsetLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoFontsetLeaf with a NULL pointer")
             end
-        end
-        gtype_wrapper_cache[:PangoLayout] = PangoLayoutLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoLayout) = begin
-                ccall(("pango_layout_get_type", libpango), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{PangoLayout})
-            signalnames(supertype(PangoLayout))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type PangoRenderer <: GObject end
-        mutable struct PangoRendererLeaf <: PangoRenderer
-            handle::Ptr{GObject}
-            function PangoRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct PangoRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:PangoRenderer] = PangoRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: PangoRenderer) = begin
-                ccall(("pango_renderer_get_type", libpango), GType, ())
-            end
+    gtype_wrapper_cache[:PangoFontset] = PangoFontsetLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoFontset) = ccall(("pango_fontset_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoFontset})
+        signalnames(supertype(PangoFontset))
     end
-    begin
-        function GLib.signalnames(::Type{PangoRenderer})
-            signalnames(supertype(PangoRenderer))
+    abstract type PangoFontsetSimple <: PangoFontset end
+    mutable struct PangoFontsetSimpleLeaf <: PangoFontsetSimple
+        handle::Ptr{GObject}
+        function PangoFontsetSimpleLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoFontsetSimpleLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        gtype_wrapper_cache_init() = begin
-                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
-            end
+    gtype_wrapper_cache[:PangoFontsetSimple] = PangoFontsetSimpleLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoFontsetSimple) = ccall(("pango_fontset_simple_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoFontsetSimple})
+        signalnames(supertype(PangoFontsetSimple))
     end
+    abstract type PangoLayout <: GObject end
+    mutable struct PangoLayoutLeaf <: PangoLayout
+        handle::Ptr{GObject}
+        function PangoLayoutLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoLayoutLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:PangoLayout] = PangoLayoutLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoLayout) = ccall(("pango_layout_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoLayout})
+        signalnames(supertype(PangoLayout))
+    end
+    abstract type PangoRenderer <: GObject end
+    mutable struct PangoRendererLeaf <: PangoRenderer
+        handle::Ptr{GObject}
+        function PangoRendererLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct PangoRendererLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:PangoRenderer] = PangoRendererLeaf
+    (GLib.g_type(::Type{T}) where T <: PangoRenderer) = ccall(("pango_renderer_get_type", libpango), GType, ())
+    function GLib.signalnames(::Type{PangoRenderer})
+        signalnames(supertype(PangoRenderer))
+    end
+    gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
     function PangoContext()
         G_.Context_new()
     end
@@ -1171,5 +792,4 @@ $(Expr(:toplevel, quote
         convert(Cint, ret)
     end
     export PangoLanguage, PangoColor, _PangoColor, PangoColorLike, PangoAttrClass, _PangoAttrClass, PangoAttrClassLike, PangoRectangle, _PangoRectangle, PangoRectangleLike, PangoFontDescription, PangoAttribute, _PangoAttribute, PangoAttributeLike, PangoAnalysis, _PangoAnalysis, PangoAnalysisLike, PangoItem, _PangoItem, PangoItemLike, PangoGlyphVisAttr, _PangoGlyphVisAttr, PangoGlyphVisAttrLike, PangoGlyphGeometry, _PangoGlyphGeometry, PangoGlyphGeometryLike, PangoGlyphInfo, _PangoGlyphInfo, PangoGlyphInfoLike, PangoGlyphString, _PangoGlyphString, PangoGlyphStringLike, PangoGlyphItem, _PangoGlyphItem, PangoGlyphItemLike, PangoAttrColor, PangoAttrColorLike, _PangoAttrColor, PangoAttrFloat, PangoAttrFloatLike, _PangoAttrFloat, PangoAttrFontDesc, PangoAttrFontDescLike, _PangoAttrFontDesc, PangoAttrFontFeatures, PangoAttrFontFeaturesLike, _PangoAttrFontFeatures, PangoAttrInt, PangoAttrIntLike, _PangoAttrInt, PangoAttrIterator, PangoAttrLanguage, PangoAttrLanguageLike, _PangoAttrLanguage, PangoAttrList, PangoAttrShape, PangoAttrShapeLike, _PangoAttrShape, PangoAttrSize, PangoAttrSizeLike, _PangoAttrSize, PangoAttrString, PangoAttrStringLike, _PangoAttrString, PangoFontMetrics, PangoFontMetricsLike, _PangoFontMetrics, PangoGlyphItemIter, PangoGlyphItemIterLike, _PangoGlyphItemIter, PangoLayoutIter, PangoLayoutLine, PangoLayoutLineLike, _PangoLayoutLine, PangoLogAttr, PangoLogAttrLike, _PangoLogAttr, PangoMatrix, PangoMatrixLike, _PangoMatrix, PangoScriptIter, PangoTabArray, PangoContext, PangoContextLeaf, PangoCoverage, PangoCoverageLeaf, PangoFont, PangoFontFace, PangoFontFamily, PangoFontMap, PangoFontset, PangoFontsetSimple, PangoFontsetSimpleLeaf, PangoLayout, PangoLayoutLeaf, PangoRenderer, PangoAttrDataCopyFunc, PangoAttrFilterFunc, PangoFontsetForeachFunc
-end))
 end

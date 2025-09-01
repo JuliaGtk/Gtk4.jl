@@ -25,13 +25,7 @@ $(Expr(:toplevel, quote
     gboxed_cache_init() = begin
             append!(GLib.gboxed_types, gboxed_types)
         end
-    struct AdwSwipeable <: GInterface
-        handle::Ptr{GObject}
-        gc::Any
-        AdwSwipeable(x::GObject) = begin
-                new(unsafe_convert(Ptr{GObject}, x), x)
-            end
-    end
+    GLib.@Giface AdwSwipeable libadwaita adw_swipeable_get_type
     const gtype_wrapper_cache = Dict{Symbol, Type}()
     begin
         abstract type AdwDialog <: GtkWidget end

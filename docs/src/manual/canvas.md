@@ -24,7 +24,7 @@ win = GtkWindow(c, "Canvas")
 end
 ```
 This `draw` function will be called each time the window is resized or otherwise needs to refresh its display.
-If you need to force a redraw of the canvas, you can call `reveal` on the canvas widget.
+If you need to force a redraw of the canvas, you can call `draw(c)`.
 
 ![canvas](figures/canvas.png)
 
@@ -86,7 +86,7 @@ w = GtkWindow(canvas,"CairoMakie example")
 
 @guarded draw(canvas) do widget
     global f, ax, p = lines(1:10)
-    CairoMakie.autolimits!(ax) 	
+    CairoMakie.autolimits!(ax)
     screen = CairoMakie.Screen(f.scene, config, Gtk4.cairo_surface(canvas))
     CairoMakie.resize!(f.scene, Gtk4.width(widget), Gtk4.height(widget))
     CairoMakie.cairo_draw(screen, f.scene)

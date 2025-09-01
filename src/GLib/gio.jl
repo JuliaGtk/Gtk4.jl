@@ -37,7 +37,7 @@ cancel(c::GCancellable) = G_.cancel(c)
 iscancelled(c::GCancellable) = G_.is_cancelled(c)
 
 """
-    cancel_after_delay(timeout)
+    cancel_after_delay(timeout)->GCancellable
 
 Creates and returns a `GCancellable` and after `timeout` seconds, cancels it.
 """
@@ -50,3 +50,41 @@ function cancel_after_delay(timeout)
     end
     cancellable
 end
+
+mutable struct _GActionInterface
+    g_iface::_GTypeInterface
+    get_name::Ptr{Cvoid}
+    get_parameter_type::Ptr{Cvoid}
+    get_state_type::Ptr{Cvoid}
+    get_state_hint::Ptr{Cvoid}
+    get_enabled::Ptr{Cvoid}
+    get_state::Ptr{Cvoid}
+    change_state::Ptr{Cvoid}
+    activate::Ptr{Cvoid}
+end
+
+# GSettings
+
+GSettingsSchemaSource() = G_.settings_schema_source_get_default()
+
+function Base.keys(s::GSettings)
+    ss=s.settings_schema
+    G_.list_keys(ss)
+end
+
+function Base.haskey(s::GSettings)
+    ss=s.settings_schema
+    G_.has_key(ss)
+end
+
+let gsettings_fns = Expr(:block)
+    for i = 1:length(fundamental_types)
+        (name, ctype, juliatype, g_value_fn, g_variant_fn) = fundamental_types[i]
+        if g_value_fn in [:boolean,:double,:int64,:string,:uint64,:int,:uint]
+            push!(gsettings_fns.args, :( getindex(gs::GSettings, key::AbstractString, ::Type{T}) where {T <: $juliatype} = G_.$(Symbol("get_", g_value_fn))(gs, key)[1]))
+            push!(gsettings_fns.args, :( setindex!(gs::GSettings, val::$juliatype, key::AbstractString) = G_.$(Symbol("set_", g_value_fn))(gs, key, val)[1]))
+        end
+    end
+    Core.eval(GLib, gsettings_fns)
+end
+

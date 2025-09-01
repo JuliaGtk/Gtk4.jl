@@ -19,8 +19,8 @@ export width, height, slice
 
 const Index{I<:Integer} = Union{I, AbstractVector{I}}
 
-eval(include("gen/gdkpixbuf_consts"))
-eval(include("gen/gdkpixbuf_structs"))
+include("gen/gdkpixbuf_consts")
+include("gen/gdkpixbuf_structs")
 
 module G_
 
@@ -32,8 +32,8 @@ using ..GdkPixbufLib: Colorspace, InterpType, PixbufError, PixbufRotation
 
 import Base: convert, copy
 
-eval(include("gen/gdkpixbuf_methods"))
-eval(include("gen/gdkpixbuf_functions"))
+include("gen/gdkpixbuf_methods")
+include("gen/gdkpixbuf_functions")
 
 end
 
@@ -83,7 +83,7 @@ end
 convert(::Type{RGBA}, x::Unsigned) = RGBA(UInt8(x), UInt8(x >> 8), UInt8(x >> 16), UInt8(x >> 24))
 convert(::Type{U}, x::RGBA) where {U <: Unsigned} = convert(U, (x.r) | (x.g >> 8) | (x.b >> 16) | (x.a >> 24))
 function convert(::Type{RGBA}, x::Colorant)
-    c = ColorTypes.RGBA{N0f8}(x)     
+    c = ColorTypes.RGBA{N0f8}(x)
     RGBA(reinterpret(UInt8,red(c)),reinterpret(UInt8,green(c)),reinterpret(UInt8,blue(c)),reinterpret(UInt8,alpha(c)))
 end
 
@@ -206,8 +206,6 @@ width(a::MatrixStrided) = a.width
 height(a::MatrixStrided) = a.height
 size(a::MatrixStrided, i::Integer) = (i == 1 ? width(a) : (i == 2 ? height(a) : 1))
 size(a::MatrixStrided) = (width(a), height(a))
-eltype(a::MatrixStrided{T}) where {T} = T
-Base.ndims(::MatrixStrided) = 2
 # next line was causing invalidations
 # convert(::Type{P}, a::MatrixStrided) where {P <: Ptr} = convert(P, a.p)
 bstride(a::MatrixStrided, i) = (i == 1 ? sizeof(eltype(a)) : (i == 2 ? a.rowstride : 0))

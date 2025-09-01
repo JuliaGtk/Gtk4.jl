@@ -1,645 +1,413 @@
-quote
-$(Expr(:toplevel, quote
+begin
     const gboxed_types = Any[]
-    begin
-        struct _GrapheneSimd4F
-            x::Float32
-            y::Float32
-            z::Float32
-            w::Float32
-        end
-        mutable struct GrapheneSimd4F
-            handle::Ptr{_GrapheneSimd4F}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneSimd4F}}, box::GrapheneSimd4F) = begin
-                    convert(Ptr{_GrapheneSimd4F}, box.handle)
-                end
-            convert(::Type{GrapheneSimd4F}, p::Ptr{_GrapheneSimd4F}, owns = false) = begin
-                    GrapheneSimd4F(p, owns)
-                end
-            const GrapheneSimd4FLike = Union{Ref{_GrapheneSimd4F}, GrapheneSimd4F}
-            convert(::Type{GrapheneSimd4FLike}, p, owns) = begin
-                    convert(GrapheneSimd4F, p, owns)
-                end
-        end
+    struct _GrapheneSimd4F
+        x::Float32
+        y::Float32
+        z::Float32
+        w::Float32
     end
-    begin
-        struct _GrapheneVec3
-            value::_GrapheneSimd4F
-        end
-        mutable struct GrapheneVec3 <: GBoxed
-            handle::Ptr{_GrapheneVec3}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneVec3) = begin
-                        ccall(("graphene_vec3_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneVec3(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneVec3}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct GrapheneSimd4F
+        handle::Ptr{_GrapheneSimd4F}
+    end
+    unsafe_convert(::Type{Ptr{_GrapheneSimd4F}}, box::GrapheneSimd4F) = convert(Ptr{_GrapheneSimd4F}, box.handle)
+    convert(::Type{GrapheneSimd4F}, p::Ptr{_GrapheneSimd4F}, owns = false) = GrapheneSimd4F(p, owns)
+    const GrapheneSimd4FLike = Union{Ref{_GrapheneSimd4F}, GrapheneSimd4F}
+    convert(::Type{GrapheneSimd4FLike}, p, owns) = convert(GrapheneSimd4F, p, owns)
+    struct _GrapheneVec3
+        value::_GrapheneSimd4F
+    end
+    mutable struct GrapheneVec3 <: GBoxed
+        handle::Ptr{_GrapheneVec3}
+        (GLib.g_type(::Type{T}) where T <: GrapheneVec3) = ccall(("graphene_vec3_get_type", libgraphene), GType, ())
+        function GrapheneVec3(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneVec3}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneVec3)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneVec3}}, box::GrapheneVec3) = begin
-                    convert(Ptr{_GrapheneVec3}, box.handle)
-                end
-            convert(::Type{GrapheneVec3}, p::Ptr{_GrapheneVec3}, owns = false) = begin
-                    GrapheneVec3(p, owns)
-                end
-            const GrapheneVec3Like = Union{Ref{_GrapheneVec3}, GrapheneVec3}
-            convert(::Type{GrapheneVec3Like}, p, owns) = begin
-                    convert(GrapheneVec3, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneVec3)
     end
-    begin
-        struct _GrapheneSimd4X4F
-            x::_GrapheneSimd4F
-            y::_GrapheneSimd4F
-            z::_GrapheneSimd4F
-            w::_GrapheneSimd4F
-        end
-        mutable struct GrapheneSimd4X4F
-            handle::Ptr{_GrapheneSimd4X4F}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneSimd4X4F}}, box::GrapheneSimd4X4F) = begin
-                    convert(Ptr{_GrapheneSimd4X4F}, box.handle)
-                end
-            convert(::Type{GrapheneSimd4X4F}, p::Ptr{_GrapheneSimd4X4F}, owns = false) = begin
-                    GrapheneSimd4X4F(p, owns)
-                end
-            const GrapheneSimd4X4FLike = Union{Ref{_GrapheneSimd4X4F}, GrapheneSimd4X4F}
-            convert(::Type{GrapheneSimd4X4FLike}, p, owns) = begin
-                    convert(GrapheneSimd4X4F, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_GrapheneVec3}}, box::GrapheneVec3) = convert(Ptr{_GrapheneVec3}, box.handle)
+    convert(::Type{GrapheneVec3}, p::Ptr{_GrapheneVec3}, owns = false) = GrapheneVec3(p, owns)
+    const GrapheneVec3Like = Union{Ref{_GrapheneVec3}, GrapheneVec3}
+    convert(::Type{GrapheneVec3Like}, p, owns) = convert(GrapheneVec3, p, owns)
+    struct _GrapheneSimd4X4F
+        x::_GrapheneSimd4F
+        y::_GrapheneSimd4F
+        z::_GrapheneSimd4F
+        w::_GrapheneSimd4F
     end
-    begin
-        struct _GrapheneSize
-            width::Float32
-            height::Float32
-        end
-        mutable struct GrapheneSize <: GBoxed
-            handle::Ptr{_GrapheneSize}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneSize) = begin
-                        ccall(("graphene_size_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneSize(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneSize}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct GrapheneSimd4X4F
+        handle::Ptr{_GrapheneSimd4X4F}
+    end
+    unsafe_convert(::Type{Ptr{_GrapheneSimd4X4F}}, box::GrapheneSimd4X4F) = convert(Ptr{_GrapheneSimd4X4F}, box.handle)
+    convert(::Type{GrapheneSimd4X4F}, p::Ptr{_GrapheneSimd4X4F}, owns = false) = GrapheneSimd4X4F(p, owns)
+    const GrapheneSimd4X4FLike = Union{Ref{_GrapheneSimd4X4F}, GrapheneSimd4X4F}
+    convert(::Type{GrapheneSimd4X4FLike}, p, owns) = convert(GrapheneSimd4X4F, p, owns)
+    struct _GrapheneSize
+        width::Float32
+        height::Float32
+    end
+    mutable struct GrapheneSize <: GBoxed
+        handle::Ptr{_GrapheneSize}
+        (GLib.g_type(::Type{T}) where T <: GrapheneSize) = ccall(("graphene_size_get_type", libgraphene), GType, ())
+        function GrapheneSize(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneSize}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneSize)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneSize}}, box::GrapheneSize) = begin
-                    convert(Ptr{_GrapheneSize}, box.handle)
-                end
-            convert(::Type{GrapheneSize}, p::Ptr{_GrapheneSize}, owns = false) = begin
-                    GrapheneSize(p, owns)
-                end
-            const GrapheneSizeLike = Union{Ref{_GrapheneSize}, GrapheneSize}
-            convert(::Type{GrapheneSizeLike}, p, owns) = begin
-                    convert(GrapheneSize, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneSize)
     end
-    begin
-        struct _GrapheneBox
-            min::_GrapheneVec3
-            max::_GrapheneVec3
-        end
-        mutable struct GrapheneBox <: GBoxed
-            handle::Ptr{_GrapheneBox}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneBox) = begin
-                        ccall(("graphene_box_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneBox(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneBox}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneSize}}, box::GrapheneSize) = convert(Ptr{_GrapheneSize}, box.handle)
+    convert(::Type{GrapheneSize}, p::Ptr{_GrapheneSize}, owns = false) = GrapheneSize(p, owns)
+    const GrapheneSizeLike = Union{Ref{_GrapheneSize}, GrapheneSize}
+    convert(::Type{GrapheneSizeLike}, p, owns) = convert(GrapheneSize, p, owns)
+    struct _GrapheneBox
+        min::_GrapheneVec3
+        max::_GrapheneVec3
+    end
+    mutable struct GrapheneBox <: GBoxed
+        handle::Ptr{_GrapheneBox}
+        (GLib.g_type(::Type{T}) where T <: GrapheneBox) = ccall(("graphene_box_get_type", libgraphene), GType, ())
+        function GrapheneBox(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneBox}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneBox)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneBox}}, box::GrapheneBox) = begin
-                    convert(Ptr{_GrapheneBox}, box.handle)
-                end
-            convert(::Type{GrapheneBox}, p::Ptr{_GrapheneBox}, owns = false) = begin
-                    GrapheneBox(p, owns)
-                end
-            const GrapheneBoxLike = Union{Ref{_GrapheneBox}, GrapheneBox}
-            convert(::Type{GrapheneBoxLike}, p, owns) = begin
-                    convert(GrapheneBox, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneBox)
     end
-    begin
-        struct _GrapheneEuler
-            angles::_GrapheneVec3
-            order::UInt32
-        end
-        mutable struct GrapheneEuler <: GBoxed
-            handle::Ptr{_GrapheneEuler}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneEuler) = begin
-                        ccall(("graphene_euler_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneEuler(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneEuler}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneBox}}, box::GrapheneBox) = convert(Ptr{_GrapheneBox}, box.handle)
+    convert(::Type{GrapheneBox}, p::Ptr{_GrapheneBox}, owns = false) = GrapheneBox(p, owns)
+    const GrapheneBoxLike = Union{Ref{_GrapheneBox}, GrapheneBox}
+    convert(::Type{GrapheneBoxLike}, p, owns) = convert(GrapheneBox, p, owns)
+    struct _GrapheneEuler
+        angles::_GrapheneVec3
+        order::UInt32
+    end
+    mutable struct GrapheneEuler <: GBoxed
+        handle::Ptr{_GrapheneEuler}
+        (GLib.g_type(::Type{T}) where T <: GrapheneEuler) = ccall(("graphene_euler_get_type", libgraphene), GType, ())
+        function GrapheneEuler(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneEuler}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneEuler)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneEuler}}, box::GrapheneEuler) = begin
-                    convert(Ptr{_GrapheneEuler}, box.handle)
-                end
-            convert(::Type{GrapheneEuler}, p::Ptr{_GrapheneEuler}, owns = false) = begin
-                    GrapheneEuler(p, owns)
-                end
-            const GrapheneEulerLike = Union{Ref{_GrapheneEuler}, GrapheneEuler}
-            convert(::Type{GrapheneEulerLike}, p, owns) = begin
-                    convert(GrapheneEuler, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneEuler)
     end
-    begin
-        mutable struct GrapheneFrustum <: GBoxed
-            handle::Ptr{GrapheneFrustum}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneFrustum) = begin
-                        ccall(("graphene_frustum_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneFrustum(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneEuler}}, box::GrapheneEuler) = convert(Ptr{_GrapheneEuler}, box.handle)
+    convert(::Type{GrapheneEuler}, p::Ptr{_GrapheneEuler}, owns = false) = GrapheneEuler(p, owns)
+    const GrapheneEulerLike = Union{Ref{_GrapheneEuler}, GrapheneEuler}
+    convert(::Type{GrapheneEulerLike}, p, owns) = convert(GrapheneEuler, p, owns)
+    mutable struct GrapheneFrustum <: GBoxed
+        handle::Ptr{GrapheneFrustum}
+        (GLib.g_type(::Type{T}) where T <: GrapheneFrustum) = ccall(("graphene_frustum_get_type", libgraphene), GType, ())
+        function GrapheneFrustum(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneFrustum)
             end
+            x
         end
-        const GrapheneFrustumLike = GrapheneFrustum
-        const _GrapheneFrustum = GrapheneFrustum
+        push!(gboxed_types, GrapheneFrustum)
     end
-    begin
-        struct _GrapheneMatrix
-            value::_GrapheneSimd4X4F
-        end
-        mutable struct GrapheneMatrix <: GBoxed
-            handle::Ptr{_GrapheneMatrix}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneMatrix) = begin
-                        ccall(("graphene_matrix_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneMatrix(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneMatrix}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GrapheneFrustumLike = GrapheneFrustum
+    const _GrapheneFrustum = GrapheneFrustum
+    struct _GrapheneMatrix
+        value::_GrapheneSimd4X4F
+    end
+    mutable struct GrapheneMatrix <: GBoxed
+        handle::Ptr{_GrapheneMatrix}
+        (GLib.g_type(::Type{T}) where T <: GrapheneMatrix) = ccall(("graphene_matrix_get_type", libgraphene), GType, ())
+        function GrapheneMatrix(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneMatrix}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneMatrix)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneMatrix}}, box::GrapheneMatrix) = begin
-                    convert(Ptr{_GrapheneMatrix}, box.handle)
-                end
-            convert(::Type{GrapheneMatrix}, p::Ptr{_GrapheneMatrix}, owns = false) = begin
-                    GrapheneMatrix(p, owns)
-                end
-            const GrapheneMatrixLike = Union{Ref{_GrapheneMatrix}, GrapheneMatrix}
-            convert(::Type{GrapheneMatrixLike}, p, owns) = begin
-                    convert(GrapheneMatrix, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneMatrix)
     end
-    begin
-        struct _GraphenePlane
-            normal::_GrapheneVec3
-            constant::Float32
-        end
-        mutable struct GraphenePlane <: GBoxed
-            handle::Ptr{_GraphenePlane}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GraphenePlane) = begin
-                        ccall(("graphene_plane_get_type", libgraphene), GType, ())
-                    end
-                function GraphenePlane(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GraphenePlane}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneMatrix}}, box::GrapheneMatrix) = convert(Ptr{_GrapheneMatrix}, box.handle)
+    convert(::Type{GrapheneMatrix}, p::Ptr{_GrapheneMatrix}, owns = false) = GrapheneMatrix(p, owns)
+    const GrapheneMatrixLike = Union{Ref{_GrapheneMatrix}, GrapheneMatrix}
+    convert(::Type{GrapheneMatrixLike}, p, owns) = convert(GrapheneMatrix, p, owns)
+    struct _GraphenePlane
+        normal::_GrapheneVec3
+        constant::Float32
+    end
+    mutable struct GraphenePlane <: GBoxed
+        handle::Ptr{_GraphenePlane}
+        (GLib.g_type(::Type{T}) where T <: GraphenePlane) = ccall(("graphene_plane_get_type", libgraphene), GType, ())
+        function GraphenePlane(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GraphenePlane}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GraphenePlane)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GraphenePlane}}, box::GraphenePlane) = begin
-                    convert(Ptr{_GraphenePlane}, box.handle)
-                end
-            convert(::Type{GraphenePlane}, p::Ptr{_GraphenePlane}, owns = false) = begin
-                    GraphenePlane(p, owns)
-                end
-            const GraphenePlaneLike = Union{Ref{_GraphenePlane}, GraphenePlane}
-            convert(::Type{GraphenePlaneLike}, p, owns) = begin
-                    convert(GraphenePlane, p, owns)
-                end
-        end
+        push!(gboxed_types, GraphenePlane)
     end
-    begin
-        struct _GraphenePoint
-            x::Float32
-            y::Float32
-        end
-        mutable struct GraphenePoint <: GBoxed
-            handle::Ptr{_GraphenePoint}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GraphenePoint) = begin
-                        ccall(("graphene_point_get_type", libgraphene), GType, ())
-                    end
-                function GraphenePoint(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GraphenePoint}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GraphenePlane}}, box::GraphenePlane) = convert(Ptr{_GraphenePlane}, box.handle)
+    convert(::Type{GraphenePlane}, p::Ptr{_GraphenePlane}, owns = false) = GraphenePlane(p, owns)
+    const GraphenePlaneLike = Union{Ref{_GraphenePlane}, GraphenePlane}
+    convert(::Type{GraphenePlaneLike}, p, owns) = convert(GraphenePlane, p, owns)
+    struct _GraphenePoint
+        x::Float32
+        y::Float32
+    end
+    mutable struct GraphenePoint <: GBoxed
+        handle::Ptr{_GraphenePoint}
+        (GLib.g_type(::Type{T}) where T <: GraphenePoint) = ccall(("graphene_point_get_type", libgraphene), GType, ())
+        function GraphenePoint(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GraphenePoint}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GraphenePoint)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GraphenePoint}}, box::GraphenePoint) = begin
-                    convert(Ptr{_GraphenePoint}, box.handle)
-                end
-            convert(::Type{GraphenePoint}, p::Ptr{_GraphenePoint}, owns = false) = begin
-                    GraphenePoint(p, owns)
-                end
-            const GraphenePointLike = Union{Ref{_GraphenePoint}, GraphenePoint}
-            convert(::Type{GraphenePointLike}, p, owns) = begin
-                    convert(GraphenePoint, p, owns)
-                end
-        end
+        push!(gboxed_types, GraphenePoint)
     end
-    begin
-        struct _GraphenePoint3D
-            x::Float32
-            y::Float32
-            z::Float32
-        end
-        mutable struct GraphenePoint3D <: GBoxed
-            handle::Ptr{_GraphenePoint3D}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GraphenePoint3D) = begin
-                        ccall(("graphene_point3d_get_type", libgraphene), GType, ())
-                    end
-                function GraphenePoint3D(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GraphenePoint3D}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GraphenePoint}}, box::GraphenePoint) = convert(Ptr{_GraphenePoint}, box.handle)
+    convert(::Type{GraphenePoint}, p::Ptr{_GraphenePoint}, owns = false) = GraphenePoint(p, owns)
+    const GraphenePointLike = Union{Ref{_GraphenePoint}, GraphenePoint}
+    convert(::Type{GraphenePointLike}, p, owns) = convert(GraphenePoint, p, owns)
+    struct _GraphenePoint3D
+        x::Float32
+        y::Float32
+        z::Float32
+    end
+    mutable struct GraphenePoint3D <: GBoxed
+        handle::Ptr{_GraphenePoint3D}
+        (GLib.g_type(::Type{T}) where T <: GraphenePoint3D) = ccall(("graphene_point3d_get_type", libgraphene), GType, ())
+        function GraphenePoint3D(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GraphenePoint3D}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GraphenePoint3D)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GraphenePoint3D}}, box::GraphenePoint3D) = begin
-                    convert(Ptr{_GraphenePoint3D}, box.handle)
-                end
-            convert(::Type{GraphenePoint3D}, p::Ptr{_GraphenePoint3D}, owns = false) = begin
-                    GraphenePoint3D(p, owns)
-                end
-            const GraphenePoint3DLike = Union{Ref{_GraphenePoint3D}, GraphenePoint3D}
-            convert(::Type{GraphenePoint3DLike}, p, owns) = begin
-                    convert(GraphenePoint3D, p, owns)
-                end
-        end
+        push!(gboxed_types, GraphenePoint3D)
     end
-    begin
-        mutable struct GrapheneQuad <: GBoxed
-            handle::Ptr{GrapheneQuad}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneQuad) = begin
-                        ccall(("graphene_quad_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneQuad(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GraphenePoint3D}}, box::GraphenePoint3D) = convert(Ptr{_GraphenePoint3D}, box.handle)
+    convert(::Type{GraphenePoint3D}, p::Ptr{_GraphenePoint3D}, owns = false) = GraphenePoint3D(p, owns)
+    const GraphenePoint3DLike = Union{Ref{_GraphenePoint3D}, GraphenePoint3D}
+    convert(::Type{GraphenePoint3DLike}, p, owns) = convert(GraphenePoint3D, p, owns)
+    mutable struct GrapheneQuad <: GBoxed
+        handle::Ptr{GrapheneQuad}
+        (GLib.g_type(::Type{T}) where T <: GrapheneQuad) = ccall(("graphene_quad_get_type", libgraphene), GType, ())
+        function GrapheneQuad(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneQuad)
             end
+            x
         end
-        const GrapheneQuadLike = GrapheneQuad
-        const _GrapheneQuad = GrapheneQuad
+        push!(gboxed_types, GrapheneQuad)
     end
-    begin
-        struct _GrapheneQuaternion
-            x::Float32
-            y::Float32
-            z::Float32
-            w::Float32
-        end
-        mutable struct GrapheneQuaternion <: GBoxed
-            handle::Ptr{_GrapheneQuaternion}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneQuaternion) = begin
-                        ccall(("graphene_quaternion_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneQuaternion(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneQuaternion}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GrapheneQuadLike = GrapheneQuad
+    const _GrapheneQuad = GrapheneQuad
+    struct _GrapheneQuaternion
+        x::Float32
+        y::Float32
+        z::Float32
+        w::Float32
+    end
+    mutable struct GrapheneQuaternion <: GBoxed
+        handle::Ptr{_GrapheneQuaternion}
+        (GLib.g_type(::Type{T}) where T <: GrapheneQuaternion) = ccall(("graphene_quaternion_get_type", libgraphene), GType, ())
+        function GrapheneQuaternion(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneQuaternion}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneQuaternion)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneQuaternion}}, box::GrapheneQuaternion) = begin
-                    convert(Ptr{_GrapheneQuaternion}, box.handle)
-                end
-            convert(::Type{GrapheneQuaternion}, p::Ptr{_GrapheneQuaternion}, owns = false) = begin
-                    GrapheneQuaternion(p, owns)
-                end
-            const GrapheneQuaternionLike = Union{Ref{_GrapheneQuaternion}, GrapheneQuaternion}
-            convert(::Type{GrapheneQuaternionLike}, p, owns) = begin
-                    convert(GrapheneQuaternion, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneQuaternion)
     end
-    begin
-        struct _GrapheneRay
-            origin::_GrapheneVec3
-            direction::_GrapheneVec3
-        end
-        mutable struct GrapheneRay <: GBoxed
-            handle::Ptr{_GrapheneRay}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneRay) = begin
-                        ccall(("graphene_ray_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneRay(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneRay}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneQuaternion}}, box::GrapheneQuaternion) = convert(Ptr{_GrapheneQuaternion}, box.handle)
+    convert(::Type{GrapheneQuaternion}, p::Ptr{_GrapheneQuaternion}, owns = false) = GrapheneQuaternion(p, owns)
+    const GrapheneQuaternionLike = Union{Ref{_GrapheneQuaternion}, GrapheneQuaternion}
+    convert(::Type{GrapheneQuaternionLike}, p, owns) = convert(GrapheneQuaternion, p, owns)
+    struct _GrapheneRay
+        origin::_GrapheneVec3
+        direction::_GrapheneVec3
+    end
+    mutable struct GrapheneRay <: GBoxed
+        handle::Ptr{_GrapheneRay}
+        (GLib.g_type(::Type{T}) where T <: GrapheneRay) = ccall(("graphene_ray_get_type", libgraphene), GType, ())
+        function GrapheneRay(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneRay}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneRay)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneRay}}, box::GrapheneRay) = begin
-                    convert(Ptr{_GrapheneRay}, box.handle)
-                end
-            convert(::Type{GrapheneRay}, p::Ptr{_GrapheneRay}, owns = false) = begin
-                    GrapheneRay(p, owns)
-                end
-            const GrapheneRayLike = Union{Ref{_GrapheneRay}, GrapheneRay}
-            convert(::Type{GrapheneRayLike}, p, owns) = begin
-                    convert(GrapheneRay, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneRay)
     end
-    begin
-        struct _GrapheneRect
-            origin::_GraphenePoint
-            size::_GrapheneSize
-        end
-        mutable struct GrapheneRect <: GBoxed
-            handle::Ptr{_GrapheneRect}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneRect) = begin
-                        ccall(("graphene_rect_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneRect(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneRect}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneRay}}, box::GrapheneRay) = convert(Ptr{_GrapheneRay}, box.handle)
+    convert(::Type{GrapheneRay}, p::Ptr{_GrapheneRay}, owns = false) = GrapheneRay(p, owns)
+    const GrapheneRayLike = Union{Ref{_GrapheneRay}, GrapheneRay}
+    convert(::Type{GrapheneRayLike}, p, owns) = convert(GrapheneRay, p, owns)
+    struct _GrapheneRect
+        origin::_GraphenePoint
+        size::_GrapheneSize
+    end
+    mutable struct GrapheneRect <: GBoxed
+        handle::Ptr{_GrapheneRect}
+        (GLib.g_type(::Type{T}) where T <: GrapheneRect) = ccall(("graphene_rect_get_type", libgraphene), GType, ())
+        function GrapheneRect(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneRect}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneRect)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneRect}}, box::GrapheneRect) = begin
-                    convert(Ptr{_GrapheneRect}, box.handle)
-                end
-            convert(::Type{GrapheneRect}, p::Ptr{_GrapheneRect}, owns = false) = begin
-                    GrapheneRect(p, owns)
-                end
-            const GrapheneRectLike = Union{Ref{_GrapheneRect}, GrapheneRect}
-            convert(::Type{GrapheneRectLike}, p, owns) = begin
-                    convert(GrapheneRect, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneRect)
     end
-    begin
-        struct _GrapheneSphere
-            center::_GrapheneVec3
-            radius::Float32
-        end
-        mutable struct GrapheneSphere <: GBoxed
-            handle::Ptr{_GrapheneSphere}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneSphere) = begin
-                        ccall(("graphene_sphere_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneSphere(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneSphere}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneRect}}, box::GrapheneRect) = convert(Ptr{_GrapheneRect}, box.handle)
+    convert(::Type{GrapheneRect}, p::Ptr{_GrapheneRect}, owns = false) = GrapheneRect(p, owns)
+    const GrapheneRectLike = Union{Ref{_GrapheneRect}, GrapheneRect}
+    convert(::Type{GrapheneRectLike}, p, owns) = convert(GrapheneRect, p, owns)
+    struct _GrapheneSphere
+        center::_GrapheneVec3
+        radius::Float32
+    end
+    mutable struct GrapheneSphere <: GBoxed
+        handle::Ptr{_GrapheneSphere}
+        (GLib.g_type(::Type{T}) where T <: GrapheneSphere) = ccall(("graphene_sphere_get_type", libgraphene), GType, ())
+        function GrapheneSphere(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneSphere}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneSphere)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneSphere}}, box::GrapheneSphere) = begin
-                    convert(Ptr{_GrapheneSphere}, box.handle)
-                end
-            convert(::Type{GrapheneSphere}, p::Ptr{_GrapheneSphere}, owns = false) = begin
-                    GrapheneSphere(p, owns)
-                end
-            const GrapheneSphereLike = Union{Ref{_GrapheneSphere}, GrapheneSphere}
-            convert(::Type{GrapheneSphereLike}, p, owns) = begin
-                    convert(GrapheneSphere, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneSphere)
     end
-    begin
-        struct _GrapheneTriangle
-            a::_GrapheneVec3
-            b::_GrapheneVec3
-            c::_GrapheneVec3
-        end
-        mutable struct GrapheneTriangle <: GBoxed
-            handle::Ptr{_GrapheneTriangle}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneTriangle) = begin
-                        ccall(("graphene_triangle_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneTriangle(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneTriangle}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneSphere}}, box::GrapheneSphere) = convert(Ptr{_GrapheneSphere}, box.handle)
+    convert(::Type{GrapheneSphere}, p::Ptr{_GrapheneSphere}, owns = false) = GrapheneSphere(p, owns)
+    const GrapheneSphereLike = Union{Ref{_GrapheneSphere}, GrapheneSphere}
+    convert(::Type{GrapheneSphereLike}, p, owns) = convert(GrapheneSphere, p, owns)
+    struct _GrapheneTriangle
+        a::_GrapheneVec3
+        b::_GrapheneVec3
+        c::_GrapheneVec3
+    end
+    mutable struct GrapheneTriangle <: GBoxed
+        handle::Ptr{_GrapheneTriangle}
+        (GLib.g_type(::Type{T}) where T <: GrapheneTriangle) = ccall(("graphene_triangle_get_type", libgraphene), GType, ())
+        function GrapheneTriangle(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneTriangle}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneTriangle)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneTriangle}}, box::GrapheneTriangle) = begin
-                    convert(Ptr{_GrapheneTriangle}, box.handle)
-                end
-            convert(::Type{GrapheneTriangle}, p::Ptr{_GrapheneTriangle}, owns = false) = begin
-                    GrapheneTriangle(p, owns)
-                end
-            const GrapheneTriangleLike = Union{Ref{_GrapheneTriangle}, GrapheneTriangle}
-            convert(::Type{GrapheneTriangleLike}, p, owns) = begin
-                    convert(GrapheneTriangle, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneTriangle)
     end
-    begin
-        struct _GrapheneVec2
-            value::_GrapheneSimd4F
-        end
-        mutable struct GrapheneVec2 <: GBoxed
-            handle::Ptr{_GrapheneVec2}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneVec2) = begin
-                        ccall(("graphene_vec2_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneVec2(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneVec2}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneTriangle}}, box::GrapheneTriangle) = convert(Ptr{_GrapheneTriangle}, box.handle)
+    convert(::Type{GrapheneTriangle}, p::Ptr{_GrapheneTriangle}, owns = false) = GrapheneTriangle(p, owns)
+    const GrapheneTriangleLike = Union{Ref{_GrapheneTriangle}, GrapheneTriangle}
+    convert(::Type{GrapheneTriangleLike}, p, owns) = convert(GrapheneTriangle, p, owns)
+    struct _GrapheneVec2
+        value::_GrapheneSimd4F
+    end
+    mutable struct GrapheneVec2 <: GBoxed
+        handle::Ptr{_GrapheneVec2}
+        (GLib.g_type(::Type{T}) where T <: GrapheneVec2) = ccall(("graphene_vec2_get_type", libgraphene), GType, ())
+        function GrapheneVec2(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneVec2}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneVec2)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneVec2}}, box::GrapheneVec2) = begin
-                    convert(Ptr{_GrapheneVec2}, box.handle)
-                end
-            convert(::Type{GrapheneVec2}, p::Ptr{_GrapheneVec2}, owns = false) = begin
-                    GrapheneVec2(p, owns)
-                end
-            const GrapheneVec2Like = Union{Ref{_GrapheneVec2}, GrapheneVec2}
-            convert(::Type{GrapheneVec2Like}, p, owns) = begin
-                    convert(GrapheneVec2, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneVec2)
     end
-    begin
-        struct _GrapheneVec4
-            value::_GrapheneSimd4F
-        end
-        mutable struct GrapheneVec4 <: GBoxed
-            handle::Ptr{_GrapheneVec4}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GrapheneVec4) = begin
-                        ccall(("graphene_vec4_get_type", libgraphene), GType, ())
-                    end
-                function GrapheneVec4(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneVec4}
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    unsafe_convert(::Type{Ptr{_GrapheneVec2}}, box::GrapheneVec2) = convert(Ptr{_GrapheneVec2}, box.handle)
+    convert(::Type{GrapheneVec2}, p::Ptr{_GrapheneVec2}, owns = false) = GrapheneVec2(p, owns)
+    const GrapheneVec2Like = Union{Ref{_GrapheneVec2}, GrapheneVec2}
+    convert(::Type{GrapheneVec2Like}, p, owns) = convert(GrapheneVec2, p, owns)
+    struct _GrapheneVec4
+        value::_GrapheneSimd4F
+    end
+    mutable struct GrapheneVec4 <: GBoxed
+        handle::Ptr{_GrapheneVec4}
+        (GLib.g_type(::Type{T}) where T <: GrapheneVec4) = ccall(("graphene_vec4_get_type", libgraphene), GType, ())
+        function GrapheneVec4(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GrapheneVec4}
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GrapheneVec4)
             end
+            x
         end
-        begin
-            unsafe_convert(::Type{Ptr{_GrapheneVec4}}, box::GrapheneVec4) = begin
-                    convert(Ptr{_GrapheneVec4}, box.handle)
-                end
-            convert(::Type{GrapheneVec4}, p::Ptr{_GrapheneVec4}, owns = false) = begin
-                    GrapheneVec4(p, owns)
-                end
-            const GrapheneVec4Like = Union{Ref{_GrapheneVec4}, GrapheneVec4}
-            convert(::Type{GrapheneVec4Like}, p, owns) = begin
-                    convert(GrapheneVec4, p, owns)
-                end
-        end
+        push!(gboxed_types, GrapheneVec4)
     end
-    gboxed_cache_init() = begin
-            append!(GLib.gboxed_types, gboxed_types)
-        end
+    unsafe_convert(::Type{Ptr{_GrapheneVec4}}, box::GrapheneVec4) = convert(Ptr{_GrapheneVec4}, box.handle)
+    convert(::Type{GrapheneVec4}, p::Ptr{_GrapheneVec4}, owns = false) = GrapheneVec4(p, owns)
+    const GrapheneVec4Like = Union{Ref{_GrapheneVec4}, GrapheneVec4}
+    convert(::Type{GrapheneVec4Like}, p, owns) = convert(GrapheneVec4, p, owns)
+    gboxed_cache_init() = append!(GLib.gboxed_types, gboxed_types)
     const gtype_wrapper_cache = Dict{Symbol, Type}()
-    begin
-        gtype_wrapper_cache_init() = begin
-                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
-            end
-    end
+    gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
     function GrapheneVec3()
         G_.Vec3_alloc()
     end
@@ -689,5 +457,4 @@ $(Expr(:toplevel, quote
         G_.Vec4_alloc()
     end
     export GrapheneSimd4F, _GrapheneSimd4F, GrapheneSimd4FLike, GrapheneVec3, _GrapheneVec3, GrapheneVec3Like, GrapheneSimd4X4F, _GrapheneSimd4X4F, GrapheneSimd4X4FLike, GrapheneSize, _GrapheneSize, GrapheneSizeLike, GrapheneBox, GrapheneBoxLike, _GrapheneBox, GrapheneEuler, GrapheneEulerLike, _GrapheneEuler, GrapheneFrustum, GrapheneFrustumLike, _GrapheneFrustum, GrapheneMatrix, GrapheneMatrixLike, _GrapheneMatrix, GraphenePlane, GraphenePlaneLike, _GraphenePlane, GraphenePoint, GraphenePointLike, _GraphenePoint, GraphenePoint3D, GraphenePoint3DLike, _GraphenePoint3D, GrapheneQuad, GrapheneQuadLike, _GrapheneQuad, GrapheneQuaternion, GrapheneQuaternionLike, _GrapheneQuaternion, GrapheneRay, GrapheneRayLike, _GrapheneRay, GrapheneRect, GrapheneRectLike, _GrapheneRect, GrapheneSphere, GrapheneSphereLike, _GrapheneSphere, GrapheneTriangle, GrapheneTriangleLike, _GrapheneTriangle, GrapheneVec2, GrapheneVec2Like, _GrapheneVec2, GrapheneVec4, GrapheneVec4Like, _GrapheneVec4
-end))
 end

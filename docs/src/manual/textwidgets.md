@@ -67,6 +67,8 @@ ent.visibility = false
 ```
 To get notified by changes to the entry one can listen to the "changed" event.
 
+The `GtkEntry` widget includes a progress bar. Methods `fraction`, `pulse`, and `pulse_step` control its appearance and work the same as for [GtkProgressBar](@ref).
+
 ## [GtkSearchEntry](https://docs.gtk.org/gtk4/class.SearchEntry.html)
 
 A special variant of the entry that can be used as a search box is `GtkSearchEntry`. It is equipped

@@ -1,5 +1,4 @@
-quote
-$(Expr(:toplevel, quote
+begin
     function BookmarkFile_new()
         ret = ccall(("g_bookmark_file_new", libglib), Ptr{GBookmarkFile}, ())
         ret2 = convert(GBookmarkFile, ret, true)
@@ -1169,7 +1168,8 @@ $(Expr(:toplevel, quote
         (ret2, _length)
     end
     function unref(instance::GKeyFile)
-        ret = ccall(("g_key_file_unref", libglib), Nothing, (Ptr{GKeyFile},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_key_file_unref", libglib), Nothing, (Ptr{GKeyFile},), reffed_instance)
         nothing
     end
     function MainContext_new()
@@ -1220,6 +1220,11 @@ $(Expr(:toplevel, quote
     function push_thread_default(instance::GMainContext)
         ret = ccall(("g_main_context_push_thread_default", libglib), Nothing, (Ptr{GMainContext},), instance)
         nothing
+    end
+    function pusher_new(instance::GMainContext)
+        ret = ccall(("g_main_context_pusher_new", libglib), Ptr{Nothing}, (Ptr{GMainContext},), instance)
+        ret2 = convert(Nothing, ret)
+        ret2
     end
     function ref(instance::GMainContext)
         ret = ccall(("g_main_context_ref", libglib), Ptr{GMainContext}, (Ptr{GMainContext},), instance)
@@ -1292,7 +1297,7 @@ $(Expr(:toplevel, quote
     end
     function get_contents(instance::GMappedFile)
         ret = ccall(("g_mapped_file_get_contents", libglib), Cstring, (Ptr{GMappedFile},), instance)
-        ret2 = string_or_nothing(ret, true)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function get_length(instance::GMappedFile)
@@ -1570,13 +1575,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function replace_eval(instance::GRegex, _string, _start_position::Integer, _match_options, _eval::Function)
-        begin
-            _eval_cfunc = @cfunction(GRegexEvalCallback, Cint, (Ptr{GMatchInfo}, Ptr{_GString}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_eval)
-                _eval_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _eval_cfunc = @cfunction(GRegexEvalCallback, Cint, (Ptr{GMatchInfo}, Ptr{_GString}, Ref{Function}))
+        ref = Ref{Any}(_eval)
+        _eval_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         _string_len = length(_string)
         err = err_buf()
         ret = ccall(("g_regex_replace_eval", libglib), Cstring, (Ptr{GRegex}, Ptr{Cstring}, Int64, Int32, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _string, _string_len, _start_position, _match_options, _eval_cfunc, _eval_closure, err)
@@ -1803,6 +1804,17 @@ $(Expr(:toplevel, quote
         reffed_instance = GLib.glib_ref(instance)
         ret = ccall(("g_strv_builder_unref", libglib), Nothing, (Ptr{GStrvBuilder},), reffed_instance)
         nothing
+    end
+    function unref_to_strv(instance::GStrvBuilder)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_strv_builder_unref_to_strv", libglib), Ptr{Cstring}, (Ptr{GStrvBuilder},), reffed_instance)
+        ret2 = begin
+                _len = length_zt(ret)
+                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
+                GLib.g_strfreev(ret)
+                arrtemp
+            end
+        ret2
     end
     function TimeZone_new_identifier(_identifier::Maybe(Union{AbstractString, Symbol}))
         _identifier_maybe = nothing_to_null(_identifier)
@@ -2436,7 +2448,7 @@ $(Expr(:toplevel, quote
     end
     function first(instance::GVariantType)
         ret = ccall(("g_variant_type_first", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
-        ret2 = convert(GVariantType, ret, false)
+        ret2 = convert_if_not_null(GVariantType, ret, false)
         ret2
     end
     function free(instance::GVariantType)
@@ -2507,7 +2519,7 @@ $(Expr(:toplevel, quote
     end
     function next(instance::GVariantType)
         ret = ccall(("g_variant_type_next", libglib), Ptr{GVariantType}, (Ptr{GVariantType},), instance)
-        ret2 = convert(GVariantType, ret, false)
+        ret2 = convert_if_not_null(GVariantType, ret, false)
         ret2
     end
     function value(instance::GVariantType)
@@ -2515,5 +2527,4 @@ $(Expr(:toplevel, quote
         ret2 = convert(GVariantType, ret, false)
         ret2
     end
-end))
 end

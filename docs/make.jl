@@ -1,5 +1,12 @@
 using Documenter, Gtk4, Cairo
 
+function exclude_types(t)
+    if t in [Gtk4.GLib.GSimpleAction, Gtk4.GLib.GVariant, Gtk4.GLib.GVariantType, Gtk4.GLib.GApplication]
+        return false
+    end
+    return true
+end
+
 makedocs(
     format = Documenter.HTML(
         prettyurls = get(ENV, "CI", nothing) == "true",
@@ -34,6 +41,8 @@ makedocs(
         "Gtk.jl to Gtk4.jl" => "diff3to4.md",
         "Reference" => ["doc/reference.md",
                         "doc/GLib_reference.md",
+                        "doc/GObject_reference.md",
+                        "doc/Gio_reference.md",
                         "doc/Gtk4_types_reference.md",
                         "doc/GLib_types_reference.md",
                         "doc/constants_reference.md",

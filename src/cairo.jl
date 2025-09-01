@@ -16,15 +16,10 @@ function _init_canvas!(widget, w, h)
     widget.backcc = CairoContext(widget.back)
 end
 
-function _canvas_on_realize(::Ptr, canvas)
-    canvas.is_sized && _canvas_on_resize(da,1,1)
-    nothing
-end
-
 function _canvas_on_resize(::Ptr, width, height, canvas)
-    canvas.is_sized = true
     if isrealized(canvas)
         _init_canvas!(canvas, width, height)
+        canvas.is_sized = true
 
         if isa(canvas.resize, Function)
             canvas.resize(canvas)
@@ -71,7 +66,6 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
         end
 
         widget = GLib.gobject_move_ref(widget, da)
-        signal_connect(Base.inferencebarrier(_canvas_on_realize), widget, "realize", Nothing, (), false, widget)
         signal_connect(Base.inferencebarrier(_canvas_on_resize), widget, "resize", Nothing, (Cint, Cint), false, widget)
 
         return widget
@@ -79,6 +73,13 @@ mutable struct GtkCanvas <: GtkDrawingArea # NOT a GType
 end
 const GtkCanvasLeaf = GtkCanvas
 
+"""
+    resize(config::Function, widget::GtkCanvas)
+
+Set a function `config` to be called whenever the `GtkCanvas`'s size is changed and
+trigger a redraw. The `config` function should have a single argument, the `GtkCanvas`,
+from which the `CairoSurface` can be retrieved using [`getgc`](@ref).
+"""
 function resize(config::Function, widget::GtkCanvas)
     widget.resize = config
     if G_.get_realized(widget) && widget.is_sized
@@ -102,6 +103,11 @@ function draw(redraw::Function, widget::GtkCanvas)
     nothing
 end
 
+"""
+    draw(widget::GtkCanvas)
+
+Triggers a redraw of the canvas using a previously set `redraw` function.
+"""
 function draw(widget::GtkCanvas)
     if !isdefined(widget, :back)
         #@warn("backing store not defined")
@@ -134,4 +140,4 @@ function cairo_surface(c::GtkCanvas)
 end
 
 CairoContext(cr::cairoContext) = CairoContext(Ptr{Nothing}(cr.handle))
-cairoContext(cr::CairoContext) = cairoContext(Ptr{cairoContext}(cr.ptr),false)
+Cairo.cairoContext(cr::CairoContext) = cairoContext(Ptr{cairoContext}(cr.ptr),false)

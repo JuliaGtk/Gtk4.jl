@@ -1,4 +1,4 @@
-# Demonstrates keeping the UI responsive while doing tasks in a thread
+# Demonstrates updating the GUI from a separate thread
 
 if Threads.nthreads() == 1 && Threads.nthreads(:interactive) < 1
     @warn("This example is intended to be run with multiple threads enabled.")

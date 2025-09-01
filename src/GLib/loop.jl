@@ -85,7 +85,7 @@ glib_main() = g_sigatom() do
 end
 
 """
-    is_loop_running()
+    is_loop_running() -> Bool
 
 Return true if the default GLib main event loop is running.
 
@@ -160,7 +160,7 @@ Pauses the GLib event loop around a function. Restores the original state of the
 function pause_main_loop(f)
     was_running = is_loop_running()
     if was_running && g_main_running[] == false
-        warn("GLib main loop is running, but not via `glib_main`. Pausing the main loop inside a GApplication is not currently supported, so the function will be called without pausing.")
+        @warn("GLib main loop is running, but not via `glib_main`. Pausing the main loop inside a GApplication is not currently supported, so the function will be called without pausing.")
         f()
         return
     end
@@ -188,7 +188,7 @@ function set_uv_loop_integration(s = "auto")
 end
 
 """
-    get_uv_loop_integration()
+    get_uv_loop_integration() -> String
 
 Get Gtk4.jl's libuv loop integration setting: "auto", "enabled", or "disabled".
 
@@ -197,7 +197,7 @@ See also [`set_uv_loop_integration`](@ref).
 get_uv_loop_integration() = @load_preference("uv_loop_integration", "auto")
 
 """
-    is_uv_loop_integration_enabled()
+    is_uv_loop_integration_enabled() -> Bool
 
 Get whether Gtk4.jl's libuv loop integration is enabled.
 
@@ -205,7 +205,14 @@ See also [`set_uv_loop_integration`](@ref).
 """
 is_uv_loop_integration_enabled() = uv_int_enabled[]
 
-GApplication(id = nothing) = G_.Application_new(id,ApplicationFlags_FLAGS_NONE)
+"""
+    GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE)
+
+Create a `GApplication` with DBus id `id` and flags.
+
+Related GLib function: [`g_application_new`()]($(gtkdoc_method_url("gio","Application","new")))
+"""
+GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,ApplicationFlags_FLAGS_NONE)
 
 """
     run(app::GApplication)

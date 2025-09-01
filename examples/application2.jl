@@ -50,18 +50,14 @@ function activate(app)
     show(window)
 end
 
-app = GtkApplication("julia.gtk4.example2",
-        Gtk4.GLib.ApplicationFlags_FLAGS_NONE)
-
-if isinteractive()
-    Gtk4.GLib.stop_main_loop()  # g_application_run will run the loop
-end
+app = GtkApplication("julia.gtk4.example2")
 
 Gtk4.signal_connect(activate, app, :activate)
 
 # When all windows are closed, loop automatically stops running
 
 if isinteractive()
+    Gtk4.GLib.stop_main_loop()  # g_application_run will run the loop
     loop()=Gtk4.run(app)
     t = schedule(Task(loop))
 else

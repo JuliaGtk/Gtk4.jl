@@ -152,6 +152,8 @@ Related GTK function: [`g_binding_unbind`](https://docs.gtk.org/gobject/method.B
 """
 unbind_property(b::GBinding) = G_.unbind(b)
 
+## Below is experimental and unstable!
+
 mutable struct _GObjectClass
     g_type_class::_GTypeClass
     construct_properties::Ptr{GLib._GSList{Ptr{Nothing}}}
@@ -170,4 +172,44 @@ mutable struct _GObjectClass
     pdummy1::Ptr{Nothing}
     pdummy2::Ptr{Nothing}
     pdummy3::Ptr{Nothing}
+end
+
+# Register a subtype of `T` with name `typename` and class init C function `object_class_init_cfunc`.
+# The class init function should fill in the virtual functions necessary for the class and its ancestors.
+function register_subtype(::Type{T}, typename::Symbol, object_class_init_cfunc) where T<:GObject
+    base_gtype = g_type(T)
+    tq=G_.type_query(base_gtype)
+    typeinfo = _GTypeInfo(tq.class_size,
+               C_NULL,   # base_init
+               C_NULL,   # base_finalize
+               object_class_init_cfunc,
+               C_NULL,   # class_finalize
+               C_NULL,   # class_data
+               tq.instance_size,
+               0,        # n_preallocs
+               C_NULL,   # instance_init
+               C_NULL)   # value_table
+    G_.type_register_static(base_gtype,typename,Ref(typeinfo),TypeFlags_FINAL)
+end
+
+# Add an interface implementation to a type
+function add_interface(subtype::GType, interface_type, interface_init_cfunc)
+    interfaceinfo=_GInterfaceInfo(interface_init_cfunc,
+                                  C_NULL,
+                                  C_NULL)
+    G_.type_add_interface_static(subtype, g_type(interface_type), Ref(interfaceinfo))
+end
+
+# Override a property (sometimes needed for interfaces or subtypes) of a `class`
+# `property_id` is under your control but you have to be self-consistent
+function override_property(class::Ptr{_GObjectClass}, property_id, name::AbstractString)
+    ccall((:g_object_class_override_property, libgobject), Cvoid, (Ptr{_GObjectClass}, Cuint, Cstring), class, property_id, name)
+end
+
+# Asks GLib to make a new GObject
+function gobject_new(juliatype, args...)
+    gtype = g_type(juliatype)
+    h=ccall(("g_object_new", libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)
+    gobject_maybe_sink(h, false)
+    gobject_ref(juliatype(h, args...))
 end

@@ -3,7 +3,8 @@ module Gtk4
 import Base: unsafe_convert, length, size, parent, push!, pushfirst!, insert!,
              pop!, show, length, setindex!, getindex, iterate, eltype, IteratorSize,
              convert, empty!, string, popfirst!, size, delete!, in, close, stack,
-             deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy
+             deleteat!, splice!, first, parent, (:), getproperty, setproperty!, copy,
+             minimum, maximum
 
 import CEnum: @cenum
 import BitFlags: @bitflag
@@ -32,12 +33,12 @@ using Reexport
 import .Graphics: width, height, getgc, scale, center, clip
 import Cairo: destroy, text, status
 
-eval(include("gen/gdk4_consts"))
-eval(include("gen/gdk4_structs"))
-eval(include("gen/gsk4_consts"))
-eval(include("gen/gsk4_structs"))
-eval(include("gen/gtk4_consts"))
-eval(include("gen/gtk4_structs"))
+include("gen/gdk4_consts")
+include("gen/gdk4_structs")
+include("gen/gsk4_consts")
+include("gen/gsk4_structs")
+include("gen/gtk4_consts")
+include("gen/gtk4_structs")
 
 const ModifierType_NONE = ModifierType_NO_MODIFIER_MASK
 
@@ -52,14 +53,14 @@ using ..Graphene
 using ..GdkPixbufLib
 using ..Gtk4
 
-using ..Gtk4: BlendMode, Corner, FillRule, GLUniformType, LineCap, LineJoin, MaskMode, PathDirection, PathOperation, RenderNodeType, ScalingFilter, SerializationError, TransformCategory, PathForeachFlags, AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DmabufError, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, ScrollUnit, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState, AccessibleAnnouncementPriority, AccessibleAutocomplete, AccessibleInvalidState, AccessiblePlatformState, AccessibleProperty, AccessibleRelation, AccessibleRole, AccessibleSort, AccessibleState, AccessibleTextContentChange, AccessibleTextGranularity, AccessibleTristate, Align, ArrowType, AssistantPageType, BaselinePosition, BorderStyle, BuilderError, ButtonsType, CellRendererAccelMode, CellRendererMode, Collation, ConstraintAttribute, ConstraintRelation, ConstraintStrength, ConstraintVflParserError, ContentFit, CornerType, CssParserError, CssParserWarning, DeleteType, DialogError, DirectionType, EditableProperties, EntryIconPosition, EventSequenceState, FileChooserAction, FileChooserError, FilterChange, FilterMatch, FontLevel, GraphicsOffloadEnabled, IconSize, IconThemeError, IconViewDropPosition, ImageType, InputPurpose, InscriptionOverflow, Justification, LevelBarMode, License, ListTabBehavior, MessageType, MovementStep, NaturalWrapMode, NotebookTab, NumberUpLayout, Ordering, Orientation, Overflow, PackType, PadActionType, PageOrientation, PageSet, PanDirection, PolicyType, PositionType, PrintDuplex, PrintError, PrintOperationAction, PrintOperationResult, PrintPages, PrintQuality, PrintStatus, PropagationLimit, PropagationPhase, RecentManagerError, ResponseType, RevealerTransitionType, ScrollStep, ScrollType, ScrollablePolicy, SelectionMode, SensitivityType, ShortcutScope, ShortcutType, SizeGroupMode, SizeRequestMode, SortType, SorterChange, SorterOrder, SpinButtonUpdatePolicy, SpinType, StackTransitionType, StringFilterMatchMode, SymbolicColor, SystemSetting, TextDirection, TextExtendSelection, TextViewLayer, TextWindowType, TreeViewColumnSizing, TreeViewDropPosition, TreeViewGridLines, Unit, WrapMode, ApplicationInhibitFlags, BuilderClosureFlags, CellRendererState, DebugFlags, DialogFlags, EventControllerScrollFlags, FontChooserLevel, IconLookupFlags, InputHints, ListScrollFlags, PickFlags, PopoverMenuFlags, PrintCapabilities, ShortcutActionFlags, StateFlags, StyleContextPrintFlags, TextSearchFlags
+using ..Gtk4: BlendMode, Corner, FillRule, LineCap, LineJoin, MaskMode, PathDirection, PathOperation, RenderNodeType, ScalingFilter, SerializationError, TransformCategory, PathForeachFlags, AxisUse, CrossingMode, DevicePadFeature, DeviceToolType, DmabufError, DragCancelReason, EventType, FullscreenMode, GLError, Gravity, InputSource, KeyMatch, MemoryFormat, NotifyType, ScrollDirection, ScrollUnit, SubpixelLayout, SurfaceEdge, TextureError, TitlebarGesture, TouchpadGesturePhase, VulkanError, AnchorHints, AxisFlags, DragAction, FrameClockPhase, GLAPI, ModifierType, PaintableFlags, SeatCapabilities, ToplevelState, AccessibleAnnouncementPriority, AccessibleAutocomplete, AccessibleInvalidState, AccessiblePlatformState, AccessibleProperty, AccessibleRelation, AccessibleRole, AccessibleSort, AccessibleState, AccessibleTextContentChange, AccessibleTextGranularity, AccessibleTristate, Align, ArrowType, AssistantPageType, BaselinePosition, BorderStyle, BuilderError, ButtonsType, CellRendererAccelMode, CellRendererMode, Collation, ConstraintAttribute, ConstraintRelation, ConstraintStrength, ConstraintVflParserError, ContentFit, CornerType, CssParserError, CssParserWarning, DeleteType, DialogError, DirectionType, EditableProperties, EntryIconPosition, EventSequenceState, FileChooserAction, FileChooserError, FilterChange, FilterMatch, FontLevel, GraphicsOffloadEnabled, IconSize, IconThemeError, IconViewDropPosition, ImageType, InputPurpose, InscriptionOverflow, Justification, LevelBarMode, License, ListTabBehavior, MessageType, MovementStep, NaturalWrapMode, NotebookTab, NumberUpLayout, Ordering, Orientation, Overflow, PackType, PadActionType, PageOrientation, PageSet, PanDirection, PolicyType, PositionType, PrintDuplex, PrintError, PrintOperationAction, PrintOperationResult, PrintPages, PrintQuality, PrintStatus, PropagationLimit, PropagationPhase, RecentManagerError, ResponseType, RevealerTransitionType, ScrollStep, ScrollType, ScrollablePolicy, SelectionMode, SensitivityType, ShortcutScope, ShortcutType, SizeGroupMode, SizeRequestMode, SortType, SorterChange, SorterOrder, SpinButtonUpdatePolicy, SpinType, StackTransitionType, StringFilterMatchMode, SymbolicColor, SystemSetting, TextDirection, TextExtendSelection, TextViewLayer, TextWindowType, TreeViewColumnSizing, TreeViewDropPosition, TreeViewGridLines, Unit, WrapMode, ApplicationInhibitFlags, BuilderClosureFlags, CellRendererState, DebugFlags, DialogFlags, EventControllerScrollFlags, FontChooserLevel, IconLookupFlags, InputHints, ListScrollFlags, PickFlags, PopoverMenuFlags, PrintCapabilities, ShortcutActionFlags, StateFlags, StyleContextPrintFlags, TextSearchFlags
 
-eval(include("gen/gdk4_methods"))
-eval(include("gen/gdk4_functions"))
-eval(include("gen/gsk4_methods"))
-eval(include("gen/gsk4_functions"))
-eval(include("gen/gtk4_methods"))
-eval(include("gen/gtk4_functions"))
+include("gen/gdk4_methods")
+include("gen/gdk4_functions")
+include("gen/gsk4_methods")
+include("gen/gsk4_functions")
+include("gen/gtk4_methods")
+include("gen/gtk4_functions")
 
 function get_current_event_state(instance::GtkEventController)
     ret = ccall(("gtk_event_controller_get_current_event_state", libgtk4), UInt32, (Ptr{GObject},), instance)
@@ -71,7 +72,8 @@ end
 
 import .GLib: set_gtk_property!, get_gtk_property, activate,
               signal_handler_is_connected, signalnames,
-              GListModel, start_main_loop, stop_main_loop
+              GListModel, start_main_loop, stop_main_loop,
+              _GObjectClass, g_type_from_name
 
 # define accessor methods in Gtk4
 
@@ -98,7 +100,19 @@ let skiplist = [:selected_rows, :selected, :selection_bounds, # handwritten meth
     end
 end
 
+let havechild = [:GtkButton,:GtkCheckButton,:GtkMenuButton,:GtkFrame,:GtkAspectFrame,
+                 :GtkExpander,:GtkOverlay,:GtkPopover,:GtkRevealer,:GtkViewport,
+                 :GtkSearchBar,:GtkComboBox,:GtkWindow,:GtkScrolledWindow]
+    for haschild in havechild
+        @eval begin
+            getindex(w::$haschild) = G_.get_child(w)
+            setindex!(w::$haschild, c::Union{Nothing,GtkWidget}) = G_.set_child(w,c)
+        end
+    end
+end
+
 include("Gdk4.jl")
+include("Gsk4.jl")
 include("base.jl")
 include("builder.jl")
 include("input.jl")
@@ -125,8 +139,17 @@ function set_EGL_vendorlib_dirs(dirs)
     @info("Setting will take effect after restarting Julia.")
 end
 
+const initialized = Ref(false)  # whether `init_check` succeeded, not necessarily the same as GTK4's `is_initialized`
+
 function __init__()
     in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
+
+    if VERSION >= v"1.11" && isinteractive()
+        if (Threads.nthreads(:default) > 1 && Threads.nthreads(:interactive) == 0) ||
+           Threads.nthreads(:interactive) > 1
+            @warn("Gtk4 may freeze the REPL if there is more than one thread in its thread pool. Please set JULIA_NUM_THREADS to N,1 (for N default threads) and restart Julia.")
+        end
+    end
 
     # check that GTK is compatible with what the GI generated code expects
     vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
@@ -146,7 +169,7 @@ function __init__()
         # Help GTK find modules for printing, media, and input backends
         # May have consequences for GTK3 programs spawned by Julia
         ENV["GTK_PATH"] = joinpath(dirname(GTK4_jll.libgtk4_path::String),"gtk-4.0")
-        
+
         # Following also works for finding the printing backends (and also may affect GTK3 programs)
         #ENV["GTK_EXE_PREFIX"] = GTK4_jll.artifact_dir
     end
@@ -168,8 +191,11 @@ function __init__()
         end
     end
 
-    success = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
-    success || error("gtk_init_check() failed.")
+    initialized[] = ccall((:gtk_init_check, libgtk4), Cint, ()) != 0
+    if !initialized[]
+        @warn("Gtk4 initialization failed. Calling Gtk4 methods will cause Julia to crash.")
+        return
+    end
 
     if Sys.islinux() || Sys.isfreebsd()
         G_.set_default_icon_name("julia")
@@ -180,8 +206,6 @@ function __init__()
     GLib.G_.set_prgname("julia")
 
     isinteractive() && GLib.start_main_loop()
-
-    #@debug("Gtk4 initialized.")
 end
 
 isinitialized() = G_.is_initialized()

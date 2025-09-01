@@ -100,9 +100,7 @@ function length_zt(arr::Ptr)
     i-1
 end
 
-function nothing_to_null(x)
-    x = x === nothing ? C_NULL : x
-end
+nothing_to_null(x) = something(x, C_NULL)
 
 function check_undefref(p::Ptr)
     if p == C_NULL
@@ -151,7 +149,7 @@ end
 include("glist.jl")
 include("gtype.jl")
 
-eval(include("../gen/glib_consts"))
+include("../gen/glib_consts")
 
 const lib_version = VersionNumber(
       MAJOR_VERSION,
@@ -160,7 +158,7 @@ const lib_version = VersionNumber(
 
 include("gvalues.jl")
 
-eval(include("../gen/glib_structs"))
+include("../gen/glib_structs")
 
 include("gvariant.jl")
 include("gerror.jl")
@@ -169,8 +167,8 @@ include("hashtable.jl")
 
 include("signals.jl")
 
-eval(include("../gen/gobject_structs"))
-eval(include("../gen/gio_structs"))
+include("../gen/gobject_structs")
+include("../gen/gio_structs")
 
 module G_
 
@@ -181,12 +179,12 @@ using ..GLib: BookmarkFileError, ChecksumType, ConvertError, DateDMY, DateMonth,
 
 import Base: convert, copy, run
 
-eval(include("../gen/glib_methods"))
-eval(include("../gen/glib_functions"))
-eval(include("../gen/gobject_methods"))
-eval(include("../gen/gobject_functions"))
-eval(include("../gen/gio_methods"))
-eval(include("../gen/gio_functions"))
+include("../gen/glib_methods")
+include("../gen/glib_functions")
+include("../gen/gobject_methods")
+include("../gen/gobject_functions")
+include("../gen/gio_methods")
+include("../gen/gio_functions")
 
 end
 
@@ -221,10 +219,62 @@ function GLogWriterFunc(log_level, fields, n_fields, user_data)
     convert(UInt32, ret)
 end
 
+"""
+    set_log_writer_func(log_func)
+
+Sets a function that is used to handle messages. The function should be of the form
+`log_func(log_level,fields)` and should return `true` if the message was handled and
+otherwise `false.`
+
+This function must be called only once per Julia session.
+"""
 function set_log_writer_func(log_func)
     func = @cfunction(GLogWriterFunc, Cuint, (Cuint, Ptr{_GLogField}, Csize_t, Ref{Function}))
     ref, deref = gc_ref_closure(log_func)
     ccall((:g_log_set_writer_func, libglib), Nothing, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}), func, ref, deref)
+end
+
+"""
+    suppress_C_messages()
+
+Sets the preference `"C_message_handling"` to "suppress_all", which intercepts all
+messages from the C libraries and stores them in an internal buffer. This setting
+will take effect the next time Julia is started.
+
+The stored messages can be found in `GLib.C_message_buffer`.
+
+See also [`show_C_messages`](@ref).
+"""
+function suppress_C_messages()
+    @set_preferences!("C_message_handling" => "suppress_all")
+    @info("Setting will take effect after restarting Julia.")
+end
+
+"""
+    show_C_messages()
+
+Sets the preference `"C_message_handling"` to "", which allows messages and warnings
+from the C libraries to be displayed. This setting will take effect the next time
+Julia is started.
+
+See also [`suppress_C_messages`](@ref).
+"""
+function show_C_messages()
+    @set_preferences!("C_message_handling" => "")
+    @info("Setting will take effect after restarting Julia.")
+end
+
+C_message_buffer::Vector{Tuple{LogLevelFlags,String,String}} = Tuple{LogLevelFlags,String,String}[]
+
+function suppress_func(log_level, fields)
+    imessage = findfirst(f->bytestring(f.key)=="MESSAGE", fields)
+    idomain = findfirst(f->bytestring(f.key)=="GLIB_DOMAIN", fields)
+    if imessage !== nothing && idomain !== nothing
+        push!(C_message_buffer, (log_level,bytestring(Ptr{UInt8}(fields[idomain].value)),bytestring(Ptr{UInt8}(fields[imessage].value))))
+        return true
+    else
+        return false
+    end
 end
 
 const exiting = Ref(false)
@@ -233,6 +283,10 @@ function __init__()
     vercheck = G_.check_version(MAJOR_VERSION,MINOR_VERSION,0)
     if vercheck !== nothing
         @warn "GLib version check failed: $vercheck"
+    end
+    d = @load_preference("C_message_handling", "")
+    if d == "suppress_all"
+        set_log_writer_func(suppress_func)
     end
     global JuliaClosureMarshal = @cfunction(GClosureMarshal, Nothing,
         (Ptr{Nothing}, Ptr{GValue}, Cuint, Ptr{GValue}, Ptr{Nothing}, Ptr{Nothing}))

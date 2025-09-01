@@ -1,5 +1,4 @@
-quote
-$(Expr(:toplevel, quote
+begin
     function access(_filename::Union{AbstractString, Symbol}, _mode::Integer)
         ret = ccall(("g_access", libglib), Int32, (Cstring, Int32), _filename, _mode)
         ret
@@ -414,13 +413,9 @@ $(Expr(:toplevel, quote
         ret2
     end
     function byte_array_sort_with_data(_array, _compare_func::Function)
-        begin
-            _compare_func_cfunc = @cfunction(GCompareDataFunc, Int32, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_compare_func)
-                _compare_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _compare_func_cfunc = @cfunction(GCompareDataFunc, Int32, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+        ref = Ref{Any}(_compare_func)
+        _compare_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("g_byte_array_sort_with_data", libglib), Nothing, (Ptr{GByteArray}, Ptr{Cvoid}, Ptr{Nothing}), _array, _compare_func_cfunc, _compare_func_closure)
         nothing
     end
@@ -1039,47 +1034,31 @@ $(Expr(:toplevel, quote
         nothing
     end
     function hash_table_find(_hash_table, _predicate::Function)
-        begin
-            _predicate_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_predicate)
-                _predicate_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _predicate_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+        ref = Ref{Any}(_predicate)
+        _predicate_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("g_hash_table_find", libglib), Ptr{Nothing}, (Ptr{GHashTable}, Ptr{Cvoid}, Ptr{Nothing}), _hash_table, _predicate_cfunc, _predicate_closure)
         ret2 = convert(Nothing, ret)
         ret2
     end
     function hash_table_foreach(_hash_table, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GHFunc, Nothing, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GHFunc, Nothing, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("g_hash_table_foreach", libglib), Nothing, (Ptr{GHashTable}, Ptr{Cvoid}, Ptr{Nothing}), _hash_table, _func_cfunc, _func_closure)
         nothing
     end
     function hash_table_foreach_remove(_hash_table, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("g_hash_table_foreach_remove", libglib), UInt32, (Ptr{GHashTable}, Ptr{Cvoid}, Ptr{Nothing}), _hash_table, _func_cfunc, _func_closure)
         ret
     end
     function hash_table_foreach_steal(_hash_table, _func::Function)
-        begin
-            _func_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_func)
-                _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
+        _func_cfunc = @cfunction(GHRFunc, Cint, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
         ret = ccall(("g_hash_table_foreach_steal", libglib), UInt32, (Ptr{GHashTable}, Ptr{Cvoid}, Ptr{Nothing}), _hash_table, _func_cfunc, _func_closure)
         ret
     end
@@ -1429,8 +1408,9 @@ $(Expr(:toplevel, quote
         ret = ccall(("g_on_error_query", libglib), Nothing, (Cstring,), _prg_name)
         nothing
     end
-    function on_error_stack_trace(_prg_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_on_error_stack_trace", libglib), Nothing, (Cstring,), _prg_name)
+    function on_error_stack_trace(_prg_name::Maybe(Union{AbstractString, Symbol}))
+        _prg_name_maybe = nothing_to_null(_prg_name)
+        ret = ccall(("g_on_error_stack_trace", libglib), Nothing, (Cstring,), _prg_name_maybe)
         nothing
     end
     function once_init_enter(_location::Nothing)
@@ -1548,17 +1528,6 @@ $(Expr(:toplevel, quote
         _dest = m_dest[]
         _dest
     end
-    function qsort_with_data(_pbase::Nothing, _total_elems::Integer, _size::Integer, _compare_func::Function)
-        begin
-            _compare_func_cfunc = @cfunction(GCompareDataFunc, Int32, (Ptr{Nothing}, Ptr{Nothing}, Ref{Function}))
-            begin
-                ref = Ref{Any}(_compare_func)
-                _compare_func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-            end
-        end
-        ret = ccall(("g_qsort_with_data", libglib), Nothing, (Ptr{Nothing}, Int32, UInt64, Ptr{Cvoid}, Ptr{Nothing}), _pbase, _total_elems, _size, _compare_func_cfunc, _compare_func_closure)
-        nothing
-    end
     function quark_from_static_string(_string::Maybe(Union{AbstractString, Symbol}))
         _string_maybe = nothing_to_null(_string)
         ret = ccall(("g_quark_from_static_string", libglib), UInt32, (Cstring,), _string_maybe)
@@ -1660,6 +1629,11 @@ $(Expr(:toplevel, quote
     function ref_string_acquire(_str::Union{AbstractString, Symbol})
         ret = ccall(("g_ref_string_acquire", libglib), Cstring, (Cstring,), _str)
         ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function ref_string_equal(_str1::Union{AbstractString, Symbol}, _str2::Union{AbstractString, Symbol})
+        ret = ccall(("g_ref_string_equal", libglib), Cint, (Cstring, Cstring), _str1, _str2)
+        ret2 = convert(Bool, ret)
         ret2
     end
     function ref_string_length(_str::Union{AbstractString, Symbol})
@@ -2029,12 +2003,12 @@ $(Expr(:toplevel, quote
     end
     function strrstr(_haystack::Union{AbstractString, Symbol}, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strrstr", libglib), Cstring, (Cstring, Cstring), _haystack, _needle)
-        ret2 = string_or_nothing(ret, true)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strrstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strrstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
-        ret2 = string_or_nothing(ret, true)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strsignal(_signum::Integer)
@@ -2064,7 +2038,7 @@ $(Expr(:toplevel, quote
     end
     function strstr_len(_haystack::Union{AbstractString, Symbol}, _haystack_len::Integer, _needle::Union{AbstractString, Symbol})
         ret = ccall(("g_strstr_len", libglib), Cstring, (Cstring, Int64, Cstring), _haystack, _haystack_len, _needle)
-        ret2 = string_or_nothing(ret, true)
+        ret2 = string_or_nothing(ret, false)
         ret2
     end
     function strtod(_nptr::Union{AbstractString, Symbol})
@@ -2983,5 +2957,4 @@ $(Expr(:toplevel, quote
         _endptr = string_or_nothing(_endptr, true)
         (ret2, _endptr)
     end
-end))
 end
