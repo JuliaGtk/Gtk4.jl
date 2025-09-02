@@ -24,9 +24,9 @@ module GI
     libgi = Glib_jll.libgirepository
 
     include("girepo.jl")
-    include("giimport.jl")
-    include("giexport.jl")
-    include("gidocs.jl")
+    #include("giimport.jl")
+    #include("giexport.jl")
+    #include("gidocs.jl")
     
     function __init__()
         global repo = GIRepository()

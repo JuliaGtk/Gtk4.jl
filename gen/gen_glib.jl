@@ -40,6 +40,7 @@ push!(exprs, const_mod)
 ## export constants, enums, and flags code
 GI.write_consts_to_file(path,"glib_consts",toplevel)
 
+if false
 printstyled("Generating code for GLib\n";bold=true)
 
 ## structs
@@ -113,3 +114,4 @@ skiplist=[:convert,:atomic_rc_box_release_full,:child_watch_add,:datalist_foreac
 GI.all_functions!(exprs,ns,skiplist=skiplist,symbol_skiplist=symbols_handled, liboverride=:libglib)
 
 GI.write_to_file(path,"glib_functions",toplevel)
+end
