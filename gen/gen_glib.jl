@@ -11,6 +11,9 @@ ns = GINamespace(:GLib, "2.0")
 ns2 = GINamespace(:GObject, "2.0")
 ns3 = GINamespace(:Gio, "2.0")
 
+# GI.get_shlibs() gets confused sometimes and for some reason this helps...
+println(GI.get_shlibs(ns3))
+
 # This exports constants, structs, functions, etc. from the glib library
 
 # Constants for GLib, GObject, and Gio are grouped together. Structs and methods
@@ -30,6 +33,7 @@ GI.append_const_docs!(const_mod.args, "glib", dglib, c)
 c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:IOCondition])
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns2)).gir")
 GI.append_const_docs!(const_mod.args, "gobject", d, c)
+#println(GI.get_shlibs(ns3))
 c = GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns3)).gir")
 GI.append_const_docs!(const_mod.args, "gio", d, c)

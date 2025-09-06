@@ -5,6 +5,8 @@
 
 abstract type GITypelib end
 abstract type GIBaseInfo end
+abstract type GIRegisteredTypeInfo <: GIBaseInfo end
+abstract type GICallableInfo <: GIBaseInfo end
 
 mutable struct GIRepository
     handle::Ptr{GIRepository}
@@ -18,7 +20,51 @@ mutable struct GIConstantInfo <: GIBaseInfo
     handle::Ptr{GIBaseInfo}
 end
 
+mutable struct GIEnumInfo <: GIRegisteredTypeInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GIFlagsInfo <: GIRegisteredTypeInfo
+    handle::Ptr{GIBaseInfo}
+end
+
 mutable struct GITypeInfo <: GIBaseInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GIValueInfo <: GIBaseInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GIStructInfo <: GIRegisteredTypeInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GIObjectInfo <: GIRegisteredTypeInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GIInterfaceInfo <: GIRegisteredTypeInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GIArgInfo <: GIBaseInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GIFieldInfo <: GIBaseInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GICallbackInfo <: GICallableInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GISignalInfo <: GICallableInfo
+    handle::Ptr{GIBaseInfo}
+end
+
+mutable struct GIFunctionInfo <: GICallableInfo
     handle::Ptr{GIBaseInfo}
 end
 
@@ -32,7 +78,6 @@ G_TYPE_FROM_INSTANCE(w::Ptr) = G_TYPE_FROM_CLASS(unsafe_load(convert(Ptr{Ptr{GTy
 
 function GIInfo(h::Ptr{GIBaseInfo},owns=true)
     h == C_NULL && error("Cannot construct GIInfo from NULL")
-    #typeid = ccall((:gi_base_info_get_type, libgi), Int, (Ptr{GIBaseInfo},), h)
     typeid = G_TYPE_FROM_CLASS(h)
     info = GIInfo{typeid}(h)
     owns && finalizer(info_unref, info)
@@ -45,7 +90,7 @@ function info_unref(info::GIInfo)
     info.handle = C_NULL
 end
 
-unsafe_convert(::Type{Ptr{GIBaseInfo}},w::GIInfo) = w.handle
+unsafe_convert(::Type{Ptr{GIBaseInfo}},w::GIBaseInfo) = w.handle
 
 const GIInfoTypesShortNames = (:Invalid, :Function, :Callback, :Struct, :Boxed, :Enum,
                                :Flags, :Object, :Interface, :Constant, :Unknown, :Union,
@@ -67,15 +112,15 @@ for (i,itype) in enumerate(GIInfoTypesShortNames)
 end
 
 #const GICallableInfo = Union{GIFunctionInfo,GIVFuncInfo, GICallbackInfo, GISignalInfo}
-#const GIEnumOrFlags = Union{GIEnumInfo,GIFlagsInfo}
+const GIEnumOrFlags = Union{GIEnumInfo,GIFlagsInfo}
 #const GIRegisteredTypeInfo = Union{GIEnumOrFlags,GIInterfaceInfo, GIObjectInfo, GIStructInfo, GIUnionInfo}
 
 #show(io::IO, ::Type{GIInfo{Typeid}}) where Typeid = print(io, GIInfoTypeNames[Typeid+1])
 
-#function show(io::IO, info::GIInfo)
-#    show(io, typeof(info))
-#    print(io,"(:$(get_namespace(info)), :$(get_name(info)))")
-#end
+function show(io::IO, info::GIBaseInfo)
+    show(io, typeof(info))
+    print(io,"(:$(get_namespace(info)), :$(get_name(info)))")
+end
 
 #show(io::IO, info::GIArgInfo) = print(io,"GIArgInfo(:$(get_name(info)),$(extract_type(info)))")
 
@@ -153,6 +198,12 @@ function convert(::Type{GIInfo}, h::Ptr)
     gt = G_TYPE_FROM_INSTANCE(h)
     if gt == ccall((:gi_constant_info_get_type, libgi), GType, ())
         return GIConstantInfo(h)
+    elseif gt == ccall((:gi_enum_info_get_type, libgi), GType, ())
+        return GIEnumInfo(h)
+    elseif gt == ccall((:gi_flags_info_get_type, libgi), GType, ())
+        return GIFlagsInfo(h)
+    elseif gt == ccall((:gi_value_info_get_type, libgi), GType, ())
+        return GIValueInfo(h)
     elseif gt == ccall((:gi_type_info_get_type, libgi), GType, ())
         return GITypeInfo(h)
     end
@@ -169,7 +220,7 @@ end
 
 Base.length(ns::GINamespace) = Int(ccall((:gi_repository_get_n_infos, libgi), Cint,
                                (Ptr{GIRepository}, Cstring), repo, ns))
-Base.iterate(ns::GINamespace, state=1) = state > length(ns) ? nothing : (GIInfo(ccall((:gi_repository_get_info, libgi), Ptr{GIBaseInfo},
+Base.iterate(ns::GINamespace, state=1) = state > length(ns) ? nothing : (convert(GIInfo,ccall((:gi_repository_get_info, libgi), Ptr{GIBaseInfo},
                                              (Ptr{GIRepository}, Cstring, Cint), repo, ns, state-1 )), state+1)
 Base.eltype(::Type{GINamespace}) = GIInfo
 
@@ -197,7 +248,7 @@ function prepend_search_path(mod::Module)
     prepend_search_path(d)
 end
 
-function get_all(ns::GINamespace, t::Type{T},exclude_deprecated=true) where {T<:GIInfo}
+function get_all(ns::GINamespace, t::Type{T},exclude_deprecated=true) where {T<:GIBaseInfo}
     [info for info=ns if isa(info,t) && (exclude_deprecated ? !is_deprecated(info) : true)]
 end
 
@@ -253,26 +304,28 @@ end
 function get_shlibs(ns)
     n_elements = Ref{Csize_t}()
     names = ccall((:gi_repository_get_shared_libraries, libgi), Ptr{Cstring}, (Ptr{GIRepository}, Cstring, Ref{Csize_t}), repo, ns, n_elements)
-    if bnames !== nothing
-        collect(bytestring.(unsafe_wrap(Vector{Cstring}, names, n_elements)))
-        [bytestring(s) for s in split(bnames,",")]
+    if names != C_NULL
+        collect(bytestring.(unsafe_wrap(Vector{Cstring}, names, n_elements[])))
     else
         String[]
     end
 end
-get_shlibs(info::GIInfo) = get_shlibs(get_namespace(info))
+get_shlibs(info::GIBaseInfo) = get_shlibs(get_namespace(info))
 
 function find_by_gtype(gtypeid::Csize_t)
     GIInfo(ccall((:gi_repository_find_by_gtype, libgi), Ptr{GIBaseInfo}, (Ptr{GIRepository}, Csize_t), repo, gtypeid))
 end
 
 #GIInfoTypes[:method] = GIFunctionInfo
-#GIInfoTypes[:callable] = GICallableInfo
-#GIInfoTypes[:registered_type] = GIRegisteredTypeInfo
+GIInfoTypes[:callable] = GICallableInfo
+GIInfoTypes[:registered_type] = GIRegisteredTypeInfo
+GIInfoTypes[:object] = GIObjectInfo
 GIInfoTypes[:base] = GIBaseInfo
 GIInfoTypes[:constant] = GIConstantInfo
+GIInfoTypes[:enum] = GIEnumInfo
+GIInfoTypes[:flags] = GIFlagsInfo
 GIInfoTypes[:type] = GITypeInfo
-#GIInfoTypes[:enum] = GIEnumOrFlags
+GIInfoTypes[:value] = GIValueInfo
 
 Maybe(T) = Union{T,Nothing}
 const MaybeGIInfo = Maybe(GIInfo)
@@ -281,7 +334,13 @@ const MaybeGIInfo = Maybe(GIInfo)
 rconvert(t,v) = rconvert(t,v,false)
 rconvert(t::Type,val,owns) = convert(t,val)
 rconvert(::Type{String}, val,owns) = bytestring(val) #,owns)
-rconvert(::Type{Symbol}, val,owns) = Symbol(bytestring(val))#,owns) )
+function rconvert(::Type{Symbol}, val,owns)
+    if val != C_NULL
+        Symbol(bytestring(val))#,owns) )
+    else
+        return :nothing
+    end
+end
 rconvert(::Type{GIInfo}, val::Ptr{GIBaseInfo},owns) = GIInfo(val,owns)
 
 for typ in [GIInfo, String, GObject]
@@ -294,12 +353,13 @@ for (owner, property) in [
     #(:object, :method), (:object, :signal), (:object, :interface),
     #(:object, :constant), (:object, :field),
     #(:interface, :method), (:interface, :signal), (:callable, :arg),
-    #(:enum, :value), (:struct, :field), (:struct, :method),
+    (:enum, :value), 
+    #(:struct, :field), (:struct, :method),
     #(:interface, :prerequisite)
     ]
     @eval function $(Symbol("get_$(property)s"))(info::$(GIInfoTypes[owner]))
         n = Int(ccall(($("gi_$(owner)_info_get_n_$(property)s"), libgi), Cint, (Ptr{GIBaseInfo},), info))
-        GIInfo[ GIInfo( ccall(($("gi_$(owner)_info_get_$property"), libgi), Ptr{GIBaseInfo},
+        GIBaseInfo[ convert(GIInfo, ccall(($("gi_$(owner)_info_get_$property"), libgi), Ptr{GIBaseInfo},
                       (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
     end
     if property === :method
@@ -342,21 +402,26 @@ ctypes = Dict(GIInfo=>Ptr{GIBaseInfo},
 for (owner,property,typ) in [
     (:base, :name, Symbol), (:base, :namespace, Symbol), #(:base, :type, Int),
     (:base, :container, MaybeGIInfo),
-    #(:registered_type, :g_type, GType), (:registered_type, :type_name, Symbol), (:object, :parent, MaybeGIInfo), (:object, :type_init, Symbol),
-    #(:callable, :return_type, GIInfo), (:callable, :caller_owns, EnumGI), (:callable, :instance_ownership_transfer, EnumGI), (:registered_type, :type_init, Symbol),
+    (:registered_type, :g_type, GType), (:registered_type, :type_name, Symbol), (:object, :parent, MaybeGIInfo), (:object, :type_init_function_name, Symbol),
+    (:callable, :return_type, GIInfo), (:callable, :caller_owns, EnumGI), (:callable, :instance_ownership_transfer, EnumGI), (:registered_type, :type_init_function_name, Symbol),
     #(:function, :flags, EnumGI), (:function, :symbol, Symbol), (:property, :type, GIInfo), (:property, :ownership_transfer, EnumGI), (:property, :flags, EnumGI),
     #(:arg, :type, GIInfo), (:arg, :direction, EnumGI), (:arg, :ownership_transfer, EnumGI), #(:function, :property, MaybeGIInfo),
     #(:arg, :closure, Cint), (:arg, :destroy, Cint), (:arg, :scope, EnumGI),
-    #(:type, :tag, EnumGI), (:type, :interface, MaybeGIInfo), (:type, :array_type, EnumGI),
+    (:type, :tag, EnumGI), (:type, :interface, MaybeGIInfo), (:type, :array_type, EnumGI),
     #(:type, :array_length, Cint), (:type, :array_fixed_size, Cint),
-    (:constant, :type_info, GIInfo),
-    #(:value, :value, Int64), (:field, :type, GIInfo), (:enum, :storage_type, EnumGI)
+    (:constant, :type_info, GITypeInfo),
+    (:value, :value, Int64), #(:field, :type, GIInfo), 
+    (:enum, :storage_type, EnumGI)
     ]
 
     ctype = get(ctypes, typ, typ)
     @eval function $(Symbol("get_$(property)"))(info::$(GIInfoTypes[owner]))
         rconvert($typ,ccall(($("gi_$(owner)_info_get_$(property)"), libgi), $ctype, (Ptr{GIBaseInfo},), info))
     end
+end
+
+function get_storage_type(info::GIFlagsInfo)
+    rconvert(Int,ccall(("gi_enum_info_get_storage_type", libgi), Int, (Ptr{GIBaseInfo},), info))
 end
 
 function get_attribute(info,name)
@@ -370,7 +435,7 @@ end
 #get_param_type(info::GITypeInfo,n) = rconvert(MaybeGIInfo, ccall(("gi_type_info_get_param_type", libgi), Ptr{GIBaseInfo}, (Ptr{GIBaseInfo}, Cint), info, n))
 
 #pretend that CallableInfo is a ArgInfo describing the return value
-#const ArgInfo = Union{GIArgInfo,GICallableInfo}
+const ArgInfo = Union{GIArgInfo,GICallableInfo}
 #get_ownership_transfer(ai::GICallableInfo) = get_caller_owns(ai)
 #may_be_null(ai::GICallableInfo) = may_return_null(ai)
 
@@ -443,11 +508,11 @@ end
 
 """Get the Julia type corresponding to a GITypeInfo. Not necessarily the actual
 type but a base type."""
-get_base_type(info::GIConstantInfo) = get_base_type(get_type(info))
-#function get_base_type(info::GITypeInfo)
-#    tag = get_tag(info)
-#    if tag <= TAG_BASIC_MAX
-#        return typetag_primitive[tag+1]
+get_base_type(info::GIConstantInfo) = get_base_type(get_type_info(info))
+function get_base_type(info::GITypeInfo)
+    tag = get_tag(info)
+    if tag <= TAG_BASIC_MAX
+        return typetag_primitive[tag+1]
 #    elseif tag == TAG_INTERFACE
 #        # Object Types n such -- we have to figure out what the type is
 #        interf_info = get_interface(info) # output here is a BaseInfo
@@ -501,12 +566,12 @@ get_base_type(info::GIConstantInfo) = get_base_type(get_type(info))
 #        GHashTable
 #    elseif tag == TAG_FILENAME
 #        String #FIXME: on funky platforms this may not be utf8/ascii
-#    else
-#        #print("base type not implemented: ",tag)
-#        #throw(NotImplementedError())
-#        return Nothing
-#    end
-#end
+    else
+        #print("base type not implemented: ",tag)
+        #throw(NotImplementedError())
+        return Nothing
+    end
+end
 
 #function isopaque(info::GIStructInfo)
 #    fields=get_fields(info)
@@ -593,9 +658,9 @@ function get_consts(gns,exclude_deprecated=true)
     consts
 end
 
-#function get_enum_values(info::GIEnumOrFlags)
-#    [(get_name(i),get_value(i)) for i in get_values(info)]
-#end
+function get_enum_values(info::GIEnumOrFlags)
+    [(get_name(i),get_value(i)) for i in get_values(GIEnumInfo(info.handle))]
+end
 
 #function get_structs(gns,exclude_deprecated=true)
 #    structs = get_all(gns, GIStructInfo, exclude_deprecated)

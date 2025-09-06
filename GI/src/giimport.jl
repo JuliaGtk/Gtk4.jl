@@ -14,9 +14,11 @@ end
 find_symbol(id) = Base.Fix2(find_symbol, id)
 
 function typeinit_def(info, gstructname = get_name(info))
-    type_init = String(get_type_init(info))
-    libs=get_shlibs(GINamespace(get_namespace(info)))
-    lib=libs[findfirst(find_symbol(type_init),libs)]
+    type_init = String(get_type_init_function_name(info))
+    libs=get_shlibs(info)
+    ind = findfirst(find_symbol(type_init),libs)
+    isnothing(ind) && error("function $(type_init) not found in $libs")
+    lib=libs[ind]
     quote
         GLib.g_type(::Type{T}) where {T <: $gstructname} =
             ccall(($type_init, $(symbol_from_lib(lib))), GType, ())
@@ -26,7 +28,7 @@ end
 function append_type_init(body, enum, incl_typeinit)
     bloc = Expr(:block, unblock(body))
     # if this enum has a GType we define GLib.g_type() to support storing this in GValue
-    if incl_typeinit && get_type_init(enum) !== :nothing
+    if incl_typeinit && get_type_init_function_name(enum) !== :nothing
         push!(bloc.args,unblock(typeinit_def(enum)))
     end
     unblock(bloc)
