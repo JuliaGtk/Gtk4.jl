@@ -6,8 +6,8 @@ using GI, EzXML
 
 GI.prepend_search_path("/usr/lib64/girepository-1.0")
 include("gen_glib.jl")
-#include("gen_gobject.jl")
-#include("gen_gio.jl")
+include("gen_gobject.jl")
+include("gen_gio.jl")
 #include("gen_cairo.jl")
 #include("gen_gdkpixbuf.jl")
 #include("gen_pango.jl")

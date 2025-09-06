@@ -307,7 +307,7 @@ end
 function decl(interfaceinfo::GIInterfaceInfo)
     g_type = get_g_type(interfaceinfo)
 
-    type_init = Symbol(get_type_init(interfaceinfo))
+    type_init = Symbol(get_type_init_function_name(interfaceinfo))
     libs=get_shlibs(GINamespace(get_namespace(interfaceinfo)))
     lib=libs[findfirst(find_symbol(type_init),libs)]
 

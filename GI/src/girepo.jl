@@ -208,10 +208,16 @@ function convert(::Type{GIInfo}, h::Ptr)
         return GITypeInfo(h)
     elseif gt == ccall((:gi_struct_info_get_type, libgi), GType, ())
         return GIStructInfo(h)
+    elseif gt == ccall((:gi_object_info_get_type, libgi), GType, ())
+        return GIObjectInfo(h)
+    elseif gt == ccall((:gi_interface_info_get_type, libgi), GType, ())
+        return GIInterfaceInfo(h)
     elseif gt == ccall((:gi_field_info_get_type, libgi), GType, ())
         return GIFieldInfo(h)
     elseif gt == ccall((:gi_function_info_get_type, libgi), GType, ())
         return GIFunctionInfo(h)
+    elseif gt == ccall((:gi_signal_info_get_type, libgi), GType, ())
+        return GISignalInfo(h)
     elseif gt == ccall((:gi_callback_info_get_type, libgi), GType, ())
         return GICallbackInfo(h)
     elseif gt == ccall((:gi_arg_info_get_type, libgi), GType, ())
@@ -330,6 +336,7 @@ end
 GIInfoTypes[:callable] = GICallableInfo
 GIInfoTypes[:registered_type] = GIRegisteredTypeInfo
 GIInfoTypes[:object] = GIObjectInfo
+GIInfoTypes[:interface] = GIInterfaceInfo
 GIInfoTypes[:base] = GIBaseInfo
 GIInfoTypes[:constant] = GIConstantInfo
 GIInfoTypes[:enum] = GIEnumInfo
@@ -338,6 +345,7 @@ GIInfoTypes[:type] = GITypeInfo
 GIInfoTypes[:value] = GIValueInfo
 GIInfoTypes[:struct] = GIStructInfo
 GIInfoTypes[:field] = GIFieldInfo
+GIInfoTypes[:signal] = GISignalInfo
 GIInfoTypes[:function] = GIFunctionInfo
 GIInfoTypes[:callback] = GICallbackInfo
 GIInfoTypes[:arg] = GIArgInfo
@@ -365,12 +373,12 @@ rconvert(::Type{Nothing}, val) = error("something went wrong")
 
 # one-> many relationships
 for (owner, property) in [
-    #(:object, :method), (:object, :signal), (:object, :interface),
-    #(:object, :constant), (:object, :field),
-    #(:interface, :method), (:interface, :signal),
+    (:object, :method), (:object, :signal), (:object, :interface),
+    (:object, :constant), (:object, :field),
+    (:interface, :method), (:interface, :signal),
     (:callable, :arg), (:enum, :value), 
     (:struct, :field), (:struct, :method),
-    #(:interface, :prerequisite)
+    (:interface, :prerequisite)
     ]
     @eval function $(Symbol("get_$(property)s"))(info::$(GIInfoTypes[owner]))
         n = Int(ccall(($("gi_$(owner)_info_get_n_$(property)s"), libgi), Cint, (Ptr{GIBaseInfo},), info))
@@ -386,26 +394,26 @@ for (owner, property) in [
     end
 end
 
-#function get_properties(info::GIObjectInfo)
-#    n = Int(ccall(("gi_object_info_get_n_properties", libgi), Cint, (Ptr{GIBaseInfo},), info))
-#    GIInfo[ GIInfo( ccall(("gi_object_info_get_property", libgi), Ptr{GIBaseInfo},
-#                  (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
-#end
+function get_properties(info::GIObjectInfo)
+    n = Int(ccall(("gi_object_info_get_n_properties", libgi), Cint, (Ptr{GIBaseInfo},), info))
+    GIInfo[ GIInfo( ccall(("gi_object_info_get_property", libgi), Ptr{GIBaseInfo},
+                  (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
+end
 
-#function get_properties(info::GIInterfaceInfo)
-#    n = Int(ccall(("gi_interface_info_get_n_properties", libgi), Cint, (Ptr{GIBaseInfo},), info))
-#    GIInfo[ GIInfo( ccall(("gi_interface_info_get_property", libgi), Ptr{GIBaseInfo},
-#                  (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
-#end
+function get_properties(info::GIInterfaceInfo)
+    n = Int(ccall(("gi_interface_info_get_n_properties", libgi), Cint, (Ptr{GIBaseInfo},), info))
+    GIInfo[ GIInfo( ccall(("gi_interface_info_get_property", libgi), Ptr{GIBaseInfo},
+                  (Ptr{GIBaseInfo}, Cint), info, i)) for i=0:n-1]
+end
 
 # including the interfaces
-#function get_all_signals(info::GIObjectInfo)
-#    sigs = get_signals(info)
-#    for interf in get_interfaces(info)
-#        append!(sigs, get_signals(interf))
-#    end
-#    sigs
-#end
+function get_all_signals(info::GIObjectInfo)
+    sigs = get_signals(info)
+    for interf in get_interfaces(info)
+        append!(sigs, get_signals(interf))
+    end
+    sigs
+end
 
 #getindex(info::GIRegisteredTypeInfo, name::Symbol) = find_method(info, name)
 
@@ -484,7 +492,7 @@ for (owner,flag) in [
     (:type, :is_zero_terminated),
     (:base, :is_deprecated),
     (:struct, :is_gtype_struct),
-    #(:object, :get_abstract)
+    (:object, :get_abstract)
     ]
 
     @eval function $flag(info::$(GIInfoTypes[owner]))
@@ -493,27 +501,27 @@ for (owner,flag) in [
     end
 end
 
-#is_gobject(::Nothing) = false
-#function is_gobject(info::GIObjectInfo)
-#    if get_g_type(info) == GLib.g_type(GLib.GObject)
-#        true
-#    else
-#        is_gobject(get_parent(info))
-#    end
-#end
+is_gobject(::Nothing) = false
+function is_gobject(info::GIObjectInfo)
+    if get_g_type(info) == GLib.g_type(GLib.GObject)
+        true
+    else
+        is_gobject(get_parent(info))
+    end
+end
 
 # Look through the prerequisites for an interface and return the one that is a
 # subclass of GObject. If there are none, return GObject.
-#function get_gobj_prerequisite(info::GIInterfaceInfo)
-#    prereqs = get_prerequisites(info)
-#    length(prereqs) == 0 && return :GObject
-#    for p in prereqs
-#        if GIInfoTypeNames[get_type(p)+1] === :GIObjectInfo
-#            return get_full_name(p)
-#        end
-#    end
-#    return :GObject
-#end
+function get_gobj_prerequisite(info::GIInterfaceInfo)
+    prereqs = get_prerequisites(info)
+    length(prereqs) == 0 && return :GObject
+    for p in prereqs
+        if p isa GIObjectInfo
+            return get_full_name(p)
+        end
+    end
+    return :GObject
+end
 
 const typetag_primitive = [
     Nothing,Bool,Int8,UInt8,
@@ -570,14 +578,14 @@ function get_base_type(info::GITypeInfo)
             return BitFlags.BitFlag
         elseif interf_info isa GICallbackInfo
             return Function
-        #elseif typ===:GIObjectInfo
-        #    if is_gobject(interf_info)
-        #        return GObject
-        #    else
-        #        return get_toplevel(interf_info)
-        #    end
-        #elseif typ===:GIInterfaceInfo
-        #    return GInterface
+        elseif interf_info isa GIObjectInfo
+            if is_gobject(interf_info)
+                return GObject
+            else
+                return get_toplevel(interf_info)
+            end
+        elseif interf_info isa GIInterfaceInfo
+            return GInterface
         else
             name=get_name(interf_info)
             println("$name, Unhandled type: ", typ," ",get_type(interf_info))

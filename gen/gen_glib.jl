@@ -90,7 +90,6 @@ symbols_handled=GI.all_struct_methods!(exprs,ns;print_detailed=false,skiplist=sk
 
 GI.write_to_file(path,"glib_methods",toplevel)
 
-if false
 ## functions
 
 toplevel, exprs, exports = GI.output_exprs()
@@ -117,4 +116,3 @@ skiplist=[:convert,:atomic_rc_box_release_full,:child_watch_add,:datalist_foreac
 GI.all_functions!(exprs,ns,skiplist=skiplist,symbol_skiplist=symbols_handled, liboverride=:libglib)
 
 GI.write_to_file(path,"glib_functions",toplevel)
-end
