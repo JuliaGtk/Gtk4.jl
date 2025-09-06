@@ -68,7 +68,6 @@ constructor_skiplist=[:new,:new_take,:new_from_unix_utc,:new_now_utc,:new_utc,:n
 
 GI.export_struct_exprs!(ns,path, "glib", struct_skiplist, import_as_opaque; doc_xml = dglib, constructor_skiplist = constructor_skiplist, output_object_cache_init = false, output_object_cache_define = false, output_boxed_types_def = false, callback_skiplist)
 
-if false
 ## struct methods
 
 toplevel, exprs, exports = GI.output_exprs()
@@ -76,7 +75,7 @@ toplevel, exprs, exports = GI.output_exprs()
 name_issues=[:end]
 
 skiplist=vcat(name_issues,[
-:add_poll,:remove_poll,:check,:query,:find_source_by_funcs_user_data,:get_region,:invoke_full,:new_from_data,:find_source_by_id,:find_source_by_user_data])
+:get_application_info,:add_poll,:remove_poll,:check,:query,:find_source_by_funcs_user_data,:get_region,:invoke_full,:new_from_data,:find_source_by_id,:find_source_by_user_data])
 
 filter!(x->x≠:Variant,struct_skiplist)
 filter!(x->x≠:ByteArray,struct_skiplist)
@@ -91,6 +90,7 @@ symbols_handled=GI.all_struct_methods!(exprs,ns;print_detailed=false,skiplist=sk
 
 GI.write_to_file(path,"glib_methods",toplevel)
 
+if false
 ## functions
 
 toplevel, exprs, exports = GI.output_exprs()

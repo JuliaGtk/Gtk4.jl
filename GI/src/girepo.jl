@@ -212,6 +212,8 @@ function convert(::Type{GIInfo}, h::Ptr)
         return GIFieldInfo(h)
     elseif gt == ccall((:gi_function_info_get_type, libgi), GType, ())
         return GIFunctionInfo(h)
+    elseif gt == ccall((:gi_callback_info_get_type, libgi), GType, ())
+        return GICallbackInfo(h)
     elseif gt == ccall((:gi_arg_info_get_type, libgi), GType, ())
         return GIArgInfo(h)
     end
@@ -337,6 +339,7 @@ GIInfoTypes[:value] = GIValueInfo
 GIInfoTypes[:struct] = GIStructInfo
 GIInfoTypes[:field] = GIFieldInfo
 GIInfoTypes[:function] = GIFunctionInfo
+GIInfoTypes[:callback] = GICallbackInfo
 GIInfoTypes[:arg] = GIArgInfo
 
 Maybe(T) = Union{T,Nothing}
@@ -469,12 +472,14 @@ get_param_type(info::GITypeInfo,n) = rconvert(MaybeGIInfo, ccall(("gi_type_info_
 
 #pretend that CallableInfo is a ArgInfo describing the return value
 const ArgInfo = Union{GIArgInfo,GICallableInfo}
-#get_ownership_transfer(ai::GICallableInfo) = get_caller_owns(ai)
-#may_be_null(ai::GICallableInfo) = may_return_null(ai)
+get_ownership_transfer(ai::GICallableInfo) = get_caller_owns(ai)
+may_be_null(ai::GICallableInfo) = may_return_null(ai)
+get_type_info(ci::GICallableInfo) = get_return_type(ci)
 
 for (owner,flag) in [
     (:type, :is_pointer), (:callable, :may_return_null), (:callable, :skip_return),
-    (:callable, :is_method), (:arg, :is_caller_allocates), (:arg, :may_be_null),
+    (:callable, :is_method), (:callable, :can_throw_gerror),
+    (:arg, :is_caller_allocates), (:arg, :may_be_null),
     (:arg, :is_skip), (:arg, :is_return_value), (:arg, :is_optional),
     (:type, :is_zero_terminated),
     (:base, :is_deprecated),
@@ -694,9 +699,9 @@ function get_enum_values(info::GIEnumOrFlags)
     [(get_name(i),get_value(i)) for i in get_values(GIEnumInfo(info.handle))]
 end
 
-#function get_structs(gns,exclude_deprecated=true)
-#    structs = get_all(gns, GIStructInfo, exclude_deprecated)
-#end
+function get_structs(gns,exclude_deprecated=true)
+    structs = get_all(gns, GIStructInfo, exclude_deprecated)
+end
 
 baremodule GIFunction
     const IS_METHOD      = 1
@@ -704,7 +709,7 @@ baremodule GIFunction
     const IS_GETTER      = 4
     const IS_SETTER      = 8
     const WRAPS_VFUNC    = 16
-    const THROWS         = 32
+    const IS_ASYNC       = 32
 end
 
 baremodule GIDirection

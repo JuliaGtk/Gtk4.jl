@@ -570,9 +570,9 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
     elm = get_param_type(argtypeinfo,0)
     elmtype = extract_type(elm)
     elmctype=elmtype.ctype
-    arrlen=get_array_length(argtypeinfo) # position of array length argument
+    arrlen=get_array_length_index(argtypeinfo) # position of array length argument
     lensymb=nothing
-    if arrlen != -1
+    if arrlen !== nothing
         if typeof(arginfo)==GIFunctionInfo
             args=get_args(arginfo)
         else
@@ -710,9 +710,9 @@ callback_symbols(name) = (Symbol("$(name)_cfunc"),Symbol("$(name)_closure"),Symb
 
 function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:Type{Function}}
     st = get_scope(info)
-    closure = get_closure(info)
+    closure = get_closure_index(info)
     (st == GIScopeType.FOREVER || st == GIScopeType.INVALID) && throw(NotImplementedError("Scope type $st not implemented."))
-    closure == -1 && throw(NotImplementedError("Closure not found."))
+    closure === nothing && throw(NotImplementedError("Closure not found."))
     callbackinfo=get_interface(get_type_info(info))
     # get return type
     rettyp=get_return_type(callbackinfo)
@@ -1074,7 +1074,7 @@ function get_jargs(info::GIFunctionInfo)
         typ = extract_type(arg)
         typeinfo=get_type_info(arg)
         arrlen=get_array_length_index(typeinfo)
-        if typ.gitype == GICArray && arrlen >= 0
+        if typ.gitype == GICArray && arrlen !== nothing
             len_name=Symbol("_",get_name(args[arrlen+1]))
             len_i=findfirst(a->(a.name === len_name),jargs)
             len_i !== nothing && deleteat!(jargs,len_i)
@@ -1215,8 +1215,8 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         typ = extract_type(arg)
         aname = Symbol("_$(get_name(arg))")
         typeinfo=get_type_info(arg)
-        arrlen=get_array_length(typeinfo)
-        if typ.gitype == GICArray && arrlen >= 0
+        arrlen=get_array_length_index(typeinfo)
+        if typ.gitype == GICArray && arrlen !== nothing
             len_name=Symbol("_",get_name(args[arrlen+1]))
             len_i=findfirst(a->((Symbol("_$(get_name(a))") === len_name && get_direction(a) != GIDirection.OUT)),args)
             if len_i !== nothing
@@ -1226,14 +1226,14 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         end
     end
     if rettype.gitype == GICArray
-        arrlen=get_array_length(rettypeinfo)
-        if arrlen >=0
+        arrlen=get_array_length_index(rettypeinfo)
+        if arrlen !== nothing
             len_name=Symbol("_",get_name(args[arrlen+1]))
             delete_arg!(retvals, len_name)
         end
     end
 
-    if flags & GIFunction.THROWS != 0
+    if can_throw_gerror(info)
         push!(prologue, :( err = err_buf() ))
         push!(cargs, Arg(:err, :(Ptr{Ptr{GError}})))
         pushfirst!(epilogue, :( check_err(err) ))
