@@ -444,7 +444,7 @@ end
 # used for certain types to convert returned values from ccall's to Julia types
 
 function extract_type(info::GIArgInfo)
-    typdesc = extract_type(get_type(info))
+    typdesc = extract_type(get_type_info(info))
     if may_be_null(info) && typdesc.jtype !== :Any
         jtype=typdesc.jtype
         typdesc.jtype = :(Maybe($jtype))
@@ -452,7 +452,7 @@ function extract_type(info::GIArgInfo)
     end
     typdesc
 end
-extract_type(info::GIFieldInfo) = extract_type(get_type(info))
+extract_type(info::GIFieldInfo) = extract_type(get_type_info(info))
 function extract_type(info::GITypeInfo)
     base_type = get_base_type(info)
     extract_type(info,base_type)
@@ -565,7 +565,7 @@ function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) w
     if typeof(arginfo)==GIFunctionInfo
         argtypeinfo=get_return_type(arginfo)
     else
-        argtypeinfo=get_type(arginfo)
+        argtypeinfo=get_type_info(arginfo)
     end
     elm = get_param_type(argtypeinfo,0)
     elmtype = extract_type(elm)
@@ -643,7 +643,7 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
         return (name, nothing)
     end
     is_caller_allocates(info) && throw(NotImplementedException("Array output with 'caller_allocates'"))
-    typeinfo=get_type(info)
+    typeinfo=get_type_info(info)
     elm = get_param_type(typeinfo,0)
     elmtype = extract_type(elm)
     elmctype=elmtype.ctype
@@ -713,7 +713,7 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
     closure = get_closure(info)
     (st == GIScopeType.FOREVER || st == GIScopeType.INVALID) && throw(NotImplementedError("Scope type $st not implemented."))
     closure == -1 && throw(NotImplementedError("Closure not found."))
-    callbackinfo=get_interface(get_type(info))
+    callbackinfo=get_interface(get_type_info(info))
     # get return type
     rettyp=get_return_type(callbackinfo)
     cname=get_full_name(callbackinfo)
@@ -726,7 +726,7 @@ function convert_to_c(name::Symbol, info::GIArgInfo, ti::TypeDesc{T}) where {T<:
         if i == length(args) # we already know there is a closure, and it has to be the last argument
             push!(argctypes_arr,:(Ref{Function}))
         else
-            argtyp=get_type(arg)
+            argtyp=get_type_info(arg)
             argctyp=extract_type(argtyp).ctype
             push!(argctypes_arr,argctyp)
         end
@@ -872,7 +872,7 @@ end
 
 function convert_from_c(name::Symbol, arginfo::ArgInfo, typeinfo::TypeDesc{T}) where {T <: Type{GBoxed}}
     owns = get_ownership_transfer(arginfo) != GITransfer.NOTHING
-    typ = isa(arginfo, GIFunctionInfo) ? 0 : get_type(arginfo)
+    typ = isa(arginfo, GIFunctionInfo) ? 0 : get_type_info(arginfo)
 
     if may_be_null(arginfo)
         :(convert_if_not_null($(typeinfo.jstype), $name, $owns))
@@ -927,7 +927,7 @@ end
 
 function convert_from_c(name::Symbol, arginfo::ArgInfo, ti::TypeDesc{T}) where {T}
     # check transfer
-    typ=get_type(arginfo)
+    typ=get_type_info(arginfo)
 
     if ti.jtype !== :Any && ti.jtype !== :Real && ti.jtype !== :Integer
         :(convert($(ti.jtype), $name))
@@ -1036,8 +1036,8 @@ function get_closure_args(info::GIFunctionInfo)
     for arg in get_args(info)
         is_skip(arg) && continue
         typ = extract_type(arg)
-        closure = get_closure(arg)
-        if typ.gitype == Function && closure > -1
+        closure = get_closure_index(arg)
+        if typ.gitype == Function && closure !== nothing
             aname = Symbol("_", get_name(arg))
             closure_args[aname]=closure+1
         end
@@ -1072,8 +1072,8 @@ function get_jargs(info::GIFunctionInfo)
     for arg in args
         is_skip(arg) && continue
         typ = extract_type(arg)
-        typeinfo=get_type(arg)
-        arrlen=get_array_length(typeinfo)
+        typeinfo=get_type_info(arg)
+        arrlen=get_array_length_index(typeinfo)
         if typ.gitype == GICArray && arrlen >= 0
             len_name=Symbol("_",get_name(args[arrlen+1]))
             len_i=findfirst(a->(a.name === len_name),jargs)
@@ -1193,7 +1193,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         else
             ctype = typ.ctype
             wname = Symbol("m_$(get_name(arg))")
-            atyp = get_type(arg)
+            atyp = get_type_info(arg)
             push!(prologue, :( $wname = Ref{$ctype}() ))
             if dir == GIDirection.INOUT
                 push!(prologue, :( $wname[] = Base.cconvert($ctype,$anametran) ))
@@ -1214,7 +1214,7 @@ function create_method(info::GIFunctionInfo, liboverride = nothing)
         is_skip(arg) && continue
         typ = extract_type(arg)
         aname = Symbol("_$(get_name(arg))")
-        typeinfo=get_type(arg)
+        typeinfo=get_type_info(arg)
         arrlen=get_array_length(typeinfo)
         if typ.gitype == GICArray && arrlen >= 0
             len_name=Symbol("_",get_name(args[arrlen+1]))

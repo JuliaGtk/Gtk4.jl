@@ -33,7 +33,6 @@ GI.append_const_docs!(const_mod.args, "glib", dglib, c)
 c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:IOCondition])
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns2)).gir")
 GI.append_const_docs!(const_mod.args, "gobject", d, c)
-#println(GI.get_shlibs(ns3))
 c = GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns3)).gir")
 GI.append_const_docs!(const_mod.args, "gio", d, c)
@@ -44,7 +43,6 @@ push!(exprs, const_mod)
 ## export constants, enums, and flags code
 GI.write_consts_to_file(path,"glib_consts",toplevel)
 
-if false
 printstyled("Generating code for GLib\n";bold=true)
 
 ## structs
@@ -70,6 +68,7 @@ constructor_skiplist=[:new,:new_take,:new_from_unix_utc,:new_now_utc,:new_utc,:n
 
 GI.export_struct_exprs!(ns,path, "glib", struct_skiplist, import_as_opaque; doc_xml = dglib, constructor_skiplist = constructor_skiplist, output_object_cache_init = false, output_object_cache_define = false, output_boxed_types_def = false, callback_skiplist)
 
+if false
 ## struct methods
 
 toplevel, exprs, exports = GI.output_exprs()
