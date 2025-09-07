@@ -309,7 +309,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
             imported -= 1
             continue
         end
-        if get_type_init(o)==:intern  # GParamSpec and children output this
+        if get_type_init_function_name(o)==:intern  # GParamSpec and children output this
             continue
         end
         obj_decl!(exprs,o,ns,handled)
@@ -453,11 +453,11 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
         unsupported = false # whatever we happen to unsupport
         for arg in get_args(i)
             try
-                bt = get_base_type(get_type(arg))
+                bt = get_base_type(get_type_info(arg))
                 if isa(bt,Ptr{GIArrayType}) || isa(bt,Ptr{GIArrayType{3}})
                     unsupported = true; break
                 end
-                if (isa(get_base_type(get_type(arg)), Nothing))
+                if (isa(get_base_type(get_type_info(arg)), Nothing))
                     unsupported = true; break
                 end
             catch e

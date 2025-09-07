@@ -1,8 +1,6 @@
 module GI
-    using Glib_jll, gobject_introspection_jll
+    using Glib_jll
     using MacroTools, CEnum, BitFlags, EzXML
-
-    @static gobject_introspection_jll.is_available() || error("gobject_introspection_jll is not available on this platform")
 
     include("GLibBase/GLibBase.jl")
 
@@ -23,16 +21,18 @@ module GI
     export const_expr
     export extract_type
 
-    libgi = gobject_introspection_jll.libgirepository
+    const libgi = Glib_jll.libgirepository
+    mutable struct GIRepository
+        handle::Ptr{GIRepository}
+    end
 
-    global const libgi_version = VersionNumber(
-      ccall((:gi_get_major_version, libgi), Cint, ()),
-      ccall((:gi_get_minor_version, libgi), Cint, ()),
-      ccall((:gi_get_micro_version, libgi), Cint, ()))
-
-
+    global repo::GIRepository
     include("girepo.jl")
     include("giimport.jl")
     include("giexport.jl")
     include("gidocs.jl")
+    
+    function __init__()
+        global repo = GIRepository()
+    end
 end

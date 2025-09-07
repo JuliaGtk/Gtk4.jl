@@ -30,21 +30,6 @@ begin
         ret2 = convert(GDateTime, ret, false)
         ret2
     end
-    function get_application_info(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol}, _name::Union{AbstractString, Symbol})
-        m_exec = Ref{Cstring}()
-        m_count = Ref{UInt32}()
-        m_stamp = Ref{Ptr{GDateTime}}()
-        err = err_buf()
-        ret = ccall(("g_bookmark_file_get_application_info", libglib), Cint, (Ptr{GBookmarkFile}, Cstring, Cstring, Ptr{Cstring}, Ptr{UInt32}, Ptr{Ptr{GDateTime}}, Ptr{Ptr{GError}}), instance, _uri, _name, m_exec, m_count, m_stamp, err)
-        check_err(err)
-        ret2 = convert(Bool, ret)
-        _exec = m_exec[]
-        _exec = string_or_nothing(_exec, true)
-        _count = m_count[]
-        _stamp = m_stamp[]
-        _stamp = convert(GDateTime, _stamp, false)
-        (ret2, _exec, _count, _stamp)
-    end
     function get_applications(instance::GBookmarkFile, _uri::Union{AbstractString, Symbol})
         m_length = Ref{UInt64}()
         err = err_buf()
