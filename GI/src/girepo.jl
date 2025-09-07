@@ -302,7 +302,6 @@ function find_by_gtype(gtypeid::Csize_t)
     rconvert(GIBaseInfo, ccall((:gi_repository_find_by_gtype, libgi), Ptr{GIBaseInfo}, (Ptr{GIRepository}, Csize_t), repo, gtypeid))
 end
 
-#GIInfoTypes[:method] = GIFunctionInfo
 GIInfoTypes[:callable] = GICallableInfo
 GIInfoTypes[:registered_type] = GIRegisteredTypeInfo
 GIInfoTypes[:object] = GIObjectInfo
@@ -344,9 +343,8 @@ rconvert(::Type{Nothing}, val) = error("something went wrong")
 for (owner, property) in [
     (:object, :method), (:object, :signal), (:object, :interface),
     (:object, :constant), (:object, :field),
-    (:interface, :method), (:interface, :signal),
-    (:callable, :arg), (:enum, :value), 
-    (:struct, :field), (:struct, :method),
+    (:interface, :method), (:interface, :signal), (:callable, :arg),
+    (:enum, :value), (:struct, :field), (:struct, :method),
     (:interface, :prerequisite)
     ]
     @eval function $(Symbol("get_$(property)s"))(info::$(GIInfoTypes[owner]))
@@ -384,20 +382,17 @@ function get_all_signals(info::GIObjectInfo)
     sigs
 end
 
-#getindex(info::GIRegisteredTypeInfo, name::Symbol) = find_method(info, name)
-
 # one->one
 # FIXME: memory management of GIInfo:s
 ctypes = Dict(GIBaseInfo=>Ptr{GIBaseInfo},
          MaybeGIInfo=>Ptr{GIBaseInfo},
           Symbol=>Ptr{UInt8})
 for (owner,property,typ) in [
-    (:base, :name, Symbol), (:base, :namespace, Symbol), #(:base, :type, Int),
-    (:base, :container, MaybeGIInfo),
+    (:base, :name, Symbol), (:base, :namespace, Symbol), (:base, :container, MaybeGIInfo),
     (:registered_type, :g_type, GType), (:registered_type, :type_name, Symbol), (:object, :parent, MaybeGIInfo), (:object, :type_init_function_name, Symbol),
     (:callable, :return_type, GIBaseInfo), (:callable, :caller_owns, EnumGI), (:callable, :instance_ownership_transfer, EnumGI), (:registered_type, :type_init_function_name, Symbol),
-    (:function, :flags, EnumGI), (:function, :symbol, Symbol), #(:property, :type, GIBaseInfo), (:property, :ownership_transfer, EnumGI), (:property, :flags, EnumGI),
-    (:arg, :type_info, GIBaseInfo), (:arg, :direction, EnumGI), (:arg, :ownership_transfer, EnumGI), #(:function, :property, MaybeGIInfo),
+    (:function, :flags, EnumGI), (:function, :symbol, Symbol),
+    (:arg, :type_info, GIBaseInfo), (:arg, :direction, EnumGI), (:arg, :ownership_transfer, EnumGI),
     (:arg, :destroy, Cint), (:arg, :scope, EnumGI),
     (:type, :tag, EnumGI), (:type, :interface, MaybeGIInfo), (:type, :array_type, EnumGI),
     (:type, :array_fixed_size, Cint),
@@ -442,9 +437,6 @@ function get_attribute(info,name)
     ret==C_NULL ? nothing : bytestring(ret)
 end
 
-#get_name(info::GITypeInfo) = Symbol("<gtype>")
-#get_name(info::GIInvalidInfo) = Symbol("<INVALID>")
-
 get_param_type(info::GITypeInfo,n) = rconvert(MaybeGIInfo, ccall(("gi_type_info_get_param_type", libgi), Ptr{GIBaseInfo}, (Ptr{GIBaseInfo}, Cint), info, n))
 
 #pretend that CallableInfo is a ArgInfo describing the return value
@@ -458,10 +450,8 @@ for (owner,flag) in [
     (:callable, :is_method), (:callable, :can_throw_gerror),
     (:arg, :is_caller_allocates), (:arg, :may_be_null),
     (:arg, :is_skip), (:arg, :is_return_value), (:arg, :is_optional),
-    (:type, :is_zero_terminated),
-    (:base, :is_deprecated),
-    (:struct, :is_gtype_struct),
-    (:object, :get_abstract)
+    (:type, :is_zero_terminated), (:base, :is_deprecated),
+    (:struct, :is_gtype_struct), (:object, :get_abstract)
     ]
 
     @eval function $flag(info::$(GIInfoTypes[owner]))
@@ -591,10 +581,6 @@ function isopaque(info::GIStructInfo)
     fields=get_fields(info)
     return length(fields)==0
 end
-
-#get_call(info::GITypeInfo) = get_call(get_container(info))
-#get_call(info::GIArgInfo) = get_container(info)
-#get_call(info::GICallableInfo) = info
 
 function show(io::IO,info::GITypeInfo)
     bt = get_base_type(info)
