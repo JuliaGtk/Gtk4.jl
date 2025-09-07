@@ -26,7 +26,6 @@ GI.write_consts_to_file(path,"gio_consts",toplevel)
 ## structs
 
 disguised = GI.read_disguised(d)
-println(disguised)
 struct_skiplist=vcat(disguised, [:ActionEntry,:DBusAnnotationInfo,:DBusArgInfo,:DBusInterfaceInfo,
 :DBusInterfaceVTable,:DBusMethodInfo,:DBusPropertyInfo,:DBusSignalInfo,:DBusSubtreeVTable,
 :DBusNodeInfo,:InputMessage,:OutputMessage,:StaticResource,:UnixMountEntry,:UnixMountPoint,

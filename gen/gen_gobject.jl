@@ -31,6 +31,7 @@ special = [:Value]
 import_as_opaque = [:ObjectClass]
 struct_skiplist=vcat(disguised, special, [:CClosure,:Closure,:ClosureNotifyData,
 :ObjectConstructParam,:TypeInstance,:TypeInterface,:WeakRef],
+# following are GLib structs that are somehow imported as in the GObject namespace (bug in libgirepository?)
 [:Array, :BookmarkFile, :ByteArray, :Bytes, :Checksum, :Date, :DateTime, :Dir,
  :Error, :HashTable, :Hmac, :IOChannel, :KeyFile, :MainContext, :MainLoop, 
  :MappedFile, :MarkupParseContext, :MatchInfo, :OptionGroup, :PatternSpec,
