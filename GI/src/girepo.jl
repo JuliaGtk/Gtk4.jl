@@ -79,24 +79,9 @@ end
 
 unsafe_convert(::Type{Ptr{GIBaseInfo}},w::GIBaseInfo) = w.handle
 
-const GIInfoTypesShortNames = (:Invalid, :Function, :Callback, :Struct, :Boxed, :Enum,
-                               :Flags, :Object, :Interface, :Constant, :Unknown, :Union,
-                               :Value, :Signal, :VFunc, :Property, :Field, :Arg, :Type, :Unresolved)
-
 const EnumGI = Int
 
-const GIInfoTypeNames = [ Base.Symbol("GI$(name)Info") for name in GIInfoTypesShortNames]
-
 const GIInfoTypes = Dict{Symbol, Type}()
-
-for (i,itype) in enumerate(GIInfoTypesShortNames)
-    #gt = GLib.g_type_from_name(Symbol("GI",itype,"Info"))
-    #println("itype is $itype, gt is $gt")
-    #let lowername = Symbol(lowercase(string(itype)))
-    #    @eval const $(GIInfoTypeNames[i]) = GIInfo{$gt}
-    #    GIInfoTypes[lowername] = GIInfo{gt}
-    #end
-end
 
 const GIEnumOrFlags = Union{GIEnumInfo,GIFlagsInfo}
 
