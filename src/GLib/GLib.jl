@@ -150,6 +150,8 @@ include("glist.jl")
 include("gtype.jl")
 
 include("../gen/glib_consts")
+include("../gen/gobject_consts")
+include("../gen/gio_consts")
 
 const lib_version = VersionNumber(
       MAJOR_VERSION,

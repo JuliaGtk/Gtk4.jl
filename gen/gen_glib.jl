@@ -9,20 +9,10 @@ path="../src/gen"
 mkpath(path)
 
 ns = GINamespace(:GLib, "2.0")
-ns2 = GINamespace(:GObject, "2.0")
-ns3 = GINamespace(:Gio, "2.0")
-
-# GI.get_shlibs() gets confused sometimes and for some reason this helps...
-println(GI.get_shlibs(ns3))
 
 # This exports constants, structs, functions, etc. from the glib library
 
-# Constants for GLib, GObject, and Gio are grouped together. Structs and methods
-# are kept separate because we need to interweave the automatically generated
-# code with hand-written code. See "gen_gobject.jl" and "gen_gio.jl".
-
 const_mod = Expr(:block)
-
 const_exports = Expr(:export)
 
 # Out of principle, let's skip some mathematical constants that are stored to only 6 decimals
@@ -31,12 +21,6 @@ const_skip = [:E,:LN2,:LN10,:LOG_2_BASE_10,:PI,:PI_2,:PI_4,:SQRT2]
 c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=const_skip; incl_typeinit=false)
 dglib = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 GI.append_const_docs!(const_mod.args, "glib", dglib, c)
-c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:IOCondition])
-d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns2)).gir")
-GI.append_const_docs!(const_mod.args, "gobject", d, c)
-c = GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
-d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns3)).gir")
-GI.append_const_docs!(const_mod.args, "gio", d, c)
 push!(const_mod.args,const_exports)
 
 push!(exprs, const_mod)
