@@ -10,6 +10,19 @@ path="../src/gen"
 ns = GINamespace(:Gio,"2.0")
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 
+const_mod = Expr(:block)
+const_exports = Expr(:export)
+
+c = GI.all_const_exprs!(const_mod, const_exports, ns; incl_typeinit=false)
+dglib = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
+GI.append_const_docs!(const_mod.args, "gio", dglib, c)
+push!(const_mod.args,const_exports)
+
+push!(exprs, const_mod)
+
+## export constants, enums, and flags code
+GI.write_consts_to_file(path,"gio_consts",toplevel)
+
 ## structs
 
 disguised = GI.read_disguised(d)
