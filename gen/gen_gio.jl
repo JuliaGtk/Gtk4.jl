@@ -13,7 +13,7 @@ d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 const_mod = Expr(:block)
 const_exports = Expr(:export)
 
-c = GI.all_const_exprs!(const_mod, const_exports, ns; incl_typeinit=false)
+c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=[:TlsProtocolVersion])
 dglib = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 GI.append_const_docs!(const_mod.args, "gio", dglib, c)
 push!(const_mod.args,const_exports)

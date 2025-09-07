@@ -3,10 +3,25 @@ GI.prepend_search_path("/usr/lib64/girepository-1.0")
 
 printstyled("Generating code for GObject\n";bold=true)
 
+toplevel, exprs, exports = GI.output_exprs()
+
 path="../src/gen"
 
 ns = GINamespace(:GObject,"2.0")
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
+
+const_mod = Expr(:block)
+const_exports = Expr(:export)
+
+c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist = [:IOCondition])
+dglib = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
+GI.append_const_docs!(const_mod.args, "gobject", dglib, c)
+push!(const_mod.args,const_exports)
+
+push!(exprs, const_mod)
+
+## export constants, enums, and flags code
+GI.write_consts_to_file(path,"gobject_consts",toplevel)
 
 ## structs
 
@@ -15,7 +30,12 @@ disguised = GI.read_disguised(d)
 special = [:Value]
 import_as_opaque = [:ObjectClass]
 struct_skiplist=vcat(disguised, special, [:CClosure,:Closure,:ClosureNotifyData,
-:ObjectConstructParam,:TypeInstance,:TypeInterface,:WeakRef])
+:ObjectConstructParam,:TypeInstance,:TypeInterface,:WeakRef],
+[:Array, :BookmarkFile, :ByteArray, :Bytes, :Checksum, :Date, :DateTime, :Dir,
+ :Error, :HashTable, :Hmac, :IOChannel, :KeyFile, :MainContext, :MainLoop, 
+ :MappedFile, :MarkupParseContext, :MatchInfo, :OptionGroup, :PatternSpec,
+ :PollFD, :PtrArray, :Rand, :Regex, :Source, :String, :Strv, :StrvBuilder,
+ :Thread, :TimeZone, :Tree, :Uri, :VariantBuilder, :VariantDict, :VariantType])
 
 # these struct types are members in other structs, so we export them first
 first_list=[:EnumValue,:TypeClass,:TypeInterface,:FlagsValue,:TypeValueTable]
