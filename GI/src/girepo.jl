@@ -8,10 +8,6 @@ abstract type GIBaseInfo end
 abstract type GIRegisteredTypeInfo <: GIBaseInfo end
 abstract type GICallableInfo <: GIBaseInfo end
 
-mutable struct GIRepository
-    handle::Ptr{GIRepository}
-end
-
 GIRepository() = GIRepository(ccall((:gi_repository_new, libgi), Ptr{GIRepository}, ()))
 
 unsafe_convert(::Type{Ptr{GIRepository}},w::GIRepository) = w.handle

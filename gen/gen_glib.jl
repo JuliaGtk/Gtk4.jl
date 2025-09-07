@@ -1,4 +1,5 @@
 using GI, EzXML
+GI.prepend_search_path("/usr/lib64/girepository-1.0")
 
 printstyled("Generating constants for GLib, GObject, and Gio\n";bold=true)
 

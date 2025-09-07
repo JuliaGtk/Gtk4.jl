@@ -21,8 +21,12 @@ module GI
     export const_expr
     export extract_type
 
-    libgi = Glib_jll.libgirepository
+    const libgi = Glib_jll.libgirepository
+    mutable struct GIRepository
+        handle::Ptr{GIRepository}
+    end
 
+    global repo::GIRepository
     include("girepo.jl")
     include("giimport.jl")
     include("giexport.jl")

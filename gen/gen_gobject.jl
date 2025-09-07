@@ -1,4 +1,5 @@
-using GI
+using GI, EzXML
+GI.prepend_search_path("/usr/lib64/girepository-1.0")
 
 printstyled("Generating code for GObject\n";bold=true)
 

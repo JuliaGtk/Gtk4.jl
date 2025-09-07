@@ -1,4 +1,5 @@
 using GI
+GI.prepend_search_path("/usr/lib64/girepository-1.0")
 
 ns = GINamespace(:cairo,"1.0")
 path="../src/gen"

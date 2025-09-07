@@ -1,4 +1,5 @@
-using GI
+using GI, EzXML
+GI.prepend_search_path("/usr/lib64/girepository-1.0")
 
 printstyled("Generating code for Gio\n";bold=true)
 
@@ -12,6 +13,7 @@ d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 ## structs
 
 disguised = GI.read_disguised(d)
+println(disguised)
 struct_skiplist=vcat(disguised, [:ActionEntry,:DBusAnnotationInfo,:DBusArgInfo,:DBusInterfaceInfo,
 :DBusInterfaceVTable,:DBusMethodInfo,:DBusPropertyInfo,:DBusSignalInfo,:DBusSubtreeVTable,
 :DBusNodeInfo,:InputMessage,:OutputMessage,:StaticResource,:UnixMountEntry,:UnixMountPoint,
@@ -27,7 +29,7 @@ obj_constructor_skiplist = [:new_for_bus_sync,:new_sync,:new_with_fd_list,:new_f
 
 #GI.all_object_signals!(exprs,ns;object_skiplist=vcat(obj_skiplist,[:AppInfoMonitor,:DBusConnection,:DBusMenuModel,:DBusProxy,:DBusMethodInvocation,:IOModule,:SimpleProxyResolver,:UnixMountMonitor,:Task]))
 
-struct_skiplist = GI.export_struct_exprs!(ns,path, "gio", struct_skiplist, import_as_opaque; doc_xml = d, output_boxed_cache_init = false, output_object_cache_init = false, object_skiplist = obj_skiplist, object_constructor_skiplist = obj_constructor_skiplist, interface_skiplist = [:XdpProxyResolverIface], output_object_cache_define = false, output_boxed_types_def = false)
+struct_skiplist = GI.export_struct_exprs!(ns,path, "gio", struct_skiplist, []; doc_xml = d, output_boxed_cache_init = false, output_object_cache_init = false, object_skiplist = obj_skiplist, object_constructor_skiplist = obj_constructor_skiplist, interface_skiplist = [:XdpProxyResolverIface], output_object_cache_define = false, output_boxed_types_def = false)
 
 object_method_skiplist=[:new_for_bus,:export,:add_option_group,:make_pollfd,:get_info,
 :new_for_bus_sync,:new_sync,:writev,:writev_all,:flatten_tree,:changed_tree,:receive_messages,:send_message,:send_message_with_timeout,:send_messages,
