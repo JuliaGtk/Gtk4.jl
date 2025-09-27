@@ -23,10 +23,45 @@ end
 
 # GtkImage (for fixed-size images, such as icons)
 
+@doc """
+    GtkImage(; kwargs...)
+    GtkImage(image::GdkPixbuf; kwargs...)
+    GtkImage(image::GdkPaintable; kwargs...)
+    GtkImage(image::GIcon; kwargs...)
+
+Create a `GtkImage` widget, which displays an image as an icon. If an `image`
+is provided it will be displayed. Keyword arguments allow you to set GObject
+properties.
+
+    GtkImage(filename::AbstractString; kwargs...)
+
+Try to load an image from a file and create a `GtkImage` displaying it.
+
+See also the [GTK docs](https://docs.gtk.org/gtk4/class.Picture.html).
+""" GtkImage
+
 GtkImage(::Nothing; kwargs...) = error("Ambiguous argument for constructor, please directly call one of the constructors in G_.")
 empty!(img::GtkImage) = (G_.clear(img); img)
 
 # GtkPicture (for displaying an image at its natural size)
+
+@doc """
+    GtkPicture(; kwargs...)
+    GtkPicture(image::GdkPixbuf; kwargs...)
+    GtkPicture(image::GdkPaintable; kwargs...)
+
+Create a `GtkPicture` widget, which displays an image at its natural size. If
+an `image` is provided it will be displayed. Keyword arguments allow you to
+set GObject properties.
+
+    GtkPicture(filename::AbstractString; kwargs...)
+    GtkPicture(file::GFile; kwargs...)
+
+Try to load an image from a file and create a `GtkPicture` displaying it.
+
+See also the [GTK docs](https://docs.gtk.org/gtk4/class.Picture.html).
+""" GtkPicture
+
 
 GtkPicture(::Nothing; kwargs...) = error("Ambiguous argument for constructor, please directly call one of the constructors in G_.")
 
@@ -36,9 +71,32 @@ GtkVideo(::Nothing; kwargs...) = error("Ambiguous argument for constructor, plea
 
 ## GtkProgressBar
 
+@doc """
+    GtkProgressBar(; kwargs...)
+
+Create a `GtkProgressBar`, which shows a progress bar and optionally a text
+label. Keyword arguments allow you to set GObject properties.
+
+The method or property `fraction` can be used to set or get the fraction of
+the operation that is complete (it must be between 0 and 1).
+
+See also the [GTK docs](https://docs.gtk.org/gtk4/class.ProgressBar.html).
+""" GtkProgressBar
+
 pulse(progress::GtkProgressBar) = G_.pulse(progress)
 
 ## GtkSpinner
+
+@doc """
+    GtkSpinner(; kwargs...)
+
+Create a `GtkSpinner`, which optionally shows a spinning icon to indicate to
+the user that some operation is running. The state of the widget can be
+controlled through the property "spinning" or using the methods `start` and
+`stop`. Keyword arguments allow you to set GObject properties.
+
+See also the [GTK docs](https://docs.gtk.org/gtk4/class.Spinner.html).
+""" GtkSpinner
 
 """
     start(spinner::GtkSpinner)

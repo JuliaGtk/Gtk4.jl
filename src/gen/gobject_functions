@@ -211,6 +211,11 @@ begin
         ret = ccall(("g_type_class_adjust_private_offset", libgobject), Nothing, (Ptr{Nothing}, Ptr{Int32}), _g_class_maybe, _private_size_or_offset)
         nothing
     end
+    function type_class_get(_type::Integer)
+        ret = ccall(("g_type_class_get", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
+        ret2 = convert(GTypeClassLike, ret)
+        ret2
+    end
     function type_class_peek(_type::Integer)
         ret = ccall(("g_type_class_peek", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
         ret2 = convert(GTypeClassLike, ret)
@@ -221,18 +226,13 @@ begin
         ret2 = convert(GTypeClassLike, ret)
         ret2
     end
-    function type_class_ref(_type::Integer)
-        ret = ccall(("g_type_class_ref", libgobject), Ptr{_GTypeClass}, (UInt64,), _type)
-        ret2 = convert(GTypeClassLike, ret)
+    function type_default_interface_get(_g_type::Integer)
+        ret = ccall(("g_type_default_interface_get", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
+        ret2 = convert(GTypeInterfaceLike, ret)
         ret2
     end
     function type_default_interface_peek(_g_type::Integer)
         ret = ccall(("g_type_default_interface_peek", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
-        ret2 = convert(GTypeInterfaceLike, ret)
-        ret2
-    end
-    function type_default_interface_ref(_g_type::Integer)
-        ret = ccall(("g_type_default_interface_ref", libgobject), Ptr{_GTypeInterface}, (UInt64,), _g_type)
         ret2 = convert(GTypeInterfaceLike, ret)
         ret2
     end

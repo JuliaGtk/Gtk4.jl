@@ -1,7 +1,7 @@
 GI.jl
 ======
 
-Julia bindings using libgobject-introspection.
+Julia bindings using GObject introspection.
 
 This builds on https://github.com/bfredl/GI.jl
 
@@ -15,7 +15,7 @@ As new functionality is added to libraries, you just have to run GI.jl again and
 The advantage over using Clang to generate wrappers is the fact that annotations provide important information, like whether outputs are "owned" or not, which arguments are closures or array lengths, and so on.
 Disadvantages: the current implementation only extracts GI information on Linux, leading to potential bugs on other platforms.
 
-This package is unregistered and it only works on Linux because it uses [gobject_introspection_jll](https://github.com/JuliaPackaging/Yggdrasil/tree/master/G/gobject_introspection), which is currently only available for Linux. However, most generated code works on other platforms.
+This package is unregistered. It has only been tested and run on Linux. However, most generated code works on other platforms.
 
 ## Status
 

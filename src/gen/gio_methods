@@ -110,6 +110,11 @@ begin
         _flags = m_flags[]
         (ret2, _size, _flags)
     end
+    function has_children(instance::GResource, _path::Union{AbstractString, Symbol})
+        ret = ccall(("g_resource_has_children", libgio), Cint, (Ptr{GResource}, Cstring), instance, _path)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function lookup_data(instance::GResource, _path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
         ret = ccall(("g_resource_lookup_data", libgio), Ptr{GBytes}, (Ptr{GResource}, Cstring, UInt32, Ptr{Ptr{GError}}), instance, _path, _lookup_flags, err)

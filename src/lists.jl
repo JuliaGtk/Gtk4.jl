@@ -36,6 +36,7 @@ Base.lastindex(sl::GtkStringList) = length(sl)
 iterate(ls::GtkStringList, i=0) = (i==length(ls) ? nothing : (getindex(ls, i+1),i+1))
 getindex(sl::GtkStringList, i::Integer) = G_.get_string(sl, i - 1)
 eltype(::Type{GtkStringList}) = String
+getindex(sl::GtkStringList, bs::GtkBitset) = [sl[i] for i in bs]
 
 function show(io::IO, sl::GtkStringList)
     l=length(sl)
@@ -296,6 +297,18 @@ function set_sort_func(cf::GtkCustomSorter, ::Nothing)
 end
 
 changed(cs::GtkCustomSorter, _change = FilterChange_DIFFERENT) = G_.changed(cs, _change)
+
+## GtkBitset (used for multiple selection)
+
+length(bs::GtkBitset) = Int(Gtk4.G_.get_size(bs))
+Base.isempty(bs::GtkBitset) = Gtk4.G_.is_empty(bs)
+function getindex(bs::GtkBitset, i::Integer)
+    (i<1 || i> length(bs)) && error("Index $i is out of bounds")
+    Gtk4.G_.get_nth(bs, i-1)+1
+end
+push!(bs::GtkBitset, val) = (Gtk4.G_.add(bs,val-1); bs)
+iterate(bs::GtkBitset, i=0) = (i==length(bs) ? nothing : (getindex(bs, i+1),i+1))
+eltype(::Type{GtkBitset}) = UInt
 
 ## GtkExpressions
 

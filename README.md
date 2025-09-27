@@ -36,7 +36,7 @@ Gtk4.jl can interfere with [PyPlot.jl](https://github.com/JuliaPy/PyPlot.jl). Ca
 Gtk4.jl has also been reported to interfere with [GLMakie.jl](https://github.com/MakieOrg/Makie.jl), though this doesn't always seem to happen. To use Gtk4 based packages with Makie, you can use [Gtk4Makie.jl](https://github.com/JuliaGtk/Gtk4Makie.jl).
 
 ## Enabling GTK4's EGL backend (Linux)
-On Wayland, a Cairo-based fallback backend will be used unless you tell `libglvnd_jll` where to find libEGL. This can be done by setting the environment variable __EGL_VENDOR_LIBRARY_DIRS. See [here](https://gitlab.freedesktop.org/glvnd/libglvnd/-/blob/master/src/EGL/icd_enumeration.md) for details.
+On older versions of Wayland, a Cairo-based fallback rendering backend may be used unless you tell `libglvnd_jll` where to find libEGL. This can be done by setting the environment variable __EGL_VENDOR_LIBRARY_DIRS. See [here](https://gitlab.freedesktop.org/glvnd/libglvnd/-/blob/master/src/EGL/icd_enumeration.md) for details.
 
 For convenience, in Gtk4.jl this can be set as a preference for a particular Julia environment using Preferences.jl:
 ```julia

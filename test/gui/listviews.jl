@@ -59,6 +59,15 @@ destroy(win)
 
 end
 
+@testset "Bitset" begin
+bs=GtkBitset()
+@test isempty(bs)
+@test length(bs)==0
+push!(bs, 3)
+@test 3 in bs
+@test !(4 in bs)
+end
+
 function match(item)
   label = item.child
   return startswith(label.label, "widget")

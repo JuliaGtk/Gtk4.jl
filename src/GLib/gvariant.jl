@@ -36,8 +36,6 @@ GVariant(::Type{T},x) where T = GVariant(convert(T, x))
 Base.:(==)(lhs::GVariant, rhs::GVariant) = G_.equal(lhs,rhs)
 Base.:(<)(lhs::GVariant, rhs::GVariant) = G_.compare(lhs, rhs) < 0
 Base.:(<=)(lhs::GVariant, rhs::GVariant) = G_.compare(lhs, rhs) <= 0
-Base.:(>)(lhs::GVariant, rhs::GVariant) = G_.compare(lhs, rhs) > 0
-Base.:(>=)(lhs::GVariant, rhs::GVariant) = G_.compare(lhs, rhs) >= 0
 
 variant_type_string(::Type{Bool}) = "b"
 variant_type_string(::Type{UInt8}) = "y"

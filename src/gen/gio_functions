@@ -699,6 +699,11 @@ begin
         _flags = m_flags[]
         (ret2, _size, _flags)
     end
+    function resources_has_children(_path::Union{AbstractString, Symbol})
+        ret = ccall(("g_resources_has_children", libgio), Cint, (Cstring,), _path)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function resources_lookup_data(_path::Union{AbstractString, Symbol}, _lookup_flags)
         err = err_buf()
         ret = ccall(("g_resources_lookup_data", libgio), Ptr{GBytes}, (Cstring, UInt32, Ptr{Ptr{GError}}), _path, _lookup_flags, err)
@@ -789,8 +794,8 @@ begin
         ret2 = convert(Bool, ret)
         ret2
     end
-    function unix_mounts_changed_since(_time::Integer)
-        ret = ccall(("g_unix_mounts_changed_since", libgio), Cint, (UInt64,), _time)
+    function unix_mount_entries_changed_since(_time::Integer)
+        ret = ccall(("g_unix_mount_entries_changed_since", libgio), Cint, (UInt64,), _time)
         ret2 = convert(Bool, ret)
         ret2
     end

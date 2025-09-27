@@ -1408,8 +1408,9 @@ begin
         ret = ccall(("g_on_error_query", libglib), Nothing, (Cstring,), _prg_name)
         nothing
     end
-    function on_error_stack_trace(_prg_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_on_error_stack_trace", libglib), Nothing, (Cstring,), _prg_name)
+    function on_error_stack_trace(_prg_name::Maybe(Union{AbstractString, Symbol}))
+        _prg_name_maybe = nothing_to_null(_prg_name)
+        ret = ccall(("g_on_error_stack_trace", libglib), Nothing, (Cstring,), _prg_name_maybe)
         nothing
     end
     function once_init_enter(_location::Nothing)
@@ -1628,6 +1629,11 @@ begin
     function ref_string_acquire(_str::Union{AbstractString, Symbol})
         ret = ccall(("g_ref_string_acquire", libglib), Cstring, (Cstring,), _str)
         ret2 = string_or_nothing(ret, true)
+        ret2
+    end
+    function ref_string_equal(_str1::Union{AbstractString, Symbol}, _str2::Union{AbstractString, Symbol})
+        ret = ccall(("g_ref_string_equal", libglib), Cint, (Cstring, Cstring), _str1, _str2)
+        ret2 = convert(Bool, ret)
         ret2
     end
     function ref_string_length(_str::Union{AbstractString, Symbol})

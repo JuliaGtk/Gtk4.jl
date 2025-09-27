@@ -100,9 +100,7 @@ function length_zt(arr::Ptr)
     i-1
 end
 
-function nothing_to_null(x)
-    x = x === nothing ? C_NULL : x
-end
+nothing_to_null(x) = something(x, C_NULL)
 
 function check_undefref(p::Ptr)
     if p == C_NULL
@@ -152,6 +150,8 @@ include("glist.jl")
 include("gtype.jl")
 
 include("../gen/glib_consts")
+include("../gen/gobject_consts")
+include("../gen/gio_consts")
 
 const lib_version = VersionNumber(
       MAJOR_VERSION,

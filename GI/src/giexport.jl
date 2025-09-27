@@ -11,9 +11,9 @@ function _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports,
     end
 end
 
-function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[], export_constants = true)
+function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_typeinit=true,skiplist=Symbol[], export_constants = true, exclude_deprecated = true)
     loaded=Symbol[]
-    c = get_consts(ns)
+    c = get_consts(ns, exclude_deprecated)
 
     for (name,val) in c
         in(name, skiplist) && continue
@@ -24,14 +24,14 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
         printstyled("Generated ",length(c)," constants\n";color=:green)
     end
 
-    es=get_all(ns,GIEnumInfo)
+    es=get_all(ns,GIEnumInfo,exclude_deprecated)
     _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants)
 
     if print_summary && length(es)>0
         printstyled("Generated ",length(es)," enums\n";color=:green)
     end
 
-    es=get_all(ns,GIFlagsInfo)
+    es=get_all(ns,GIFlagsInfo,exclude_deprecated)
     _enums_and_flags(es, skiplist, incl_typeinit, const_mod, const_exports, loaded, export_constants)
 
     if print_summary && length(es)>0
@@ -40,12 +40,12 @@ function all_const_exprs!(const_mod, const_exports, ns;print_summary=true,incl_t
     loaded
 end
 
-function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix, doc_xml = nothing, export_constants = true)
+function export_consts!(ns,path,prefix,skiplist = Symbol[]; doc_prefix = prefix, doc_xml = nothing, export_constants = true, exclude_deprecated = true)
     toplevel, exprs, exports = GI.output_exprs()
 
     const_mod = Expr(:block)
 
-    c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist, export_constants)
+    c = all_const_exprs!(const_mod, exports, ns; skiplist= skiplist, export_constants, exclude_deprecated)
     if doc_xml !== nothing
         GI.append_const_docs!(const_mod.args, doc_prefix, doc_xml, c)
     end
@@ -134,13 +134,10 @@ end
 
 function struct_constructor_exprs!(exprs,ns;constructor_skiplist=[], struct_skiplist=[], exclude_deprecated=true,first_list=[])
     s=get_non_skipped(ns,GIStructInfo,struct_skiplist,exclude_deprecated)
-    structs = get_name.(s)
-    for ss in vcat(first_list, structs)
+    for ss in vcat(first_list, get_name.(s))
         ssi=gi_find_by_name(ns,ss)
         constructors = get_constructors(ssi;skiplist=constructor_skiplist, struct_skiplist=struct_skiplist, exclude_deprecated=exclude_deprecated)
-        if !isempty(constructors)
-            append!(exprs,constructors)
-        end
+        append!(exprs,constructors)
     end
 end
 
@@ -191,18 +188,17 @@ function all_struct_exprs!(exprs,exports,ns;print_summary=true,excludelist=[],co
     struct_skiplist, loaded
 end
 
-function all_callbacks!(exprs, exports, ns; callback_skiplist = [])
-    callbacks=get_all(ns,GICallbackInfo)
-    for c in callbacks
+function all_callbacks!(exprs, exports, ns; callback_skiplist = [], exclude_deprecated = true)
+    for c in get_all(ns,GICallbackInfo,exclude_deprecated)
         get_name(c) in callback_skiplist && continue
         try
-        push!(exprs, decl(c))
-    catch e
-        if isa(e, NotImplementedError)
-            continue
-        else
-            rethrow(e)
-        end
+            push!(exprs, decl(c))
+        catch e
+            if isa(e, NotImplementedError)
+                continue
+            else
+                rethrow(e)
+            end
         end
         push!(exports.args, get_full_name(c))
     end
@@ -235,7 +231,7 @@ function export_struct_exprs!(ns,path,prefix, struct_skiplist, import_as_opaque;
     end
     all_object_signals!(exprs, ns;skiplist=signal_skiplist,object_skiplist=object_skiplist, exclude_deprecated = exclude_deprecated)
     if output_callbacks
-        all_callbacks!(exprs, exports, ns; callback_skiplist)
+        all_callbacks!(exprs, exports, ns; callback_skiplist, exclude_deprecated)
     end
     push!(exprs,exports)
     write_to_file(path,"$(prefix)_structs",toplevel)
@@ -268,8 +264,7 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
             (exclude_deprecated && is_deprecated(m)) && continue
             print_detailed && println(get_name(m))
             try
-                fun=create_method(m, liboverride)
-                push!(exprs, fun)
+                create_method(exprs, m, liboverride)
                 push!(handled_symbols,get_symbol(m))
                 created+=1
             catch e
@@ -314,7 +309,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
             imported -= 1
             continue
         end
-        if get_type_init(o)==:intern  # GParamSpec and children output this
+        if get_type_init_function_name(o)==:intern  # GParamSpec and children output this
             continue
         end
         obj_decl!(exprs,o,ns,handled)
@@ -332,7 +327,7 @@ function all_objects!(exprs,exports,ns;print_summary=true,handled=Symbol[],skipl
     end
     for o in objects
         constructors = get_constructors(o;skiplist=constructor_skiplist, struct_skiplist=skiplist, exclude_deprecated=exclude_deprecated)
-        isempty(constructors) || append!(exprs,constructors)
+        append!(exprs,constructors)
     end
     if print_summary
         printstyled("Created ",imported," objects out of ",length(objects),"\n";color=:green)
@@ -344,8 +339,7 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
     not_implemented=0
     skipped=0
     created=0
-    objects=get_non_skipped(ns,GIObjectInfo,object_skiplist,exclude_deprecated)
-    for o in objects
+    for o in get_non_skipped(ns,GIObjectInfo,object_skiplist,exclude_deprecated)
         name=get_name(o)
         methods=get_methods(o)
         for m in methods
@@ -355,8 +349,7 @@ function all_object_methods!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[]
             end
             (exclude_deprecated && is_deprecated(m)) && continue
             try
-                fun=create_method(m, liboverride)
-                push!(exprs, fun)
+                create_method(exprs, m, liboverride)
                 created+=1
             catch e
                 if isa(e, NotImplementedError)
@@ -383,8 +376,7 @@ end
 
 function all_object_signals!(exprs,ns;skiplist=Symbol[],object_skiplist=Symbol[], liboverride=nothing, exclude_deprecated=true)
     not_implemented=0
-    objects=get_non_skipped(ns,GIObjectInfo,object_skiplist,exclude_deprecated)
-    for o in objects
+    for o in get_non_skipped(ns,GIObjectInfo,object_skiplist,exclude_deprecated)
         signals = get_all_signals(o)
         for s in signals
             (exclude_deprecated && is_deprecated(s)) && continue
@@ -423,8 +415,7 @@ function all_interface_methods!(exprs,ns;skiplist=Symbol[],interface_skiplist=Sy
             end
             (exclude_deprecated && is_deprecated(m)) && continue
             try
-                fun=create_method(m, liboverride)
-                push!(exprs, fun)
+                create_method(exprs, m, liboverride)
                 created+=1
             catch e
                 if isa(e, NotImplementedError)
@@ -462,11 +453,11 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
         unsupported = false # whatever we happen to unsupport
         for arg in get_args(i)
             try
-                bt = get_base_type(get_type(arg))
+                bt = get_base_type(get_type_info(arg))
                 if isa(bt,Ptr{GIArrayType}) || isa(bt,Ptr{GIArrayType{3}})
                     unsupported = true; break
                 end
-                if (isa(get_base_type(get_type(arg)), Nothing))
+                if (isa(get_base_type(get_type_info(arg)), Nothing))
                     unsupported = true; break
                 end
             catch e
@@ -496,8 +487,7 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
         name = get_name(i)
         name = Symbol("$name")
         try
-            fun=create_method(i, liboverride)
-            push!(exprs, fun)
+            create_method(exprs, i, liboverride)
             j+=1
         catch e
             if isa(e, NotImplementedError)

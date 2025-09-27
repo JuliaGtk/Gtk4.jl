@@ -38,7 +38,8 @@ b = GtkBuilder("path/to/myapp.ui")
 !!! note
     If you are developing the code in a package you can get the package directory using the `@__DIR__` macro.
     For instance, if your UI file is located at `MyPackage/src/builder/myuifile.ui`, you can get the full path using
-    `uifile = joinpath(@__DIR__, "builder", "myuifile.ui")`.
+    `uifile = joinpath(@__DIR__, "builder", "myuifile.ui")`. If you plan to create an executable application of your package using PackageCompiler,
+    ensure that your UI file is relocatable by utilizing Artifacts.jl or RelocatableFolders.jl. For further details, please refer to the documentation of the respective packages.
 
 Alternatively, if we store the above XML definition in a Julia string `myapp` we can initialize
 the builder by

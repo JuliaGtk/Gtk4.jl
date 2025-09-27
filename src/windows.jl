@@ -361,7 +361,7 @@ end
 ## FileChoosers
 
 function GtkFileChooserDialog(title::AbstractString, parent::Union{Nothing,GtkWindow}, action, button_text_response; kwargs...)
-    parent = (parent === nothing ? C_NULL : parent)
+    parent = something(parent, C_NULL)
     d = ccall((:gtk_file_chooser_dialog_new, libgtk4), Ptr{GObject},
                 (Ptr{UInt8}, Ptr{GObject}, Cint, Ptr{Nothing}),
                                    title, parent, action, C_NULL)
@@ -719,6 +719,8 @@ end
 Get the paths selected by the user in a "select multiple folders" dialog.
 """
 select_multiple_folder_paths(dlg, resobj) = _path_multiple_finish(Gtk4.G_.select_multiple_folders_finish, dlg, resobj)
+
+## GtkFontDialog
 
 function choose_font(cb, dlg::GtkFontDialog, parent = nothing, cancellable = nothing)
     G_.choose_font(dlg, parent, nothing, cancellable, cb)

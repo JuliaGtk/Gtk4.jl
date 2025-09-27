@@ -1,8 +1,5 @@
-using Test, gobject_introspection_jll
+using Test
 
-if gobject_introspection_jll.is_available()
-
-ENV["GI_TYPELIB_PATH"]=gobject_introspection_jll.find_artifact_dir()*"/lib/girepository-1.0"
 using GI, EzXML
 
 @testset "GObject" begin
@@ -33,5 +30,4 @@ deps = GI.get_immediate_dependencies(ns)
 
 include("../../gen/gen_all.jl")
 
-end
 end

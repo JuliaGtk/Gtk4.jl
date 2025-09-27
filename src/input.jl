@@ -6,6 +6,11 @@ pulse(progress::GtkEntry) = G_.progress_pulse(progress)
 pulse_step(progress::GtkEntry, frac) = G_.set_progress_pulse_step(progress, frac)
 pulse_step(progress::GtkEntry) = G_.get_progress_pulse_step(progress)
 
+"""
+    GtkEntryBuffer(initial_text = nothing)
+
+Create an object that holds the text shown in a `GtkEntry`.
+"""
 function GtkEntryBuffer(initial_text = nothing)
     G_.EntryBuffer_new(initial_text, -1)
 end
@@ -78,7 +83,32 @@ function configure!(adj::GtkAdjustment; value = nothing, lower = nothing, upper 
 end
 
 ## GtkSpinButton
+@doc """
+    GtkSpinButton(min::Real, max::Real, step::Real; kwargs...)
 
+Create a `GtkSpinButton` widget, which shows an entry and buttons that
+increment and decrement the number shown in the entry. Minimum (`min`) and
+maximum (`max`) arguments restrict the range of allowable values, while the
+`step` argument controls the increment when the widget's buttons are used.
+Keyword arguments allow you to set GObject properties.
+
+    GtkSpinButton(adjustment::GtkAdjustment, climb_rate::Real, digits::Integer; kwargs...)
+
+Create a `GtkSpinButton` widget using an `adjustment` to set the range and step
+size. Additional arguments set widget properties: `climb_rate` controls the
+rate of acceleration when the widget's buttons are held down, while `digits`
+controls the number of decimal places displayed.
+
+See also [`GtkAdjustment`](@ref)
+and the [GTK docs](https://docs.gtk.org/gtk4/class.SpinButton.html).
+""" GtkSpinButton
+
+"""
+    GtkSpinButton(scale::AbstractRange; kwargs...)
+
+Create a `GtkSpinButton` with minimum and maximum allowed values and the
+default step size corresponding to `scale`.
+"""
 GtkSpinButton(scale::AbstractRange; kwargs...) = GtkSpinButton(minimum(scale), maximum(scale), step(scale); kwargs...)
 
 """

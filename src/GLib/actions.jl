@@ -46,7 +46,9 @@ getindex(m::GActionMap, name::AbstractString) = G_.lookup_action(m, name)
 """
     add_action(m::GActionMap, name::AbstractString, parameter::Type{T}, handler::Function)
 
-Add an action with `name` and a parameter of type `T` to a `GActionMap`. Also connect a `handler` for the action's "activate" signal.
+Add an action with `name` and a parameter of type `T` to a `GActionMap`.
+Returns the action. Also connect a `handler` for the action's "activate"
+signal.
 """
 function add_action(m::GActionMap, name::AbstractString,
                     parameter::Type{T}, handler::Function) where T
@@ -59,7 +61,8 @@ end
 """
     add_action(m::GActionMap, name::AbstractString, handler::Function)
 
-Add an action with `name` to a `GActionMap`. Also connect a `handler` for the action's "activate" signal.
+Add an action with `name` to a `GActionMap`. Also connect a `handler` for the
+action's "activate" signal.
 """
 function add_action(m::GActionMap, name::AbstractString, handler::Function)
     add_action(m, name, Nothing, handler)
