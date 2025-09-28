@@ -51,8 +51,7 @@ begin
     end
     function get_gtype(instance::GValueLike)
         ret = ccall(("g_value_get_gtype", libgobject), GType, (Ptr{_GValue},), instance)
-        ret2 = convert(GType, ret)
-        ret2
+        ret
     end
     function get_int(instance::GValueLike)
         ret = ccall(("g_value_get_int", libgobject), Int32, (Ptr{_GValue},), instance)
@@ -106,7 +105,7 @@ begin
         ret2 = convert(GVariant, ret)
         ret2
     end
-    function init(instance::GValueLike, _g_type::GType)
+    function init(instance::GValueLike, _g_type::Integer)
         ret = ccall(("g_value_init", libgobject), Ptr{_GValue}, (Ptr{_GValue}, GType), instance, _g_type)
         ret2 = convert(GValueLike, ret, false)
         ret2
@@ -146,7 +145,7 @@ begin
         ret = ccall(("g_value_set_float", libgobject), Nothing, (Ptr{_GValue}, Float32), instance, _v_float)
         nothing
     end
-    function set_gtype(instance::GValueLike, _v_gtype::GType)
+    function set_gtype(instance::GValueLike, _v_gtype::Integer)
         ret = ccall(("g_value_set_gtype", libgobject), Nothing, (Ptr{_GValue}, GType), instance, _v_gtype)
         nothing
     end

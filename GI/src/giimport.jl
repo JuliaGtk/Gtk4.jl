@@ -460,7 +460,7 @@ end
 
 function extract_type(info::GITypeInfo, basetype)
     if basetype === :GType
-        return TypeDesc(basetype,:GType,:GType,:GType)
+        return TypeDesc(basetype,:Integer,:GType,:GType)
     end
     typ = Symbol(string(basetype))
     if is_pointer(info)

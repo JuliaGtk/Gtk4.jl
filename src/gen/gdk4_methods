@@ -26,12 +26,12 @@ begin
         ret2
     end
     function ContentFormats_new_for_gtype(_type::Integer)
-        ret = ccall(("gdk_content_formats_new_for_gtype", libgtk4), Ptr{GdkContentFormats}, (UInt64,), _type)
+        ret = ccall(("gdk_content_formats_new_for_gtype", libgtk4), Ptr{GdkContentFormats}, (GType,), _type)
         ret2 = convert(GdkContentFormats, ret, true)
         ret2
     end
     function contain_gtype(instance::GdkContentFormats, _type::Integer)
-        ret = ccall(("gdk_content_formats_contain_gtype", libgtk4), Cint, (Ptr{GdkContentFormats}, UInt64), instance, _type)
+        ret = ccall(("gdk_content_formats_contain_gtype", libgtk4), Cint, (Ptr{GdkContentFormats}, GType), instance, _type)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -42,8 +42,8 @@ begin
     end
     function get_gtypes(instance::GdkContentFormats)
         m_n_gtypes = Ref{UInt64}()
-        ret = ccall(("gdk_content_formats_get_gtypes", libgtk4), Ptr{UInt64}, (Ptr{GdkContentFormats}, Ptr{UInt64}), instance, m_n_gtypes)
-        ret2 = collect(unsafe_wrap(Vector{UInt64}, ret, m_n_gtypes[]))
+        ret = ccall(("gdk_content_formats_get_gtypes", libgtk4), Ptr{GType}, (Ptr{GdkContentFormats}, Ptr{UInt64}), instance, m_n_gtypes)
+        ret2 = collect(unsafe_wrap(Vector{GType}, ret, m_n_gtypes[]))
         _n_gtypes = m_n_gtypes[]
         ret2
     end
@@ -65,7 +65,7 @@ begin
         ret2
     end
     function match_gtype(instance::GdkContentFormats, _second::GdkContentFormats)
-        ret = ccall(("gdk_content_formats_match_gtype", libgtk4), UInt64, (Ptr{GdkContentFormats}, Ptr{GdkContentFormats}), instance, _second)
+        ret = ccall(("gdk_content_formats_match_gtype", libgtk4), GType, (Ptr{GdkContentFormats}, Ptr{GdkContentFormats}), instance, _second)
         ret
     end
     function match_mime_type(instance::GdkContentFormats, _second::GdkContentFormats)
@@ -131,7 +131,7 @@ begin
         nothing
     end
     function add_gtype(instance::GdkContentFormatsBuilder, _type::Integer)
-        ret = ccall(("gdk_content_formats_builder_add_gtype", libgtk4), Nothing, (Ptr{GdkContentFormatsBuilder}, UInt64), instance, _type)
+        ret = ccall(("gdk_content_formats_builder_add_gtype", libgtk4), Nothing, (Ptr{GdkContentFormatsBuilder}, GType), instance, _type)
         nothing
     end
     function add_mime_type(instance::GdkContentFormatsBuilder, _mime_type::Union{AbstractString, Symbol})
@@ -665,7 +665,7 @@ begin
             _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
             _callback_closure = GLib.gc_ref(_callback)
         end
-        ret = ccall(("gdk_clipboard_read_value_async", libgtk4), Nothing, (Ptr{GObject}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        ret = ccall(("gdk_clipboard_read_value_async", libgtk4), Nothing, (Ptr{GObject}, GType, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function read_value_finish(instance::GdkClipboard, _result::GAsyncResult)
@@ -710,7 +710,7 @@ begin
         ret2
     end
     function get_gtype(instance::GdkContentDeserializer)
-        ret = ccall(("gdk_content_deserializer_get_gtype", libgtk4), UInt64, (Ptr{GObject},), instance)
+        ret = ccall(("gdk_content_deserializer_get_gtype", libgtk4), GType, (Ptr{GObject},), instance)
         ret
     end
     function get_input_stream(instance::GdkContentDeserializer)
@@ -824,7 +824,7 @@ begin
         ret2
     end
     function get_gtype(instance::GdkContentSerializer)
-        ret = ccall(("gdk_content_serializer_get_gtype", libgtk4), UInt64, (Ptr{GObject},), instance)
+        ret = ccall(("gdk_content_serializer_get_gtype", libgtk4), GType, (Ptr{GObject},), instance)
         ret
     end
     function get_mime_type(instance::GdkContentSerializer)
@@ -1533,7 +1533,7 @@ begin
             _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
             _callback_closure = GLib.gc_ref(_callback)
         end
-        ret = ccall(("gdk_drop_read_value_async", libgtk4), Nothing, (Ptr{GObject}, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        ret = ccall(("gdk_drop_read_value_async", libgtk4), Nothing, (Ptr{GObject}, GType, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function read_value_finish(instance::GdkDrop, _result::GAsyncResult)

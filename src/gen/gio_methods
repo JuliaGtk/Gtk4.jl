@@ -3028,7 +3028,7 @@ begin
         ret
     end
     function ListStore_new(_item_type::Integer)
-        ret = ccall(("g_list_store_new", libgio), Ptr{GObject}, (UInt64,), _item_type)
+        ret = ccall(("g_list_store_new", libgio), Ptr{GObject}, (GType,), _item_type)
         ret2 = GListStoreLeaf(ret, true)
         ret2
     end
@@ -5217,11 +5217,11 @@ begin
         nothing
     end
     function factory_lookup_type(_family, _type, _protocol_id::Integer)
-        ret = ccall(("g_socket_connection_factory_lookup_type", libgio), UInt64, (UInt32, UInt32, Int32), _family, _type, _protocol_id)
+        ret = ccall(("g_socket_connection_factory_lookup_type", libgio), GType, (UInt32, UInt32, Int32), _family, _type, _protocol_id)
         ret
     end
     function factory_register_type(_g_type::Integer, _family, _type, _protocol::Integer)
-        ret = ccall(("g_socket_connection_factory_register_type", libgio), Nothing, (UInt64, UInt32, UInt32, Int32), _g_type, _family, _type, _protocol)
+        ret = ccall(("g_socket_connection_factory_register_type", libgio), Nothing, (GType, UInt32, UInt32, Int32), _g_type, _family, _type, _protocol)
         nothing
     end
     function connect(instance::GSocketConnection, _address::GSocketAddress, _cancellable::Maybe(GCancellable))
@@ -8628,7 +8628,7 @@ begin
         ret2
     end
     function get_item_type(instance::GListModel)
-        ret = ccall(("g_list_model_get_item_type", libgio), UInt64, (Ptr{GObject},), instance)
+        ret = ccall(("g_list_model_get_item_type", libgio), GType, (Ptr{GObject},), instance)
         ret
     end
     function get_n_items(instance::GListModel)

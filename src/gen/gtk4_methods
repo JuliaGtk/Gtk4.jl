@@ -2842,7 +2842,7 @@ begin
     end
     function extend_with_template(instance::GtkBuilder, _object::GObject, _template_type::Integer, _buffer::Union{AbstractString, Symbol}, _length::Integer)
         err = err_buf()
-        ret = ccall(("gtk_builder_extend_with_template", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, UInt64, Cstring, Int64, Ptr{Ptr{GError}}), instance, _object, _template_type, _buffer, _length, err)
+        ret = ccall(("gtk_builder_extend_with_template", libgtk4), Cint, (Ptr{GObject}, Ptr{GObject}, GType, Cstring, Int64, Ptr{Ptr{GError}}), instance, _object, _template_type, _buffer, _length, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
@@ -2876,7 +2876,7 @@ begin
         ret2
     end
     function get_type_from_name(instance::GtkBuilder, _type_name::Union{AbstractString, Symbol})
-        ret = ccall(("gtk_builder_get_type_from_name", libgtk4), UInt64, (Ptr{GObject}, Cstring), instance, _type_name)
+        ret = ccall(("gtk_builder_get_type_from_name", libgtk4), GType, (Ptr{GObject}, Cstring), instance, _type_name)
         ret
     end
     function set_current_object(instance::GtkBuilder, _current_object::Maybe(GObject))
@@ -2906,7 +2906,7 @@ begin
     function value_from_string_type(instance::GtkBuilder, _type::Integer, _string::Union{AbstractString, Symbol})
         m_value = Ref{_GValue}()
         err = err_buf()
-        ret = ccall(("gtk_builder_value_from_string_type", libgtk4), Cint, (Ptr{GObject}, UInt64, Cstring, Ptr{_GValue}, Ptr{Ptr{GError}}), instance, _type, _string, m_value, err)
+        ret = ccall(("gtk_builder_value_from_string_type", libgtk4), Cint, (Ptr{GObject}, GType, Cstring, Ptr{_GValue}, Ptr{Ptr{GError}}), instance, _type, _string, m_value, err)
         check_err(err)
         ret2 = convert(Bool, ret)
         _value = m_value[]
@@ -5881,7 +5881,7 @@ begin
         get_buildable_id(GtkBuildable(instance))
     end
     function DropTarget_new(_type::Integer, _actions)
-        ret = ccall(("gtk_drop_target_new", libgtk4), Ptr{GObject}, (UInt64, UInt32), _type, _actions)
+        ret = ccall(("gtk_drop_target_new", libgtk4), Ptr{GObject}, (GType, UInt32), _type, _actions)
         ret2 = GtkDropTargetLeaf(ret, true)
         ret2
     end
@@ -5907,8 +5907,8 @@ begin
     end
     function get_gtypes(instance::GtkDropTarget)
         m_n_types = Ref{UInt64}()
-        ret = ccall(("gtk_drop_target_get_gtypes", libgtk4), Ptr{UInt64}, (Ptr{GObject}, Ptr{UInt64}), instance, m_n_types)
-        ret2 = collect(unsafe_wrap(Vector{UInt64}, ret, m_n_types[]))
+        ret = ccall(("gtk_drop_target_get_gtypes", libgtk4), Ptr{GType}, (Ptr{GObject}, Ptr{UInt64}), instance, m_n_types)
+        ret2 = collect(unsafe_wrap(Vector{GType}, ret, m_n_types[]))
         _n_types = m_n_types[]
         ret2
     end
@@ -5931,9 +5931,9 @@ begin
         nothing
     end
     function set_gtypes(instance::GtkDropTarget, _types)
-        _types_arr = convert(Vector{UInt64}, _types)
+        _types_arr = convert(Vector{GType}, _types)
         _n_types = length(_types)
-        ret = ccall(("gtk_drop_target_set_gtypes", libgtk4), Nothing, (Ptr{GObject}, Ptr{UInt64}, UInt64), instance, _types_arr, _n_types)
+        ret = ccall(("gtk_drop_target_set_gtypes", libgtk4), Nothing, (Ptr{GObject}, Ptr{GType}, UInt64), instance, _types_arr, _n_types)
         nothing
     end
     function set_preload(instance::GtkDropTarget, _preload::Bool)
@@ -7072,7 +7072,7 @@ begin
         ret2
     end
     function get_value_type(instance::GtkExpression)
-        ret = ccall(("gtk_expression_get_value_type", libgtk4), UInt64, (Ptr{GtkExpression},), instance)
+        ret = ccall(("gtk_expression_get_value_type", libgtk4), GType, (Ptr{GtkExpression},), instance)
         ret
     end
     function is_static(instance::GtkExpression)
@@ -12385,9 +12385,9 @@ begin
         nothing
     end
     function ListStore_new(_types)
-        _types_arr = convert(Vector{UInt64}, _types)
+        _types_arr = convert(Vector{GType}, _types)
         _n_columns = length(_types)
-        ret = ccall(("gtk_list_store_newv", libgtk4), Ptr{GObject}, (Int32, Ptr{UInt64}), _n_columns, _types_arr)
+        ret = ccall(("gtk_list_store_newv", libgtk4), Ptr{GObject}, (Int32, Ptr{GType}), _n_columns, _types_arr)
         ret2 = GtkListStoreLeaf(ret, true)
         ret2
     end
@@ -12463,9 +12463,9 @@ begin
         nothing
     end
     function set_column_types(instance::GtkListStore, _types)
-        _types_arr = convert(Vector{UInt64}, _types)
+        _types_arr = convert(Vector{GType}, _types)
         _n_columns = length(_types)
-        ret = ccall(("gtk_list_store_set_column_types", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{UInt64}), instance, _n_columns, _types_arr)
+        ret = ccall(("gtk_list_store_set_column_types", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{GType}), instance, _n_columns, _types_arr)
         nothing
     end
     function set_value(instance::GtkListStore, _iter::GtkTreeIterLike, _column::Integer, _value::GValueLike)
@@ -15710,7 +15710,7 @@ begin
     end
     function PropertyExpression_new(_this_type::Integer, _expression::Maybe(GtkExpression), _property_name::Union{AbstractString, Symbol})
         _expression_maybe = nothing_to_null(_expression)
-        ret = ccall(("gtk_property_expression_new", libgtk4), Ptr{GtkExpression}, (UInt64, Ptr{GtkExpression}, Cstring), _this_type, _expression_maybe, _property_name)
+        ret = ccall(("gtk_property_expression_new", libgtk4), Ptr{GtkExpression}, (GType, Ptr{GtkExpression}, Cstring), _this_type, _expression_maybe, _property_name)
         ret2 = convert(GtkExpression, ret)
         ret2
     end
@@ -21004,9 +21004,9 @@ begin
         nothing
     end
     function TreeStore_new(_types)
-        _types_arr = convert(Vector{UInt64}, _types)
+        _types_arr = convert(Vector{GType}, _types)
         _n_columns = length(_types)
-        ret = ccall(("gtk_tree_store_newv", libgtk4), Ptr{GObject}, (Int32, Ptr{UInt64}), _n_columns, _types_arr)
+        ret = ccall(("gtk_tree_store_newv", libgtk4), Ptr{GObject}, (Int32, Ptr{GType}), _n_columns, _types_arr)
         ret2 = GtkTreeStoreLeaf(ret, true)
         ret2
     end
@@ -21092,9 +21092,9 @@ begin
         ret2
     end
     function set_column_types(instance::GtkTreeStore, _types)
-        _types_arr = convert(Vector{UInt64}, _types)
+        _types_arr = convert(Vector{GType}, _types)
         _n_columns = length(_types)
-        ret = ccall(("gtk_tree_store_set_column_types", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{UInt64}), instance, _n_columns, _types_arr)
+        ret = ccall(("gtk_tree_store_set_column_types", libgtk4), Nothing, (Ptr{GObject}, Int32, Ptr{GType}), instance, _n_columns, _types_arr)
         nothing
     end
     function set_value(instance::GtkTreeStore, _iter::GtkTreeIterLike, _column::Integer, _value::GValueLike)
@@ -22472,7 +22472,7 @@ begin
         ret2
     end
     function dispose_template(instance::GtkWidget, _widget_type::Integer)
-        ret = ccall(("gtk_widget_dispose_template", libgtk4), Nothing, (Ptr{GObject}, UInt64), instance, _widget_type)
+        ret = ccall(("gtk_widget_dispose_template", libgtk4), Nothing, (Ptr{GObject}, GType), instance, _widget_type)
         nothing
     end
     function drag_check_threshold(instance::GtkWidget, _start_x::Integer, _start_y::Integer, _current_x::Integer, _current_y::Integer)
@@ -22503,7 +22503,7 @@ begin
         _allocation
     end
     function get_ancestor(instance::GtkWidget, _widget_type::Integer)
-        ret = ccall(("gtk_widget_get_ancestor", libgtk4), Ptr{GObject}, (Ptr{GObject}, UInt64), instance, _widget_type)
+        ret = ccall(("gtk_widget_get_ancestor", libgtk4), Ptr{GObject}, (Ptr{GObject}, GType), instance, _widget_type)
         ret2 = convert_if_not_null(GtkWidget, ret, false)
         ret2
     end
@@ -22771,7 +22771,7 @@ begin
         ret2
     end
     function get_template_child(instance::GtkWidget, _widget_type::Integer, _name::Union{AbstractString, Symbol})
-        ret = ccall(("gtk_widget_get_template_child", libgtk4), Ptr{GObject}, (Ptr{GObject}, UInt64, Cstring), instance, _widget_type, _name)
+        ret = ccall(("gtk_widget_get_template_child", libgtk4), Ptr{GObject}, (Ptr{GObject}, GType, Cstring), instance, _widget_type, _name)
         ret2 = convert(GObject, ret, false)
         ret2
     end
@@ -24584,7 +24584,7 @@ begin
         nothing
     end
     function get_column_type(instance::GtkTreeModel, _index_::Integer)
-        ret = ccall(("gtk_tree_model_get_column_type", libgtk4), UInt64, (Ptr{GObject}, Int32), instance, _index_)
+        ret = ccall(("gtk_tree_model_get_column_type", libgtk4), GType, (Ptr{GObject}, Int32), instance, _index_)
         ret
     end
     function get_flags(instance::GtkTreeModel)
