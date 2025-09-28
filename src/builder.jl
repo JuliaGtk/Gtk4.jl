@@ -17,7 +17,9 @@ function push!(builder::GtkBuilder; buffer = nothing, filename = nothing)
         if Sys.WORD_SIZE == 64  # this method takes gssize as the length of the string so crashes on 32 bit
             G_.add_from_string(builder, buffer, -1)
         else
-            error("this method doesn't work on 32 bit systems, use a ccall")
+            err = err_buf()
+            ret = ccall(("gtk_builder_add_from_string", libgtk4), Cint, (Ptr{GObject}, Cstring, Cssize_t, Ptr{Ptr{GError}}), instance, _buffer, _length, err)
+            check_err(err)
         end
     elseif filename !== nothing
         G_.add_from_file(builder, filename)
