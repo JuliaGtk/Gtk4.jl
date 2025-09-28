@@ -12,7 +12,7 @@ begin
     const GEnumValueLike = Union{Ref{_GEnumValue}, GEnumValue}
     convert(::Type{GEnumValueLike}, p, owns) = convert(GEnumValue, p, owns)
     struct _GTypeClass
-        g_type::UInt64
+        g_type::GType
     end
     mutable struct GTypeClass
         handle::Ptr{_GTypeClass}
@@ -22,8 +22,8 @@ begin
     const GTypeClassLike = Union{Ref{_GTypeClass}, GTypeClass}
     convert(::Type{GTypeClassLike}, p, owns) = convert(GTypeClass, p, owns)
     struct _GTypeInterface
-        g_type::UInt64
-        g_instance_type::UInt64
+        g_type::GType
+        g_instance_type::GType
     end
     mutable struct GTypeInterface
         handle::Ptr{_GTypeInterface}
@@ -104,7 +104,7 @@ begin
         instance_size::UInt16
         n_preallocs::UInt16
         instance_init::Ptr{Cvoid}
-        value_type::UInt64
+        value_type::GType
         finalize::Ptr{Cvoid}
         value_set_default::Ptr{Cvoid}
         value_validate::Ptr{Cvoid}
@@ -132,11 +132,11 @@ begin
     struct _GSignalQuery
         signal_id::UInt32
         signal_name::Cstring
-        itype::UInt64
+        itype::GType
         signal_flags::UInt32
-        return_type::UInt64
+        return_type::GType
         n_params::UInt32
-        param_types::Ptr{UInt64}
+        param_types::Ptr{GType}
     end
     mutable struct GSignalQuery
         handle::Ptr{_GSignalQuery}
@@ -189,7 +189,7 @@ begin
     const GTypePluginClassLike = Union{Ref{_GTypePluginClass}, GTypePluginClass}
     convert(::Type{GTypePluginClassLike}, p, owns) = convert(GTypePluginClass, p, owns)
     struct _GTypeQuery
-        type::UInt64
+        type::GType
         type_name::Cstring
         class_size::UInt32
         instance_size::UInt32
