@@ -470,8 +470,8 @@ function all_functions!(exprs,ns;print_summary=true,skiplist=Symbol[],symbol_ski
         end
         try
             bt = get_base_type(get_return_type(i))
-            if isa(bt,Symbol)
-                unsupported = true;
+            if isa(bt,Symbol) && bt !== :GType
+                unsupported = true
             end
             if unsupported
                 skipped+=1

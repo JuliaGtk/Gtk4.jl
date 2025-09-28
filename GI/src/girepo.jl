@@ -486,7 +486,7 @@ const typetag_primitive = [
     Nothing,Bool,Int8,UInt8,
     Int16,UInt16,Int32,UInt32,
     Int64,UInt64,Cfloat,Cdouble,
-    GType,
+    :GType,
     String
     ]
 const TAG_BASIC_MAX = 13

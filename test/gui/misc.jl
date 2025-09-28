@@ -187,13 +187,11 @@ push!(b4; filename=testui)
 win = b4["a_window"]
 destroy(win)
 
-if Sys.WORD_SIZE == 64
-    b5 = GtkBuilder()
-    push!(b5; buffer=s)
+b5 = GtkBuilder()
+push!(b5; buffer=s)
 
-    win = b5["a_window"]
-    destroy(win)
-end
+win = b5["a_window"]
+destroy(win)
 
 end
 
