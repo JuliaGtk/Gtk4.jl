@@ -18,7 +18,7 @@ function push!(builder::GtkBuilder; buffer = nothing, filename = nothing)
             G_.add_from_string(builder, buffer, -1)
         else
             err = err_buf()
-            ret = ccall(("gtk_builder_add_from_string", libgtk4), Cint, (Ptr{GObject}, Cstring, Cssize_t, Ptr{Ptr{GError}}), instance, _buffer, _length, err)
+            ret = ccall(("gtk_builder_add_from_string", libgtk4), Cint, (Ptr{GObject}, Cstring, Cssize_t, Ptr{Ptr{GError}}), builder, buffer, -1, err)
             check_err(err)
         end
     elseif filename !== nothing
