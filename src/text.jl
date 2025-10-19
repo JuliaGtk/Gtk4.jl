@@ -31,7 +31,7 @@ function GtkTextIter(text::GtkTextBuffer, mark::GtkTextMark)
     Ref(i)
 end
 
-show(io::IO, iter::_GtkTextIter) = println("_GtkTextIter($(iter.offset) ))")
+show(io::IO, iter::_GtkTextIter) = print("_GtkTextIter($(G_.get_offset(Ref(iter))))")
 
 
 #"""
