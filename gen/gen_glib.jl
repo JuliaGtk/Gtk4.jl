@@ -1,4 +1,5 @@
 using GI, EzXML
+GI.prepend_search_path("/usr/lib64/girepository-1.0")
 
 printstyled("Generating constants for GLib, GObject, and Gio\n";bold=true)
 
@@ -8,17 +9,10 @@ path="../GObjects/src/gen"
 mkpath(path)
 
 ns = GINamespace(:GLib, "2.0")
-ns2 = GINamespace(:GObject, "2.0")
-ns3 = GINamespace(:Gio, "2.0")
 
 # This exports constants, structs, functions, etc. from the glib library
 
-# Constants for GLib, GObject, and Gio are grouped together. Structs and methods
-# are kept separate because we need to interweave the automatically generated
-# code with hand-written code. See "gen_gobject.jl" and "gen_gio.jl".
-
 const_mod = Expr(:block)
-
 const_exports = Expr(:export)
 
 # Out of principle, let's skip some mathematical constants that are stored to only 6 decimals
@@ -27,18 +21,12 @@ const_skip = [:E,:LN2,:LN10,:LOG_2_BASE_10,:PI,:PI_2,:PI_4,:SQRT2]
 c = GI.all_const_exprs!(const_mod, const_exports, ns, skiplist=const_skip; incl_typeinit=false)
 dglib = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
 GI.append_const_docs!(const_mod.args, "glib", dglib, c)
-c = GI.all_const_exprs!(const_mod, const_exports, ns2, skiplist=[:IOCondition])
-d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns2)).gir")
-GI.append_const_docs!(const_mod.args, "gobject", d, c)
-c = GI.all_const_exprs!(const_mod, const_exports, ns3, skiplist=[:TlsProtocolVersion])
-d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns3)).gir")
-GI.append_const_docs!(const_mod.args, "gio", d, c)
 push!(const_mod.args,const_exports)
 
 push!(exprs, const_mod)
 
 ## export constants, enums, and flags code
-GI.write_to_file(path,"glib_consts",toplevel)
+GI.write_consts_to_file(path,"glib_consts",toplevel)
 
 printstyled("Generating code for GLib\n";bold=true)
 
@@ -72,7 +60,7 @@ toplevel, exprs, exports = GI.output_exprs()
 name_issues=[:end]
 
 skiplist=vcat(name_issues,[
-:add_poll,:remove_poll,:check,:query,:find_source_by_funcs_user_data,:get_region,:invoke_full,:new_from_data,:find_source_by_id,:find_source_by_user_data])
+:get_application_info,:add_poll,:remove_poll,:check,:query,:find_source_by_funcs_user_data,:get_region,:invoke_full,:new_from_data,:find_source_by_id,:find_source_by_user_data])
 
 filter!(x->x≠:Variant,struct_skiplist)
 filter!(x->x≠:ByteArray,struct_skiplist)
@@ -105,7 +93,7 @@ skiplist=[:convert,:atomic_rc_box_release_full,:child_watch_add,:datalist_foreac
           :pattern_match_string,:log_structured_array,:log_writer_default,:log_writer_format_fields,
           :log_writer_journald,:log_writer_standard_streams,:parse_debug_string,:lstat,:stat,
           :child_watch_source_new,:date_strftime,:idle_source_new,:main_current_source,
-          :timeout_source_new,:timeout_source_new_seconds,:unix_fd_source_new,
+          :timeout_source_new,:timeout_source_new_seconds,:unix_fd_source_new,:async_queue_new,
           :unix_signal_source_new,:datalist_id_remove_multiple,:base64_encode_close,
           :base64_encode_step,:sequence_insert_before,:sequence_range_get_midpoint,
           :list_push_allocator,:node_push_allocator,:slist_push_allocator,:sequence_foreach_range,:sequence_sort_changed,:sequence_sort_changed_iter]

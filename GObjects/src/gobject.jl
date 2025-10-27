@@ -192,6 +192,14 @@ function register_subtype(::Type{T}, typename::Symbol, object_class_init_cfunc) 
     G_.type_register_static(base_gtype,typename,Ref(typeinfo),TypeFlags_FINAL)
 end
 
+# Add an interface implementation to a type
+function add_interface(subtype::GType, interface_type, interface_init_cfunc)
+    interfaceinfo=_GInterfaceInfo(interface_init_cfunc,
+                                  C_NULL,
+                                  C_NULL)
+    G_.type_add_interface_static(subtype, g_type(interface_type), Ref(interfaceinfo))
+end
+
 # Override a property (sometimes needed for interfaces or subtypes) of a `class`
 # `property_id` is under your control but you have to be self-consistent
 function override_property(class::Ptr{_GObjectClass}, property_id, name::AbstractString)
@@ -200,7 +208,8 @@ end
 
 # Asks GLib to make a new GObject
 function gobject_new(juliatype, args...)
-    gtype = GLib.g_type(juliatype)
-    h=ccall(("g_object_new", GLib.libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)
-    juliatype(h, args...)
+    gtype = g_type(juliatype)
+    h=ccall(("g_object_new", libgobject), Ptr{GObject}, (UInt64, Ptr{Cvoid}), gtype, C_NULL)
+    gobject_maybe_sink(h, false)
+    gobject_ref(juliatype(h, args...))
 end

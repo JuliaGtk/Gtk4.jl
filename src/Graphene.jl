@@ -12,8 +12,8 @@ import Base: convert, length, getindex, iterate, unsafe_convert
 
 import CEnum: @cenum, CEnum
 
-eval(include("gen/graphene_consts"))
-eval(include("gen/graphene_structs"))
+include("gen/graphene_consts")
+include("gen/graphene_structs")
 
 export _GrapheneRect, _GraphenePoint, _GrapheneMatrix, _GrapheneVec4, _GrapheneVec3, _GrapheneSize, _GraphenePoint3D
 
@@ -23,8 +23,8 @@ using ..GLib
 using ..Graphene
 using ..Graphene: libgraphene
 
-eval(include("gen/graphene_methods"))
-#eval(include("gen/graphene_functions"))
+include("gen/graphene_methods")
+#include("gen/graphene_functions")
 
 end
 

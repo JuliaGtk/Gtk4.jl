@@ -1,5 +1,4 @@
-quote
-$(Expr(:toplevel, quote
+begin
     function attr_allow_breaks_new(_allow_breaks::Bool)
         ret = ccall(("pango_attr_allow_breaks_new", libpango), Ptr{_PangoAttribute}, (Cint,), _allow_breaks)
         ret2 = convert(PangoAttributeLike, ret, true)
@@ -20,11 +19,13 @@ $(Expr(:toplevel, quote
         ret2 = convert(PangoAttributeLike, ret, true)
         ret2
     end
-    function attr_break(_text::Union{AbstractString, Symbol}, _length::Integer, _attr_list::PangoAttrList, _offset::Integer, _attrs)
-        _attrs_arr = convert(Vector{_PangoLogAttr}, _attrs)
+    function attr_break(_text::Union{AbstractString, Symbol}, _length::Integer, _attr_list::PangoAttrList, _offset::Integer)
+        m_attrs = Ref{Ptr{_PangoLogAttr}}()
         _attrs_len = length(_attrs)
-        ret = ccall(("pango_attr_break", libpango), Nothing, (Cstring, Int32, Ptr{PangoAttrList}, Int32, Ptr{_PangoLogAttr}, Int32), _text, _length, _attr_list, _offset, _attrs_arr, _attrs_len)
-        nothing
+        ret = ccall(("pango_attr_break", libpango), Nothing, (Cstring, Int32, Ptr{PangoAttrList}, Int32, Ptr{Ptr{_PangoLogAttr}}, Int32), _text, _length, _attr_list, _offset, m_attrs, _attrs_len)
+        _attrs = m_attrs[]
+        _attrs = collect(unsafe_wrap(Vector{_PangoLogAttr}, _attrs, m_attrs_len[]))
+        _attrs
     end
     function attr_fallback_new(_enable_fallback::Bool)
         ret = ccall(("pango_attr_fallback_new", libpango), Ptr{_PangoAttribute}, (Cint,), _enable_fallback)
@@ -211,16 +212,26 @@ $(Expr(:toplevel, quote
         ret2 = BidiType(ret)
         ret2
     end
-    function default_break(_text::Union{AbstractString, Symbol}, _length::Integer, _analysis::Maybe(PangoAnalysisLike), _attrs::PangoLogAttrLike, _attrs_len::Integer)
+    function default_break(_text::Union{AbstractString, Symbol}, _length::Integer, _analysis::Maybe(PangoAnalysisLike))
         _analysis_maybe = nothing_to_null(_analysis)
-        ret = ccall(("pango_default_break", libpango), Nothing, (Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoLogAttr}, Int32), _text, _length, _analysis_maybe, _attrs, _attrs_len)
-        nothing
+        m_attrs = Ref{Ptr{_PangoLogAttr}}()
+        _attrs_len = length(_attrs)
+        ret = ccall(("pango_default_break", libpango), Nothing, (Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{Ptr{_PangoLogAttr}}, Int32), _text, _length, _analysis_maybe, m_attrs, _attrs_len)
+        _attrs = m_attrs[]
+        _attrs = collect(unsafe_wrap(Vector{_PangoLogAttr}, _attrs, m_attrs_len[]))
+        _attrs
     end
-    function extents_to_pixels(_inclusive::Maybe(PangoRectangleLike), _nearest::Maybe(PangoRectangleLike))
-        _inclusive_maybe = nothing_to_null(_inclusive)
-        _nearest_maybe = nothing_to_null(_nearest)
-        ret = ccall(("pango_extents_to_pixels", libpango), Nothing, (Ptr{_PangoRectangle}, Ptr{_PangoRectangle}), _inclusive_maybe, _nearest_maybe)
-        nothing
+    function extents_to_pixels(_inclusive::_PangoRectangle, _nearest::_PangoRectangle)
+        m_inclusive = Ref{_PangoRectangle}()
+        m_inclusive[] = Base.cconvert(_PangoRectangle, _inclusive)
+        m_nearest = Ref{_PangoRectangle}()
+        m_nearest[] = Base.cconvert(_PangoRectangle, _nearest)
+        ret = ccall(("pango_extents_to_pixels", libpango), Nothing, (Ptr{_PangoRectangle}, Ptr{_PangoRectangle}), m_inclusive, m_nearest)
+        _inclusive = m_inclusive[]
+        _inclusive = convert(_PangoRectangle, _inclusive)
+        _nearest = m_nearest[]
+        _nearest = convert(_PangoRectangle, _nearest)
+        (_inclusive, _nearest)
     end
     function find_base_dir(_text::Union{AbstractString, Symbol}, _length::Integer)
         ret = ccall(("pango_find_base_dir", libpango), UInt32, (Cstring, Int32), _text, _length)
@@ -240,11 +251,13 @@ $(Expr(:toplevel, quote
         ret2 = convert(PangoFontDescription, ret, true)
         ret2
     end
-    function get_log_attrs(_text::Union{AbstractString, Symbol}, _length::Integer, _level::Integer, _language::PangoLanguage, _attrs)
-        _attrs_arr = convert(Vector{_PangoLogAttr}, _attrs)
+    function get_log_attrs(_text::Union{AbstractString, Symbol}, _length::Integer, _level::Integer, _language::PangoLanguage)
+        m_attrs = Ref{Ptr{_PangoLogAttr}}()
         _attrs_len = length(_attrs)
-        ret = ccall(("pango_get_log_attrs", libpango), Nothing, (Cstring, Int32, Int32, Ptr{PangoLanguage}, Ptr{_PangoLogAttr}, Int32), _text, _length, _level, _language, _attrs_arr, _attrs_len)
-        nothing
+        ret = ccall(("pango_get_log_attrs", libpango), Nothing, (Cstring, Int32, Int32, Ptr{PangoLanguage}, Ptr{Ptr{_PangoLogAttr}}, Int32), _text, _length, _level, _language, m_attrs, _attrs_len)
+        _attrs = m_attrs[]
+        _attrs = collect(unsafe_wrap(Vector{_PangoLogAttr}, _attrs, m_attrs_len[]))
+        _attrs
     end
     function gravity_get_for_matrix(_matrix::Maybe(PangoMatrixLike))
         _matrix_maybe = nothing_to_null(_matrix)
@@ -297,11 +310,6 @@ $(Expr(:toplevel, quote
     function layout_deserialize_error_quark()
         ret = ccall(("pango_layout_deserialize_error_quark", libpango), UInt32, ())
         ret
-    end
-    function log2vis_get_embedding_levels(_text::Union{AbstractString, Symbol}, _length::Integer, _pbase_dir)
-        ret = ccall(("pango_log2vis_get_embedding_levels", libpango), Ptr{UInt8}, (Cstring, Int32, UInt32), _text, _length, _pbase_dir)
-        ret2 = convert(UInt8, ret)
-        ret2
     end
     function markup_parser_finish(_context::GMarkupParseContext)
         m_attr_list = Ref{Ptr{PangoAttrList}}()
@@ -390,36 +398,46 @@ $(Expr(:toplevel, quote
         ret2 = convert_if_not_null(PangoLanguage, ret, true)
         ret2
     end
-    function shape(_text::Union{AbstractString, Symbol}, _length::Integer, _analysis::PangoAnalysisLike, _glyphs::PangoGlyphStringLike)
-        ret = ccall(("pango_shape", libpango), Nothing, (Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoGlyphString}), _text, _length, _analysis, _glyphs)
-        nothing
+    function shape(_text::Union{AbstractString, Symbol}, _length::Integer, _analysis::PangoAnalysisLike)
+        m_glyphs = Ref{_PangoGlyphString}()
+        ret = ccall(("pango_shape", libpango), Nothing, (Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoGlyphString}), _text, _length, _analysis, m_glyphs)
+        _glyphs = m_glyphs[]
+        _glyphs
     end
-    function shape_full(_item_text::Union{AbstractString, Symbol}, _item_length::Integer, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _analysis::PangoAnalysisLike, _glyphs::PangoGlyphStringLike)
+    function shape_full(_item_text::Union{AbstractString, Symbol}, _item_length::Integer, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _analysis::PangoAnalysisLike)
         _paragraph_text_maybe = nothing_to_null(_paragraph_text)
-        ret = ccall(("pango_shape_full", libpango), Nothing, (Cstring, Int32, Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoGlyphString}), _item_text, _item_length, _paragraph_text_maybe, _paragraph_length, _analysis, _glyphs)
-        nothing
+        m_glyphs = Ref{_PangoGlyphString}()
+        ret = ccall(("pango_shape_full", libpango), Nothing, (Cstring, Int32, Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoGlyphString}), _item_text, _item_length, _paragraph_text_maybe, _paragraph_length, _analysis, m_glyphs)
+        _glyphs = m_glyphs[]
+        _glyphs
     end
-    function shape_item(_item::PangoItemLike, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _log_attrs::Maybe(PangoLogAttrLike), _glyphs::PangoGlyphStringLike, _flags)
+    function shape_item(_item::PangoItemLike, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _log_attrs::Maybe(PangoLogAttrLike), _flags)
         _paragraph_text_maybe = nothing_to_null(_paragraph_text)
         _log_attrs_maybe = nothing_to_null(_log_attrs)
-        ret = ccall(("pango_shape_item", libpango), Nothing, (Ptr{_PangoItem}, Cstring, Int32, Ptr{_PangoLogAttr}, Ptr{_PangoGlyphString}, UInt32), _item, _paragraph_text_maybe, _paragraph_length, _log_attrs_maybe, _glyphs, _flags)
-        nothing
+        m_glyphs = Ref{_PangoGlyphString}()
+        ret = ccall(("pango_shape_item", libpango), Nothing, (Ptr{_PangoItem}, Cstring, Int32, Ptr{_PangoLogAttr}, Ptr{_PangoGlyphString}, UInt32), _item, _paragraph_text_maybe, _paragraph_length, _log_attrs_maybe, m_glyphs, _flags)
+        _glyphs = m_glyphs[]
+        _glyphs
     end
-    function shape_with_flags(_item_text::Union{AbstractString, Symbol}, _item_length::Integer, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _analysis::PangoAnalysisLike, _glyphs::PangoGlyphStringLike, _flags)
+    function shape_with_flags(_item_text::Union{AbstractString, Symbol}, _item_length::Integer, _paragraph_text::Maybe(Union{AbstractString, Symbol}), _paragraph_length::Integer, _analysis::PangoAnalysisLike, _flags)
         _paragraph_text_maybe = nothing_to_null(_paragraph_text)
-        ret = ccall(("pango_shape_with_flags", libpango), Nothing, (Cstring, Int32, Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoGlyphString}, UInt32), _item_text, _item_length, _paragraph_text_maybe, _paragraph_length, _analysis, _glyphs, _flags)
-        nothing
+        m_glyphs = Ref{_PangoGlyphString}()
+        ret = ccall(("pango_shape_with_flags", libpango), Nothing, (Cstring, Int32, Cstring, Int32, Ptr{_PangoAnalysis}, Ptr{_PangoGlyphString}, UInt32), _item_text, _item_length, _paragraph_text_maybe, _paragraph_length, _analysis, m_glyphs, _flags)
+        _glyphs = m_glyphs[]
+        _glyphs
     end
     function tab_array_from_string(_text::Union{AbstractString, Symbol})
         ret = ccall(("pango_tab_array_from_string", libpango), Ptr{PangoTabArray}, (Cstring,), _text)
         ret2 = convert_if_not_null(PangoTabArray, ret, true)
         ret2
     end
-    function tailor_break(_text::Union{AbstractString, Symbol}, _length::Integer, _analysis::PangoAnalysisLike, _offset::Integer, _attrs)
-        _attrs_arr = convert(Vector{_PangoLogAttr}, _attrs)
+    function tailor_break(_text::Union{AbstractString, Symbol}, _length::Integer, _analysis::PangoAnalysisLike, _offset::Integer)
+        m_attrs = Ref{Ptr{_PangoLogAttr}}()
         _attrs_len = length(_attrs)
-        ret = ccall(("pango_tailor_break", libpango), Nothing, (Cstring, Int32, Ptr{_PangoAnalysis}, Int32, Ptr{_PangoLogAttr}, Int32), _text, _length, _analysis, _offset, _attrs_arr, _attrs_len)
-        nothing
+        ret = ccall(("pango_tailor_break", libpango), Nothing, (Cstring, Int32, Ptr{_PangoAnalysis}, Int32, Ptr{Ptr{_PangoLogAttr}}, Int32), _text, _length, _analysis, _offset, m_attrs, _attrs_len)
+        _attrs = m_attrs[]
+        _attrs = collect(unsafe_wrap(Vector{_PangoLogAttr}, _attrs, m_attrs_len[]))
+        _attrs
     end
     function unichar_direction(_ch)
         ret = ccall(("pango_unichar_direction", libpango), UInt32, (Nothing,), _ch)
@@ -448,5 +466,4 @@ $(Expr(:toplevel, quote
         ret2 = string_or_nothing(ret, false)
         ret2
     end
-end))
 end

@@ -31,7 +31,7 @@ function GtkTextIter(text::GtkTextBuffer, mark::GtkTextMark)
     Ref(i)
 end
 
-show(io::IO, iter::_GtkTextIter) = println("_GtkTextIter($(iter.offset) ))")
+show(io::IO, iter::_GtkTextIter) = print("_GtkTextIter($(G_.get_offset(Ref(iter))))")
 
 
 #"""
@@ -152,8 +152,6 @@ end
 Base.:(==)(lhs::TI, rhs::TI) = G_.equal(lhs, rhs)
 Base.:(<)(lhs::TI, rhs::TI) = G_.compare(lhs, rhs) < 0
 Base.:(<=)(lhs::TI, rhs::TI) = G_.compare(lhs, rhs) <= 0
-Base.:(>)(lhs::TI, rhs::TI) = G_.compare(lhs, rhs) > 0
-Base.:(>=)(lhs::TI, rhs::TI) = G_.compare(lhs, rhs) >= 0
 
 start_(iter::TI) = Ref(iter)
 iterate(::TI, iter=start_(iter)) = iter.is_end ? nothing : (iter.char, iter + 1)

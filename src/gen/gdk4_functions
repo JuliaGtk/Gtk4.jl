@@ -1,5 +1,4 @@
-quote
-$(Expr(:toplevel, quote
+begin
     function cairo_rectangle(_cr::cairoContext, _rectangle::GdkRectangleLike)
         ret = ccall(("gdk_cairo_rectangle", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRectangle}), _cr, _rectangle)
         nothing
@@ -21,6 +20,36 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_cairo_set_source_rgba", libgtk4), Nothing, (Ptr{cairoContext}, Ptr{_GdkRGBA}), _cr, _rgba)
         nothing
     end
+    function color_state_get_oklab()
+        ret = ccall(("gdk_color_state_get_oklab", libgtk4), Ptr{GdkColorState}, ())
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
+    function color_state_get_oklch()
+        ret = ccall(("gdk_color_state_get_oklch", libgtk4), Ptr{GdkColorState}, ())
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
+    function color_state_get_rec2100_linear()
+        ret = ccall(("gdk_color_state_get_rec2100_linear", libgtk4), Ptr{GdkColorState}, ())
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
+    function color_state_get_rec2100_pq()
+        ret = ccall(("gdk_color_state_get_rec2100_pq", libgtk4), Ptr{GdkColorState}, ())
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
+    function color_state_get_srgb()
+        ret = ccall(("gdk_color_state_get_srgb", libgtk4), Ptr{GdkColorState}, ())
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
+    function color_state_get_srgb_linear()
+        ret = ccall(("gdk_color_state_get_srgb_linear", libgtk4), Ptr{GdkColorState}, ())
+        ret2 = convert(GdkColorState, ret, true)
+        ret2
+    end
     function content_deserialize_async(_stream::GInputStream, _mime_type::Union{AbstractString, Symbol}, _type::Integer, _io_priority::Integer, _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
         _cancellable_maybe = nothing_to_null(_cancellable)
         if _callback === nothing
@@ -30,7 +59,7 @@ $(Expr(:toplevel, quote
             _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
             _callback_closure = GLib.gc_ref(_callback)
         end
-        ret = ccall(("gdk_content_deserialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, UInt64, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _mime_type, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        ret = ccall(("gdk_content_deserialize_async", libgtk4), Nothing, (Ptr{GObject}, Cstring, GType, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _stream, _mime_type, _type, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function content_deserialize_finish(_result::GAsyncResult)
@@ -74,10 +103,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_drag_action_is_unique", libgtk4), Cint, (UInt32,), _action)
         ret2 = convert(Bool, ret)
         ret2
-    end
-    function drag_surface_size_get_type()
-        ret = ccall(("gdk_drag_surface_size_get_type", libgtk4), UInt64, ())
-        ret
     end
     function gl_error_quark()
         ret = ccall(("gdk_gl_error_quark", libgtk4), UInt32, ())
@@ -143,10 +168,6 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_texture_error_quark", libgtk4), UInt32, ())
         ret
     end
-    function toplevel_size_get_type()
-        ret = ccall(("gdk_toplevel_size_get_type", libgtk4), UInt64, ())
-        ret
-    end
     function unicode_to_keyval(_wc::Integer)
         ret = ccall(("gdk_unicode_to_keyval", libgtk4), UInt32, (UInt32,), _wc)
         ret
@@ -155,5 +176,4 @@ $(Expr(:toplevel, quote
         ret = ccall(("gdk_vulkan_error_quark", libgtk4), UInt32, ())
         ret
     end
-end))
 end

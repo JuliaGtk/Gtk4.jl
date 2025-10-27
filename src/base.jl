@@ -201,13 +201,6 @@ IteratorSize(::GtkWidget) = Base.SizeUnknown()
 
 convert(::Type{GtkWidget}, w::AbstractString) = GtkLabel(w)
 
-function glib_ref(x::Ptr{GskRenderNode})
-    ccall((:gsk_render_node_ref, libgtk4), Nothing, (Ptr{GskRenderNode},), x)
-end
-function glib_unref(x::Ptr{GskRenderNode})
-    ccall((:gsk_render_node_unref, libgtk4), Nothing, (Ptr{GskRenderNode},), x)
-end
-
 ## CSS, style
 
 """
@@ -226,6 +219,8 @@ function GtkCssProvider(data::Union{AbstractString,Nothing}, filename = nothing)
     end
     return provider
 end
+
+Base.show(io::IO, cssp::GtkCssProvider) = print(io,"GtkCssProviderLeaf(\""*G_.to_string(cssp)*"\")")
 
 function push!(context::GtkStyleContext, provider, priority=STYLE_PROVIDER_PRIORITY_USER)
     G_.add_provider(context, GtkStyleProvider(provider), priority)
@@ -303,7 +298,7 @@ Create a `GtkApplication` with DBus id `id` and flags.
 
 Related GTK function: [`gtk_application_new`()]($(gtkdoc_method_url("gtk4","Application","new")))
 """
-GtkApplication(id = nothing, flags = GObjects.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,flags)
+GtkApplication(id = nothing, flags = GObjects.ApplicationFlags_FLAGS_NONE) = GtkApplication(id,flags; kwargs...)
 function push!(app::GtkApplication, win::GtkWindow)
     G_.add_window(app, win)
     app

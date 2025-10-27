@@ -58,16 +58,19 @@ end
 lmm(g,k) = GtkStringList([join([k,b],'/') for b in keys(g)])
 lmm(d::HDF5.Dataset,k) = nothing
 
-function create_tree_model(filename, pwin)
-    treemodel = h5open(filename,"r") do h
-        ks = keys(h)
-        rootmodel = GtkStringList(ks)
-        function create_model(pp)
-            k=Gtk4.string(pp)
-            return lmm(h[k],k)
-        end
-        GtkTreeListModel(GLib.GListModel(rootmodel),false, true, create_model)
+function create_tree_model(h::HDF5.File)
+    ks = keys(h)
+    rootmodel = GtkStringList(ks)
+    function create_model(pp)
+        k=Gtk4.string(pp)
+        return lmm(h[k],k)
     end
+    GtkTreeListModel(GLib.GListModel(rootmodel),false, true, create_model)
+end
+
+create_tree_model(filename::AbstractString) = h5open(create_tree_model, filename,"r")
+function create_tree_model(filename, pwin)
+    treemodel = create_tree_model(filename)
     @idle_add begin
         Gtk4.destroy(pwin)
         _create_gui(filename, treemodel)

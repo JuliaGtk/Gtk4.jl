@@ -1,6 +1,10 @@
 using GObjects
 using Test
 
+function can_use_closure_cfunction()
+    return !(Sys.ARCH === :aarch64 || Sys.ARCH === :armv7l || Sys.ARCH === :armv6l)
+end
+
 @testset "signal basics" begin
 
 @test signal_return_type(GObject, :notify) == Nothing
@@ -141,22 +145,24 @@ add_action(GActionMap(g), "new-action-with-parameter", Bool, cb)
 
 end
 
-@testset "add action cfunction" begin
-g=GObjects.G_.SimpleActionGroup_new()
-extra_arg_ref=Ref(0)
+@static if can_use_closure_cfunction()
+    @testset "add action cfunction" begin
+    g=GObjects.G_.SimpleActionGroup_new()
+    extra_arg_ref=Ref(0)
 
-action_added = Ref(false)
+    action_added = Ref(false)
 
-function action_added_cb2(action_group, action_name, extra_arg)
-    action_added[] = true
-    extra_arg_ref[] = extra_arg
-    nothing
+    function action_added_cb2(action_group, action_name, extra_arg)
+        action_added[] = true
+        extra_arg_ref[] = extra_arg
+        nothing
+    end
+
+    # test the more sophisticated `signal_connect`
+    GObjects.on_action_added(action_added_cb2, g, 3)
+    end
 end
 
-# test the more sophisticated `signal_connect`
-GObjects.on_action_added(action_added_cb2, g, 3)
-
-end
 
 @testset "add stateful action" begin
 
@@ -175,17 +181,17 @@ a5 = add_stateful_action(GActionMap(g), "new-action3-par", Bool, true, cb)
 
 end
 
-@testset "add stateful action cfunction" begin
+@static if can_use_closure_cfunction()
+    @testset "add stateful action cfunction" begin
 
-g=GObjects.G_.SimpleActionGroup_new()
+    g=GObjects.G_.SimpleActionGroup_new()
 
-function cb2(a,v,user_data)
-    nothing
-end
+    function cb2(a,v,user_data)
+        nothing
+    end
 
-add_stateful_action(GActionMap(g), "new-action4", true, cb2, 5)
-
-
+    add_stateful_action(GActionMap(g), "new-action4", true, cb2, 5)
+    end
 end
 
 @testset "GListStore" begin

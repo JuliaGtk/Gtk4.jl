@@ -1,511 +1,395 @@
-quote
-$(Expr(:toplevel, quote
-    begin
-        struct _GskColorStop
-            offset::Float32
-            color::_GdkRGBA
-        end
-        mutable struct GskColorStop
-            handle::Ptr{_GskColorStop}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GskColorStop}}, box::GskColorStop) = begin
-                    convert(Ptr{_GskColorStop}, box.handle)
-                end
-            convert(::Type{GskColorStop}, p::Ptr{_GskColorStop}, owns = false) = begin
-                    GskColorStop(p, owns)
-                end
-            const GskColorStopLike = Union{Ref{_GskColorStop}, GskColorStop}
-            convert(::Type{GskColorStopLike}, p, owns) = begin
-                    convert(GskColorStop, p, owns)
-                end
-        end
+begin
+    struct _GskColorStop
+        offset::Float32
+        color::_GdkRGBA
     end
-    begin
-        struct _GskParseLocation
-            bytes::UInt64
-            chars::UInt64
-            lines::UInt64
-            line_bytes::UInt64
-            line_chars::UInt64
-        end
-        mutable struct GskParseLocation
-            handle::Ptr{_GskParseLocation}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GskParseLocation}}, box::GskParseLocation) = begin
-                    convert(Ptr{_GskParseLocation}, box.handle)
-                end
-            convert(::Type{GskParseLocation}, p::Ptr{_GskParseLocation}, owns = false) = begin
-                    GskParseLocation(p, owns)
-                end
-            const GskParseLocationLike = Union{Ref{_GskParseLocation}, GskParseLocation}
-            convert(::Type{GskParseLocationLike}, p, owns) = begin
-                    convert(GskParseLocation, p, owns)
-                end
-        end
+    mutable struct GskColorStop
+        handle::Ptr{_GskColorStop}
     end
-    begin
-        mutable struct GskRoundedRect
-            handle::Ptr{GskRoundedRect}
-        end
-        const GskRoundedRectLike = GskRoundedRect
-        const _GskRoundedRect = GskRoundedRect
+    unsafe_convert(::Type{Ptr{_GskColorStop}}, box::GskColorStop) = convert(Ptr{_GskColorStop}, box.handle)
+    convert(::Type{GskColorStop}, p::Ptr{_GskColorStop}, owns = false) = GskColorStop(p, owns)
+    const GskColorStopLike = Union{Ref{_GskColorStop}, GskColorStop}
+    convert(::Type{GskColorStopLike}, p, owns) = convert(GskColorStop, p, owns)
+    struct _GskParseLocation
+        bytes::UInt64
+        chars::UInt64
+        lines::UInt64
+        line_bytes::UInt64
+        line_chars::UInt64
     end
-    begin
-        mutable struct GskShaderArgsBuilder <: GBoxed
-            handle::Ptr{GskShaderArgsBuilder}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = begin
-                        ccall(("gsk_shader_args_builder_get_type", libgtk4), GType, ())
-                    end
-                function GskShaderArgsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    mutable struct GskParseLocation
+        handle::Ptr{_GskParseLocation}
+    end
+    unsafe_convert(::Type{Ptr{_GskParseLocation}}, box::GskParseLocation) = convert(Ptr{_GskParseLocation}, box.handle)
+    convert(::Type{GskParseLocation}, p::Ptr{_GskParseLocation}, owns = false) = GskParseLocation(p, owns)
+    const GskParseLocationLike = Union{Ref{_GskParseLocation}, GskParseLocation}
+    convert(::Type{GskParseLocationLike}, p, owns) = convert(GskParseLocation, p, owns)
+    mutable struct GskPath <: GBoxed
+        handle::Ptr{GskPath}
+        (GLib.g_type(::Type{T}) where T <: GskPath) = ccall(("gsk_path_get_type", libgtk4), GType, ())
+        function GskPath(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GskShaderArgsBuilder)
             end
+            x
         end
-        const GskShaderArgsBuilderLike = GskShaderArgsBuilder
+        push!(gboxed_types, GskPath)
     end
-    begin
-        struct _GskShadow
-            color::_GdkRGBA
-            dx::Float32
-            dy::Float32
-            radius::Float32
-        end
-        mutable struct GskShadow
-            handle::Ptr{_GskShadow}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GskShadow}}, box::GskShadow) = begin
-                    convert(Ptr{_GskShadow}, box.handle)
-                end
-            convert(::Type{GskShadow}, p::Ptr{_GskShadow}, owns = false) = begin
-                    GskShadow(p, owns)
-                end
-            const GskShadowLike = Union{Ref{_GskShadow}, GskShadow}
-            convert(::Type{GskShadowLike}, p, owns) = begin
-                    convert(GskShadow, p, owns)
-                end
-        end
-    end
-    begin
-        mutable struct GskTransform <: GBoxed
-            handle::Ptr{GskTransform}
-            begin
-                (GLib.g_type(::Type{T}) where T <: GskTransform) = begin
-                        ccall(("gsk_transform_get_type", libgtk4), GType, ())
-                    end
-                function GskTransform(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
-                    x = new(ref)
-                    if own
-                        finalizer(x) do x
-                            GLib.delboxed(x)
-                        end
-                    end
+    const GskPathLike = GskPath
+    mutable struct GskPathBuilder <: GBoxed
+        handle::Ptr{GskPathBuilder}
+        (GLib.g_type(::Type{T}) where T <: GskPathBuilder) = ccall(("gsk_path_builder_get_type", libgtk4), GType, ())
+        function GskPathBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
                     x
                 end
-                push!(gboxed_types, GskTransform)
             end
+            x
         end
-        const GskTransformLike = GskTransform
+        push!(gboxed_types, GskPathBuilder)
     end
+    const GskPathBuilderLike = GskPathBuilder
+    mutable struct GskPathMeasure <: GBoxed
+        handle::Ptr{GskPathMeasure}
+        (GLib.g_type(::Type{T}) where T <: GskPathMeasure) = ccall(("gsk_path_measure_get_type", libgtk4), GType, ())
+        function GskPathMeasure(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskPathMeasure)
+    end
+    const GskPathMeasureLike = GskPathMeasure
+    mutable struct GskPathPoint <: GBoxed
+        handle::Ptr{GskPathPoint}
+        (GLib.g_type(::Type{T}) where T <: GskPathPoint) = ccall(("gsk_path_point_get_type", libgtk4), GType, ())
+        function GskPathPoint(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskPathPoint)
+    end
+    const GskPathPointLike = GskPathPoint
+    mutable struct GskRoundedRect
+        handle::Ptr{GskRoundedRect}
+    end
+    const GskRoundedRectLike = GskRoundedRect
+    const _GskRoundedRect = GskRoundedRect
+    mutable struct GskShaderArgsBuilder <: GBoxed
+        handle::Ptr{GskShaderArgsBuilder}
+        (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = ccall(("gsk_shader_args_builder_get_type", libgtk4), GType, ())
+        function GskShaderArgsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskShaderArgsBuilder)
+    end
+    const GskShaderArgsBuilderLike = GskShaderArgsBuilder
+    struct _GskShadow
+        color::_GdkRGBA
+        dx::Float32
+        dy::Float32
+        radius::Float32
+    end
+    mutable struct GskShadow
+        handle::Ptr{_GskShadow}
+    end
+    unsafe_convert(::Type{Ptr{_GskShadow}}, box::GskShadow) = convert(Ptr{_GskShadow}, box.handle)
+    convert(::Type{GskShadow}, p::Ptr{_GskShadow}, owns = false) = GskShadow(p, owns)
+    const GskShadowLike = Union{Ref{_GskShadow}, GskShadow}
+    convert(::Type{GskShadowLike}, p, owns) = convert(GskShadow, p, owns)
+    mutable struct GskStroke <: GBoxed
+        handle::Ptr{GskStroke}
+        (GLib.g_type(::Type{T}) where T <: GskStroke) = ccall(("gsk_stroke_get_type", libgtk4), GType, ())
+        function GskStroke(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskStroke)
+    end
+    const GskStrokeLike = GskStroke
+    mutable struct GskTransform <: GBoxed
+        handle::Ptr{GskTransform}
+        (GLib.g_type(::Type{T}) where T <: GskTransform) = ccall(("gsk_transform_get_type", libgtk4), GType, ())
+        function GskTransform(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
+            x = new(ref)
+            if own
+                finalizer(x) do x
+                    GLib.delboxed
+                    x
+                end
+            end
+            x
+        end
+        push!(gboxed_types, GskTransform)
+    end
+    const GskTransformLike = GskTransform
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ColorStop.html)." GskColorStop
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ParseLocation.html)." GskParseLocation
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Path.html)." GskPath
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathBuilder.html)." GskPathBuilder
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathMeasure.html)." GskPathMeasure
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.PathPoint.html)." GskPathPoint
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.RoundedRect.html)." GskRoundedRect
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.ShaderArgsBuilder.html)." GskShaderArgsBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Shadow.html)." GskShadow
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Stroke.html)." GskStroke
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/struct.Transform.html)." GskTransform
-    begin
-        abstract type GskRenderNode <: GTypeInstance end
-        Base.convert(::Type{GskRenderNode}, ptr::Ptr{GskRenderNode}) = begin
-                GskRenderNodeLeaf(ptr)
+    abstract type GskRenderNode <: GTypeInstance end
+    Base.convert(::Type{GskRenderNode}, ptr::Ptr{GskRenderNode}) = GskRenderNodeLeaf(ptr)
+    Base.unsafe_convert(::Type{Ptr{GskRenderNode}}, o::GskRenderNode) = o.handle
+    mutable struct GskRenderNodeLeaf <: GskRenderNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskBlendNode <: GskRenderNode end
+    mutable struct GskBlendNodeLeaf <: GskBlendNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskBlurNode <: GskRenderNode end
+    mutable struct GskBlurNodeLeaf <: GskBlurNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskBorderNode <: GskRenderNode end
+    mutable struct GskBorderNodeLeaf <: GskBorderNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskRenderer <: GObject end
+    mutable struct GskRendererLeaf <: GskRenderer
+        handle::Ptr{GObject}
+        function GskRendererLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GskRendererLeaf with a NULL pointer")
             end
-        Base.unsafe_convert(::Type{Ptr{GskRenderNode}}, o::GskRenderNode) = begin
-                o.handle
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GskRenderer] = GskRendererLeaf
+    (GLib.g_type(::Type{T}) where T <: GskRenderer) = ccall(("gsk_renderer_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GskRenderer})
+        signalnames(supertype(GskRenderer))
+    end
+    abstract type GskBroadwayRenderer <: GskRenderer end
+    mutable struct GskBroadwayRendererLeaf <: GskBroadwayRenderer
+        handle::Ptr{GObject}
+        function GskBroadwayRendererLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GskBroadwayRendererLeaf with a NULL pointer")
             end
-    end
-    begin
-        mutable struct GskRenderNodeLeaf <: GskRenderNode
-            handle::Ptr{GskRenderNode}
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GskBlendNode <: GskRenderNode end
+    gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
+    (GLib.g_type(::Type{T}) where T <: GskBroadwayRenderer) = ccall(("gsk_broadway_renderer_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GskBroadwayRenderer})
+        signalnames(supertype(GskBroadwayRenderer))
     end
-    begin
-        mutable struct GskBlendNodeLeaf <: GskBlendNode
-            handle::Ptr{GskRenderNode}
-        end
+    abstract type GskCairoNode <: GskRenderNode end
+    mutable struct GskCairoNodeLeaf <: GskCairoNode
+        handle::Ptr{GskRenderNode}
     end
-    begin
-        abstract type GskBlurNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskBlurNodeLeaf <: GskBlurNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskBorderNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskBorderNodeLeaf <: GskBorderNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskRenderer <: GObject end
-        mutable struct GskRendererLeaf <: GskRenderer
-            handle::Ptr{GObject}
-            function GskRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GskCairoRenderer <: GskRenderer end
+    mutable struct GskCairoRendererLeaf <: GskCairoRenderer
+        handle::Ptr{GObject}
+        function GskCairoRendererLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GskCairoRendererLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GskRenderer] = GskRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskRenderer) = begin
-                ccall(("gsk_renderer_get_type", libgtk4), GType, ())
+    end
+    gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
+    (GLib.g_type(::Type{T}) where T <: GskCairoRenderer) = ccall(("gsk_cairo_renderer_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GskCairoRenderer})
+        signalnames(supertype(GskCairoRenderer))
+    end
+    abstract type GskClipNode <: GskRenderNode end
+    mutable struct GskClipNodeLeaf <: GskClipNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskColorMatrixNode <: GskRenderNode end
+    mutable struct GskColorMatrixNodeLeaf <: GskColorMatrixNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskColorNode <: GskRenderNode end
+    mutable struct GskColorNodeLeaf <: GskColorNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskConicGradientNode <: GskRenderNode end
+    mutable struct GskConicGradientNodeLeaf <: GskConicGradientNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskContainerNode <: GskRenderNode end
+    mutable struct GskContainerNodeLeaf <: GskContainerNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskCrossFadeNode <: GskRenderNode end
+    mutable struct GskCrossFadeNodeLeaf <: GskCrossFadeNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskDebugNode <: GskRenderNode end
+    mutable struct GskDebugNodeLeaf <: GskDebugNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskGLRenderer <: GskRenderer end
+    mutable struct GskGLRendererLeaf <: GskGLRenderer
+        handle::Ptr{GObject}
+        function GskGLRendererLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GskGLRendererLeaf with a NULL pointer")
             end
-    end
-    begin
-        function GLib.signalnames(::Type{GskRenderer})
-            signalnames(supertype(GskRenderer))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GskBroadwayRenderer <: GskRenderer end
-        mutable struct GskBroadwayRendererLeaf <: GskBroadwayRenderer
-            handle::Ptr{GObject}
-            function GskBroadwayRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskBroadwayRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    gtype_wrapper_cache[:GskGLRenderer] = GskGLRendererLeaf
+    (GLib.g_type(::Type{T}) where T <: GskGLRenderer) = ccall(("gsk_gl_renderer_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GskGLRenderer})
+        signalnames(supertype(GskGLRenderer))
+    end
+    abstract type GskGLShader <: GObject end
+    mutable struct GskGLShaderLeaf <: GskGLShader
+        handle::Ptr{GObject}
+        function GskGLShaderLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GskGLShaderLeaf with a NULL pointer")
             end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
-        gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskBroadwayRenderer) = begin
-                ccall(("gsk_broadway_renderer_get_type", libgtk4), GType, ())
+    end
+    gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
+    (GLib.g_type(::Type{T}) where T <: GskGLShader) = ccall(("gsk_gl_shader_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GskGLShader})
+        signalnames(supertype(GskGLShader))
+    end
+    abstract type GskGLShaderNode <: GskRenderNode end
+    mutable struct GskGLShaderNodeLeaf <: GskGLShaderNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskInsetShadowNode <: GskRenderNode end
+    mutable struct GskInsetShadowNodeLeaf <: GskInsetShadowNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskLinearGradientNode <: GskRenderNode end
+    mutable struct GskLinearGradientNodeLeaf <: GskLinearGradientNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskMaskNode <: GskRenderNode end
+    mutable struct GskMaskNodeLeaf <: GskMaskNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskNglRenderer <: GskRenderer end
+    mutable struct GskNglRendererLeaf <: GskNglRenderer
+        handle::Ptr{GObject}
+        function GskNglRendererLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GskNglRendererLeaf with a NULL pointer")
             end
-    end
-    begin
-        function GLib.signalnames(::Type{GskBroadwayRenderer})
-            signalnames(supertype(GskBroadwayRenderer))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GskCairoNode <: GskRenderNode end
+    gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
+    (GLib.g_type(::Type{T}) where T <: GskNglRenderer) = ccall(("gsk_ngl_renderer_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GskNglRenderer})
+        signalnames(supertype(GskNglRenderer))
     end
-    begin
-        mutable struct GskCairoNodeLeaf <: GskCairoNode
-            handle::Ptr{GskRenderNode}
-        end
+    abstract type GskOpacityNode <: GskRenderNode end
+    mutable struct GskOpacityNodeLeaf <: GskOpacityNode
+        handle::Ptr{GskRenderNode}
     end
-    begin
-        abstract type GskCairoRenderer <: GskRenderer end
-        mutable struct GskCairoRendererLeaf <: GskCairoRenderer
-            handle::Ptr{GObject}
-            function GskCairoRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskCairoRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GskOutsetShadowNode <: GskRenderNode end
+    mutable struct GskOutsetShadowNodeLeaf <: GskOutsetShadowNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskRadialGradientNode <: GskRenderNode end
+    mutable struct GskRadialGradientNodeLeaf <: GskRadialGradientNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskRepeatNode <: GskRenderNode end
+    mutable struct GskRepeatNodeLeaf <: GskRepeatNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskRepeatingLinearGradientNode <: GskRenderNode end
+    mutable struct GskRepeatingLinearGradientNodeLeaf <: GskRepeatingLinearGradientNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskRepeatingRadialGradientNode <: GskRenderNode end
+    mutable struct GskRepeatingRadialGradientNodeLeaf <: GskRepeatingRadialGradientNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskRoundedClipNode <: GskRenderNode end
+    mutable struct GskRoundedClipNodeLeaf <: GskRoundedClipNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskShadowNode <: GskRenderNode end
+    mutable struct GskShadowNodeLeaf <: GskShadowNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskTextNode <: GskRenderNode end
+    mutable struct GskTextNodeLeaf <: GskTextNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskTextureNode <: GskRenderNode end
+    mutable struct GskTextureNodeLeaf <: GskTextureNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskTextureScaleNode <: GskRenderNode end
+    mutable struct GskTextureScaleNodeLeaf <: GskTextureScaleNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskTransformNode <: GskRenderNode end
+    mutable struct GskTransformNodeLeaf <: GskTransformNode
+        handle::Ptr{GskRenderNode}
+    end
+    abstract type GskVulkanRenderer <: GskRenderer end
+    mutable struct GskVulkanRendererLeaf <: GskVulkanRenderer
+        handle::Ptr{GObject}
+        function GskVulkanRendererLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GskVulkanRendererLeaf with a NULL pointer")
             end
-        end
-        gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskCairoRenderer) = begin
-                ccall(("gsk_cairo_renderer_get_type", libgtk4), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GskCairoRenderer})
-            signalnames(supertype(GskCairoRenderer))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GskClipNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskClipNodeLeaf <: GskClipNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskColorMatrixNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskColorMatrixNodeLeaf <: GskColorMatrixNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskColorNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskColorNodeLeaf <: GskColorNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskConicGradientNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskConicGradientNodeLeaf <: GskConicGradientNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskContainerNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskContainerNodeLeaf <: GskContainerNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskCrossFadeNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskCrossFadeNodeLeaf <: GskCrossFadeNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskDebugNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskDebugNodeLeaf <: GskDebugNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskGLRenderer <: GskRenderer end
-        mutable struct GskGLRendererLeaf <: GskGLRenderer
-            handle::Ptr{GObject}
-            function GskGLRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskGLRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskGLRenderer] = GskGLRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskGLRenderer) = begin
-                ccall(("gsk_gl_renderer_get_type", libgtk4), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GskGLRenderer})
-            signalnames(supertype(GskGLRenderer))
-        end
-    end
-    begin
-        abstract type GskGLShader <: GObject end
-        mutable struct GskGLShaderLeaf <: GskGLShader
-            handle::Ptr{GObject}
-            function GskGLShaderLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskGLShaderLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
-        (GLib.g_type(::Type{T}) where T <: GskGLShader) = begin
-                ccall(("gsk_gl_shader_get_type", libgtk4), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GskGLShader})
-            signalnames(supertype(GskGLShader))
-        end
-    end
-    begin
-        abstract type GskGLShaderNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskGLShaderNodeLeaf <: GskGLShaderNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskInsetShadowNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskInsetShadowNodeLeaf <: GskInsetShadowNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskLinearGradientNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskLinearGradientNodeLeaf <: GskLinearGradientNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskMaskNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskMaskNodeLeaf <: GskMaskNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskNglRenderer <: GskRenderer end
-        mutable struct GskNglRendererLeaf <: GskNglRenderer
-            handle::Ptr{GObject}
-            function GskNglRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskNglRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskNglRenderer) = begin
-                ccall(("gsk_ngl_renderer_get_type", libgtk4), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GskNglRenderer})
-            signalnames(supertype(GskNglRenderer))
-        end
-    end
-    begin
-        abstract type GskOpacityNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskOpacityNodeLeaf <: GskOpacityNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskOutsetShadowNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskOutsetShadowNodeLeaf <: GskOutsetShadowNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskRadialGradientNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskRadialGradientNodeLeaf <: GskRadialGradientNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskRepeatNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskRepeatNodeLeaf <: GskRepeatNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskRepeatingLinearGradientNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskRepeatingLinearGradientNodeLeaf <: GskRepeatingLinearGradientNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskRepeatingRadialGradientNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskRepeatingRadialGradientNodeLeaf <: GskRepeatingRadialGradientNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskRoundedClipNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskRoundedClipNodeLeaf <: GskRoundedClipNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskShadowNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskShadowNodeLeaf <: GskShadowNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskTextNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskTextNodeLeaf <: GskTextNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskTextureNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskTextureNodeLeaf <: GskTextureNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskTextureScaleNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskTextureScaleNodeLeaf <: GskTextureScaleNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskTransformNode <: GskRenderNode end
-    end
-    begin
-        mutable struct GskTransformNodeLeaf <: GskTransformNode
-            handle::Ptr{GskRenderNode}
-        end
-    end
-    begin
-        abstract type GskVulkanRenderer <: GskRenderer end
-        mutable struct GskVulkanRendererLeaf <: GskVulkanRenderer
-            handle::Ptr{GObject}
-            function GskVulkanRendererLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GskVulkanRendererLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GskVulkanRenderer] = GskVulkanRendererLeaf
-        (GLib.g_type(::Type{T}) where T <: GskVulkanRenderer) = begin
-                ccall(("gsk_vulkan_renderer_get_type", libgtk4), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GskVulkanRenderer})
-            signalnames(supertype(GskVulkanRenderer))
-        end
+    gtype_wrapper_cache[:GskVulkanRenderer] = GskVulkanRendererLeaf
+    (GLib.g_type(::Type{T}) where T <: GskVulkanRenderer) = ccall(("gsk_vulkan_renderer_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GskVulkanRenderer})
+        signalnames(supertype(GskVulkanRenderer))
     end
     function GskBlendNode(_bottom::GskRenderNode, _top::GskRenderNode, _blend_mode)
         G_.BlendNode_new(_bottom, _top, _blend_mode)
@@ -551,12 +435,12 @@ $(Expr(:toplevel, quote
     end
     function GskGLShader(_sourcecode::GBytes; kwargs...)
         obj = G_.GLShader_new_from_bytes(_sourcecode)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GskGLShader(_resource_path::Union{AbstractString, Symbol}; kwargs...)
         obj = G_.GLShader_new_from_resource(_resource_path)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GskGLShaderNode(_shader::GskGLShader, _bounds::GrapheneRectLike, _args::GBytes, _children)
@@ -585,7 +469,7 @@ $(Expr(:toplevel, quote
     end
     function GskRenderer(_surface::GdkSurface; kwargs...)
         obj = G_.Renderer_new_for_surface(_surface)
-        GLib.setproperties!(obj; kwargs...)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
     function GskRepeatNode(_bounds::GrapheneRectLike, _child::GskRenderNode, _child_bounds::Maybe(GrapheneRectLike))
@@ -618,8 +502,20 @@ $(Expr(:toplevel, quote
     function GskVulkanRenderer()
         G_.VulkanRenderer_new()
     end
+    function GskPathBuilder()
+        G_.PathBuilder_new()
+    end
+    function GskPathMeasure(_path::GskPath)
+        G_.PathMeasure_new(_path)
+    end
+    function GskPathMeasure(_path::GskPath, _tolerance::Real)
+        G_.PathMeasure_new_with_tolerance(_path, _tolerance)
+    end
     function GskShaderArgsBuilder(_shader::GskGLShader, _initial_values::Maybe(GBytes))
         G_.ShaderArgsBuilder_new(_shader, _initial_values)
+    end
+    function GskStroke(_line_width::Real)
+        G_.Stroke_new(_line_width)
     end
     function GskTransform()
         G_.Transform_new()
@@ -627,6 +523,7 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.BlendNode.html)." GskBlendNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.BlurNode.html)." GskBlurNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.BorderNode.html)." GskBorderNode
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.BroadwayRenderer.html)." GskBroadwayRenderer
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.CairoNode.html)." GskCairoNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.CairoRenderer.html)." GskCairoRenderer
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.ClipNode.html)." GskClipNode
@@ -636,11 +533,13 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.ContainerNode.html)." GskContainerNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.CrossFadeNode.html)." GskCrossFadeNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.DebugNode.html)." GskDebugNode
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.GLRenderer.html)." GskGLRenderer
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.GLShader.html)." GskGLShader
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.GLShaderNode.html)." GskGLShaderNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.InsetShadowNode.html)." GskInsetShadowNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.LinearGradientNode.html)." GskLinearGradientNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.MaskNode.html)." GskMaskNode
+    @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.NglRenderer.html)." GskNglRenderer
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.OpacityNode.html)." GskOpacityNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.OutsetShadowNode.html)." GskOutsetShadowNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.RadialGradientNode.html)." GskRadialGradientNode
@@ -656,6 +555,5 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TextureScaleNode.html)." GskTextureScaleNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.TransformNode.html)." GskTransformNode
     @doc "See the [GTK docs](https://docs.gtk.org/gsk4/class.VulkanRenderer.html)." GskVulkanRenderer
-    export GskColorStop, GskColorStopLike, _GskColorStop, GskParseLocation, GskParseLocationLike, _GskParseLocation, GskRoundedRect, GskRoundedRectLike, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, GskShadowLike, _GskShadow, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorMatrixNode, GskColorMatrixNodeLeaf, GskColorNode, GskColorNodeLeaf, GskConicGradientNode, GskConicGradientNodeLeaf, GskContainerNode, GskContainerNodeLeaf, GskCrossFadeNode, GskCrossFadeNodeLeaf, GskDebugNode, GskDebugNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskGLShaderNode, GskGLShaderNodeLeaf, GskInsetShadowNode, GskInsetShadowNodeLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskMaskNode, GskMaskNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskOutsetShadowNode, GskOutsetShadowNodeLeaf, GskRadialGradientNode, GskRadialGradientNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRepeatingLinearGradientNode, GskRepeatingLinearGradientNodeLeaf, GskRepeatingRadialGradientNode, GskRepeatingRadialGradientNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTextureScaleNode, GskTextureScaleNodeLeaf, GskTransformNode, GskTransformNodeLeaf, GskVulkanRenderer, GskVulkanRendererLeaf
-end))
+    export GskColorStop, GskColorStopLike, _GskColorStop, GskParseLocation, GskParseLocationLike, _GskParseLocation, GskPath, GskPathBuilder, GskPathMeasure, GskPathPoint, GskRoundedRect, GskRoundedRectLike, _GskRoundedRect, GskShaderArgsBuilder, GskShadow, GskShadowLike, _GskShadow, GskStroke, GskTransform, GskBlendNode, GskBlendNodeLeaf, GskBlurNode, GskBlurNodeLeaf, GskBorderNode, GskBorderNodeLeaf, GskBroadwayRenderer, GskBroadwayRendererLeaf, GskCairoNode, GskCairoNodeLeaf, GskCairoRenderer, GskCairoRendererLeaf, GskClipNode, GskClipNodeLeaf, GskColorMatrixNode, GskColorMatrixNodeLeaf, GskColorNode, GskColorNodeLeaf, GskConicGradientNode, GskConicGradientNodeLeaf, GskContainerNode, GskContainerNodeLeaf, GskCrossFadeNode, GskCrossFadeNodeLeaf, GskDebugNode, GskDebugNodeLeaf, GskGLRenderer, GskGLRendererLeaf, GskGLShader, GskGLShaderLeaf, GskGLShaderNode, GskGLShaderNodeLeaf, GskInsetShadowNode, GskInsetShadowNodeLeaf, GskLinearGradientNode, GskLinearGradientNodeLeaf, GskMaskNode, GskMaskNodeLeaf, GskNglRenderer, GskNglRendererLeaf, GskOpacityNode, GskOpacityNodeLeaf, GskOutsetShadowNode, GskOutsetShadowNodeLeaf, GskRadialGradientNode, GskRadialGradientNodeLeaf, GskRenderNode, GskRenderer, GskRepeatNode, GskRepeatNodeLeaf, GskRepeatingLinearGradientNode, GskRepeatingLinearGradientNodeLeaf, GskRepeatingRadialGradientNode, GskRepeatingRadialGradientNodeLeaf, GskRoundedClipNode, GskRoundedClipNodeLeaf, GskShadowNode, GskShadowNodeLeaf, GskTextNode, GskTextNodeLeaf, GskTextureNode, GskTextureNodeLeaf, GskTextureScaleNode, GskTextureScaleNodeLeaf, GskTransformNode, GskTransformNodeLeaf, GskVulkanRenderer, GskVulkanRendererLeaf
 end

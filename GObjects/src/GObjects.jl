@@ -113,9 +113,7 @@ function length_zt(arr::Ptr)
     i-1
 end
 
-function nothing_to_null(x)
-    x = x === nothing ? C_NULL : x
-end
+nothing_to_null(x) = something(x, C_NULL)
 
 function check_undefref(p::Ptr)
     if p == C_NULL
@@ -166,7 +164,9 @@ include("gtype.jl")
 
 const GLib = GObjects
 
-eval(include("gen/glib_consts"))
+include("gen/glib_consts")
+include("gen/gobject_consts")
+include("gen/gio_consts")
 
 const lib_version = VersionNumber(
       MAJOR_VERSION,
@@ -175,7 +175,7 @@ const lib_version = VersionNumber(
 
 include("gvalues.jl")
 
-eval(include("gen/glib_structs"))
+include("gen/glib_structs")
 
 include("gvariant.jl")
 include("gerror.jl")
@@ -184,8 +184,8 @@ include("hashtable.jl")
 
 include("signals.jl")
 
-eval(include("gen/gobject_structs"))
-eval(include("gen/gio_structs"))
+include("gen/gobject_structs")
+include("gen/gio_structs")
 
 module G_
 
@@ -197,12 +197,12 @@ using ..GObjects: BookmarkFileError, ChecksumType, ConvertError, DateDMY, DateMo
 
 import Base: convert, copy, run
 
-eval(include("gen/glib_methods"))
-eval(include("gen/glib_functions"))
-eval(include("gen/gobject_methods"))
-eval(include("gen/gobject_functions"))
-eval(include("gen/gio_methods"))
-eval(include("gen/gio_functions"))
+include("gen/glib_methods")
+include("gen/glib_functions")
+include("gen/gobject_methods")
+include("gen/gobject_functions")
+include("gen/gio_methods")
+include("gen/gio_functions")
 
 end
 

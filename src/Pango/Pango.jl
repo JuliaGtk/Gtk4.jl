@@ -14,12 +14,12 @@ import Base: convert, length, getindex, iterate, unsafe_convert
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag
 
-eval(include("../gen/pango_consts"))
-eval(include("../gen/pango_structs"))
+include("../gen/pango_consts")
+include("../gen/pango_structs")
 
 include("Cairo.jl")
 
-eval(include("../gen/pangocairo_structs"))
+include("../gen/pangocairo_structs")
 
 using .Cairo
 
@@ -35,11 +35,11 @@ using ..Pango: Alignment, AttrType, BaselineShift, CoverageLevel, Direction, Ell
 using ..Pango: libpango
 using ..Pango.Cairo
 
-eval(include("../gen/pango_methods"))
-eval(include("../gen/pango_functions"))
+include("../gen/pango_methods")
+include("../gen/pango_functions")
 
-eval(include("../gen/pangocairo_methods"))
-eval(include("../gen/pangocairo_functions"))
+include("../gen/pangocairo_methods")
+include("../gen/pangocairo_functions")
 
 end
 
@@ -86,7 +86,7 @@ eltype(::Type{PangoFontFamily}) = PangoFontFace
 Base.keys(ff::PangoFontFamily) = 1:length(ff)
 
 PangoFontDescription(s::AbstractString) = G_.font_description_from_string(s)
-Base.show(io::IO, pfd::PangoFontDescription) = print(io, "PangoFontDescription(" * G_.to_string(pfd) * ")")
+Base.show(io::IO, pfd::PangoFontDescription) = print(io, "PangoFontDescription(\"" * G_.to_string(pfd) * "\")")
 
 PangoLayout(cr::cairoContext) = G_.create_layout(cr)
 

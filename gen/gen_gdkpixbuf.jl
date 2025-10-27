@@ -1,4 +1,5 @@
-using GI
+using GI, EzXML
+GI.prepend_search_path("/usr/lib64/girepository-1.0")
 
 printstyled("Generating code for GdkPixbuf\n";bold=true)
 
@@ -17,7 +18,7 @@ first_list=[:PixbufModulePattern]
 
 obj_constructor_skiplist=[:new_from_resource,:new_with_mime_type,:new_from_resource_at_scale]
 
-struct_skiplist = GI.export_struct_exprs!(ns,path, "gdkpixbuf", struct_skiplist, []; doc_xml = d, object_skiplist = obj_skiplist, object_constructor_skiplist = obj_constructor_skiplist, interface_skiplist = [:XdpProxyResolverIface], first_list = first_list, doc_prefix = "gdk-pixbuf")
+struct_skiplist = GI.export_struct_exprs!(ns,path, "gdkpixbuf", struct_skiplist, []; doc_xml = d, object_constructor_skiplist = obj_constructor_skiplist, interface_skiplist = [:XdpProxyResolverIface], first_list = first_list, doc_prefix = "gdk-pixbuf")
 
 object_method_skiplist=[:get_iter,:advance,:get_file_info_finish,:new_from_stream_async]
 

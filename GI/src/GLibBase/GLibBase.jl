@@ -20,7 +20,14 @@ export GList, _GSList, _GList
 const  AbstractStringLike = Union{AbstractString, Symbol}
 bytestring(s) = String(s)
 bytestring(s::Symbol) = s
-bytestring(s::Ptr{UInt8}) = s == C_NULL ? nothing : unsafe_string(s)
+function bytestring(s::Union{Cstring,Ptr{UInt8}}, own::Bool=false)
+    str=unsafe_string(s)
+    if own
+        g_free(s)
+    end
+    str
+end
+
 # bytestring(s::Ptr{UInt8}, own::Bool=false) = unsafe_string(s)
 
 g_free(p::Ptr) = ccall((:g_free, libglib), Nothing, (Ptr{Nothing},), p)

@@ -36,14 +36,31 @@ function GtkButton(s::Symbol,str::AbstractString)
     end
 end
 
-setindex!(f::GtkButton, w::Union{Nothing,GtkWidget}) = G_.set_child(f,w)
-getindex(f::GtkButton) = G_.get_child(f)
-
 function on_signal_clicked(@nospecialize(clicked_cb::Function), widget::GtkButton, vargs...)
     signal_connect(clicked_cb, widget, "clicked", Nothing, (), vargs...)
 end
 
 ## GtkCheckButton, GtkToggleButton
+
+@doc """
+    GtkCheckButton(; kwargs...)
+    GtkCheckButton(label::AbstractString)
+
+Create a `GtkCheckButton`, a widget that shows a clickable checkbox next to an
+optional text label. The property "active" sets and gets whether the checkbox
+is checked. The signal "toggled" can be used to set callbacks for when the
+checkbox is clicked. Keyword arguments allow you to set GObject properties.
+""" GtkCheckButton
+
+@doc """
+    GtkToggleButton(; kwargs...)
+    GtkToggleButton(label::AbstractString)
+
+Create a `GtkToggleButton`, a subclass of `GtkButton` that is toggled on and
+off when clicked. The property "active" sets and gets whether the button is
+active. The signal "toggled" can be used to set callbacks for when the toggle
+state changes. Keyword arguments allow you to set GObject properties.
+""" GtkToggleButton
 
 group(cb::GtkCheckButton, cb2::Union{Nothing,GtkCheckButton}) = G_.set_group(cb, cb2)
 group(tb::GtkToggleButton, tb2::Union{Nothing,GtkToggleButton}) = G_.set_group(tb, tb2)
@@ -56,6 +73,12 @@ end
 
 ## GtkSwitch
 
+"""
+    GtkSwitch(active = false; kwargs...)
+
+Create a `GtkSwitch` widget, which shows a simple on/off switch. The widget is
+initialized to the on position if `active` is `true`.
+"""
 function GtkSwitch(active::Bool; kwargs...)
     b = GtkSwitch(; kwargs...)
     G_.set_active(b, active)
@@ -64,6 +87,13 @@ end
 
 ## GtkLinkButton
 
+"""
+    GtkLinkButton(uri::AbstractString, label::AbstractString [, visited::Bool]; kwargs...)
+
+Create a `GtkLinkButton`, which shows a hyperlink to the URI given by `uri`
+with a `label`. The optional argument `visited` controls whether the link is
+colored to signify that the link has been visited already.
+"""
 function GtkLinkButton(uri::AbstractString, label::AbstractString, visited::Bool; kwargs...)
     b = GtkLinkButton(uri, label; kwargs...)
     G_.set_visited(b, visited)
@@ -82,6 +112,7 @@ function GtkVolumeButton(value::Real; kwargs...) # 0 <= value <= 1
 end
 
 popup(b::GtkMenuButton) = G_.popup(b)
+popdown(b::GtkMenuButton) = G_.popdown(b)
 
 function GtkPopoverMenu(model::GMenu, nested::Bool = false)
     if nested

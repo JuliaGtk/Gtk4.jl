@@ -1,357 +1,206 @@
-quote
-$(Expr(:toplevel, quote
-    begin
-        struct _GEnumValue
-            value::Int32
-            value_name::Cstring
-            value_nick::Cstring
-        end
-        mutable struct GEnumValue
-            handle::Ptr{_GEnumValue}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GEnumValue}}, box::GEnumValue) = begin
-                    convert(Ptr{_GEnumValue}, box.handle)
-                end
-            convert(::Type{GEnumValue}, p::Ptr{_GEnumValue}, owns = false) = begin
-                    GEnumValue(p, owns)
-                end
-            const GEnumValueLike = Union{Ref{_GEnumValue}, GEnumValue}
-            convert(::Type{GEnumValueLike}, p, owns) = begin
-                    convert(GEnumValue, p, owns)
-                end
-        end
+begin
+    struct _GEnumValue
+        value::Int32
+        value_name::Cstring
+        value_nick::Cstring
     end
-    begin
-        struct _GTypeClass
-            g_type::UInt64
-        end
-        mutable struct GTypeClass
-            handle::Ptr{_GTypeClass}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GTypeClass}}, box::GTypeClass) = begin
-                    convert(Ptr{_GTypeClass}, box.handle)
-                end
-            convert(::Type{GTypeClass}, p::Ptr{_GTypeClass}, owns = false) = begin
-                    GTypeClass(p, owns)
-                end
-            const GTypeClassLike = Union{Ref{_GTypeClass}, GTypeClass}
-            convert(::Type{GTypeClassLike}, p, owns) = begin
-                    convert(GTypeClass, p, owns)
-                end
-        end
+    mutable struct GEnumValue
+        handle::Ptr{_GEnumValue}
     end
-    begin
-        struct _GTypeInterface
-            g_type::UInt64
-            g_instance_type::UInt64
-        end
-        mutable struct GTypeInterface
-            handle::Ptr{_GTypeInterface}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GTypeInterface}}, box::GTypeInterface) = begin
-                    convert(Ptr{_GTypeInterface}, box.handle)
-                end
-            convert(::Type{GTypeInterface}, p::Ptr{_GTypeInterface}, owns = false) = begin
-                    GTypeInterface(p, owns)
-                end
-            const GTypeInterfaceLike = Union{Ref{_GTypeInterface}, GTypeInterface}
-            convert(::Type{GTypeInterfaceLike}, p, owns) = begin
-                    convert(GTypeInterface, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_GEnumValue}}, box::GEnumValue) = convert(Ptr{_GEnumValue}, box.handle)
+    convert(::Type{GEnumValue}, p::Ptr{_GEnumValue}, owns = false) = GEnumValue(p, owns)
+    const GEnumValueLike = Union{Ref{_GEnumValue}, GEnumValue}
+    convert(::Type{GEnumValueLike}, p, owns) = convert(GEnumValue, p, owns)
+    struct _GTypeClass
+        g_type::GType
     end
-    begin
-        struct _GFlagsValue
-            value::UInt32
-            value_name::Cstring
-            value_nick::Cstring
-        end
-        mutable struct GFlagsValue
-            handle::Ptr{_GFlagsValue}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GFlagsValue}}, box::GFlagsValue) = begin
-                    convert(Ptr{_GFlagsValue}, box.handle)
-                end
-            convert(::Type{GFlagsValue}, p::Ptr{_GFlagsValue}, owns = false) = begin
-                    GFlagsValue(p, owns)
-                end
-            const GFlagsValueLike = Union{Ref{_GFlagsValue}, GFlagsValue}
-            convert(::Type{GFlagsValueLike}, p, owns) = begin
-                    convert(GFlagsValue, p, owns)
-                end
-        end
+    mutable struct GTypeClass
+        handle::Ptr{_GTypeClass}
     end
-    begin
-        struct _GTypeValueTable
-            value_init::Ptr{Cvoid}
-            value_free::Ptr{Cvoid}
-            value_copy::Ptr{Cvoid}
-            value_peek_pointer::Ptr{Cvoid}
-            collect_format::Cstring
-            collect_value::Ptr{Cvoid}
-            lcopy_format::Cstring
-            lcopy_value::Ptr{Cvoid}
-        end
-        mutable struct GTypeValueTable
-            handle::Ptr{_GTypeValueTable}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GTypeValueTable}}, box::GTypeValueTable) = begin
-                    convert(Ptr{_GTypeValueTable}, box.handle)
-                end
-            convert(::Type{GTypeValueTable}, p::Ptr{_GTypeValueTable}, owns = false) = begin
-                    GTypeValueTable(p, owns)
-                end
-            const GTypeValueTableLike = Union{Ref{_GTypeValueTable}, GTypeValueTable}
-            convert(::Type{GTypeValueTableLike}, p, owns) = begin
-                    convert(GTypeValueTable, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_GTypeClass}}, box::GTypeClass) = convert(Ptr{_GTypeClass}, box.handle)
+    convert(::Type{GTypeClass}, p::Ptr{_GTypeClass}, owns = false) = GTypeClass(p, owns)
+    const GTypeClassLike = Union{Ref{_GTypeClass}, GTypeClass}
+    convert(::Type{GTypeClassLike}, p, owns) = convert(GTypeClass, p, owns)
+    struct _GTypeInterface
+        g_type::GType
+        g_instance_type::GType
     end
-    begin
-        struct _GEnumClass
-            g_type_class::_GTypeClass
-            minimum::Int32
-            maximum::Int32
-            n_values::UInt32
-            values::Ptr{_GEnumValue}
-        end
-        mutable struct GEnumClass
-            handle::Ptr{_GEnumClass}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GEnumClass}}, box::GEnumClass) = begin
-                    convert(Ptr{_GEnumClass}, box.handle)
-                end
-            convert(::Type{GEnumClass}, p::Ptr{_GEnumClass}, owns = false) = begin
-                    GEnumClass(p, owns)
-                end
-            const GEnumClassLike = Union{Ref{_GEnumClass}, GEnumClass}
-            convert(::Type{GEnumClassLike}, p, owns) = begin
-                    convert(GEnumClass, p, owns)
-                end
-        end
+    mutable struct GTypeInterface
+        handle::Ptr{_GTypeInterface}
     end
-    begin
-        struct _GFlagsClass
-            g_type_class::_GTypeClass
-            mask::UInt32
-            n_values::UInt32
-            values::Ptr{_GFlagsValue}
-        end
-        mutable struct GFlagsClass
-            handle::Ptr{_GFlagsClass}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GFlagsClass}}, box::GFlagsClass) = begin
-                    convert(Ptr{_GFlagsClass}, box.handle)
-                end
-            convert(::Type{GFlagsClass}, p::Ptr{_GFlagsClass}, owns = false) = begin
-                    GFlagsClass(p, owns)
-                end
-            const GFlagsClassLike = Union{Ref{_GFlagsClass}, GFlagsClass}
-            convert(::Type{GFlagsClassLike}, p, owns) = begin
-                    convert(GFlagsClass, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_GTypeInterface}}, box::GTypeInterface) = convert(Ptr{_GTypeInterface}, box.handle)
+    convert(::Type{GTypeInterface}, p::Ptr{_GTypeInterface}, owns = false) = GTypeInterface(p, owns)
+    const GTypeInterfaceLike = Union{Ref{_GTypeInterface}, GTypeInterface}
+    convert(::Type{GTypeInterfaceLike}, p, owns) = convert(GTypeInterface, p, owns)
+    struct _GFlagsValue
+        value::UInt32
+        value_name::Cstring
+        value_nick::Cstring
     end
-    begin
-        struct _GInterfaceInfo
-            interface_init::Ptr{Cvoid}
-            interface_finalize::Ptr{Cvoid}
-            interface_data::Ptr{Nothing}
-        end
-        mutable struct GInterfaceInfo
-            handle::Ptr{_GInterfaceInfo}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GInterfaceInfo}}, box::GInterfaceInfo) = begin
-                    convert(Ptr{_GInterfaceInfo}, box.handle)
-                end
-            convert(::Type{GInterfaceInfo}, p::Ptr{_GInterfaceInfo}, owns = false) = begin
-                    GInterfaceInfo(p, owns)
-                end
-            const GInterfaceInfoLike = Union{Ref{_GInterfaceInfo}, GInterfaceInfo}
-            convert(::Type{GInterfaceInfoLike}, p, owns) = begin
-                    convert(GInterfaceInfo, p, owns)
-                end
-        end
+    mutable struct GFlagsValue
+        handle::Ptr{_GFlagsValue}
     end
-    begin
-        struct _GParamSpecTypeInfo
-            instance_size::UInt16
-            n_preallocs::UInt16
-            instance_init::Ptr{Cvoid}
-            value_type::UInt64
-            finalize::Ptr{Cvoid}
-            value_set_default::Ptr{Cvoid}
-            value_validate::Ptr{Cvoid}
-            values_cmp::Ptr{Cvoid}
-        end
-        mutable struct GParamSpecTypeInfo
-            handle::Ptr{_GParamSpecTypeInfo}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GParamSpecTypeInfo}}, box::GParamSpecTypeInfo) = begin
-                    convert(Ptr{_GParamSpecTypeInfo}, box.handle)
-                end
-            convert(::Type{GParamSpecTypeInfo}, p::Ptr{_GParamSpecTypeInfo}, owns = false) = begin
-                    GParamSpecTypeInfo(p, owns)
-                end
-            const GParamSpecTypeInfoLike = Union{Ref{_GParamSpecTypeInfo}, GParamSpecTypeInfo}
-            convert(::Type{GParamSpecTypeInfoLike}, p, owns) = begin
-                    convert(GParamSpecTypeInfo, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_GFlagsValue}}, box::GFlagsValue) = convert(Ptr{_GFlagsValue}, box.handle)
+    convert(::Type{GFlagsValue}, p::Ptr{_GFlagsValue}, owns = false) = GFlagsValue(p, owns)
+    const GFlagsValueLike = Union{Ref{_GFlagsValue}, GFlagsValue}
+    convert(::Type{GFlagsValueLike}, p, owns) = convert(GFlagsValue, p, owns)
+    struct _GTypeValueTable
+        value_init::Ptr{Cvoid}
+        value_free::Ptr{Cvoid}
+        value_copy::Ptr{Cvoid}
+        value_peek_pointer::Ptr{Cvoid}
+        collect_format::Cstring
+        collect_value::Ptr{Cvoid}
+        lcopy_format::Cstring
+        lcopy_value::Ptr{Cvoid}
     end
-    begin
-        struct _GSignalInvocationHint
-            signal_id::UInt32
-            detail::UInt32
-            run_type::UInt32
-        end
-        mutable struct GSignalInvocationHint
-            handle::Ptr{_GSignalInvocationHint}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GSignalInvocationHint}}, box::GSignalInvocationHint) = begin
-                    convert(Ptr{_GSignalInvocationHint}, box.handle)
-                end
-            convert(::Type{GSignalInvocationHint}, p::Ptr{_GSignalInvocationHint}, owns = false) = begin
-                    GSignalInvocationHint(p, owns)
-                end
-            const GSignalInvocationHintLike = Union{Ref{_GSignalInvocationHint}, GSignalInvocationHint}
-            convert(::Type{GSignalInvocationHintLike}, p, owns) = begin
-                    convert(GSignalInvocationHint, p, owns)
-                end
-        end
+    mutable struct GTypeValueTable
+        handle::Ptr{_GTypeValueTable}
     end
-    begin
-        struct _GSignalQuery
-            signal_id::UInt32
-            signal_name::Cstring
-            itype::UInt64
-            signal_flags::UInt32
-            return_type::UInt64
-            n_params::UInt32
-            param_types::Ptr{UInt64}
-        end
-        mutable struct GSignalQuery
-            handle::Ptr{_GSignalQuery}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GSignalQuery}}, box::GSignalQuery) = begin
-                    convert(Ptr{_GSignalQuery}, box.handle)
-                end
-            convert(::Type{GSignalQuery}, p::Ptr{_GSignalQuery}, owns = false) = begin
-                    GSignalQuery(p, owns)
-                end
-            const GSignalQueryLike = Union{Ref{_GSignalQuery}, GSignalQuery}
-            convert(::Type{GSignalQueryLike}, p, owns) = begin
-                    convert(GSignalQuery, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_GTypeValueTable}}, box::GTypeValueTable) = convert(Ptr{_GTypeValueTable}, box.handle)
+    convert(::Type{GTypeValueTable}, p::Ptr{_GTypeValueTable}, owns = false) = GTypeValueTable(p, owns)
+    const GTypeValueTableLike = Union{Ref{_GTypeValueTable}, GTypeValueTable}
+    convert(::Type{GTypeValueTableLike}, p, owns) = convert(GTypeValueTable, p, owns)
+    struct _GEnumClass
+        g_type_class::_GTypeClass
+        minimum::Int32
+        maximum::Int32
+        n_values::UInt32
+        values::Ptr{_GEnumValue}
     end
-    begin
-        struct _GTypeFundamentalInfo
-            type_flags::UInt32
-        end
-        mutable struct GTypeFundamentalInfo
-            handle::Ptr{_GTypeFundamentalInfo}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GTypeFundamentalInfo}}, box::GTypeFundamentalInfo) = begin
-                    convert(Ptr{_GTypeFundamentalInfo}, box.handle)
-                end
-            convert(::Type{GTypeFundamentalInfo}, p::Ptr{_GTypeFundamentalInfo}, owns = false) = begin
-                    GTypeFundamentalInfo(p, owns)
-                end
-            const GTypeFundamentalInfoLike = Union{Ref{_GTypeFundamentalInfo}, GTypeFundamentalInfo}
-            convert(::Type{GTypeFundamentalInfoLike}, p, owns) = begin
-                    convert(GTypeFundamentalInfo, p, owns)
-                end
-        end
+    mutable struct GEnumClass
+        handle::Ptr{_GEnumClass}
     end
-    begin
-        struct _GTypeInfo
-            class_size::UInt16
-            base_init::Ptr{Cvoid}
-            base_finalize::Ptr{Cvoid}
-            class_init::Ptr{Cvoid}
-            class_finalize::Ptr{Cvoid}
-            class_data::Ptr{Nothing}
-            instance_size::UInt16
-            n_preallocs::UInt16
-            instance_init::Ptr{Cvoid}
-            value_table::Ptr{_GTypeValueTable}
-        end
-        mutable struct GTypeInfo
-            handle::Ptr{_GTypeInfo}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GTypeInfo}}, box::GTypeInfo) = begin
-                    convert(Ptr{_GTypeInfo}, box.handle)
-                end
-            convert(::Type{GTypeInfo}, p::Ptr{_GTypeInfo}, owns = false) = begin
-                    GTypeInfo(p, owns)
-                end
-            const GTypeInfoLike = Union{Ref{_GTypeInfo}, GTypeInfo}
-            convert(::Type{GTypeInfoLike}, p, owns) = begin
-                    convert(GTypeInfo, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_GEnumClass}}, box::GEnumClass) = convert(Ptr{_GEnumClass}, box.handle)
+    convert(::Type{GEnumClass}, p::Ptr{_GEnumClass}, owns = false) = GEnumClass(p, owns)
+    const GEnumClassLike = Union{Ref{_GEnumClass}, GEnumClass}
+    convert(::Type{GEnumClassLike}, p, owns) = convert(GEnumClass, p, owns)
+    struct _GFlagsClass
+        g_type_class::_GTypeClass
+        mask::UInt32
+        n_values::UInt32
+        values::Ptr{_GFlagsValue}
     end
-    begin
-        struct _GTypePluginClass
-            base_iface::_GTypeInterface
-            use_plugin::Ptr{Cvoid}
-            unuse_plugin::Ptr{Cvoid}
-            complete_type_info::Ptr{Cvoid}
-            complete_interface_info::Ptr{Cvoid}
-        end
-        mutable struct GTypePluginClass
-            handle::Ptr{_GTypePluginClass}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GTypePluginClass}}, box::GTypePluginClass) = begin
-                    convert(Ptr{_GTypePluginClass}, box.handle)
-                end
-            convert(::Type{GTypePluginClass}, p::Ptr{_GTypePluginClass}, owns = false) = begin
-                    GTypePluginClass(p, owns)
-                end
-            const GTypePluginClassLike = Union{Ref{_GTypePluginClass}, GTypePluginClass}
-            convert(::Type{GTypePluginClassLike}, p, owns) = begin
-                    convert(GTypePluginClass, p, owns)
-                end
-        end
+    mutable struct GFlagsClass
+        handle::Ptr{_GFlagsClass}
     end
-    begin
-        struct _GTypeQuery
-            type::UInt64
-            type_name::Cstring
-            class_size::UInt32
-            instance_size::UInt32
-        end
-        mutable struct GTypeQuery
-            handle::Ptr{_GTypeQuery}
-        end
-        begin
-            unsafe_convert(::Type{Ptr{_GTypeQuery}}, box::GTypeQuery) = begin
-                    convert(Ptr{_GTypeQuery}, box.handle)
-                end
-            convert(::Type{GTypeQuery}, p::Ptr{_GTypeQuery}, owns = false) = begin
-                    GTypeQuery(p, owns)
-                end
-            const GTypeQueryLike = Union{Ref{_GTypeQuery}, GTypeQuery}
-            convert(::Type{GTypeQueryLike}, p, owns) = begin
-                    convert(GTypeQuery, p, owns)
-                end
-        end
+    unsafe_convert(::Type{Ptr{_GFlagsClass}}, box::GFlagsClass) = convert(Ptr{_GFlagsClass}, box.handle)
+    convert(::Type{GFlagsClass}, p::Ptr{_GFlagsClass}, owns = false) = GFlagsClass(p, owns)
+    const GFlagsClassLike = Union{Ref{_GFlagsClass}, GFlagsClass}
+    convert(::Type{GFlagsClassLike}, p, owns) = convert(GFlagsClass, p, owns)
+    struct _GInterfaceInfo
+        interface_init::Ptr{Cvoid}
+        interface_finalize::Ptr{Cvoid}
+        interface_data::Ptr{Nothing}
     end
+    mutable struct GInterfaceInfo
+        handle::Ptr{_GInterfaceInfo}
+    end
+    unsafe_convert(::Type{Ptr{_GInterfaceInfo}}, box::GInterfaceInfo) = convert(Ptr{_GInterfaceInfo}, box.handle)
+    convert(::Type{GInterfaceInfo}, p::Ptr{_GInterfaceInfo}, owns = false) = GInterfaceInfo(p, owns)
+    const GInterfaceInfoLike = Union{Ref{_GInterfaceInfo}, GInterfaceInfo}
+    convert(::Type{GInterfaceInfoLike}, p, owns) = convert(GInterfaceInfo, p, owns)
+    struct _GParamSpecTypeInfo
+        instance_size::UInt16
+        n_preallocs::UInt16
+        instance_init::Ptr{Cvoid}
+        value_type::GType
+        finalize::Ptr{Cvoid}
+        value_set_default::Ptr{Cvoid}
+        value_validate::Ptr{Cvoid}
+        values_cmp::Ptr{Cvoid}
+    end
+    mutable struct GParamSpecTypeInfo
+        handle::Ptr{_GParamSpecTypeInfo}
+    end
+    unsafe_convert(::Type{Ptr{_GParamSpecTypeInfo}}, box::GParamSpecTypeInfo) = convert(Ptr{_GParamSpecTypeInfo}, box.handle)
+    convert(::Type{GParamSpecTypeInfo}, p::Ptr{_GParamSpecTypeInfo}, owns = false) = GParamSpecTypeInfo(p, owns)
+    const GParamSpecTypeInfoLike = Union{Ref{_GParamSpecTypeInfo}, GParamSpecTypeInfo}
+    convert(::Type{GParamSpecTypeInfoLike}, p, owns) = convert(GParamSpecTypeInfo, p, owns)
+    struct _GSignalInvocationHint
+        signal_id::UInt32
+        detail::UInt32
+        run_type::UInt32
+    end
+    mutable struct GSignalInvocationHint
+        handle::Ptr{_GSignalInvocationHint}
+    end
+    unsafe_convert(::Type{Ptr{_GSignalInvocationHint}}, box::GSignalInvocationHint) = convert(Ptr{_GSignalInvocationHint}, box.handle)
+    convert(::Type{GSignalInvocationHint}, p::Ptr{_GSignalInvocationHint}, owns = false) = GSignalInvocationHint(p, owns)
+    const GSignalInvocationHintLike = Union{Ref{_GSignalInvocationHint}, GSignalInvocationHint}
+    convert(::Type{GSignalInvocationHintLike}, p, owns) = convert(GSignalInvocationHint, p, owns)
+    struct _GSignalQuery
+        signal_id::UInt32
+        signal_name::Cstring
+        itype::GType
+        signal_flags::UInt32
+        return_type::GType
+        n_params::UInt32
+        param_types::Ptr{GType}
+    end
+    mutable struct GSignalQuery
+        handle::Ptr{_GSignalQuery}
+    end
+    unsafe_convert(::Type{Ptr{_GSignalQuery}}, box::GSignalQuery) = convert(Ptr{_GSignalQuery}, box.handle)
+    convert(::Type{GSignalQuery}, p::Ptr{_GSignalQuery}, owns = false) = GSignalQuery(p, owns)
+    const GSignalQueryLike = Union{Ref{_GSignalQuery}, GSignalQuery}
+    convert(::Type{GSignalQueryLike}, p, owns) = convert(GSignalQuery, p, owns)
+    struct _GTypeFundamentalInfo
+        type_flags::UInt32
+    end
+    mutable struct GTypeFundamentalInfo
+        handle::Ptr{_GTypeFundamentalInfo}
+    end
+    unsafe_convert(::Type{Ptr{_GTypeFundamentalInfo}}, box::GTypeFundamentalInfo) = convert(Ptr{_GTypeFundamentalInfo}, box.handle)
+    convert(::Type{GTypeFundamentalInfo}, p::Ptr{_GTypeFundamentalInfo}, owns = false) = GTypeFundamentalInfo(p, owns)
+    const GTypeFundamentalInfoLike = Union{Ref{_GTypeFundamentalInfo}, GTypeFundamentalInfo}
+    convert(::Type{GTypeFundamentalInfoLike}, p, owns) = convert(GTypeFundamentalInfo, p, owns)
+    struct _GTypeInfo
+        class_size::UInt16
+        base_init::Ptr{Cvoid}
+        base_finalize::Ptr{Cvoid}
+        class_init::Ptr{Cvoid}
+        class_finalize::Ptr{Cvoid}
+        class_data::Ptr{Nothing}
+        instance_size::UInt16
+        n_preallocs::UInt16
+        instance_init::Ptr{Cvoid}
+        value_table::Ptr{_GTypeValueTable}
+    end
+    mutable struct GTypeInfo
+        handle::Ptr{_GTypeInfo}
+    end
+    unsafe_convert(::Type{Ptr{_GTypeInfo}}, box::GTypeInfo) = convert(Ptr{_GTypeInfo}, box.handle)
+    convert(::Type{GTypeInfo}, p::Ptr{_GTypeInfo}, owns = false) = GTypeInfo(p, owns)
+    const GTypeInfoLike = Union{Ref{_GTypeInfo}, GTypeInfo}
+    convert(::Type{GTypeInfoLike}, p, owns) = convert(GTypeInfo, p, owns)
+    struct _GTypePluginClass
+        base_iface::_GTypeInterface
+        use_plugin::Ptr{Cvoid}
+        unuse_plugin::Ptr{Cvoid}
+        complete_type_info::Ptr{Cvoid}
+        complete_interface_info::Ptr{Cvoid}
+    end
+    mutable struct GTypePluginClass
+        handle::Ptr{_GTypePluginClass}
+    end
+    unsafe_convert(::Type{Ptr{_GTypePluginClass}}, box::GTypePluginClass) = convert(Ptr{_GTypePluginClass}, box.handle)
+    convert(::Type{GTypePluginClass}, p::Ptr{_GTypePluginClass}, owns = false) = GTypePluginClass(p, owns)
+    const GTypePluginClassLike = Union{Ref{_GTypePluginClass}, GTypePluginClass}
+    convert(::Type{GTypePluginClassLike}, p, owns) = convert(GTypePluginClass, p, owns)
+    struct _GTypeQuery
+        type::GType
+        type_name::Cstring
+        class_size::UInt32
+        instance_size::UInt32
+    end
+    mutable struct GTypeQuery
+        handle::Ptr{_GTypeQuery}
+    end
+    unsafe_convert(::Type{Ptr{_GTypeQuery}}, box::GTypeQuery) = convert(Ptr{_GTypeQuery}, box.handle)
+    convert(::Type{GTypeQuery}, p::Ptr{_GTypeQuery}, owns = false) = GTypeQuery(p, owns)
+    const GTypeQueryLike = Union{Ref{_GTypeQuery}, GTypeQuery}
+    convert(::Type{GTypeQueryLike}, p, owns) = convert(GTypeQuery, p, owns)
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.EnumClass.html)." GEnumClass
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.FlagsClass.html)." GFlagsClass
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.InterfaceInfo.html)." GInterfaceInfo
@@ -364,77 +213,55 @@ $(Expr(:toplevel, quote
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/struct.TypeQuery.html)." GTypeQuery
     GLib.@Giface GTypePlugin libgobject g_type_plugin_get_type
     const gtype_wrapper_cache = Dict{Symbol, Type}()
-    begin
-        abstract type GBinding <: GObject end
-        mutable struct GBindingLeaf <: GBinding
-            handle::Ptr{GObject}
-            function GBindingLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GBindingLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
+    abstract type GBinding <: GObject end
+    mutable struct GBindingLeaf <: GBinding
+        handle::Ptr{GObject}
+        function GBindingLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GBindingLeaf with a NULL pointer")
             end
-        end
-        gtype_wrapper_cache[:GBinding] = GBindingLeaf
-        (GLib.g_type(::Type{T}) where T <: GBinding) = begin
-                ccall(("g_binding_get_type", libgobject), GType, ())
-            end
-    end
-    begin
-        function GLib.signalnames(::Type{GBinding})
-            signalnames(supertype(GBinding))
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GInitiallyUnowned <: GObject end
-        mutable struct GInitiallyUnownedLeaf <: GInitiallyUnowned
-            handle::Ptr{GObject}
-            function GInitiallyUnownedLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GInitiallyUnownedLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GInitiallyUnowned] = GInitiallyUnownedLeaf
-        (GLib.g_type(::Type{T}) where T <: GInitiallyUnowned) = begin
-                ccall(("g_initially_unowned_get_type", libgobject), GType, ())
-            end
+    gtype_wrapper_cache[:GBinding] = GBindingLeaf
+    (GLib.g_type(::Type{T}) where T <: GBinding) = ccall(("g_binding_get_type", libgobject), GType, ())
+    function GLib.signalnames(::Type{GBinding})
+        signalnames(supertype(GBinding))
     end
-    begin
-        function GLib.signalnames(::Type{GInitiallyUnowned})
-            signalnames(supertype(GInitiallyUnowned))
+    abstract type GInitiallyUnowned <: GObject end
+    mutable struct GInitiallyUnownedLeaf <: GInitiallyUnowned
+        handle::Ptr{GObject}
+        function GInitiallyUnownedLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GInitiallyUnownedLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        abstract type GTypeModule <: GObject end
-        mutable struct GTypeModuleLeaf <: GTypeModule
-            handle::Ptr{GObject}
-            function GTypeModuleLeaf(handle::Ptr{GObject}, owns = false)
-                if handle == C_NULL
-                    error("Cannot construct GTypeModuleLeaf with a NULL pointer")
-                end
-                GLib.gobject_maybe_sink(handle, owns)
-                return gobject_ref(new(handle))
-            end
-        end
-        gtype_wrapper_cache[:GTypeModule] = GTypeModuleLeaf
-        (GLib.g_type(::Type{T}) where T <: GTypeModule) = begin
-                ccall(("g_type_module_get_type", libgobject), GType, ())
-            end
+    gtype_wrapper_cache[:GInitiallyUnowned] = GInitiallyUnownedLeaf
+    (GLib.g_type(::Type{T}) where T <: GInitiallyUnowned) = ccall(("g_initially_unowned_get_type", libgobject), GType, ())
+    function GLib.signalnames(::Type{GInitiallyUnowned})
+        signalnames(supertype(GInitiallyUnowned))
     end
-    begin
-        function GLib.signalnames(::Type{GTypeModule})
-            signalnames(supertype(GTypeModule))
+    abstract type GTypeModule <: GObject end
+    mutable struct GTypeModuleLeaf <: GTypeModule
+        handle::Ptr{GObject}
+        function GTypeModuleLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GTypeModuleLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
         end
     end
-    begin
-        gtype_wrapper_cache_init() = begin
-                merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
-            end
+    gtype_wrapper_cache[:GTypeModule] = GTypeModuleLeaf
+    (GLib.g_type(::Type{T}) where T <: GTypeModule) = ccall(("g_type_module_get_type", libgobject), GType, ())
+    function GLib.signalnames(::Type{GTypeModule})
+        signalnames(supertype(GTypeModule))
     end
+    gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.Binding.html)." GBinding
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.InitiallyUnowned.html)." GInitiallyUnowned
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.TypeModule.html)." GTypeModule
@@ -496,5 +323,4 @@ $(Expr(:toplevel, quote
         convert(Cint, ret)
     end
     export GEnumValue, _GEnumValue, GEnumValueLike, GTypeClass, _GTypeClass, GTypeClassLike, GTypeInterface, _GTypeInterface, GTypeInterfaceLike, GFlagsValue, _GFlagsValue, GFlagsValueLike, GTypeValueTable, _GTypeValueTable, GTypeValueTableLike, GEnumClass, GEnumClassLike, _GEnumClass, GFlagsClass, GFlagsClassLike, _GFlagsClass, GInterfaceInfo, GInterfaceInfoLike, _GInterfaceInfo, GParamSpecTypeInfo, GParamSpecTypeInfoLike, _GParamSpecTypeInfo, GSignalInvocationHint, GSignalInvocationHintLike, _GSignalInvocationHint, GSignalQuery, GSignalQueryLike, _GSignalQuery, GTypeFundamentalInfo, GTypeFundamentalInfoLike, _GTypeFundamentalInfo, GTypeInfo, GTypeInfoLike, _GTypeInfo, GTypePluginClass, GTypePluginClassLike, _GTypePluginClass, GTypeQuery, GTypeQueryLike, _GTypeQuery, GTypePlugin, GBinding, GBindingLeaf, GInitiallyUnowned, GInitiallyUnownedLeaf, GTypeModule, GBindingTransformFunc, GClassFinalizeFunc, GClassInitFunc, GClosureMarshal, GInterfaceFinalizeFunc, GInterfaceInitFunc, GSignalAccumulator, GSignalEmissionHook
-end))
 end

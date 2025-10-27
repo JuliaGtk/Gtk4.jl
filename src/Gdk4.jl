@@ -21,6 +21,8 @@ end
 convert(::Type{RGBA}, gcolor::_GdkRGBA) = RGBA(gcolor.red, gcolor.green, gcolor.blue, gcolor.alpha)
 convert(::Type{GdkRGBA}, color::Colorant) = GdkRGBA(red(color), green(color), blue(color), alpha(color))
 
+Base.show(io::IO, c::GdkRGBA) = print(io,"GdkRGBA(\""*G_.to_string(c)*"\")")
+
 ## GdkCursor
 
 GdkCursor(name::AbstractString; kwargs...) = GdkCursor(name, nothing; kwargs...)
@@ -78,7 +80,6 @@ const color_formats = Dict(ColorTypes.RGB{N0f8}=>MemoryFormat_R8G8B8,
                            ColorTypes.BGRA{N0f8}=>MemoryFormat_B8G8R8A8,
                            ColorTypes.RGB{N0f16}=>MemoryFormat_R16G16B16,
                            ColorTypes.RGBA{N0f16}=>MemoryFormat_R16G16B16A16,
-                           # Available since GTK 4.12
                            ColorTypes.Gray{N0f8}=>MemoryFormat_G8,
                            ColorTypes.Gray{N0f16}=>MemoryFormat_G16,
                            ColorTypes.GrayA{N0f8}=>MemoryFormat_G8A8,
@@ -89,7 +90,6 @@ const color_formats_premultiplied = Dict(ColorTypes.RGBA{N0f8}=>MemoryFormat_R8G
                            ColorTypes.ARGB{N0f8}=>MemoryFormat_A8R8G8B8_PREMULTIPLIED,
                            ColorTypes.BGRA{N0f8}=>MemoryFormat_B8G8R8A8_PREMULTIPLIED,
                            ColorTypes.RGBA{N0f16}=>MemoryFormat_R16G16B16A16_PREMULTIPLIED,
-                           # Available since GTK 4.12
                            ColorTypes.GrayA{N0f8}=>MemoryFormat_G8A8_PREMULTIPLIED,
                            ColorTypes.GrayA{N0f16}=>MemoryFormat_G16A16_PREMULTIPLIED,
 )
@@ -144,6 +144,4 @@ end
 function glib_unref(x::Ptr{GdkEvent})
     ccall((:gdk_event_unref, libgtk4), Nothing, (Ptr{GdkEvent},), x)
 end
-
-Base.show(io::IO, t::GskTransform) = print(io,"GskTransform("*G_.to_string(t)*")")
 

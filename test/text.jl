@@ -18,6 +18,7 @@ push!(w, v)
 
 its = GtkTextIter(b, 1)
 ite = GtkTextIter(b, 2)
+show(its)
 
 @test buffer(its) == b
 @test (its:ite).text == "t"

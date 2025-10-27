@@ -1,5 +1,4 @@
-quote
-$(Expr(:toplevel, quote
+begin
     function copy(instance::GValueLike, _dest_value::GValueLike)
         ret = ccall(("g_value_copy", libgobject), Nothing, (Ptr{_GValue}, Ptr{_GValue}), instance, _dest_value)
         nothing
@@ -51,7 +50,7 @@ $(Expr(:toplevel, quote
         ret
     end
     function get_gtype(instance::GValueLike)
-        ret = ccall(("g_value_get_gtype", libgobject), UInt64, (Ptr{_GValue},), instance)
+        ret = ccall(("g_value_get_gtype", libgobject), GType, (Ptr{_GValue},), instance)
         ret
     end
     function get_int(instance::GValueLike)
@@ -107,7 +106,7 @@ $(Expr(:toplevel, quote
         ret2
     end
     function init(instance::GValueLike, _g_type::Integer)
-        ret = ccall(("g_value_init", libgobject), Ptr{_GValue}, (Ptr{_GValue}, UInt64), instance, _g_type)
+        ret = ccall(("g_value_init", libgobject), Ptr{_GValue}, (Ptr{_GValue}, GType), instance, _g_type)
         ret2 = convert(GValueLike, ret, false)
         ret2
     end
@@ -147,7 +146,7 @@ $(Expr(:toplevel, quote
         nothing
     end
     function set_gtype(instance::GValueLike, _v_gtype::Integer)
-        ret = ccall(("g_value_set_gtype", libgobject), Nothing, (Ptr{_GValue}, UInt64), instance, _v_gtype)
+        ret = ccall(("g_value_set_gtype", libgobject), Nothing, (Ptr{_GValue}, GType), instance, _v_gtype)
         nothing
     end
     function set_instance(instance::GValueLike, _instance::Maybe(Nothing))
@@ -380,5 +379,4 @@ $(Expr(:toplevel, quote
         ret2 = convert(Bool, ret)
         ret2
     end
-end))
 end

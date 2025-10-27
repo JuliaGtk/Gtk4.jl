@@ -8,11 +8,9 @@ sw = GtkScrolledWindow()
 push!(win, bx)
 hbx = GtkBox(:h)
 entry = GtkSearchEntry()
-push!(hbx, entry)
 sort_control = GtkDropDown(["Alphabetical","Reverse alphabetical","# methods (most to least)"])
-push!(hbx, sort_control)
-push!(bx, hbx)
-push!(bx, sw)
+push!(hbx, entry, sort_control)
+push!(bx, hbx, sw)
 
 # The model
 

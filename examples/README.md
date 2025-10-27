@@ -1,8 +1,9 @@
 # Gtk4.jl Examples
 
-These examples should be run in the REPL unless stated otherwise.
+These examples should be run in the REPL unless otherwise noted.
 
 ## Basic examples
+- `builder.jl` shows how to use `GtkBuilder` to define widgets using XML.
 - `calculator4.jl` demonstrates a simple GUI with lots of buttons. Adapted from an example in Gtk.jl by Nand Vinchhi.
 - `css.jl` demonstrates widget styling using CSS.
 - `css-style.jl` shows how to style individual widgets using CSS classes.
@@ -18,6 +19,7 @@ These examples should be run in the REPL unless stated otherwise.
 
 ## Lists
 - `listview.jl` demonstrates using `GtkListView` to show a huge list of strings.
+- `listview_multi.jl` demonstrates using `GtkListView` with multiple selection.
 - `filteredlistview.jl` demonstrates `GtkListView` with a `GtkSearchEntry` and `GtkCustomFilter` to filter what's shown.
 - `sortedlistview.jl` demonstrates `GtkListView` with a `GtkDropDown` widget to control how the list is sorted.
 - `columnview.jl` demonstrates using `GtkColumnView` to show lists with multiple columns.
@@ -25,10 +27,14 @@ These examples should be run in the REPL unless stated otherwise.
 - `listbox.jl` demonstrates `GtkListBox` to show a huge list of strings. This widget is a little easier to use than `GtkListView` but may be less performant.
 
 ## Multithreading
+These examples should be run with more than one Julia thread enabled.
+
 - `thread.jl` is a basic example of doing work in a separate thread while maintaining a responsive UI. Adapted from an example in the Gtk.jl manual.
 - `thread_timeout.jl` adds a label that updates during the task in the example above.
 
 ## Applications
+These examples can be run inside or outside the REPL.
+
 - `application.jl` is a simple example of using `GtkApplication` and `GAction`s.
 - `application2.jl` together with `application.jl` shows how to use remote actions with DBus. This probably only works on Linux.
 - The `ExampleApplication` subdirectory shows how to use Gtk4.jl with [PackageCompiler.jl](https://github.com/JuliaLang/PackageCompiler.jl).
@@ -38,4 +44,5 @@ These examples should be run in the REPL unless stated otherwise.
 
 ## Experimental
 
-- `custom_widget` shows how to define a custom GtkWidget with its own "snapshot" callback
+- `custom_widget.jl` shows how to define a custom GtkWidget with its own "snapshot" callback.
+- `builder2.jl` is a version of the `GtkBuilder` example that connects a signal handler automatically.

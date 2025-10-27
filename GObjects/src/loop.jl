@@ -160,7 +160,7 @@ Pauses the GLib event loop around a function. Restores the original state of the
 function pause_main_loop(f)
     was_running = is_loop_running()
     if was_running && g_main_running[] == false
-        warn("GLib main loop is running, but not via `glib_main`. Pausing the main loop inside a GApplication is not currently supported, so the function will be called without pausing.")
+        @warn("GLib main loop is running, but not via `glib_main`. Pausing the main loop inside a GApplication is not currently supported, so the function will be called without pausing.")
         f()
         return
     end

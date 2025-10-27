@@ -198,6 +198,7 @@ end
 wh = 600
 w = GtkWindow("GL example", wh, wh)
 glarea = GtkGLArea()
+Gtk4.allowed_apis(glarea, Gtk4.GLAPI_GL)
 
 signal_connect(on_realized, glarea, "realize")
 Gtk4.on_render(render, glarea)

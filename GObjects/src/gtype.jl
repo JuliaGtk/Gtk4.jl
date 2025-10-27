@@ -331,7 +331,9 @@ end
 function addref(@nospecialize(x::GObject))
     # internal helper function
     finalizer(delref, x)
-    gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
+    if !haskey(gc_preserve_glib, x)
+        gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
+    end
     nothing
 end
 function gobject_maybe_sink(handle,owns::Bool)
@@ -366,7 +368,7 @@ function gobject_ref(x::T) where T <: GObject
         # already gc-protected, nothing to do
     end
     gc_preserve_glib_lock[] = false
-    run_delayed_finalizers()
+    # run_delayed_finalizers() # Commenting out helps with issue #99, unsure why
     return x
 end
 gc_ref(x::GObject) = pointer_from_objref(gobject_ref(x))
@@ -408,7 +410,7 @@ function gc_unref(x::GObject)
     if ref != C_NULL && x !== unsafe_pointer_to_objref(ref)
         # We got called because we are no longer the default object for this handle, but we are still alive
         @warn("Duplicate Julia object creation detected for GObject")
-        deref = cfunction_(gc_unref_weak, Nothing, (Ref{typeof(x)},))
+        deref = @cfunction(gc_unref_weak, Nothing, (Ref{GObject},))
         ccall((:g_object_weak_ref, libgobject), Nothing, (Ptr{GObject}, Ptr{Nothing}, Any), x, deref, x)
     else
         ccall((:g_object_steal_qdata, libgobject), Any, (Ptr{GObject}, UInt32), x, jlref_quark::UInt32)
@@ -426,6 +428,11 @@ function gobject_move_ref(new::GObject, old::GObject)
     glib_ref(h)
     gc_unref(old)
     gc_ref(new)
+    # replace weak with strong reference
+    gc_preserve_glib_lock[] = true
+    filter!(x->!(isa(x.first,WeakRef) && x.first.value == new), gc_preserve_glib)
+    gc_preserve_glib[new] = true
+    gc_preserve_glib_lock[] = false
     glib_unref(h)
     new
 end
