@@ -129,10 +129,10 @@ end
 
 @testset "add action" begin
 g=GLib.G_.SimpleActionGroup_new()
-extra_arg_ref=Ref(0)
+refset=Ref(false)
 
 function cb(ac,va)
-    nothing
+    refset[] = true
 end
 
 @test g["new-action"] === nothing
@@ -140,6 +140,9 @@ end
 ac = add_action(GActionMap(g), "new-action", cb)
 
 @test g["new-action"] == ac
+
+GLib.activate(ac)
+@test refset[]
 
 add_action(GActionMap(g), "new-action-with-parameter", Bool, cb)
 
@@ -176,10 +179,12 @@ end
 
 a5 = add_stateful_action(GActionMap(g), "new-action3", true, cb)
 @test a5.state == GVariant(true)
-GLib.set_state(a5, GVariant(false))
+GLib.set_state(a5, false)
 @test a5.state == GVariant(false)
 
 a5 = add_stateful_action(GActionMap(g), "new-action3-par", Bool, true, cb)
+
+@test keys(g) == ["new-action3", "new-action3-par"]
 
 end
 
@@ -222,8 +227,10 @@ push!(l, GLib.GSimpleAction("do-something-else"))
     @test l[1].name == "do-something"
     @test length(l)==2
     insert!(l, 2, GLib.GSimpleAction("do-yet-another-thing"))
-    @test l[2].name == "do-yet-another-thing"
+    @test l[end].name == "do-something-else"
     @test length(l)==3
+    show(IOBuffer(), l)
+    @test keys(l) == 1:3
 end
 
 @testset "gvariant" begin
@@ -252,8 +259,10 @@ gvs = GVariant("test")
 @test gvs[String] == "test"
 
 # test tuples
-gvt = GLib.GVariant((true,3,6.5))
-@test GLib.GVariantType(Tuple{Bool,Int,Float64}) == GLib.G_.get_type(gvt)
-@test gvt[Tuple{Bool,Int,Float64}] == (true,3,6.5)
+gvt = GLib.GVariant((true,3,6.5,"foo"))
+@test GLib.GVariantType(Tuple{Bool,Int,Float64,String}) == GLib.G_.get_type(gvt)
+@test gvt[Tuple{Bool,Int,Float64,String}] == (true,3,6.5,"foo")
+show(IOBuffer(), GLib.GVariantType(Any))
+@test_throws ErrorException show(IOBuffer(), GLib.GVariantType(Float16))
 
 end

@@ -38,6 +38,8 @@ for (i,item) = enumerate(g)
     @test string(i)==item
 end
 
+show(IOBuffer(), g)
+
 g2=copy(g)
 
 for (i,item) = enumerate(g2)

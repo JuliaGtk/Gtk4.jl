@@ -32,5 +32,6 @@ end
     d = GLib.G_.base64_decode(str) # transfer full, returns array with a specified length
     @test String(d) == "Hello!"
 
-    
+    ba = GLib.G_.byte_array_new()
+    @test GLib.get_length(ba) == 0
 end

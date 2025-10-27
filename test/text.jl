@@ -136,6 +136,7 @@ place_cursor(b, ite)
 
 # GtkTextRange
 range=its:ite
+show(IOBuffer(), range)
 @test range[1] == 'l'
 @test range[5] == '2'
 @test_throws BoundsError range[10]
