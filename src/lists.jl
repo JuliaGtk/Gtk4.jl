@@ -117,6 +117,32 @@ function selected_string!(d::GtkDropDown, s::AbstractString)
     G_.set_selected(d, i-1)
 end
 
+"""
+    selected(d::GtkDropDown)
+
+Get the (one based) index of the currently selected item of a dropdown widget.
+Returns `nothing` if there is no item selected.
+
+Related GTK functions: [`gtk_drop_down_get_selected`()]($(gtkdoc_method_url("gtk4","DropDown","get_selected")))
+"""
+function selected(d::GtkDropDown)
+    ind = G_.get_selected(d)
+    if ind == Gtk4.INVALID_LIST_POSITION
+        return nothing
+    end
+    ind+1
+end
+
+"""
+    selected!(d::GtkDropDown, i)
+
+Set the (one based) index of the currently selected item of a dropdown widget.
+
+Related GTK functions: [`gtk_drop_down_set_selected`()]($(gtkdoc_method_url("gtk4","DropDown","set_selected")))
+"""
+selected!(d::GtkDropDown, i::Integer) = G_.set_selected(d, i-1)
+selected!(d::GtkDropDown, ::Nothing) = G_.set_selected(d, Gtk4.INVALID_LIST_POSITION)
+
 ## GtkListView and GtkGridView
 
 """
@@ -154,6 +180,7 @@ push!(cv::GtkColumnView, cvc::GtkColumnViewColumn) = (G_.append_column(cv,cvc); 
 getindex(li::GtkListItem) = G_.get_item(li)
 set_child(li::GtkListItem, w) = G_.set_child(li, w)
 get_child(li::GtkListItem) = G_.get_child(li)
+selected(li::GtkListItem) = G_.get_selected(li)
 
 set_list_row(te::GtkTreeExpander, w) = G_.set_list_row(te, w)
 set_child(te::GtkTreeExpander, w) = G_.set_child(te, w)
@@ -297,6 +324,37 @@ function set_sort_func(cf::GtkCustomSorter, ::Nothing)
 end
 
 changed(cs::GtkCustomSorter, _change = FilterChange_DIFFERENT) = G_.changed(cs, _change)
+
+## selection models
+
+"""
+    selected(d::GtkSingleSelection)
+
+Get the (one based) index of the currently selected item in a list widget
+corresponding to a `GtkSingleSelection` object. Returns `nothing` if there is
+no item currently selected.
+
+Related GTK function: [`gtk_single_selection_get_selected`()]($(gtkdoc_method_url("gtk4","SingleSelection","get_selected")))
+"""
+function selected(d::GtkSingleSelection)
+    ind = G_.get_selected(d)
+    if ind == Gtk4.INVALID_LIST_POSITION
+        return nothing
+    end
+    ind+1
+end
+
+"""
+    selected!(d::GtkSingleSelection, i)
+
+Set the (one based) index of the currently selected item in a list widget
+corresponding to a `GtkSingleSelection` object. Pass in `nothing` to clear
+the selection.
+
+Related GTK function: [`gtk_single_selection_set_selected`()]($(gtkdoc_method_url("gtk4","SingleSelection","set_selected")))
+"""
+selected!(d::GtkSingleSelection, i::Integer) = G_.set_selected(d, i-1)
+selected!(d::GtkSingleSelection, ::Nothing) = G_.set_selected(d, Gtk4.INVALID_LIST_POSITION)
 
 ## GtkBitset (used for multiple selection)
 

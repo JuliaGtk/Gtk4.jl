@@ -9,8 +9,7 @@ actions = String[]
 function update_label(l)
     "toggle" in actions || return
     v=GLib.G_.get_action_state(GActionGroup(remote_action_group),"toggle")
-    b=GLib.G_.get_boolean(v)
-    Gtk4.G_.set_label(l, b ? "on" : "off")
+    Gtk4.label(l, v[Bool] ? "on" : "off")
 end
 
 function on_action_added(group, name)

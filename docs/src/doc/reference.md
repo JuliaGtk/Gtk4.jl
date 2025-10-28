@@ -49,6 +49,8 @@ Gtk4.toplevels
 Gtk4.configure!
 Gtk4.selected_string!
 Gtk4.selected_string
+Gtk4.selected
+Gtk4.selected!
 ```
 
 ## Display widgets

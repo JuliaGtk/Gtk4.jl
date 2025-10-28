@@ -22,7 +22,7 @@ factory = GtkSignalListItemFactory(setup_cb, bind_cb)
 list = GtkListView(selmodel, factory)
 
 function ss(w, pos, n)
-    s = Gtk4.G_.get_selected(singlesel)+1
+    s = Gtk4.selected(singlesel)
     println("You selected ",model[s])
 end
 signal_connect(ss, selmodel, "selection-changed")
