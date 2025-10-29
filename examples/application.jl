@@ -40,7 +40,7 @@ function new_window()
 end
 
 # callback to be called when application is "activated"
-function activate(app)
+function activate_cb(app)
     add_action(GActionMap(app),"new_window",on_new_clicked)
     add_stateful_action(GActionMap(app), "toggle", false, on_state_changed)
 
@@ -50,14 +50,13 @@ end
 # create application -- argument is the application id, which is optional
 app = GtkApplication("julia.gtk4.example")
 
-Gtk4.signal_connect(activate, app, :activate)
+Gtk4.signal_connect(activate_cb, app, :activate)
 
 # When all windows are closed, loop automatically stops running and program exits (if Julia is not run interactively)
 
 if isinteractive()
     Gtk4.GLib.stop_main_loop()  # g_application_run will run the loop
-    loop()=Gtk4.run(app)
-    t = schedule(Task(loop))
+    t = schedule(Task(()->Gtk4.run(app)))
 else
     Gtk4.run(app)
 end

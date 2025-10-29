@@ -2,7 +2,10 @@
 """
     activate(a::GAction, par = nothing)
 
-Activates an action, optionally with a parameter `par`, which if given should be a GVariant.
+Activates an action, optionally with a parameter `par`, which if given should
+be a GVariant.
+
+Related GLib function: [`g_action_activate`()]($(gtkdoc_method_url("glib","Action","activate")))
 """
 activate(a::GAction, par = nothing) = G_.activate(a, par)
 GSimpleAction(name::AbstractString; kwargs...) = GSimpleAction(name, nothing; kwargs...)
@@ -131,6 +134,15 @@ function GDBusActionGroup(app::GApplication, bus_name, object_path)
     conn = G_.get_dbus_connection(app)
     G_.get(conn, bus_name, object_path)
 end
+
+"""
+    activate(g::GActionGroup, name [, parameter])
+
+Activate an action `name` in a GActionGroup, optionally with a `parameter`.
+
+Related GLib function: [`g_action_group_activate_action`()]($(gtkdoc_method_url("glib","ActionGroup","activate_action")))
+"""
+activate(g::GActionGroup, name::AbstractString, parameter = nothing) = G_.activate_action(g, name, parameter)
 
 # menus
 function GMenu(i::GMenuItem)

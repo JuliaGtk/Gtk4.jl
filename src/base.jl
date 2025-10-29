@@ -123,7 +123,8 @@ isrealized(w::GtkWidget) = G_.get_realized(w)
 """
     activate(w::GtkWidget)
 
-Activates widgets like buttons, menu items, etc. that support being activated. Returns `false` if the widget is not activatable.
+Activates widgets that support being activated, such as buttons and menu items.
+Returns `false` if the widget is not activatable.
 
 Related GTK function: [`gtk_widget_activate`()]($(gtkdoc_method_url("gtk4","Widget","activate")))
 """

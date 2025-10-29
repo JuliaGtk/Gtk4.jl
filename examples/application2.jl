@@ -21,10 +21,10 @@ end
 
 function on_button_clicked(widget)
     "new_window" in actions || return
-    GLib.G_.activate_action(GActionGroup(remote_action_group), "new_window", nothing)
+    activate(GActionGroup(remote_action_group), "new_window")
 end
 
-function activate(app)
+function activate_cb(app)
     global tlabel = GtkLabel("")
     global remote_action_group = GDBusActionGroup(app, "julia.gtk4.example","/julia/gtk4/example")
     signal_connect(on_action_added, remote_action_group, "action-added")
@@ -51,7 +51,7 @@ end
 
 app = GtkApplication("julia.gtk4.example2")
 
-Gtk4.signal_connect(activate, app, :activate)
+Gtk4.signal_connect(activate_cb, app, :activate)
 
 # When all windows are closed, loop automatically stops running
 
