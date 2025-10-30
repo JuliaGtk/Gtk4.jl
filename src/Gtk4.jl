@@ -26,7 +26,7 @@ using ..GdkPixbufLib
 using ..Graphene
 using ..Pango
 
-using Preferences
+using Dates, Preferences
 
 using Reexport
 @reexport using Graphics

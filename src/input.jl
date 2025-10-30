@@ -128,3 +128,9 @@ function configure!(sb::GtkSpinButton; adj = nothing, climb_rate = nothing, digi
     end
     G_.configure(sb, adj, climb_rate, digits)
 end
+
+## GtkCalendar
+
+Dates.Date(dt::GLib.GDateTimeLike) = Date(GLib.G_.get_year(dt),GLib.G_.get_month(dt),GLib.G_.get_day_of_month(dt))
+selected(c::GtkCalendar) = Date(G_.get_date(c))
+selected!(c::GtkCalendar, d::Date) = G_.select_day(c, GDateTime(year(d), month(d), day(d), 0, 0, 0.0))
