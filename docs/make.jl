@@ -28,6 +28,7 @@ makedocs(
                      "manual/menus.md",
                      "manual/dialogs.md",
                      "manual/textwidgets.md",
+                     "manual/input.md",
                      "manual/display.md",
                      "manual/combobox.md",
                      "manual/listtreeview.md",
