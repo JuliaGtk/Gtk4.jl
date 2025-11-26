@@ -22,7 +22,7 @@ end
 end
 
 # currently failing on some arch's
-if false && !(get(ENV, "CI", nothing) == "true" && (Sys.iswindows() || Sys.WORD_SIZE!=64))
+if (Sys.iswindows() || Sys.WORD_SIZE!=64)
 @testset "GL Area" begin
     include(joinpath(@__DIR__, "..", "..", "examples", "glarea.jl"))
     destroy(w)
