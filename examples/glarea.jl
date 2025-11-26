@@ -1,5 +1,5 @@
 using Gtk4
-using ModernGL
+using ModernGL, GLAbstraction
 
 # mostly copied from ModernGL.jl: see https://github.com/JuliaGL/ModernGL.jl/blob/master/test/runtests.jl
 
@@ -66,7 +66,7 @@ function createShader(source, typ)
 		error("Error creating shader: ", glErrorMessage())
 	end
 	# Compile the shader
-	glShaderSource(shader, 1, convert(Ptr{UInt8}, pointer([convert(Ptr{GLchar}, pointer(source))])), C_NULL)
+	ModernGL.glShaderSource(shader, source)
 	glCompileShader(shader)
 	# Check for errors
 	!validateShader(shader) && error("Shader creation error: ", getInfoLog(shader))
@@ -121,7 +121,6 @@ function createcontextinfo()
 	    :gl_version     => glv,
 	    :gl_vendor	    => unsafe_string(glGetString(GL_VENDOR)),
 	    :gl_renderer	=> unsafe_string(glGetString(GL_RENDERER)),
-	    #:gl_extensions => split(unsafe_string(glGetString(GL_EXTENSIONS))),
 	)
 end
 function get_glsl_version_string()
