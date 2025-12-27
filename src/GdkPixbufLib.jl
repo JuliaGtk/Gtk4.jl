@@ -268,6 +268,12 @@ Base.fill!(img::GdkPixbuf, pix) = fill!(convert(MatrixStrided, img), pix)
 #TODO: image transformations, rotations, compositing
 # G_.flip -> Base.reverse
 
+function query_pixbuf_loaders(dir::String;
+                              extra_env::Vector{Pair{String,String}} = Pair{String,String}[])
+    gpql = gdk_pixbuf_query_loaders()
+    return readchomp(addenv(gpql, "GDK_PIXBUF_MODULEDIR" => dir, extra_env...))
+end
+
 function __init__()
     gtype_wrapper_cache_init()
     gboxed_cache_init()
@@ -277,12 +283,6 @@ function __init__()
     loaders_cache_path = joinpath(cache_dir, "loaders.cache")
     gdk_pixbuf_treehash = basename(gdk_pixbuf_jll.artifact_dir)
     if !isfile(treehash_cache_path) || read(treehash_cache_path, String) != gdk_pixbuf_treehash
-        function query_pixbuf_loaders(dir::String;
-                                      extra_env::Vector{Pair{String,String}} = Pair{String,String}[])
-            gpql = gdk_pixbuf_query_loaders()
-            return readchomp(addenv(gpql, "GDK_PIXBUF_MODULEDIR" => dir, extra_env...))
-        end
-
         open(loaders_cache_path, write=true) do io
             # Cache builtin gdx-pixbuf modules
             write(io, query_pixbuf_loaders(gdk_pixbuf_loaders_dir))
