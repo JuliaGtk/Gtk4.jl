@@ -12,8 +12,9 @@ import Base: convert, copy, run, show, size, length, getindex, setindex!, get,
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag, BitFlag
 
-using Glib_jll
-using Libdl, Preferences
+using Glib_jll: Glib_jll, libgio, libglib, libgobject
+using Libdl
+using Preferences: Preferences, @load_preference, @set_preferences!
 
 export Maybe
 
@@ -174,7 +175,7 @@ include("../gen/gio_structs")
 
 module G_
 
-using Glib_jll
+using Glib_jll: Glib_jll, libgio, libglib, libgobject
 
 using ..GLib
 using ..GLib: BookmarkFileError, ChecksumType, ConvertError, DateDMY, DateMonth, DateWeekday, ErrorType, FileError, IOChannelError, IOError, IOStatus, KeyFileError, LogWriterOutput, MarkupError, NormalizeMode, NumberParserError, OnceStatus, OptionArg, OptionError, RegexError, SeekType, ShellError, SliceConfig, SpawnError, TestFileType, TestLogType, TestResult, ThreadError, TimeType, TokenType, TraverseType, UnicodeBreakType, UnicodeScript, UnicodeType, UnixPipeEnd, UriError, UserDirectory, VariantClass, VariantParseError, BusType, ConverterResult, CredentialsType, DBusError, DBusMessageByteOrder, DBusMessageHeaderField, DBusMessageType, DataStreamByteOrder, DataStreamNewlineType, DriveStartStopType, EmblemOrigin, FileAttributeStatus, FileAttributeType, FileMonitorEvent, FileType, FilesystemPreviewType, IOErrorEnum, IOModuleScopeFlags, MemoryMonitorWarningLevel, MountOperationResult, NetworkConnectivity, NotificationPriority, PasswordSave, PollableReturn, ResolverError, ResolverRecordType, ResourceError, SocketClientEvent, SocketFamily, SocketListenerEvent, SocketProtocol, SocketType, TlsAuthenticationMode, TlsCertificateRequestFlags, TlsChannelBindingError, TlsChannelBindingType, TlsDatabaseLookupFlags, TlsError, TlsInteractionResult, UnixSocketAddressType, ZlibCompressorFormat, AsciiType, FileSetContentsFlags, FileTest, FormatSizeFlags, HookFlagMask, IOCondition, IOFlags, KeyFileFlags, LogLevelFlags, MainContextFlags, MarkupCollectType, MarkupParseFlags, OptionFlags, RegexCompileFlags, RegexMatchFlags, SpawnFlags, TestSubprocessFlags, TraverseFlags, UriFlags, UriHideFlags, UriParamsFlags, BindingFlags, ConnectFlags, IOCondition, ParamFlags, SignalFlags, SignalMatchType, TypeFlags, TypeFundamentalFlags, AppInfoCreateFlags, ApplicationFlags, AskPasswordFlags, BusNameOwnerFlags, BusNameWatcherFlags, ConverterFlags, DBusCallFlags, DBusCapabilityFlags, DBusConnectionFlags, DBusInterfaceSkeletonFlags, DBusMessageFlags, DBusObjectManagerClientFlags, DBusPropertyInfoFlags, DBusProxyFlags, DBusSendMessageFlags, DBusServerFlags, DBusSignalFlags, DBusSubtreeFlags, DriveStartFlags, FileAttributeInfoFlags, FileCopyFlags, FileCreateFlags, FileMeasureFlags, FileMonitorFlags, FileQueryInfoFlags, IOStreamSpliceFlags, MountMountFlags, MountUnmountFlags, OutputStreamSpliceFlags, ResolverNameLookupFlags, ResourceFlags, ResourceLookupFlags, SettingsBindFlags, SocketMsgFlags, SubprocessFlags, TestDBusFlags, TlsCertificateFlags, TlsDatabaseVerifyFlags, TlsPasswordFlags

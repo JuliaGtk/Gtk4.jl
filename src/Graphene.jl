@@ -1,9 +1,9 @@
 module Graphene
 
 using ..GLib
-using Graphene_jll
+using Graphene_jll: Graphene_jll, libgraphene
 
-import Base: convert, length, getindex, iterate, unsafe_convert
+import Base: convert, unsafe_convert
 
 import CEnum: @cenum, CEnum
 
@@ -14,7 +14,7 @@ export _GrapheneRect, _GraphenePoint, _GrapheneMatrix, _GrapheneVec4, _GrapheneV
 
 module G_
 
-using Graphene_jll
+using Graphene_jll: Graphene_jll, libgraphene
 
 using ..GLib
 using ..Graphene

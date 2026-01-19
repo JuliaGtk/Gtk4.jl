@@ -2,11 +2,11 @@ module GdkPixbufLib
 
 using ..GLib
 using Glib_jll
-using gdk_pixbuf_jll
+using gdk_pixbuf_jll: gdk_pixbuf_jll, libgdkpixbuf
 using Librsvg_jll
 using JLLWrappers
-using Scratch
-using ColorTypes
+using Scratch: Scratch, @get_scratch!
+using ColorTypes: ColorTypes, Colorant, alpha, blue, green, red
 import FixedPointNumbers: N0f8
 
 import Base: convert, size, eltype, getindex, setindex!
@@ -24,7 +24,7 @@ include("gen/gdkpixbuf_structs")
 
 module G_
 
-using gdk_pixbuf_jll
+using gdk_pixbuf_jll: gdk_pixbuf_jll, libgdkpixbuf
 
 using ..GLib
 using ..GdkPixbufLib

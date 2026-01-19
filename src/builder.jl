@@ -132,7 +132,7 @@ functions in a Julia module `mod`.
 """
 function GtkBuilder(mod::Module)
     b = GtkBuilder()
-    j = Gtk4.JuliaBuilderScope(mod)
-    Gtk4.G_.set_scope(b, GtkBuilderScope(j))
+    j = JuliaBuilderScope(mod)
+    G_.set_scope(b, GtkBuilderScope(j))
     b
 end

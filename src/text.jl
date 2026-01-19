@@ -609,19 +609,19 @@ function cursor_locations(view::GtkTextView)
     return (iter, strong, weak)
 end
 
-function convert(::Type{Gtk4.TextWindowType}, x::Symbol)
+function convert(::Type{TextWindowType}, x::Symbol)
     if x === :left
-        Gtk4.TextWindowType_LEFT
+        TextWindowType_LEFT
     elseif x === :right
-        Gtk4.TextWindowType_RIGHT
+        TextWindowType_RIGHT
     elseif x === :top
-        Gtk4.TextWindowType_TOP
+        TextWindowType_TOP
     elseif x === :bottom
-        Gtk4.TextWindowType_BOTTOM
+        TextWindowType_BOTTOM
     elseif x === :widget
-        Gtk4.TextWindowType_WIDGET
+        TextWindowType_WIDGET
     elseif x === :text
-        Gtk4.TextWindowType_TEXT
+        TextWindowType_TEXT
     else
         error("can't convert $x to GtkTextWindowType")
     end

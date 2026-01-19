@@ -2,7 +2,7 @@ module Pango
 
 using ..GLib
 using Glib_jll
-using Pango_jll
+using Pango_jll: Pango_jll, libpango, libpangocairo
 
 import Base: convert, length, getindex, iterate, unsafe_convert
 import CEnum: @cenum, CEnum
@@ -21,7 +21,8 @@ module G_
 
 import Base: copy
 
-using Pango_jll, Glib_jll
+using Pango_jll: Pango_jll, libpango, libpangocairo
+using Glib_jll
 
 using ..GLib
 using ..Pango

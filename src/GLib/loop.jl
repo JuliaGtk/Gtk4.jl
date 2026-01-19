@@ -212,7 +212,7 @@ Create a `GApplication` with DBus id `id` and flags.
 
 Related GLib function: [`g_application_new`()]($(gtkdoc_method_url("gio","Application","new")))
 """
-GApplication(id = nothing, flags = GLib.ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,ApplicationFlags_FLAGS_NONE)
+GApplication(id = nothing, flags = ApplicationFlags_FLAGS_NONE) = G_.Application_new(id,ApplicationFlags_FLAGS_NONE)
 
 """
     run(app::GApplication)

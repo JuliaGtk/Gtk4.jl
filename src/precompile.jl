@@ -5,7 +5,7 @@
 function _precompile_()
     ccall(:jl_generating_output, Cint, ()) == 1 || return nothing
     precompile(Tuple{typeof(__init__)})
-    precompile(Tuple{typeof(Gtk4.GLib.GClosureMarshal), Ptr{Nothing}, Ptr{Gtk4.GLib.GValue}, UInt32, Ptr{Gtk4.GLib.GValue}, Ptr{Nothing}, Ptr{Nothing}})
+    precompile(Tuple{typeof(GLib.GClosureMarshal), Ptr{Nothing}, Ptr{GLib.GValue}, UInt32, Ptr{GLib.GValue}, Ptr{Nothing}, Ptr{Nothing}})
     precompile(Tuple{typeof(GLib.uv_prepare), Ptr{Nothing}, Ptr{Int32}})
     precompile(Tuple{typeof(GLib.uv_check), Ptr{Nothing}})
     precompile(Tuple{typeof(GLib.uv_dispatch), Ptr{Nothing}, Ptr{Nothing}, Int64})
