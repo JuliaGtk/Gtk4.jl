@@ -285,7 +285,7 @@ function __init__()
     if !isfile(treehash_cache_path) || read(treehash_cache_path, String) != gdk_pixbuf_treehash
         open(loaders_cache_path, write=true) do io
             # Cache builtin gdx-pixbuf modules
-            write(io, query_pixbuf_loaders(gdk_pixbuf_loaders_dir))
+            write(io, query_pixbuf_loaders(gdk_pixbuf_jll.gdk_pixbuf_loaders_dir))
             println(io)
 
             # If Librsvg_jll is available, cache that one too
