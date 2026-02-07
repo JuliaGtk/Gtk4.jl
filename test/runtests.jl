@@ -47,7 +47,9 @@ include("gui/layout.jl")
 include("gui/window.jl")
 include("gui/listviews.jl")
 include("gui/examples.jl")
+if VERSION <= v"1.12"
 include("gui/application.jl")  # needs to be last because it messes with the main loop
+end
 end
 
 GC.gc()
