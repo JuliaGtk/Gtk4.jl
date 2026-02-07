@@ -89,7 +89,7 @@ glib_main() = g_sigatom() do
     # In Julia 1.13 the REPL locks up when we run the loop in a parallel task.
     # This approach probably has worse performance, but at least the REPL works.
     @static if VERSION > v"1.12"
-        global loop_timer = Timer(iterate_loop, 0.05; interval=0.05)
+        global loop_timer = Timer(iterate_loop, 0.002; interval=0.002)
     else
         while g_main_running[]
             ccall((:g_main_context_iteration, libglib), Cint, (Ptr{Cvoid}, Cint), C_NULL, true)
