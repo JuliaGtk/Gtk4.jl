@@ -2,7 +2,7 @@ module GdkPixbufLib
 
 using ..GLib
 using Glib_jll
-using gdk_pixbuf_jll: gdk_pixbuf_jll, libgdkpixbuf
+using gdk_pixbuf_jll: gdk_pixbuf_jll, libgdkpixbuf, gdk_pixbuf_query_loaders
 using Librsvg_jll
 using JLLWrappers
 using Scratch: Scratch, @get_scratch!
