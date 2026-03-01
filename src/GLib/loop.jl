@@ -75,7 +75,7 @@ Related GTK function: [`g_source_remove`()]($(gtkdoc_func_url("glib","source_rem
 """
 g_source_remove(id) = G_.source_remove(id)
 
-const g_main_running = Ref{Bool}(VERSION <= v"1.12")
+const g_main_running = Ref{Bool}(VERSION < v"1.13-beta2")
 
 function iterate_loop(t)
     if !g_main_running[]
@@ -88,7 +88,7 @@ end
 glib_main() = g_sigatom() do
     # In Julia 1.13 the REPL locks up when we run the loop in a parallel task.
     # This approach probably has worse performance, but at least the REPL works.
-    @static if VERSION > v"1.12"
+    @static if VERSION >= v"1.13-beta2"
         global loop_timer = Timer(iterate_loop, 0.002; interval=0.002)
     else
         while g_main_running[]
@@ -105,7 +105,7 @@ Return true if the default GLib main event loop is running.
 Related GTK function: [`g_main_depth`()]($(gtkdoc_func_url("glib","main_depth")))
 """
 function is_loop_running()
-    @static if VERSION > v"1.12"
+    @static if VERSION >= v"1.13-beta2"
         return g_main_running[]
     else
         return G_.main_depth() != 0
