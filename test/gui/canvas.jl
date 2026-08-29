@@ -93,3 +93,29 @@ c = GtkCanvas(10,10,true)
 @test isdefined(c,:back)
 end
 
+@testset "CairoCanvas initialization" begin
+# must provide a nonzero size to use `init_back`
+@test_throws ErrorException c = Gtk4.CairoCanvas(0,0,true)
+c = Gtk4.CairoCanvas(10,10,true)
+@test isdefined(c,:back)
+end
+
+@testset "SetCoordinates CairoCanvas" begin
+    cnvs = Gtk4.CairoCanvas(300, 280)
+    sleep(0.2)
+    draw(cnvs) do c
+        set_coordinates(getgc(c), BoundingBox(0, 1, 0, 1))
+    end
+    win = GtkWindow(cnvs)
+    sleep(1.0)
+    s = size(cnvs)
+    @test s[1] == 300
+    @test s[2] == 280
+    mtrx = Cairo.get_matrix(getgc(cnvs))
+    @test mtrx.xx == 300
+    @test mtrx.yy == 280
+    @test mtrx.xy == mtrx.yx == mtrx.x0 == mtrx.y0 == 0
+    surf = Gtk4.cairo_surface(cnvs)
+    destroy(win)
+end
+
