@@ -37,7 +37,7 @@ end
 # export as a Cenum type
 function decl(enum::GIEnumInfo, incl_typeinit=true)
     enumname=get_name(enum)
-    typ = typetag_primitive[get_storage_type(enum)]
+    typ = typetag_primitive[get_storage_type(enum)+1]
     body = Expr(:macrocall, Symbol("@cenum"), Symbol("nothing"), :($enumname::$typ))
     for (name,val) in get_enum_values(enum)
         val=unsafe_trunc(typ,val)  # sometimes the value returned by GI is outside the range of the enum's type
@@ -50,7 +50,7 @@ end
 # use BitFlags.jl
 function decl(enum::GIFlagsInfo, incl_typeinit=true)
     enumname=get_name(enum)
-    typ = typetag_primitive[get_storage_type(enum)]
+    typ = typetag_primitive[get_storage_type(enum)+1]
     body = Expr(:macrocall, Symbol("@bitflag"), Symbol("nothing"), :($enumname::UInt32))
     seen=UInt32[]
     for (name,val) in get_enum_values(enum)
