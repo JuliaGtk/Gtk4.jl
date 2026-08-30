@@ -222,6 +222,11 @@ begin
         ret = ccall(("pango_font_description_free", libpango), Nothing, (Ptr{PangoFontDescription},), instance)
         nothing
     end
+    function get_color(instance::PangoFontDescription)
+        ret = ccall(("pango_font_description_get_color", libpango), UInt32, (Ptr{PangoFontDescription},), instance)
+        ret2 = FontColor(ret)
+        ret2
+    end
     function get_family(instance::PangoFontDescription)
         ret = ccall(("pango_font_description_get_family", libpango), Cstring, (Ptr{PangoFontDescription},), instance)
         ret2 = string_or_nothing(ret, false)
@@ -291,6 +296,10 @@ begin
     end
     function set_absolute_size(instance::PangoFontDescription, _size::Real)
         ret = ccall(("pango_font_description_set_absolute_size", libpango), Nothing, (Ptr{PangoFontDescription}, Float64), instance, _size)
+        nothing
+    end
+    function set_color(instance::PangoFontDescription, _color)
+        ret = ccall(("pango_font_description_set_color", libpango), Nothing, (Ptr{PangoFontDescription}, UInt32), instance, _color)
         nothing
     end
     function set_family(instance::PangoFontDescription, _family::Union{AbstractString, Symbol})
@@ -565,13 +574,13 @@ begin
     end
     function get_scripts(instance::PangoLanguage)
         m_num_scripts = Ref{Int32}()
-        ret = ccall(("pango_language_get_scripts", libpango), Ptr{UInt32}, (Ptr{PangoLanguage}, Ptr{Int32}), instance, m_num_scripts)
-        ret2 = collect(unsafe_wrap(Vector{UInt32}, ret, m_num_scripts[]))
+        ret = ccall(("pango_language_get_scripts", libpango), Ptr{Int32}, (Ptr{PangoLanguage}, Ptr{Int32}), instance, m_num_scripts)
+        ret2 = collect(unsafe_wrap(Vector{Int32}, ret, m_num_scripts[]))
         _num_scripts = m_num_scripts[]
         ret2
     end
     function includes_script(instance::PangoLanguage, _script)
-        ret = ccall(("pango_language_includes_script", libpango), Cint, (Ptr{PangoLanguage}, UInt32), instance, _script)
+        ret = ccall(("pango_language_includes_script", libpango), Cint, (Ptr{PangoLanguage}, Int32), instance, _script)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -881,8 +890,8 @@ begin
     function get_range(instance::PangoScriptIter)
         m_start = Ref{Cstring}()
         m_end = Ref{Cstring}()
-        m_script = Ref{UInt32}()
-        ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{UInt32}), instance, m_start, m_end, m_script)
+        m_script = Ref{Int32}()
+        ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}), instance, m_start, m_end, m_script)
         _start = m_start[]
         _start = string_or_nothing(_start, false)
         _end = m_end[]
@@ -1053,9 +1062,8 @@ begin
         ret = ccall(("pango_context_set_base_gravity", libpango), Nothing, (Ptr{GObject}, UInt32), instance, _gravity)
         nothing
     end
-    function set_font_description(instance::PangoContext, _desc::Maybe(PangoFontDescription))
-        _desc_maybe = nothing_to_null(_desc)
-        ret = ccall(("pango_context_set_font_description", libpango), Nothing, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _desc_maybe)
+    function set_font_description(instance::PangoContext, _desc::PangoFontDescription)
+        ret = ccall(("pango_context_set_font_description", libpango), Nothing, (Ptr{GObject}, Ptr{PangoFontDescription}), instance, _desc)
         nothing
     end
     function set_font_map(instance::PangoContext, _font_map::Maybe(PangoFontMap))
@@ -1255,7 +1263,7 @@ begin
     end
     function get_family(instance::PangoFontMap, _name::Union{AbstractString, Symbol})
         ret = ccall(("pango_font_map_get_family", libpango), Ptr{GObject}, (Ptr{GObject}, Cstring), instance, _name)
-        ret2 = convert(PangoFontFamily, ret, false)
+        ret2 = convert_if_not_null(PangoFontFamily, ret, false)
         ret2
     end
     function get_serial(instance::PangoFontMap)

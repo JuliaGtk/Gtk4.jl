@@ -149,7 +149,7 @@ begin
             _callback_cfunc = @cfunction(GAsyncReadyCallback, Nothing, (Ptr{GObject}, Ptr{GObject}, Ref{Function}))
             _callback_closure = GLib.gc_ref(_callback)
         end
-        ret = ccall(("g_bus_get", libgio), Nothing, (UInt32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _bus_type, _cancellable_maybe, _callback_cfunc, _callback_closure)
+        ret = ccall(("g_bus_get", libgio), Nothing, (Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), _bus_type, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
     function bus_get_finish(_res::GAsyncResult)
@@ -162,7 +162,7 @@ begin
     function bus_get_sync(_bus_type, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
-        ret = ccall(("g_bus_get_sync", libgio), Ptr{GObject}, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable_maybe, err)
+        ret = ccall(("g_bus_get_sync", libgio), Ptr{GObject}, (Int32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable_maybe, err)
         check_err(err)
         ret2 = convert(GDBusConnection, ret, true)
         ret2
@@ -284,7 +284,7 @@ begin
     function dbus_address_get_for_bus_sync(_bus_type, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)
         err = err_buf()
-        ret = ccall(("g_dbus_address_get_for_bus_sync", libgio), Cstring, (UInt32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable_maybe, err)
+        ret = ccall(("g_dbus_address_get_for_bus_sync", libgio), Cstring, (Int32, Ptr{GObject}, Ptr{Ptr{GError}}), _bus_type, _cancellable_maybe, err)
         check_err(err)
         ret2 = string_or_nothing(ret, true)
         ret2
