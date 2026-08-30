@@ -1636,243 +1636,6 @@ begin
     function truncate(instance::GDataOutputStream, _offset::Integer, _cancellable::Maybe(GCancellable))
         truncate(GSeekable(instance), _offset, _cancellable)
     end
-    function DesktopAppInfo_new(_desktop_id::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_new", libgio), Ptr{GObject}, (Cstring,), _desktop_id)
-        ret2 = convert_if_not_null(GDesktopAppInfo, ret, true)
-        ret2
-    end
-    function DesktopAppInfo_new_from_filename(_filename::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_new_from_filename", libgio), Ptr{GObject}, (Cstring,), _filename)
-        ret2 = convert_if_not_null(GDesktopAppInfo, ret, true)
-        ret2
-    end
-    function DesktopAppInfo_new_from_keyfile(_key_file::GKeyFile)
-        ret = ccall(("g_desktop_app_info_new_from_keyfile", libgio), Ptr{GObject}, (Ptr{GKeyFile},), _key_file)
-        ret2 = convert_if_not_null(GDesktopAppInfo, ret, true)
-        ret2
-    end
-    function get_implementations(_interface::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_get_implementations", libgio), Ptr{GLib._GList{Ptr{GObject}}}, (Cstring,), _interface)
-        ret2 = GLib.GList(ret, true)
-        ret2
-    end
-    function get_action_name(instance::GDesktopAppInfo, _action_name::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_get_action_name", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _action_name)
-        ret2 = string_or_nothing(ret, true)
-        ret2
-    end
-    function get_boolean(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_get_boolean", libgio), Cint, (Ptr{GObject}, Cstring), instance, _key)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_categories(instance::GDesktopAppInfo)
-        ret = ccall(("g_desktop_app_info_get_categories", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function get_filename(instance::GDesktopAppInfo)
-        ret = ccall(("g_desktop_app_info_get_filename", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function get_generic_name(instance::GDesktopAppInfo)
-        ret = ccall(("g_desktop_app_info_get_generic_name", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function get_is_hidden(instance::GDesktopAppInfo)
-        ret = ccall(("g_desktop_app_info_get_is_hidden", libgio), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_keywords(instance::GDesktopAppInfo)
-        ret = ccall(("g_desktop_app_info_get_keywords", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret2 = begin
-                _len = length_zt(ret)
-                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
-                arrtemp
-            end
-        ret2
-    end
-    function get_locale_string(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_get_locale_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _key)
-        ret2 = string_or_nothing(ret, true)
-        ret2
-    end
-    function get_nodisplay(instance::GDesktopAppInfo)
-        ret = ccall(("g_desktop_app_info_get_nodisplay", libgio), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_show_in(instance::GDesktopAppInfo, _desktop_env::Maybe(Union{AbstractString, Symbol}))
-        _desktop_env_maybe = nothing_to_null(_desktop_env)
-        ret = ccall(("g_desktop_app_info_get_show_in", libgio), Cint, (Ptr{GObject}, Cstring), instance, _desktop_env_maybe)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_startup_wm_class(instance::GDesktopAppInfo)
-        ret = ccall(("g_desktop_app_info_get_startup_wm_class", libgio), Cstring, (Ptr{GObject},), instance)
-        ret2 = string_or_nothing(ret, false)
-        ret2
-    end
-    function get_string(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_get_string", libgio), Cstring, (Ptr{GObject}, Cstring), instance, _key)
-        ret2 = string_or_nothing(ret, true)
-        ret2
-    end
-    function get_string_list(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
-        m_length = Ref{UInt64}()
-        ret = ccall(("g_desktop_app_info_get_string_list", libgio), Ptr{Cstring}, (Ptr{GObject}, Cstring, Ptr{UInt64}), instance, _key, m_length)
-        ret2 = begin
-                _len = length_zt(ret)
-                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
-                GLib.g_strfreev(ret)
-                arrtemp
-            end
-        _length = m_length[]
-        ret2
-    end
-    function has_key(instance::GDesktopAppInfo, _key::Union{AbstractString, Symbol})
-        ret = ccall(("g_desktop_app_info_has_key", libgio), Cint, (Ptr{GObject}, Cstring), instance, _key)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function launch_action(instance::GDesktopAppInfo, _action_name::Union{AbstractString, Symbol}, _launch_context::Maybe(GAppLaunchContext))
-        _launch_context_maybe = nothing_to_null(_launch_context)
-        ret = ccall(("g_desktop_app_info_launch_action", libgio), Nothing, (Ptr{GObject}, Cstring, Ptr{GObject}), instance, _action_name, _launch_context_maybe)
-        nothing
-    end
-    function launch_uris_as_manager(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{String}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _pid_callback::Maybe(Function))
-        _launch_context_maybe = nothing_to_null(_launch_context)
-        if _user_setup === nothing
-            _user_setup_cfunc = C_NULL
-            _user_setup_closure = C_NULL
-        else
-            _user_setup_cfunc = @cfunction(GSpawnChildSetupFunc, Nothing, (Ref{Function},))
-            _user_setup_closure = GLib.gc_ref(_user_setup)
-        end
-        if _pid_callback === nothing
-            _pid_callback_cfunc = C_NULL
-            _pid_callback_closure = C_NULL
-        else
-            _pid_callback_cfunc = @cfunction(GDesktopAppLaunchCallback, Nothing, (Ptr{GObject}, Int32, Ref{Function}))
-            ref = Ref{Any}(_pid_callback)
-            _pid_callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-        end
-        err = err_buf()
-        ret = ccall(("g_desktop_app_info_launch_uris_as_manager", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{String}}, Ptr{GObject}, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Ptr{GError}}), instance, _uris, _launch_context_maybe, _spawn_flags, _user_setup_cfunc, _user_setup_closure, _pid_callback_cfunc, _pid_callback_closure, err)
-        check_err(err)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function launch_uris_as_manager_with_fds(instance::GDesktopAppInfo, _uris::GLib.LList{GLib._GList{String}}, _launch_context::Maybe(GAppLaunchContext), _spawn_flags, _user_setup::Maybe(Function), _pid_callback::Maybe(Function), _stdin_fd::Integer, _stdout_fd::Integer, _stderr_fd::Integer)
-        _launch_context_maybe = nothing_to_null(_launch_context)
-        if _user_setup === nothing
-            _user_setup_cfunc = C_NULL
-            _user_setup_closure = C_NULL
-        else
-            _user_setup_cfunc = @cfunction(GSpawnChildSetupFunc, Nothing, (Ref{Function},))
-            _user_setup_closure = GLib.gc_ref(_user_setup)
-        end
-        if _pid_callback === nothing
-            _pid_callback_cfunc = C_NULL
-            _pid_callback_closure = C_NULL
-        else
-            _pid_callback_cfunc = @cfunction(GDesktopAppLaunchCallback, Nothing, (Ptr{GObject}, Int32, Ref{Function}))
-            ref = Ref{Any}(_pid_callback)
-            _pid_callback_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
-        end
-        err = err_buf()
-        ret = ccall(("g_desktop_app_info_launch_uris_as_manager_with_fds", libgio), Cint, (Ptr{GObject}, Ptr{GLib._GList{String}}, Ptr{GObject}, UInt32, Ptr{Cvoid}, Ptr{Nothing}, Ptr{Cvoid}, Ptr{Nothing}, Int32, Int32, Int32, Ptr{Ptr{GError}}), instance, _uris, _launch_context_maybe, _spawn_flags, _user_setup_cfunc, _user_setup_closure, _pid_callback_cfunc, _pid_callback_closure, _stdin_fd, _stdout_fd, _stderr_fd, err)
-        check_err(err)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function list_actions(instance::GDesktopAppInfo)
-        ret = ccall(("g_desktop_app_info_list_actions", libgio), Ptr{Cstring}, (Ptr{GObject},), instance)
-        ret2 = begin
-                _len = length_zt(ret)
-                arrtemp = bytestring.(unsafe_wrap(Vector{Cstring}, ret, _len))
-                arrtemp
-            end
-        ret2
-    end
-    function add_supports_type(instance::GDesktopAppInfo, _content_type::Union{AbstractString, Symbol})
-        add_supports_type(GAppInfo(instance), _content_type)
-    end
-    function can_delete(instance::GDesktopAppInfo)
-        can_delete(GAppInfo(instance))
-    end
-    function can_remove_supports_type(instance::GDesktopAppInfo)
-        can_remove_supports_type(GAppInfo(instance))
-    end
-    function delete(instance::GDesktopAppInfo)
-        delete(GAppInfo(instance))
-    end
-    function dup(instance::GDesktopAppInfo)
-        dup(GAppInfo(instance))
-    end
-    function equal(instance::GDesktopAppInfo, _appinfo2::GAppInfo)
-        equal(GAppInfo(instance), _appinfo2)
-    end
-    function get_commandline(instance::GDesktopAppInfo)
-        get_commandline(GAppInfo(instance))
-    end
-    function get_description(instance::GDesktopAppInfo)
-        get_description(GAppInfo(instance))
-    end
-    function get_display_name(instance::GDesktopAppInfo)
-        get_display_name(GAppInfo(instance))
-    end
-    function get_executable(instance::GDesktopAppInfo)
-        get_executable(GAppInfo(instance))
-    end
-    function get_icon(instance::GDesktopAppInfo)
-        get_icon(GAppInfo(instance))
-    end
-    function get_id(instance::GDesktopAppInfo)
-        get_id(GAppInfo(instance))
-    end
-    function get_name(instance::GDesktopAppInfo)
-        get_name(GAppInfo(instance))
-    end
-    function get_supported_types(instance::GDesktopAppInfo)
-        get_supported_types(GAppInfo(instance))
-    end
-    function launch(instance::GDesktopAppInfo, _files::Maybe(GLib.LList{GLib._GList{Ptr{GObject}}}), _context::Maybe(GAppLaunchContext))
-        launch(GAppInfo(instance), _files, _context)
-    end
-    function launch_uris(instance::GDesktopAppInfo, _uris::Maybe(GLib.LList{GLib._GList{String}}), _context::Maybe(GAppLaunchContext))
-        launch_uris(GAppInfo(instance), _uris, _context)
-    end
-    function launch_uris_async(instance::GDesktopAppInfo, _uris::Maybe(GLib.LList{GLib._GList{String}}), _context::Maybe(GAppLaunchContext), _cancellable::Maybe(GCancellable), _callback::Maybe(Function))
-        launch_uris_async(GAppInfo(instance), _uris, _context, _cancellable, _callback)
-    end
-    function launch_uris_finish(instance::GDesktopAppInfo, _result::GAsyncResult)
-        launch_uris_finish(GAppInfo(instance), _result)
-    end
-    function remove_supports_type(instance::GDesktopAppInfo, _content_type::Union{AbstractString, Symbol})
-        remove_supports_type(GAppInfo(instance), _content_type)
-    end
-    function set_as_default_for_extension(instance::GDesktopAppInfo, _extension::Union{AbstractString, Symbol})
-        set_as_default_for_extension(GAppInfo(instance), _extension)
-    end
-    function set_as_default_for_type(instance::GDesktopAppInfo, _content_type::Union{AbstractString, Symbol})
-        set_as_default_for_type(GAppInfo(instance), _content_type)
-    end
-    function set_as_last_used_for_type(instance::GDesktopAppInfo, _content_type::Union{AbstractString, Symbol})
-        set_as_last_used_for_type(GAppInfo(instance), _content_type)
-    end
-    function should_show(instance::GDesktopAppInfo)
-        should_show(GAppInfo(instance))
-    end
-    function supports_files(instance::GDesktopAppInfo)
-        supports_files(GAppInfo(instance))
-    end
-    function supports_uris(instance::GDesktopAppInfo)
-        supports_uris(GAppInfo(instance))
-    end
     function Emblem_new(_icon::GIcon)
         ret = ccall(("g_emblem_new", libgio), Ptr{GObject}, (Ptr{GObject},), _icon)
         ret2 = GEmblemLeaf(ret, true)
@@ -2494,8 +2257,9 @@ begin
         ret2 = convert(Bool, ret)
         ret2
     end
-    function emit_event(instance::GFileMonitor, _child::GFile, _other_file::GFile, _event_type)
-        ret = ccall(("g_file_monitor_emit_event", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, UInt32), instance, _child, _other_file, _event_type)
+    function emit_event(instance::GFileMonitor, _child::GFile, _other_file::Maybe(GFile), _event_type)
+        _other_file_maybe = nothing_to_null(_other_file)
+        ret = ccall(("g_file_monitor_emit_event", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}, UInt32), instance, _child, _other_file_maybe, _event_type)
         nothing
     end
     function is_cancelled(instance::GFileMonitor)
@@ -2683,6 +2447,34 @@ begin
         ret = ccall(("g_io_stream_splice_async", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}, UInt32, Int32, Ptr{GObject}, Ptr{Cvoid}, Ptr{Nothing}), instance, _stream2, _flags, _io_priority, _cancellable_maybe, _callback_cfunc, _callback_closure)
         nothing
     end
+    function IPTosMessage_new(_dscp::Integer, _ecn)
+        ret = ccall(("g_ip_tos_message_new", libgio), Ptr{GObject}, (UInt8, UInt32), _dscp, _ecn)
+        ret2 = GIPTosMessageLeaf(ret, true)
+        ret2
+    end
+    function get_dscp(instance::GIPTosMessage)
+        ret = ccall(("g_ip_tos_message_get_dscp", libgio), UInt8, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_ecn(instance::GIPTosMessage)
+        ret = ccall(("g_ip_tos_message_get_ecn", libgio), UInt32, (Ptr{GObject},), instance)
+        ret2 = EcnCodePoint(ret)
+        ret2
+    end
+    function IPv6TclassMessage_new(_dscp::Integer, _ecn)
+        ret = ccall(("g_ipv6_tclass_message_new", libgio), Ptr{GObject}, (UInt8, UInt32), _dscp, _ecn)
+        ret2 = GIPv6TclassMessageLeaf(ret, true)
+        ret2
+    end
+    function get_dscp(instance::GIPv6TclassMessage)
+        ret = ccall(("g_ipv6_tclass_message_get_dscp", libgio), UInt8, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_ecn(instance::GIPv6TclassMessage)
+        ret = ccall(("g_ipv6_tclass_message_get_ecn", libgio), UInt32, (Ptr{GObject},), instance)
+        ret2 = EcnCodePoint(ret)
+        ret2
+    end
     function InetAddress_new_any(_family)
         ret = ccall(("g_inet_address_new_any", libgio), Ptr{GObject}, (UInt32,), _family)
         ret2 = GInetAddressLeaf(ret, true)
@@ -2691,6 +2483,12 @@ begin
     function InetAddress_new_from_bytes(_bytes, _family)
         _bytes_arr = convert(Vector{UInt8}, _bytes)
         ret = ccall(("g_inet_address_new_from_bytes", libgio), Ptr{GObject}, (Ptr{UInt8}, UInt32), _bytes_arr, _family)
+        ret2 = GInetAddressLeaf(ret, true)
+        ret2
+    end
+    function InetAddress_new_from_bytes_with_ipv6_info(_bytes, _family, _flowinfo::Integer, _scope_id::Integer)
+        _bytes_arr = convert(Vector{UInt8}, _bytes)
+        ret = ccall(("g_inet_address_new_from_bytes_with_ipv6_info", libgio), Ptr{GObject}, (Ptr{UInt8}, UInt32, UInt32, UInt32), _bytes_arr, _family, _flowinfo, _scope_id)
         ret2 = GInetAddressLeaf(ret, true)
         ret2
     end
@@ -2713,6 +2511,10 @@ begin
         ret = ccall(("g_inet_address_get_family", libgio), UInt32, (Ptr{GObject},), instance)
         ret2 = SocketFamily(ret)
         ret2
+    end
+    function get_flowinfo(instance::GInetAddress)
+        ret = ccall(("g_inet_address_get_flowinfo", libgio), UInt32, (Ptr{GObject},), instance)
+        ret
     end
     function get_is_any(instance::GInetAddress)
         ret = ccall(("g_inet_address_get_is_any", libgio), Cint, (Ptr{GObject},), instance)
@@ -2766,6 +2568,10 @@ begin
     end
     function get_native_size(instance::GInetAddress)
         ret = ccall(("g_inet_address_get_native_size", libgio), UInt64, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_scope_id(instance::GInetAddress)
+        ret = ccall(("g_inet_address_get_scope_id", libgio), UInt32, (Ptr{GObject},), instance)
         ret
     end
     function to_string(instance::GInetAddress)
@@ -6589,9 +6395,17 @@ begin
         ret2 = convert_if_not_null(GFileInfo, ret, false)
         ret2
     end
+    function get_os(instance::GZlibCompressor)
+        ret = ccall(("g_zlib_compressor_get_os", libgio), Int32, (Ptr{GObject},), instance)
+        ret
+    end
     function set_file_info(instance::GZlibCompressor, _file_info::Maybe(GFileInfo))
         _file_info_maybe = nothing_to_null(_file_info)
         ret = ccall(("g_zlib_compressor_set_file_info", libgio), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _file_info_maybe)
+        nothing
+    end
+    function set_os(instance::GZlibCompressor, _os::Integer)
+        ret = ccall(("g_zlib_compressor_set_os", libgio), Nothing, (Ptr{GObject}, Int32), instance, _os)
         nothing
     end
     function convert(instance::GZlibCompressor, _inbuf, _outbuf, _flags)
@@ -8614,10 +8428,6 @@ begin
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
-    end
-    function get_fd(instance::GFileDescriptorBased)
-        ret = ccall(("g_file_descriptor_based_get_fd", libgio), Int32, (Ptr{GObject},), instance)
-        ret
     end
     function init(instance::GInitable, _cancellable::Maybe(GCancellable))
         _cancellable_maybe = nothing_to_null(_cancellable)

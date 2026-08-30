@@ -322,7 +322,7 @@ begin
     end
     function ref(instance::GObject)
         ret = ccall(("g_object_ref", libgobject), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GObject, ret, false)
+        ret2 = convert(GObject, ret, true)
         ret2
     end
     function ref_sink(instance::GObject)
@@ -358,7 +358,8 @@ begin
         nothing
     end
     function unref(instance::GObject)
-        ret = ccall(("g_object_unref", libgobject), Nothing, (Ptr{GObject},), instance)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("g_object_unref", libgobject), Nothing, (Ptr{GObject},), reffed_instance)
         nothing
     end
     function is_valid_name(_name::Union{AbstractString, Symbol})

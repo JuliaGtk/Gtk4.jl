@@ -191,7 +191,6 @@ begin
     GLib.@Giface GDtlsConnection libgio g_dtls_connection_get_type
     GLib.@Giface GDtlsServerConnection libgio g_dtls_server_connection_get_type
     GLib.@Giface GFile libgio g_file_get_type
-    GLib.@Giface GFileDescriptorBased libgio g_file_descriptor_based_get_type
     GLib.@Giface GIcon libgio g_icon_get_type
     GLib.@Giface GInitable libgio g_initable_get_type
     GLib.@Giface GListModel libgio g_list_model_get_type
@@ -772,22 +771,6 @@ begin
     function GLib.signalnames(::Type{GDataOutputStream})
         signalnames(supertype(GDataOutputStream))
     end
-    abstract type GDesktopAppInfo <: GObject end
-    mutable struct GDesktopAppInfoLeaf <: GDesktopAppInfo
-        handle::Ptr{GObject}
-        function GDesktopAppInfoLeaf(handle::Ptr{GObject}, owns = false)
-            if handle == C_NULL
-                error("Cannot construct GDesktopAppInfoLeaf with a NULL pointer")
-            end
-            GLib.gobject_maybe_sink(handle, owns)
-            return gobject_ref(new(handle))
-        end
-    end
-    gtype_wrapper_cache[:GDesktopAppInfo] = GDesktopAppInfoLeaf
-    (GLib.g_type(::Type{T}) where T <: GDesktopAppInfo) = ccall(("g_desktop_app_info_get_type", libgio), GType, ())
-    function GLib.signalnames(::Type{GDesktopAppInfo})
-        signalnames(supertype(GDesktopAppInfo))
-    end
     abstract type GEmblem <: GObject end
     mutable struct GEmblemLeaf <: GEmblem
         handle::Ptr{GObject}
@@ -995,6 +978,54 @@ begin
     (GLib.g_type(::Type{T}) where T <: GIOModule) = ccall(("g_io_module_get_type", libgio), GType, ())
     function GLib.signalnames(::Type{GIOModule})
         signalnames(supertype(GIOModule))
+    end
+    abstract type GSocketControlMessage <: GObject end
+    mutable struct GSocketControlMessageLeaf <: GSocketControlMessage
+        handle::Ptr{GObject}
+        function GSocketControlMessageLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GSocketControlMessageLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GSocketControlMessage] = GSocketControlMessageLeaf
+    (GLib.g_type(::Type{T}) where T <: GSocketControlMessage) = ccall(("g_socket_control_message_get_type", libgio), GType, ())
+    function GLib.signalnames(::Type{GSocketControlMessage})
+        signalnames(supertype(GSocketControlMessage))
+    end
+    abstract type GIPTosMessage <: GSocketControlMessage end
+    mutable struct GIPTosMessageLeaf <: GIPTosMessage
+        handle::Ptr{GObject}
+        function GIPTosMessageLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GIPTosMessageLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GIPTosMessage] = GIPTosMessageLeaf
+    (GLib.g_type(::Type{T}) where T <: GIPTosMessage) = ccall(("g_ip_tos_message_get_type", libgio), GType, ())
+    function GLib.signalnames(::Type{GIPTosMessage})
+        signalnames(supertype(GIPTosMessage))
+    end
+    abstract type GIPv6TclassMessage <: GSocketControlMessage end
+    mutable struct GIPv6TclassMessageLeaf <: GIPv6TclassMessage
+        handle::Ptr{GObject}
+        function GIPv6TclassMessageLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GIPv6TclassMessageLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GIPv6TclassMessage] = GIPv6TclassMessageLeaf
+    (GLib.g_type(::Type{T}) where T <: GIPv6TclassMessage) = ccall(("g_ipv6_tclass_message_get_type", libgio), GType, ())
+    function GLib.signalnames(::Type{GIPv6TclassMessage})
+        signalnames(supertype(GIPv6TclassMessage))
     end
     abstract type GInetAddress <: GObject end
     mutable struct GInetAddressLeaf <: GInetAddress
@@ -1620,22 +1651,6 @@ begin
     function GLib.signalnames(::Type{GSocketConnection})
         signalnames(supertype(GSocketConnection))
     end
-    abstract type GSocketControlMessage <: GObject end
-    mutable struct GSocketControlMessageLeaf <: GSocketControlMessage
-        handle::Ptr{GObject}
-        function GSocketControlMessageLeaf(handle::Ptr{GObject}, owns = false)
-            if handle == C_NULL
-                error("Cannot construct GSocketControlMessageLeaf with a NULL pointer")
-            end
-            GLib.gobject_maybe_sink(handle, owns)
-            return gobject_ref(new(handle))
-        end
-    end
-    gtype_wrapper_cache[:GSocketControlMessage] = GSocketControlMessageLeaf
-    (GLib.g_type(::Type{T}) where T <: GSocketControlMessage) = ccall(("g_socket_control_message_get_type", libgio), GType, ())
-    function GLib.signalnames(::Type{GSocketControlMessage})
-        signalnames(supertype(GSocketControlMessage))
-    end
     abstract type GSocketListener <: GObject end
     mutable struct GSocketListenerLeaf <: GSocketListener
         handle::Ptr{GObject}
@@ -2116,16 +2131,6 @@ begin
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function GDesktopAppInfo(_desktop_id::Union{AbstractString, Symbol}; kwargs...)
-        obj = G_.DesktopAppInfo_new(_desktop_id)
-        obj !== nothing && GLib.setproperties!(obj; kwargs...)
-        obj
-    end
-    function GDesktopAppInfo(_key_file::GKeyFile; kwargs...)
-        obj = G_.DesktopAppInfo_new_from_keyfile(_key_file)
-        obj !== nothing && GLib.setproperties!(obj; kwargs...)
-        obj
-    end
     function GEmblem(_icon::GIcon; kwargs...)
         obj = G_.Emblem_new(_icon)
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
@@ -2155,6 +2160,12 @@ begin
     function GIOModule(_filename::Union{AbstractString, Symbol})
         G_.IOModule_new(_filename)
     end
+    function GIPTosMessage(_dscp::Integer, _ecn)
+        G_.IPTosMessage_new(_dscp, _ecn)
+    end
+    function GIPv6TclassMessage(_dscp::Integer, _ecn)
+        G_.IPv6TclassMessage_new(_dscp, _ecn)
+    end
     function GInetAddress(_family; kwargs...)
         obj = G_.InetAddress_new_any(_family)
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
@@ -2162,6 +2173,11 @@ begin
     end
     function GInetAddress(_bytes, _family; kwargs...)
         obj = G_.InetAddress_new_from_bytes(_bytes, _family)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GInetAddress(_bytes, _family, _flowinfo::Integer, _scope_id::Integer; kwargs...)
+        obj = G_.InetAddress_new_from_bytes_with_ipv6_info(_bytes, _family, _flowinfo, _scope_id)
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
@@ -2457,7 +2473,6 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DBusServer.html)." GDBusServer
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DataInputStream.html)." GDataInputStream
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DataOutputStream.html)." GDataOutputStream
-    @doc "See the [GTK docs](https://docs.gtk.org/gio/class.DesktopAppInfo.html)." GDesktopAppInfo
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.Emblem.html)." GEmblem
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.EmblemedIcon.html)." GEmblemedIcon
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.FileEnumerator.html)." GFileEnumerator
@@ -2472,6 +2487,8 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.FilterOutputStream.html)." GFilterOutputStream
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.IOModule.html)." GIOModule
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.IOStream.html)." GIOStream
+    @doc "See the [GTK docs](https://docs.gtk.org/gio/class.IPTosMessage.html)." GIPTosMessage
+    @doc "See the [GTK docs](https://docs.gtk.org/gio/class.IPv6TclassMessage.html)." GIPv6TclassMessage
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.InetAddress.html)." GInetAddress
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.InetAddressMask.html)." GInetAddressMask
     @doc "See the [GTK docs](https://docs.gtk.org/gio/class.InetSocketAddress.html)." GInetSocketAddress
@@ -2899,12 +2916,6 @@ begin
         ret = f(datagram_based, condition)
         convert(Cint, ret)
     end
-    function GDesktopAppLaunchCallback(appinfo, pid, user_data)
-        appinfo = convert(GDesktopAppInfo, appinfo, false)
-        f = user_data
-        ret = f(appinfo, pid)
-        nothing
-    end
     function GFileMeasureProgressCallback(reporting, current_size, num_dirs, num_files, data)
         reporting = convert(Bool, reporting)
         f = data
@@ -2965,5 +2976,5 @@ begin
         ret != C_NULL && GLib.glib_ref(ret)
         convert(Ptr{GObject}, GLib.get_pointer(ret))
     end
-    export GDBusErrorEntry, GDBusErrorEntryLike, _GDBusErrorEntry, GFileAttributeInfo, GFileAttributeInfoLike, _GFileAttributeInfo, GFileAttributeInfoList, GFileAttributeInfoListLike, _GFileAttributeInfoList, GFileAttributeMatcher, GInputVector, GInputVectorLike, _GInputVector, GOutputVector, GOutputVectorLike, _GOutputVector, GResource, GSettingsSchema, GSettingsSchemaKey, GSettingsSchemaSource, GSrvTarget, GAction, GActionGroup, GActionMap, GAppInfo, GAsyncInitable, GAsyncResult, GConverter, GDBusInterface, GDBusObject, GDBusObjectManager, GDatagramBased, GDebugController, GDrive, GDtlsClientConnection, GDtlsConnection, GDtlsServerConnection, GFile, GFileDescriptorBased, GIcon, GInitable, GListModel, GLoadableIcon, GMemoryMonitor, GMount, GNetworkMonitor, GPollableInputStream, GPollableOutputStream, GPowerProfileMonitor, GProxy, GProxyResolver, GRemoteActionGroup, GSeekable, GSocketConnectable, GTlsBackend, GTlsClientConnection, GTlsFileDatabase, GTlsServerConnection, GVolume, GAppInfoMonitor, GAppInfoMonitorLeaf, GAppLaunchContext, GAppLaunchContextLeaf, GApplication, GApplicationLeaf, GApplicationCommandLine, GApplicationCommandLineLeaf, GBufferedInputStream, GBufferedInputStreamLeaf, GBufferedOutputStream, GBufferedOutputStreamLeaf, GBytesIcon, GBytesIconLeaf, GCancellable, GCancellableLeaf, GCharsetConverter, GCharsetConverterLeaf, GConverterInputStream, GConverterInputStreamLeaf, GConverterOutputStream, GConverterOutputStreamLeaf, GCredentials, GCredentialsLeaf, GDBusActionGroup, GDBusActionGroupLeaf, GDBusAuthObserver, GDBusAuthObserverLeaf, GDBusConnection, GDBusConnectionLeaf, GDBusMenuModel, GDBusMenuModelLeaf, GDBusMessage, GDBusMessageLeaf, GDBusMethodInvocation, GDBusMethodInvocationLeaf, GDBusObjectManagerClient, GDBusObjectManagerClientLeaf, GDBusObjectProxy, GDBusObjectProxyLeaf, GDBusProxy, GDBusProxyLeaf, GDBusServer, GDBusServerLeaf, GDataInputStream, GDataInputStreamLeaf, GDataOutputStream, GDataOutputStreamLeaf, GDesktopAppInfo, GDesktopAppInfoLeaf, GEmblem, GEmblemLeaf, GEmblemedIcon, GEmblemedIconLeaf, GFileEnumerator, GFileEnumeratorLeaf, GFileIOStream, GFileIOStreamLeaf, GFileIcon, GFileIconLeaf, GFileInfo, GFileInfoLeaf, GFileInputStream, GFileInputStreamLeaf, GFileMonitor, GFileOutputStream, GFileOutputStreamLeaf, GFilenameCompleter, GFilenameCompleterLeaf, GFilterInputStream, GFilterOutputStream, GIOModule, GIOModuleLeaf, GIOStream, GInetAddress, GInetAddressLeaf, GInetAddressMask, GInetAddressMaskLeaf, GInetSocketAddress, GInetSocketAddressLeaf, GInputStream, GListStore, GListStoreLeaf, GMemoryInputStream, GMemoryInputStreamLeaf, GMemoryOutputStream, GMemoryOutputStreamLeaf, GMenu, GMenuLeaf, GMenuAttributeIter, GMenuItem, GMenuItemLeaf, GMenuLinkIter, GMenuModel, GMountOperation, GMountOperationLeaf, GNativeSocketAddress, GNativeSocketAddressLeaf, GNativeVolumeMonitor, GNetworkAddress, GNetworkAddressLeaf, GNetworkService, GNetworkServiceLeaf, GNotification, GNotificationLeaf, GOutputStream, GPermission, GPropertyAction, GPropertyActionLeaf, GProxyAddress, GProxyAddressLeaf, GProxyAddressEnumerator, GProxyAddressEnumeratorLeaf, GResolver, GSettings, GSettingsLeaf, GSettingsBackend, GSimpleAction, GSimpleActionLeaf, GSimpleActionGroup, GSimpleActionGroupLeaf, GSimpleAsyncResult, GSimpleAsyncResultLeaf, GSimpleIOStream, GSimpleIOStreamLeaf, GSimplePermission, GSimplePermissionLeaf, GSimpleProxyResolver, GSimpleProxyResolverLeaf, GSocket, GSocketLeaf, GSocketAddress, GSocketAddressEnumerator, GSocketClient, GSocketClientLeaf, GSocketConnection, GSocketConnectionLeaf, GSocketControlMessage, GSocketListener, GSocketListenerLeaf, GSocketService, GSocketServiceLeaf, GSubprocess, GSubprocessLeaf, GSubprocessLauncher, GSubprocessLauncherLeaf, GTask, GTaskLeaf, GTcpConnection, GTcpConnectionLeaf, GTcpWrapperConnection, GTcpWrapperConnectionLeaf, GTestDBus, GTestDBusLeaf, GThemedIcon, GThemedIconLeaf, GThreadedResolver, GThreadedResolverLeaf, GThreadedSocketService, GThreadedSocketServiceLeaf, GTlsCertificate, GTlsConnection, GTlsDatabase, GTlsInteraction, GTlsInteractionLeaf, GTlsPassword, GTlsPasswordLeaf, GUnixConnection, GUnixConnectionLeaf, GUnixCredentialsMessage, GUnixCredentialsMessageLeaf, GVfs, GVfsLeaf, GVolumeMonitor, GVolumeMonitorLeaf, GZlibCompressor, GZlibCompressorLeaf, GZlibDecompressor, GZlibDecompressorLeaf, GAsyncReadyCallback, GBusAcquiredCallback, GBusNameAcquiredCallback, GBusNameAppearedCallback, GBusNameLostCallback, GBusNameVanishedCallback, GCancellableSourceFunc, GDBusInterfaceGetPropertyFunc, GDBusInterfaceMethodCallFunc, GDBusInterfaceSetPropertyFunc, GDBusMessageFilterFunction, GDBusProxyTypeFunc, GDBusSignalCallback, GDBusSubtreeDispatchFunc, GDBusSubtreeEnumerateFunc, GDBusSubtreeIntrospectFunc, GDatagramBasedSourceFunc, GDesktopAppLaunchCallback, GFileMeasureProgressCallback, GFileProgressCallback, GFileReadMoreCallback, GPollableSourceFunc, GSettingsBindGetMapping, GSettingsBindSetMapping, GSettingsGetMapping, GSocketSourceFunc, GVfsFileLookupFunc
+    export GDBusErrorEntry, GDBusErrorEntryLike, _GDBusErrorEntry, GFileAttributeInfo, GFileAttributeInfoLike, _GFileAttributeInfo, GFileAttributeInfoList, GFileAttributeInfoListLike, _GFileAttributeInfoList, GFileAttributeMatcher, GInputVector, GInputVectorLike, _GInputVector, GOutputVector, GOutputVectorLike, _GOutputVector, GResource, GSettingsSchema, GSettingsSchemaKey, GSettingsSchemaSource, GSrvTarget, GAction, GActionGroup, GActionMap, GAppInfo, GAsyncInitable, GAsyncResult, GConverter, GDBusInterface, GDBusObject, GDBusObjectManager, GDatagramBased, GDebugController, GDrive, GDtlsClientConnection, GDtlsConnection, GDtlsServerConnection, GFile, GIcon, GInitable, GListModel, GLoadableIcon, GMemoryMonitor, GMount, GNetworkMonitor, GPollableInputStream, GPollableOutputStream, GPowerProfileMonitor, GProxy, GProxyResolver, GRemoteActionGroup, GSeekable, GSocketConnectable, GTlsBackend, GTlsClientConnection, GTlsFileDatabase, GTlsServerConnection, GVolume, GAppInfoMonitor, GAppInfoMonitorLeaf, GAppLaunchContext, GAppLaunchContextLeaf, GApplication, GApplicationLeaf, GApplicationCommandLine, GApplicationCommandLineLeaf, GBufferedInputStream, GBufferedInputStreamLeaf, GBufferedOutputStream, GBufferedOutputStreamLeaf, GBytesIcon, GBytesIconLeaf, GCancellable, GCancellableLeaf, GCharsetConverter, GCharsetConverterLeaf, GConverterInputStream, GConverterInputStreamLeaf, GConverterOutputStream, GConverterOutputStreamLeaf, GCredentials, GCredentialsLeaf, GDBusActionGroup, GDBusActionGroupLeaf, GDBusAuthObserver, GDBusAuthObserverLeaf, GDBusConnection, GDBusConnectionLeaf, GDBusMenuModel, GDBusMenuModelLeaf, GDBusMessage, GDBusMessageLeaf, GDBusMethodInvocation, GDBusMethodInvocationLeaf, GDBusObjectManagerClient, GDBusObjectManagerClientLeaf, GDBusObjectProxy, GDBusObjectProxyLeaf, GDBusProxy, GDBusProxyLeaf, GDBusServer, GDBusServerLeaf, GDataInputStream, GDataInputStreamLeaf, GDataOutputStream, GDataOutputStreamLeaf, GEmblem, GEmblemLeaf, GEmblemedIcon, GEmblemedIconLeaf, GFileEnumerator, GFileEnumeratorLeaf, GFileIOStream, GFileIOStreamLeaf, GFileIcon, GFileIconLeaf, GFileInfo, GFileInfoLeaf, GFileInputStream, GFileInputStreamLeaf, GFileMonitor, GFileOutputStream, GFileOutputStreamLeaf, GFilenameCompleter, GFilenameCompleterLeaf, GFilterInputStream, GFilterOutputStream, GIOModule, GIOModuleLeaf, GIOStream, GIPTosMessage, GIPTosMessageLeaf, GIPv6TclassMessage, GIPv6TclassMessageLeaf, GInetAddress, GInetAddressLeaf, GInetAddressMask, GInetAddressMaskLeaf, GInetSocketAddress, GInetSocketAddressLeaf, GInputStream, GListStore, GListStoreLeaf, GMemoryInputStream, GMemoryInputStreamLeaf, GMemoryOutputStream, GMemoryOutputStreamLeaf, GMenu, GMenuLeaf, GMenuAttributeIter, GMenuItem, GMenuItemLeaf, GMenuLinkIter, GMenuModel, GMountOperation, GMountOperationLeaf, GNativeSocketAddress, GNativeSocketAddressLeaf, GNativeVolumeMonitor, GNetworkAddress, GNetworkAddressLeaf, GNetworkService, GNetworkServiceLeaf, GNotification, GNotificationLeaf, GOutputStream, GPermission, GPropertyAction, GPropertyActionLeaf, GProxyAddress, GProxyAddressLeaf, GProxyAddressEnumerator, GProxyAddressEnumeratorLeaf, GResolver, GSettings, GSettingsLeaf, GSettingsBackend, GSimpleAction, GSimpleActionLeaf, GSimpleActionGroup, GSimpleActionGroupLeaf, GSimpleAsyncResult, GSimpleAsyncResultLeaf, GSimpleIOStream, GSimpleIOStreamLeaf, GSimplePermission, GSimplePermissionLeaf, GSimpleProxyResolver, GSimpleProxyResolverLeaf, GSocket, GSocketLeaf, GSocketAddress, GSocketAddressEnumerator, GSocketClient, GSocketClientLeaf, GSocketConnection, GSocketConnectionLeaf, GSocketControlMessage, GSocketListener, GSocketListenerLeaf, GSocketService, GSocketServiceLeaf, GSubprocess, GSubprocessLeaf, GSubprocessLauncher, GSubprocessLauncherLeaf, GTask, GTaskLeaf, GTcpConnection, GTcpConnectionLeaf, GTcpWrapperConnection, GTcpWrapperConnectionLeaf, GTestDBus, GTestDBusLeaf, GThemedIcon, GThemedIconLeaf, GThreadedResolver, GThreadedResolverLeaf, GThreadedSocketService, GThreadedSocketServiceLeaf, GTlsCertificate, GTlsConnection, GTlsDatabase, GTlsInteraction, GTlsInteractionLeaf, GTlsPassword, GTlsPasswordLeaf, GUnixConnection, GUnixConnectionLeaf, GUnixCredentialsMessage, GUnixCredentialsMessageLeaf, GVfs, GVfsLeaf, GVolumeMonitor, GVolumeMonitorLeaf, GZlibCompressor, GZlibCompressorLeaf, GZlibDecompressor, GZlibDecompressorLeaf, GAsyncReadyCallback, GBusAcquiredCallback, GBusNameAcquiredCallback, GBusNameAppearedCallback, GBusNameLostCallback, GBusNameVanishedCallback, GCancellableSourceFunc, GDBusInterfaceGetPropertyFunc, GDBusInterfaceMethodCallFunc, GDBusInterfaceSetPropertyFunc, GDBusMessageFilterFunction, GDBusProxyTypeFunc, GDBusSignalCallback, GDBusSubtreeDispatchFunc, GDBusSubtreeEnumerateFunc, GDBusSubtreeIntrospectFunc, GDatagramBasedSourceFunc, GFileMeasureProgressCallback, GFileProgressCallback, GFileReadMoreCallback, GPollableSourceFunc, GSettingsBindGetMapping, GSettingsBindSetMapping, GSettingsGetMapping, GSocketSourceFunc, GVfsFileLookupFunc
 end

@@ -431,16 +431,6 @@ begin
         push!(gboxed_types, GTimeZone)
     end
     const GTimeZoneLike = GTimeZone
-    struct _GUnixPipe
-        fds::Ptr{Int32}
-    end
-    mutable struct GUnixPipe
-        handle::Ptr{_GUnixPipe}
-    end
-    unsafe_convert(::Type{Ptr{_GUnixPipe}}, box::GUnixPipe) = convert(Ptr{_GUnixPipe}, box.handle)
-    convert(::Type{GUnixPipe}, p::Ptr{_GUnixPipe}, owns = false) = GUnixPipe(p, owns)
-    const GUnixPipeLike = Union{Ref{_GUnixPipe}, GUnixPipe}
-    convert(::Type{GUnixPipeLike}, p, owns) = convert(GUnixPipe, p, owns)
     mutable struct GUri <: GBoxed
         handle::Ptr{GUri}
         (GLib.g_type(::Type{T}) where T <: GUri) = ccall(("g_uri_get_type", libgobject), GType, ())
@@ -530,11 +520,13 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.String.html)." GString
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.StrvBuilder.html)." GStrvBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.TimeZone.html)." GTimeZone
-    @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.UnixPipe.html)." GUnixPipe
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.Uri.html)." GUri
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantBuilder.html)." GVariantBuilder
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantDict.html)." GVariantDict
     @doc "See the [GTK docs](https://docs.gtk.org/glib/struct.VariantType.html)." GVariantType
+    function GBytes(_bytes::GBytes, _offset::Integer, _length::Integer)
+        G_.Bytes_new_from_bytes(_bytes, _offset, _length)
+    end
     function GDate(_day::Integer, _month, _year::Integer)
         G_.Date_new_dmy(_day, _month, _year)
     end
@@ -810,11 +802,5 @@ begin
         ret = f(node)
         convert(Cint, ret)
     end
-    function GUnixFDSourceFunc(fd, condition, user_data)
-        condition = IOCondition(condition)
-        f = user_data
-        ret = f(fd, condition)
-        convert(Cint, ret)
-    end
-    export GBookmarkFile, GBytes, GChecksum, GDate, GDateLike, _GDate, GDateTime, GDebugKey, GDebugKeyLike, _GDebugKey, GDir, GHmac, GKeyFile, GLogField, GLogFieldLike, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, GOptionEntryLike, _GOptionEntry, GPatternSpec, GRand, GRegex, GScannerConfig, GScannerConfigLike, _GScannerConfig, GSource, GSourceLike, _GSource, GSourceCallbackFuncs, GSourceCallbackFuncsLike, _GSourceCallbackFuncs, GString, GStringLike, _GString, GStrvBuilder, GTestConfig, GTestConfigLike, _GTestConfig, GTimeZone, GUnixPipe, GUnixPipeLike, _GUnixPipe, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDestroyNotify, GDuplicateFunc, GEqualFuncFull, GFreeFunc, GFunc, GHFunc, GHRFunc, GHookCheckFunc, GHookCheckMarshaller, GHookFindFunc, GHookFunc, GHookMarshaller, GIOFunc, GLogFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc, GUnixFDSourceFunc
+    export GBookmarkFile, GBytes, GChecksum, GDate, GDateLike, _GDate, GDateTime, GDebugKey, GDebugKeyLike, _GDebugKey, GDir, GHmac, GKeyFile, GLogField, GLogFieldLike, _GLogField, GMainContext, GMainLoop, GMappedFile, GMarkupParseContext, GMatchInfo, GOptionEntry, GOptionEntryLike, _GOptionEntry, GPatternSpec, GRand, GRegex, GScannerConfig, GScannerConfigLike, _GScannerConfig, GSource, GSourceLike, _GSource, GSourceCallbackFuncs, GSourceCallbackFuncsLike, _GSourceCallbackFuncs, GString, GStringLike, _GString, GStrvBuilder, GTestConfig, GTestConfigLike, _GTestConfig, GTimeZone, GUri, GVariantBuilder, GVariantDict, GVariantType, GChildWatchFunc, GCompareDataFunc, GCopyFunc, GDataForeachFunc, GDestroyNotify, GDuplicateFunc, GEqualFuncFull, GFreeFunc, GFunc, GHFunc, GHRFunc, GHookCheckFunc, GHookCheckMarshaller, GHookFindFunc, GHookFunc, GHookMarshaller, GIOFunc, GLogFunc, GNodeForeachFunc, GNodeTraverseFunc, GOptionArgFunc, GOptionErrorFunc, GOptionParseFunc, GRegexEvalCallback, GSequenceIterCompareFunc, GSourceFunc, GSourceOnceFunc, GSpawnChildSetupFunc, GTestDataFunc, GTestFixtureFunc, GTestLogFatalFunc, GThreadFunc, GTranslateFunc, GTraverseFunc, GTraverseNodeFunc
 end
