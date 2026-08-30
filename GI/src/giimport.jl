@@ -532,10 +532,22 @@ function extract_type(typeinfo::Type{InstanceType}, info::GIStructInfo)
     end
 end
 
+# The integer type used to pass an enum/flags value through a ccall. Use the
+# enum's actual storage type (e.g. Int32 for a signed enum, UInt32 for an
+# unsigned one) rather than always UInt32 so that negative members such as
+# PANGO_SCRIPT_INVALID_CODE (== -1) round-trip correctly. Passing a negative
+# value as UInt32 (or building the Cenum from a UInt32 like 0xffffffff) throws
+# InexactError. Falls back to UInt32 for the (not expected) case of a non-integer
+# storage tag.
+function enum_ccall_type(interf_info::GIEnumOrFlags)
+    t = typetag_primitive[get_storage_type(interf_info)+1]
+    (isa(t, Type) && t <: Integer) ? Symbol(t) : Symbol(UInt32)
+end
+
 function extract_type(typeinfo::GITypeInfo,basetype::Type{T}) where {T<:CEnum.Cenum}
     interf_info = get_interface(typeinfo)
     name = get_name(interf_info)
-    TypeDesc{Type{CEnum.Cenum}}(CEnum.Cenum, :Any, name, Symbol(UInt32))
+    TypeDesc{Type{CEnum.Cenum}}(CEnum.Cenum, :Any, name, enum_ccall_type(interf_info))
 end
 
 function convert_from_c(argname::Symbol, info::ArgInfo, ti::TypeDesc{T}) where {T<:Type{CEnum.Cenum}}

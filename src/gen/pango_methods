@@ -574,13 +574,13 @@ begin
     end
     function get_scripts(instance::PangoLanguage)
         m_num_scripts = Ref{Int32}()
-        ret = ccall(("pango_language_get_scripts", libpango), Ptr{UInt32}, (Ptr{PangoLanguage}, Ptr{Int32}), instance, m_num_scripts)
-        ret2 = collect(unsafe_wrap(Vector{UInt32}, ret, m_num_scripts[]))
+        ret = ccall(("pango_language_get_scripts", libpango), Ptr{Int32}, (Ptr{PangoLanguage}, Ptr{Int32}), instance, m_num_scripts)
+        ret2 = collect(unsafe_wrap(Vector{Int32}, ret, m_num_scripts[]))
         _num_scripts = m_num_scripts[]
         ret2
     end
     function includes_script(instance::PangoLanguage, _script)
-        ret = ccall(("pango_language_includes_script", libpango), Cint, (Ptr{PangoLanguage}, UInt32), instance, _script)
+        ret = ccall(("pango_language_includes_script", libpango), Cint, (Ptr{PangoLanguage}, Int32), instance, _script)
         ret2 = convert(Bool, ret)
         ret2
     end
@@ -890,8 +890,8 @@ begin
     function get_range(instance::PangoScriptIter)
         m_start = Ref{Cstring}()
         m_end = Ref{Cstring}()
-        m_script = Ref{UInt32}()
-        ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{UInt32}), instance, m_start, m_end, m_script)
+        m_script = Ref{Int32}()
+        ret = ccall(("pango_script_iter_get_range", libpango), Nothing, (Ptr{PangoScriptIter}, Ptr{Cstring}, Ptr{Cstring}, Ptr{Int32}), instance, m_start, m_end, m_script)
         _start = m_start[]
         _start = string_or_nothing(_start, false)
         _end = m_end[]
