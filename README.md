@@ -15,7 +15,7 @@ Documentation for the master branch version of this package can be found [here](
 
 This package is intended to be a relatively thin wrapper of the GTK library based largely on GObject introspection, analogous to [PyGObject](https://pypi.org/project/PyGObject/). Using it beyond simple widgets requires some knowledge of the GTK API (the Gtk4.jl [documentation](https://juliagtk.github.io/Gtk4.jl/dev/) covers a small fraction of the API available through introspection). It is also very possible to crash or freeze Julia if you're not careful.
 
-Those seeking a more user friendly, well documented, curated GUI building experience based on GTK should consider using [Mousetrap](https://github.com/Clemapfel/mousetrap.jl). Other popular packages for creating desktop GUI interfaces include [QML.jl](https://github.com/JuliaGraphics/QML.jl), [Blink.jl](https://github.com/JuliaGizmos/Blink.jl), [Electron.jl](https://github.com/davidanthoff/Electron.jl), and [CImGui.jl](https://github.com/Gnimuc/CImGui.jl).
+Other popular packages for creating desktop GUI interfaces include [QML.jl](https://github.com/JuliaGraphics/QML.jl), [Blink.jl](https://github.com/JuliaGizmos/Blink.jl), [Electron.jl](https://github.com/davidanthoff/Electron.jl), and [CImGui.jl](https://github.com/Gnimuc/CImGui.jl).
 
 ## Related packages
 
@@ -24,11 +24,11 @@ Other registered packages extend the functionality of Gtk4.jl:
 - [Gtk4Makie.jl](https://github.com/JuliaGtk/Gtk4Makie.jl): provides integration with the popular plotting package [Makie.jl](https://github.com/MakieOrg/Makie.jl), specifically its interactive, high performance GLMakie backend.
 
 ## Current status
-**Note:** On Julia 1.11, Gtk4 causes the Julia REPL to freeze if Julia is started with more than one default thread and no interactive threads or with two interactive threads. This can be avoided with little-to-no performance penalty by being careful to start julia with `--threads N,1` or setting the environment variable `JULIA_NUM_THREADS = "N,1"` where N is the number of default threads to use.
-
 For auto-generated code, Gtk4.jl relies on GObject introspection data generated on a Linux x86_64 machine, which may result in code that crashes on 32 bit computers. This mostly seems to affect obscure parts of GLib that are unlikely to be useful to Julia users, but 32 bit users should be aware of this. Also, on Windows 32 bit systems, a crash may occur when using recent versions of libpng. This can be avoided by pinning libpng_jll to version 1.6.40.
 
 Note that this package uses binaries for the GTK library and its dependencies that are built and packaged using [BinaryBuilder.jl](https://github.com/JuliaPackaging/BinaryBuilder.jl). On Linux it does **not** use the binaries that are packaged with your distribution. The build scripts for the binaries used by Gtk4.jl, including the library versions currently being used, can be found by perusing [Yggdrasil.jl](https://github.com/JuliaPackaging/Yggdrasil.jl).
+
+**Note:** On Julia 1.11 and 1.12, Gtk4 causes the Julia REPL to freeze if Julia is started with more than one default thread and no interactive threads or with two interactive threads. This can be avoided with little-to-no performance penalty by being careful to start julia with `--threads N,1` or setting the environment variable `JULIA_NUM_THREADS = "N,1"` where N is the number of default threads to use.
 
 ### Known incompatibilities
 
