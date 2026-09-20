@@ -1,9 +1,28 @@
-# First the version of `signal_connect` that takes the return type and argument types and passes a 
-# function and closure to `g_signal_connect_data`.
+"""
+    signal_connect(callback, widget::GObject, signal_name; after=false)
+    signal_connect(callback, widget::GObject, signal_name, return_type, argument_types, after=false; user_data=widget)
 
-# id = signal_connect(widget, :event, Nothing, (ArgsT...)) do ptr, evt_args..., closure
-#    stuff
-# end
+Connects `callback` to `signal_name` on `widget`, so that `callback` is invoked
+whenever `widget` emits that signal. Returns a handler ID (a `Culong`) that can be
+passed to [`signal_handler_disconnect`](@ref), [`signal_handler_block`](@ref), or
+[`signal_handler_unblock`](@ref).
+
+The three-argument form is the common one, typically used with `do`-block syntax:
+```julia
+signal_connect(widget, "clicked") do w
+    println("clicked!")
+end
+```
+`callback` is called with `widget` followed by the signal's own parameters; each
+argument is converted to and from a Julia value via `GValue`. Pass `after=true` to
+have `callback` run after GTK's own default handler for the signal.
+
+The five-argument form calls `callback` directly with the C argument types listed in
+`argument_types` and return type `return_type`, bypassing `GValue` conversion. It
+exists for signals or argument types not supported by that conversion machinery.
+
+See also [`signal_emit`](@ref).
+"""
 function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike,
         ::Type{RT}, param_types::Tuple, after::Bool = false, user_data::CT = w) where {CT, RT}
     # could use signal_query to check RT and param_types and throw an error if not correct
@@ -24,11 +43,6 @@ function signal_connect_generic(@nospecialize(cb::Function), w::GObject, sig::Ab
                  after ? ConnectFlags_AFTER : 0)
 end
 
-# Next the more user friendly version, which passes everything as GValues.
-
-# id = signal_connect(widget, :event) do obj, evt_args...
-#    stuff
-# end
 function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike, after::Bool = false)
     _signal_connect(cb, w, sig, after, false, nothing, nothing)
 end

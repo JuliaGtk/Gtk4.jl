@@ -33,13 +33,6 @@ end
 
 show(io::IO, iter::_GtkTextIter) = print("_GtkTextIter($(G_.get_offset(Ref(iter))))")
 
-
-#"""
-#    buffer(iter::Union{Ref{_GtkTextIter}, GtkTextIter})
-#
-#Returns the buffer associated with `iter`.
-#"""
-
 """
     char_offset(iter::Union{Ref{_GtkTextIter}, GtkTextIter})
 
@@ -447,6 +440,13 @@ place_cursor(buffer::GtkTextBuffer, it::TI) = G_.place_cursor(buffer, it)
 begin_user_action(buffer::GtkTextBuffer) = G_.begin_user_action(buffer)
 end_user_action(buffer::GtkTextBuffer) = G_.end_user_action(buffer)
 
+"""
+    user_action(f::Function, buffer::GtkTextBuffer)
+
+Runs `f(buffer)` bracketed by [`begin_user_action`](@ref) and
+[`end_user_action`](@ref), so that all edits `f` makes to `buffer` are grouped into
+a single action for undo/redo purposes.
+"""
 function user_action(f::Function, buffer::GtkTextBuffer)
     begin_user_action(buffer)
     try

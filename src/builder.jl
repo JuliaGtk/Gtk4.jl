@@ -60,10 +60,10 @@ end
 # Below is experimental
 
 """
-    @load_builder(b::GtkBuilder)
+    @load_builder(b)
 
-Loads all GtkBuildable objects from a GtkBuilder object and assigns them to Julia
-variables in the current scope. GtkBuilder ID's are mapped onto Julia variable
+Loads all GtkBuildable objects from the `GtkBuilder` object `b` and assigns them to
+Julia variables in the current scope. GtkBuilder ID's are mapped onto Julia variable
 names.
 """
 macro load_builder(b)

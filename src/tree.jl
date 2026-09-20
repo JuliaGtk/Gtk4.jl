@@ -1,5 +1,7 @@
 ## GtkTreeView
 
+# this API is deprecated in GTK4 and is not being actively worked on anymore here
+
 const TRI = Union{Ref{_GtkTreeIter}, _GtkTreeIter}
 copy(ti::GtkTreeIter) = G_.copy(ti)
 copy(ti::_GtkTreeIter) = ti

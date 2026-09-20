@@ -1,8 +1,24 @@
 ## GtkEntry
 
+"""
+    fraction(progress::GtkEntry)
+    fraction(progress::GtkEntry, frac)
+
+Get or set the fraction of the entry's progress indicator that is filled in
+(a value between 0 and 1).
+"""
 fraction(progress::GtkEntry) = G_.get_progress_fraction(progress)
 fraction(progress::GtkEntry, frac) = G_.set_progress_fraction(progress, frac)
+
 pulse(progress::GtkEntry) = G_.progress_pulse(progress)
+
+"""
+    pulse_step(progress::GtkEntry)
+    pulse_step(progress::GtkEntry, frac)
+
+Get or set the fraction of the entry's progress indicator that
+[`pulse`](@ref) moves it forward by each time it is called.
+"""
 pulse_step(progress::GtkEntry, frac) = G_.set_progress_pulse_step(progress, frac)
 pulse_step(progress::GtkEntry) = G_.get_progress_pulse_step(progress)
 
@@ -18,6 +34,14 @@ end
 setindex!(buffer::GtkEntryBuffer, content::String) =
     G_.set_text(buffer, content, -1)
 
+"""
+    complete(completion::GtkEntryCompletion)
+
+Requests a completion operation, or in other words a refiltering of the current
+list with completions using the current key. This is normally implicit when a key
+is typed, but can be useful to call explicitly, for example if filter conditions
+have changed.
+"""
 complete(completion::GtkEntryCompletion) = G_.complete(completion)
 
 ## GtkScale

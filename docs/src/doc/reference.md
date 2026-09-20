@@ -51,6 +51,7 @@ Gtk4.selected_string!
 Gtk4.selected_string
 Gtk4.selected
 Gtk4.selected!
+Gtk4.complete
 ```
 
 ## Display widgets
@@ -58,6 +59,7 @@ Gtk4.selected!
 ```@docs
 Gtk4.start
 Gtk4.stop
+Gtk4.pulse
 ```
 
 ## Dialogs
@@ -67,6 +69,7 @@ Gtk4.ask_dialog
 Gtk4.input_dialog
 Gtk4.open_dialog
 Gtk4.save_dialog
+Gtk4.color_dialog
 ```
 
 ## GtkCanvas (for Cairo drawing)
@@ -111,5 +114,8 @@ Gtk4.char_offset
 Gtk4.forward_search
 Gtk4.text_iter_at_position
 Gtk4.window_to_buffer_coords
+Gtk4.user_action
+Gtk4.begin_user_action
+Gtk4.end_user_action
 ```
 
