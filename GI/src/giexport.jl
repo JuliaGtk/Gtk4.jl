@@ -269,9 +269,10 @@ function all_struct_methods!(exprs,ns;print_summary=true,print_detailed=false,sk
                 created+=1
             catch e
                 if isa(e, NotImplementedError)
+                    not_implemented += 1
                     continue
                 else
-                    error("Error: $name.$(get_name(m))")
+                    println("Error: $name.$(get_name(m))")
                     rethrow(e)
                 end
             end

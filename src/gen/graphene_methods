@@ -162,7 +162,7 @@ begin
         ret
     end
     function get_order(instance::GrapheneEulerLike)
-        ret = ccall(("graphene_euler_get_order", libgraphene), UInt32, (Ptr{_GrapheneEuler},), instance)
+        ret = ccall(("graphene_euler_get_order", libgraphene), Int32, (Ptr{_GrapheneEuler},), instance)
         ret2 = EulerOrder(ret)
         ret2
     end
@@ -191,35 +191,35 @@ begin
     end
     function init_from_matrix(instance::GrapheneEulerLike, _m::Maybe(GrapheneMatrixLike), _order)
         _m_maybe = nothing_to_null(_m)
-        ret = ccall(("graphene_euler_init_from_matrix", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneMatrix}, UInt32), instance, _m_maybe, _order)
+        ret = ccall(("graphene_euler_init_from_matrix", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneMatrix}, Int32), instance, _m_maybe, _order)
         ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
     function init_from_quaternion(instance::GrapheneEulerLike, _q::Maybe(GrapheneQuaternionLike), _order)
         _q_maybe = nothing_to_null(_q)
-        ret = ccall(("graphene_euler_init_from_quaternion", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneQuaternion}, UInt32), instance, _q_maybe, _order)
+        ret = ccall(("graphene_euler_init_from_quaternion", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneQuaternion}, Int32), instance, _q_maybe, _order)
         ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
     function init_from_radians(instance::GrapheneEulerLike, _x::Real, _y::Real, _z::Real, _order)
-        ret = ccall(("graphene_euler_init_from_radians", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Float32, Float32, Float32, UInt32), instance, _x, _y, _z, _order)
+        ret = ccall(("graphene_euler_init_from_radians", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Float32, Float32, Float32, Int32), instance, _x, _y, _z, _order)
         ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
     function init_from_vec3(instance::GrapheneEulerLike, _v::Maybe(GrapheneVec3Like), _order)
         _v_maybe = nothing_to_null(_v)
-        ret = ccall(("graphene_euler_init_from_vec3", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneVec3}, UInt32), instance, _v_maybe, _order)
+        ret = ccall(("graphene_euler_init_from_vec3", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Ptr{_GrapheneVec3}, Int32), instance, _v_maybe, _order)
         ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
     function init_with_order(instance::GrapheneEulerLike, _x::Real, _y::Real, _z::Real, _order)
-        ret = ccall(("graphene_euler_init_with_order", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Float32, Float32, Float32, UInt32), instance, _x, _y, _z, _order)
+        ret = ccall(("graphene_euler_init_with_order", libgraphene), Ptr{_GrapheneEuler}, (Ptr{_GrapheneEuler}, Float32, Float32, Float32, Int32), instance, _x, _y, _z, _order)
         ret2 = convert(GrapheneEulerLike, ret, false)
         ret2
     end
     function reorder(instance::GrapheneEulerLike, _order)
         m_res = Ref{_GrapheneEuler}()
-        ret = ccall(("graphene_euler_reorder", libgraphene), Nothing, (Ptr{_GrapheneEuler}, UInt32, Ptr{_GrapheneEuler}), instance, _order, m_res)
+        ret = ccall(("graphene_euler_reorder", libgraphene), Nothing, (Ptr{_GrapheneEuler}, Int32, Ptr{_GrapheneEuler}), instance, _order, m_res)
         _res = m_res[]
         _res
     end

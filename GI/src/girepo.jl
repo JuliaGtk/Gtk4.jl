@@ -592,12 +592,11 @@ function show(io::IO,info::GITypeInfo)
         zero = is_zero_terminated(info) ? "zt" : ""
         print(io,"$bt($zero,")
         fs = get_array_fixed_size(info)
-        len = get_array_length(info)
+        len = get_array_length_index(info)
         if fs >= 0
             show(io, fs)
         elseif len >= 0
-            call = get_call(info)
-            arg = get_args(call)[len+1]
+            arg = get_arg_types(info)[len+1]
             show(io, get_name(arg))
         end
         print(io,", ")
