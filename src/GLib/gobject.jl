@@ -165,10 +165,10 @@ mutable struct _GObjectClass
     dispatch_properties_changed::Ptr{Cvoid}
     notify::Ptr{Cvoid}
     constructed::Ptr{Cvoid}
-    flags::UInt64
-    n_construct_properties::UInt64
+    flags::Csize_t
+    n_construct_properties::Csize_t
     pspecs::Ptr{Nothing}
-    n_pspecs::UInt64
+    n_pspecs::Csize_t
     pdummy1::Ptr{Nothing}
     pdummy2::Ptr{Nothing}
     pdummy3::Ptr{Nothing}
