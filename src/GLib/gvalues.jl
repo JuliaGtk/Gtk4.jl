@@ -198,6 +198,21 @@ end
 
 const gvalue_types = Any[]
 const gboxed_types = Any[]
+
+# Index of `gboxed_types` by name, used to find the wrapper for a boxed GType. Relies on each
+# boxed wrapper type having the same name as its GType.
+const gboxed_names = Dict{Symbol,Any}()
+const gboxed_names_count = Ref(0)
+
+function gboxed_type_from_name(name::Symbol)
+    n = length(gboxed_types)
+    for i in gboxed_names_count[]+1:n
+        t = gboxed_types[i]
+        gboxed_names[nameof(t)] = t
+    end
+    gboxed_names_count[] = n
+    get(gboxed_names, name, nothing)
+end
 const fundamental_fns = tuple(Function[ make_gvalue_from_fundamental_type(i, @__MODULE__) for
                               i in 1:length(fundamental_types)]...)
 @make_gvalue(Symbol, Ptr{UInt8}, :static_string, :(g_type(AbstractString)))
@@ -231,11 +246,8 @@ function getindex(gv::Base.Ref{GValue}, ::Type{Any})
         end
     end
     # second pass: GBoxed types
-    for typ in gboxed_types
-        if gtyp == g_type(typ)
-            return getindex(gv,typ)
-        end
-    end
+    typ = gboxed_type_from_name(g_type_name(gtyp))
+    typ === nothing || return getindex(gv, typ)
     # third pass: user defined (sub)types
     for (typ, typefn, getfn) in gvalue_types
         if g_isa(gtyp, typefn())
