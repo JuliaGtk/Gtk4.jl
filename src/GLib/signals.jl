@@ -88,23 +88,38 @@ function GClosureMarshal(closuref::Ptr{Nothing}, return_value::Ptr{GValue}, n_pa
     gtk_calling_convention = (0 != unsafe_load(convert(Ptr{Int}, closure_env),  2))
     @assert gtk_calling_convention == false
     params = Vector{Any}(undef, n_param_values)
-    g_siginterruptible(cb) do
-        for i = 1:n_param_values
-            r=Ref(unsafe_load(param_values, i))
-            params[i] = r[Any]
-        end
-        # note: make sure not to leak any of the GValue objects into this task switch, since many of them were alloca'd
-        retval = cb(params...) # widget, args...
-        if return_value != C_NULL && retval !== nothing
-            gtyp = unsafe_load(return_value).g_type
-            if gtyp != g_type(Nothing) && gtyp != 0
-                try
-                    return_value[] = gvalue(retval)
-                catch
-                    @async begin # make this async to prevent task switches from being present right here
-                        blame(cb)
-                        println("ERROR: failed to set return value of type $(typeof(retval)); did your callback return an unintentional value?")
-                    end
+    g_siginterruptible(GClosureInvocation(cb, return_value, n_param_values, param_values, params), cb)
+    return nothing
+end
+
+# A callable struct rather than a closure: a closure's type is parameterized by the
+# concrete type of `cb`, which would force `g_siginterruptible` and the body below to be
+# compiled again for every distinct callback.
+struct GClosureInvocation
+    cb::Function
+    return_value::Ptr{GValue}
+    n_param_values::Cuint
+    param_values::Ptr{GValue}
+    params::Vector{Any}
+end
+
+function (inv::GClosureInvocation)()
+    (; cb, return_value, n_param_values, param_values, params) = inv
+    for i = 1:n_param_values
+        r=Ref(unsafe_load(param_values, i))
+        params[i] = r[Any]
+    end
+    # note: make sure not to leak any of the GValue objects into this task switch, since many of them were alloca'd
+    retval = cb(params...) # widget, args...
+    if return_value != C_NULL && retval !== nothing
+        gtyp = unsafe_load(return_value).g_type
+        if gtyp != g_type(Nothing) && gtyp != 0
+            try
+                return_value[] = gvalue(retval)
+            catch
+                @async begin # make this async to prevent task switches from being present right here
+                    blame(cb)
+                    println("ERROR: failed to set return value of type $(typeof(retval)); did your callback return an unintentional value?")
                 end
             end
         end
@@ -265,7 +280,7 @@ function g_sigatom(@nospecialize(f)) # calls f, where f never throws (but this f
     return ret
 end
 
-function g_siginterruptible(f::Base.Callable, @nospecialize(cb)) # calls f (which may throw), but this function never throws
+function g_siginterruptible(f, @nospecialize(cb)) # calls f (which may throw), but this function never throws
     global g_sigatom_flag, g_stack
     prev = g_sigatom_flag[]
     @assert xor(prev, (current_task() !== g_stack))
