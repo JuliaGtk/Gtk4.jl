@@ -129,8 +129,9 @@ function empty!(list::GList{L}) where L <: _GSList
         if list.transfer_full
             s = start_(list)
             while !done_(list, s)
+                n = unsafe_load(s).next
                 empty!(s)
-                s = next_(list, s)[2]
+                s = n
             end
         end
         if list.transfer_container
@@ -145,8 +146,9 @@ function empty!(list::GList{L}) where L <: _GList
         if list.transfer_full
             s = start_(list)
             while !done_(list, s)
+                n = unsafe_load(s).next
                 empty!(s)
-                s = next_(list, s)[2]
+                s = n
             end
         end
         if list.transfer_container

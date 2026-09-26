@@ -43,7 +43,7 @@ function bind_cb(f, li)
     row = li[]
     tree_expander = get_child(li)
     Gtk4.set_list_row(tree_expander, row)
-    text = Gtk4.G_.get_string(Gtk4.get_item(row))
+    text = Gtk4.string(Gtk4.get_item(row))
     label = get_child(tree_expander)
     Gtk4.label(label, get_funcname(text))
 end
@@ -72,7 +72,7 @@ function match(row::GtkTreeListRow)
     if item === nothing
         return false
     end
-    text = Gtk4.G_.get_string(item)
+    text = Gtk4.string(item)
     thismatch = matchstr(text, entrytext)
     if thismatch
         return true

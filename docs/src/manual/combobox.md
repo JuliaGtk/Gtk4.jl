@@ -42,6 +42,11 @@ push!(m, "five")
 More complex uses of `GtkDropDown` are possible by using models other than
 `GtkStringList`. This may be supported in future versions of Gtk4.jl.
 
+| signal | arguments | returns | |
+| :--- | :--- | :--- | :--- |
+| "notify::selected" | self::GtkDropDown, paramspec::GParamSpec | `Nothing` | Emitted when selection is changed |
+
+
 ## [GtkComboBox](https://docs.gtk.org/gtk4/class.ComboBox.html)
 
 The older API for dropdown menu functionality is `GtkComboBox`.

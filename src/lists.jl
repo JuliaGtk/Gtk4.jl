@@ -90,7 +90,7 @@ populated with the elements of `a` converted to strings. Keyword arguments set
 GObject properties.
 """
 function GtkDropDown(a::AbstractArray; kwargs...)
-    dd = Gtk4.G_.DropDown_new_from_strings(string.(collect(a)))
+    dd = G_.DropDown_new_from_strings(string.(collect(a)))
     GObjects.setproperties!(dd; kwargs...)
     dd
 end
@@ -116,6 +116,32 @@ function selected_string!(d::GtkDropDown, s::AbstractString)
     isnothing(i) && error("String not found in model")
     G_.set_selected(d, i-1)
 end
+
+"""
+    selected(d::GtkDropDown)
+
+Get the (one based) index of the currently selected item of a dropdown widget.
+Returns `nothing` if there is no item selected.
+
+Related GTK functions: [`gtk_drop_down_get_selected`()]($(gtkdoc_method_url("gtk4","DropDown","get_selected")))
+"""
+function selected(d::GtkDropDown)
+    ind = G_.get_selected(d)
+    if ind == INVALID_LIST_POSITION
+        return nothing
+    end
+    ind+1
+end
+
+"""
+    selected!(d::GtkDropDown, i)
+
+Set the (one based) index of the currently selected item of a dropdown widget.
+
+Related GTK functions: [`gtk_drop_down_set_selected`()]($(gtkdoc_method_url("gtk4","DropDown","set_selected")))
+"""
+selected!(d::GtkDropDown, i::Integer) = G_.set_selected(d, i-1)
+selected!(d::GtkDropDown, ::Nothing) = G_.set_selected(d, INVALID_LIST_POSITION)
 
 ## GtkListView and GtkGridView
 
@@ -154,6 +180,7 @@ push!(cv::GtkColumnView, cvc::GtkColumnViewColumn) = (G_.append_column(cv,cvc); 
 getindex(li::GtkListItem) = G_.get_item(li)
 set_child(li::GtkListItem, w) = G_.set_child(li, w)
 get_child(li::GtkListItem) = G_.get_child(li)
+selected(li::GtkListItem) = G_.get_selected(li)
 
 set_list_row(te::GtkTreeExpander, w) = G_.set_list_row(te, w)
 set_child(te::GtkTreeExpander, w) = G_.set_child(te, w)
@@ -298,15 +325,46 @@ end
 
 changed(cs::GtkCustomSorter, _change = FilterChange_DIFFERENT) = G_.changed(cs, _change)
 
+## selection models
+
+"""
+    selected(d::GtkSingleSelection)
+
+Get the (one based) index of the currently selected item in a list widget
+corresponding to a `GtkSingleSelection` object. Returns `nothing` if there is
+no item currently selected.
+
+Related GTK function: [`gtk_single_selection_get_selected`()]($(gtkdoc_method_url("gtk4","SingleSelection","get_selected")))
+"""
+function selected(d::GtkSingleSelection)
+    ind = G_.get_selected(d)
+    if ind == INVALID_LIST_POSITION
+        return nothing
+    end
+    ind+1
+end
+
+"""
+    selected!(d::GtkSingleSelection, i)
+
+Set the (one based) index of the currently selected item in a list widget
+corresponding to a `GtkSingleSelection` object. Pass in `nothing` to clear
+the selection.
+
+Related GTK function: [`gtk_single_selection_set_selected`()]($(gtkdoc_method_url("gtk4","SingleSelection","set_selected")))
+"""
+selected!(d::GtkSingleSelection, i::Integer) = G_.set_selected(d, i-1)
+selected!(d::GtkSingleSelection, ::Nothing) = G_.set_selected(d, INVALID_LIST_POSITION)
+
 ## GtkBitset (used for multiple selection)
 
-length(bs::GtkBitset) = Int(Gtk4.G_.get_size(bs))
-Base.isempty(bs::GtkBitset) = Gtk4.G_.is_empty(bs)
+length(bs::GtkBitset) = Int(G_.get_size(bs))
+Base.isempty(bs::GtkBitset) = G_.is_empty(bs)
 function getindex(bs::GtkBitset, i::Integer)
     (i<1 || i> length(bs)) && error("Index $i is out of bounds")
-    Gtk4.G_.get_nth(bs, i-1)+1
+    G_.get_nth(bs, i-1)+1
 end
-push!(bs::GtkBitset, val) = (Gtk4.G_.add(bs,val-1); bs)
+push!(bs::GtkBitset, val) = (G_.add(bs,val-1); bs)
 iterate(bs::GtkBitset, i=0) = (i==length(bs) ? nothing : (getindex(bs, i+1),i+1))
 eltype(::Type{GtkBitset}) = UInt
 
@@ -333,6 +391,6 @@ end
 
 function evaluate(e::GtkExpression, this=nothing)
     rgv=Ref(GObjects.GValue())
-    Gtk4.G_.evaluate(e, this, rgv)
+    G_.evaluate(e, this, rgv)
     rgv[Any]
 end

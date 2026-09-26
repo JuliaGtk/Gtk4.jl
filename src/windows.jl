@@ -271,7 +271,7 @@ function info_dialog(callback::Function, message::AbstractString, parent = nothi
     
     function cb(dlg, resobj)
         try
-            Gtk4.choose_finish(dlg, resobj)
+            choose_finish(dlg, resobj)
         catch e
             if !isa(e, GObjects.GErrorException)
                 rethrow(e)
@@ -474,7 +474,7 @@ function open_dialog(callback::Function, title::AbstractString, parent = nothing
     end
     if start_folder != ""
         curr = GObjects.G_.file_new_for_path(start_folder)
-        Gtk4.G_.set_current_folder(dlgp, GFile(curr))
+        G_.set_current_folder(dlgp, GFile(curr))
     end
 
     function on_response(dlg, response_id)
@@ -531,7 +531,7 @@ function save_dialog(callback::Function, title::AbstractString, parent = nothing
   end
   if start_folder != ""
       curr = GObjects.G_.file_new_for_path(start_folder)
-      Gtk4.G_.set_current_folder(dlgp, GFile(curr))
+      G_.set_current_folder(dlgp, GFile(curr))
   end
 
   function on_response(dlg, response_id)
@@ -550,7 +550,7 @@ function save_dialog(callback::Function, title::AbstractString, parent = nothing
   show(dlg)
 
   if timeout > 0
-      emit(timer) = on_response(dlg, Int32(Gtk4.ResponseType_CANCEL))
+      emit(timer) = on_response(dlg, Int32(ResponseType_CANCEL))
       Timer(emit, timeout)
   end
   return dlg
@@ -576,7 +576,7 @@ function color_dialog(callback::Function, title::AbstractString, parent = nothin
 
     function cb(dlg, resobj)
         rgba = try
-            Gtk4.G_.choose_rgba_finish(dlg, GAsyncResult(resobj))
+            G_.choose_rgba_finish(dlg, GAsyncResult(resobj))
         catch e
             if !isa(e, GObjects.GErrorException)
                 rethrow(e)
@@ -650,7 +650,7 @@ end
 Get the path selected by the user in a save dialog. An exception will be thrown
 if the user cancelled the operation.
 """
-save_path(dlg, resobj) = _path_finish(Gtk4.G_.save_finish, dlg, resobj)
+save_path(dlg, resobj) = _path_finish(G_.save_finish, dlg, resobj)
 
 """
     open_file(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
@@ -667,7 +667,7 @@ end
 
 Get the path selected by the user in an open dialog.
 """
-open_path(dlg, resobj) = _path_finish(Gtk4.G_.open_finish, dlg, resobj)
+open_path(dlg, resobj) = _path_finish(G_.open_finish, dlg, resobj)
 
 """
     select_folder(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
@@ -684,7 +684,7 @@ end
 
 Get the path selected by the user in a select folder dialog.
 """
-select_folder_path(dlg, resobj) = _path_finish(Gtk4.G_.select_folder_finish, dlg, resobj)
+select_folder_path(dlg, resobj) = _path_finish(G_.select_folder_finish, dlg, resobj)
 
 """
     open_multiple(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
@@ -701,7 +701,7 @@ end
 
 Get the paths selected by the user in a "open multiple" dialog.
 """
-open_paths(dlg, resobj) = _path_multiple_finish(Gtk4.G_.open_multiple_finish, dlg, resobj)
+open_paths(dlg, resobj) = _path_multiple_finish(G_.open_multiple_finish, dlg, resobj)
 
 """
     select_multiple_folders(cb, dlg::GtkFileDialog, parent = nothing, cancellable = nothing)
@@ -718,7 +718,7 @@ end
 
 Get the paths selected by the user in a "select multiple folders" dialog.
 """
-select_multiple_folder_paths(dlg, resobj) = _path_multiple_finish(Gtk4.G_.select_multiple_folders_finish, dlg, resobj)
+select_multiple_folder_paths(dlg, resobj) = _path_multiple_finish(G_.select_multiple_folders_finish, dlg, resobj)
 
 ## GtkFontDialog
 

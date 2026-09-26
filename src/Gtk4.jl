@@ -30,7 +30,8 @@ using ..GdkPixbufLib
 using ..Graphene
 using ..Pango
 
-using Preferences
+using Dates
+using Preferences: Preferences, @load_preference, @set_preferences!
 
 using Reexport
 @reexport using Graphics

@@ -204,8 +204,8 @@ function _create_gui(filename, treemodel)
     dtv = b["dtv"]::GtkTextViewLeaf
 
     function get_selected_key(single_sel)
-        position = Gtk4.G_.get_selected(single_sel)
-        row = treemodel[position + 1]
+        position = Gtk4.selected(single_sel)
+        row = treemodel[position]
         row!==nothing || return ""
         Gtk4.string(Gtk4.get_item(row))
     end
@@ -247,7 +247,7 @@ function _create_gui(filename, treemodel)
 
     ag = GSimpleActionGroup()
     add_action(GActionMap(ag), "copy", copy_activated)
-    Gtk4.G_.insert_action_group(w, "win", GActionGroup(ag))
+    push!(w, GActionGroup(ag), "win")
 
     show(w)
     

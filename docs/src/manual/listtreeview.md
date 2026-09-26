@@ -60,6 +60,12 @@ method on the list item (by calling `list_item[]`). Each string in `GtkStringLis
 Finally, we construct the `GtkListView` using the selection model and the factory and add it to a
 `GtkScrolledWindow` and a `GtkWindow`.
 
+## Selection
+
+If `GtkSingleSelection` is used, the index of the currently selected item can be accessed using `Gtk4.selected(sel)`, where `sel` is the selection object. This index can be used to find the corresponding item in the model (i.e. the `GtkStringList` in the example above). To change the selected item programatically, use the method `Gtk4.selected!`.
+
+If `GtkMultiSelection` is used, the accessor method `Gtk4.selection(sel)` is used to get the set of currently selected items. This method returns a `GtkBitset`, which can be iterated over to retrieve the selected indices. Note that the `selection` method does also work for `GtkSingleSelection`. In that case it contains only one item.
+
 ## Filtering
 
 !!! note "Example"

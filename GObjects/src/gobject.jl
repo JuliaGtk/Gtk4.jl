@@ -156,7 +156,7 @@ unbind_property(b::GBinding) = G_.unbind(b)
 
 mutable struct _GObjectClass
     g_type_class::_GTypeClass
-    construct_properties::Ptr{GLib._GSList{Ptr{Nothing}}}
+    construct_properties::Ptr{_GSList{Ptr{Nothing}}}
     constructor::Ptr{Nothing}
     set_property::Ptr{Cvoid}
     get_property::Ptr{Cvoid}

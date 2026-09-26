@@ -198,6 +198,7 @@ end
 @testset "GBoxed properties in Gtk4" begin
     c=GtkColorButton()
     @test c.rgba isa GdkRGBA
+    show(IOBuffer(), c.rgba)
 end
 
 @testset "CssProviderLeaf(filename=\"...\")" begin
@@ -206,6 +207,7 @@ end
     l = GtkLabel("I am some large blue text!")
 
     provider = GtkCssProvider(nothing,style_file)
+    show(IOBuffer(), provider)
 
     sc = Gtk4.style_context(l)
     push!(sc, provider, 600)
@@ -258,6 +260,15 @@ push!(b,mb)
 win = GtkWindow(b, "Menus", 200, 40)
 @test length(filemenu)==3
 destroy(win)
+end
+
+@testset "Gsk" begin
+    t = GskTransform()
+    show(IOBuffer(), t)
+    
+    pb = GskPathBuilder()
+    Gtk4.G_.add_circle(pb, GraphenePoint(0.0,0.0), 1.0)
+    Gtk4.build(pb)
 end
 
 @testset "preferences" begin

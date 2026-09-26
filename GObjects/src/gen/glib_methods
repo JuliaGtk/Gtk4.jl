@@ -277,6 +277,11 @@ begin
         ret2 = convert(GBytes, ret, true)
         ret2
     end
+    function Bytes_new_from_bytes(_bytes::GBytes, _offset::Integer, _length::Integer)
+        ret = ccall(("g_bytes_new_from_bytes", libglib), Ptr{GBytes}, (Ptr{GBytes}, UInt64, UInt64), _bytes, _offset, _length)
+        ret2 = convert(GBytes, ret, true)
+        ret2
+    end
     function Bytes_new_take(_data)
         _data_arr = convert(Vector{UInt8}, _data)
         _size = length(_data)
@@ -307,11 +312,6 @@ begin
     function hash(instance::GBytes)
         ret = ccall(("g_bytes_hash", libglib), UInt32, (Ptr{GBytes},), instance)
         ret
-    end
-    function new_from_bytes(instance::GBytes, _offset::Integer, _length::Integer)
-        ret = ccall(("g_bytes_new_from_bytes", libglib), Ptr{GBytes}, (Ptr{GBytes}, UInt64, UInt64), instance, _offset, _length)
-        ret2 = convert(GBytes, ret, true)
-        ret2
     end
     function ref(instance::GBytes)
         ret = ccall(("g_bytes_ref", libglib), Ptr{GBytes}, (Ptr{GBytes},), instance)
@@ -448,6 +448,10 @@ begin
     end
     function get_sunday_week_of_year(instance::GDateLike)
         ret = ccall(("g_date_get_sunday_week_of_year", libglib), UInt32, (Ptr{_GDate},), instance)
+        ret
+    end
+    function get_week_of_year(instance::GDateLike, _first_day_of_week)
+        ret = ccall(("g_date_get_week_of_year", libglib), UInt32, (Ptr{_GDate}, UInt32), instance, _first_day_of_week)
         ret
     end
     function get_weekday(instance::GDateLike)
@@ -1665,6 +1669,11 @@ begin
     function assign(instance::GStringLike, _rval::Union{AbstractString, Symbol})
         ret = ccall(("g_string_assign", libglib), Ptr{_GString}, (Ptr{_GString}, Cstring), instance, _rval)
         ret2 = convert(GStringLike, ret, false)
+        ret2
+    end
+    function copy(instance::GStringLike)
+        ret = ccall(("g_string_copy", libglib), Ptr{_GString}, (Ptr{_GString},), instance)
+        ret2 = convert(GStringLike, ret, true)
         ret2
     end
     function equal(instance::GStringLike, _v2::GStringLike)

@@ -5,9 +5,10 @@ const GLib = GObjects
 
 @static if GObjects.libdir == ""
     using Glib_jll
-    using Pango_jll
+    using Pango_jll: Pango_jll, libpango, libpangocairo
 else
     const libpango = joinpath(GObjects.libdir, "libpango-1.0.so")
+    const libpangocairo = joinpath(GObjects.libdir, "libpangocairo-1.0.so")
 end
 
 import Base: convert, length, getindex, iterate, unsafe_convert
@@ -32,7 +33,7 @@ using GObjects: libglib, libgobject, libgio
 const GLib = GObjects
 using ..Pango
 using ..Pango: Alignment, AttrType, BaselineShift, CoverageLevel, Direction, EllipsizeMode, FontScale, Gravity, GravityHint, LayoutDeserializeError, Overline, RenderPart, Script, Stretch, Style, TabAlign, TextTransform, Underline, Variant, Weight, WrapMode, FontMask, LayoutDeserializeFlags, LayoutSerializeFlags, ShapeFlags, ShowFlags
-using ..Pango: libpango
+using ..Pango: libpango, libpangocairo
 using ..Pango.Cairo
 
 include("../gen/pango_methods")

@@ -3,12 +3,12 @@ module Graphene
 using GObjects
 const GLib = GObjects
 @static if GObjects.libdir == ""
-    using Graphene_jll
+    using Graphene_jll: Graphene_jll, libgraphene
 else
     const libgraphene = joinpath(GObjects.libdir, "libgraphene-1.0.so")
 end
 
-import Base: convert, length, getindex, iterate, unsafe_convert
+import Base: convert, unsafe_convert
 
 import CEnum: @cenum, CEnum
 
