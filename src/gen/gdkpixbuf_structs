@@ -25,7 +25,7 @@ begin
     end
     mutable struct GdkPixbufFormat <: GBoxed
         handle::Ptr{_GdkPixbufFormat}
-        (GLib.g_type(::Type{T}) where T <: GdkPixbufFormat) = ccall(("gdk_pixbuf_format_get_type", libgdkpixbuf), GType, ())
+        register_g_type!(GdkPixbufFormat, () -> ccall(("gdk_pixbuf_format_get_type", libgdkpixbuf), GType, ()))
         function GdkPixbufFormat(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkPixbufFormat}
             x = new(ref)
             if own
@@ -57,10 +57,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbuf] = GdkPixbufLeaf
-    (GLib.g_type(::Type{T}) where T <: GdkPixbuf) = ccall(("gdk_pixbuf_get_type", libgdkpixbuf), GType, ())
-    function GLib.signalnames(::Type{GdkPixbuf})
-        signalnames(supertype(GdkPixbuf))
-    end
+    register_g_type!(GdkPixbuf, () -> ccall(("gdk_pixbuf_get_type", libgdkpixbuf), GType, ()))
     abstract type GdkPixbufAnimation <: GObject end
     mutable struct GdkPixbufAnimationLeaf <: GdkPixbufAnimation
         handle::Ptr{GObject}
@@ -73,10 +70,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufAnimation] = GdkPixbufAnimationLeaf
-    (GLib.g_type(::Type{T}) where T <: GdkPixbufAnimation) = ccall(("gdk_pixbuf_animation_get_type", libgdkpixbuf), GType, ())
-    function GLib.signalnames(::Type{GdkPixbufAnimation})
-        signalnames(supertype(GdkPixbufAnimation))
-    end
+    register_g_type!(GdkPixbufAnimation, () -> ccall(("gdk_pixbuf_animation_get_type", libgdkpixbuf), GType, ()))
     abstract type GdkPixbufAnimationIter <: GObject end
     mutable struct GdkPixbufAnimationIterLeaf <: GdkPixbufAnimationIter
         handle::Ptr{GObject}
@@ -89,10 +83,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufAnimationIter] = GdkPixbufAnimationIterLeaf
-    (GLib.g_type(::Type{T}) where T <: GdkPixbufAnimationIter) = ccall(("gdk_pixbuf_animation_iter_get_type", libgdkpixbuf), GType, ())
-    function GLib.signalnames(::Type{GdkPixbufAnimationIter})
-        signalnames(supertype(GdkPixbufAnimationIter))
-    end
+    register_g_type!(GdkPixbufAnimationIter, () -> ccall(("gdk_pixbuf_animation_iter_get_type", libgdkpixbuf), GType, ()))
     abstract type GdkPixbufLoader <: GObject end
     mutable struct GdkPixbufLoaderLeaf <: GdkPixbufLoader
         handle::Ptr{GObject}
@@ -105,18 +96,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufLoader] = GdkPixbufLoaderLeaf
-    (GLib.g_type(::Type{T}) where T <: GdkPixbufLoader) = ccall(("gdk_pixbuf_loader_get_type", libgdkpixbuf), GType, ())
-    function GLib.signalnames(::Type{GdkPixbufLoader})
-        vcat([:area_prepared, :area_updated, :closed, :size_prepared], signalnames(supertype(GdkPixbufLoader)))
-    end
-    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :area_prepared => (:Nothing, Any[]), :area_updated => (:Nothing, [:Int32, :Int32, :Int32, :Int32]), :size_prepared => (:Nothing, [:Int32, :Int32]), :closed => (:Nothing, Any[]))
-        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GdkPixbufLoader
-            eval((d[name])[1])
-        end
-        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GdkPixbufLoader
-            Tuple(eval.((d[name])[2]))
-        end
-    end
+    register_g_type!(GdkPixbufLoader, () -> ccall(("gdk_pixbuf_loader_get_type", libgdkpixbuf), GType, ()))
+    register_signals!(GdkPixbufLoader, [:area_prepared, :area_updated, :closed, :size_prepared])
+    register_signal_types!(GdkPixbufLoader, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :area_prepared => (:Nothing, Any[]), :area_updated => (:Nothing, [:Int32, :Int32, :Int32, :Int32]), :size_prepared => (:Nothing, [:Int32, :Int32]), :closed => (:Nothing, Any[])))
     abstract type GdkPixbufNonAnim <: GdkPixbufAnimation end
     mutable struct GdkPixbufNonAnimLeaf <: GdkPixbufNonAnim
         handle::Ptr{GObject}
@@ -129,10 +111,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufNonAnim] = GdkPixbufNonAnimLeaf
-    (GLib.g_type(::Type{T}) where T <: GdkPixbufNonAnim) = ccall(("gdk_pixbuf_non_anim_get_type", libgdkpixbuf), GType, ())
-    function GLib.signalnames(::Type{GdkPixbufNonAnim})
-        signalnames(supertype(GdkPixbufNonAnim))
-    end
+    register_g_type!(GdkPixbufNonAnim, () -> ccall(("gdk_pixbuf_non_anim_get_type", libgdkpixbuf), GType, ()))
     abstract type GdkPixbufSimpleAnim <: GdkPixbufAnimation end
     mutable struct GdkPixbufSimpleAnimLeaf <: GdkPixbufSimpleAnim
         handle::Ptr{GObject}
@@ -145,10 +124,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufSimpleAnim] = GdkPixbufSimpleAnimLeaf
-    (GLib.g_type(::Type{T}) where T <: GdkPixbufSimpleAnim) = ccall(("gdk_pixbuf_simple_anim_get_type", libgdkpixbuf), GType, ())
-    function GLib.signalnames(::Type{GdkPixbufSimpleAnim})
-        signalnames(supertype(GdkPixbufSimpleAnim))
-    end
+    register_g_type!(GdkPixbufSimpleAnim, () -> ccall(("gdk_pixbuf_simple_anim_get_type", libgdkpixbuf), GType, ()))
     abstract type GdkPixbufSimpleAnimIter <: GdkPixbufAnimationIter end
     mutable struct GdkPixbufSimpleAnimIterLeaf <: GdkPixbufSimpleAnimIter
         handle::Ptr{GObject}
@@ -161,10 +137,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufSimpleAnimIter] = GdkPixbufSimpleAnimIterLeaf
-    (GLib.g_type(::Type{T}) where T <: GdkPixbufSimpleAnimIter) = ccall(("gdk_pixbuf_simple_anim_iter_get_type", libgdkpixbuf), GType, ())
-    function GLib.signalnames(::Type{GdkPixbufSimpleAnimIter})
-        signalnames(supertype(GdkPixbufSimpleAnimIter))
-    end
+    register_g_type!(GdkPixbufSimpleAnimIter, () -> ccall(("gdk_pixbuf_simple_anim_iter_get_type", libgdkpixbuf), GType, ()))
     gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
     function GdkPixbuf(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer; kwargs...)
         obj = G_.Pixbuf_new(_colorspace, _has_alpha, _bits_per_sample, _width, _height)

@@ -70,8 +70,7 @@ g_type_from_name(name::Symbol) = ccall((:g_type_from_name, libgobject), GType, (
 const fundamental_ids = tuple(GType[g_type_from_name(name) for (name, c, j, f, v) in fundamental_types]...)
 
 function get_gtype_decl(name::Symbol, lib, callname::Symbol)
-    :(GLib.g_type(::Type{T}) where T <: $(esc(name)) =
-        ccall(($(String(callname)), $(esc(lib))), GType, ()))
+    :($(esc(:register_g_type!))($(esc(name)), () -> ccall(($(String(callname)), $(esc(lib))), GType, ())))
 end
 
 function get_interface_decl(iname::Symbol)
@@ -102,11 +101,96 @@ Get the GType corresponding to a Julia type or object. See
 information.
 """
 g_type(gtyp::GType) = gtyp
+
+# Each concrete wrapper type (one per GObject class, GBoxed struct, GEnum, or
+# GFlags) needs its own `g_type` lookup, and GI.jl emits one for every type in
+# every library. Registering the lookup closure here, rather than adding a
+# `g_type` method per type, keeps that growth as plain dictionary data: a new
+# method on a function owned by this module has to be woven into this module's
+# method table (ambiguity checks against everything already defined for
+# `g_type`) even when the type it dispatches on lives in another package, and
+# with hundreds of GTK types that dominates that package's load time.
+const _leaf_g_types = Dict{Type,Any}()
+const _leaf_g_type_cache = Dict{Type,GType}()
+
+"""
+    register_g_type!(T::Type, f)
+
+Record `f`, a zero-argument function returning `T`'s `GType`, to be looked up
+and cached the first time `g_type(T)` is called. Called from generated code in
+this package.
+"""
+register_g_type!(T, f) = (_leaf_g_types[T::Type] = f; nothing)
+
+# A downstream package (Gtk4, and the libraries it bundles) cannot register
+# its own types into `_leaf_g_types` directly: mutating a Dict this
+# already-precompiled package owns, from code that runs during the downstream
+# package's own precompilation, does not persist across a fresh session --
+# and populating it later, from `__init__`, is worse: with hundreds of GTK
+# types it means hundreds of fresh, uncached `setindex!` compilations on every
+# load, since `__init__` itself is never precompiled ahead of time. Instead,
+# such a package builds and populates its *own* local Dict at its own
+# precompile time (an ordinary, safe, same-package mutation) and hands that
+# whole Dict over, once, from its own `__init__` -- a single cheap operation
+# with no per-type cost.
+const _g_type_providers = Dict{Type,Any}[]
+
+"""
+    register_g_type_provider!(d::Dict{Type,Any})
+
+Add another package's own `Type => GType-lookup-closure` registry to consult
+when this package's own `_leaf_g_types` has no entry for a type or any of its
+ancestors. Called once per providing package, from that package's `__init__`.
+"""
+register_g_type_provider!(d::Dict{Type,Any}) = (push!(_g_type_providers, d); nothing)
+
+# GI registers each concrete wrapper's constructor (e.g. GtkWindowLeaf) as a
+# subtype of the abstract, user-facing class name (e.g. GtkWindow), and only
+# the abstract name gets a registered GType lookup. So a lookup for `T` walks
+# up to its nearest registered ancestor, the same way the abstract class names
+# themselves walk up to find an inherited GType (mirroring `signalnames`).
+function _find_g_type_fn(T)
+    while true
+        f = get(_leaf_g_types, T, nothing)
+        f !== nothing && return f
+        for d in _g_type_providers
+            f = get(d, T, nothing)
+            f !== nothing && return f
+        end
+        T === Any && return nothing
+        T = supertype(T)
+    end
+end
+
+# Looks up a registered ancestor's GType, falling back to `fallback` (the
+# GType of whichever abstract GObject/GBoxed/... family `T` was dispatched
+# through) when nothing more specific was registered for `T` or its ancestors.
+function _resolve_g_type(::Type{T}, fallback::GType) where T
+    cached = get(_leaf_g_type_cache, T, nothing)
+    cached !== nothing && return cached
+    f = _find_g_type_fn(T)
+    v = f === nothing ? fallback : f()::GType
+    _leaf_g_type_cache[T] = v
+    v
+end
+
+# Types with no fundamental-family ancestor of their own (GEnum/GFlags leaf
+# types, mainly) reach `g_type` only through this fallback, so it has to
+# consult the registry directly rather than defer to a family method.
+function g_type(::Type{T}) where T
+    cached = get(_leaf_g_type_cache, T, nothing)
+    cached !== nothing && return cached
+    f = _find_g_type_fn(T)
+    f === nothing && throw(MethodError(g_type, (T,)))
+    v = f()::GType
+    _leaf_g_type_cache[T] = v
+    v
+end
 let jtypes = Expr(:block, :( g_type(::Type{Nothing}) = $(g_type_from_name(:void)) ))
     for i = 1:length(fundamental_types)
         (name, ctype, juliatype, g_value_fn, g_variant_fn) = fundamental_types[i]
         if juliatype != Union{}
-            push!(jtypes.args, :( g_type(::Type{T}) where {T <: $juliatype} = convert(GType, $(fundamental_ids[i])) ))
+            push!(jtypes.args, :( g_type(::Type{T}) where {T <: $juliatype} = _resolve_g_type(T, $(fundamental_ids[i])) ))
         end
     end
     Core.eval(GObjects, jtypes)

@@ -20,8 +20,7 @@ function typeinit_def(info, gstructname = get_name(info))
     isnothing(ind) && error("function $(type_init) not found in $libs")
     lib=libs[ind]
     quote
-        GLib.g_type(::Type{T}) where {T <: $gstructname} =
-            ccall(($type_init, $(symbol_from_lib(lib))), GType, ())
+        register_g_type!($gstructname, () -> ccall(($type_init, $(symbol_from_lib(lib))), GType, ()))
     end
 end
 
@@ -164,24 +163,13 @@ end
 
 function signal_dict(info)
     d=Dict{Symbol,Tuple{Any,Any}}()
-    for s in get_signals(info)
+    for s in get_all_signals(info)
         rettyp = get_ret_type(s)
         argtyps = get_arg_types(s)
         name=Symbol(replace(String(get_name(s)),"-"=>"_"))
         d[name]=(rettyp,argtyps)
     end
     d
-end
-
-function signal_dict_incl_parents(objectinfo::GIObjectInfo)
-    parentinfo=get_parent(objectinfo)
-    if parentinfo!==nothing
-        return merge(signal_dict_incl_parents(parentinfo),signal_dict(objectinfo))
-    else
-        d=Dict{Symbol,Tuple{Any,Any}}()
-        d[:notify] = (:Nothing, Any[:(Ptr{GParamSpec})])
-        return d
-    end
 end
 
 get_toplevel(o::GIInterfaceInfo) = :GObject
@@ -236,31 +224,17 @@ function gobject_decl(objectinfo)
     push!(exprs, decl)
     # if there are signals, add "signal_return_type" method, and "signal_arg_types" method
     signals = get_all_signals(objectinfo)
-    sigdict = signal_dict_incl_parents(objectinfo)
+    sigdict = signal_dict(objectinfo)
     if length(signals)>0
         signalnames = [Symbol(replace(String(sname),"-"=>"_")) for sname in get_name.(signals)]
         signalexprs = quote
-            function GLib.signalnames(::Type{$oname})
-                vcat($signalnames,signalnames(supertype($oname)))
-            end
-            let d = $sigdict
-                function GLib.signal_return_type(::Type{T},name::Symbol) where T<:$oname
-                    eval(d[name][1])
-                end
-                function GLib.signal_argument_types(::Type{T},name::Symbol) where T<:$oname
-                    Tuple(eval.(d[name][2]))
-                end
-            end
-        end
-        push!(exprs,signalexprs)
-    else
-        signalexprs = quote
-            function GLib.signalnames(::Type{$oname})
-                signalnames(supertype($oname))
-            end
+            register_signals!($oname, $signalnames)
+            register_signal_types!($oname, $sigdict)
         end
         push!(exprs,signalexprs)
     end
+    # types with no signals of their own need no registration: signalnames/
+    # signal_return_type/signal_argument_types fall back to the supertype already
     exprs
 end
 

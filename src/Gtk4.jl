@@ -15,6 +15,20 @@ using GObjects
 import GObjects as GLib
 export GLib
 
+# Generated code in this package (and the libraries it bundles below) cannot
+# register its GType/signal metadata straight into GObjects' own registries:
+# see the comment on `GObjects._g_type_providers` for why. Instead it's
+# recorded in this package's own registries -- an ordinary, safe, same-package
+# mutation -- and handed to GObjects as a single provider registration from
+# `__init__`.
+const _leaf_g_types = Dict{Type,Any}()
+const _signal_names = Dict{Type,Vector{Symbol}}()
+const _signal_types = Dict{Type,Dict{Symbol,Tuple{Any,Any}}}()
+
+register_g_type!(T, f) = (_leaf_g_types[T::Type] = f; nothing)
+register_signals!(T, names::Vector{Symbol}) = (_signal_names[T::Type] = names; nothing)
+register_signal_types!(T, d::Dict{Symbol,Tuple{Any,Any}}) = (_signal_types[T::Type] = d; nothing)
+
 include("Pango/Pango.jl")
 include("GdkPixbufLib.jl")
 include("Graphene.jl")
@@ -149,6 +163,9 @@ end
 const initialized = Ref(false)  # whether `init_check` succeeded, not necessarily the same as GTK4's `is_initialized`
 
 function __init__()
+    GLib.register_g_type_provider!(_leaf_g_types)
+    GLib.register_signal_provider!(_signal_names, _signal_types)
+
     in("Gtk",[x.name for x in keys(Base.loaded_modules)]) && error("Gtk4 is incompatible with Gtk.")
 
     if VERSION >= v"1.11" && isinteractive()

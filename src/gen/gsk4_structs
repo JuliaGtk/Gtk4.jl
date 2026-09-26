@@ -26,7 +26,7 @@ begin
     convert(::Type{GskParseLocationLike}, p, owns) = convert(GskParseLocation, p, owns)
     mutable struct GskPath <: GBoxed
         handle::Ptr{GskPath}
-        (GLib.g_type(::Type{T}) where T <: GskPath) = ccall(("gsk_path_get_type", libgtk4), GType, ())
+        register_g_type!(GskPath, () -> ccall(("gsk_path_get_type", libgtk4), GType, ()))
         function GskPath(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -42,7 +42,7 @@ begin
     const GskPathLike = GskPath
     mutable struct GskPathBuilder <: GBoxed
         handle::Ptr{GskPathBuilder}
-        (GLib.g_type(::Type{T}) where T <: GskPathBuilder) = ccall(("gsk_path_builder_get_type", libgtk4), GType, ())
+        register_g_type!(GskPathBuilder, () -> ccall(("gsk_path_builder_get_type", libgtk4), GType, ()))
         function GskPathBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -58,7 +58,7 @@ begin
     const GskPathBuilderLike = GskPathBuilder
     mutable struct GskPathMeasure <: GBoxed
         handle::Ptr{GskPathMeasure}
-        (GLib.g_type(::Type{T}) where T <: GskPathMeasure) = ccall(("gsk_path_measure_get_type", libgtk4), GType, ())
+        register_g_type!(GskPathMeasure, () -> ccall(("gsk_path_measure_get_type", libgtk4), GType, ()))
         function GskPathMeasure(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -74,7 +74,7 @@ begin
     const GskPathMeasureLike = GskPathMeasure
     mutable struct GskPathPoint <: GBoxed
         handle::Ptr{GskPathPoint}
-        (GLib.g_type(::Type{T}) where T <: GskPathPoint) = ccall(("gsk_path_point_get_type", libgtk4), GType, ())
+        register_g_type!(GskPathPoint, () -> ccall(("gsk_path_point_get_type", libgtk4), GType, ()))
         function GskPathPoint(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -95,7 +95,7 @@ begin
     const _GskRoundedRect = GskRoundedRect
     mutable struct GskShaderArgsBuilder <: GBoxed
         handle::Ptr{GskShaderArgsBuilder}
-        (GLib.g_type(::Type{T}) where T <: GskShaderArgsBuilder) = ccall(("gsk_shader_args_builder_get_type", libgtk4), GType, ())
+        register_g_type!(GskShaderArgsBuilder, () -> ccall(("gsk_shader_args_builder_get_type", libgtk4), GType, ()))
         function GskShaderArgsBuilder(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -124,7 +124,7 @@ begin
     convert(::Type{GskShadowLike}, p, owns) = convert(GskShadow, p, owns)
     mutable struct GskStroke <: GBoxed
         handle::Ptr{GskStroke}
-        (GLib.g_type(::Type{T}) where T <: GskStroke) = ccall(("gsk_stroke_get_type", libgtk4), GType, ())
+        register_g_type!(GskStroke, () -> ccall(("gsk_stroke_get_type", libgtk4), GType, ()))
         function GskStroke(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -140,7 +140,7 @@ begin
     const GskStrokeLike = GskStroke
     mutable struct GskTransform <: GBoxed
         handle::Ptr{GskTransform}
-        (GLib.g_type(::Type{T}) where T <: GskTransform) = ccall(("gsk_transform_get_type", libgtk4), GType, ())
+        register_g_type!(GskTransform, () -> ccall(("gsk_transform_get_type", libgtk4), GType, ()))
         function GskTransform(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -195,10 +195,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GskRenderer] = GskRendererLeaf
-    (GLib.g_type(::Type{T}) where T <: GskRenderer) = ccall(("gsk_renderer_get_type", libgtk4), GType, ())
-    function GLib.signalnames(::Type{GskRenderer})
-        signalnames(supertype(GskRenderer))
-    end
+    register_g_type!(GskRenderer, () -> ccall(("gsk_renderer_get_type", libgtk4), GType, ()))
     abstract type GskBroadwayRenderer <: GskRenderer end
     mutable struct GskBroadwayRendererLeaf <: GskBroadwayRenderer
         handle::Ptr{GObject}
@@ -211,10 +208,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GskBroadwayRenderer] = GskBroadwayRendererLeaf
-    (GLib.g_type(::Type{T}) where T <: GskBroadwayRenderer) = ccall(("gsk_broadway_renderer_get_type", libgtk4), GType, ())
-    function GLib.signalnames(::Type{GskBroadwayRenderer})
-        signalnames(supertype(GskBroadwayRenderer))
-    end
+    register_g_type!(GskBroadwayRenderer, () -> ccall(("gsk_broadway_renderer_get_type", libgtk4), GType, ()))
     abstract type GskCairoNode <: GskRenderNode end
     mutable struct GskCairoNodeLeaf <: GskCairoNode
         handle::Ptr{GskRenderNode}
@@ -231,10 +225,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GskCairoRenderer] = GskCairoRendererLeaf
-    (GLib.g_type(::Type{T}) where T <: GskCairoRenderer) = ccall(("gsk_cairo_renderer_get_type", libgtk4), GType, ())
-    function GLib.signalnames(::Type{GskCairoRenderer})
-        signalnames(supertype(GskCairoRenderer))
-    end
+    register_g_type!(GskCairoRenderer, () -> ccall(("gsk_cairo_renderer_get_type", libgtk4), GType, ()))
     abstract type GskClipNode <: GskRenderNode end
     mutable struct GskClipNodeLeaf <: GskClipNode
         handle::Ptr{GskRenderNode}
@@ -275,10 +266,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GskGLRenderer] = GskGLRendererLeaf
-    (GLib.g_type(::Type{T}) where T <: GskGLRenderer) = ccall(("gsk_gl_renderer_get_type", libgtk4), GType, ())
-    function GLib.signalnames(::Type{GskGLRenderer})
-        signalnames(supertype(GskGLRenderer))
-    end
+    register_g_type!(GskGLRenderer, () -> ccall(("gsk_gl_renderer_get_type", libgtk4), GType, ()))
     abstract type GskGLShader <: GObject end
     mutable struct GskGLShaderLeaf <: GskGLShader
         handle::Ptr{GObject}
@@ -291,10 +279,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GskGLShader] = GskGLShaderLeaf
-    (GLib.g_type(::Type{T}) where T <: GskGLShader) = ccall(("gsk_gl_shader_get_type", libgtk4), GType, ())
-    function GLib.signalnames(::Type{GskGLShader})
-        signalnames(supertype(GskGLShader))
-    end
+    register_g_type!(GskGLShader, () -> ccall(("gsk_gl_shader_get_type", libgtk4), GType, ()))
     abstract type GskGLShaderNode <: GskRenderNode end
     mutable struct GskGLShaderNodeLeaf <: GskGLShaderNode
         handle::Ptr{GskRenderNode}
@@ -323,10 +308,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GskNglRenderer] = GskNglRendererLeaf
-    (GLib.g_type(::Type{T}) where T <: GskNglRenderer) = ccall(("gsk_ngl_renderer_get_type", libgtk4), GType, ())
-    function GLib.signalnames(::Type{GskNglRenderer})
-        signalnames(supertype(GskNglRenderer))
-    end
+    register_g_type!(GskNglRenderer, () -> ccall(("gsk_ngl_renderer_get_type", libgtk4), GType, ()))
     abstract type GskOpacityNode <: GskRenderNode end
     mutable struct GskOpacityNodeLeaf <: GskOpacityNode
         handle::Ptr{GskRenderNode}
@@ -387,10 +369,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GskVulkanRenderer] = GskVulkanRendererLeaf
-    (GLib.g_type(::Type{T}) where T <: GskVulkanRenderer) = ccall(("gsk_vulkan_renderer_get_type", libgtk4), GType, ())
-    function GLib.signalnames(::Type{GskVulkanRenderer})
-        signalnames(supertype(GskVulkanRenderer))
-    end
+    register_g_type!(GskVulkanRenderer, () -> ccall(("gsk_vulkan_renderer_get_type", libgtk4), GType, ()))
     function GskBlendNode(_bottom::GskRenderNode, _top::GskRenderNode, _blend_mode)
         G_.BlendNode_new(_bottom, _top, _blend_mode)
     end

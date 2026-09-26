@@ -2,6 +2,7 @@ module GdkPixbufLib
 
 using GObjects
 const GLib = GObjects
+using ..Gtk4: register_g_type!, register_signals!, register_signal_types!
 
 @static if GObjects.libdir == ""
     using Glib_jll

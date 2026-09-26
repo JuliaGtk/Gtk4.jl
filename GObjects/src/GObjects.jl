@@ -34,7 +34,9 @@ export GList, GSList, glist_iter, _GSList, _GList, GError, GVariant, GType, GBox
 export GObject, GInitiallyUnowned, GInterface, GTypeInterface, _GTypeInterface, GParam, GTypeInstance
 export GByteArray, GHashTable, GPtrArray
 export g_timeout_add, g_idle_add, @idle_add, @guarded, g_source_remove, cancel
-export cfunction_, on_notify, signalnames, signal_return_type, signal_argument_types
+export cfunction_, on_notify, signalnames, signal_return_type, signal_argument_types,
+       register_signals!, register_signal_types!, register_g_type!,
+       register_g_type_provider!, register_signal_provider!
 export gobject_ref, signal_connect, signal_emit, signal_handler_disconnect
 export signal_handler_block, signal_handler_unblock
 export add_action, add_stateful_action

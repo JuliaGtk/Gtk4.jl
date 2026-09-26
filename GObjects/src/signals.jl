@@ -458,15 +458,87 @@ function on_notify(f, object::GObject, property::AbstractString, user_data = obj
 end
 on_notify(f, object::GObject, property::Symbol, user_data = object, after = false) = on_notify(f, object, String(property), user_data, after)
 
-# The following are overridden by GI for each subtype of GObject
+# Per-type signal metadata is filled in by GI for each subtype of GObject (including
+# subtypes defined in other packages, such as Gtk4). It is stored here in plain
+# dictionaries rather than as a method per type: a generic function acquires a new
+# method for every GObject subtype that way, and when the subtype and the function
+# live in different packages, the runtime has to weave that method into a foreign,
+# already-precompiled method table on every load -- with hundreds of GTK widget
+# types, that dominates load time. A dictionary lookup keeps the growth in generated
+# code as data, not as method-table churn.
+const _signal_names = Dict{Type,Vector{Symbol}}(GObject => [:notify])
+const _signal_types = Dict{Type,Dict{Symbol,Tuple{Any,Any}}}(
+    GObject => Dict(:notify => (:Nothing, Any[:(Ptr{GParamSpec})])))
+
+"""
+    register_signals!(T::Type, names::Vector{Symbol})
+
+Record the names of the signals introduced by `T` itself (not inherited from its
+supertype). Called from generated code in this package.
+"""
+register_signals!(T, names::Vector{Symbol}) = (_signal_names[T::Type] = names; nothing)
+
+"""
+    register_signal_types!(T::Type, d::Dict{Symbol,Tuple{Any,Any}})
+
+Record the callback return/argument types for the signals introduced by `T` itself.
+Called from generated code in this package.
+"""
+register_signal_types!(T, d::Dict{Symbol,Tuple{Any,Any}}) = (_signal_types[T::Type] = d; nothing)
+
+# See the matching comment on `_g_type_providers` in gtype.jl: a downstream
+# package hands over its own, locally-populated signal-name/-type Dicts once,
+# from its own `__init__`, instead of registering per type.
+const _signal_name_providers = Dict{Type,Vector{Symbol}}[]
+const _signal_type_providers = Dict{Type,Dict{Symbol,Tuple{Any,Any}}}[]
+
+"""
+    register_signal_provider!(names::Dict{Type,Vector{Symbol}}, types::Dict{Type,Dict{Symbol,Tuple{Any,Any}}})
+
+Add another package's own signal-name/-type registries to consult when this
+package's own registries have no entry for a type or any of its ancestors.
+Called once per providing package, from that package's `__init__`.
+"""
+function register_signal_provider!(names::Dict{Type,Vector{Symbol}}, types::Dict{Type,Dict{Symbol,Tuple{Any,Any}}})
+    push!(_signal_name_providers, names)
+    push!(_signal_type_providers, types)
+    nothing
+end
+
+function _own_signal_names_all(T)
+    own = get(_signal_names, T, nothing)
+    own !== nothing && return own
+    for d in _signal_name_providers
+        own = get(d, T, nothing)
+        own !== nothing && return own
+    end
+    nothing
+end
+
+function _find_signal_type_entry(T, name)
+    sd = get(_signal_types, T, nothing)
+    if sd !== nothing
+        entry = get(sd, name, nothing)
+        entry !== nothing && return entry
+    end
+    for d in _signal_type_providers
+        sd = get(d, T, nothing)
+        if sd !== nothing
+            entry = get(sd, name, nothing)
+            entry !== nothing && return entry
+        end
+    end
+    nothing
+end
 
 """
     signalnames(::Type{T}) where T <: GObject
 
 Returns a list of the names of supported signals for T.
 """
-function signalnames(::Type{GObject})
-    [:notify]
+function signalnames(::Type{T}) where T<:GObject
+    own = something(_own_signal_names_all(T), Symbol[])
+    T === GObject ? own : vcat(own, signalnames(supertype(T)))
 end
 
 """
@@ -475,9 +547,11 @@ end
 Gets the return type for the callback for the signal `name` of a `GObject` type
 (for example `GtkWidget`).
 """
-function signal_return_type(::Type{GObject},name::Symbol)
-    name === :notify || KeyError(name)
-    Nothing
+function signal_return_type(::Type{T}, name::Symbol) where T<:GObject
+    entry = _find_signal_type_entry(T, name)
+    entry !== nothing && return eval(entry[1])
+    T === GObject && throw(KeyError(name))
+    signal_return_type(supertype(T), name)
 end
 
 """
@@ -486,7 +560,9 @@ end
 Gets the argument types for the callback for the signal `name` of a `GObject` type
 (for example `GtkWidget`).
 """
-function signal_argument_types(::Type{GObject},name::Symbol)
-    name === :notify || KeyError(name)
-    (Ptr{GParamSpec},)
+function signal_argument_types(::Type{T}, name::Symbol) where T<:GObject
+    entry = _find_signal_type_entry(T, name)
+    entry !== nothing && return Tuple(eval.(entry[2]))
+    T === GObject && throw(KeyError(name))
+    signal_argument_types(supertype(T), name)
 end

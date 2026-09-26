@@ -2,7 +2,7 @@ begin
     const gboxed_types = Any[]
     mutable struct cairoContext <: GBoxed
         handle::Ptr{cairoContext}
-        (GLib.g_type(::Type{T}) where T <: cairoContext) = ccall(("cairo_gobject_context_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoContext, () -> ccall(("cairo_gobject_context_get_type", libcairo_gobject), GType, ()))
         function cairoContext(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -18,7 +18,7 @@ begin
     const cairoContextLike = cairoContext
     mutable struct cairoDevice <: GBoxed
         handle::Ptr{cairoDevice}
-        (GLib.g_type(::Type{T}) where T <: cairoDevice) = ccall(("cairo_gobject_device_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoDevice, () -> ccall(("cairo_gobject_device_get_type", libcairo_gobject), GType, ()))
         function cairoDevice(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -34,7 +34,7 @@ begin
     const cairoDeviceLike = cairoDevice
     mutable struct cairoSurface <: GBoxed
         handle::Ptr{cairoSurface}
-        (GLib.g_type(::Type{T}) where T <: cairoSurface) = ccall(("cairo_gobject_surface_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoSurface, () -> ccall(("cairo_gobject_surface_get_type", libcairo_gobject), GType, ()))
         function cairoSurface(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -54,7 +54,7 @@ begin
     const cairoMatrixLike = cairoMatrix
     mutable struct cairoPattern <: GBoxed
         handle::Ptr{cairoPattern}
-        (GLib.g_type(::Type{T}) where T <: cairoPattern) = ccall(("cairo_gobject_pattern_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoPattern, () -> ccall(("cairo_gobject_pattern_get_type", libcairo_gobject), GType, ()))
         function cairoPattern(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -70,7 +70,7 @@ begin
     const cairoPatternLike = cairoPattern
     mutable struct cairoRegion <: GBoxed
         handle::Ptr{cairoRegion}
-        (GLib.g_type(::Type{T}) where T <: cairoRegion) = ccall(("cairo_gobject_region_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoRegion, () -> ccall(("cairo_gobject_region_get_type", libcairo_gobject), GType, ()))
         function cairoRegion(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -86,7 +86,7 @@ begin
     const cairoRegionLike = cairoRegion
     mutable struct cairoFontOptions <: GBoxed
         handle::Ptr{cairoFontOptions}
-        (GLib.g_type(::Type{T}) where T <: cairoFontOptions) = ccall(("cairo_gobject_font_options_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoFontOptions, () -> ccall(("cairo_gobject_font_options_get_type", libcairo_gobject), GType, ()))
         function cairoFontOptions(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -102,7 +102,7 @@ begin
     const cairoFontOptionsLike = cairoFontOptions
     mutable struct cairoFontFace <: GBoxed
         handle::Ptr{cairoFontFace}
-        (GLib.g_type(::Type{T}) where T <: cairoFontFace) = ccall(("cairo_gobject_font_face_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoFontFace, () -> ccall(("cairo_gobject_font_face_get_type", libcairo_gobject), GType, ()))
         function cairoFontFace(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -118,7 +118,7 @@ begin
     const cairoFontFaceLike = cairoFontFace
     mutable struct cairoScaledFont <: GBoxed
         handle::Ptr{cairoScaledFont}
-        (GLib.g_type(::Type{T}) where T <: cairoScaledFont) = ccall(("cairo_gobject_scaled_font_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoScaledFont, () -> ccall(("cairo_gobject_scaled_font_get_type", libcairo_gobject), GType, ()))
         function cairoScaledFont(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -144,7 +144,7 @@ begin
     end
     mutable struct cairoRectangle <: GBoxed
         handle::Ptr{_cairoRectangle}
-        (GLib.g_type(::Type{T}) where T <: cairoRectangle) = ccall(("cairo_gobject_rectangle_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoRectangle, () -> ccall(("cairo_gobject_rectangle_get_type", libcairo_gobject), GType, ()))
         function cairoRectangle(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _cairoRectangle}
             x = new(ref)
             if own
@@ -169,7 +169,7 @@ begin
     end
     mutable struct cairoRectangleInt <: GBoxed
         handle::Ptr{_cairoRectangleInt}
-        (GLib.g_type(::Type{T}) where T <: cairoRectangleInt) = ccall(("cairo_gobject_rectangle_int_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoRectangleInt, () -> ccall(("cairo_gobject_rectangle_int_get_type", libcairo_gobject), GType, ()))
         function cairoRectangleInt(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _cairoRectangleInt}
             x = new(ref)
             if own
@@ -193,7 +193,7 @@ begin
     end
     mutable struct cairoGlyph <: GBoxed
         handle::Ptr{_cairoGlyph}
-        (GLib.g_type(::Type{T}) where T <: cairoGlyph) = ccall(("cairo_gobject_glyph_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoGlyph, () -> ccall(("cairo_gobject_glyph_get_type", libcairo_gobject), GType, ()))
         function cairoGlyph(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _cairoGlyph}
             x = new(ref)
             if own
@@ -216,7 +216,7 @@ begin
     end
     mutable struct cairoTextCluster <: GBoxed
         handle::Ptr{_cairoTextCluster}
-        (GLib.g_type(::Type{T}) where T <: cairoTextCluster) = ccall(("cairo_gobject_text_cluster_get_type", libcairo_gobject), GType, ())
+        register_g_type!(cairoTextCluster, () -> ccall(("cairo_gobject_text_cluster_get_type", libcairo_gobject), GType, ()))
         function cairoTextCluster(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _cairoTextCluster}
             x = new(ref)
             if own

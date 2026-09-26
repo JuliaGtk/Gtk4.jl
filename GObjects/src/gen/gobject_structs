@@ -225,10 +225,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GBinding] = GBindingLeaf
-    (GLib.g_type(::Type{T}) where T <: GBinding) = ccall(("g_binding_get_type", libgobject), GType, ())
-    function GLib.signalnames(::Type{GBinding})
-        signalnames(supertype(GBinding))
-    end
+    register_g_type!(GBinding, () -> ccall(("g_binding_get_type", libgobject), GType, ()))
     abstract type GInitiallyUnowned <: GObject end
     mutable struct GInitiallyUnownedLeaf <: GInitiallyUnowned
         handle::Ptr{GObject}
@@ -241,10 +238,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GInitiallyUnowned] = GInitiallyUnownedLeaf
-    (GLib.g_type(::Type{T}) where T <: GInitiallyUnowned) = ccall(("g_initially_unowned_get_type", libgobject), GType, ())
-    function GLib.signalnames(::Type{GInitiallyUnowned})
-        signalnames(supertype(GInitiallyUnowned))
-    end
+    register_g_type!(GInitiallyUnowned, () -> ccall(("g_initially_unowned_get_type", libgobject), GType, ()))
     abstract type GTypeModule <: GObject end
     mutable struct GTypeModuleLeaf <: GTypeModule
         handle::Ptr{GObject}
@@ -257,10 +251,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTypeModule] = GTypeModuleLeaf
-    (GLib.g_type(::Type{T}) where T <: GTypeModule) = ccall(("g_type_module_get_type", libgobject), GType, ())
-    function GLib.signalnames(::Type{GTypeModule})
-        signalnames(supertype(GTypeModule))
-    end
+    register_g_type!(GTypeModule, () -> ccall(("g_type_module_get_type", libgobject), GType, ()))
     gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.Binding.html)." GBinding
     @doc "See the [GTK docs](https://docs.gtk.org/gobject/class.InitiallyUnowned.html)." GInitiallyUnowned
