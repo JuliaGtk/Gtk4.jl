@@ -307,7 +307,7 @@ const await_lock = ReentrantLock()
 const topfinalizer = Ref(true) # keep recursion to a minimum by only iterating from the top
 const await_finalize = Set{GObjectKey}()
 
-function finalize_gc_unref(@nospecialize(x::GObject))
+Base.@nospecializeinfer function finalize_gc_unref(@nospecialize(x::GObject))
     # this records that the are no user references left to the object from Julia
     # and notifies GLib that it can free the object (if no reference exist from C)
     # it is intended to be called by GC, not in user code function
@@ -327,7 +327,7 @@ function finalize_gc_unref(@nospecialize(x::GObject))
     nothing
 end
 
-function delref(@nospecialize(x::GObject))
+Base.@nospecializeinfer function delref(@nospecialize(x::GObject))
     # internal helper function
     exiting[] && return # unnecessary to cleanup if we are about to die anyways
     if gc_preserve_glib_lock[] || g_yielded[]
@@ -337,7 +337,7 @@ function delref(@nospecialize(x::GObject))
     finalize_gc_unref(x)
     nothing
 end
-function addref(@nospecialize(x::GObject))
+Base.@nospecializeinfer function addref(@nospecialize(x::GObject))
     # internal helper function
     finalizer(delref, x)
     if !haskey(gc_preserve_glib, GObjectKey(x))
@@ -351,7 +351,7 @@ function gobject_maybe_sink(handle,owns::Bool)
         glib_ref_sink(handle)
     end
 end
-function gobject_ref(@nospecialize(x::GObject))
+Base.@nospecializeinfer function gobject_ref(@nospecialize(x::GObject))
     gc_preserve_glib_lock[] = true
     strong = get(gc_preserve_glib, GObjectKey(x), nothing)
     if strong === nothing
@@ -400,7 +400,7 @@ function run_delayed_finalizers()
     topfinalizer[] = true
 end
 
-function gc_unref_weak(x::GObject)
+Base.@nospecializeinfer function gc_unref_weak(@nospecialize(x::GObject))
     # this strongly destroys and invalidates the object
     # it is intended to be called by GLib, not in user code function
     # note: this may be called multiple times by GLib
@@ -411,7 +411,7 @@ function gc_unref_weak(x::GObject)
     nothing
 end
 
-function gc_unref(x::GObject)
+Base.@nospecializeinfer function gc_unref(@nospecialize(x::GObject))
     # this strongly destroys and invalidates the object
     # it is intended to be called by GLib, not in user code function
     ref = ccall((:g_object_get_qdata, libgobject), Ptr{Nothing}, (Ptr{GObject}, UInt32), x, jlref_quark::UInt32)
