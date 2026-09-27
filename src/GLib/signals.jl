@@ -360,7 +360,9 @@ function new_gsource(source_funcs::_GSourceFuncs)
 end
 
 expiration::UInt64 = UInt64(0)
-_isempty_workqueue() = isempty(Base.Workqueue)
+# `Base.Workqueue` is not the live queue on Julia ≥ 1.13 (it is a stale object created
+# during sysimage build), so look up the queue of the thread running the GLib loop.
+_isempty_workqueue() = isempty(Base.workqueue_for(Threads.threadid()))
 uv_loop_alive(evt) = ccall(:uv_loop_alive, Cint, (Ptr{Nothing},), evt) != 0
 
 function uv_prepare(src::Ptr{Nothing}, timeout::Ptr{Cint})
