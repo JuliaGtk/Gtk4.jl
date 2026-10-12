@@ -550,6 +550,11 @@ begin
         ret = ccall(("gdk_button_event_get_button", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
         ret
     end
+    function cairo_create(instance::GdkCairoContext)
+        ret = ccall(("gdk_cairo_context_cairo_create", libgtk4), Ptr{cairoContext}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(cairoContext, ret, true)
+        ret2
+    end
     function CicpParams_new()
         ret = ccall(("gdk_cicp_params_new", libgtk4), Ptr{GObject}, ())
         ret2 = GdkCicpParamsLeaf(ret, true)
@@ -1149,6 +1154,11 @@ begin
         ret2 = convert(Bool, ret)
         ret2
     end
+    function get_startup_notification_id(instance::GdkDisplay)
+        ret = ccall(("gdk_display_get_startup_notification_id", libgtk4), Cstring, (Ptr{GObject},), instance)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
     function is_closed(instance::GdkDisplay)
         ret = ccall(("gdk_display_is_closed", libgtk4), Cint, (Ptr{GObject},), instance)
         ret2 = convert(Bool, ret)
@@ -1203,6 +1213,10 @@ begin
             end
         _n_keys = m_n_keys[]
         (ret2, _keys)
+    end
+    function notify_startup_complete(instance::GdkDisplay, _startup_id::Union{AbstractString, Symbol})
+        ret = ccall(("gdk_display_notify_startup_complete", libgtk4), Nothing, (Ptr{GObject}, Cstring), instance, _startup_id)
+        nothing
     end
     function prepare_gl(instance::GdkDisplay)
         err = err_buf()
@@ -1477,14 +1491,32 @@ begin
         ret = ccall(("gdk_drag_set_hotspot", libgtk4), Nothing, (Ptr{GObject}, Int32, Int32), instance, _hot_x, _hot_y)
         nothing
     end
+    function begin_frame(instance::GdkDrawContext, _region::cairoRegion)
+        ret = ccall(("gdk_draw_context_begin_frame", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region)
+        nothing
+    end
+    function end_frame(instance::GdkDrawContext)
+        ret = ccall(("gdk_draw_context_end_frame", libgtk4), Nothing, (Ptr{GObject},), instance)
+        nothing
+    end
     function get_display(instance::GdkDrawContext)
         ret = ccall(("gdk_draw_context_get_display", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GdkDisplay, ret, false)
         ret2
     end
+    function get_frame_region(instance::GdkDrawContext)
+        ret = ccall(("gdk_draw_context_get_frame_region", libgtk4), Ptr{cairoRegion}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(cairoRegion, ret, false)
+        ret2
+    end
     function get_surface(instance::GdkDrawContext)
         ret = ccall(("gdk_draw_context_get_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
         ret2 = convert_if_not_null(GdkSurface, ret, false)
+        ret2
+    end
+    function is_in_frame(instance::GdkDrawContext)
+        ret = ccall(("gdk_draw_context_is_in_frame", libgtk4), Cint, (Ptr{GObject},), instance)
+        ret2 = convert(Bool, ret)
         ret2
     end
     function finish(instance::GdkDrop, _action)
@@ -1784,6 +1816,11 @@ begin
         _minor = m_minor[]
         _minor = convert(Maybe(Integer), _minor)
         (_major, _minor)
+    end
+    function get_shared_context(instance::GdkGLContext)
+        ret = ccall(("gdk_gl_context_get_shared_context", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert_if_not_null(GdkGLContext, ret, false)
+        ret2
     end
     function get_surface(instance::GdkGLContext)
         ret = ccall(("gdk_gl_context_get_surface", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
@@ -2347,11 +2384,28 @@ begin
         ret = ccall(("gdk_surface_beep", libgtk4), Nothing, (Ptr{GObject},), instance)
         nothing
     end
+    function create_cairo_context(instance::GdkSurface)
+        ret = ccall(("gdk_surface_create_cairo_context", libgtk4), Ptr{GObject}, (Ptr{GObject},), instance)
+        ret2 = convert(GdkCairoContext, ret, true)
+        ret2
+    end
     function create_gl_context(instance::GdkSurface)
         err = err_buf()
         ret = ccall(("gdk_surface_create_gl_context", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
         check_err(err)
         ret2 = convert(GdkGLContext, ret, true)
+        ret2
+    end
+    function create_similar_surface(instance::GdkSurface, _content, _width::Integer, _height::Integer)
+        ret = ccall(("gdk_surface_create_similar_surface", libgtk4), Ptr{cairoSurface}, (Ptr{GObject}, UInt32, Int32, Int32), instance, _content, _width, _height)
+        ret2 = convert(cairoSurface, ret, true)
+        ret2
+    end
+    function create_vulkan_context(instance::GdkSurface)
+        err = err_buf()
+        ret = ccall(("gdk_surface_create_vulkan_context", libgtk4), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), instance, err)
+        check_err(err)
+        ret2 = convert(GdkVulkanContext, ret, true)
         ret2
     end
     function destroy(instance::GdkSurface)
@@ -2442,6 +2496,11 @@ begin
         ret = ccall(("gdk_surface_set_input_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region_maybe)
         nothing
     end
+    function set_opaque_region(instance::GdkSurface, _region::Maybe(cairoRegion))
+        _region_maybe = nothing_to_null(_region)
+        ret = ccall(("gdk_surface_set_opaque_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region_maybe)
+        nothing
+    end
     function translate_coordinates(instance::GdkSurface, _to::GdkSurface, _x::Real, _y::Real)
         m_x = Ref{Float64}()
         m_x[] = Base.cconvert(Float64, _x)
@@ -2452,6 +2511,11 @@ begin
         _x = m_x[]
         _y = m_y[]
         (ret2, _x, _y)
+    end
+    function Texture_new_for_pixbuf(_pixbuf::GdkPixbuf)
+        ret = ccall(("gdk_texture_new_for_pixbuf", libgtk4), Ptr{GObject}, (Ptr{GObject},), _pixbuf)
+        ret2 = convert(GdkTexture, ret, true)
+        ret2
     end
     function Texture_new_from_bytes(_bytes::GBytes)
         err = err_buf()
