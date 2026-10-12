@@ -290,24 +290,33 @@ end
 function glib_ref_sink(x::Ptr{GObject})
     ccall((:g_object_ref_sink, libgobject), Nothing, (Ptr{GObject},), x)
 end
-const gc_preserve_glib = Dict{Union{WeakRef, GObject}, Bool}() # glib objects
+# Dict/Set key holding a GObject strongly. Base's Dict and Set methods specialize
+# on the concrete key type, so keying on this one type (instead of on each GObject
+# leaf type) lets them compile once.
+struct GObjectKey
+    x::GObject
+end
+Base.hash(k::GObjectKey, h::UInt) = hash(k.x, h)
+Base.isequal(a::GObjectKey, b::GObjectKey) = a.x === b.x
+Base.isequal(k::GObjectKey, w::WeakRef) = k.x === w.value
+
+# Keys are WeakRef (weak reference) or GObjectKey (strong reference); look up with GObjectKey.
+const gc_preserve_glib = Dict{Union{WeakRef, GObjectKey}, Bool}() # glib objects
 const gc_preserve_glib_lock = Ref(false) # to satisfy this lock, must never decrement a ref counter while it is held
 const await_lock = ReentrantLock()
 const topfinalizer = Ref(true) # keep recursion to a minimum by only iterating from the top
-const await_finalize = Set{Any}()
+const await_finalize = Set{GObjectKey}()
 
-Base.isequal(x::GObject, w::WeakRef) = x === w.value   # cuts the number of MethodInstances from O(N^2) to O(N)
-
-function finalize_gc_unref(@nospecialize(x::GObject))
+Base.@nospecializeinfer function finalize_gc_unref(@nospecialize(x::GObject))
     # this records that the are no user references left to the object from Julia
     # and notifies GLib that it can free the object (if no reference exist from C)
     # it is intended to be called by GC, not in user code function
     istop = topfinalizer[]
     topfinalizer[] = false
     gc_preserve_glib_lock[] = true
-    delete!(gc_preserve_glib, x)
+    delete!(gc_preserve_glib, GObjectKey(x))
     if getfield(x, :handle) != C_NULL
-        gc_preserve_glib[x] = true # convert to a strong-reference
+        gc_preserve_glib[GObjectKey(x)] = true # convert to a strong-reference
         gc_preserve_glib_lock[] = false
         gc_unref(unsafe_convert(Ptr{GObject}, x)) # may clear the strong reference
     else
@@ -318,20 +327,20 @@ function finalize_gc_unref(@nospecialize(x::GObject))
     nothing
 end
 
-function delref(@nospecialize(x::GObject))
+Base.@nospecializeinfer function delref(@nospecialize(x::GObject))
     # internal helper function
     exiting[] && return # unnecessary to cleanup if we are about to die anyways
     if gc_preserve_glib_lock[] || g_yielded[]
-        @lock await_lock push!(await_finalize, x)
+        @lock await_lock push!(await_finalize, GObjectKey(x))
         return # avoid running finalizers at random times
     end
     finalize_gc_unref(x)
     nothing
 end
-function addref(@nospecialize(x::GObject))
+Base.@nospecializeinfer function addref(@nospecialize(x::GObject))
     # internal helper function
     finalizer(delref, x)
-    if !haskey(gc_preserve_glib, x)
+    if !haskey(gc_preserve_glib, GObjectKey(x))
         gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
     end
     nothing
@@ -342,19 +351,19 @@ function gobject_maybe_sink(handle,owns::Bool)
         glib_ref_sink(handle)
     end
 end
-function gobject_ref(x::T) where T <: GObject
+Base.@nospecializeinfer function gobject_ref(@nospecialize(x::GObject))
     gc_preserve_glib_lock[] = true
-    strong = get(gc_preserve_glib, x, nothing)
+    strong = get(gc_preserve_glib, GObjectKey(x), nothing)
     if strong === nothing
         if ccall((:g_object_get_qdata, libgobject), Ptr{Cvoid},
                  (Ptr{GObject}, UInt32), x, jlref_quark::UInt32) != C_NULL
             # have set up metadata for this before, but its weakref has been cleared. restore the ref.
-            @lock await_lock delete!(await_finalize, x)
+            @lock await_lock delete!(await_finalize, GObjectKey(x))
             finalizer(delref, x)
             gc_preserve_glib[WeakRef(x)] = false # record the existence of the object, but allow the finalizer
         else
             # we haven't seen this before, setup the metadata
-            deref = @cfunction(gc_unref, Nothing, (Ref{T},))
+            deref = @cfunction(gc_unref, Nothing, (Ref{GObject},))
             ccall((:g_object_set_qdata_full, libgobject), Nothing,
                   (Ptr{GObject}, UInt32, Any, Ptr{Nothing}), x, jlref_quark::UInt32, x,
                   deref) # add a circular reference to the Julia object in the GObject
@@ -385,25 +394,24 @@ function run_delayed_finalizers()
     end
     @lock await_lock begin
         while !isempty(await_finalize)
-            x = pop!(await_finalize)
-            finalize_gc_unref(x)
+            finalize_gc_unref(pop!(await_finalize).x)
         end
     end
     topfinalizer[] = true
 end
 
-function gc_unref_weak(x::GObject)
+Base.@nospecializeinfer function gc_unref_weak(@nospecialize(x::GObject))
     # this strongly destroys and invalidates the object
     # it is intended to be called by GLib, not in user code function
     # note: this may be called multiple times by GLib
     setfield!(x,:handle, Ptr{GObject}(C_NULL))
     gc_preserve_glib_lock[] = true
-    delete!(gc_preserve_glib, x)
+    delete!(gc_preserve_glib, GObjectKey(x))
     gc_preserve_glib_lock[] = false
     nothing
 end
 
-function gc_unref(x::GObject)
+Base.@nospecializeinfer function gc_unref(@nospecialize(x::GObject))
     # this strongly destroys and invalidates the object
     # it is intended to be called by GLib, not in user code function
     ref = ccall((:g_object_get_qdata, libgobject), Ptr{Nothing}, (Ptr{GObject}, UInt32), x, jlref_quark::UInt32)
@@ -431,7 +439,7 @@ function gobject_move_ref(new::GObject, old::GObject)
     # replace weak with strong reference
     gc_preserve_glib_lock[] = true
     filter!(x->!(isa(x.first,WeakRef) && x.first.value == new), gc_preserve_glib)
-    gc_preserve_glib[new] = true
+    gc_preserve_glib[GObjectKey(new)] = true
     gc_preserve_glib_lock[] = false
     glib_unref(h)
     new

@@ -83,6 +83,15 @@ the operation that is complete (it must be between 0 and 1).
 See also the [GTK docs](https://docs.gtk.org/gtk4/class.ProgressBar.html).
 """ GtkProgressBar
 
+"""
+    pulse(progress::GtkProgressBar)
+
+Advances `progress` by one increment, for cases where the exact fraction complete
+cannot be determined. Each call moves the bar's indicator block forward, wrapping
+around to the beginning once it reaches the end.
+
+See also [`GtkProgressBar`](@ref).
+"""
 pulse(progress::GtkProgressBar) = G_.pulse(progress)
 
 ## GtkSpinner

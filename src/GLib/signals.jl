@@ -1,9 +1,28 @@
-# First the version of `signal_connect` that takes the return type and argument types and passes a 
-# function and closure to `g_signal_connect_data`.
+"""
+    signal_connect(callback, widget::GObject, signal_name; after=false)
+    signal_connect(callback, widget::GObject, signal_name, return_type, argument_types, after=false; user_data=widget)
 
-# id = signal_connect(widget, :event, Nothing, (ArgsT...)) do ptr, evt_args..., closure
-#    stuff
-# end
+Connects `callback` to `signal_name` on `widget`, so that `callback` is invoked
+whenever `widget` emits that signal. Returns a handler ID (a `Culong`) that can be
+passed to [`signal_handler_disconnect`](@ref), [`signal_handler_block`](@ref), or
+[`signal_handler_unblock`](@ref).
+
+The three-argument form is the common one, typically used with `do`-block syntax:
+```julia
+signal_connect(widget, "clicked") do w
+    println("clicked!")
+end
+```
+`callback` is called with `widget` followed by the signal's own parameters; each
+argument is converted to and from a Julia value via `GValue`. Pass `after=true` to
+have `callback` run after GTK's own default handler for the signal.
+
+The five-argument form calls `callback` directly with the C argument types listed in
+`argument_types` and return type `return_type`, bypassing `GValue` conversion. It
+exists for signals or argument types not supported by that conversion machinery.
+
+See also [`signal_emit`](@ref).
+"""
 function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike,
         ::Type{RT}, param_types::Tuple, after::Bool = false, user_data::CT = w) where {CT, RT}
     # could use signal_query to check RT and param_types and throw an error if not correct
@@ -24,11 +43,6 @@ function signal_connect_generic(@nospecialize(cb::Function), w::GObject, sig::Ab
                  after ? ConnectFlags_AFTER : 0)
 end
 
-# Next the more user friendly version, which passes everything as GValues.
-
-# id = signal_connect(widget, :event) do obj, evt_args...
-#    stuff
-# end
 function signal_connect(@nospecialize(cb::Function), w::GObject, sig::AbstractStringLike, after::Bool = false)
     _signal_connect(cb, w, sig, after, false, nothing, nothing)
 end
@@ -74,23 +88,38 @@ function GClosureMarshal(closuref::Ptr{Nothing}, return_value::Ptr{GValue}, n_pa
     gtk_calling_convention = (0 != unsafe_load(convert(Ptr{Int}, closure_env),  2))
     @assert gtk_calling_convention == false
     params = Vector{Any}(undef, n_param_values)
-    g_siginterruptible(cb) do
-        for i = 1:n_param_values
-            r=Ref(unsafe_load(param_values, i))
-            params[i] = r[Any]
-        end
-        # note: make sure not to leak any of the GValue objects into this task switch, since many of them were alloca'd
-        retval = cb(params...) # widget, args...
-        if return_value != C_NULL && retval !== nothing
-            gtyp = unsafe_load(return_value).g_type
-            if gtyp != g_type(Nothing) && gtyp != 0
-                try
-                    return_value[] = gvalue(retval)
-                catch
-                    @async begin # make this async to prevent task switches from being present right here
-                        blame(cb)
-                        println("ERROR: failed to set return value of type $(typeof(retval)); did your callback return an unintentional value?")
-                    end
+    g_siginterruptible(GClosureInvocation(cb, return_value, n_param_values, param_values, params), cb)
+    return nothing
+end
+
+# A callable struct rather than a closure: a closure's type is parameterized by the
+# concrete type of `cb`, which would force `g_siginterruptible` and the body below to be
+# compiled again for every distinct callback.
+struct GClosureInvocation
+    cb::Function
+    return_value::Ptr{GValue}
+    n_param_values::Cuint
+    param_values::Ptr{GValue}
+    params::Vector{Any}
+end
+
+function (inv::GClosureInvocation)()
+    (; cb, return_value, n_param_values, param_values, params) = inv
+    for i = 1:n_param_values
+        r=Ref(unsafe_load(param_values, i))
+        params[i] = r[Any]
+    end
+    # note: make sure not to leak any of the GValue objects into this task switch, since many of them were alloca'd
+    retval = cb(params...) # widget, args...
+    if return_value != C_NULL && retval !== nothing
+        gtyp = unsafe_load(return_value).g_type
+        if gtyp != g_type(Nothing) && gtyp != 0
+            try
+                return_value[] = gvalue(retval)
+            catch
+                @async begin # make this async to prevent task switches from being present right here
+                    blame(cb)
+                    println("ERROR: failed to set return value of type $(typeof(retval)); did your callback return an unintentional value?")
                 end
             end
         end
@@ -251,7 +280,7 @@ function g_sigatom(@nospecialize(f)) # calls f, where f never throws (but this f
     return ret
 end
 
-function g_siginterruptible(f::Base.Callable, @nospecialize(cb)) # calls f (which may throw), but this function never throws
+function g_siginterruptible(f, @nospecialize(cb)) # calls f (which may throw), but this function never throws
     global g_sigatom_flag, g_stack
     prev = g_sigatom_flag[]
     @assert xor(prev, (current_task() !== g_stack))
@@ -331,7 +360,9 @@ function new_gsource(source_funcs::_GSourceFuncs)
 end
 
 expiration::UInt64 = UInt64(0)
-_isempty_workqueue() = isempty(Base.Workqueue)
+# `Base.Workqueue` is not the live queue on Julia ≥ 1.13 (it is a stale object created
+# during sysimage build), so look up the queue of the thread running the GLib loop.
+_isempty_workqueue() = isempty(Base.workqueue_for(Threads.threadid()))
 uv_loop_alive(evt) = ccall(:uv_loop_alive, Cint, (Ptr{Nothing},), evt) != 0
 
 function uv_prepare(src::Ptr{Nothing}, timeout::Ptr{Cint})

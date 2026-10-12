@@ -64,7 +64,6 @@ sleep(0.5)
 
 x[] = 1 # reset
 
-if VERSION <= v"1.12"
 GLib.pause_main_loop() do
     @test GLib.is_loop_running() == false
     x[] = 2
@@ -72,7 +71,6 @@ end
 
 @test GLib.is_loop_running() == true
 @test x[] == 2
-end
 
 end
 
