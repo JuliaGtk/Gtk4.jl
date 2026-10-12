@@ -223,9 +223,6 @@ function CompareDataFunc(a, b, user_data)
     convert(Cint, ret)
 end
 
-# enums in GTK are so...
-Ordering(x::UInt32) = unsafe_trunc(Int16,0xffff)
-
 ## GtkListBox
 setindex!(lb::GtkListBox, w::GtkWidget, i::Integer) = (G_.insert(lb, w, i - 1); lb[i])
 getindex(lb::GtkListBox, i::Integer) = G_.get_row_at_index(lb, i - 1)
@@ -323,7 +320,7 @@ function set_sort_func(cf::GtkCustomSorter, ::Nothing)
     ccall(("gtk_custom_sorter_set_sort_func", libgtk4), Nothing, (Ptr{GObject}, Ptr{Nothing}, Ptr{Nothing}, Ptr{Nothing}), cf, C_NULL, C_NULL, C_NULL)
 end
 
-changed(cs::GtkCustomSorter, _change = FilterChange_DIFFERENT) = G_.changed(cs, _change)
+changed(cs::GtkCustomSorter, _change = SorterChange_DIFFERENT) = G_.changed(cs, _change)
 
 ## selection models
 

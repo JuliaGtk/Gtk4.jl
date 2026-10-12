@@ -1,4 +1,18 @@
 begin
+    function equal(instance::GskPath, _path2::GskPath)
+        ret = ccall(("gsk_path_equal", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskPath}), instance, _path2)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
+    function foreach_intersection(instance::GskPath, _path2::Maybe(GskPath), _func::Function)
+        _path2_maybe = nothing_to_null(_path2)
+        _func_cfunc = @cfunction(GskPathIntersectionFunc, Cint, (Ptr{GskPath}, Ptr{GskPathPoint}, Ptr{GskPath}, Ptr{GskPathPoint}, UInt32, Ref{Function}))
+        ref = Ref{Any}(_func)
+        _func_closure = unsafe_load(convert(Ptr{Ptr{Nothing}}, Base.unsafe_convert(Ptr{Any}, ref)))
+        ret = ccall(("gsk_path_foreach_intersection", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskPath}, Ptr{Cvoid}, Ptr{Nothing}), instance, _path2_maybe, _func_cfunc, _func_closure)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function get_bounds(instance::GskPath)
         m_bounds = Ref{_GrapheneRect}()
         ret = ccall(("gsk_path_get_bounds", libgtk4), Cint, (Ptr{GskPath}, Ptr{_GrapheneRect}), instance, m_bounds)
@@ -22,6 +36,24 @@ begin
         _result = m_result[]
         (ret2, _result)
     end
+    function get_next(instance::GskPath, _point::GskPathPoint)
+        _point = GLib.glib_ref(_point)
+        m_point = Ref{GskPathPoint}()
+        m_point[] = Base.cconvert(GskPathPoint, _point)
+        ret = ccall(("gsk_path_get_next", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskPathPoint}), instance, m_point)
+        ret2 = convert(Bool, ret)
+        _point = m_point[]
+        (ret2, _point)
+    end
+    function get_previous(instance::GskPath, _point::GskPathPoint)
+        _point = GLib.glib_ref(_point)
+        m_point = Ref{GskPathPoint}()
+        m_point[] = Base.cconvert(GskPathPoint, _point)
+        ret = ccall(("gsk_path_get_previous", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskPathPoint}), instance, m_point)
+        ret2 = convert(Bool, ret)
+        _point = m_point[]
+        (ret2, _point)
+    end
     function get_start_point(instance::GskPath)
         m_result = Ref{GskPathPoint}()
         ret = ccall(("gsk_path_get_start_point", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskPathPoint}), instance, m_result)
@@ -32,6 +64,13 @@ begin
     function get_stroke_bounds(instance::GskPath, _stroke::GskStroke)
         m_bounds = Ref{_GrapheneRect}()
         ret = ccall(("gsk_path_get_stroke_bounds", libgtk4), Cint, (Ptr{GskPath}, Ptr{GskStroke}, Ptr{_GrapheneRect}), instance, _stroke, m_bounds)
+        ret2 = convert(Bool, ret)
+        _bounds = m_bounds[]
+        (ret2, _bounds)
+    end
+    function get_tight_bounds(instance::GskPath)
+        m_bounds = Ref{_GrapheneRect}()
+        ret = ccall(("gsk_path_get_tight_bounds", libgtk4), Cint, (Ptr{GskPath}, Ptr{_GrapheneRect}), instance, m_bounds)
         ret2 = convert(Bool, ret)
         _bounds = m_bounds[]
         (ret2, _bounds)
@@ -281,6 +320,35 @@ begin
         _tangent = m_tangent[]
         _tangent
     end
+    function RenderReplay_new()
+        ret = ccall(("gsk_render_replay_new", libgtk4), Ptr{GskRenderReplay}, ())
+        ret2 = convert(GskRenderReplay, ret)
+        ret2
+    end
+    function default(instance::GskRenderReplay, _node::GskRenderNode)
+        ret = ccall(("gsk_render_replay_default", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderReplay}, Ptr{GskRenderNode}), instance, _node)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function filter_font(instance::GskRenderReplay, _font::PangoFont)
+        ret = ccall(("gsk_render_replay_filter_font", libgtk4), Ptr{GObject}, (Ptr{GskRenderReplay}, Ptr{GObject}), instance, _font)
+        ret2 = convert(PangoFont, ret, true)
+        ret2
+    end
+    function filter_node(instance::GskRenderReplay, _node::GskRenderNode)
+        ret = ccall(("gsk_render_replay_filter_node", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderReplay}, Ptr{GskRenderNode}), instance, _node)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function filter_texture(instance::GskRenderReplay, _texture::GdkTexture)
+        ret = ccall(("gsk_render_replay_filter_texture", libgtk4), Ptr{GObject}, (Ptr{GskRenderReplay}, Ptr{GObject}), instance, _texture)
+        ret2 = convert(GdkTexture, ret, true)
+        ret2
+    end
+    function free(instance::GskRenderReplay)
+        ret = ccall(("gsk_render_replay_free", libgtk4), Nothing, (Ptr{GskRenderReplay},), instance)
+        nothing
+    end
     function contains_point(instance::GskRoundedRectLike, _point::GraphenePointLike)
         ret = ccall(("gsk_rounded_rect_contains_point", libgtk4), Cint, (Ptr{_GskRoundedRect}, Ptr{_GraphenePoint}), instance, _point)
         ret2 = convert(Bool, ret)
@@ -430,6 +498,12 @@ begin
         reffed_instance = GLib.glib_ref(instance)
         ret = ccall(("gsk_transform_matrix", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Ptr{_GrapheneMatrix}), reffed_instance, _matrix)
         ret2 = convert(GskTransform, ret, true)
+        ret2
+    end
+    function matrix_2d(instance::GskTransform, _xx::Real, _yx::Real, _xy::Real, _yy::Real, _dx::Real, _dy::Real)
+        reffed_instance = GLib.glib_ref(instance)
+        ret = ccall(("gsk_transform_matrix_2d", libgtk4), Ptr{GskTransform}, (Ptr{GskTransform}, Float32, Float32, Float32, Float32, Float32, Float32), reffed_instance, _xx, _yx, _xy, _yy, _dx, _dy)
+        ret2 = convert_if_not_null(GskTransform, ret, true)
         ret2
     end
     function perspective(instance::GskTransform, _depth::Real)
@@ -631,11 +705,6 @@ begin
         ret = ccall(("gsk_border_node_get_widths", libgtk4), Ptr{Float32}, (Ptr{GskRenderNode},), instance)
         ret
     end
-    function BroadwayRenderer_new()
-        ret = ccall(("gsk_broadway_renderer_new", libgtk4), Ptr{GObject}, ())
-        ret2 = GskBroadwayRendererLeaf(ret, true)
-        ret2
-    end
     function CairoNode_new(_bounds::GrapheneRectLike)
         ret = ccall(("gsk_cairo_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect},), _bounds)
         ret2 = convert(GskRenderNode, ret)
@@ -701,6 +770,26 @@ begin
         ret2 = convert(GdkRGBALike, ret, false)
         ret2
     end
+    function CompositeNode_new(_child::GskRenderNode, _mask::GskRenderNode, _op)
+        ret = ccall(("gsk_composite_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Ptr{GskRenderNode}, UInt32), _child, _mask, _op)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_child(instance::GskCompositeNode)
+        ret = ccall(("gsk_composite_node_get_child", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), instance)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_mask(instance::GskCompositeNode)
+        ret = ccall(("gsk_composite_node_get_mask", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), instance)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_operator(instance::GskCompositeNode)
+        ret = ccall(("gsk_composite_node_get_operator", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
+        ret2 = PorterDuff(ret)
+        ret2
+    end
     function ConicGradientNode_new(_bounds::GrapheneRectLike, _center::GraphenePointLike, _rotation::Real, _color_stops)
         _color_stops_arr = convert(Vector{_GskColorStop}, _color_stops)
         _n_color_stops = length(_color_stops)
@@ -747,6 +836,16 @@ begin
     function get_n_children(instance::GskContainerNode)
         ret = ccall(("gsk_container_node_get_n_children", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
         ret
+    end
+    function CopyNode_new(_child::GskRenderNode)
+        ret = ccall(("gsk_copy_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), _child)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_child(instance::GskCopyNode)
+        ret = ccall(("gsk_copy_node_get_child", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), instance)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
     end
     function CrossFadeNode_new(_start::GskRenderNode, _end::GskRenderNode, _progress::Real)
         ret = ccall(("gsk_cross_fade_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Ptr{GskRenderNode}, Float32), _start, _end, _progress)
@@ -822,6 +921,21 @@ begin
     function get_spread(instance::GskInsetShadowNode)
         ret = ccall(("gsk_inset_shadow_node_get_spread", libgtk4), Float32, (Ptr{GskRenderNode},), instance)
         ret
+    end
+    function IsolationNode_new(_child::GskRenderNode, _isolations)
+        ret = ccall(("gsk_isolation_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, UInt32), _child, _isolations)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_child(instance::GskIsolationNode)
+        ret = ccall(("gsk_isolation_node_get_child", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode},), instance)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_isolations(instance::GskIsolationNode)
+        ret = ccall(("gsk_isolation_node_get_isolations", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
+        ret2 = Isolation(ret)
+        ret2
     end
     function LinearGradientNode_new(_bounds::GrapheneRectLike, _start::GraphenePointLike, _end::GraphenePointLike, _color_stops)
         _color_stops_arr = convert(Vector{_GskColorStop}, _color_stops)
@@ -916,6 +1030,15 @@ begin
         ret = ccall(("gsk_outset_shadow_node_get_spread", libgtk4), Float32, (Ptr{GskRenderNode},), instance)
         ret
     end
+    function PasteNode_new(_bounds::GrapheneRectLike, _depth::Integer)
+        ret = ccall(("gsk_paste_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{_GrapheneRect}, UInt64), _bounds, _depth)
+        ret2 = convert(GskRenderNode, ret)
+        ret2
+    end
+    function get_depth(instance::GskPasteNode)
+        ret = ccall(("gsk_paste_node_get_depth", libgtk4), UInt64, (Ptr{GskRenderNode},), instance)
+        ret
+    end
     function RadialGradientNode_new(_bounds::GrapheneRectLike, _center::GraphenePointLike, _hradius::Real, _vradius::Real, _start::Real, _end::Real, _color_stops)
         _color_stops_arr = convert(Vector{_GskColorStop}, _color_stops)
         _n_color_stops = length(_color_stops)
@@ -964,6 +1087,13 @@ begin
         ret = ccall(("gsk_render_node_get_bounds", libgtk4), Nothing, (Ptr{GskRenderNode}, Ptr{_GrapheneRect}), instance, m_bounds)
         _bounds = m_bounds[]
         _bounds
+    end
+    function get_children(instance::GskRenderNode)
+        m_n_children = Ref{UInt64}()
+        ret = ccall(("gsk_render_node_get_children", libgtk4), Ptr{Ptr{GskRenderNode}}, (Ptr{GskRenderNode}, Ptr{UInt64}), instance, m_n_children)
+        ret2 = collect(unsafe_wrap(Vector{Ptr{GskRenderNode}}, ret, m_n_children[]))
+        _n_children = m_n_children[]
+        ret2
     end
     function get_node_type(instance::GskRenderNode)
         ret = ccall(("gsk_render_node_get_node_type", libgtk4), UInt32, (Ptr{GskRenderNode},), instance)
@@ -1171,8 +1301,9 @@ begin
         ret2 = convert(GdkTexture, ret, false)
         ret2
     end
-    function TransformNode_new(_child::GskRenderNode, _transform::GskTransform)
-        ret = ccall(("gsk_transform_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Ptr{GskTransform}), _child, _transform)
+    function TransformNode_new(_child::GskRenderNode, _transform::Maybe(GskTransform))
+        _transform_maybe = nothing_to_null(_transform)
+        ret = ccall(("gsk_transform_node_new", libgtk4), Ptr{GskRenderNode}, (Ptr{GskRenderNode}, Ptr{GskTransform}), _child, _transform_maybe)
         ret2 = convert(GskRenderNode, ret)
         ret2
     end

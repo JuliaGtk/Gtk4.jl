@@ -1,4 +1,9 @@
 begin
+    function accelerator_get_accessible_label(_accelerator_key::Integer, _accelerator_mods)
+        ret = ccall(("gtk_accelerator_get_accessible_label", libgtk4), Cstring, (UInt32, UInt32), _accelerator_key, _accelerator_mods)
+        ret2 = string_or_nothing(ret, true)
+        ret2
+    end
     function accelerator_get_default_mod_mask()
         ret = ccall(("gtk_accelerator_get_default_mod_mask", libgtk4), UInt32, ())
         ret2 = ModifierType(ret)
@@ -104,6 +109,10 @@ begin
     function dialog_error_quark()
         ret = ccall(("gtk_dialog_error_quark", libgtk4), UInt32, ())
         ret
+    end
+    function disable_portal_interfaces(_portal_interfaces)
+        ret = ccall(("gtk_disable_portal_interfaces", libgtk4), Nothing, (Ptr{Cstring},), _portal_interfaces)
+        nothing
     end
     function disable_portals()
         ret = ccall(("gtk_disable_portals", libgtk4), Nothing, ())
@@ -320,6 +329,30 @@ begin
         check_err(err)
         ret2 = convert(Bool, ret)
         ret2
+    end
+    function svg_error_get_attribute(_error)
+        ret = ccall(("gtk_svg_error_get_attribute", libgtk4), Cstring, (Ptr{GError},), _error)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function svg_error_get_element(_error)
+        ret = ccall(("gtk_svg_error_get_element", libgtk4), Cstring, (Ptr{GError},), _error)
+        ret2 = string_or_nothing(ret, false)
+        ret2
+    end
+    function svg_error_get_end(_error)
+        ret = ccall(("gtk_svg_error_get_end", libgtk4), Ptr{_GtkSvgLocation}, (Ptr{GError},), _error)
+        ret2 = convert(GtkSvgLocationLike, ret)
+        ret2
+    end
+    function svg_error_get_start(_error)
+        ret = ccall(("gtk_svg_error_get_start", libgtk4), Ptr{_GtkSvgLocation}, (Ptr{GError},), _error)
+        ret2 = convert(GtkSvgLocationLike, ret)
+        ret2
+    end
+    function svg_error_quark()
+        ret = ccall(("gtk_svg_error_quark", libgtk4), UInt32, ())
+        ret
     end
     function test_accessible_assertion_message_role(_domain::Union{AbstractString, Symbol}, _file::Union{AbstractString, Symbol}, _line::Integer, _func::Union{AbstractString, Symbol}, _expr::Union{AbstractString, Symbol}, _accessible::GtkAccessible, _expected_role, _actual_role)
         ret = ccall(("gtk_test_accessible_assertion_message_role", libgtk4), Nothing, (Cstring, Cstring, Int32, Cstring, Cstring, Ptr{GObject}, UInt32, UInt32), _domain, _file, _line, _func, _expr, _accessible, _expected_role, _actual_role)
