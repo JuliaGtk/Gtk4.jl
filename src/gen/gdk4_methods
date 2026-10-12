@@ -9,6 +9,11 @@ begin
         ret2 = convert(Bool, ret)
         ret2
     end
+    function equivalent(instance::GdkColorState, _other::GdkColorState)
+        ret = ccall(("gdk_color_state_equivalent", libgtk4), Cint, (Ptr{GdkColorState}, Ptr{GdkColorState}), instance, _other)
+        ret2 = convert(Bool, ret)
+        ret2
+    end
     function ref(instance::GdkColorState)
         ret = ccall(("gdk_color_state_ref", libgtk4), Ptr{GdkColorState}, (Ptr{GdkColorState},), instance)
         ret2 = convert(GdkColorState, ret, true)
@@ -360,6 +365,11 @@ begin
         ret2 = convert(Bool, ret)
         ret2
     end
+    function print(instance::GdkRGBALike, _string::GStringLike)
+        ret = ccall(("gdk_rgba_print", libgtk4), Ptr{_GString}, (Ptr{_GdkRGBA}, Ptr{_GString}), instance, _string)
+        ret2 = convert(GStringLike, ret, true)
+        ret2
+    end
     function to_string(instance::GdkRGBALike)
         ret = ccall(("gdk_rgba_to_string", libgtk4), Cstring, (Ptr{_GdkRGBA},), instance)
         ret2 = string_or_nothing(ret, true)
@@ -404,6 +414,15 @@ begin
         ret2 = convert(GBytes, ret, true)
         _out_stride = m_out_stride[]
         (ret2, _out_stride)
+    end
+    function download_bytes_with_planes(instance::GdkTextureDownloader)
+        m_out_offsets = Ref{Ptr{UInt64}}()
+        m_out_strides = Ref{Ptr{UInt64}}()
+        ret = ccall(("gdk_texture_downloader_download_bytes_with_planes", libgtk4), Ptr{GBytes}, (Ptr{GdkTextureDownloader}, Ptr{Ptr{UInt64}}, Ptr{Ptr{UInt64}}), instance, m_out_offsets, m_out_strides)
+        ret2 = convert(GBytes, ret, true)
+        _out_offsets = m_out_offsets[]
+        _out_strides = m_out_strides[]
+        (ret2, _out_offsets, _out_strides)
     end
     function download_into(instance::GdkTextureDownloader, _data, _stride::Integer)
         _data_arr = convert(Vector{UInt8}, _data)
@@ -2106,8 +2125,16 @@ begin
         ret = ccall(("gdk_memory_texture_builder_get_height", libgtk4), Int32, (Ptr{GObject},), instance)
         ret
     end
+    function get_offset(instance::GdkMemoryTextureBuilder, _plane::Integer)
+        ret = ccall(("gdk_memory_texture_builder_get_offset", libgtk4), UInt64, (Ptr{GObject}, UInt32), instance, _plane)
+        ret
+    end
     function get_stride(instance::GdkMemoryTextureBuilder)
         ret = ccall(("gdk_memory_texture_builder_get_stride", libgtk4), UInt64, (Ptr{GObject},), instance)
+        ret
+    end
+    function get_stride_for_plane(instance::GdkMemoryTextureBuilder, _plane::Integer)
+        ret = ccall(("gdk_memory_texture_builder_get_stride_for_plane", libgtk4), UInt64, (Ptr{GObject}, UInt32), instance, _plane)
         ret
     end
     function get_update_region(instance::GdkMemoryTextureBuilder)
@@ -2141,8 +2168,16 @@ begin
         ret = ccall(("gdk_memory_texture_builder_set_height", libgtk4), Nothing, (Ptr{GObject}, Int32), instance, _height)
         nothing
     end
+    function set_offset(instance::GdkMemoryTextureBuilder, _plane::Integer, _offset::Integer)
+        ret = ccall(("gdk_memory_texture_builder_set_offset", libgtk4), Nothing, (Ptr{GObject}, UInt32, UInt64), instance, _plane, _offset)
+        nothing
+    end
     function set_stride(instance::GdkMemoryTextureBuilder, _stride::Integer)
         ret = ccall(("gdk_memory_texture_builder_set_stride", libgtk4), Nothing, (Ptr{GObject}, UInt64), instance, _stride)
+        nothing
+    end
+    function set_stride_for_plane(instance::GdkMemoryTextureBuilder, _plane::Integer, _stride::Integer)
+        ret = ccall(("gdk_memory_texture_builder_set_stride_for_plane", libgtk4), Nothing, (Ptr{GObject}, UInt32, UInt64), instance, _plane, _stride)
         nothing
     end
     function set_update_region(instance::GdkMemoryTextureBuilder, _region::Maybe(cairoRegion))
@@ -2251,6 +2286,11 @@ begin
     function get_direction(instance::GdkScrollEvent)
         ret = ccall(("gdk_scroll_event_get_direction", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
         ret2 = ScrollDirection(ret)
+        ret2
+    end
+    function get_relative_direction(instance::GdkScrollEvent)
+        ret = ccall(("gdk_scroll_event_get_relative_direction", libgtk4), UInt32, (Ptr{GdkEvent},), instance)
+        ret2 = ScrollRelativeDirection(ret)
         ret2
     end
     function get_unit(instance::GdkScrollEvent)
@@ -2397,8 +2437,9 @@ begin
         ret = ccall(("gdk_surface_set_device_cursor", libgtk4), Nothing, (Ptr{GObject}, Ptr{GObject}, Ptr{GObject}), instance, _device, _cursor)
         nothing
     end
-    function set_input_region(instance::GdkSurface, _region::cairoRegion)
-        ret = ccall(("gdk_surface_set_input_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region)
+    function set_input_region(instance::GdkSurface, _region::Maybe(cairoRegion))
+        _region_maybe = nothing_to_null(_region)
+        ret = ccall(("gdk_surface_set_input_region", libgtk4), Nothing, (Ptr{GObject}, Ptr{cairoRegion}), instance, _region_maybe)
         nothing
     end
     function translate_coordinates(instance::GdkSurface, _to::GdkSurface, _x::Real, _y::Real)
@@ -2411,11 +2452,6 @@ begin
         _x = m_x[]
         _y = m_y[]
         (ret2, _x, _y)
-    end
-    function Texture_new_for_pixbuf(_pixbuf::GdkPixbuf)
-        ret = ccall(("gdk_texture_new_for_pixbuf", libgtk4), Ptr{GObject}, (Ptr{GObject},), _pixbuf)
-        ret2 = convert(GdkTexture, ret, true)
-        ret2
     end
     function Texture_new_from_bytes(_bytes::GBytes)
         err = err_buf()
@@ -2679,6 +2715,16 @@ begin
         ret = ccall(("gdk_toplevel_focus", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _timestamp)
         nothing
     end
+    function get_capabilities(instance::GdkToplevel)
+        ret = ccall(("gdk_toplevel_get_capabilities", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = ToplevelCapabilities(ret)
+        ret2
+    end
+    function get_gravity(instance::GdkToplevel)
+        ret = ccall(("gdk_toplevel_get_gravity", libgtk4), UInt32, (Ptr{GObject},), instance)
+        ret2 = Gravity(ret)
+        ret2
+    end
     function get_state(instance::GdkToplevel)
         ret = ccall(("gdk_toplevel_get_state", libgtk4), UInt32, (Ptr{GObject},), instance)
         ret2 = ToplevelState(ret)
@@ -2708,6 +2754,10 @@ begin
     end
     function set_deletable(instance::GdkToplevel, _deletable::Bool)
         ret = ccall(("gdk_toplevel_set_deletable", libgtk4), Nothing, (Ptr{GObject}, Cint), instance, _deletable)
+        nothing
+    end
+    function set_gravity(instance::GdkToplevel, _gravity)
+        ret = ccall(("gdk_toplevel_set_gravity", libgtk4), Nothing, (Ptr{GObject}, UInt32), instance, _gravity)
         nothing
     end
     function set_icon_list(instance::GdkToplevel, _surfaces::GLib.LList{GLib._GList{Ptr{GObject}}})

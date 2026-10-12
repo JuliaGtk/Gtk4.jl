@@ -276,6 +276,18 @@ begin
         push!(gboxed_types, GtkScrollInfo)
     end
     const GtkScrollInfoLike = GtkScrollInfo
+    struct _GtkSvgLocation
+        bytes::UInt64
+        lines::UInt64
+        line_chars::UInt64
+    end
+    mutable struct GtkSvgLocation
+        handle::Ptr{_GtkSvgLocation}
+    end
+    unsafe_convert(::Type{Ptr{_GtkSvgLocation}}, box::GtkSvgLocation) = convert(Ptr{_GtkSvgLocation}, box.handle)
+    convert(::Type{GtkSvgLocation}, p::Ptr{_GtkSvgLocation}, owns = false) = GtkSvgLocation(p, owns)
+    const GtkSvgLocationLike = Union{Ref{_GtkSvgLocation}, GtkSvgLocation}
+    convert(::Type{GtkSvgLocationLike}, p, owns) = convert(GtkSvgLocation, p, owns)
     struct _GtkTextIter
         dummy1::Ptr{Nothing}
         dummy2::Ptr{Nothing}
@@ -388,10 +400,12 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/struct.RequestedSize.html)." GtkRequestedSize
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/struct.Requisition.html)." GtkRequisition
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/struct.ScrollInfo.html)." GtkScrollInfo
+    @doc "See the [GTK docs](https://docs.gtk.org/gtk4/struct.SvgLocation.html)." GtkSvgLocation
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/struct.TextIter.html)." GtkTextIter
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/struct.TreeIter.html)." GtkTreeIter
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/struct.TreePath.html)." GtkTreePath
     GLib.@Giface GtkAccessible libgtk4 gtk_accessible_get_type
+    GLib.@Giface GtkAccessibleHypertext libgtk4 gtk_accessible_hypertext_get_type
     GLib.@Giface GtkAccessibleRange libgtk4 gtk_accessible_range_get_type
     GLib.@Giface GtkAccessibleText libgtk4 gtk_accessible_text_get_type
     GLib.@Giface GtkActionable libgtk4 gtk_actionable_get_type
@@ -514,6 +528,22 @@ begin
         function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkAboutDialog
             Tuple(eval.((d[name])[2]))
         end
+    end
+    abstract type GtkAccessibleHyperlink <: GObject end
+    mutable struct GtkAccessibleHyperlinkLeaf <: GtkAccessibleHyperlink
+        handle::Ptr{GObject}
+        function GtkAccessibleHyperlinkLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GtkAccessibleHyperlinkLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GtkAccessibleHyperlink] = GtkAccessibleHyperlinkLeaf
+    (GLib.g_type(::Type{T}) where T <: GtkAccessibleHyperlink) = ccall(("gtk_accessible_hyperlink_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GtkAccessibleHyperlink})
+        signalnames(supertype(GtkAccessibleHyperlink))
     end
     abstract type GtkActionBar <: GtkWidget end
     mutable struct GtkActionBarLeaf <: GtkActionBar
@@ -3195,9 +3225,9 @@ begin
     gtype_wrapper_cache[:GtkIMContext] = GtkIMContextLeaf
     (GLib.g_type(::Type{T}) where T <: GtkIMContext) = ccall(("gtk_im_context_get_type", libgtk4), GType, ())
     function GLib.signalnames(::Type{GtkIMContext})
-        vcat([:commit, :delete_surrounding, :preedit_changed, :preedit_end, :preedit_start, :retrieve_surrounding], signalnames(supertype(GtkIMContext)))
+        vcat([:commit, :delete_surrounding, :invalid_composition, :preedit_changed, :preedit_end, :preedit_start, :retrieve_surrounding], signalnames(supertype(GtkIMContext)))
     end
-    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :preedit_changed => (:Nothing, Any[]), :delete_surrounding => (:Cint, [:Int32, :Int32]), :preedit_start => (:Nothing, Any[]), :commit => (:Nothing, [:Cstring]), :preedit_end => (:Nothing, Any[]), :retrieve_surrounding => (:Cint, Any[]))
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :invalid_composition => (:Cint, [:Cstring]), :preedit_changed => (:Nothing, Any[]), :delete_surrounding => (:Cint, [:Int32, :Int32]), :preedit_start => (:Nothing, Any[]), :commit => (:Nothing, [:Cstring]), :preedit_end => (:Nothing, Any[]), :retrieve_surrounding => (:Cint, Any[]))
         function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkIMContext
             eval((d[name])[1])
         end
@@ -4104,6 +4134,22 @@ begin
     (GLib.g_type(::Type{T}) where T <: GtkPicture) = ccall(("gtk_picture_get_type", libgtk4), GType, ())
     function GLib.signalnames(::Type{GtkPicture})
         signalnames(supertype(GtkPicture))
+    end
+    abstract type GtkPopoverBin <: GtkWidget end
+    mutable struct GtkPopoverBinLeaf <: GtkPopoverBin
+        handle::Ptr{GObject}
+        function GtkPopoverBinLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GtkPopoverBinLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GtkPopoverBin] = GtkPopoverBinLeaf
+    (GLib.g_type(::Type{T}) where T <: GtkPopoverBin) = ccall(("gtk_popover_bin_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GtkPopoverBin})
+        signalnames(supertype(GtkPopoverBin))
     end
     abstract type GtkPopoverMenu <: GtkPopover end
     mutable struct GtkPopoverMenuLeaf <: GtkPopoverMenu
@@ -5021,6 +5067,30 @@ begin
     function GLib.signalnames(::Type{GtkStyleContext})
         signalnames(supertype(GtkStyleContext))
     end
+    abstract type GtkSvg <: GObject end
+    mutable struct GtkSvgLeaf <: GtkSvg
+        handle::Ptr{GObject}
+        function GtkSvgLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GtkSvgLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GtkSvg] = GtkSvgLeaf
+    (GLib.g_type(::Type{T}) where T <: GtkSvg) = ccall(("gtk_svg_get_type", libgtk4), GType, ())
+    function GLib.signalnames(::Type{GtkSvg})
+        vcat([:error, :invalidate_contents, :invalidate_size], signalnames(supertype(GtkSvg)))
+    end
+    let d = Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :error => (:Nothing, Expr[:(Ptr{GError})]))
+        function GLib.signal_return_type(::Type{T}, name::Symbol) where T <: GtkSvg
+            eval((d[name])[1])
+        end
+        function GLib.signal_argument_types(::Type{T}, name::Symbol) where T <: GtkSvg
+            Tuple(eval.((d[name])[2]))
+        end
+    end
     abstract type GtkSwitch <: GtkWidget end
     mutable struct GtkSwitchLeaf <: GtkSwitch
         handle::Ptr{GObject}
@@ -5445,6 +5515,10 @@ begin
             Tuple(eval.((d[name])[2]))
         end
     end
+    abstract type GtkTryExpression <: GtkExpression end
+    mutable struct GtkTryExpressionLeaf <: GtkTryExpression
+        handle::Ptr{GtkExpression}
+    end
     abstract type GtkUriLauncher <: GObject end
     mutable struct GtkUriLauncherLeaf <: GtkUriLauncher
         handle::Ptr{GObject}
@@ -5590,6 +5664,9 @@ begin
         obj = G_.AboutDialog_new()
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
+    end
+    function GtkAccessibleHyperlink(_parent::GtkAccessibleHypertext, _index::Integer, _uri::Union{AbstractString, Symbol}, _bounds::GtkAccessibleTextRangeLike)
+        G_.AccessibleHyperlink_new(_parent, _index, _uri, _bounds)
     end
     function GtkActionBar(; kwargs...)
         obj = G_.ActionBar_new()
@@ -5872,8 +5949,10 @@ begin
     function GtkConstraintLayout()
         G_.ConstraintLayout_new()
     end
-    function GtkCssProvider()
-        G_.CssProvider_new()
+    function GtkCssProvider(; kwargs...)
+        obj = G_.CssProvider_new()
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
     end
     function GtkCustomFilter(_match_func::Maybe(Function), _user_destroy::Function)
         G_.CustomFilter_new(_match_func, _user_destroy)
@@ -6410,6 +6489,11 @@ begin
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GtkPopoverBin(; kwargs...)
+        obj = G_.PopoverBin_new()
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GtkPopoverMenu(_model::Maybe(GMenuModel); kwargs...)
         obj = G_.PopoverMenu_new_from_model(_model)
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
@@ -6631,6 +6715,16 @@ begin
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
+    function GtkSvg(; kwargs...)
+        obj = G_.Svg_new()
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
+    function GtkSvg(_bytes::GBytes; kwargs...)
+        obj = G_.Svg_new_from_bytes(_bytes)
+        obj !== nothing && GLib.setproperties!(obj; kwargs...)
+        obj
+    end
     function GtkSwitch(; kwargs...)
         obj = G_.Switch_new()
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
@@ -6732,6 +6826,9 @@ begin
         obj = G_.TreeViewColumn_new_with_area(_area)
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
+    end
+    function GtkTryExpression(_expressions)
+        G_.TryExpression_new(_expressions)
     end
     function GtkUriLauncher(_uri::Maybe(Union{AbstractString, Symbol}); kwargs...)
         obj = G_.UriLauncher_new(_uri)
@@ -6847,6 +6944,7 @@ begin
     end
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.ATContext.html)." GtkATContext
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.AboutDialog.html)." GtkAboutDialog
+    @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.AccessibleHyperlink.html)." GtkAccessibleHyperlink
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.ActionBar.html)." GtkActionBar
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.ActivateAction.html)." GtkActivateAction
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.Adjustment.html)." GtkAdjustment
@@ -7018,6 +7116,7 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.PasswordEntry.html)." GtkPasswordEntry
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.PasswordEntryBuffer.html)." GtkPasswordEntryBuffer
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.Popover.html)." GtkPopover
+    @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.PopoverBin.html)." GtkPopoverBin
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.PopoverMenu.html)." GtkPopoverMenu
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.PopoverMenuBar.html)." GtkPopoverMenuBar
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.PrintContext.html)." GtkPrintContext
@@ -7063,6 +7162,7 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.StringObject.html)." GtkStringObject
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.StringSorter.html)." GtkStringSorter
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.StyleContext.html)." GtkStyleContext
+    @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.Svg.html)." GtkSvg
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.Switch.html)." GtkSwitch
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.Text.html)." GtkText
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.TextBuffer.html)." GtkTextBuffer
@@ -7082,6 +7182,7 @@ begin
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.TreeStore.html)." GtkTreeStore
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.TreeView.html)." GtkTreeView
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.TreeViewColumn.html)." GtkTreeViewColumn
+    @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.TryExpression.html)." GtkTryExpression
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.UriLauncher.html)." GtkUriLauncher
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.Video.html)." GtkVideo
     @doc "See the [GTK docs](https://docs.gtk.org/gtk4/class.Viewport.html)." GtkViewport
@@ -7635,6 +7736,9 @@ begin
     function on_delete_surrounding(f, object::GtkIMContext, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "delete-surrounding", Cint, (Int32, Int32), after, user_data)
     end
+    function on_invalid_composition(f, object::GtkIMContext, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalid-composition", Cint, (Cstring,), after, user_data)
+    end
     function on_preedit_changed(f, object::GtkIMContext, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "preedit-changed", Nothing, (), after, user_data)
     end
@@ -8069,6 +8173,15 @@ begin
     end
     function on_items_changed(f, object::GtkStringList, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "items-changed", Nothing, (UInt32, UInt32, UInt32), after, user_data)
+    end
+    function on_error(f, object::GtkSvg, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "error", Nothing, (Ptr{GError},), after, user_data)
+    end
+    function on_invalidate_contents(f, object::GtkSvg, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-contents", Nothing, (), after, user_data)
+    end
+    function on_invalidate_size(f, object::GtkSvg, user_data = object, after = false)
+        GLib.signal_connect_generic(f, object, "invalidate-size", Nothing, (), after, user_data)
     end
     function on_activate(f, object::GtkSwitch, user_data = object, after = false)
         GLib.signal_connect_generic(f, object, "activate", Nothing, (), after, user_data)
@@ -8702,5 +8815,5 @@ begin
         ret = f(model, column, key, iter)
         convert(Cint, ret)
     end
-    export GtkAccessibleList, GtkAccessibleTextRange, GtkAccessibleTextRangeLike, _GtkAccessibleTextRange, GtkBitset, GtkBitsetIter, GtkBitsetIterLike, _GtkBitsetIter, GtkBorder, GtkBorderLike, _GtkBorder, GtkBuildableParseContext, GtkBuildableParser, GtkBuildableParserLike, _GtkBuildableParser, GtkCssLocation, GtkCssLocationLike, _GtkCssLocation, GtkCssSection, GtkCssStyleChange, GtkExpressionWatch, GtkPadActionEntry, GtkPadActionEntryLike, _GtkPadActionEntry, GtkPaperSize, GtkPrintBackend, GtkPrintSetup, GtkRecentData, GtkRecentDataLike, _GtkRecentData, GtkRecentInfo, GtkRequestedSize, GtkRequestedSizeLike, _GtkRequestedSize, GtkRequisition, GtkRequisitionLike, _GtkRequisition, GtkScrollInfo, GtkTextIter, GtkTextIterLike, _GtkTextIter, GtkTreeIter, GtkTreeIterLike, _GtkTreeIter, GtkTreePath, GtkTreeRowData, GtkAccessible, GtkAccessibleRange, GtkAccessibleText, GtkActionable, GtkAppChooser, GtkBuildable, GtkBuilderScope, GtkCellEditable, GtkCellLayout, GtkColorChooser, GtkConstraintTarget, GtkEditable, GtkFileChooser, GtkFontChooser, GtkNative, GtkOrientable, GtkPrintOperationPreview, GtkRoot, GtkScrollable, GtkSectionModel, GtkSelectionModel, GtkShortcutManager, GtkStyleProvider, GtkSymbolicPaintable, GtkTreeDragDest, GtkTreeDragSource, GtkTreeModel, GtkTreeSortable, GtkATContext, GtkAboutDialog, GtkAboutDialogLeaf, GtkActionBar, GtkActionBarLeaf, GtkActivateAction, GtkActivateActionLeaf, GtkAdjustment, GtkAdjustmentLeaf, GtkAlertDialog, GtkAlertDialogLeaf, GtkAlternativeTrigger, GtkAlternativeTriggerLeaf, GtkAnyFilter, GtkAnyFilterLeaf, GtkAppChooserButton, GtkAppChooserButtonLeaf, GtkAppChooserDialog, GtkAppChooserDialogLeaf, GtkAppChooserWidget, GtkAppChooserWidgetLeaf, GtkApplication, GtkApplicationLeaf, GtkApplicationWindow, GtkApplicationWindowLeaf, GtkAspectFrame, GtkAspectFrameLeaf, GtkAssistant, GtkAssistantLeaf, GtkAssistantPage, GtkAssistantPageLeaf, GtkBinLayout, GtkBinLayoutLeaf, GtkBookmarkList, GtkBookmarkListLeaf, GtkBoolFilter, GtkBoolFilterLeaf, GtkBox, GtkBoxLeaf, GtkBoxLayout, GtkBoxLayoutLeaf, GtkBuilder, GtkBuilderLeaf, GtkBuilderCScope, GtkBuilderCScopeLeaf, GtkBuilderListItemFactory, GtkBuilderListItemFactoryLeaf, GtkButton, GtkButtonLeaf, GtkCalendar, GtkCalendarLeaf, GtkCallbackAction, GtkCallbackActionLeaf, GtkCellArea, GtkCellAreaBox, GtkCellAreaBoxLeaf, GtkCellAreaContext, GtkCellAreaContextLeaf, GtkCellRenderer, GtkCellRendererAccel, GtkCellRendererAccelLeaf, GtkCellRendererCombo, GtkCellRendererComboLeaf, GtkCellRendererPixbuf, GtkCellRendererPixbufLeaf, GtkCellRendererProgress, GtkCellRendererProgressLeaf, GtkCellRendererSpin, GtkCellRendererSpinLeaf, GtkCellRendererSpinner, GtkCellRendererSpinnerLeaf, GtkCellRendererText, GtkCellRendererTextLeaf, GtkCellRendererToggle, GtkCellRendererToggleLeaf, GtkCellView, GtkCellViewLeaf, GtkCenterBox, GtkCenterBoxLeaf, GtkCenterLayout, GtkCenterLayoutLeaf, GtkCheckButton, GtkCheckButtonLeaf, GtkColorButton, GtkColorButtonLeaf, GtkColorChooserDialog, GtkColorChooserDialogLeaf, GtkColorChooserWidget, GtkColorChooserWidgetLeaf, GtkColorDialog, GtkColorDialogLeaf, GtkColorDialogButton, GtkColorDialogButtonLeaf, GtkColumnView, GtkColumnViewLeaf, GtkColumnViewCell, GtkColumnViewCellLeaf, GtkColumnViewColumn, GtkColumnViewColumnLeaf, GtkColumnViewRow, GtkColumnViewRowLeaf, GtkColumnViewSorter, GtkColumnViewSorterLeaf, GtkComboBox, GtkComboBoxLeaf, GtkComboBoxText, GtkComboBoxTextLeaf, GtkConstantExpression, GtkConstantExpressionLeaf, GtkConstraint, GtkConstraintLeaf, GtkConstraintGuide, GtkConstraintGuideLeaf, GtkConstraintLayout, GtkConstraintLayoutLeaf, GtkConstraintLayoutChild, GtkConstraintLayoutChildLeaf, GtkCssProvider, GtkCssProviderLeaf, GtkCustomFilter, GtkCustomFilterLeaf, GtkCustomLayout, GtkCustomLayoutLeaf, GtkCustomSorter, GtkCustomSorterLeaf, GtkDialog, GtkDialogLeaf, GtkDirectoryList, GtkDirectoryListLeaf, GtkDragIcon, GtkDragIconLeaf, GtkDragSource, GtkDragSourceLeaf, GtkDrawingArea, GtkDrawingAreaLeaf, GtkDropControllerMotion, GtkDropControllerMotionLeaf, GtkDropDown, GtkDropDownLeaf, GtkDropTarget, GtkDropTargetLeaf, GtkDropTargetAsync, GtkDropTargetAsyncLeaf, GtkEditableLabel, GtkEditableLabelLeaf, GtkEmojiChooser, GtkEmojiChooserLeaf, GtkEntry, GtkEntryLeaf, GtkEntryBuffer, GtkEntryBufferLeaf, GtkEntryCompletion, GtkEntryCompletionLeaf, GtkEventController, GtkEventControllerFocus, GtkEventControllerFocusLeaf, GtkEventControllerKey, GtkEventControllerKeyLeaf, GtkEventControllerLegacy, GtkEventControllerLegacyLeaf, GtkEventControllerMotion, GtkEventControllerMotionLeaf, GtkEventControllerScroll, GtkEventControllerScrollLeaf, GtkEveryFilter, GtkEveryFilterLeaf, GtkExpander, GtkExpanderLeaf, GtkExpression, GtkFileChooserDialog, GtkFileChooserDialogLeaf, GtkFileChooserNative, GtkFileChooserNativeLeaf, GtkFileChooserWidget, GtkFileChooserWidgetLeaf, GtkFileDialog, GtkFileDialogLeaf, GtkFileFilter, GtkFileFilterLeaf, GtkFileLauncher, GtkFileLauncherLeaf, GtkFilter, GtkFilterLeaf, GtkFilterListModel, GtkFilterListModelLeaf, GtkFixed, GtkFixedLeaf, GtkFixedLayout, GtkFixedLayoutLeaf, GtkFixedLayoutChild, GtkFixedLayoutChildLeaf, GtkFlattenListModel, GtkFlattenListModelLeaf, GtkFlowBox, GtkFlowBoxLeaf, GtkFlowBoxChild, GtkFlowBoxChildLeaf, GtkFontButton, GtkFontButtonLeaf, GtkFontChooserDialog, GtkFontChooserDialogLeaf, GtkFontChooserWidget, GtkFontChooserWidgetLeaf, GtkFontDialog, GtkFontDialogLeaf, GtkFontDialogButton, GtkFontDialogButtonLeaf, GtkFrame, GtkFrameLeaf, GtkGLArea, GtkGLAreaLeaf, GtkGesture, GtkGestureClick, GtkGestureClickLeaf, GtkGestureDrag, GtkGestureDragLeaf, GtkGestureLongPress, GtkGestureLongPressLeaf, GtkGesturePan, GtkGesturePanLeaf, GtkGestureRotate, GtkGestureRotateLeaf, GtkGestureSingle, GtkGestureSingleLeaf, GtkGestureStylus, GtkGestureStylusLeaf, GtkGestureSwipe, GtkGestureSwipeLeaf, GtkGestureZoom, GtkGestureZoomLeaf, GtkGraphicsOffload, GtkGraphicsOffloadLeaf, GtkGrid, GtkGridLeaf, GtkGridLayout, GtkGridLayoutLeaf, GtkGridLayoutChild, GtkGridLayoutChildLeaf, GtkGridView, GtkGridViewLeaf, GtkHeaderBar, GtkHeaderBarLeaf, GtkIMContext, GtkIMContextSimple, GtkIMContextSimpleLeaf, GtkIMMulticontext, GtkIMMulticontextLeaf, GtkIconPaintable, GtkIconPaintableLeaf, GtkIconTheme, GtkIconThemeLeaf, GtkIconView, GtkIconViewLeaf, GtkImage, GtkImageLeaf, GtkInfoBar, GtkInfoBarLeaf, GtkInscription, GtkInscriptionLeaf, GtkKeyvalTrigger, GtkKeyvalTriggerLeaf, GtkLabel, GtkLabelLeaf, GtkLayoutChild, GtkLayoutManager, GtkLevelBar, GtkLevelBarLeaf, GtkLinkButton, GtkLinkButtonLeaf, GtkListBase, GtkListBox, GtkListBoxLeaf, GtkListBoxRow, GtkListBoxRowLeaf, GtkListHeader, GtkListHeaderLeaf, GtkListItem, GtkListItemLeaf, GtkListItemFactory, GtkListItemFactoryLeaf, GtkListStore, GtkListStoreLeaf, GtkListView, GtkListViewLeaf, GtkLockButton, GtkLockButtonLeaf, GtkMapListModel, GtkMapListModelLeaf, GtkMediaControls, GtkMediaControlsLeaf, GtkMediaFile, GtkMediaStream, GtkMenuButton, GtkMenuButtonLeaf, GtkMessageDialog, GtkMessageDialogLeaf, GtkMnemonicAction, GtkMnemonicActionLeaf, GtkMnemonicTrigger, GtkMnemonicTriggerLeaf, GtkMountOperation, GtkMountOperationLeaf, GtkMultiFilter, GtkMultiSelection, GtkMultiSelectionLeaf, GtkMultiSorter, GtkMultiSorterLeaf, GtkNamedAction, GtkNamedActionLeaf, GtkNativeDialog, GtkNeverTrigger, GtkNeverTriggerLeaf, GtkNoSelection, GtkNoSelectionLeaf, GtkNotebook, GtkNotebookLeaf, GtkNotebookPage, GtkNotebookPageLeaf, GtkNothingAction, GtkNothingActionLeaf, GtkNumericSorter, GtkNumericSorterLeaf, GtkObjectExpression, GtkObjectExpressionLeaf, GtkOverlay, GtkOverlayLeaf, GtkOverlayLayout, GtkOverlayLayoutLeaf, GtkOverlayLayoutChild, GtkOverlayLayoutChildLeaf, GtkPadController, GtkPadControllerLeaf, GtkPageSetup, GtkPageSetupLeaf, GtkPaned, GtkPanedLeaf, GtkPasswordEntry, GtkPasswordEntryLeaf, GtkPasswordEntryBuffer, GtkPasswordEntryBufferLeaf, GtkPicture, GtkPictureLeaf, GtkPopover, GtkPopoverLeaf, GtkPopoverMenu, GtkPopoverMenuLeaf, GtkPopoverMenuBar, GtkPopoverMenuBarLeaf, GtkPrintContext, GtkPrintContextLeaf, GtkPrintDialog, GtkPrintDialogLeaf, GtkPrintJob, GtkPrintJobLeaf, GtkPrintOperation, GtkPrintOperationLeaf, GtkPrintSettings, GtkPrintSettingsLeaf, GtkPrinter, GtkPrinterLeaf, GtkProgressBar, GtkProgressBarLeaf, GtkPropertyExpression, GtkPropertyExpressionLeaf, GtkRange, GtkRangeLeaf, GtkRecentManager, GtkRecentManagerLeaf, GtkRevealer, GtkRevealerLeaf, GtkScale, GtkScaleLeaf, GtkScaleButton, GtkScaleButtonLeaf, GtkScrollbar, GtkScrollbarLeaf, GtkScrolledWindow, GtkScrolledWindowLeaf, GtkSearchBar, GtkSearchBarLeaf, GtkSearchEntry, GtkSearchEntryLeaf, GtkSelectionFilterModel, GtkSelectionFilterModelLeaf, GtkSeparator, GtkSeparatorLeaf, GtkSettings, GtkSettingsLeaf, GtkShortcut, GtkShortcutLeaf, GtkShortcutAction, GtkShortcutController, GtkShortcutControllerLeaf, GtkShortcutLabel, GtkShortcutLabelLeaf, GtkShortcutTrigger, GtkShortcutsGroup, GtkShortcutsGroupLeaf, GtkShortcutsSection, GtkShortcutsSectionLeaf, GtkShortcutsShortcut, GtkShortcutsShortcutLeaf, GtkShortcutsWindow, GtkShortcutsWindowLeaf, GtkSignalAction, GtkSignalActionLeaf, GtkSignalListItemFactory, GtkSignalListItemFactoryLeaf, GtkSingleSelection, GtkSingleSelectionLeaf, GtkSizeGroup, GtkSizeGroupLeaf, GtkSliceListModel, GtkSliceListModelLeaf, GtkSnapshot, GtkSnapshotLeaf, GtkSortListModel, GtkSortListModelLeaf, GtkSorter, GtkSorterLeaf, GtkSpinButton, GtkSpinButtonLeaf, GtkSpinner, GtkSpinnerLeaf, GtkStack, GtkStackLeaf, GtkStackPage, GtkStackPageLeaf, GtkStackSidebar, GtkStackSidebarLeaf, GtkStackSwitcher, GtkStackSwitcherLeaf, GtkStatusbar, GtkStatusbarLeaf, GtkStringFilter, GtkStringFilterLeaf, GtkStringList, GtkStringListLeaf, GtkStringObject, GtkStringObjectLeaf, GtkStringSorter, GtkStringSorterLeaf, GtkStyleContext, GtkStyleContextLeaf, GtkSwitch, GtkSwitchLeaf, GtkText, GtkTextLeaf, GtkTextBuffer, GtkTextBufferLeaf, GtkTextChildAnchor, GtkTextChildAnchorLeaf, GtkTextMark, GtkTextMarkLeaf, GtkTextTag, GtkTextTagLeaf, GtkTextTagTable, GtkTextTagTableLeaf, GtkTextView, GtkTextViewLeaf, GtkToggleButton, GtkToggleButtonLeaf, GtkTooltip, GtkTooltipLeaf, GtkTreeExpander, GtkTreeExpanderLeaf, GtkTreeListModel, GtkTreeListModelLeaf, GtkTreeListRow, GtkTreeListRowLeaf, GtkTreeListRowSorter, GtkTreeListRowSorterLeaf, GtkTreeModelFilter, GtkTreeModelFilterLeaf, GtkTreeModelSort, GtkTreeModelSortLeaf, GtkTreeSelection, GtkTreeSelectionLeaf, GtkTreeStore, GtkTreeStoreLeaf, GtkTreeView, GtkTreeViewLeaf, GtkTreeViewColumn, GtkTreeViewColumnLeaf, GtkUriLauncher, GtkUriLauncherLeaf, GtkVideo, GtkVideoLeaf, GtkViewport, GtkViewportLeaf, GtkVolumeButton, GtkVolumeButtonLeaf, GtkWidget, GtkWidgetPaintable, GtkWidgetPaintableLeaf, GtkWindow, GtkWindowLeaf, GtkWindowControls, GtkWindowControlsLeaf, GtkWindowGroup, GtkWindowGroupLeaf, GtkWindowHandle, GtkWindowHandleLeaf, GtkAssistantPageFunc, GtkCellAllocCallback, GtkCellCallback, GtkCellLayoutDataFunc, GtkCustomFilterFunc, GtkDrawingAreaDrawFunc, GtkEntryCompletionMatchFunc, GtkExpressionNotify, GtkFlowBoxCreateWidgetFunc, GtkFlowBoxFilterFunc, GtkFlowBoxForeachFunc, GtkFlowBoxSortFunc, GtkFontFilterFunc, GtkIconViewForeachFunc, GtkListBoxCreateWidgetFunc, GtkListBoxFilterFunc, GtkListBoxForeachFunc, GtkListBoxSortFunc, GtkListBoxUpdateHeaderFunc, GtkMapListModelMapFunc, GtkMenuButtonCreatePopupFunc, GtkPageSetupDoneFunc, GtkPrintSettingsFunc, GtkPrinterFunc, GtkScaleFormatValueFunc, GtkShortcutFunc, GtkTextBufferCommitNotify, GtkTextCharPredicate, GtkTextTagTableForeach, GtkTickCallback, GtkTreeCellDataFunc, GtkTreeIterCompareFunc, GtkTreeListModelCreateModelFunc, GtkTreeModelFilterModifyFunc, GtkTreeModelFilterVisibleFunc, GtkTreeModelForeachFunc, GtkTreeSelectionForeachFunc, GtkTreeSelectionFunc, GtkTreeViewColumnDropFunc, GtkTreeViewMappingFunc, GtkTreeViewRowSeparatorFunc, GtkTreeViewSearchEqualFunc
+    export GtkAccessibleList, GtkAccessibleTextRange, GtkAccessibleTextRangeLike, _GtkAccessibleTextRange, GtkBitset, GtkBitsetIter, GtkBitsetIterLike, _GtkBitsetIter, GtkBorder, GtkBorderLike, _GtkBorder, GtkBuildableParseContext, GtkBuildableParser, GtkBuildableParserLike, _GtkBuildableParser, GtkCssLocation, GtkCssLocationLike, _GtkCssLocation, GtkCssSection, GtkCssStyleChange, GtkExpressionWatch, GtkPadActionEntry, GtkPadActionEntryLike, _GtkPadActionEntry, GtkPaperSize, GtkPrintBackend, GtkPrintSetup, GtkRecentData, GtkRecentDataLike, _GtkRecentData, GtkRecentInfo, GtkRequestedSize, GtkRequestedSizeLike, _GtkRequestedSize, GtkRequisition, GtkRequisitionLike, _GtkRequisition, GtkScrollInfo, GtkSvgLocation, GtkSvgLocationLike, _GtkSvgLocation, GtkTextIter, GtkTextIterLike, _GtkTextIter, GtkTreeIter, GtkTreeIterLike, _GtkTreeIter, GtkTreePath, GtkTreeRowData, GtkAccessible, GtkAccessibleHypertext, GtkAccessibleRange, GtkAccessibleText, GtkActionable, GtkAppChooser, GtkBuildable, GtkBuilderScope, GtkCellEditable, GtkCellLayout, GtkColorChooser, GtkConstraintTarget, GtkEditable, GtkFileChooser, GtkFontChooser, GtkNative, GtkOrientable, GtkPrintOperationPreview, GtkRoot, GtkScrollable, GtkSectionModel, GtkSelectionModel, GtkShortcutManager, GtkStyleProvider, GtkSymbolicPaintable, GtkTreeDragDest, GtkTreeDragSource, GtkTreeModel, GtkTreeSortable, GtkATContext, GtkAboutDialog, GtkAboutDialogLeaf, GtkAccessibleHyperlink, GtkAccessibleHyperlinkLeaf, GtkActionBar, GtkActionBarLeaf, GtkActivateAction, GtkActivateActionLeaf, GtkAdjustment, GtkAdjustmentLeaf, GtkAlertDialog, GtkAlertDialogLeaf, GtkAlternativeTrigger, GtkAlternativeTriggerLeaf, GtkAnyFilter, GtkAnyFilterLeaf, GtkAppChooserButton, GtkAppChooserButtonLeaf, GtkAppChooserDialog, GtkAppChooserDialogLeaf, GtkAppChooserWidget, GtkAppChooserWidgetLeaf, GtkApplication, GtkApplicationLeaf, GtkApplicationWindow, GtkApplicationWindowLeaf, GtkAspectFrame, GtkAspectFrameLeaf, GtkAssistant, GtkAssistantLeaf, GtkAssistantPage, GtkAssistantPageLeaf, GtkBinLayout, GtkBinLayoutLeaf, GtkBookmarkList, GtkBookmarkListLeaf, GtkBoolFilter, GtkBoolFilterLeaf, GtkBox, GtkBoxLeaf, GtkBoxLayout, GtkBoxLayoutLeaf, GtkBuilder, GtkBuilderLeaf, GtkBuilderCScope, GtkBuilderCScopeLeaf, GtkBuilderListItemFactory, GtkBuilderListItemFactoryLeaf, GtkButton, GtkButtonLeaf, GtkCalendar, GtkCalendarLeaf, GtkCallbackAction, GtkCallbackActionLeaf, GtkCellArea, GtkCellAreaBox, GtkCellAreaBoxLeaf, GtkCellAreaContext, GtkCellAreaContextLeaf, GtkCellRenderer, GtkCellRendererAccel, GtkCellRendererAccelLeaf, GtkCellRendererCombo, GtkCellRendererComboLeaf, GtkCellRendererPixbuf, GtkCellRendererPixbufLeaf, GtkCellRendererProgress, GtkCellRendererProgressLeaf, GtkCellRendererSpin, GtkCellRendererSpinLeaf, GtkCellRendererSpinner, GtkCellRendererSpinnerLeaf, GtkCellRendererText, GtkCellRendererTextLeaf, GtkCellRendererToggle, GtkCellRendererToggleLeaf, GtkCellView, GtkCellViewLeaf, GtkCenterBox, GtkCenterBoxLeaf, GtkCenterLayout, GtkCenterLayoutLeaf, GtkCheckButton, GtkCheckButtonLeaf, GtkColorButton, GtkColorButtonLeaf, GtkColorChooserDialog, GtkColorChooserDialogLeaf, GtkColorChooserWidget, GtkColorChooserWidgetLeaf, GtkColorDialog, GtkColorDialogLeaf, GtkColorDialogButton, GtkColorDialogButtonLeaf, GtkColumnView, GtkColumnViewLeaf, GtkColumnViewCell, GtkColumnViewCellLeaf, GtkColumnViewColumn, GtkColumnViewColumnLeaf, GtkColumnViewRow, GtkColumnViewRowLeaf, GtkColumnViewSorter, GtkColumnViewSorterLeaf, GtkComboBox, GtkComboBoxLeaf, GtkComboBoxText, GtkComboBoxTextLeaf, GtkConstantExpression, GtkConstantExpressionLeaf, GtkConstraint, GtkConstraintLeaf, GtkConstraintGuide, GtkConstraintGuideLeaf, GtkConstraintLayout, GtkConstraintLayoutLeaf, GtkConstraintLayoutChild, GtkConstraintLayoutChildLeaf, GtkCssProvider, GtkCssProviderLeaf, GtkCustomFilter, GtkCustomFilterLeaf, GtkCustomLayout, GtkCustomLayoutLeaf, GtkCustomSorter, GtkCustomSorterLeaf, GtkDialog, GtkDialogLeaf, GtkDirectoryList, GtkDirectoryListLeaf, GtkDragIcon, GtkDragIconLeaf, GtkDragSource, GtkDragSourceLeaf, GtkDrawingArea, GtkDrawingAreaLeaf, GtkDropControllerMotion, GtkDropControllerMotionLeaf, GtkDropDown, GtkDropDownLeaf, GtkDropTarget, GtkDropTargetLeaf, GtkDropTargetAsync, GtkDropTargetAsyncLeaf, GtkEditableLabel, GtkEditableLabelLeaf, GtkEmojiChooser, GtkEmojiChooserLeaf, GtkEntry, GtkEntryLeaf, GtkEntryBuffer, GtkEntryBufferLeaf, GtkEntryCompletion, GtkEntryCompletionLeaf, GtkEventController, GtkEventControllerFocus, GtkEventControllerFocusLeaf, GtkEventControllerKey, GtkEventControllerKeyLeaf, GtkEventControllerLegacy, GtkEventControllerLegacyLeaf, GtkEventControllerMotion, GtkEventControllerMotionLeaf, GtkEventControllerScroll, GtkEventControllerScrollLeaf, GtkEveryFilter, GtkEveryFilterLeaf, GtkExpander, GtkExpanderLeaf, GtkExpression, GtkFileChooserDialog, GtkFileChooserDialogLeaf, GtkFileChooserNative, GtkFileChooserNativeLeaf, GtkFileChooserWidget, GtkFileChooserWidgetLeaf, GtkFileDialog, GtkFileDialogLeaf, GtkFileFilter, GtkFileFilterLeaf, GtkFileLauncher, GtkFileLauncherLeaf, GtkFilter, GtkFilterLeaf, GtkFilterListModel, GtkFilterListModelLeaf, GtkFixed, GtkFixedLeaf, GtkFixedLayout, GtkFixedLayoutLeaf, GtkFixedLayoutChild, GtkFixedLayoutChildLeaf, GtkFlattenListModel, GtkFlattenListModelLeaf, GtkFlowBox, GtkFlowBoxLeaf, GtkFlowBoxChild, GtkFlowBoxChildLeaf, GtkFontButton, GtkFontButtonLeaf, GtkFontChooserDialog, GtkFontChooserDialogLeaf, GtkFontChooserWidget, GtkFontChooserWidgetLeaf, GtkFontDialog, GtkFontDialogLeaf, GtkFontDialogButton, GtkFontDialogButtonLeaf, GtkFrame, GtkFrameLeaf, GtkGLArea, GtkGLAreaLeaf, GtkGesture, GtkGestureClick, GtkGestureClickLeaf, GtkGestureDrag, GtkGestureDragLeaf, GtkGestureLongPress, GtkGestureLongPressLeaf, GtkGesturePan, GtkGesturePanLeaf, GtkGestureRotate, GtkGestureRotateLeaf, GtkGestureSingle, GtkGestureSingleLeaf, GtkGestureStylus, GtkGestureStylusLeaf, GtkGestureSwipe, GtkGestureSwipeLeaf, GtkGestureZoom, GtkGestureZoomLeaf, GtkGraphicsOffload, GtkGraphicsOffloadLeaf, GtkGrid, GtkGridLeaf, GtkGridLayout, GtkGridLayoutLeaf, GtkGridLayoutChild, GtkGridLayoutChildLeaf, GtkGridView, GtkGridViewLeaf, GtkHeaderBar, GtkHeaderBarLeaf, GtkIMContext, GtkIMContextSimple, GtkIMContextSimpleLeaf, GtkIMMulticontext, GtkIMMulticontextLeaf, GtkIconPaintable, GtkIconPaintableLeaf, GtkIconTheme, GtkIconThemeLeaf, GtkIconView, GtkIconViewLeaf, GtkImage, GtkImageLeaf, GtkInfoBar, GtkInfoBarLeaf, GtkInscription, GtkInscriptionLeaf, GtkKeyvalTrigger, GtkKeyvalTriggerLeaf, GtkLabel, GtkLabelLeaf, GtkLayoutChild, GtkLayoutManager, GtkLevelBar, GtkLevelBarLeaf, GtkLinkButton, GtkLinkButtonLeaf, GtkListBase, GtkListBox, GtkListBoxLeaf, GtkListBoxRow, GtkListBoxRowLeaf, GtkListHeader, GtkListHeaderLeaf, GtkListItem, GtkListItemLeaf, GtkListItemFactory, GtkListItemFactoryLeaf, GtkListStore, GtkListStoreLeaf, GtkListView, GtkListViewLeaf, GtkLockButton, GtkLockButtonLeaf, GtkMapListModel, GtkMapListModelLeaf, GtkMediaControls, GtkMediaControlsLeaf, GtkMediaFile, GtkMediaStream, GtkMenuButton, GtkMenuButtonLeaf, GtkMessageDialog, GtkMessageDialogLeaf, GtkMnemonicAction, GtkMnemonicActionLeaf, GtkMnemonicTrigger, GtkMnemonicTriggerLeaf, GtkMountOperation, GtkMountOperationLeaf, GtkMultiFilter, GtkMultiSelection, GtkMultiSelectionLeaf, GtkMultiSorter, GtkMultiSorterLeaf, GtkNamedAction, GtkNamedActionLeaf, GtkNativeDialog, GtkNeverTrigger, GtkNeverTriggerLeaf, GtkNoSelection, GtkNoSelectionLeaf, GtkNotebook, GtkNotebookLeaf, GtkNotebookPage, GtkNotebookPageLeaf, GtkNothingAction, GtkNothingActionLeaf, GtkNumericSorter, GtkNumericSorterLeaf, GtkObjectExpression, GtkObjectExpressionLeaf, GtkOverlay, GtkOverlayLeaf, GtkOverlayLayout, GtkOverlayLayoutLeaf, GtkOverlayLayoutChild, GtkOverlayLayoutChildLeaf, GtkPadController, GtkPadControllerLeaf, GtkPageSetup, GtkPageSetupLeaf, GtkPaned, GtkPanedLeaf, GtkPasswordEntry, GtkPasswordEntryLeaf, GtkPasswordEntryBuffer, GtkPasswordEntryBufferLeaf, GtkPicture, GtkPictureLeaf, GtkPopover, GtkPopoverLeaf, GtkPopoverBin, GtkPopoverBinLeaf, GtkPopoverMenu, GtkPopoverMenuLeaf, GtkPopoverMenuBar, GtkPopoverMenuBarLeaf, GtkPrintContext, GtkPrintContextLeaf, GtkPrintDialog, GtkPrintDialogLeaf, GtkPrintJob, GtkPrintJobLeaf, GtkPrintOperation, GtkPrintOperationLeaf, GtkPrintSettings, GtkPrintSettingsLeaf, GtkPrinter, GtkPrinterLeaf, GtkProgressBar, GtkProgressBarLeaf, GtkPropertyExpression, GtkPropertyExpressionLeaf, GtkRange, GtkRangeLeaf, GtkRecentManager, GtkRecentManagerLeaf, GtkRevealer, GtkRevealerLeaf, GtkScale, GtkScaleLeaf, GtkScaleButton, GtkScaleButtonLeaf, GtkScrollbar, GtkScrollbarLeaf, GtkScrolledWindow, GtkScrolledWindowLeaf, GtkSearchBar, GtkSearchBarLeaf, GtkSearchEntry, GtkSearchEntryLeaf, GtkSelectionFilterModel, GtkSelectionFilterModelLeaf, GtkSeparator, GtkSeparatorLeaf, GtkSettings, GtkSettingsLeaf, GtkShortcut, GtkShortcutLeaf, GtkShortcutAction, GtkShortcutController, GtkShortcutControllerLeaf, GtkShortcutLabel, GtkShortcutLabelLeaf, GtkShortcutTrigger, GtkShortcutsGroup, GtkShortcutsGroupLeaf, GtkShortcutsSection, GtkShortcutsSectionLeaf, GtkShortcutsShortcut, GtkShortcutsShortcutLeaf, GtkShortcutsWindow, GtkShortcutsWindowLeaf, GtkSignalAction, GtkSignalActionLeaf, GtkSignalListItemFactory, GtkSignalListItemFactoryLeaf, GtkSingleSelection, GtkSingleSelectionLeaf, GtkSizeGroup, GtkSizeGroupLeaf, GtkSliceListModel, GtkSliceListModelLeaf, GtkSnapshot, GtkSnapshotLeaf, GtkSortListModel, GtkSortListModelLeaf, GtkSorter, GtkSorterLeaf, GtkSpinButton, GtkSpinButtonLeaf, GtkSpinner, GtkSpinnerLeaf, GtkStack, GtkStackLeaf, GtkStackPage, GtkStackPageLeaf, GtkStackSidebar, GtkStackSidebarLeaf, GtkStackSwitcher, GtkStackSwitcherLeaf, GtkStatusbar, GtkStatusbarLeaf, GtkStringFilter, GtkStringFilterLeaf, GtkStringList, GtkStringListLeaf, GtkStringObject, GtkStringObjectLeaf, GtkStringSorter, GtkStringSorterLeaf, GtkStyleContext, GtkStyleContextLeaf, GtkSvg, GtkSvgLeaf, GtkSwitch, GtkSwitchLeaf, GtkText, GtkTextLeaf, GtkTextBuffer, GtkTextBufferLeaf, GtkTextChildAnchor, GtkTextChildAnchorLeaf, GtkTextMark, GtkTextMarkLeaf, GtkTextTag, GtkTextTagLeaf, GtkTextTagTable, GtkTextTagTableLeaf, GtkTextView, GtkTextViewLeaf, GtkToggleButton, GtkToggleButtonLeaf, GtkTooltip, GtkTooltipLeaf, GtkTreeExpander, GtkTreeExpanderLeaf, GtkTreeListModel, GtkTreeListModelLeaf, GtkTreeListRow, GtkTreeListRowLeaf, GtkTreeListRowSorter, GtkTreeListRowSorterLeaf, GtkTreeModelFilter, GtkTreeModelFilterLeaf, GtkTreeModelSort, GtkTreeModelSortLeaf, GtkTreeSelection, GtkTreeSelectionLeaf, GtkTreeStore, GtkTreeStoreLeaf, GtkTreeView, GtkTreeViewLeaf, GtkTreeViewColumn, GtkTreeViewColumnLeaf, GtkTryExpression, GtkTryExpressionLeaf, GtkUriLauncher, GtkUriLauncherLeaf, GtkVideo, GtkVideoLeaf, GtkViewport, GtkViewportLeaf, GtkVolumeButton, GtkVolumeButtonLeaf, GtkWidget, GtkWidgetPaintable, GtkWidgetPaintableLeaf, GtkWindow, GtkWindowLeaf, GtkWindowControls, GtkWindowControlsLeaf, GtkWindowGroup, GtkWindowGroupLeaf, GtkWindowHandle, GtkWindowHandleLeaf, GtkAssistantPageFunc, GtkCellAllocCallback, GtkCellCallback, GtkCellLayoutDataFunc, GtkCustomFilterFunc, GtkDrawingAreaDrawFunc, GtkEntryCompletionMatchFunc, GtkExpressionNotify, GtkFlowBoxCreateWidgetFunc, GtkFlowBoxFilterFunc, GtkFlowBoxForeachFunc, GtkFlowBoxSortFunc, GtkFontFilterFunc, GtkIconViewForeachFunc, GtkListBoxCreateWidgetFunc, GtkListBoxFilterFunc, GtkListBoxForeachFunc, GtkListBoxSortFunc, GtkListBoxUpdateHeaderFunc, GtkMapListModelMapFunc, GtkMenuButtonCreatePopupFunc, GtkPageSetupDoneFunc, GtkPrintSettingsFunc, GtkPrinterFunc, GtkScaleFormatValueFunc, GtkShortcutFunc, GtkTextBufferCommitNotify, GtkTextCharPredicate, GtkTextTagTableForeach, GtkTickCallback, GtkTreeCellDataFunc, GtkTreeIterCompareFunc, GtkTreeListModelCreateModelFunc, GtkTreeModelFilterModifyFunc, GtkTreeModelFilterVisibleFunc, GtkTreeModelForeachFunc, GtkTreeSelectionForeachFunc, GtkTreeSelectionFunc, GtkTreeViewColumnDropFunc, GtkTreeViewMappingFunc, GtkTreeViewRowSeparatorFunc, GtkTreeViewSearchEqualFunc
 end
