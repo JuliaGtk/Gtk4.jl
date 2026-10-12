@@ -28,7 +28,7 @@ begin
     end
     mutable struct GFileAttributeInfoList <: GBoxed
         handle::Ptr{_GFileAttributeInfoList}
-        register_g_type!(GFileAttributeInfoList, () -> ccall(("g_file_attribute_info_list_get_type", libgio), GType, ()))
+        register_g_type!(GFileAttributeInfoList, (()->ccall(("g_file_attribute_info_list_get_type", libgio), GType, ())))
         function GFileAttributeInfoList(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GFileAttributeInfoList}
             x = new(ref)
             if own
@@ -47,7 +47,7 @@ begin
     convert(::Type{GFileAttributeInfoListLike}, p, owns) = convert(GFileAttributeInfoList, p, owns)
     mutable struct GFileAttributeMatcher <: GBoxed
         handle::Ptr{GFileAttributeMatcher}
-        register_g_type!(GFileAttributeMatcher, () -> ccall(("g_file_attribute_matcher_get_type", libgio), GType, ()))
+        register_g_type!(GFileAttributeMatcher, (()->ccall(("g_file_attribute_matcher_get_type", libgio), GType, ())))
         function GFileAttributeMatcher(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -85,7 +85,7 @@ begin
     convert(::Type{GOutputVectorLike}, p, owns) = convert(GOutputVector, p, owns)
     mutable struct GResource <: GBoxed
         handle::Ptr{GResource}
-        register_g_type!(GResource, () -> ccall(("g_resource_get_type", libgio), GType, ()))
+        register_g_type!(GResource, (()->ccall(("g_resource_get_type", libgio), GType, ())))
         function GResource(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -101,7 +101,7 @@ begin
     const GResourceLike = GResource
     mutable struct GSettingsSchema <: GBoxed
         handle::Ptr{GSettingsSchema}
-        register_g_type!(GSettingsSchema, () -> ccall(("g_settings_schema_get_type", libgio), GType, ()))
+        register_g_type!(GSettingsSchema, (()->ccall(("g_settings_schema_get_type", libgio), GType, ())))
         function GSettingsSchema(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -117,7 +117,7 @@ begin
     const GSettingsSchemaLike = GSettingsSchema
     mutable struct GSettingsSchemaKey <: GBoxed
         handle::Ptr{GSettingsSchemaKey}
-        register_g_type!(GSettingsSchemaKey, () -> ccall(("g_settings_schema_key_get_type", libgio), GType, ()))
+        register_g_type!(GSettingsSchemaKey, (()->ccall(("g_settings_schema_key_get_type", libgio), GType, ())))
         function GSettingsSchemaKey(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -133,7 +133,7 @@ begin
     const GSettingsSchemaKeyLike = GSettingsSchemaKey
     mutable struct GSettingsSchemaSource <: GBoxed
         handle::Ptr{GSettingsSchemaSource}
-        register_g_type!(GSettingsSchemaSource, () -> ccall(("g_settings_schema_source_get_type", libgio), GType, ()))
+        register_g_type!(GSettingsSchemaSource, (()->ccall(("g_settings_schema_source_get_type", libgio), GType, ())))
         function GSettingsSchemaSource(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -149,7 +149,7 @@ begin
     const GSettingsSchemaSourceLike = GSettingsSchemaSource
     mutable struct GSrvTarget <: GBoxed
         handle::Ptr{GSrvTarget}
-        register_g_type!(GSrvTarget, () -> ccall(("g_srv_target_get_type", libgio), GType, ()))
+        register_g_type!(GSrvTarget, (()->ccall(("g_srv_target_get_type", libgio), GType, ())))
         function GSrvTarget(ref::Ptr{T}, own::Bool = false) where T <: GBoxed
             x = new(ref)
             if own
@@ -223,9 +223,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GAppInfoMonitor] = GAppInfoMonitorLeaf
-    register_g_type!(GAppInfoMonitor, () -> ccall(("g_app_info_monitor_get_type", libgio), GType, ()))
+    register_g_type!(GAppInfoMonitor, (()->ccall(("g_app_info_monitor_get_type", libgio), GType, ())))
     register_signals!(GAppInfoMonitor, [:changed])
-    register_signal_types!(GAppInfoMonitor, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :changed => (:Nothing, Any[])))
+    register_signal_types!(GAppInfoMonitor, Dict{Symbol, Tuple{Any, Any}}(:changed => (:Nothing, Any[])))
     abstract type GAppLaunchContext <: GObject end
     mutable struct GAppLaunchContextLeaf <: GAppLaunchContext
         handle::Ptr{GObject}
@@ -238,9 +238,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GAppLaunchContext] = GAppLaunchContextLeaf
-    register_g_type!(GAppLaunchContext, () -> ccall(("g_app_launch_context_get_type", libgio), GType, ()))
+    register_g_type!(GAppLaunchContext, (()->ccall(("g_app_launch_context_get_type", libgio), GType, ())))
     register_signals!(GAppLaunchContext, [:launch_failed, :launch_started, :launched])
-    register_signal_types!(GAppLaunchContext, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :launch_failed => (:Nothing, [:Cstring]), :launched => (:Nothing, Any[:(Ptr{GObject}), :GVariant]), :launch_started => (:Nothing, Any[:(Ptr{GObject}), :GVariant])))
+    register_signal_types!(GAppLaunchContext, Dict{Symbol, Tuple{Any, Any}}(:launch_failed => (:Nothing, [:Cstring]), :launched => (:Nothing, Any[:(Ptr{GObject}), :GVariant]), :launch_started => (:Nothing, Any[:(Ptr{GObject}), :GVariant])))
     abstract type GApplication <: GObject end
     mutable struct GApplicationLeaf <: GApplication
         handle::Ptr{GObject}
@@ -253,9 +253,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GApplication] = GApplicationLeaf
-    register_g_type!(GApplication, () -> ccall(("g_application_get_type", libgio), GType, ()))
+    register_g_type!(GApplication, (()->ccall(("g_application_get_type", libgio), GType, ())))
     register_signals!(GApplication, [:activate, :command_line, :handle_local_options, :name_lost, :open, :shutdown, :startup, :action_added, :action_enabled_changed, :action_removed, :action_state_changed])
-    register_signal_types!(GApplication, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :startup => (:Nothing, Any[]), :shutdown => (:Nothing, Any[]), :command_line => (:Int32, Expr[:(Ptr{GObject})]), :name_lost => (:Cint, Any[]), :open => (:Nothing, Any[:(Ptr{Ptr{GObject}}), :Int32, :Cstring]), :activate => (:Nothing, Any[]), :handle_local_options => (:Int32, [:GVariantDict])))
+    register_signal_types!(GApplication, Dict{Symbol, Tuple{Any, Any}}(:startup => (:Nothing, Any[]), :command_line => (:Int32, Expr[:(Ptr{GObject})]), :action_removed => (:Nothing, [:Cstring]), :action_added => (:Nothing, [:Cstring]), :action_enabled_changed => (:Nothing, [:Cstring, :Cint]), :activate => (:Nothing, Any[]), :action_state_changed => (:Nothing, [:Cstring, :GVariant]), :open => (:Nothing, Any[:(Ptr{Ptr{GObject}}), :Int32, :Cstring]), :shutdown => (:Nothing, Any[]), :name_lost => (:Cint, Any[]), :handle_local_options => (:Int32, [:GVariantDict])))
     abstract type GApplicationCommandLine <: GObject end
     mutable struct GApplicationCommandLineLeaf <: GApplicationCommandLine
         handle::Ptr{GObject}
@@ -268,7 +268,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GApplicationCommandLine] = GApplicationCommandLineLeaf
-    register_g_type!(GApplicationCommandLine, () -> ccall(("g_application_command_line_get_type", libgio), GType, ()))
+    register_g_type!(GApplicationCommandLine, (()->ccall(("g_application_command_line_get_type", libgio), GType, ())))
     abstract type GInputStream <: GObject end
     mutable struct GInputStreamLeaf <: GInputStream
         handle::Ptr{GObject}
@@ -281,7 +281,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GInputStream] = GInputStreamLeaf
-    register_g_type!(GInputStream, () -> ccall(("g_input_stream_get_type", libgio), GType, ()))
+    register_g_type!(GInputStream, (()->ccall(("g_input_stream_get_type", libgio), GType, ())))
     abstract type GFilterInputStream <: GInputStream end
     mutable struct GFilterInputStreamLeaf <: GFilterInputStream
         handle::Ptr{GObject}
@@ -294,7 +294,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GFilterInputStream] = GFilterInputStreamLeaf
-    register_g_type!(GFilterInputStream, () -> ccall(("g_filter_input_stream_get_type", libgio), GType, ()))
+    register_g_type!(GFilterInputStream, (()->ccall(("g_filter_input_stream_get_type", libgio), GType, ())))
     abstract type GBufferedInputStream <: GFilterInputStream end
     mutable struct GBufferedInputStreamLeaf <: GBufferedInputStream
         handle::Ptr{GObject}
@@ -307,7 +307,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GBufferedInputStream] = GBufferedInputStreamLeaf
-    register_g_type!(GBufferedInputStream, () -> ccall(("g_buffered_input_stream_get_type", libgio), GType, ()))
+    register_g_type!(GBufferedInputStream, (()->ccall(("g_buffered_input_stream_get_type", libgio), GType, ())))
     abstract type GOutputStream <: GObject end
     mutable struct GOutputStreamLeaf <: GOutputStream
         handle::Ptr{GObject}
@@ -320,7 +320,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GOutputStream] = GOutputStreamLeaf
-    register_g_type!(GOutputStream, () -> ccall(("g_output_stream_get_type", libgio), GType, ()))
+    register_g_type!(GOutputStream, (()->ccall(("g_output_stream_get_type", libgio), GType, ())))
     abstract type GFilterOutputStream <: GOutputStream end
     mutable struct GFilterOutputStreamLeaf <: GFilterOutputStream
         handle::Ptr{GObject}
@@ -333,7 +333,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GFilterOutputStream] = GFilterOutputStreamLeaf
-    register_g_type!(GFilterOutputStream, () -> ccall(("g_filter_output_stream_get_type", libgio), GType, ()))
+    register_g_type!(GFilterOutputStream, (()->ccall(("g_filter_output_stream_get_type", libgio), GType, ())))
     abstract type GBufferedOutputStream <: GFilterOutputStream end
     mutable struct GBufferedOutputStreamLeaf <: GBufferedOutputStream
         handle::Ptr{GObject}
@@ -346,7 +346,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GBufferedOutputStream] = GBufferedOutputStreamLeaf
-    register_g_type!(GBufferedOutputStream, () -> ccall(("g_buffered_output_stream_get_type", libgio), GType, ()))
+    register_g_type!(GBufferedOutputStream, (()->ccall(("g_buffered_output_stream_get_type", libgio), GType, ())))
     abstract type GBytesIcon <: GObject end
     mutable struct GBytesIconLeaf <: GBytesIcon
         handle::Ptr{GObject}
@@ -359,7 +359,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GBytesIcon] = GBytesIconLeaf
-    register_g_type!(GBytesIcon, () -> ccall(("g_bytes_icon_get_type", libgio), GType, ()))
+    register_g_type!(GBytesIcon, (()->ccall(("g_bytes_icon_get_type", libgio), GType, ())))
     abstract type GCancellable <: GObject end
     mutable struct GCancellableLeaf <: GCancellable
         handle::Ptr{GObject}
@@ -372,9 +372,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GCancellable] = GCancellableLeaf
-    register_g_type!(GCancellable, () -> ccall(("g_cancellable_get_type", libgio), GType, ()))
+    register_g_type!(GCancellable, (()->ccall(("g_cancellable_get_type", libgio), GType, ())))
     register_signals!(GCancellable, [:cancelled])
-    register_signal_types!(GCancellable, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :cancelled => (:Nothing, Any[])))
+    register_signal_types!(GCancellable, Dict{Symbol, Tuple{Any, Any}}(:cancelled => (:Nothing, Any[])))
     abstract type GCharsetConverter <: GObject end
     mutable struct GCharsetConverterLeaf <: GCharsetConverter
         handle::Ptr{GObject}
@@ -387,7 +387,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GCharsetConverter] = GCharsetConverterLeaf
-    register_g_type!(GCharsetConverter, () -> ccall(("g_charset_converter_get_type", libgio), GType, ()))
+    register_g_type!(GCharsetConverter, (()->ccall(("g_charset_converter_get_type", libgio), GType, ())))
     abstract type GConverterInputStream <: GFilterInputStream end
     mutable struct GConverterInputStreamLeaf <: GConverterInputStream
         handle::Ptr{GObject}
@@ -400,7 +400,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GConverterInputStream] = GConverterInputStreamLeaf
-    register_g_type!(GConverterInputStream, () -> ccall(("g_converter_input_stream_get_type", libgio), GType, ()))
+    register_g_type!(GConverterInputStream, (()->ccall(("g_converter_input_stream_get_type", libgio), GType, ())))
     abstract type GConverterOutputStream <: GFilterOutputStream end
     mutable struct GConverterOutputStreamLeaf <: GConverterOutputStream
         handle::Ptr{GObject}
@@ -413,7 +413,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GConverterOutputStream] = GConverterOutputStreamLeaf
-    register_g_type!(GConverterOutputStream, () -> ccall(("g_converter_output_stream_get_type", libgio), GType, ()))
+    register_g_type!(GConverterOutputStream, (()->ccall(("g_converter_output_stream_get_type", libgio), GType, ())))
     abstract type GCredentials <: GObject end
     mutable struct GCredentialsLeaf <: GCredentials
         handle::Ptr{GObject}
@@ -426,7 +426,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GCredentials] = GCredentialsLeaf
-    register_g_type!(GCredentials, () -> ccall(("g_credentials_get_type", libgio), GType, ()))
+    register_g_type!(GCredentials, (()->ccall(("g_credentials_get_type", libgio), GType, ())))
     abstract type GDBusActionGroup <: GObject end
     mutable struct GDBusActionGroupLeaf <: GDBusActionGroup
         handle::Ptr{GObject}
@@ -439,9 +439,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusActionGroup] = GDBusActionGroupLeaf
-    register_g_type!(GDBusActionGroup, () -> ccall(("g_dbus_action_group_get_type", libgio), GType, ()))
+    register_g_type!(GDBusActionGroup, (()->ccall(("g_dbus_action_group_get_type", libgio), GType, ())))
     register_signals!(GDBusActionGroup, [:action_added, :action_enabled_changed, :action_removed, :action_state_changed])
-    register_signal_types!(GDBusActionGroup, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})])))
+    register_signal_types!(GDBusActionGroup, Dict{Symbol, Tuple{Any, Any}}(:action_enabled_changed => (:Nothing, [:Cstring, :Cint]), :action_state_changed => (:Nothing, [:Cstring, :GVariant]), :action_removed => (:Nothing, [:Cstring]), :action_added => (:Nothing, [:Cstring])))
     abstract type GDBusAuthObserver <: GObject end
     mutable struct GDBusAuthObserverLeaf <: GDBusAuthObserver
         handle::Ptr{GObject}
@@ -454,9 +454,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusAuthObserver] = GDBusAuthObserverLeaf
-    register_g_type!(GDBusAuthObserver, () -> ccall(("g_dbus_auth_observer_get_type", libgio), GType, ()))
+    register_g_type!(GDBusAuthObserver, (()->ccall(("g_dbus_auth_observer_get_type", libgio), GType, ())))
     register_signals!(GDBusAuthObserver, [:allow_mechanism, :authorize_authenticated_peer])
-    register_signal_types!(GDBusAuthObserver, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :authorize_authenticated_peer => (:Cint, Expr[:(Ptr{GObject}), :(Ptr{GObject})]), :allow_mechanism => (:Cint, [:Cstring])))
+    register_signal_types!(GDBusAuthObserver, Dict{Symbol, Tuple{Any, Any}}(:authorize_authenticated_peer => (:Cint, Expr[:(Ptr{GObject}), :(Ptr{GObject})]), :allow_mechanism => (:Cint, [:Cstring])))
     abstract type GDBusConnection <: GObject end
     mutable struct GDBusConnectionLeaf <: GDBusConnection
         handle::Ptr{GObject}
@@ -469,9 +469,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusConnection] = GDBusConnectionLeaf
-    register_g_type!(GDBusConnection, () -> ccall(("g_dbus_connection_get_type", libgio), GType, ()))
+    register_g_type!(GDBusConnection, (()->ccall(("g_dbus_connection_get_type", libgio), GType, ())))
     register_signals!(GDBusConnection, [:closed])
-    register_signal_types!(GDBusConnection, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :closed => (:Nothing, Any[:Cint, :(Ptr{GError})])))
+    register_signal_types!(GDBusConnection, Dict{Symbol, Tuple{Any, Any}}(:closed => (:Nothing, Any[:Cint, :(Ptr{GError})])))
     abstract type GMenuModel <: GObject end
     mutable struct GMenuModelLeaf <: GMenuModel
         handle::Ptr{GObject}
@@ -484,9 +484,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GMenuModel] = GMenuModelLeaf
-    register_g_type!(GMenuModel, () -> ccall(("g_menu_model_get_type", libgio), GType, ()))
+    register_g_type!(GMenuModel, (()->ccall(("g_menu_model_get_type", libgio), GType, ())))
     register_signals!(GMenuModel, [:items_changed])
-    register_signal_types!(GMenuModel, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :items_changed => (:Nothing, [:Int32, :Int32, :Int32])))
+    register_signal_types!(GMenuModel, Dict{Symbol, Tuple{Any, Any}}(:items_changed => (:Nothing, [:Int32, :Int32, :Int32])))
     abstract type GDBusMenuModel <: GMenuModel end
     mutable struct GDBusMenuModelLeaf <: GDBusMenuModel
         handle::Ptr{GObject}
@@ -499,7 +499,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusMenuModel] = GDBusMenuModelLeaf
-    register_g_type!(GDBusMenuModel, () -> ccall(("g_dbus_menu_model_get_type", libgio), GType, ()))
+    register_g_type!(GDBusMenuModel, (()->ccall(("g_dbus_menu_model_get_type", libgio), GType, ())))
     abstract type GDBusMessage <: GObject end
     mutable struct GDBusMessageLeaf <: GDBusMessage
         handle::Ptr{GObject}
@@ -512,7 +512,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusMessage] = GDBusMessageLeaf
-    register_g_type!(GDBusMessage, () -> ccall(("g_dbus_message_get_type", libgio), GType, ()))
+    register_g_type!(GDBusMessage, (()->ccall(("g_dbus_message_get_type", libgio), GType, ())))
     abstract type GDBusMethodInvocation <: GObject end
     mutable struct GDBusMethodInvocationLeaf <: GDBusMethodInvocation
         handle::Ptr{GObject}
@@ -525,7 +525,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusMethodInvocation] = GDBusMethodInvocationLeaf
-    register_g_type!(GDBusMethodInvocation, () -> ccall(("g_dbus_method_invocation_get_type", libgio), GType, ()))
+    register_g_type!(GDBusMethodInvocation, (()->ccall(("g_dbus_method_invocation_get_type", libgio), GType, ())))
     abstract type GDBusObjectManagerClient <: GObject end
     mutable struct GDBusObjectManagerClientLeaf <: GDBusObjectManagerClient
         handle::Ptr{GObject}
@@ -538,9 +538,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusObjectManagerClient] = GDBusObjectManagerClientLeaf
-    register_g_type!(GDBusObjectManagerClient, () -> ccall(("g_dbus_object_manager_client_get_type", libgio), GType, ()))
+    register_g_type!(GDBusObjectManagerClient, (()->ccall(("g_dbus_object_manager_client_get_type", libgio), GType, ())))
     register_signals!(GDBusObjectManagerClient, [:interface_proxy_properties_changed, :interface_proxy_signal, :interface_added, :interface_removed, :object_added, :object_removed])
-    register_signal_types!(GDBusObjectManagerClient, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :interface_proxy_signal => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :Cstring, :Cstring, :GVariant]), :interface_proxy_properties_changed => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :GVariant, :(Ptr{Cstring})])))
+    register_signal_types!(GDBusObjectManagerClient, Dict{Symbol, Tuple{Any, Any}}(:object_added => (:Nothing, Expr[:(Ptr{GObject})]), :interface_removed => (:Nothing, Expr[:(Ptr{GObject}), :(Ptr{GObject})]), :interface_proxy_signal => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :Cstring, :Cstring, :GVariant]), :interface_added => (:Nothing, Expr[:(Ptr{GObject}), :(Ptr{GObject})]), :object_removed => (:Nothing, Expr[:(Ptr{GObject})]), :interface_proxy_properties_changed => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :GVariant, :(Ptr{Cstring})])))
     abstract type GDBusObjectProxy <: GObject end
     mutable struct GDBusObjectProxyLeaf <: GDBusObjectProxy
         handle::Ptr{GObject}
@@ -553,9 +553,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusObjectProxy] = GDBusObjectProxyLeaf
-    register_g_type!(GDBusObjectProxy, () -> ccall(("g_dbus_object_proxy_get_type", libgio), GType, ()))
+    register_g_type!(GDBusObjectProxy, (()->ccall(("g_dbus_object_proxy_get_type", libgio), GType, ())))
     register_signals!(GDBusObjectProxy, [:interface_added, :interface_removed])
-    register_signal_types!(GDBusObjectProxy, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})])))
+    register_signal_types!(GDBusObjectProxy, Dict{Symbol, Tuple{Any, Any}}(:interface_removed => (:Nothing, Expr[:(Ptr{GObject})]), :interface_added => (:Nothing, Expr[:(Ptr{GObject})])))
     abstract type GDBusProxy <: GObject end
     mutable struct GDBusProxyLeaf <: GDBusProxy
         handle::Ptr{GObject}
@@ -568,9 +568,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusProxy] = GDBusProxyLeaf
-    register_g_type!(GDBusProxy, () -> ccall(("g_dbus_proxy_get_type", libgio), GType, ()))
+    register_g_type!(GDBusProxy, (()->ccall(("g_dbus_proxy_get_type", libgio), GType, ())))
     register_signals!(GDBusProxy, [:g_properties_changed, :g_signal])
-    register_signal_types!(GDBusProxy, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :g_signal => (:Nothing, [:Cstring, :Cstring, :GVariant]), :g_properties_changed => (:Nothing, Any[:GVariant, :(Ptr{Cstring})])))
+    register_signal_types!(GDBusProxy, Dict{Symbol, Tuple{Any, Any}}(:g_signal => (:Nothing, [:Cstring, :Cstring, :GVariant]), :g_properties_changed => (:Nothing, Any[:GVariant, :(Ptr{Cstring})])))
     abstract type GDBusServer <: GObject end
     mutable struct GDBusServerLeaf <: GDBusServer
         handle::Ptr{GObject}
@@ -583,9 +583,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GDBusServer] = GDBusServerLeaf
-    register_g_type!(GDBusServer, () -> ccall(("g_dbus_server_get_type", libgio), GType, ()))
+    register_g_type!(GDBusServer, (()->ccall(("g_dbus_server_get_type", libgio), GType, ())))
     register_signals!(GDBusServer, [:new_connection])
-    register_signal_types!(GDBusServer, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :new_connection => (:Cint, Expr[:(Ptr{GObject})])))
+    register_signal_types!(GDBusServer, Dict{Symbol, Tuple{Any, Any}}(:new_connection => (:Cint, Expr[:(Ptr{GObject})])))
     abstract type GDataInputStream <: GBufferedInputStream end
     mutable struct GDataInputStreamLeaf <: GDataInputStream
         handle::Ptr{GObject}
@@ -598,7 +598,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GDataInputStream] = GDataInputStreamLeaf
-    register_g_type!(GDataInputStream, () -> ccall(("g_data_input_stream_get_type", libgio), GType, ()))
+    register_g_type!(GDataInputStream, (()->ccall(("g_data_input_stream_get_type", libgio), GType, ())))
     abstract type GDataOutputStream <: GFilterOutputStream end
     mutable struct GDataOutputStreamLeaf <: GDataOutputStream
         handle::Ptr{GObject}
@@ -611,7 +611,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GDataOutputStream] = GDataOutputStreamLeaf
-    register_g_type!(GDataOutputStream, () -> ccall(("g_data_output_stream_get_type", libgio), GType, ()))
+    register_g_type!(GDataOutputStream, (()->ccall(("g_data_output_stream_get_type", libgio), GType, ())))
     abstract type GEmblem <: GObject end
     mutable struct GEmblemLeaf <: GEmblem
         handle::Ptr{GObject}
@@ -624,7 +624,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GEmblem] = GEmblemLeaf
-    register_g_type!(GEmblem, () -> ccall(("g_emblem_get_type", libgio), GType, ()))
+    register_g_type!(GEmblem, (()->ccall(("g_emblem_get_type", libgio), GType, ())))
     abstract type GEmblemedIcon <: GObject end
     mutable struct GEmblemedIconLeaf <: GEmblemedIcon
         handle::Ptr{GObject}
@@ -637,7 +637,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GEmblemedIcon] = GEmblemedIconLeaf
-    register_g_type!(GEmblemedIcon, () -> ccall(("g_emblemed_icon_get_type", libgio), GType, ()))
+    register_g_type!(GEmblemedIcon, (()->ccall(("g_emblemed_icon_get_type", libgio), GType, ())))
     abstract type GFileEnumerator <: GObject end
     mutable struct GFileEnumeratorLeaf <: GFileEnumerator
         handle::Ptr{GObject}
@@ -650,7 +650,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GFileEnumerator] = GFileEnumeratorLeaf
-    register_g_type!(GFileEnumerator, () -> ccall(("g_file_enumerator_get_type", libgio), GType, ()))
+    register_g_type!(GFileEnumerator, (()->ccall(("g_file_enumerator_get_type", libgio), GType, ())))
     abstract type GIOStream <: GObject end
     mutable struct GIOStreamLeaf <: GIOStream
         handle::Ptr{GObject}
@@ -663,7 +663,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GIOStream] = GIOStreamLeaf
-    register_g_type!(GIOStream, () -> ccall(("g_io_stream_get_type", libgio), GType, ()))
+    register_g_type!(GIOStream, (()->ccall(("g_io_stream_get_type", libgio), GType, ())))
     abstract type GFileIOStream <: GIOStream end
     mutable struct GFileIOStreamLeaf <: GFileIOStream
         handle::Ptr{GObject}
@@ -676,7 +676,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GFileIOStream] = GFileIOStreamLeaf
-    register_g_type!(GFileIOStream, () -> ccall(("g_file_io_stream_get_type", libgio), GType, ()))
+    register_g_type!(GFileIOStream, (()->ccall(("g_file_io_stream_get_type", libgio), GType, ())))
     abstract type GFileIcon <: GObject end
     mutable struct GFileIconLeaf <: GFileIcon
         handle::Ptr{GObject}
@@ -689,7 +689,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GFileIcon] = GFileIconLeaf
-    register_g_type!(GFileIcon, () -> ccall(("g_file_icon_get_type", libgio), GType, ()))
+    register_g_type!(GFileIcon, (()->ccall(("g_file_icon_get_type", libgio), GType, ())))
     abstract type GFileInfo <: GObject end
     mutable struct GFileInfoLeaf <: GFileInfo
         handle::Ptr{GObject}
@@ -702,7 +702,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GFileInfo] = GFileInfoLeaf
-    register_g_type!(GFileInfo, () -> ccall(("g_file_info_get_type", libgio), GType, ()))
+    register_g_type!(GFileInfo, (()->ccall(("g_file_info_get_type", libgio), GType, ())))
     abstract type GFileInputStream <: GInputStream end
     mutable struct GFileInputStreamLeaf <: GFileInputStream
         handle::Ptr{GObject}
@@ -715,7 +715,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GFileInputStream] = GFileInputStreamLeaf
-    register_g_type!(GFileInputStream, () -> ccall(("g_file_input_stream_get_type", libgio), GType, ()))
+    register_g_type!(GFileInputStream, (()->ccall(("g_file_input_stream_get_type", libgio), GType, ())))
     abstract type GFileMonitor <: GObject end
     mutable struct GFileMonitorLeaf <: GFileMonitor
         handle::Ptr{GObject}
@@ -728,9 +728,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GFileMonitor] = GFileMonitorLeaf
-    register_g_type!(GFileMonitor, () -> ccall(("g_file_monitor_get_type", libgio), GType, ()))
+    register_g_type!(GFileMonitor, (()->ccall(("g_file_monitor_get_type", libgio), GType, ())))
     register_signals!(GFileMonitor, [:changed])
-    register_signal_types!(GFileMonitor, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :changed => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :UInt32])))
+    register_signal_types!(GFileMonitor, Dict{Symbol, Tuple{Any, Any}}(:changed => (:Nothing, Any[:(Ptr{GObject}), :(Ptr{GObject}), :UInt32])))
     abstract type GFileOutputStream <: GOutputStream end
     mutable struct GFileOutputStreamLeaf <: GFileOutputStream
         handle::Ptr{GObject}
@@ -743,7 +743,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GFileOutputStream] = GFileOutputStreamLeaf
-    register_g_type!(GFileOutputStream, () -> ccall(("g_file_output_stream_get_type", libgio), GType, ()))
+    register_g_type!(GFileOutputStream, (()->ccall(("g_file_output_stream_get_type", libgio), GType, ())))
     abstract type GFilenameCompleter <: GObject end
     mutable struct GFilenameCompleterLeaf <: GFilenameCompleter
         handle::Ptr{GObject}
@@ -756,9 +756,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GFilenameCompleter] = GFilenameCompleterLeaf
-    register_g_type!(GFilenameCompleter, () -> ccall(("g_filename_completer_get_type", libgio), GType, ()))
+    register_g_type!(GFilenameCompleter, (()->ccall(("g_filename_completer_get_type", libgio), GType, ())))
     register_signals!(GFilenameCompleter, [:got_completion_data])
-    register_signal_types!(GFilenameCompleter, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :got_completion_data => (:Nothing, Any[])))
+    register_signal_types!(GFilenameCompleter, Dict{Symbol, Tuple{Any, Any}}(:got_completion_data => (:Nothing, Any[])))
     abstract type GIOModule <: GTypeModule end
     mutable struct GIOModuleLeaf <: GIOModule
         handle::Ptr{GObject}
@@ -771,7 +771,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GIOModule] = GIOModuleLeaf
-    register_g_type!(GIOModule, () -> ccall(("g_io_module_get_type", libgio), GType, ()))
+    register_g_type!(GIOModule, (()->ccall(("g_io_module_get_type", libgio), GType, ())))
     abstract type GSocketControlMessage <: GObject end
     mutable struct GSocketControlMessageLeaf <: GSocketControlMessage
         handle::Ptr{GObject}
@@ -784,7 +784,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSocketControlMessage] = GSocketControlMessageLeaf
-    register_g_type!(GSocketControlMessage, () -> ccall(("g_socket_control_message_get_type", libgio), GType, ()))
+    register_g_type!(GSocketControlMessage, (()->ccall(("g_socket_control_message_get_type", libgio), GType, ())))
     abstract type GIPTosMessage <: GSocketControlMessage end
     mutable struct GIPTosMessageLeaf <: GIPTosMessage
         handle::Ptr{GObject}
@@ -797,7 +797,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GIPTosMessage] = GIPTosMessageLeaf
-    register_g_type!(GIPTosMessage, () -> ccall(("g_ip_tos_message_get_type", libgio), GType, ()))
+    register_g_type!(GIPTosMessage, (()->ccall(("g_ip_tos_message_get_type", libgio), GType, ())))
     abstract type GIPv6TclassMessage <: GSocketControlMessage end
     mutable struct GIPv6TclassMessageLeaf <: GIPv6TclassMessage
         handle::Ptr{GObject}
@@ -810,7 +810,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GIPv6TclassMessage] = GIPv6TclassMessageLeaf
-    register_g_type!(GIPv6TclassMessage, () -> ccall(("g_ipv6_tclass_message_get_type", libgio), GType, ()))
+    register_g_type!(GIPv6TclassMessage, (()->ccall(("g_ipv6_tclass_message_get_type", libgio), GType, ())))
     abstract type GInetAddress <: GObject end
     mutable struct GInetAddressLeaf <: GInetAddress
         handle::Ptr{GObject}
@@ -823,7 +823,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GInetAddress] = GInetAddressLeaf
-    register_g_type!(GInetAddress, () -> ccall(("g_inet_address_get_type", libgio), GType, ()))
+    register_g_type!(GInetAddress, (()->ccall(("g_inet_address_get_type", libgio), GType, ())))
     abstract type GInetAddressMask <: GObject end
     mutable struct GInetAddressMaskLeaf <: GInetAddressMask
         handle::Ptr{GObject}
@@ -836,7 +836,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GInetAddressMask] = GInetAddressMaskLeaf
-    register_g_type!(GInetAddressMask, () -> ccall(("g_inet_address_mask_get_type", libgio), GType, ()))
+    register_g_type!(GInetAddressMask, (()->ccall(("g_inet_address_mask_get_type", libgio), GType, ())))
     abstract type GSocketAddress <: GObject end
     mutable struct GSocketAddressLeaf <: GSocketAddress
         handle::Ptr{GObject}
@@ -849,7 +849,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSocketAddress] = GSocketAddressLeaf
-    register_g_type!(GSocketAddress, () -> ccall(("g_socket_address_get_type", libgio), GType, ()))
+    register_g_type!(GSocketAddress, (()->ccall(("g_socket_address_get_type", libgio), GType, ())))
     abstract type GInetSocketAddress <: GSocketAddress end
     mutable struct GInetSocketAddressLeaf <: GInetSocketAddress
         handle::Ptr{GObject}
@@ -862,7 +862,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GInetSocketAddress] = GInetSocketAddressLeaf
-    register_g_type!(GInetSocketAddress, () -> ccall(("g_inet_socket_address_get_type", libgio), GType, ()))
+    register_g_type!(GInetSocketAddress, (()->ccall(("g_inet_socket_address_get_type", libgio), GType, ())))
     abstract type GListStore <: GObject end
     mutable struct GListStoreLeaf <: GListStore
         handle::Ptr{GObject}
@@ -875,9 +875,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GListStore] = GListStoreLeaf
-    register_g_type!(GListStore, () -> ccall(("g_list_store_get_type", libgio), GType, ()))
+    register_g_type!(GListStore, (()->ccall(("g_list_store_get_type", libgio), GType, ())))
     register_signals!(GListStore, [:items_changed])
-    register_signal_types!(GListStore, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})])))
+    register_signal_types!(GListStore, Dict{Symbol, Tuple{Any, Any}}(:items_changed => (:Nothing, [:UInt32, :UInt32, :UInt32])))
     abstract type GMemoryInputStream <: GInputStream end
     mutable struct GMemoryInputStreamLeaf <: GMemoryInputStream
         handle::Ptr{GObject}
@@ -890,7 +890,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GMemoryInputStream] = GMemoryInputStreamLeaf
-    register_g_type!(GMemoryInputStream, () -> ccall(("g_memory_input_stream_get_type", libgio), GType, ()))
+    register_g_type!(GMemoryInputStream, (()->ccall(("g_memory_input_stream_get_type", libgio), GType, ())))
     abstract type GMemoryOutputStream <: GOutputStream end
     mutable struct GMemoryOutputStreamLeaf <: GMemoryOutputStream
         handle::Ptr{GObject}
@@ -903,7 +903,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GMemoryOutputStream] = GMemoryOutputStreamLeaf
-    register_g_type!(GMemoryOutputStream, () -> ccall(("g_memory_output_stream_get_type", libgio), GType, ()))
+    register_g_type!(GMemoryOutputStream, (()->ccall(("g_memory_output_stream_get_type", libgio), GType, ())))
     abstract type GMenu <: GMenuModel end
     mutable struct GMenuLeaf <: GMenu
         handle::Ptr{GObject}
@@ -916,7 +916,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GMenu] = GMenuLeaf
-    register_g_type!(GMenu, () -> ccall(("g_menu_get_type", libgio), GType, ()))
+    register_g_type!(GMenu, (()->ccall(("g_menu_get_type", libgio), GType, ())))
     abstract type GMenuAttributeIter <: GObject end
     mutable struct GMenuAttributeIterLeaf <: GMenuAttributeIter
         handle::Ptr{GObject}
@@ -929,7 +929,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GMenuAttributeIter] = GMenuAttributeIterLeaf
-    register_g_type!(GMenuAttributeIter, () -> ccall(("g_menu_attribute_iter_get_type", libgio), GType, ()))
+    register_g_type!(GMenuAttributeIter, (()->ccall(("g_menu_attribute_iter_get_type", libgio), GType, ())))
     abstract type GMenuItem <: GObject end
     mutable struct GMenuItemLeaf <: GMenuItem
         handle::Ptr{GObject}
@@ -942,7 +942,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GMenuItem] = GMenuItemLeaf
-    register_g_type!(GMenuItem, () -> ccall(("g_menu_item_get_type", libgio), GType, ()))
+    register_g_type!(GMenuItem, (()->ccall(("g_menu_item_get_type", libgio), GType, ())))
     abstract type GMenuLinkIter <: GObject end
     mutable struct GMenuLinkIterLeaf <: GMenuLinkIter
         handle::Ptr{GObject}
@@ -955,7 +955,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GMenuLinkIter] = GMenuLinkIterLeaf
-    register_g_type!(GMenuLinkIter, () -> ccall(("g_menu_link_iter_get_type", libgio), GType, ()))
+    register_g_type!(GMenuLinkIter, (()->ccall(("g_menu_link_iter_get_type", libgio), GType, ())))
     abstract type GMountOperation <: GObject end
     mutable struct GMountOperationLeaf <: GMountOperation
         handle::Ptr{GObject}
@@ -968,9 +968,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GMountOperation] = GMountOperationLeaf
-    register_g_type!(GMountOperation, () -> ccall(("g_mount_operation_get_type", libgio), GType, ()))
+    register_g_type!(GMountOperation, (()->ccall(("g_mount_operation_get_type", libgio), GType, ())))
     register_signals!(GMountOperation, [:aborted, :ask_password, :ask_question, :reply, :show_processes, :show_unmount_progress])
-    register_signal_types!(GMountOperation, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :show_unmount_progress => (:Nothing, [:Cstring, :Int64, :Int64]), :show_processes => (:Nothing, Any[:Cstring, :(Ptr{GArray}), :(Ptr{Cstring})]), :ask_password => (:Nothing, [:Cstring, :Cstring, :Cstring, :UInt32]), :aborted => (:Nothing, Any[]), :ask_question => (:Nothing, Any[:Cstring, :(Ptr{Cstring})]), :reply => (:Nothing, [:UInt32])))
+    register_signal_types!(GMountOperation, Dict{Symbol, Tuple{Any, Any}}(:show_unmount_progress => (:Nothing, [:Cstring, :Int64, :Int64]), :show_processes => (:Nothing, Any[:Cstring, :(Ptr{GArray}), :(Ptr{Cstring})]), :ask_password => (:Nothing, [:Cstring, :Cstring, :Cstring, :UInt32]), :aborted => (:Nothing, Any[]), :ask_question => (:Nothing, Any[:Cstring, :(Ptr{Cstring})]), :reply => (:Nothing, [:UInt32])))
     abstract type GNativeSocketAddress <: GSocketAddress end
     mutable struct GNativeSocketAddressLeaf <: GNativeSocketAddress
         handle::Ptr{GObject}
@@ -983,7 +983,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GNativeSocketAddress] = GNativeSocketAddressLeaf
-    register_g_type!(GNativeSocketAddress, () -> ccall(("g_native_socket_address_get_type", libgio), GType, ()))
+    register_g_type!(GNativeSocketAddress, (()->ccall(("g_native_socket_address_get_type", libgio), GType, ())))
     abstract type GVolumeMonitor <: GObject end
     mutable struct GVolumeMonitorLeaf <: GVolumeMonitor
         handle::Ptr{GObject}
@@ -996,9 +996,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GVolumeMonitor] = GVolumeMonitorLeaf
-    register_g_type!(GVolumeMonitor, () -> ccall(("g_volume_monitor_get_type", libgio), GType, ()))
+    register_g_type!(GVolumeMonitor, (()->ccall(("g_volume_monitor_get_type", libgio), GType, ())))
     register_signals!(GVolumeMonitor, [:drive_changed, :drive_connected, :drive_disconnected, :drive_eject_button, :drive_stop_button, :mount_added, :mount_changed, :mount_pre_unmount, :mount_removed, :volume_added, :volume_changed, :volume_removed])
-    register_signal_types!(GVolumeMonitor, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :volume_added => (:Nothing, Expr[:(Ptr{GObject})]), :mount_removed => (:Nothing, Expr[:(Ptr{GObject})]), :volume_changed => (:Nothing, Expr[:(Ptr{GObject})]), :drive_disconnected => (:Nothing, Expr[:(Ptr{GObject})]), :volume_removed => (:Nothing, Expr[:(Ptr{GObject})]), :mount_pre_unmount => (:Nothing, Expr[:(Ptr{GObject})]), :drive_changed => (:Nothing, Expr[:(Ptr{GObject})]), :drive_stop_button => (:Nothing, Expr[:(Ptr{GObject})]), :mount_added => (:Nothing, Expr[:(Ptr{GObject})]), :drive_eject_button => (:Nothing, Expr[:(Ptr{GObject})]), :mount_changed => (:Nothing, Expr[:(Ptr{GObject})]), :drive_connected => (:Nothing, Expr[:(Ptr{GObject})])))
+    register_signal_types!(GVolumeMonitor, Dict{Symbol, Tuple{Any, Any}}(:volume_added => (:Nothing, Expr[:(Ptr{GObject})]), :mount_pre_unmount => (:Nothing, Expr[:(Ptr{GObject})]), :drive_stop_button => (:Nothing, Expr[:(Ptr{GObject})]), :mount_added => (:Nothing, Expr[:(Ptr{GObject})]), :drive_connected => (:Nothing, Expr[:(Ptr{GObject})]), :mount_removed => (:Nothing, Expr[:(Ptr{GObject})]), :volume_changed => (:Nothing, Expr[:(Ptr{GObject})]), :drive_disconnected => (:Nothing, Expr[:(Ptr{GObject})]), :volume_removed => (:Nothing, Expr[:(Ptr{GObject})]), :drive_changed => (:Nothing, Expr[:(Ptr{GObject})]), :drive_eject_button => (:Nothing, Expr[:(Ptr{GObject})]), :mount_changed => (:Nothing, Expr[:(Ptr{GObject})])))
     abstract type GNativeVolumeMonitor <: GVolumeMonitor end
     mutable struct GNativeVolumeMonitorLeaf <: GNativeVolumeMonitor
         handle::Ptr{GObject}
@@ -1011,7 +1011,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GNativeVolumeMonitor] = GNativeVolumeMonitorLeaf
-    register_g_type!(GNativeVolumeMonitor, () -> ccall(("g_native_volume_monitor_get_type", libgio), GType, ()))
+    register_g_type!(GNativeVolumeMonitor, (()->ccall(("g_native_volume_monitor_get_type", libgio), GType, ())))
     abstract type GNetworkAddress <: GObject end
     mutable struct GNetworkAddressLeaf <: GNetworkAddress
         handle::Ptr{GObject}
@@ -1024,7 +1024,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GNetworkAddress] = GNetworkAddressLeaf
-    register_g_type!(GNetworkAddress, () -> ccall(("g_network_address_get_type", libgio), GType, ()))
+    register_g_type!(GNetworkAddress, (()->ccall(("g_network_address_get_type", libgio), GType, ())))
     abstract type GNetworkService <: GObject end
     mutable struct GNetworkServiceLeaf <: GNetworkService
         handle::Ptr{GObject}
@@ -1037,7 +1037,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GNetworkService] = GNetworkServiceLeaf
-    register_g_type!(GNetworkService, () -> ccall(("g_network_service_get_type", libgio), GType, ()))
+    register_g_type!(GNetworkService, (()->ccall(("g_network_service_get_type", libgio), GType, ())))
     abstract type GNotification <: GObject end
     mutable struct GNotificationLeaf <: GNotification
         handle::Ptr{GObject}
@@ -1050,7 +1050,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GNotification] = GNotificationLeaf
-    register_g_type!(GNotification, () -> ccall(("g_notification_get_type", libgio), GType, ()))
+    register_g_type!(GNotification, (()->ccall(("g_notification_get_type", libgio), GType, ())))
     abstract type GPermission <: GObject end
     mutable struct GPermissionLeaf <: GPermission
         handle::Ptr{GObject}
@@ -1063,7 +1063,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GPermission] = GPermissionLeaf
-    register_g_type!(GPermission, () -> ccall(("g_permission_get_type", libgio), GType, ()))
+    register_g_type!(GPermission, (()->ccall(("g_permission_get_type", libgio), GType, ())))
     abstract type GPropertyAction <: GObject end
     mutable struct GPropertyActionLeaf <: GPropertyAction
         handle::Ptr{GObject}
@@ -1076,7 +1076,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GPropertyAction] = GPropertyActionLeaf
-    register_g_type!(GPropertyAction, () -> ccall(("g_property_action_get_type", libgio), GType, ()))
+    register_g_type!(GPropertyAction, (()->ccall(("g_property_action_get_type", libgio), GType, ())))
     abstract type GProxyAddress <: GInetSocketAddress end
     mutable struct GProxyAddressLeaf <: GProxyAddress
         handle::Ptr{GObject}
@@ -1089,7 +1089,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GProxyAddress] = GProxyAddressLeaf
-    register_g_type!(GProxyAddress, () -> ccall(("g_proxy_address_get_type", libgio), GType, ()))
+    register_g_type!(GProxyAddress, (()->ccall(("g_proxy_address_get_type", libgio), GType, ())))
     abstract type GSocketAddressEnumerator <: GObject end
     mutable struct GSocketAddressEnumeratorLeaf <: GSocketAddressEnumerator
         handle::Ptr{GObject}
@@ -1102,7 +1102,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSocketAddressEnumerator] = GSocketAddressEnumeratorLeaf
-    register_g_type!(GSocketAddressEnumerator, () -> ccall(("g_socket_address_enumerator_get_type", libgio), GType, ()))
+    register_g_type!(GSocketAddressEnumerator, (()->ccall(("g_socket_address_enumerator_get_type", libgio), GType, ())))
     abstract type GProxyAddressEnumerator <: GSocketAddressEnumerator end
     mutable struct GProxyAddressEnumeratorLeaf <: GProxyAddressEnumerator
         handle::Ptr{GObject}
@@ -1115,7 +1115,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GProxyAddressEnumerator] = GProxyAddressEnumeratorLeaf
-    register_g_type!(GProxyAddressEnumerator, () -> ccall(("g_proxy_address_enumerator_get_type", libgio), GType, ()))
+    register_g_type!(GProxyAddressEnumerator, (()->ccall(("g_proxy_address_enumerator_get_type", libgio), GType, ())))
     abstract type GResolver <: GObject end
     mutable struct GResolverLeaf <: GResolver
         handle::Ptr{GObject}
@@ -1128,9 +1128,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GResolver] = GResolverLeaf
-    register_g_type!(GResolver, () -> ccall(("g_resolver_get_type", libgio), GType, ()))
+    register_g_type!(GResolver, (()->ccall(("g_resolver_get_type", libgio), GType, ())))
     register_signals!(GResolver, [:reload])
-    register_signal_types!(GResolver, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :reload => (:Nothing, Any[])))
+    register_signal_types!(GResolver, Dict{Symbol, Tuple{Any, Any}}(:reload => (:Nothing, Any[])))
     abstract type GSettings <: GObject end
     mutable struct GSettingsLeaf <: GSettings
         handle::Ptr{GObject}
@@ -1143,9 +1143,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GSettings] = GSettingsLeaf
-    register_g_type!(GSettings, () -> ccall(("g_settings_get_type", libgio), GType, ()))
+    register_g_type!(GSettings, (()->ccall(("g_settings_get_type", libgio), GType, ())))
     register_signals!(GSettings, [:change_event, :changed, :writable_change_event, :writable_changed])
-    register_signal_types!(GSettings, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :change_event => (:Cint, Any[:(Ptr{UInt32}), :Int32]), :changed => (:Nothing, [:Cstring]), :writable_change_event => (:Cint, [:UInt32]), :writable_changed => (:Nothing, [:Cstring])))
+    register_signal_types!(GSettings, Dict{Symbol, Tuple{Any, Any}}(:change_event => (:Cint, Any[:(Ptr{UInt32}), :Int32]), :changed => (:Nothing, [:Cstring]), :writable_change_event => (:Cint, [:UInt32]), :writable_changed => (:Nothing, [:Cstring])))
     abstract type GSettingsBackend <: GObject end
     mutable struct GSettingsBackendLeaf <: GSettingsBackend
         handle::Ptr{GObject}
@@ -1158,7 +1158,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSettingsBackend] = GSettingsBackendLeaf
-    register_g_type!(GSettingsBackend, () -> ccall(("g_settings_backend_get_type", libgio), GType, ()))
+    register_g_type!(GSettingsBackend, (()->ccall(("g_settings_backend_get_type", libgio), GType, ())))
     abstract type GSimpleAction <: GObject end
     mutable struct GSimpleActionLeaf <: GSimpleAction
         handle::Ptr{GObject}
@@ -1171,9 +1171,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GSimpleAction] = GSimpleActionLeaf
-    register_g_type!(GSimpleAction, () -> ccall(("g_simple_action_get_type", libgio), GType, ()))
+    register_g_type!(GSimpleAction, (()->ccall(("g_simple_action_get_type", libgio), GType, ())))
     register_signals!(GSimpleAction, [:activate, :change_state])
-    register_signal_types!(GSimpleAction, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :change_state => (:Nothing, [:GVariant]), :activate => (:Nothing, [:GVariant])))
+    register_signal_types!(GSimpleAction, Dict{Symbol, Tuple{Any, Any}}(:change_state => (:Nothing, [:GVariant]), :activate => (:Nothing, [:GVariant])))
     abstract type GSimpleActionGroup <: GObject end
     mutable struct GSimpleActionGroupLeaf <: GSimpleActionGroup
         handle::Ptr{GObject}
@@ -1186,9 +1186,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GSimpleActionGroup] = GSimpleActionGroupLeaf
-    register_g_type!(GSimpleActionGroup, () -> ccall(("g_simple_action_group_get_type", libgio), GType, ()))
+    register_g_type!(GSimpleActionGroup, (()->ccall(("g_simple_action_group_get_type", libgio), GType, ())))
     register_signals!(GSimpleActionGroup, [:action_added, :action_enabled_changed, :action_removed, :action_state_changed])
-    register_signal_types!(GSimpleActionGroup, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})])))
+    register_signal_types!(GSimpleActionGroup, Dict{Symbol, Tuple{Any, Any}}(:action_enabled_changed => (:Nothing, [:Cstring, :Cint]), :action_state_changed => (:Nothing, [:Cstring, :GVariant]), :action_removed => (:Nothing, [:Cstring]), :action_added => (:Nothing, [:Cstring])))
     abstract type GSimpleAsyncResult <: GObject end
     mutable struct GSimpleAsyncResultLeaf <: GSimpleAsyncResult
         handle::Ptr{GObject}
@@ -1201,7 +1201,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSimpleAsyncResult] = GSimpleAsyncResultLeaf
-    register_g_type!(GSimpleAsyncResult, () -> ccall(("g_simple_async_result_get_type", libgio), GType, ()))
+    register_g_type!(GSimpleAsyncResult, (()->ccall(("g_simple_async_result_get_type", libgio), GType, ())))
     abstract type GSimpleIOStream <: GIOStream end
     mutable struct GSimpleIOStreamLeaf <: GSimpleIOStream
         handle::Ptr{GObject}
@@ -1214,7 +1214,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSimpleIOStream] = GSimpleIOStreamLeaf
-    register_g_type!(GSimpleIOStream, () -> ccall(("g_simple_io_stream_get_type", libgio), GType, ()))
+    register_g_type!(GSimpleIOStream, (()->ccall(("g_simple_io_stream_get_type", libgio), GType, ())))
     abstract type GSimplePermission <: GPermission end
     mutable struct GSimplePermissionLeaf <: GSimplePermission
         handle::Ptr{GObject}
@@ -1227,7 +1227,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSimplePermission] = GSimplePermissionLeaf
-    register_g_type!(GSimplePermission, () -> ccall(("g_simple_permission_get_type", libgio), GType, ()))
+    register_g_type!(GSimplePermission, (()->ccall(("g_simple_permission_get_type", libgio), GType, ())))
     abstract type GSimpleProxyResolver <: GObject end
     mutable struct GSimpleProxyResolverLeaf <: GSimpleProxyResolver
         handle::Ptr{GObject}
@@ -1240,7 +1240,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSimpleProxyResolver] = GSimpleProxyResolverLeaf
-    register_g_type!(GSimpleProxyResolver, () -> ccall(("g_simple_proxy_resolver_get_type", libgio), GType, ()))
+    register_g_type!(GSimpleProxyResolver, (()->ccall(("g_simple_proxy_resolver_get_type", libgio), GType, ())))
     abstract type GSocket <: GObject end
     mutable struct GSocketLeaf <: GSocket
         handle::Ptr{GObject}
@@ -1253,7 +1253,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSocket] = GSocketLeaf
-    register_g_type!(GSocket, () -> ccall(("g_socket_get_type", libgio), GType, ()))
+    register_g_type!(GSocket, (()->ccall(("g_socket_get_type", libgio), GType, ())))
     abstract type GSocketClient <: GObject end
     mutable struct GSocketClientLeaf <: GSocketClient
         handle::Ptr{GObject}
@@ -1266,9 +1266,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GSocketClient] = GSocketClientLeaf
-    register_g_type!(GSocketClient, () -> ccall(("g_socket_client_get_type", libgio), GType, ()))
+    register_g_type!(GSocketClient, (()->ccall(("g_socket_client_get_type", libgio), GType, ())))
     register_signals!(GSocketClient, [:event])
-    register_signal_types!(GSocketClient, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :event => (:Nothing, Any[:UInt32, :(Ptr{GObject}), :(Ptr{GObject})])))
+    register_signal_types!(GSocketClient, Dict{Symbol, Tuple{Any, Any}}(:event => (:Nothing, Any[:UInt32, :(Ptr{GObject}), :(Ptr{GObject})])))
     abstract type GSocketConnection <: GIOStream end
     mutable struct GSocketConnectionLeaf <: GSocketConnection
         handle::Ptr{GObject}
@@ -1281,7 +1281,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSocketConnection] = GSocketConnectionLeaf
-    register_g_type!(GSocketConnection, () -> ccall(("g_socket_connection_get_type", libgio), GType, ()))
+    register_g_type!(GSocketConnection, (()->ccall(("g_socket_connection_get_type", libgio), GType, ())))
     abstract type GSocketListener <: GObject end
     mutable struct GSocketListenerLeaf <: GSocketListener
         handle::Ptr{GObject}
@@ -1294,9 +1294,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GSocketListener] = GSocketListenerLeaf
-    register_g_type!(GSocketListener, () -> ccall(("g_socket_listener_get_type", libgio), GType, ()))
+    register_g_type!(GSocketListener, (()->ccall(("g_socket_listener_get_type", libgio), GType, ())))
     register_signals!(GSocketListener, [:event])
-    register_signal_types!(GSocketListener, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :event => (:Nothing, Any[:UInt32, :(Ptr{GObject})])))
+    register_signal_types!(GSocketListener, Dict{Symbol, Tuple{Any, Any}}(:event => (:Nothing, Any[:UInt32, :(Ptr{GObject})])))
     abstract type GSocketService <: GSocketListener end
     mutable struct GSocketServiceLeaf <: GSocketService
         handle::Ptr{GObject}
@@ -1309,9 +1309,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GSocketService] = GSocketServiceLeaf
-    register_g_type!(GSocketService, () -> ccall(("g_socket_service_get_type", libgio), GType, ()))
+    register_g_type!(GSocketService, (()->ccall(("g_socket_service_get_type", libgio), GType, ())))
     register_signals!(GSocketService, [:incoming])
-    register_signal_types!(GSocketService, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :event => (:Nothing, Any[:UInt32, :(Ptr{GObject})]), :incoming => (:Cint, Expr[:(Ptr{GObject}), :(Ptr{GObject})])))
+    register_signal_types!(GSocketService, Dict{Symbol, Tuple{Any, Any}}(:incoming => (:Cint, Expr[:(Ptr{GObject}), :(Ptr{GObject})])))
     abstract type GSubprocess <: GObject end
     mutable struct GSubprocessLeaf <: GSubprocess
         handle::Ptr{GObject}
@@ -1324,7 +1324,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSubprocess] = GSubprocessLeaf
-    register_g_type!(GSubprocess, () -> ccall(("g_subprocess_get_type", libgio), GType, ()))
+    register_g_type!(GSubprocess, (()->ccall(("g_subprocess_get_type", libgio), GType, ())))
     abstract type GSubprocessLauncher <: GObject end
     mutable struct GSubprocessLauncherLeaf <: GSubprocessLauncher
         handle::Ptr{GObject}
@@ -1337,7 +1337,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GSubprocessLauncher] = GSubprocessLauncherLeaf
-    register_g_type!(GSubprocessLauncher, () -> ccall(("g_subprocess_launcher_get_type", libgio), GType, ()))
+    register_g_type!(GSubprocessLauncher, (()->ccall(("g_subprocess_launcher_get_type", libgio), GType, ())))
     abstract type GTask <: GObject end
     mutable struct GTaskLeaf <: GTask
         handle::Ptr{GObject}
@@ -1350,7 +1350,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTask] = GTaskLeaf
-    register_g_type!(GTask, () -> ccall(("g_task_get_type", libgio), GType, ()))
+    register_g_type!(GTask, (()->ccall(("g_task_get_type", libgio), GType, ())))
     abstract type GTcpConnection <: GSocketConnection end
     mutable struct GTcpConnectionLeaf <: GTcpConnection
         handle::Ptr{GObject}
@@ -1363,7 +1363,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTcpConnection] = GTcpConnectionLeaf
-    register_g_type!(GTcpConnection, () -> ccall(("g_tcp_connection_get_type", libgio), GType, ()))
+    register_g_type!(GTcpConnection, (()->ccall(("g_tcp_connection_get_type", libgio), GType, ())))
     abstract type GTcpWrapperConnection <: GTcpConnection end
     mutable struct GTcpWrapperConnectionLeaf <: GTcpWrapperConnection
         handle::Ptr{GObject}
@@ -1376,7 +1376,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTcpWrapperConnection] = GTcpWrapperConnectionLeaf
-    register_g_type!(GTcpWrapperConnection, () -> ccall(("g_tcp_wrapper_connection_get_type", libgio), GType, ()))
+    register_g_type!(GTcpWrapperConnection, (()->ccall(("g_tcp_wrapper_connection_get_type", libgio), GType, ())))
     abstract type GTestDBus <: GObject end
     mutable struct GTestDBusLeaf <: GTestDBus
         handle::Ptr{GObject}
@@ -1389,7 +1389,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTestDBus] = GTestDBusLeaf
-    register_g_type!(GTestDBus, () -> ccall(("g_test_dbus_get_type", libgio), GType, ()))
+    register_g_type!(GTestDBus, (()->ccall(("g_test_dbus_get_type", libgio), GType, ())))
     abstract type GThemedIcon <: GObject end
     mutable struct GThemedIconLeaf <: GThemedIcon
         handle::Ptr{GObject}
@@ -1402,7 +1402,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GThemedIcon] = GThemedIconLeaf
-    register_g_type!(GThemedIcon, () -> ccall(("g_themed_icon_get_type", libgio), GType, ()))
+    register_g_type!(GThemedIcon, (()->ccall(("g_themed_icon_get_type", libgio), GType, ())))
     abstract type GThreadedResolver <: GResolver end
     mutable struct GThreadedResolverLeaf <: GThreadedResolver
         handle::Ptr{GObject}
@@ -1415,7 +1415,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GThreadedResolver] = GThreadedResolverLeaf
-    register_g_type!(GThreadedResolver, () -> ccall(("g_threaded_resolver_get_type", libgio), GType, ()))
+    register_g_type!(GThreadedResolver, (()->ccall(("g_threaded_resolver_get_type", libgio), GType, ())))
     abstract type GThreadedSocketService <: GSocketService end
     mutable struct GThreadedSocketServiceLeaf <: GThreadedSocketService
         handle::Ptr{GObject}
@@ -1428,9 +1428,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GThreadedSocketService] = GThreadedSocketServiceLeaf
-    register_g_type!(GThreadedSocketService, () -> ccall(("g_threaded_socket_service_get_type", libgio), GType, ()))
+    register_g_type!(GThreadedSocketService, (()->ccall(("g_threaded_socket_service_get_type", libgio), GType, ())))
     register_signals!(GThreadedSocketService, [:run])
-    register_signal_types!(GThreadedSocketService, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :event => (:Nothing, Any[:UInt32, :(Ptr{GObject})]), :run => (:Cint, Expr[:(Ptr{GObject}), :(Ptr{GObject})]), :incoming => (:Cint, Expr[:(Ptr{GObject}), :(Ptr{GObject})])))
+    register_signal_types!(GThreadedSocketService, Dict{Symbol, Tuple{Any, Any}}(:run => (:Cint, Expr[:(Ptr{GObject}), :(Ptr{GObject})])))
     abstract type GTlsCertificate <: GObject end
     mutable struct GTlsCertificateLeaf <: GTlsCertificate
         handle::Ptr{GObject}
@@ -1443,7 +1443,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTlsCertificate] = GTlsCertificateLeaf
-    register_g_type!(GTlsCertificate, () -> ccall(("g_tls_certificate_get_type", libgio), GType, ()))
+    register_g_type!(GTlsCertificate, (()->ccall(("g_tls_certificate_get_type", libgio), GType, ())))
     abstract type GTlsConnection <: GIOStream end
     mutable struct GTlsConnectionLeaf <: GTlsConnection
         handle::Ptr{GObject}
@@ -1456,9 +1456,9 @@ begin
         end
     end
     gtype_wrapper_cache[:GTlsConnection] = GTlsConnectionLeaf
-    register_g_type!(GTlsConnection, () -> ccall(("g_tls_connection_get_type", libgio), GType, ()))
+    register_g_type!(GTlsConnection, (()->ccall(("g_tls_connection_get_type", libgio), GType, ())))
     register_signals!(GTlsConnection, [:accept_certificate])
-    register_signal_types!(GTlsConnection, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :accept_certificate => (:Cint, Any[:(Ptr{GObject}), :UInt32])))
+    register_signal_types!(GTlsConnection, Dict{Symbol, Tuple{Any, Any}}(:accept_certificate => (:Cint, Any[:(Ptr{GObject}), :UInt32])))
     abstract type GTlsDatabase <: GObject end
     mutable struct GTlsDatabaseLeaf <: GTlsDatabase
         handle::Ptr{GObject}
@@ -1471,7 +1471,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTlsDatabase] = GTlsDatabaseLeaf
-    register_g_type!(GTlsDatabase, () -> ccall(("g_tls_database_get_type", libgio), GType, ()))
+    register_g_type!(GTlsDatabase, (()->ccall(("g_tls_database_get_type", libgio), GType, ())))
     abstract type GTlsInteraction <: GObject end
     mutable struct GTlsInteractionLeaf <: GTlsInteraction
         handle::Ptr{GObject}
@@ -1484,7 +1484,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTlsInteraction] = GTlsInteractionLeaf
-    register_g_type!(GTlsInteraction, () -> ccall(("g_tls_interaction_get_type", libgio), GType, ()))
+    register_g_type!(GTlsInteraction, (()->ccall(("g_tls_interaction_get_type", libgio), GType, ())))
     abstract type GTlsPassword <: GObject end
     mutable struct GTlsPasswordLeaf <: GTlsPassword
         handle::Ptr{GObject}
@@ -1497,7 +1497,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GTlsPassword] = GTlsPasswordLeaf
-    register_g_type!(GTlsPassword, () -> ccall(("g_tls_password_get_type", libgio), GType, ()))
+    register_g_type!(GTlsPassword, (()->ccall(("g_tls_password_get_type", libgio), GType, ())))
     abstract type GUnixConnection <: GSocketConnection end
     mutable struct GUnixConnectionLeaf <: GUnixConnection
         handle::Ptr{GObject}
@@ -1510,7 +1510,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GUnixConnection] = GUnixConnectionLeaf
-    register_g_type!(GUnixConnection, () -> ccall(("g_unix_connection_get_type", libgio), GType, ()))
+    register_g_type!(GUnixConnection, (()->ccall(("g_unix_connection_get_type", libgio), GType, ())))
     abstract type GUnixCredentialsMessage <: GSocketControlMessage end
     mutable struct GUnixCredentialsMessageLeaf <: GUnixCredentialsMessage
         handle::Ptr{GObject}
@@ -1523,7 +1523,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GUnixCredentialsMessage] = GUnixCredentialsMessageLeaf
-    register_g_type!(GUnixCredentialsMessage, () -> ccall(("g_unix_credentials_message_get_type", libgio), GType, ()))
+    register_g_type!(GUnixCredentialsMessage, (()->ccall(("g_unix_credentials_message_get_type", libgio), GType, ())))
     abstract type GVfs <: GObject end
     mutable struct GVfsLeaf <: GVfs
         handle::Ptr{GObject}
@@ -1536,7 +1536,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GVfs] = GVfsLeaf
-    register_g_type!(GVfs, () -> ccall(("g_vfs_get_type", libgio), GType, ()))
+    register_g_type!(GVfs, (()->ccall(("g_vfs_get_type", libgio), GType, ())))
     abstract type GZlibCompressor <: GObject end
     mutable struct GZlibCompressorLeaf <: GZlibCompressor
         handle::Ptr{GObject}
@@ -1549,7 +1549,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GZlibCompressor] = GZlibCompressorLeaf
-    register_g_type!(GZlibCompressor, () -> ccall(("g_zlib_compressor_get_type", libgio), GType, ()))
+    register_g_type!(GZlibCompressor, (()->ccall(("g_zlib_compressor_get_type", libgio), GType, ())))
     abstract type GZlibDecompressor <: GObject end
     mutable struct GZlibDecompressorLeaf <: GZlibDecompressor
         handle::Ptr{GObject}
@@ -1562,7 +1562,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GZlibDecompressor] = GZlibDecompressorLeaf
-    register_g_type!(GZlibDecompressor, () -> ccall(("g_zlib_decompressor_get_type", libgio), GType, ()))
+    register_g_type!(GZlibDecompressor, (()->ccall(("g_zlib_decompressor_get_type", libgio), GType, ())))
     function GAppLaunchContext()
         G_.AppLaunchContext_new()
     end

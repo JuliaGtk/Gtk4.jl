@@ -25,7 +25,7 @@ begin
     end
     mutable struct GdkPixbufFormat <: GBoxed
         handle::Ptr{_GdkPixbufFormat}
-        register_g_type!(GdkPixbufFormat, () -> ccall(("gdk_pixbuf_format_get_type", libgdkpixbuf), GType, ()))
+        register_g_type!(GdkPixbufFormat, (()->ccall(("gdk_pixbuf_format_get_type", libgdkpixbuf), GType, ())))
         function GdkPixbufFormat(ref::Ptr{T}, own::Bool = false) where T <: Union{GBoxed, _GdkPixbufFormat}
             x = new(ref)
             if own
@@ -57,33 +57,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbuf] = GdkPixbufLeaf
-    register_g_type!(GdkPixbuf, () -> ccall(("gdk_pixbuf_get_type", libgdkpixbuf), GType, ()))
-    abstract type GdkPixbufAnimation <: GObject end
-    mutable struct GdkPixbufAnimationLeaf <: GdkPixbufAnimation
-        handle::Ptr{GObject}
-        function GdkPixbufAnimationLeaf(handle::Ptr{GObject}, owns = false)
-            if handle == C_NULL
-                error("Cannot construct GdkPixbufAnimationLeaf with a NULL pointer")
-            end
-            GLib.gobject_maybe_sink(handle, owns)
-            return gobject_ref(new(handle))
-        end
-    end
-    gtype_wrapper_cache[:GdkPixbufAnimation] = GdkPixbufAnimationLeaf
-    register_g_type!(GdkPixbufAnimation, () -> ccall(("gdk_pixbuf_animation_get_type", libgdkpixbuf), GType, ()))
-    abstract type GdkPixbufAnimationIter <: GObject end
-    mutable struct GdkPixbufAnimationIterLeaf <: GdkPixbufAnimationIter
-        handle::Ptr{GObject}
-        function GdkPixbufAnimationIterLeaf(handle::Ptr{GObject}, owns = false)
-            if handle == C_NULL
-                error("Cannot construct GdkPixbufAnimationIterLeaf with a NULL pointer")
-            end
-            GLib.gobject_maybe_sink(handle, owns)
-            return gobject_ref(new(handle))
-        end
-    end
-    gtype_wrapper_cache[:GdkPixbufAnimationIter] = GdkPixbufAnimationIterLeaf
-    register_g_type!(GdkPixbufAnimationIter, () -> ccall(("gdk_pixbuf_animation_iter_get_type", libgdkpixbuf), GType, ()))
+    register_g_type!(GdkPixbuf, (()->ccall(("gdk_pixbuf_get_type", libgdkpixbuf), GType, ())))
     abstract type GdkPixbufLoader <: GObject end
     mutable struct GdkPixbufLoaderLeaf <: GdkPixbufLoader
         handle::Ptr{GObject}
@@ -96,9 +70,22 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufLoader] = GdkPixbufLoaderLeaf
-    register_g_type!(GdkPixbufLoader, () -> ccall(("gdk_pixbuf_loader_get_type", libgdkpixbuf), GType, ()))
+    register_g_type!(GdkPixbufLoader, (()->ccall(("gdk_pixbuf_loader_get_type", libgdkpixbuf), GType, ())))
     register_signals!(GdkPixbufLoader, [:area_prepared, :area_updated, :closed, :size_prepared])
-    register_signal_types!(GdkPixbufLoader, Dict{Symbol, Tuple{Any, Any}}(:notify => (:Nothing, Any[:(Ptr{GParamSpec})]), :area_prepared => (:Nothing, Any[]), :area_updated => (:Nothing, [:Int32, :Int32, :Int32, :Int32]), :size_prepared => (:Nothing, [:Int32, :Int32]), :closed => (:Nothing, Any[])))
+    register_signal_types!(GdkPixbufLoader, Dict{Symbol, Tuple{Any, Any}}(:area_prepared => (:Nothing, Any[]), :area_updated => (:Nothing, [:Int32, :Int32, :Int32, :Int32]), :size_prepared => (:Nothing, [:Int32, :Int32]), :closed => (:Nothing, Any[])))
+    abstract type GdkPixbufAnimation <: GObject end
+    mutable struct GdkPixbufAnimationLeaf <: GdkPixbufAnimation
+        handle::Ptr{GObject}
+        function GdkPixbufAnimationLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkPixbufAnimationLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GdkPixbufAnimation] = GdkPixbufAnimationLeaf
+    register_g_type!(GdkPixbufAnimation, (()->ccall(("gdk_pixbuf_animation_get_type", libgdkpixbuf), GType, ())))
     abstract type GdkPixbufNonAnim <: GdkPixbufAnimation end
     mutable struct GdkPixbufNonAnimLeaf <: GdkPixbufNonAnim
         handle::Ptr{GObject}
@@ -111,7 +98,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufNonAnim] = GdkPixbufNonAnimLeaf
-    register_g_type!(GdkPixbufNonAnim, () -> ccall(("gdk_pixbuf_non_anim_get_type", libgdkpixbuf), GType, ()))
+    register_g_type!(GdkPixbufNonAnim, (()->ccall(("gdk_pixbuf_non_anim_get_type", libgdkpixbuf), GType, ())))
     abstract type GdkPixbufSimpleAnim <: GdkPixbufAnimation end
     mutable struct GdkPixbufSimpleAnimLeaf <: GdkPixbufSimpleAnim
         handle::Ptr{GObject}
@@ -124,7 +111,20 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufSimpleAnim] = GdkPixbufSimpleAnimLeaf
-    register_g_type!(GdkPixbufSimpleAnim, () -> ccall(("gdk_pixbuf_simple_anim_get_type", libgdkpixbuf), GType, ()))
+    register_g_type!(GdkPixbufSimpleAnim, (()->ccall(("gdk_pixbuf_simple_anim_get_type", libgdkpixbuf), GType, ())))
+    abstract type GdkPixbufAnimationIter <: GObject end
+    mutable struct GdkPixbufAnimationIterLeaf <: GdkPixbufAnimationIter
+        handle::Ptr{GObject}
+        function GdkPixbufAnimationIterLeaf(handle::Ptr{GObject}, owns = false)
+            if handle == C_NULL
+                error("Cannot construct GdkPixbufAnimationIterLeaf with a NULL pointer")
+            end
+            GLib.gobject_maybe_sink(handle, owns)
+            return gobject_ref(new(handle))
+        end
+    end
+    gtype_wrapper_cache[:GdkPixbufAnimationIter] = GdkPixbufAnimationIterLeaf
+    register_g_type!(GdkPixbufAnimationIter, (()->ccall(("gdk_pixbuf_animation_iter_get_type", libgdkpixbuf), GType, ())))
     abstract type GdkPixbufSimpleAnimIter <: GdkPixbufAnimationIter end
     mutable struct GdkPixbufSimpleAnimIterLeaf <: GdkPixbufSimpleAnimIter
         handle::Ptr{GObject}
@@ -137,7 +137,7 @@ begin
         end
     end
     gtype_wrapper_cache[:GdkPixbufSimpleAnimIter] = GdkPixbufSimpleAnimIterLeaf
-    register_g_type!(GdkPixbufSimpleAnimIter, () -> ccall(("gdk_pixbuf_simple_anim_iter_get_type", libgdkpixbuf), GType, ()))
+    register_g_type!(GdkPixbufSimpleAnimIter, (()->ccall(("gdk_pixbuf_simple_anim_iter_get_type", libgdkpixbuf), GType, ())))
     gtype_wrapper_cache_init() = merge!(GLib.gtype_wrappers, gtype_wrapper_cache)
     function GdkPixbuf(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer; kwargs...)
         obj = G_.Pixbuf_new(_colorspace, _has_alpha, _bits_per_sample, _width, _height)
@@ -184,20 +184,6 @@ begin
         obj !== nothing && GLib.setproperties!(obj; kwargs...)
         obj
     end
-    function GdkPixbuf(_data; kwargs...)
-        obj = G_.Pixbuf_new_from_xpm_data(_data)
-        obj !== nothing && GLib.setproperties!(obj; kwargs...)
-        obj
-    end
-    function GdkPixbufAnimation(_filename::Union{AbstractString, Symbol})
-        G_.PixbufAnimation_new_from_file(_filename)
-    end
-    function GdkPixbufAnimation(_stream::GInputStream, _cancellable::Maybe(GCancellable))
-        G_.PixbufAnimation_new_from_stream(_stream, _cancellable)
-    end
-    function GdkPixbufAnimation(_async_result::GAsyncResult)
-        G_.PixbufAnimation_new_from_stream_finish(_async_result)
-    end
     function GdkPixbufLoader()
         G_.PixbufLoader_new()
     end
@@ -207,14 +193,7 @@ begin
     function GdkPixbufNonAnim(_pixbuf::GdkPixbuf)
         G_.PixbufNonAnim_new(_pixbuf)
     end
-    function GdkPixbufSimpleAnim(_width::Integer, _height::Integer, _rate::Real; kwargs...)
-        obj = G_.PixbufSimpleAnim_new(_width, _height, _rate)
-        obj !== nothing && GLib.setproperties!(obj; kwargs...)
-        obj
-    end
     @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.Pixbuf.html)." GdkPixbuf
-    @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.PixbufAnimation.html)." GdkPixbufAnimation
-    @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.PixbufAnimationIter.html)." GdkPixbufAnimationIter
     @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.PixbufLoader.html)." GdkPixbufLoader
     @doc "See the [GTK docs](https://docs.gtk.org/gdk-pixbuf/class.PixbufSimpleAnim.html)." GdkPixbufSimpleAnim
     function on_area_prepared(f, object::GdkPixbufLoader, user_data = object, after = false)
@@ -266,5 +245,5 @@ begin
         ret = f(buf, count, error)
         convert(Cint, ret)
     end
-    export GdkPixbufModulePattern, _GdkPixbufModulePattern, GdkPixbufModulePatternLike, GdkPixbufFormat, GdkPixbufFormatLike, _GdkPixbufFormat, GdkPixbuf, GdkPixbufLeaf, GdkPixbufAnimation, GdkPixbufAnimationLeaf, GdkPixbufAnimationIter, GdkPixbufAnimationIterLeaf, GdkPixbufLoader, GdkPixbufLoaderLeaf, GdkPixbufNonAnim, GdkPixbufNonAnimLeaf, GdkPixbufSimpleAnim, GdkPixbufSimpleAnimLeaf, GdkPixbufSimpleAnimIter, GdkPixbufSimpleAnimIterLeaf, GdkPixbufDestroyNotify, GdkPixbufModuleLoadXpmDataFunc, GdkPixbufModulePreparedFunc, GdkPixbufModuleSizeFunc, GdkPixbufModuleUpdatedFunc, GdkPixbufSaveFunc
+    export GdkPixbufModulePattern, _GdkPixbufModulePattern, GdkPixbufModulePatternLike, GdkPixbufFormat, GdkPixbufFormatLike, _GdkPixbufFormat, GdkPixbuf, GdkPixbufLeaf, GdkPixbufLoader, GdkPixbufLoaderLeaf, GdkPixbufNonAnim, GdkPixbufNonAnimLeaf, GdkPixbufSimpleAnim, GdkPixbufSimpleAnimLeaf, GdkPixbufSimpleAnimIter, GdkPixbufSimpleAnimIterLeaf, GdkPixbufDestroyNotify, GdkPixbufModuleLoadXpmDataFunc, GdkPixbufModulePreparedFunc, GdkPixbufModuleSizeFunc, GdkPixbufModuleUpdatedFunc, GdkPixbufSaveFunc
 end

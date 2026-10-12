@@ -408,7 +408,7 @@ function selection(dlg::Union{GtkFileChooserDialog,GtkFileChooserNative}, respon
     dlgp = GtkFileChooser(dlg)
     multiple = G_.get_select_multiple(dlgp)
     local sel
-    if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
+    if ResponseType(response_id) == ResponseType_ACCEPT
         if multiple
             filename_list = G_.get_files(dlgp)
             sel = String[GObjects.G_.get_path(GFile(f)) for f in GListModel(filename_list)]
@@ -535,7 +535,7 @@ function save_dialog(callback::Function, title::AbstractString, parent = nothing
   end
 
   function on_response(dlg, response_id)
-      if ResponseType(unsafe_trunc(UInt16, response_id)) == ResponseType_ACCEPT
+      if ResponseType(response_id) == ResponseType_ACCEPT
           file = G_.get_file(dlgp)
           sel = GObjects.G_.get_path(GFile(file))
       else
@@ -558,6 +558,21 @@ end
 
 ## Other chooser dialogs
 
+"""
+    color_dialog(callback::Function, title::AbstractString, parent = nothing; timeout=-1, initial_color = nothing)
+    color_dialog(title::AbstractString, parent = nothing; timeout=-1)
+
+Create a dialog for choosing a color. The form with a `callback` function argument is
+intended for use in GUI callbacks, while the form without `callback` is only useful in
+interactive scripts. If `callback` is provided, it should be a function that takes a
+single argument, which will be the chosen `GdkRGBA` or `nothing` if "Cancel" is pressed.
+The window title is set using `title`. Passing in a `parent` window is strongly
+recommended. The dialog will appear in front of the parent window by default.
+
+Keyword arguments:
+- `timeout = -1` to set a time in seconds after which the dialog will close and `nothing` will be returned. Disabled if negative.
+- `initial_color = nothing`: if set to a `GdkRGBA`, the dialog will start out with this color selected.
+"""
 function color_dialog(title::AbstractString, parent = nothing; timeout=-1)
     color = Ref{Union{Nothing,GdkRGBA}}()
     c = Condition()

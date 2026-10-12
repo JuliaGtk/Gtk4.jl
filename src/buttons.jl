@@ -62,6 +62,13 @@ active. The signal "toggled" can be used to set callbacks for when the toggle
 state changes. Keyword arguments allow you to set GObject properties.
 """ GtkToggleButton
 
+"""
+    group(b::Union{GtkCheckButton,GtkToggleButton}, b2::Union{Nothing,GtkCheckButton,GtkToggleButton})
+
+Puts `b` into the same exclusivity group as `b2`, so that only one button in the
+group can be active at a time. Pass `nothing` for `b2` to remove `b` from its
+current group.
+"""
 group(cb::GtkCheckButton, cb2::Union{Nothing,GtkCheckButton}) = G_.set_group(cb, cb2)
 group(tb::GtkToggleButton, tb2::Union{Nothing,GtkToggleButton}) = G_.set_group(tb, tb2)
 
@@ -111,7 +118,22 @@ function GtkVolumeButton(value::Real; kwargs...) # 0 <= value <= 1
     b
 end
 
+"""
+    popup(b::GtkMenuButton)
+
+Shows the popup (menu or popover) associated with `b`, as if it had been clicked.
+
+See also [`popdown`](@ref).
+"""
 popup(b::GtkMenuButton) = G_.popup(b)
+
+"""
+    popdown(b::GtkMenuButton)
+
+Hides the popup (menu or popover) associated with `b`.
+
+See also [`popup`](@ref).
+"""
 popdown(b::GtkMenuButton) = G_.popdown(b)
 
 function GtkPopoverMenu(model::GMenu, nested::Bool = false)

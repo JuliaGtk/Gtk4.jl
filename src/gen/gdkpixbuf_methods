@@ -148,11 +148,6 @@ begin
         ret2 = convert_if_not_null(GdkPixbuf, ret, true)
         ret2
     end
-    function Pixbuf_new_from_xpm_data(_data)
-        ret = ccall(("gdk_pixbuf_new_from_xpm_data", libgdkpixbuf), Ptr{GObject}, (Ptr{Cstring},), _data)
-        ret2 = convert_if_not_null(GdkPixbuf, ret, true)
-        ret2
-    end
     function calculate_rowstride(_colorspace, _has_alpha::Bool, _bits_per_sample::Integer, _width::Integer, _height::Integer)
         ret = ccall(("gdk_pixbuf_calculate_rowstride", libgdkpixbuf), Int32, (UInt32, Cint, Int32, Int32, Int32), _colorspace, _has_alpha, _bits_per_sample, _width, _height)
         ret
@@ -432,67 +427,6 @@ begin
     function load_finish(instance::GdkPixbuf, _res::GAsyncResult)
         load_finish(GLoadableIcon(instance), _res)
     end
-    function PixbufAnimation_new_from_file(_filename::Union{AbstractString, Symbol})
-        err = err_buf()
-        ret = ccall(("gdk_pixbuf_animation_new_from_file", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _filename, err)
-        check_err(err)
-        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
-        ret2
-    end
-    function PixbufAnimation_new_from_resource(_resource_path::Union{AbstractString, Symbol})
-        err = err_buf()
-        ret = ccall(("gdk_pixbuf_animation_new_from_resource", libgdkpixbuf), Ptr{GObject}, (Cstring, Ptr{Ptr{GError}}), _resource_path, err)
-        check_err(err)
-        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
-        ret2
-    end
-    function PixbufAnimation_new_from_stream(_stream::GInputStream, _cancellable::Maybe(GCancellable))
-        _cancellable_maybe = nothing_to_null(_cancellable)
-        err = err_buf()
-        ret = ccall(("gdk_pixbuf_animation_new_from_stream", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{GObject}, Ptr{Ptr{GError}}), _stream, _cancellable_maybe, err)
-        check_err(err)
-        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
-        ret2
-    end
-    function PixbufAnimation_new_from_stream_finish(_async_result::GAsyncResult)
-        err = err_buf()
-        ret = ccall(("gdk_pixbuf_animation_new_from_stream_finish", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject}, Ptr{Ptr{GError}}), _async_result, err)
-        check_err(err)
-        ret2 = convert_if_not_null(GdkPixbufAnimation, ret, true)
-        ret2
-    end
-    function get_height(instance::GdkPixbufAnimation)
-        ret = ccall(("gdk_pixbuf_animation_get_height", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-        ret
-    end
-    function get_static_image(instance::GdkPixbufAnimation)
-        ret = ccall(("gdk_pixbuf_animation_get_static_image", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GdkPixbuf, ret, false)
-        ret2
-    end
-    function get_width(instance::GdkPixbufAnimation)
-        ret = ccall(("gdk_pixbuf_animation_get_width", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-        ret
-    end
-    function is_static_image(instance::GdkPixbufAnimation)
-        ret = ccall(("gdk_pixbuf_animation_is_static_image", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function get_delay_time(instance::GdkPixbufAnimationIter)
-        ret = ccall(("gdk_pixbuf_animation_iter_get_delay_time", libgdkpixbuf), Int32, (Ptr{GObject},), instance)
-        ret
-    end
-    function get_pixbuf(instance::GdkPixbufAnimationIter)
-        ret = ccall(("gdk_pixbuf_animation_iter_get_pixbuf", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), instance)
-        ret2 = convert(GdkPixbuf, ret, false)
-        ret2
-    end
-    function on_currently_loading_frame(instance::GdkPixbufAnimationIter)
-        ret = ccall(("gdk_pixbuf_animation_iter_on_currently_loading_frame", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
     function PixbufLoader_new()
         ret = ccall(("gdk_pixbuf_loader_new", libgdkpixbuf), Ptr{GObject}, ())
         ret2 = GdkPixbufLoaderLeaf(ret, true)
@@ -558,23 +492,5 @@ begin
         ret = ccall(("gdk_pixbuf_non_anim_new", libgdkpixbuf), Ptr{GObject}, (Ptr{GObject},), _pixbuf)
         ret2 = GdkPixbufNonAnimLeaf(ret, true)
         ret2
-    end
-    function PixbufSimpleAnim_new(_width::Integer, _height::Integer, _rate::Real)
-        ret = ccall(("gdk_pixbuf_simple_anim_new", libgdkpixbuf), Ptr{GObject}, (Int32, Int32, Float32), _width, _height, _rate)
-        ret2 = GdkPixbufSimpleAnimLeaf(ret, true)
-        ret2
-    end
-    function add_frame(instance::GdkPixbufSimpleAnim, _pixbuf::GdkPixbuf)
-        ret = ccall(("gdk_pixbuf_simple_anim_add_frame", libgdkpixbuf), Nothing, (Ptr{GObject}, Ptr{GObject}), instance, _pixbuf)
-        nothing
-    end
-    function get_loop(instance::GdkPixbufSimpleAnim)
-        ret = ccall(("gdk_pixbuf_simple_anim_get_loop", libgdkpixbuf), Cint, (Ptr{GObject},), instance)
-        ret2 = convert(Bool, ret)
-        ret2
-    end
-    function set_loop(instance::GdkPixbufSimpleAnim, _loop::Bool)
-        ret = ccall(("gdk_pixbuf_simple_anim_set_loop", libgdkpixbuf), Nothing, (Ptr{GObject}, Cint), instance, _loop)
-        nothing
     end
 end
