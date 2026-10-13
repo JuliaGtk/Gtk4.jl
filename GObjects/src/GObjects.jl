@@ -314,8 +314,10 @@ function __init__()
     atexit(() -> (exiting[] = true))
     __init__gtype__()
     __init__gmainloop__()
-    #@info("$libglib")
     nothing
 end
+
+include("precompile.jl")
+_precompile_()
 
 end

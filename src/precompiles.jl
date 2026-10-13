@@ -5,12 +5,6 @@
 function _precompile_()
     ccall(:jl_generating_output, Cint, ()) == 1 || return nothing
     precompile(Tuple{typeof(__init__)})
-    precompile(Tuple{typeof(GLib.GClosureMarshal), Ptr{Nothing}, Ptr{GLib.GValue}, UInt32, Ptr{GLib.GValue}, Ptr{Nothing}, Ptr{Nothing}})
-    precompile(Tuple{typeof(GLib.uv_prepare), Ptr{Nothing}, Ptr{Int32}})
-    precompile(Tuple{typeof(GLib.uv_check), Ptr{Nothing}})
-    precompile(Tuple{typeof(GLib.uv_dispatch), Ptr{Nothing}, Ptr{Nothing}, Int64})
-    precompile(Tuple{typeof(GLib.g_yield), UInt64})
-    precompile(Tuple{typeof(GLib.__init__)})
     precompile(Tuple{typeof(Pango.__init__)})
     precompile(Tuple{typeof(GdkPixbufLib.__init__)})
     precompile(Tuple{Type{GtkWindow},String})

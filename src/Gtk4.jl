@@ -238,7 +238,7 @@ end
 
 isinitialized() = G_.is_initialized()
 
-#include("precompile.jl")
-#_precompile_()
+include("precompiles.jl")
+_precompile_()
 
 end
