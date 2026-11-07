@@ -2,7 +2,18 @@ module Pango
 
 using GObjects
 const GLib = GObjects
-using ..Gtk4: register_g_type!, register_signals!, register_signal_types!
+
+# Generated code registers its GType/signal metadata in this package's own
+# registries, which are handed to GObjects from `__init__`: see the comment on
+# `GObjects._g_type_providers`. These local definitions shadow the same-named
+# functions exported by GObjects.
+const _leaf_g_types = Dict{Type,Any}()
+const _signal_names = Dict{Type,Vector{Symbol}}()
+const _signal_types = Dict{Type,Dict{Symbol,Tuple{Any,Any}}}()
+
+register_g_type!(T, f) = (_leaf_g_types[T::Type] = f; nothing)
+register_signals!(T, names::Vector{Symbol}) = (_signal_names[T::Type] = names; nothing)
+register_signal_types!(T, d::Dict{Symbol,Tuple{Any,Any}}) = (_signal_types[T::Type] = d; nothing)
 
 @static if GObjects.libdir == ""
     using Glib_jll
@@ -12,16 +23,16 @@ else
     const libpangocairo = joinpath(GObjects.libdir, "libpangocairo-1.0.so")
 end
 
-import Base: convert, length, getindex, iterate, unsafe_convert
+import Base: convert, eltype, length, getindex, iterate, unsafe_convert
 import CEnum: @cenum, CEnum
 import BitFlags: @bitflag
 
-include("../gen/pango_consts")
-include("../gen/pango_structs")
+include("gen/pango_consts")
+include("gen/pango_structs")
 
 include("Cairo.jl")
 
-include("../gen/pangocairo_structs")
+include("gen/pangocairo_structs")
 
 using .Cairo
 
@@ -37,11 +48,11 @@ using ..Pango: Alignment, AttrType, BaselineShift, CoverageLevel, Direction, Ell
 using ..Pango: libpango, libpangocairo
 using ..Pango.Cairo
 
-include("../gen/pango_methods")
-include("../gen/pango_functions")
+include("gen/pango_methods")
+include("gen/pango_functions")
 
-include("../gen/pangocairo_methods")
-include("../gen/pangocairo_functions")
+include("gen/pangocairo_methods")
+include("gen/pangocairo_functions")
 
 end
 
@@ -65,6 +76,9 @@ for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
 end
 
 function __init__()
+    GObjects.register_g_type_provider!(_leaf_g_types)
+    GObjects.register_signal_provider!(_signal_names, _signal_types)
+
     # check that libpango is compatible with what the GI generated code expects
     vercheck = G_.version_check(VERSION_MAJOR,VERSION_MINOR,0)
     if vercheck !== nothing
@@ -94,5 +108,11 @@ PangoLayout(cr::cairoContext) = G_.create_layout(cr)
 
 PangoContext(fm::PangoFontMap) = G_.create_context(fm)
 getindex(pc::PangoContext, fd::PangoFontDescription) = G_.load_font(pc, fd)
+
+function _precompile_()
+    ccall(:jl_generating_output, Cint, ()) == 1 || return nothing
+    precompile(Tuple{typeof(__init__)})
+end
+_precompile_()
 
 end

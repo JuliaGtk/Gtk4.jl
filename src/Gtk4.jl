@@ -16,8 +16,9 @@ import GObjects as GLib
 export GLib
 using GdkPixbufs
 import GdkPixbufs as GdkPixbufLib
+using Pango
 
-# Generated code in this package (and the libraries it bundles below) cannot
+# Generated code in this package (and the Graphene module bundled below) cannot
 # register its GType/signal metadata straight into GObjects' own registries:
 # see the comment on `GObjects._g_type_providers` for why. Instead it's
 # recorded in this package's own registries -- an ordinary, safe, same-package
@@ -31,7 +32,6 @@ register_g_type!(T, f) = (_leaf_g_types[T::Type] = f; nothing)
 register_signals!(T, names::Vector{Symbol}) = (_signal_names[T::Type] = names; nothing)
 register_signal_types!(T, d::Dict{Symbol,Tuple{Any,Any}}) = (_signal_types[T::Type] = d; nothing)
 
-include("Pango/Pango.jl")
 include("Graphene.jl")
 
 @static if GObjects.libdir == ""
@@ -42,7 +42,6 @@ else
 end
 
 using ..Graphene
-using ..Pango
 
 using Dates
 using Preferences: Preferences, @load_preference, @set_preferences!
@@ -66,8 +65,8 @@ module G_
 using GObjects
 using GObjects: libglib, libgobject, libgio
 const GLib = GObjects
-using ..Pango
-using ..Pango.Cairo
+using Pango
+using Pango.Cairo
 using ..Graphene
 using GdkPixbufs
 using ..Gtk4

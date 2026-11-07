@@ -1,7 +1,7 @@
 import Cairo: CairoSurface, CairoContext, CairoARGBSurface
 
 using Cairo_jll
-using ..Pango.Cairo
+using Pango.Cairo
 
 function _canvas_draw_backing_store(w, cr, width, height, user_data) # cr is a Cairo context, user_data is a Cairo surface
     user_data==C_NULL && return
