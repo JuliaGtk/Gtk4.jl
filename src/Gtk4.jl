@@ -14,6 +14,8 @@ import FixedPointNumbers: N0f8, N0f16
 using GObjects
 import GObjects as GLib
 export GLib
+using GdkPixbufs
+import GdkPixbufs as GdkPixbufLib
 
 # Generated code in this package (and the libraries it bundles below) cannot
 # register its GType/signal metadata straight into GObjects' own registries:
@@ -30,17 +32,15 @@ register_signals!(T, names::Vector{Symbol}) = (_signal_names[T::Type] = names; n
 register_signal_types!(T, d::Dict{Symbol,Tuple{Any,Any}}) = (_signal_types[T::Type] = d; nothing)
 
 include("Pango/Pango.jl")
-include("GdkPixbufLib.jl")
 include("Graphene.jl")
 
 @static if GObjects.libdir == ""
     using GTK4_jll, Glib_jll
-    using Xorg_xkeyboard_config_jll, gdk_pixbuf_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
+    using Xorg_xkeyboard_config_jll, adwaita_icon_theme_jll, hicolor_icon_theme_jll
 else
     const libgtk4 = joinpath(GObjects.libdir, "libgtk-4.so")
 end
 
-using ..GdkPixbufLib
 using ..Graphene
 using ..Pango
 
@@ -69,7 +69,7 @@ const GLib = GObjects
 using ..Pango
 using ..Pango.Cairo
 using ..Graphene
-using ..GdkPixbufLib
+using GdkPixbufs
 using ..Gtk4
 
 using GTK4_jll

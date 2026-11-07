@@ -7,8 +7,8 @@ GLib.start_main_loop()
 include("pango.jl")
 end
 
-@testset "GdkPixbuf" begin
-include("gdkpixbuf.jl")
+@testset "GdkTexture" begin
+include("gdktexture.jl")
 end
 
 @testset "Graphene" begin

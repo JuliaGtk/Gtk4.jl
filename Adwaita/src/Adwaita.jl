@@ -21,7 +21,7 @@ using Gtk4.GLib
 using Gtk4.Pango
 using Gtk4.Pango.Cairo
 using Gtk4.Graphene
-using Gtk4.GdkPixbufLib
+using Gtk4.GdkPixbufs
 using Gtk4
 
 include("gen/adw_methods")

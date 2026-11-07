@@ -1,8 +1,19 @@
-module GdkPixbufLib
+module GdkPixbufs
 
 using GObjects
 const GLib = GObjects
-using ..Gtk4: register_g_type!, register_signals!, register_signal_types!
+
+# Generated code registers its GType/signal metadata in this package's own
+# registries, which are handed to GObjects from `__init__`: see the comment on
+# `GObjects._g_type_providers`. These local definitions shadow the same-named
+# functions exported by GObjects.
+const _leaf_g_types = Dict{Type,Any}()
+const _signal_names = Dict{Type,Vector{Symbol}}()
+const _signal_types = Dict{Type,Dict{Symbol,Tuple{Any,Any}}}()
+
+register_g_type!(T, f) = (_leaf_g_types[T::Type] = f; nothing)
+register_signals!(T, names::Vector{Symbol}) = (_signal_names[T::Type] = names; nothing)
+register_signal_types!(T, d::Dict{Symbol,Tuple{Any,Any}}) = (_signal_types[T::Type] = d; nothing)
 
 @static if GObjects.libdir == ""
     using Glib_jll
@@ -34,8 +45,8 @@ module G_
 using GObjects
 const GLib = GObjects
 using GObjects: libglib, libgobject, libgio
-using ..GdkPixbufLib
-using ..GdkPixbufLib: Colorspace, InterpType, PixbufError, PixbufRotation, libgdkpixbuf
+using ..GdkPixbufs
+using ..GdkPixbufs: Colorspace, InterpType, PixbufError, PixbufRotation, libgdkpixbuf
 
 
 import Base: convert, copy
@@ -48,7 +59,7 @@ end
 # define accessor methods
 let skiplist = [ :file_info ]
     for func in filter(x->startswith(string(x),"get_"),Base.names(G_,all=true))
-        ms=methods(getfield(GdkPixbufLib.G_,func))
+        ms=methods(getfield(GdkPixbufs.G_,func))
         v=Symbol(string(func)[5:end])
         v in skiplist && continue
         for m in ms
@@ -58,7 +69,7 @@ let skiplist = [ :file_info ]
     end
 
     for func in filter(x->startswith(string(x),"set_"),Base.names(G_,all=true))
-        ms=methods(getfield(GdkPixbufLib.G_,func))
+        ms=methods(getfield(GdkPixbufs.G_,func))
         v=Symbol(string(func)[5:end])
         v in skiplist && continue
         for m in ms
@@ -283,6 +294,9 @@ function query_pixbuf_loaders(dir::String;
 end
 
 function __init__()
+    GObjects.register_g_type_provider!(_leaf_g_types)
+    GObjects.register_signal_provider!(_signal_names, _signal_types)
+
     gtype_wrapper_cache_init()
     gboxed_cache_init()
 
@@ -318,5 +332,11 @@ function __init__()
         end
     end
 end
+
+function _precompile_()
+    ccall(:jl_generating_output, Cint, ()) == 1 || return nothing
+    precompile(Tuple{typeof(__init__)})
+end
+_precompile_()
 
 end

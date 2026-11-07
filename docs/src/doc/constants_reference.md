@@ -7,10 +7,10 @@ Modules = [Gtk4]
 Order   = [:constant]
 ```
 
-### Gtk4.GdkPixbufLib
+### Gtk4.GdkPixbufs
 
 ```@autodocs
-Modules = [Gtk4.GdkPixbufLib]
+Modules = [Gtk4.GdkPixbufs]
 Order   = [:constant]
 ```
 

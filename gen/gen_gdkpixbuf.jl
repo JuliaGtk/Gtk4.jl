@@ -5,7 +5,7 @@ printstyled("Generating code for GdkPixbuf\n";bold=true)
 
 ns = GINamespace(:GdkPixbuf,"2.0")
 d = readxml("/usr/share/gir-1.0/$(GI.ns_id(ns)).gir")
-path="../src/gen"
+path="../GdkPixbufs/src/gen"
 
 GI.export_consts!(ns, path, "gdkpixbuf", []; doc_prefix = "gdk-pixbuf", doc_xml = d, export_constants = false)
 

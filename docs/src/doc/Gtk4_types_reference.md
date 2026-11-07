@@ -3,7 +3,7 @@
 ### Types
 
 ```@autodocs
-Modules = [Gtk4, Gtk4.GdkPixbufLib]
+Modules = [Gtk4, Gtk4.GdkPixbufs]
 Order   = [:type]
 Public  = true
 Private = false
