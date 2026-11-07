@@ -36,7 +36,7 @@ kf2=gvboxed[Any]
 @test GObjects.G_.get_integer(kf2,"group","myint")==3
 
 # v[Any] finds boxed wrapper types by their GType name
-@test all(t -> nameof(t) == GLib.g_type_name(GLib.g_type(t)), GLib.gboxed_types)
+@test all(t -> nameof(t) == GObjects.g_type_name(GObjects.g_type(t)), GObjects.gboxed_types)
 
 kf3=gvboxed[GKeyFile]
 @test isa(kf3,GKeyFile)

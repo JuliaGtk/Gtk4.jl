@@ -64,8 +64,8 @@ sleep(0.5)
 
 x[] = 1 # reset
 
-GLib.pause_main_loop() do
-    @test GLib.is_loop_running() == false
+GObjects.pause_main_loop() do
+    @test GObjects.is_loop_running() == false
     x[] = 2
 end
 

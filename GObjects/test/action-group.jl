@@ -141,7 +141,7 @@ ac = add_action(GActionMap(g), "new-action", cb)
 
 @test g["new-action"] == ac
 
-GLib.activate(ac)
+GObjects.activate(ac)
 @test refset[]
 
 add_action(GActionMap(g), "new-action-with-parameter", Bool, cb)
